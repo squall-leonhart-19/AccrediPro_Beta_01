@@ -21,19 +21,29 @@ import {
   GraduationCap,
   Settings,
   Shield,
-  Send,
   Library,
+  Map,
+  FolderOpen,
+  Calendar,
+  Megaphone,
+  Trophy,
+  HelpCircle,
 } from "lucide-react";
 import { useState, useTransition } from "react";
 
 const navItems = [
   { href: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
+  { href: "/roadmap", label: "Your Roadmap", icon: Map },
   { href: "/my-courses", label: "My Courses", icon: BookOpen },
   { href: "/courses", label: "Course Catalog", icon: Library },
+  { href: "/messages", label: "Private Mentors Chat", icon: MessageSquare },
+  { href: "/resources", label: "Resources", icon: FolderOpen },
+  { href: "/events", label: "Events", icon: Calendar },
+  { href: "/announcements", label: "Announcements", icon: Megaphone },
   { href: "/community", label: "Community", icon: Users },
-  { href: "/messages", label: "Messages", icon: MessageSquare },
-  { href: "/mentorship", label: "My Coach", icon: GraduationCap },
+  { href: "/achievements", label: "Achievements", icon: Trophy },
   { href: "/certificates", label: "Certificates", icon: Award },
+  { href: "/help", label: "Help & Support", icon: HelpCircle },
   { href: "/profile", label: "Profile", icon: User },
 ];
 

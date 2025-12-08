@@ -42,7 +42,7 @@ export async function POST(request: NextRequest) {
     });
 
     // Send welcome email
-    await sendWelcomeEmail(user.email, user.firstName || undefined);
+    await sendWelcomeEmail({ to: user.email, firstName: user.firstName || "there" });
 
     // Trigger webhook
     await triggerWebhook("user.registered", {
@@ -66,7 +66,7 @@ export async function POST(request: NextRequest) {
   } catch (error) {
     if (error instanceof z.ZodError) {
       return NextResponse.json(
-        { success: false, error: error.errors[0].message },
+        { success: false, error: error.issues[0].message },
         { status: 400 }
       );
     }

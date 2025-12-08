@@ -27,6 +27,8 @@ import {
 import { WistiaPlayer } from "@/components/courses/wistia-player";
 import { LessonSidebar } from "@/components/courses/lesson-sidebar";
 import { MarkCompleteButton } from "@/components/courses/mark-complete-button";
+import { LessonNavigation } from "@/components/courses/lesson-navigation";
+import { BottomLessonNav } from "@/components/courses/bottom-lesson-nav";
 
 async function getLesson(lessonId: string) {
   return prisma.lesson.findUnique({
@@ -148,11 +150,15 @@ export default async function LessonPage({
 
   // Get all lessons in order
   const allLessons = course.modules.flatMap((m) =>
-    m.lessons.map((l) => ({ ...l, moduleTitle: m.title }))
+    m.lessons.map((l) => ({ ...l, moduleTitle: m.title, moduleId: m.id }))
   );
   const currentIndex = allLessons.findIndex((l) => l.id === lesson.id);
   const prevLesson = currentIndex > 0 ? allLessons[currentIndex - 1] : null;
   const nextLesson = currentIndex < allLessons.length - 1 ? allLessons[currentIndex + 1] : null;
+
+  // Check if user can access the next lesson (linear progression first time)
+  // User can access next lesson if current lesson is completed
+  const canAccessNextLesson = isCompleted;
 
   const formatDuration = (seconds: number) => {
     const mins = Math.floor(seconds / 60);
@@ -316,6 +322,8 @@ export default async function LessonPage({
                   isCompleted={isCompleted}
                   courseName={course.title}
                   courseSlug={slug}
+                  lessonNumber={currentIndex + 1}
+                  totalLessons={totalLessons}
                 />
               </div>
 
@@ -414,52 +422,36 @@ export default async function LessonPage({
               )}
 
               {/* Navigation Footer */}
-              <div className="flex items-center justify-between pt-6 border-t border-gray-200">
-                {prevLesson ? (
-                  <Link href={`/courses/${slug}/learn/${prevLesson.id}`}>
-                    <Button
-                      variant="outline"
-                      className="border-gray-300 text-gray-700 hover:bg-gray-100 hover:text-gray-900 transition-all"
-                    >
-                      <ChevronLeft className="w-4 h-4 mr-2" />
-                      <span className="hidden sm:inline">Previous Lesson</span>
-                      <span className="sm:hidden">Prev</span>
-                    </Button>
-                  </Link>
-                ) : (
-                  <div />
-                )}
-
-                {/* Mobile Progress */}
-                <div className="lg:hidden flex items-center gap-2 bg-gray-100 rounded-full px-4 py-2">
-                  <span className="text-xs text-gray-600">
-                    {completedLessons}/{totalLessons}
-                  </span>
-                  <Progress
-                    value={progressPercentage}
-                    className="w-16 h-1.5 bg-gray-200"
-                  />
-                </div>
-
-                {nextLesson ? (
-                  <Link href={`/courses/${slug}/learn/${nextLesson.id}`}>
-                    <Button className="bg-burgundy-600 hover:bg-burgundy-700 text-white shadow-lg transition-all">
-                      <span className="hidden sm:inline">Next Lesson</span>
-                      <span className="sm:hidden">Next</span>
-                      <ChevronRight className="w-4 h-4 ml-2" />
-                    </Button>
-                  </Link>
-                ) : (
-                  <Link href={`/courses/${slug}`}>
-                    <Button className="bg-burgundy-600 hover:bg-burgundy-700 text-white font-semibold shadow-lg transition-all">
-                      <Award className="w-4 h-4 mr-2" />
-                      Complete Course
-                    </Button>
-                  </Link>
-                )}
-              </div>
+              <LessonNavigation
+                courseSlug={slug}
+                courseId={course.id}
+                moduleId={lesson.module.id}
+                lessonId={lesson.id}
+                courseName={course.title}
+                prevLesson={prevLesson}
+                nextLesson={nextLesson}
+                isCompleted={isCompleted}
+                completedLessons={completedLessons}
+                totalLessons={totalLessons}
+                canAccessNextLesson={canAccessNextLesson}
+              />
             </div>
           </div>
+
+          {/* Bottom Fixed Navigation Bar for Text Readers */}
+          <BottomLessonNav
+            courseSlug={slug}
+            courseId={course.id}
+            moduleId={lesson.module.id}
+            lessonId={lesson.id}
+            courseName={course.title}
+            prevLesson={prevLesson}
+            nextLesson={nextLesson}
+            isCompleted={isCompleted}
+            completedLessons={completedLessons}
+            totalLessons={totalLessons}
+            currentIndex={currentIndex}
+          />
         </main>
 
         {/* Sidebar - Course Content */}

@@ -207,7 +207,7 @@ export async function POST(request: NextRequest) {
         await prisma.notification.create({
           data: {
             userId: session.user.id,
-            type: "ACHIEVEMENT",
+            type: "COURSE_COMPLETE",
             title: "Course Completed!",
             message: `Congratulations! You've completed ${course.title}. Your certificate is being prepared.`,
           },
@@ -375,7 +375,7 @@ async function checkAndAwardBadge(userId: string, badgeSlug: string) {
   await prisma.notification.create({
     data: {
       userId,
-      type: "ACHIEVEMENT",
+      type: "SYSTEM",
       title: "New Badge Earned!",
       message: `You've earned the "${badge.name}" badge! ${badge.description}`,
     },

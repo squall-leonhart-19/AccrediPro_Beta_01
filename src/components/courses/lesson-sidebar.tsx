@@ -21,18 +21,20 @@ import {
 } from "lucide-react";
 import type { LessonProgress } from "@prisma/client";
 
+interface Lesson {
+  id: string;
+  title: string;
+  order: number;
+  videoDuration: number | null;
+  isFreePreview: boolean;
+  lessonType?: string;
+}
+
 interface Module {
   id: string;
   title: string;
   order: number;
-  lessons: {
-    id: string;
-    title: string;
-    order: number;
-    videoDuration: number | null;
-    isFreePreview: boolean;
-    lessonType?: string;
-  }[];
+  lessons: Lesson[];
 }
 
 interface Course {
@@ -63,8 +65,13 @@ export function LessonSidebar({
   slug,
 }: LessonSidebarProps) {
   const [isOpen, setIsOpen] = useState(false);
+
+  // Find which module contains the current lesson and expand only that one by default
+  const currentModule = course.modules.find((m) =>
+    m.lessons.some((l) => l.id === currentLessonId)
+  );
   const [expandedModules, setExpandedModules] = useState<string[]>(
-    course.modules.map((m) => m.id)
+    currentModule ? [currentModule.id] : []
   );
 
   const toggleModule = (moduleId: string) => {
@@ -87,6 +94,45 @@ export function LessonSidebar({
     0
   );
   const overallProgress = totalLessons > 0 ? (completedTotal / totalLessons) * 100 : 0;
+
+  // Create a flat list of all lessons in order for progressive unlocking
+  const allLessonsInOrder = course.modules
+    .sort((a, b) => a.order - b.order)
+    .flatMap((m) => m.lessons.sort((a, b) => a.order - b.order));
+
+  // Check if a lesson is unlocked based on progressive unlocking rules
+  const isLessonUnlocked = (lessonId: string): boolean => {
+    const lessonIndex = allLessonsInOrder.findIndex((l) => l.id === lessonId);
+
+    // First lesson is always unlocked
+    if (lessonIndex === 0) return true;
+
+    // Lesson is unlocked if the previous lesson is completed
+    const previousLesson = allLessonsInOrder[lessonIndex - 1];
+    if (previousLesson) {
+      return progressMap.get(previousLesson.id)?.isCompleted === true;
+    }
+
+    return false;
+  };
+
+  // Check if a module is unlocked
+  const isModuleUnlocked = (moduleId: string): boolean => {
+    const moduleIndex = course.modules
+      .sort((a, b) => a.order - b.order)
+      .findIndex((m) => m.id === moduleId);
+
+    // First module is always unlocked
+    if (moduleIndex === 0) return true;
+
+    // Module is unlocked if all lessons in the previous module are completed
+    const previousModule = course.modules.sort((a, b) => a.order - b.order)[moduleIndex - 1];
+    if (previousModule) {
+      return previousModule.lessons.every((l) => progressMap.get(l.id)?.isCompleted === true);
+    }
+
+    return false;
+  };
 
   return (
     <>
@@ -143,31 +189,49 @@ export function LessonSidebar({
             const moduleProgress = module.lessons.length > 0
               ? (completedLessons / module.lessons.length) * 100
               : 0;
+            const moduleUnlocked = isModuleUnlocked(module.id);
 
             return (
               <div key={module.id}>
                 <button
                   onClick={() => toggleModule(module.id)}
-                  className="w-full px-4 py-4 flex items-start gap-3 hover:bg-gray-50 transition-colors"
+                  className={cn(
+                    "w-full px-4 py-4 flex items-start gap-3 transition-colors",
+                    moduleUnlocked ? "hover:bg-gray-50" : "opacity-70"
+                  )}
                 >
-                  <div className="flex-shrink-0 w-8 h-8 rounded-lg bg-burgundy-100 flex items-center justify-center text-sm font-semibold text-burgundy-600">
-                    {moduleIndex + 1}
+                  <div className={cn(
+                    "flex-shrink-0 w-8 h-8 rounded-lg flex items-center justify-center text-sm font-semibold",
+                    moduleUnlocked
+                      ? "bg-burgundy-100 text-burgundy-600"
+                      : "bg-gray-100 text-gray-400"
+                  )}>
+                    {moduleUnlocked ? moduleIndex + 1 : <Lock className="w-4 h-4" />}
                   </div>
                   <div className="flex-1 text-left min-w-0">
-                    <p className="text-sm font-medium text-gray-900 leading-tight mb-1 pr-4">
+                    <p className={cn(
+                      "text-sm font-medium leading-tight mb-1 pr-4",
+                      moduleUnlocked ? "text-gray-900" : "text-gray-500"
+                    )}>
                       {module.title}
                     </p>
-                    <div className="flex items-center gap-2">
-                      <div className="flex-1 max-w-[100px]">
-                        <Progress
-                          value={moduleProgress}
-                          className="h-1 bg-gray-200"
-                        />
+                    {moduleUnlocked ? (
+                      <div className="flex items-center gap-2">
+                        <div className="flex-1 max-w-[100px]">
+                          <Progress
+                            value={moduleProgress}
+                            className="h-1 bg-gray-200"
+                          />
+                        </div>
+                        <span className="text-xs text-gray-500">
+                          {completedLessons}/{module.lessons.length}
+                        </span>
                       </div>
-                      <span className="text-xs text-gray-500">
-                        {completedLessons}/{module.lessons.length}
-                      </span>
-                    </div>
+                    ) : (
+                      <p className="text-xs text-gray-400">
+                        Complete previous module to unlock
+                      </p>
+                    )}
                   </div>
                   <div className="flex-shrink-0 mt-1">
                     {isExpanded ? (
@@ -184,7 +248,30 @@ export function LessonSidebar({
                       const progress = progressMap.get(lesson.id);
                       const isCompleted = progress?.isCompleted;
                       const isCurrent = lesson.id === currentLessonId;
+                      const isUnlocked = isLessonUnlocked(lesson.id);
                       const LessonIcon = lessonTypeIcons[lesson.lessonType || "VIDEO"] || Video;
+
+                      // If lesson is locked, show locked state
+                      if (!isUnlocked && !isCompleted) {
+                        return (
+                          <div
+                            key={lesson.id}
+                            className="flex items-center gap-3 px-4 py-3 ml-4 mr-2 rounded-xl opacity-60 cursor-not-allowed"
+                          >
+                            <div className="w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0 bg-gray-100">
+                              <Lock className="w-4 h-4 text-gray-400" />
+                            </div>
+                            <div className="flex-1 min-w-0">
+                              <p className="text-sm leading-tight text-gray-400">
+                                {lesson.title}
+                              </p>
+                              <p className="text-xs text-gray-300 mt-0.5">
+                                Complete previous lesson to unlock
+                              </p>
+                            </div>
+                          </div>
+                        );
+                      }
 
                       return (
                         <Link

@@ -17,7 +17,9 @@ import {
   BarChart3,
   CheckCircle,
   PlayCircle,
+  GraduationCap,
 } from "lucide-react";
+import { CourseImportDialog } from "@/components/admin/course-import-dialog";
 
 async function getAdminCourses() {
   const courses = await prisma.course.findMany({
@@ -52,7 +54,7 @@ async function getAdminCourses() {
       (e) => e.status === "COMPLETED"
     ).length;
     const inProgressEnrollments = course.enrollments.filter(
-      (e) => e.status === "IN_PROGRESS"
+      (e) => e.status === "ACTIVE"
     ).length;
     const completionRate =
       totalEnrollments > 0
@@ -131,11 +133,24 @@ export default async function AdminCoursesPage() {
 
   return (
     <div className="space-y-8 animate-fade-in">
-      <div>
-        <h1 className="text-3xl font-bold text-gray-900">Course Management</h1>
-        <p className="text-gray-600 mt-1">
-          Monitor course performance and student progress
-        </p>
+      {/* Hero Header */}
+      <div className="relative bg-gradient-to-br from-burgundy-700 via-burgundy-800 to-burgundy-900 rounded-2xl p-8 overflow-hidden">
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_20%,rgba(184,134,11,0.15),transparent_50%)]" />
+        <div className="absolute top-4 right-4 w-32 h-32 bg-gold-400/10 rounded-full blur-2xl" />
+        <div className="relative flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+          <div className="flex items-center gap-4">
+            <div className="w-14 h-14 rounded-2xl bg-white/10 backdrop-blur-sm flex items-center justify-center border border-white/20">
+              <GraduationCap className="w-7 h-7 text-gold-400" />
+            </div>
+            <div>
+              <h1 className="text-2xl md:text-3xl font-bold text-white">Course Management</h1>
+              <p className="text-burgundy-200 mt-1">
+                Monitor course performance and import new courses
+              </p>
+            </div>
+          </div>
+          <CourseImportDialog />
+        </div>
       </div>
 
       {/* Overview Stats */}

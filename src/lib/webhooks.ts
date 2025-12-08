@@ -20,7 +20,7 @@ export async function triggerWebhook(eventType: WebhookEventType, data: Record<s
   const event = await prisma.webhookEvent.create({
     data: {
       eventType,
-      payload: { eventType, timestamp: new Date().toISOString(), data },
+      payload: { eventType, timestamp: new Date().toISOString(), data } as object,
       status: "pending",
     },
   });

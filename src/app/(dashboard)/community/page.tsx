@@ -52,7 +52,7 @@ export default async function CommunityPage() {
     id: post.id,
     title: post.title,
     content: post.content,
-    category: post.category,
+    category: post.categoryId || "general",
     isPinned: post.isPinned,
     viewCount: post.viewCount,
     createdAt: post.createdAt,

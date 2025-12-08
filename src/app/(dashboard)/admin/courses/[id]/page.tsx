@@ -97,8 +97,8 @@ async function getCourseDetails(courseId: string) {
       return {
         id: lesson.id,
         title: lesson.title,
-        type: lesson.type,
-        duration: lesson.duration,
+        type: lesson.lessonType,
+        duration: lesson.videoDuration,
         completedCount: lessonCompletedCount,
         completionRate: lessonCompletionRate,
       };
@@ -122,10 +122,10 @@ async function getCourseDetails(courseId: string) {
     (e) => e.status === "COMPLETED"
   ).length;
   const inProgressEnrollments = course.enrollments.filter(
-    (e) => e.status === "IN_PROGRESS"
+    (e) => e.status === "ACTIVE"
   ).length;
   const notStartedEnrollments = course.enrollments.filter(
-    (e) => e.status === "NOT_STARTED"
+    (e) => e.status === "PAUSED"
   ).length;
 
   const avgProgress =
@@ -460,14 +460,14 @@ export default async function AdminCourseDetailPage({ params }: Props) {
                           <CheckCircle className="w-3 h-3 mr-1" />
                           Completed
                         </Badge>
-                      ) : enrollment.status === "IN_PROGRESS" ? (
+                      ) : enrollment.status === "ACTIVE" ? (
                         <Badge className="bg-blue-100 text-blue-700 border-0">
                           <PlayCircle className="w-3 h-3 mr-1" />
                           In Progress
                         </Badge>
                       ) : (
                         <Badge className="bg-gray-100 text-gray-600 border-0">
-                          Not Started
+                          {enrollment.status}
                         </Badge>
                       )}
                     </div>

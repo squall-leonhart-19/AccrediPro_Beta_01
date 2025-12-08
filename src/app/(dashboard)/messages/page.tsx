@@ -61,6 +61,8 @@ async function getConversations(userId: string, isAdmin: boolean) {
         }),
       ]);
 
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const enrollments = user?.enrollments as any[] | undefined;
       return {
         user: user ? {
           id: user.id,
@@ -69,7 +71,12 @@ async function getConversations(userId: string, isAdmin: boolean) {
           email: user.email,
           avatar: user.avatar,
           role: user.role,
-          enrollments: isAdmin && user.enrollments ? user.enrollments : undefined,
+          enrollments: isAdmin && enrollments ? enrollments.map((e) => ({
+            id: e.id,
+            progress: Number(e.progress),
+            status: e.status,
+            course: e.course,
+          })) : undefined,
         } : null,
         lastMessage,
         unreadCount,

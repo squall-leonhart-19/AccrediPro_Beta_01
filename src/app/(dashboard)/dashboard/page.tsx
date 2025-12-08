@@ -282,7 +282,7 @@ export default async function DashboardPage() {
                 </Link>
                 {coach && (
                   <Link href={`/messages?to=${coach.id}`}>
-                    <Button variant="outline" className="border-white/30 text-white hover:bg-white/10">
+                    <Button className="bg-burgundy-500 hover:bg-burgundy-400 text-white border border-white/30">
                       <MessageSquare className="w-4 h-4 mr-2" />
                       Message Coach
                     </Button>

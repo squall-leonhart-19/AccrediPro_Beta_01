@@ -220,7 +220,10 @@ export function MessagesClient({
               <div className="w-8 h-8 rounded-lg bg-burgundy-100 flex items-center justify-center">
                 <MessageSquare className="w-4 h-4 text-burgundy-600" />
               </div>
-              Messages
+              <div>
+                <span className="text-burgundy-700">Private Mentors Chat</span>
+                <p className="text-xs font-normal text-gray-500">Direct personal mentorship</p>
+              </div>
             </CardTitle>
             <Button
               variant="ghost"
@@ -565,10 +568,10 @@ export function MessagesClient({
                 </div>
               </div>
               <h3 className="text-xl font-bold text-gray-900 mb-2">
-                Your Messages
+                Private Mentors Chat
               </h3>
               <p className="text-gray-500 mb-6">
-                Select a conversation from the list or connect with your coach for personalized guidance on your learning journey
+                Get direct, personal mentorship from your coach. Ask questions, receive encouragement, and get guidance as you move through your lessons and career path.
               </p>
               <div className="grid grid-cols-2 gap-3 text-left">
                 <div className="p-4 bg-white rounded-xl border border-gray-100 shadow-sm">
