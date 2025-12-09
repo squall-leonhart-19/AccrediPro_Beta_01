@@ -76,7 +76,7 @@ async function getCourseDetails(courseId: string) {
   if (!course) return null;
 
   // Process module-level analytics
-  const moduleAnalytics = course.modules.map((module) => {
+  const moduleAnalytics = course.modules.map((module: typeof course.modules[number]) => {
     const totalEnrollments = course.enrollments.length;
     const completedCount = module.progress.filter((p) => p.isCompleted).length;
     const completionRate =
@@ -85,7 +85,7 @@ async function getCourseDetails(courseId: string) {
         : 0;
 
     // Lesson analytics
-    const lessonAnalytics = module.lessons.map((lesson) => {
+    const lessonAnalytics = module.lessons.map((lesson: typeof module.lessons[number]) => {
       const lessonCompletedCount = lesson.progress.filter(
         (p) => p.isCompleted
       ).length;
@@ -169,7 +169,7 @@ async function getCourseDetails(courseId: string) {
       : 0,
     totalReviews: course._count.reviews,
     modules: moduleAnalytics,
-    recentEnrollments: course.enrollments.slice(0, 5).map((e) => ({
+    recentEnrollments: course.enrollments.slice(0, 5).map((e: typeof course.enrollments[number]) => ({
       id: e.id,
       user: e.user,
       status: e.status,
@@ -343,7 +343,7 @@ export default async function AdminCourseDetailPage({ params }: Props) {
         </CardHeader>
         <CardContent>
           <div className="space-y-6">
-            {course.modules.map((module, index) => (
+            {course.modules.map((module: typeof course.modules[number], index: number) => (
               <div key={module.id} className="border rounded-xl p-5">
                 <div className="flex items-start justify-between mb-4">
                   <div>
@@ -377,7 +377,7 @@ export default async function AdminCourseDetailPage({ params }: Props) {
 
                 {/* Lesson Details */}
                 <div className="space-y-2 mt-4">
-                  {module.lessons.map((lesson, lessonIndex) => (
+                  {module.lessons.map((lesson: typeof module.lessons[number], lessonIndex: number) => (
                     <div
                       key={lesson.id}
                       className="flex items-center justify-between p-3 bg-gray-50 rounded-lg"
@@ -433,7 +433,7 @@ export default async function AdminCourseDetailPage({ params }: Props) {
         </CardHeader>
         <CardContent>
           <div className="space-y-3">
-            {course.recentEnrollments.map((enrollment) => (
+            {course.recentEnrollments.map((enrollment: typeof course.recentEnrollments[number]) => (
               <div
                 key={enrollment.id}
                 className="flex items-center justify-between p-4 bg-gray-50 rounded-xl"
