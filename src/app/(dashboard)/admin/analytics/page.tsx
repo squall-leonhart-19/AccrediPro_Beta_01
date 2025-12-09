@@ -164,7 +164,7 @@ export default async function AdminAnalyticsPage() {
                 </tr>
               </thead>
               <tbody>
-                {analytics.courseAnalytics.map((course) => (
+                {analytics.courseAnalytics.map((course: typeof analytics.courseAnalytics[number]) => (
                   <tr key={course.id} className="border-b border-gray-50 hover:bg-gray-50">
                     <td className="py-3 px-4">
                       <p className="font-medium text-gray-900">{course.course.title}</p>
@@ -202,7 +202,7 @@ export default async function AdminAnalyticsPage() {
         </CardHeader>
         <CardContent>
           <div className="space-y-4">
-            {analytics.recentEnrollments.map((enrollment) => (
+            {analytics.recentEnrollments.map((enrollment: typeof analytics.recentEnrollments[number]) => (
               <div
                 key={enrollment.id}
                 className="flex items-center justify-between p-4 bg-gray-50 rounded-xl"
