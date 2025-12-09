@@ -213,7 +213,7 @@ export default async function AdminDashboard() {
           </CardHeader>
           <CardContent>
             <div className="space-y-3">
-              {stats.recentEnrollments.map((enrollment) => (
+              {stats.recentEnrollments.map((enrollment: { id: string; enrolledAt: Date; user: { firstName: string; lastName: string }; course: { title: string } }) => (
                 <div
                   key={enrollment.id}
                   className="flex items-center justify-between py-2 border-b border-gray-100 last:border-0"
