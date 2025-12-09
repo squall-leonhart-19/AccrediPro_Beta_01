@@ -78,16 +78,16 @@ async function getCourseDetails(courseId: string) {
   // Process module-level analytics
   const moduleAnalytics = course.modules.map((module: NonNullable<typeof course>["modules"][number]) => {
     const totalEnrollments = course.enrollments.length;
-    const completedCount = module.progress.filter((p) => p.isCompleted).length;
+    const completedCount = module.progress.filter((p: NonNullable<typeof course>["modules"][number]["progress"][number]) => p.isCompleted).length;
     const completionRate =
       totalEnrollments > 0
         ? Math.round((completedCount / totalEnrollments) * 100)
         : 0;
 
     // Lesson analytics
-    const lessonAnalytics = module.lessons.map((lesson: typeof module.lessons[number]) => {
+    const lessonAnalytics = module.lessons.map((lesson: NonNullable<typeof course>["modules"][number]["lessons"][number]) => {
       const lessonCompletedCount = lesson.progress.filter(
-        (p) => p.isCompleted
+        (p: NonNullable<typeof course>["modules"][number]["lessons"][number]["progress"][number]) => p.isCompleted
       ).length;
       const lessonCompletionRate =
         totalEnrollments > 0
