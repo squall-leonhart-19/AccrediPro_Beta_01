@@ -64,7 +64,7 @@ export default async function AchievementsPage() {
   const { userStreak, userBadges, allBadges, completedLessons, completedCourses } =
     await getAchievementsData(session.user.id);
 
-  const earnedBadgeIds = new Set(userBadges.map((ub) => ub.badgeId));
+  const earnedBadgeIds = new Set(userBadges.map((ub: { badgeId: string }) => ub.badgeId));
   const totalPoints = userStreak?.totalPoints || 0;
 
   const getMilestoneProgress = (milestone: typeof milestones[0]) => {
