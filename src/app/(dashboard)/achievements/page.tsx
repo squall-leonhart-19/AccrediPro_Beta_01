@@ -197,7 +197,7 @@ export default async function AchievementsPage() {
           </CardHeader>
           <CardContent>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-              {userBadges.map((userBadge) => (
+              {userBadges.map((userBadge: { id: string; earnedAt: Date; badge: { icon: string; name: string; description: string; points: number } }) => (
                 <div
                   key={userBadge.id}
                   className="bg-gold-50 border border-gold-200 rounded-xl p-4 text-center"
@@ -228,7 +228,7 @@ export default async function AchievementsPage() {
         </CardHeader>
         <CardContent>
           <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
-            {allBadges.map((badge) => {
+            {allBadges.map((badge: { id: string; icon: string; name: string; description: string }) => {
               const isEarned = earnedBadgeIds.has(badge.id);
 
               return (
