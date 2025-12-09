@@ -76,7 +76,7 @@ async function getCourseDetails(courseId: string) {
   if (!course) return null;
 
   // Process module-level analytics
-  const moduleAnalytics = course.modules.map((module: typeof course.modules[number]) => {
+  const moduleAnalytics = course.modules.map((module: NonNullable<typeof course>["modules"][number]) => {
     const totalEnrollments = course.enrollments.length;
     const completedCount = module.progress.filter((p) => p.isCompleted).length;
     const completionRate =
@@ -131,9 +131,9 @@ async function getCourseDetails(courseId: string) {
   const avgProgress =
     totalEnrollments > 0
       ? Math.round(
-          course.enrollments.reduce((acc, e) => acc + Number(e.progress), 0) /
-            totalEnrollments
-        )
+        course.enrollments.reduce((acc, e) => acc + Number(e.progress), 0) /
+        totalEnrollments
+      )
       : 0;
 
   return {
@@ -169,7 +169,7 @@ async function getCourseDetails(courseId: string) {
       : 0,
     totalReviews: course._count.reviews,
     modules: moduleAnalytics,
-    recentEnrollments: course.enrollments.slice(0, 5).map((e: typeof course.enrollments[number]) => ({
+    recentEnrollments: course.enrollments.slice(0, 5).map((e: NonNullable<typeof course>["enrollments"][number]) => ({
       id: e.id,
       user: e.user,
       status: e.status,
