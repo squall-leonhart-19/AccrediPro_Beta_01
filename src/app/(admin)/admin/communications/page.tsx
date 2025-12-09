@@ -141,7 +141,7 @@ export default async function CommunicationsPage() {
           <CardContent>
             {communications.bulkEmails.length > 0 ? (
               <div className="space-y-3">
-                {communications.bulkEmails.map((email) => (
+                {communications.bulkEmails.map((email: { id: string; subject: string; recipientType: string; sentCount: number; status: string }) => (
                   <div
                     key={email.id}
                     className="flex items-center justify-between py-2 border-b border-gray-100 last:border-0"
@@ -172,7 +172,7 @@ export default async function CommunicationsPage() {
           <CardContent>
             {communications.bulkDMs.length > 0 ? (
               <div className="space-y-3">
-                {communications.bulkDMs.map((dm) => (
+                {communications.bulkDMs.map((dm: { id: string; content: string; recipientType: string; sentCount: number; status: string }) => (
                   <div
                     key={dm.id}
                     className="flex items-center justify-between py-2 border-b border-gray-100 last:border-0"
