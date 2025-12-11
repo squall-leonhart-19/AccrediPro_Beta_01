@@ -1,0 +1,284 @@
+import { NextRequest, NextResponse } from "next/server";
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/lib/auth";
+import prisma from "@/lib/prisma";
+import { sendEmail } from "@/lib/email";
+
+const categoryLabels: Record<string, string> = {
+    "functional-medicine": "Functional Medicine",
+    "gut-health": "Gut Health",
+    "autism": "Autism & Neurodevelopment",
+    "hormones": "Women's Hormones",
+};
+
+/**
+ * POST /api/mini-diploma/complete
+ * 
+ * Called when user finishes their mini diploma.
+ * - Sets completion timestamp
+ * - Starts 3-day graduate offer countdown  
+ * - Sends congratulations VOICE DM from Sarah (using OpenAI TTS)
+ * - Sends congratulations EMAIL
+ * - Creates notification
+ * - Awards badge
+ */
+export async function POST(request: NextRequest) {
+    try {
+        const session = await getServerSession(authOptions);
+        if (!session?.user?.id) {
+            return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+        }
+
+        const userId = session.user.id;
+
+        // Get current user
+        const user = await prisma.user.findUnique({
+            where: { id: userId },
+            select: {
+                id: true,
+                firstName: true,
+                email: true,
+                miniDiplomaCategory: true,
+                miniDiplomaCompletedAt: true,
+            },
+        });
+
+        if (!user) {
+            return NextResponse.json({ error: "User not found" }, { status: 404 });
+        }
+
+        // Already completed? Just return success
+        if (user.miniDiplomaCompletedAt) {
+            return NextResponse.json({
+                success: true,
+                alreadyCompleted: true,
+                completedAt: user.miniDiplomaCompletedAt,
+            });
+        }
+
+        const now = new Date();
+        const graduateDeadline = new Date(now.getTime() + 3 * 24 * 60 * 60 * 1000); // 3 days
+
+        // Update user with completion data
+        await prisma.user.update({
+            where: { id: userId },
+            data: {
+                miniDiplomaCompletedAt: now,
+                graduateOfferDeadline: graduateDeadline,
+                hasCertificateBadge: true,
+            },
+        });
+
+        // Find Sarah coach for functional medicine
+        const sarahCoach = await prisma.user.findFirst({
+            where: {
+                email: { contains: "sarah", mode: "insensitive" },
+                role: { in: ["ADMIN", "INSTRUCTOR", "MENTOR"] },
+            },
+        });
+
+        const categoryName = categoryLabels[user.miniDiplomaCategory || ""] || user.miniDiplomaCategory;
+        const userName = user.firstName || "there";
+
+        // === SCHEDULE VOICE MESSAGE FROM SARAH (with 3-5 min delay) ===
+        if (sarahCoach) {
+            // Text with natural pauses using punctuation (... for longer pauses, , for short ones)
+            const voiceMessageText = `Hey ${userName}... It's Sarah here!
+
+I just saw that you completed your ${categoryName} Mini Diploma... and I had to send you a quick message!
+
+I am SO incredibly proud of you. Seriously... this is such a huge first step.
+
+You now understand the foundations... that most people never learn. That's AMAZING.
+
+If you ever want to take it further... and become fully certified, where you can actually start working with clients... and building your own practice... I'm here to guide you every step of the way.
+
+Just reply to this message... and we can chat about what path makes the most sense for you.
+
+You've got this!`;
+
+            const textContent = `🎙️ Hey ${userName}! 
+
+It's Sarah here! I just saw that you completed your ${categoryName} Mini Diploma and I had to send you a quick message!
+
+🎉 I am SO incredibly proud of you! Seriously, this is such a huge first step.
+
+You now understand the foundations that most people never learn. That's AMAZING.
+
+If you ever want to take it further and become fully certified – where you can actually start working with clients and building your own practice – I'm here to guide you every step of the way.
+
+Just reply to this message and we can chat about what path makes the most sense for you.
+
+You've got this! 💛
+
+– Sarah`;
+
+            // Random delay between 3-5 minutes
+            const delayMinutes = Math.floor(Math.random() * 3) + 3; // 3, 4, or 5 minutes
+            const scheduledFor = new Date(now.getTime() + delayMinutes * 60 * 1000);
+
+            await prisma.scheduledVoiceMessage.create({
+                data: {
+                    senderId: sarahCoach.id,
+                    receiverId: userId,
+                    voiceText: voiceMessageText,
+                    textContent,
+                    scheduledFor,
+                    status: "PENDING",
+                },
+            });
+
+            console.log(`⏰ Scheduled Sarah's voice message for ${user.email} in ${delayMinutes} minutes (${scheduledFor.toISOString()})`);
+        }
+
+        // === NOTIFICATIONS ===
+        await prisma.notification.create({
+            data: {
+                userId,
+                type: "SYSTEM",
+                title: "🎓 Mini Diploma Complete!",
+                message: `Congratulations! You've earned your ${categoryName} Mini Diploma! Check messages for a special gift from Coach Sarah.`,
+            },
+        });
+
+        await prisma.notification.create({
+            data: {
+                userId,
+                type: "SYSTEM",
+                title: "🏅 Badge Unlocked!",
+                message: `You've earned the "${categoryName} Graduate" badge! It's now visible on your profile.`,
+            },
+        });
+        console.log(`🔔 Created notifications for ${user.email}`);
+
+        // === SEND CONGRATULATIONS EMAIL ===
+        try {
+            const completionUrl = `${process.env.NEXTAUTH_URL}/my-mini-diploma/complete`;
+
+            console.log(`📧 Attempting to send email to ${user.email}...`);
+            console.log(`   FROM_EMAIL: ${process.env.FROM_EMAIL}`);
+            console.log(`   RESEND_API_KEY: ${process.env.RESEND_API_KEY?.substring(0, 10)}...`);
+
+            const emailResult = await sendEmail({
+                to: user.email,
+                subject: `🎓 Congratulations! You've completed your ${categoryName} Mini Diploma!`,
+                html: `
+                    <!DOCTYPE html>
+                    <html>
+                    <head>
+                        <meta charset="utf-8">
+                        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                    </head>
+                    <body style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif; line-height: 1.6; color: #333; max-width: 600px; margin: 0 auto; padding: 20px; background-color: #f5f5f5;">
+                        <div style="background: white; border-radius: 16px; overflow: hidden; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
+                            <div style="background: linear-gradient(135deg, #722F37 0%, #8B3A42 100%); padding: 40px 30px; text-align: center;">
+                                <h1 style="color: #D4AF37; margin: 0; font-size: 28px;">🎉 Congratulations!</h1>
+                                <p style="color: rgba(255,255,255,0.9); margin: 10px 0 0 0; font-size: 16px;">You've completed your Mini Diploma</p>
+                            </div>
+
+                            <div style="padding: 40px 30px;">
+                                <p style="font-size: 18px; color: #333;">Hi ${userName},</p>
+                                
+                                <p style="color: #555; font-size: 16px;">You did it! 🎊 You've successfully completed your <strong style="color: #722F37;">${categoryName} Mini Diploma</strong>!</p>
+
+                                <div style="background: linear-gradient(135deg, #FDF5E6 0%, #FFF8DC 100%); border: 2px solid #D4AF37; border-radius: 12px; padding: 25px; margin: 25px 0; text-align: center;">
+                                    <p style="margin: 0 0 10px 0; font-size: 14px; color: #8B7355;">Your Achievement</p>
+                                    <p style="margin: 0; font-size: 22px; font-weight: bold; color: #722F37;">${categoryName} Mini Diploma Graduate</p>
+                                    <p style="margin: 10px 0 0 0; font-size: 14px; color: #666;">🏅 Badge Unlocked</p>
+                                </div>
+
+                                <p style="color: #555; font-size: 16px;">Check your messages - Coach Sarah has sent you a personal voice message! 🎙️</p>
+
+                                <div style="background: #f0f9f0; border: 1px solid #10b981; border-radius: 8px; padding: 20px; margin: 25px 0;">
+                                    <p style="margin: 0 0 10px 0; font-weight: bold; color: #059669;">🎁 Special Graduate Offer</p>
+                                    <p style="margin: 0; color: #555; font-size: 14px;">As a Mini Diploma graduate, you get <strong>20% OFF</strong> the full ${categoryName} Certification. This offer expires in 3 days!</p>
+                                </div>
+
+                                <div style="text-align: center; margin: 30px 0;">
+                                    <a href="${completionUrl}" style="background: linear-gradient(135deg, #722F37 0%, #8B3A42 100%); color: white; padding: 16px 40px; text-decoration: none; border-radius: 8px; display: inline-block; font-weight: bold; font-size: 16px;">View Your Certificate</a>
+                                </div>
+                            </div>
+
+                            <div style="background: #f8f9fa; padding: 20px 30px; text-align: center; border-top: 1px solid #eee;">
+                                <p style="margin: 0; color: #999; font-size: 12px;">AccrediPro Academy</p>
+                            </div>
+                        </div>
+                    </body>
+                    </html>
+                `,
+            });
+
+            // Log email result
+            console.log(`📧 Email attempt for ${user.email}:`, emailResult);
+
+            if (emailResult?.success) {
+                console.log(`✅ Completion email sent successfully to ${user.email}`);
+            } else {
+                console.error(`❌ Email failed for ${user.email}:`, emailResult?.error);
+            }
+        } catch (emailError) {
+            console.error("❌ Failed to send completion email:", emailError);
+        }
+
+        console.log(`🎉 Mini diploma completed for ${user.email}`);
+
+        return NextResponse.json({
+            success: true,
+            completedAt: now,
+            graduateOfferDeadline: graduateDeadline,
+            message: "Mini diploma completed! Congratulations!",
+        });
+
+    } catch (error) {
+        console.error("Mini diploma completion error:", error);
+        return NextResponse.json(
+            { error: "Failed to process completion" },
+            { status: 500 }
+        );
+    }
+}
+
+/**
+ * GET /api/mini-diploma/complete
+ * Check completion status and graduate offer info
+ */
+export async function GET() {
+    try {
+        const session = await getServerSession(authOptions);
+        if (!session?.user?.id) {
+            return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+        }
+
+        const user = await prisma.user.findUnique({
+            where: { id: session.user.id },
+            select: {
+                miniDiplomaCategory: true,
+                miniDiplomaCompletedAt: true,
+                graduateOfferDeadline: true,
+                hasCertificateBadge: true,
+            },
+        });
+
+        if (!user?.miniDiplomaCategory) {
+            return NextResponse.json({ error: "No mini diploma found" }, { status: 404 });
+        }
+
+        const now = new Date();
+        const offerExpired = user.graduateOfferDeadline
+            ? now > user.graduateOfferDeadline
+            : true;
+
+        return NextResponse.json({
+            category: user.miniDiplomaCategory,
+            isCompleted: !!user.miniDiplomaCompletedAt,
+            completedAt: user.miniDiplomaCompletedAt,
+            graduateOfferDeadline: user.graduateOfferDeadline,
+            offerExpired,
+            hasBadge: user.hasCertificateBadge,
+        });
+
+    } catch (error) {
+        console.error("Error getting completion status:", error);
+        return NextResponse.json({ error: "Failed to get status" }, { status: 500 });
+    }
+}

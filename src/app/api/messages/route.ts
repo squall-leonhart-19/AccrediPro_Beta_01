@@ -25,13 +25,24 @@ export async function GET(request: NextRequest) {
       );
     }
 
-    // Get messages between current user and specified user
+    // Get messages between current user and specified user (with reactions and replies)
     const messages = await prisma.message.findMany({
       where: {
         OR: [
           { senderId: session.user.id, receiverId: userId },
           { senderId: userId, receiverId: session.user.id },
         ],
+      },
+      include: {
+        reactions: true,
+        replyTo: {
+          select: {
+            id: true,
+            content: true,
+            senderId: true,
+            attachmentType: true,
+          },
+        },
       },
       orderBy: { createdAt: "asc" },
       take: 100,
@@ -69,11 +80,21 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const { receiverId, content } = await request.json();
+    const {
+      receiverId,
+      content,
+      attachmentUrl,
+      attachmentType,
+      attachmentName,
+      voiceDuration,
+      replyToId,
+      isAiVoice,
+      transcription,
+    } = await request.json();
 
-    if (!receiverId || !content) {
+    if (!receiverId || (!content && !attachmentUrl)) {
       return NextResponse.json(
-        { success: false, error: "Receiver ID and content required" },
+        { success: false, error: "Receiver ID and content or attachment required" },
         { status: 400 }
       );
     }
@@ -83,18 +104,43 @@ export async function POST(request: NextRequest) {
       data: {
         senderId: session.user.id,
         receiverId,
-        content,
+        content: content || "",
         messageType: "DIRECT",
+        attachmentUrl,
+        attachmentType,
+        attachmentName,
+        voiceDuration,
+        replyToId,
+        isAiVoice: isAiVoice || false,
+        transcription,
+      },
+      include: {
+        reactions: true,
+        replyTo: {
+          select: {
+            id: true,
+            content: true,
+            senderId: true,
+            attachmentType: true,
+          },
+        },
       },
     });
 
     // Create notification for receiver
+    let notificationMessage = `${session.user.firstName || "Someone"} sent you a message`;
+    if (attachmentType === "voice") {
+      notificationMessage = `${session.user.firstName || "Someone"} sent you a voice message`;
+    } else if (attachmentType === "image") {
+      notificationMessage = `${session.user.firstName || "Someone"} sent you an image`;
+    }
+
     await prisma.notification.create({
       data: {
         userId: receiverId,
         type: "NEW_MESSAGE",
         title: "New Message",
-        message: `${session.user.firstName || "Someone"} sent you a message`,
+        message: notificationMessage,
         data: { messageId: message.id, senderId: session.user.id },
       },
     });

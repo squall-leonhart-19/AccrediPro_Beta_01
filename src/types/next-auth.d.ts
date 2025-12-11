@@ -8,6 +8,8 @@ declare module "next-auth" {
       role: string;
       firstName: string | null;
       lastName: string | null;
+      isFirstLogin?: boolean;
+      miniDiplomaCategory?: string | null;
     } & DefaultSession["user"];
   }
 
@@ -15,6 +17,8 @@ declare module "next-auth" {
     role: string;
     firstName: string | null;
     lastName: string | null;
+    isFirstLogin?: boolean;
+    miniDiplomaCategory?: string | null;
   }
 }
 
@@ -24,5 +28,7 @@ declare module "next-auth/jwt" {
     role: string;
     firstName: string | null;
     lastName: string | null;
+    isFirstLogin?: boolean;
+    miniDiplomaCategory?: string | null;
   }
 }

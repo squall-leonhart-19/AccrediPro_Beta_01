@@ -8,6 +8,15 @@ async function getCourses() {
     where: { isPublished: true },
     include: {
       category: true,
+      coach: {
+        select: {
+          id: true,
+          firstName: true,
+          lastName: true,
+          avatar: true,
+          bio: true,
+        },
+      },
       modules: {
         where: { isPublished: true },
         include: {
@@ -37,12 +46,34 @@ async function getUserEnrollments(userId: string) {
   });
 }
 
+async function getActiveSpecialOffers() {
+  const now = new Date();
+  return prisma.specialOffer.findMany({
+    where: {
+      isActive: true,
+      isFeatured: true,
+      startsAt: { lte: now },
+      OR: [
+        { expiresAt: null },
+        { expiresAt: { gt: now } },
+      ],
+    },
+    include: {
+      courses: {
+        select: { courseId: true },
+      },
+    },
+    orderBy: [{ createdAt: "desc" }],
+  });
+}
+
 export default async function CoursesPage() {
   const session = await getServerSession(authOptions);
-  const [courses, categories, enrollments] = await Promise.all([
+  const [courses, categories, enrollments, specialOffers] = await Promise.all([
     getCourses(),
     getCategories(),
     session?.user?.id ? getUserEnrollments(session.user.id) : [],
+    getActiveSpecialOffers(),
   ]);
 
   // Transform the data for the client component
@@ -52,6 +83,7 @@ export default async function CoursesPage() {
     title: course.title,
     description: course.description,
     shortDescription: course.shortDescription,
+    thumbnail: course.thumbnail,
     difficulty: course.difficulty,
     duration: course.duration,
     isFeatured: course.isFeatured,
@@ -60,6 +92,14 @@ export default async function CoursesPage() {
     certificateType: course.certificateType,
     category: course.category
       ? { id: course.category.id, name: course.category.name }
+      : null,
+    coach: course.coach
+      ? {
+          id: course.coach.id,
+          name: `${course.coach.firstName} ${course.coach.lastName}`,
+          avatar: course.coach.avatar,
+          title: course.coach.bio,
+        }
       : null,
     modules: course.modules.map((m) => ({
       lessons: m.lessons.map((l) => ({ id: l.id })),
@@ -84,12 +124,21 @@ export default async function CoursesPage() {
     progress: Number(e.progress),
   }));
 
+  const specialOffersData = specialOffers.map((offer) => ({
+    id: offer.id,
+    title: offer.title,
+    discount: Number(offer.discountValue),
+    expiresAt: offer.expiresAt,
+    courses: offer.courses.map((c) => c.courseId),
+  }));
+
   return (
     <div className="animate-fade-in">
       <CourseCatalogFilters
         courses={coursesData}
         categories={categoriesData}
         enrollments={enrollmentsData}
+        specialOffers={specialOffersData}
       />
     </div>
   );

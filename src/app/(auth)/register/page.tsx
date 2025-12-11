@@ -1,7 +1,7 @@
 "use client";
 
-import { useState } from "react";
-import { useRouter } from "next/navigation";
+import { useState, useEffect, Suspense } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -15,11 +15,13 @@ import {
   Shield,
   Check,
   X,
-  Sparkles
+  Sparkles,
+  Loader2
 } from "lucide-react";
 
-export default function RegisterPage() {
+function RegisterForm() {
   const router = useRouter();
+  const searchParams = useSearchParams();
 
   const [formData, setFormData] = useState({
     firstName: "",
@@ -28,10 +30,20 @@ export default function RegisterPage() {
     password: "",
     confirmPassword: "",
   });
+  const [leadSource, setLeadSource] = useState<string | null>(null);
+  const [leadSourceDetail, setLeadSourceDetail] = useState<string | null>(null);
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+
+  // Capture lead source from URL parameters
+  useEffect(() => {
+    const source = searchParams.get("source") || searchParams.get("utm_source");
+    const detail = searchParams.get("detail") || searchParams.get("utm_campaign") || searchParams.get("freebie");
+    if (source) setLeadSource(source);
+    if (detail) setLeadSourceDetail(detail);
+  }, [searchParams]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData((prev) => ({
@@ -76,6 +88,8 @@ export default function RegisterPage() {
           lastName: formData.lastName,
           email: formData.email,
           password: formData.password,
+          leadSource: leadSource || undefined,
+          leadSourceDetail: leadSourceDetail || undefined,
         }),
       });
 
@@ -363,5 +377,23 @@ export default function RegisterPage() {
         </div>
       </CardContent>
     </Card>
+  );
+}
+
+function RegisterLoading() {
+  return (
+    <Card className="border-0 shadow-2xl bg-white/95 backdrop-blur-sm">
+      <CardContent className="p-8 flex items-center justify-center min-h-[400px]">
+        <Loader2 className="w-8 h-8 animate-spin text-burgundy-600" />
+      </CardContent>
+    </Card>
+  );
+}
+
+export default function RegisterPage() {
+  return (
+    <Suspense fallback={<RegisterLoading />}>
+      <RegisterForm />
+    </Suspense>
   );
 }

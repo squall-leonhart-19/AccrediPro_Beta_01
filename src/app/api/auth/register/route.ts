@@ -10,6 +10,8 @@ const registerSchema = z.object({
   password: z.string().min(8, "Password must be at least 8 characters"),
   firstName: z.string().min(1, "First name is required"),
   lastName: z.string().min(1, "Last name is required"),
+  leadSource: z.string().optional(),      // e.g., "freebie", "webinar", "direct"
+  leadSourceDetail: z.string().optional(), // e.g., specific freebie name
 });
 
 export async function POST(request: NextRequest) {
@@ -38,6 +40,8 @@ export async function POST(request: NextRequest) {
         passwordHash,
         firstName: validatedData.firstName,
         lastName: validatedData.lastName,
+        leadSource: validatedData.leadSource || "direct",
+        leadSourceDetail: validatedData.leadSourceDetail,
       },
     });
 

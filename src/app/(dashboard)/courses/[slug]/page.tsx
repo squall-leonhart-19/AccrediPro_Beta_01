@@ -30,6 +30,7 @@ import {
 } from "lucide-react";
 import { EnrollButton } from "@/components/courses/enroll-button";
 import { CourseReviews } from "@/components/courses/course-reviews";
+import { CourseResourcesDialog } from "@/components/courses/course-resources-dialog";
 
 async function getCourse(slug: string) {
   return prisma.course.findUnique({
@@ -303,10 +304,18 @@ export default async function CourseDetailPage({
                   </div>
                 )}
 
-                <Button variant="outline" className="w-full mt-3 border-burgundy-200 text-burgundy-700 hover:bg-burgundy-50">
-                  <Download className="w-4 h-4 mr-2" />
-                  Download Syllabus
-                </Button>
+                {enrollment && (
+                  <CourseResourcesDialog
+                    courseId={course.id}
+                    courseName={course.title}
+                    trigger={
+                      <Button variant="outline" className="w-full mt-3 border-burgundy-200 text-burgundy-700 hover:bg-burgundy-50">
+                        <Download className="w-4 h-4 mr-2" />
+                        Course Resources
+                      </Button>
+                    }
+                  />
+                )}
 
                 {!enrollment && (
                   <div className="mt-4 pt-4 border-t border-gray-100">

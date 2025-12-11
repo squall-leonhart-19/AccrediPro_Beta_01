@@ -1,5 +1,6 @@
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
+import prisma from "@/lib/prisma";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -18,6 +19,7 @@ import {
   ExternalLink,
 } from "lucide-react";
 import Link from "next/link";
+import { ContactSupportDialog } from "@/components/help/contact-support-dialog";
 
 const faqCategories = [
   {
@@ -49,8 +51,8 @@ const faqCategories = [
     color: "bg-green-100 text-green-600",
     questions: [
       { q: "What payment methods do you accept?", a: "We accept all major credit cards, PayPal, and bank transfers for select regions." },
-      { q: "How do I get a refund?", a: "Contact support within 30 days of purchase. We offer a satisfaction guarantee." },
-      { q: "Can I pay in installments?", a: "Yes, payment plans are available for most certification courses." },
+      { q: "How do I access my receipt?", a: "Your payment receipts are automatically sent to your email. You can also contact support for a copy." },
+      { q: "Is my payment secure?", a: "Yes! We use industry-standard SSL encryption and secure payment processors to protect your information." },
     ],
   },
   {
@@ -66,33 +68,54 @@ const faqCategories = [
   },
 ];
 
-const contactOptions = [
-  {
-    title: "Email Support",
-    description: "Get help via email within 24 hours",
-    icon: Mail,
-    action: "support@accredipro.academy",
-    type: "email",
-  },
-  {
-    title: "Live Chat",
-    description: "Chat with our support team",
-    icon: MessageCircle,
-    action: "Start Chat",
-    type: "chat",
-  },
-  {
-    title: "Schedule a Call",
-    description: "Book a call with our team",
-    icon: Phone,
-    action: "Book Call",
-    type: "call",
-  },
-];
+async function getSarahCoach() {
+  // Find Sarah (the coach/mentor) for Live Chat
+  const sarah = await prisma.user.findFirst({
+    where: {
+      OR: [
+        { email: "coach@accredipro.com" },
+        { role: "MENTOR", firstName: { contains: "Sarah" } },
+        { role: "ADMIN" },
+      ],
+    },
+    orderBy: { role: "asc" }, // Prefer ADMIN if multiple matches
+    select: { id: true, firstName: true, lastName: true },
+  });
+  return sarah;
+}
 
 export default async function HelpPage() {
   const session = await getServerSession(authOptions);
   if (!session?.user?.id) return null;
+
+  const sarahCoach = await getSarahCoach();
+
+  const contactOptions = [
+    {
+      title: "Email Support",
+      description: "Get help via email within 24 hours",
+      icon: Mail,
+      action: "support@accredipro.academy",
+      type: "email" as const,
+      href: "mailto:support@accredipro.academy",
+    },
+    {
+      title: "Live Chat",
+      description: `Chat with ${sarahCoach ? `${sarahCoach.firstName} ${sarahCoach.lastName}` : "our support team"}`,
+      icon: MessageCircle,
+      action: "Start Chat",
+      type: "chat" as const,
+      href: sarahCoach ? `/messages?chat=${sarahCoach.id}` : "/messages",
+    },
+    {
+      title: "Schedule a Call",
+      description: "Book a call with our team",
+      icon: Phone,
+      action: "Book Call",
+      type: "call" as const,
+      href: "#",
+    },
+  ];
 
   return (
     <div className="space-y-8 animate-fade-in">
@@ -138,12 +161,20 @@ export default async function HelpPage() {
               <h3 className="font-semibold text-gray-900 mb-1">{option.title}</h3>
               <p className="text-sm text-gray-500 mb-4">{option.description}</p>
               {option.type === "email" ? (
-                <a href={`mailto:${option.action}`}>
-                  <Button variant="outline" className="w-full">
+                <ContactSupportDialog
+                  trigger={
+                    <Button variant="outline" className="w-full">
+                      {option.action}
+                      <Mail className="w-4 h-4 ml-2" />
+                    </Button>
+                  }
+                />
+              ) : option.type === "chat" ? (
+                <Link href={option.href}>
+                  <Button className="w-full bg-burgundy-600 hover:bg-burgundy-700">
                     {option.action}
-                    <ExternalLink className="w-4 h-4 ml-2" />
                   </Button>
-                </a>
+                </Link>
               ) : (
                 <Button className="w-full bg-burgundy-600 hover:bg-burgundy-700">
                   {option.action}
@@ -242,16 +273,13 @@ export default async function HelpPage() {
               </div>
             </div>
             <div className="flex gap-3">
-              <a href="mailto:support@accredipro.academy">
-                <Button variant="outline" className="border-burgundy-200">
-                  <Mail className="w-4 h-4 mr-2" />
-                  Email Us
+              <ContactSupportDialog />
+              <Link href={sarahCoach ? `/messages?chat=${sarahCoach.id}` : "/messages"}>
+                <Button className="bg-burgundy-600 hover:bg-burgundy-700">
+                  <MessageCircle className="w-4 h-4 mr-2" />
+                  Start Live Chat
                 </Button>
-              </a>
-              <Button className="bg-burgundy-600 hover:bg-burgundy-700">
-                <MessageCircle className="w-4 h-4 mr-2" />
-                Start Live Chat
-              </Button>
+              </Link>
             </div>
           </div>
         </CardContent>

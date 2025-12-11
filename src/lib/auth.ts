@@ -3,6 +3,26 @@ import CredentialsProvider from "next-auth/providers/credentials";
 import { PrismaAdapter } from "@auth/prisma-adapter";
 import bcrypt from "bcryptjs";
 import prisma from "./prisma";
+import { headers } from "next/headers";
+import { triggerAutoMessage } from "./auto-messages";
+
+// Helper to parse user agent
+function parseUserAgent(ua: string | null) {
+  if (!ua) return { device: "Unknown", browser: "Unknown" };
+
+  let device = "Desktop";
+  if (/mobile/i.test(ua)) device = "Mobile";
+  else if (/tablet|ipad/i.test(ua)) device = "Tablet";
+
+  let browser = "Unknown";
+  if (/chrome/i.test(ua) && !/edge|edg/i.test(ua)) browser = "Chrome";
+  else if (/firefox/i.test(ua)) browser = "Firefox";
+  else if (/safari/i.test(ua) && !/chrome/i.test(ua)) browser = "Safari";
+  else if (/edge|edg/i.test(ua)) browser = "Edge";
+  else if (/opera|opr/i.test(ua)) browser = "Opera";
+
+  return { device, browser };
+}
 
 export const authOptions: NextAuthOptions = {
   adapter: PrismaAdapter(prisma) as NextAuthOptions["adapter"],
@@ -39,11 +59,55 @@ export const authOptions: NextAuthOptions = {
           throw new Error("Invalid credentials");
         }
 
-        // Update last login
+        // Check if this is the first login
+        const isFirstLogin = !user.firstLoginAt;
+        const now = new Date();
+
+        // Update user login stats
         await prisma.user.update({
           where: { id: user.id },
-          data: { lastLoginAt: new Date() },
+          data: {
+            lastLoginAt: now,
+            firstLoginAt: isFirstLogin ? now : undefined,
+            loginCount: { increment: 1 },
+          },
         });
+
+        // Get request headers for login tracking
+        let ipAddress: string | null = null;
+        let userAgent: string | null = null;
+        try {
+          const headersList = await headers();
+          ipAddress = headersList.get("x-forwarded-for")?.split(",")[0] ||
+            headersList.get("x-real-ip") ||
+            null;
+          userAgent = headersList.get("user-agent");
+        } catch {
+          // Headers might not be available in some contexts
+        }
+
+        const { device, browser } = parseUserAgent(userAgent);
+
+        // Create login history record
+        await prisma.loginHistory.create({
+          data: {
+            userId: user.id,
+            ipAddress,
+            userAgent,
+            device,
+            browser,
+            isFirstLogin,
+            loginMethod: "credentials",
+          },
+        });
+
+        // Send welcome message on first login (fire and forget)
+        if (isFirstLogin) {
+          triggerAutoMessage({
+            userId: user.id,
+            trigger: "first_login",
+          }).catch(console.error);
+        }
 
         return {
           id: user.id,
@@ -53,6 +117,8 @@ export const authOptions: NextAuthOptions = {
           role: user.role,
           firstName: user.firstName,
           lastName: user.lastName,
+          isFirstLogin,
+          miniDiplomaCategory: user.miniDiplomaCategory,
         };
       },
     }),
@@ -68,6 +134,8 @@ export const authOptions: NextAuthOptions = {
         token.role = user.role;
         token.firstName = user.firstName;
         token.lastName = user.lastName;
+        token.isFirstLogin = user.isFirstLogin;
+        token.miniDiplomaCategory = user.miniDiplomaCategory;
       }
       return token;
     },
@@ -77,6 +145,8 @@ export const authOptions: NextAuthOptions = {
         session.user.role = token.role as string;
         session.user.firstName = token.firstName as string;
         session.user.lastName = token.lastName as string;
+        session.user.isFirstLogin = token.isFirstLogin as boolean;
+        session.user.miniDiplomaCategory = token.miniDiplomaCategory as string | null;
       }
       return session;
     },

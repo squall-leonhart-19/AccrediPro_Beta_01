@@ -1,5 +1,6 @@
 import prisma from "./prisma";
 import crypto from "crypto";
+import { createCertificateOnCompletion } from "./certificate-service";
 
 export type WebhookEventType =
   | "lesson.completed"
@@ -238,8 +239,8 @@ export async function checkCourseCompletion(userId: string, courseId: string) {
       },
     });
 
-    // Auto-issue certificate
-    await issueCertificate(userId, courseId);
+    // Auto-issue certificate (uses certificate-service which sends email)
+    await createCertificateOnCompletion(userId, courseId);
   }
 }
 
@@ -263,56 +264,7 @@ export async function onCourseCompleted(userId: string, courseId: string) {
     completedAt: new Date().toISOString(),
   });
 
-  // Auto-issue certificate
-  await issueCertificate(userId, courseId);
+  // Certificate is now issued by certificate-service (which also sends email)
+  // It's called from the progress/complete API route
 }
 
-async function issueCertificate(userId: string, courseId: string) {
-  const [user, course] = await Promise.all([
-    prisma.user.findUnique({ where: { id: userId } }),
-    prisma.course.findUnique({ where: { id: courseId } }),
-  ]);
-
-  if (!user || !course) return;
-
-  // Generate certificate number
-  const timestamp = Date.now().toString(36).toUpperCase();
-  const random = Math.random().toString(36).substring(2, 8).toUpperCase();
-  const certificateNumber = `AP-${timestamp}-${random}`;
-
-  const verificationUrl = `${process.env.NEXTAUTH_URL}/verify/${certificateNumber}`;
-
-  const certificate = await prisma.certificate.create({
-    data: {
-      certificateNumber,
-      userId,
-      courseId,
-      type: course.certificateType,
-      verificationUrl,
-    },
-  });
-
-  await triggerWebhook("certificate.issued", {
-    userId,
-    userEmail: user.email,
-    userName: `${user.firstName || ""} ${user.lastName || ""}`.trim(),
-    courseId,
-    courseTitle: course.title,
-    certificateNumber,
-    certificateType: course.certificateType,
-    verificationUrl,
-    issuedAt: new Date().toISOString(),
-  });
-
-  await prisma.notification.create({
-    data: {
-      userId,
-      type: "CERTIFICATE_ISSUED",
-      title: "Certificate Issued!",
-      message: `Your certificate for "${course.title}" is ready!`,
-      data: { certificateId: certificate.id, courseId },
-    },
-  });
-
-  return certificate;
-}

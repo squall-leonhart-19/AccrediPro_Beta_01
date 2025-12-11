@@ -18,10 +18,13 @@ async function getUsers() {
           },
         },
       },
+      streak: true,
       _count: {
         select: {
           certificates: true,
           progress: true,
+          receivedMessages: true,
+          sentMessages: true,
         },
       },
     },

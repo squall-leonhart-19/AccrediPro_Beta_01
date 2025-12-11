@@ -19,21 +19,21 @@ import {
   Trophy,
   HelpCircle,
   Lightbulb,
-  Star,
   Megaphone,
   Hand,
+  Building2,
+  ChevronRight,
 } from "lucide-react";
 import { CreatePostDialog } from "@/components/community/create-post-dialog";
 
-// Community categories for structured discussions
-const communityCategories = [
+// Post categories for filtering within communities
+const postCategories = [
   { id: "all", label: "All Posts", icon: MessageSquare, color: "bg-gray-100 text-gray-700" },
   { id: "introductions", label: "Introduce Yourself", icon: Hand, color: "bg-pink-100 text-pink-700" },
   { id: "wins", label: "Share Your Wins", icon: Trophy, color: "bg-amber-100 text-amber-700" },
-  { id: "ask-sarah", label: "Ask Sarah Anything", icon: Star, color: "bg-purple-100 text-purple-700" },
   { id: "tips", label: "Daily Coach Tips", icon: Lightbulb, color: "bg-green-100 text-green-700" },
-  { id: "reflections", label: "Reflection Zone", icon: Sparkles, color: "bg-blue-100 text-blue-700" },
   { id: "questions", label: "Questions & Help", icon: HelpCircle, color: "bg-orange-100 text-orange-700" },
+  { id: "graduates", label: "Graduates", icon: Sparkles, color: "bg-purple-100 text-purple-700" },
 ];
 
 interface Post {
@@ -41,6 +41,10 @@ interface Post {
   title: string;
   content: string;
   category: string | null;
+  communityId: string | null;
+  communityName?: string | null;
+  categoryName?: string | null;
+  categoryColor?: string | null;
   isPinned: boolean;
   viewCount: number;
   createdAt: Date;
@@ -53,6 +57,7 @@ interface Post {
   };
   _count: {
     comments: number;
+    likes: number;
   };
 }
 
@@ -63,25 +68,41 @@ interface Stats {
   activeToday: number;
 }
 
+interface Community {
+  id: string;
+  name: string;
+  categoryId: string;
+  categoryName: string;
+  categoryColor: string | null;
+  memberCount: number;
+}
+
 interface CommunityClientProps {
   posts: Post[];
   stats: Stats;
+  communities?: Community[];
+  isAdmin?: boolean;
 }
 
-export function CommunityClient({ posts, stats }: CommunityClientProps) {
+export function CommunityClient({ posts, stats, communities = [], isAdmin = false }: CommunityClientProps) {
+  const [selectedCommunity, setSelectedCommunity] = useState<string>("all");
   const [selectedCategory, setSelectedCategory] = useState("all");
   const [searchQuery, setSearchQuery] = useState("");
 
   const filteredPosts = useMemo(() => {
     return posts.filter((post) => {
+      // Filter by community
+      const matchesCommunity = selectedCommunity === "all" || post.communityId === selectedCommunity;
+      // Filter by post category
       const matchesCategory = selectedCategory === "all" || post.category === selectedCategory;
+      // Filter by search
       const matchesSearch =
         searchQuery === "" ||
         post.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
         post.content.toLowerCase().includes(searchQuery.toLowerCase());
-      return matchesCategory && matchesSearch;
+      return matchesCommunity && matchesCategory && matchesSearch;
     });
-  }, [posts, selectedCategory, searchQuery]);
+  }, [posts, selectedCommunity, selectedCategory, searchQuery]);
 
   const formatDate = (date: Date) => {
     const d = new Date(date);
@@ -113,6 +134,8 @@ export function CommunityClient({ posts, stats }: CommunityClientProps) {
     }
   };
 
+  const selectedCommunityData = communities.find(c => c.id === selectedCommunity);
+
   return (
     <div className="space-y-6 animate-fade-in">
       {/* Hero Header */}
@@ -134,15 +157,80 @@ export function CommunityClient({ posts, stats }: CommunityClientProps) {
                 <div>
                   <h1 className="text-3xl lg:text-4xl font-bold text-white mb-2">Community</h1>
                   <p className="text-burgundy-100 text-lg">
-                    A safe, supportive space to connect and grow together
+                    {selectedCommunityData
+                      ? selectedCommunityData.categoryName + " Community"
+                      : "Connect and grow together"}
                   </p>
                 </div>
               </div>
             </div>
-            <CreatePostDialog />
+            <CreatePostDialog
+                              communityId={selectedCommunity !== "all" ? selectedCommunity : undefined}
+                              communityName={selectedCommunityData?.name}
+                            />
           </div>
         </CardContent>
       </Card>
+
+      {/* Community Selector - Only show if user has multiple communities */}
+      {communities.length > 0 && (
+        <div className="flex items-center gap-2 overflow-x-auto pb-2">
+          <button
+            onClick={() => setSelectedCommunity("all")}
+            className={`flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium whitespace-nowrap transition-all ${
+              selectedCommunity === "all"
+                ? "bg-burgundy-600 text-white shadow-lg"
+                : "bg-white text-gray-700 hover:bg-gray-100 border border-gray-200"
+            }`}
+          >
+            <Building2 className="w-4 h-4" />
+            All Communities
+          </button>
+          {communities.map((community) => (
+            <button
+              key={community.id}
+              onClick={() => setSelectedCommunity(community.id)}
+              className={`flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium whitespace-nowrap transition-all ${
+                selectedCommunity === community.id
+                  ? "text-white shadow-lg"
+                  : "bg-white text-gray-700 hover:bg-gray-100 border border-gray-200"
+              }`}
+              style={
+                selectedCommunity === community.id
+                  ? { backgroundColor: community.categoryColor || "#722F37" }
+                  : {}
+              }
+            >
+              <span
+                className="w-2 h-2 rounded-full"
+                style={{ backgroundColor: community.categoryColor || "#722F37" }}
+              />
+              {community.categoryName}
+            </button>
+          ))}
+        </div>
+      )}
+
+      {/* No communities message for students without enrollments */}
+      {communities.length === 0 && !isAdmin && (
+        <Card className="bg-amber-50 border-amber-200">
+          <CardContent className="p-6 text-center">
+            <div className="w-16 h-16 bg-amber-100 rounded-full flex items-center justify-center mx-auto mb-4">
+              <Building2 className="w-8 h-8 text-amber-600" />
+            </div>
+            <h3 className="text-lg font-semibold text-amber-900 mb-2">Join a Community</h3>
+            <p className="text-amber-700 mb-4">
+              Enroll in a course to gain access to its exclusive community and connect with fellow students!
+            </p>
+            <Link href="/courses">
+              <button className="inline-flex items-center gap-2 px-4 py-2 bg-amber-600 text-white rounded-lg font-medium hover:bg-amber-700 transition-colors">
+                Explore Courses
+                <ChevronRight className="w-4 h-4" />
+              </button>
+            </Link>
+          </CardContent>
+        </Card>
+      )}
 
       {/* Stats */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
@@ -193,7 +281,7 @@ export function CommunityClient({ posts, stats }: CommunityClientProps) {
       </div>
 
       <div className="grid lg:grid-cols-4 gap-6">
-        {/* Sidebar - Categories */}
+        {/* Sidebar - Post Categories */}
         <div className="lg:col-span-1 space-y-4">
           <Card>
             <CardContent className="p-4">
@@ -202,7 +290,7 @@ export function CommunityClient({ posts, stats }: CommunityClientProps) {
                 Topics
               </h3>
               <div className="space-y-1">
-                {communityCategories.map((cat) => (
+                {postCategories.map((cat) => (
                   <button
                     key={cat.id}
                     onClick={() => setSelectedCategory(cat.id)}
@@ -238,10 +326,10 @@ export function CommunityClient({ posts, stats }: CommunityClientProps) {
             <CardContent className="p-4">
               <h3 className="font-semibold text-amber-800 mb-2 text-sm">Community Guidelines</h3>
               <ul className="text-xs text-amber-700 space-y-1">
-                <li>• Be respectful and supportive</li>
-                <li>• Celebrate each other&apos;s wins</li>
-                <li>• No spam or self-promotion</li>
-                <li>• Keep discussions on-topic</li>
+                <li>Be respectful and supportive</li>
+                <li>Celebrate each other&apos;s wins</li>
+                <li>No spam or self-promotion</li>
+                <li>Keep discussions on-topic</li>
               </ul>
             </CardContent>
           </Card>
@@ -260,18 +348,43 @@ export function CommunityClient({ posts, stats }: CommunityClientProps) {
             />
           </div>
 
-          {/* Category Badge */}
-          {selectedCategory !== "all" && (
-            <div className="flex items-center gap-2">
-              <span className="text-sm text-gray-500">Showing:</span>
-              <Badge className="bg-burgundy-100 text-burgundy-700 border-0">
-                {communityCategories.find((c) => c.id === selectedCategory)?.label}
-              </Badge>
+          {/* Active Filters */}
+          {(selectedCategory !== "all" || selectedCommunity !== "all") && (
+            <div className="flex items-center gap-2 flex-wrap">
+              <span className="text-sm text-gray-500">Filters:</span>
+              {selectedCommunity !== "all" && selectedCommunityData && (
+                <Badge
+                  className="border-0 text-white"
+                  style={{ backgroundColor: selectedCommunityData.categoryColor || "#722F37" }}
+                >
+                  {selectedCommunityData.categoryName}
+                  <button
+                    onClick={() => setSelectedCommunity("all")}
+                    className="ml-1.5 hover:opacity-80"
+                  >
+                    &times;
+                  </button>
+                </Badge>
+              )}
+              {selectedCategory !== "all" && (
+                <Badge className="bg-burgundy-100 text-burgundy-700 border-0">
+                  {postCategories.find((c) => c.id === selectedCategory)?.label}
+                  <button
+                    onClick={() => setSelectedCategory("all")}
+                    className="ml-1.5 hover:opacity-80"
+                  >
+                    &times;
+                  </button>
+                </Badge>
+              )}
               <button
-                onClick={() => setSelectedCategory("all")}
+                onClick={() => {
+                  setSelectedCategory("all");
+                  setSelectedCommunity("all");
+                }}
                 className="text-sm text-burgundy-600 hover:underline"
               >
-                Clear filter
+                Clear all
               </button>
             </div>
           )}
@@ -300,6 +413,14 @@ export function CommunityClient({ posts, stats }: CommunityClientProps) {
                                   Pinned
                                 </Badge>
                               )}
+                              {post.categoryName && selectedCommunity === "all" && (
+                                <Badge
+                                  className="text-white border-0 text-xs"
+                                  style={{ backgroundColor: post.categoryColor || "#722F37" }}
+                                >
+                                  {post.categoryName}
+                                </Badge>
+                              )}
                               <h3 className="font-semibold text-gray-900 line-clamp-1 hover:text-burgundy-700 transition-colors">
                                 {post.title}
                               </h3>
@@ -321,17 +442,17 @@ export function CommunityClient({ posts, stats }: CommunityClientProps) {
 
                         {/* Engagement Stats */}
                         <div className="flex items-center gap-4 mt-3 text-sm">
-                          <button className="flex items-center gap-1.5 text-gray-500 hover:text-burgundy-600 transition-colors">
-                            <Heart className="w-4 h-4" />
-                            <span>Like</span>
-                          </button>
+                          <span className="flex items-center gap-1.5 text-rose-500">
+                            <Heart className="w-4 h-4 fill-rose-500" />
+                            <span className="font-medium">{post._count.likes}</span>
+                          </span>
                           <span className="flex items-center gap-1.5 text-gray-500">
                             <MessageSquare className="w-4 h-4" />
-                            {post._count.comments} replies
+                            <span>{post._count.comments} replies</span>
                           </span>
                           <span className="flex items-center gap-1.5 text-gray-500">
                             <Eye className="w-4 h-4" />
-                            {post.viewCount} views
+                            <span>{post.viewCount} views</span>
                           </span>
                         </div>
                       </div>
@@ -348,16 +469,19 @@ export function CommunityClient({ posts, stats }: CommunityClientProps) {
                     <Users className="w-8 h-8 text-burgundy-600" />
                   </div>
                   <h3 className="text-lg font-medium text-gray-900 mb-2">
-                    {searchQuery || selectedCategory !== "all"
+                    {searchQuery || selectedCategory !== "all" || selectedCommunity !== "all"
                       ? "No discussions found"
                       : "No discussions yet"}
                   </h3>
                   <p className="text-gray-500 mb-4">
-                    {searchQuery || selectedCategory !== "all"
-                      ? "Try adjusting your search or filter"
+                    {searchQuery || selectedCategory !== "all" || selectedCommunity !== "all"
+                      ? "Try adjusting your filters"
                       : "Be the first to start a conversation!"}
                   </p>
-                  <CreatePostDialog />
+                  <CreatePostDialog
+                              communityId={selectedCommunity !== "all" ? selectedCommunity : undefined}
+                              communityName={selectedCommunityData?.name}
+                            />
                 </CardContent>
               </Card>
             )}

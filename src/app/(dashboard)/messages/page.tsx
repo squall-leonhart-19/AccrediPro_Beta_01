@@ -3,6 +3,10 @@ import { authOptions } from "@/lib/auth";
 import prisma from "@/lib/prisma";
 import { MessagesClient } from "@/components/messages/messages-client";
 
+interface MessagesPageProps {
+  searchParams: Promise<{ chat?: string }>;
+}
+
 async function getConversations(userId: string, isAdmin: boolean) {
   // Get all users the current user has exchanged messages with
   const sentTo = await prisma.message.findMany({
@@ -41,6 +45,21 @@ async function getConversations(userId: string, isAdmin: boolean) {
                 },
               },
             } : false,
+            // Include streak data for admin/coach view
+            streak: isAdmin,
+            // Include badges for admin/coach view
+            badges: isAdmin ? {
+              include: {
+                badge: {
+                  select: {
+                    name: true,
+                    icon: true,
+                  },
+                },
+              },
+              orderBy: { earnedAt: "desc" },
+              take: 6,
+            } : false,
           },
         }),
         prisma.message.findFirst({
@@ -63,6 +82,11 @@ async function getConversations(userId: string, isAdmin: boolean) {
 
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const enrollments = user?.enrollments as any[] | undefined;
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const badges = user?.badges as any[] | undefined;
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const streak = user?.streak as any | undefined;
+
       return {
         user: user ? {
           id: user.id,
@@ -77,6 +101,19 @@ async function getConversations(userId: string, isAdmin: boolean) {
             status: e.status,
             course: e.course,
           })) : undefined,
+          badges: isAdmin && badges ? badges.map((b) => ({
+            id: b.id,
+            earnedAt: b.earnedAt,
+            badge: {
+              name: b.badge.name,
+              icon: b.badge.icon,
+            },
+          })) : undefined,
+          streak: isAdmin && streak ? {
+            currentStreak: streak.currentStreak,
+            longestStreak: streak.longestStreak,
+            totalPoints: streak.totalPoints,
+          } : undefined,
         } : null,
         lastMessage,
         unreadCount,
@@ -112,11 +149,83 @@ async function getMentors() {
   });
 }
 
-export default async function MessagesPage() {
+export default async function MessagesPage({ searchParams }: MessagesPageProps) {
   const session = await getServerSession(authOptions);
   if (!session?.user?.id) return null;
 
-  const isAdmin = session.user.role === "ADMIN" || session.user.role === "INSTRUCTOR";
+  const { chat: initialChatUserId } = await searchParams;
+  const isAdmin = session.user.role === "ADMIN" || session.user.role === "INSTRUCTOR" || session.user.role === "MENTOR";
+
+  // If a chat user is specified, fetch their info
+  let initialSelectedUser = null;
+  if (initialChatUserId) {
+    const user = await prisma.user.findUnique({
+      where: { id: initialChatUserId },
+      include: {
+        enrollments: isAdmin ? {
+          include: {
+            course: {
+              select: {
+                id: true,
+                title: true,
+                slug: true,
+              },
+            },
+          },
+        } : false,
+        streak: isAdmin,
+        badges: isAdmin ? {
+          include: {
+            badge: {
+              select: {
+                name: true,
+                icon: true,
+              },
+            },
+          },
+          orderBy: { earnedAt: "desc" },
+          take: 6,
+        } : false,
+      },
+    });
+    if (user) {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const enrollments = user.enrollments as any[] | undefined;
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const badges = user.badges as any[] | undefined;
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const streak = user.streak as any | undefined;
+
+      initialSelectedUser = {
+        id: user.id,
+        firstName: user.firstName,
+        lastName: user.lastName,
+        email: user.email,
+        avatar: user.avatar,
+        role: user.role,
+        bio: user.bio,
+        enrollments: isAdmin && enrollments ? enrollments.map((e) => ({
+          id: e.id,
+          progress: Number(e.progress),
+          status: e.status,
+          course: e.course,
+        })) : undefined,
+        badges: isAdmin && badges ? badges.map((b) => ({
+          id: b.id,
+          earnedAt: b.earnedAt,
+          badge: {
+            name: b.badge.name,
+            icon: b.badge.icon,
+          },
+        })) : undefined,
+        streak: isAdmin && streak ? {
+          currentStreak: streak.currentStreak,
+          longestStreak: streak.longestStreak,
+          totalPoints: streak.totalPoints,
+        } : undefined,
+      };
+    }
+  }
 
   const [conversations, mentors] = await Promise.all([
     getConversations(session.user.id, isAdmin),
@@ -129,6 +238,7 @@ export default async function MessagesPage() {
       mentors={mentors}
       currentUserId={session.user.id}
       currentUserRole={session.user.role}
+      initialSelectedUser={initialSelectedUser}
     />
   );
 }

@@ -2,6 +2,11 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import prisma from "@/lib/prisma";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Progress } from "@/components/ui/progress";
+import Link from "next/link";
 import {
   Users,
   BookOpen,
@@ -9,14 +14,31 @@ import {
   TrendingUp,
   UserPlus,
   GraduationCap,
-  DollarSign,
   Activity,
+  MessageSquare,
+  Mail,
+  ChevronRight,
+  Flame,
+  Target,
+  Clock,
+  CalendarDays,
+  ArrowUpRight,
+  ArrowDownRight,
+  BarChart3,
+  Zap,
+  Settings,
+  Bell,
+  FileText,
+  Star,
+  Eye,
+  Play,
 } from "lucide-react";
 
 async function getAdminStats() {
   const now = new Date();
   const lastWeek = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
   const lastMonth = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000);
+  const twoWeeksAgo = new Date(now.getTime() - 14 * 24 * 60 * 60 * 1000);
 
   const [
     totalUsers,
@@ -24,15 +46,23 @@ async function getAdminStats() {
     totalEnrollments,
     totalCertificates,
     newUsersThisWeek,
+    newUsersLastWeek,
     completedThisMonth,
     activeUsers,
     recentEnrollments,
+    recentUsers,
+    topCourses,
+    totalMessages,
+    unreadMessages,
+    publishedCourses,
+    avgCourseProgress,
   ] = await Promise.all([
     prisma.user.count(),
     prisma.course.count(),
     prisma.enrollment.count(),
     prisma.certificate.count(),
     prisma.user.count({ where: { createdAt: { gte: lastWeek } } }),
+    prisma.user.count({ where: { createdAt: { gte: twoWeeksAgo, lt: lastWeek } } }),
     prisma.enrollment.count({
       where: { status: "COMPLETED", completedAt: { gte: lastMonth } },
     }),
@@ -42,29 +72,70 @@ async function getAdminStats() {
       orderBy: { enrolledAt: "desc" },
       include: {
         user: {
-          select: { firstName: true, lastName: true, email: true },
+          select: { firstName: true, lastName: true, email: true, avatar: true },
         },
         course: {
-          select: { title: true },
+          select: { title: true, slug: true },
         },
       },
     }),
+    prisma.user.findMany({
+      take: 5,
+      orderBy: { createdAt: "desc" },
+      select: {
+        id: true,
+        firstName: true,
+        lastName: true,
+        email: true,
+        avatar: true,
+        createdAt: true,
+        role: true,
+      },
+    }),
+    prisma.course.findMany({
+      where: { isPublished: true },
+      take: 5,
+      orderBy: { enrollments: { _count: "desc" } },
+      select: {
+        id: true,
+        title: true,
+        slug: true,
+        thumbnail: true,
+        _count: { select: { enrollments: true } },
+        analytics: { select: { avgRating: true, totalEnrolled: true } },
+      },
+    }),
+    prisma.message.count(),
+    prisma.message.count({ where: { isRead: false } }),
+    prisma.course.count({ where: { isPublished: true } }),
+    prisma.enrollment.aggregate({ _avg: { progress: true } }),
   ]);
 
-  const completionRate = totalEnrollments > 0
-    ? Math.round((await prisma.enrollment.count({ where: { status: "COMPLETED" } }) / totalEnrollments) * 100)
-    : 0;
+  const completedEnrollments = await prisma.enrollment.count({ where: { status: "COMPLETED" } });
+  const completionRate = totalEnrollments > 0 ? Math.round((completedEnrollments / totalEnrollments) * 100) : 0;
+
+  // Calculate user growth percentage
+  const userGrowth = newUsersLastWeek > 0
+    ? Math.round(((newUsersThisWeek - newUsersLastWeek) / newUsersLastWeek) * 100)
+    : newUsersThisWeek > 0 ? 100 : 0;
 
   return {
     totalUsers,
     totalCourses,
+    publishedCourses,
     totalEnrollments,
     totalCertificates,
     newUsersThisWeek,
+    userGrowth,
     completedThisMonth,
     completionRate,
     activeUsers,
     recentEnrollments,
+    recentUsers,
+    topCourses,
+    totalMessages,
+    unreadMessages,
+    avgProgress: avgCourseProgress._avg.progress ? Number(avgCourseProgress._avg.progress) : 0,
   };
 }
 
@@ -78,155 +149,287 @@ export default async function AdminDashboard() {
     return new Date(date).toLocaleDateString("en-US", {
       month: "short",
       day: "numeric",
-      hour: "numeric",
-      minute: "2-digit",
     });
   };
 
+  const formatRelativeTime = (date: Date) => {
+    const now = new Date();
+    const diff = now.getTime() - new Date(date).getTime();
+    const minutes = Math.floor(diff / 60000);
+    const hours = Math.floor(diff / 3600000);
+    const days = Math.floor(diff / 86400000);
+
+    if (minutes < 60) return `${minutes}m ago`;
+    if (hours < 24) return `${hours}h ago`;
+    return `${days}d ago`;
+  };
+
   return (
-    <div className="space-y-8 animate-fade-in">
-      {/* Header */}
-      <div>
-        <h1 className="text-2xl lg:text-3xl font-bold text-gray-900">
-          Admin Dashboard
-        </h1>
-        <p className="text-gray-500 mt-1">
-          Overview of your AccrediPro LMS platform
-        </p>
+    <div className="space-y-6 animate-fade-in">
+      {/* Header with Welcome */}
+      <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
+        <div>
+          <h1 className="text-2xl lg:text-3xl font-bold text-gray-900">
+            Control Center
+          </h1>
+          <p className="text-gray-500 mt-1">
+            Welcome back, {session.user.firstName}. Here&apos;s what&apos;s happening today.
+          </p>
+        </div>
+        <div className="flex items-center gap-3">
+          <Link href="/admin/analytics">
+            <Button variant="outline" className="gap-2">
+              <BarChart3 className="w-4 h-4" />
+              Analytics
+            </Button>
+          </Link>
+          <Link href="/admin/communications">
+            <Button className="gap-2 bg-burgundy-600 hover:bg-burgundy-700">
+              <Mail className="w-4 h-4" />
+              Send Message
+            </Button>
+          </Link>
+        </div>
       </div>
 
-      {/* Main Stats Grid */}
+      {/* Key Metrics Grid - 4 columns */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-        <Card>
-          <CardContent className="p-6">
-            <div className="flex items-center justify-between">
-              <div>
+        {/* Total Users */}
+        <Card className="relative overflow-hidden">
+          <CardContent className="p-5">
+            <div className="flex items-start justify-between">
+              <div className="flex-1">
                 <p className="text-sm font-medium text-gray-500">Total Users</p>
                 <p className="text-3xl font-bold text-gray-900 mt-1">
                   {stats.totalUsers.toLocaleString()}
                 </p>
+                <div className="flex items-center gap-1 mt-2">
+                  {stats.userGrowth >= 0 ? (
+                    <ArrowUpRight className="w-4 h-4 text-green-500" />
+                  ) : (
+                    <ArrowDownRight className="w-4 h-4 text-red-500" />
+                  )}
+                  <span className={`text-sm font-medium ${stats.userGrowth >= 0 ? 'text-green-600' : 'text-red-600'}`}>
+                    {Math.abs(stats.userGrowth)}%
+                  </span>
+                  <span className="text-xs text-gray-400">vs last week</span>
+                </div>
               </div>
-              <div className="p-3 bg-burgundy-100 rounded-lg">
-                <Users className="w-6 h-6 text-burgundy-600" />
+              <div className="w-12 h-12 bg-gradient-to-br from-burgundy-500 to-burgundy-600 rounded-xl flex items-center justify-center shadow-lg">
+                <Users className="w-6 h-6 text-white" />
               </div>
             </div>
-            <p className="text-sm text-green-600 mt-2">
-              +{stats.newUsersThisWeek} this week
-            </p>
+            <div className="absolute bottom-0 left-0 right-0 h-1 bg-burgundy-500" />
           </CardContent>
         </Card>
 
-        <Card>
-          <CardContent className="p-6">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm font-medium text-gray-500">Total Courses</p>
+        {/* Active Learners */}
+        <Card className="relative overflow-hidden">
+          <CardContent className="p-5">
+            <div className="flex items-start justify-between">
+              <div className="flex-1">
+                <p className="text-sm font-medium text-gray-500">Active Learners</p>
                 <p className="text-3xl font-bold text-gray-900 mt-1">
-                  {stats.totalCourses}
+                  {stats.activeUsers.toLocaleString()}
                 </p>
+                <div className="flex items-center gap-1 mt-2">
+                  <Activity className="w-4 h-4 text-green-500" />
+                  <span className="text-sm text-gray-500">
+                    {Math.round((stats.activeUsers / stats.totalUsers) * 100)}% active rate
+                  </span>
+                </div>
               </div>
-              <div className="p-3 bg-gold-100 rounded-lg">
-                <BookOpen className="w-6 h-6 text-gold-600" />
+              <div className="w-12 h-12 bg-gradient-to-br from-green-500 to-green-600 rounded-xl flex items-center justify-center shadow-lg">
+                <Flame className="w-6 h-6 text-white" />
               </div>
             </div>
-            <p className="text-sm text-gray-500 mt-2">
-              Published programs
-            </p>
+            <div className="absolute bottom-0 left-0 right-0 h-1 bg-green-500" />
           </CardContent>
         </Card>
 
-        <Card>
-          <CardContent className="p-6">
-            <div className="flex items-center justify-between">
-              <div>
+        {/* Total Enrollments */}
+        <Card className="relative overflow-hidden">
+          <CardContent className="p-5">
+            <div className="flex items-start justify-between">
+              <div className="flex-1">
                 <p className="text-sm font-medium text-gray-500">Enrollments</p>
                 <p className="text-3xl font-bold text-gray-900 mt-1">
                   {stats.totalEnrollments.toLocaleString()}
                 </p>
+                <div className="flex items-center gap-1 mt-2">
+                  <Target className="w-4 h-4 text-blue-500" />
+                  <span className="text-sm text-gray-500">
+                    {stats.completionRate}% completion
+                  </span>
+                </div>
               </div>
-              <div className="p-3 bg-blue-100 rounded-lg">
-                <GraduationCap className="w-6 h-6 text-blue-600" />
+              <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-blue-600 rounded-xl flex items-center justify-center shadow-lg">
+                <GraduationCap className="w-6 h-6 text-white" />
               </div>
             </div>
-            <p className="text-sm text-gray-500 mt-2">
-              {stats.completionRate}% completion rate
-            </p>
+            <div className="absolute bottom-0 left-0 right-0 h-1 bg-blue-500" />
           </CardContent>
         </Card>
 
-        <Card>
-          <CardContent className="p-6">
-            <div className="flex items-center justify-between">
-              <div>
+        {/* Certificates */}
+        <Card className="relative overflow-hidden">
+          <CardContent className="p-5">
+            <div className="flex items-start justify-between">
+              <div className="flex-1">
                 <p className="text-sm font-medium text-gray-500">Certificates</p>
                 <p className="text-3xl font-bold text-gray-900 mt-1">
                   {stats.totalCertificates.toLocaleString()}
                 </p>
+                <div className="flex items-center gap-1 mt-2">
+                  <TrendingUp className="w-4 h-4 text-gold-500" />
+                  <span className="text-sm text-green-600 font-medium">
+                    +{stats.completedThisMonth}
+                  </span>
+                  <span className="text-xs text-gray-400">this month</span>
+                </div>
               </div>
-              <div className="p-3 bg-green-100 rounded-lg">
-                <Award className="w-6 h-6 text-green-600" />
+              <div className="w-12 h-12 bg-gradient-to-br from-gold-500 to-gold-600 rounded-xl flex items-center justify-center shadow-lg">
+                <Award className="w-6 h-6 text-white" />
               </div>
             </div>
-            <p className="text-sm text-green-600 mt-2">
-              +{stats.completedThisMonth} this month
-            </p>
+            <div className="absolute bottom-0 left-0 right-0 h-1 bg-gold-500" />
           </CardContent>
         </Card>
       </div>
 
-      {/* Secondary Stats */}
+      {/* Second Row - Progress Overview & Quick Stats */}
       <div className="grid lg:grid-cols-3 gap-6">
-        {/* Active Users */}
+        {/* Platform Health */}
         <Card>
-          <CardHeader className="pb-3">
+          <CardHeader className="pb-2">
             <CardTitle className="text-base flex items-center gap-2">
-              <Activity className="w-5 h-5 text-green-500" />
-              Active Users
+              <Zap className="w-5 h-5 text-gold-500" />
+              Platform Health
             </CardTitle>
           </CardHeader>
-          <CardContent>
-            <p className="text-4xl font-bold text-gray-900">{stats.activeUsers}</p>
-            <p className="text-sm text-gray-500 mt-1">
-              Logged in within the last 7 days
-            </p>
-            <div className="mt-4 h-2 bg-gray-100 rounded-full overflow-hidden">
-              <div
-                className="h-full bg-green-500"
-                style={{
-                  width: `${Math.min((stats.activeUsers / stats.totalUsers) * 100, 100)}%`,
-                }}
+          <CardContent className="space-y-4">
+            <div>
+              <div className="flex items-center justify-between mb-2">
+                <span className="text-sm text-gray-600">Average Progress</span>
+                <span className="text-sm font-semibold text-burgundy-600">
+                  {Math.round(stats.avgProgress)}%
+                </span>
+              </div>
+              <Progress value={stats.avgProgress} className="h-2" />
+            </div>
+            <div>
+              <div className="flex items-center justify-between mb-2">
+                <span className="text-sm text-gray-600">Completion Rate</span>
+                <span className="text-sm font-semibold text-green-600">
+                  {stats.completionRate}%
+                </span>
+              </div>
+              <Progress value={stats.completionRate} className="h-2" />
+            </div>
+            <div>
+              <div className="flex items-center justify-between mb-2">
+                <span className="text-sm text-gray-600">User Engagement</span>
+                <span className="text-sm font-semibold text-blue-600">
+                  {Math.round((stats.activeUsers / stats.totalUsers) * 100)}%
+                </span>
+              </div>
+              <Progress
+                value={Math.round((stats.activeUsers / stats.totalUsers) * 100)}
+                className="h-2"
               />
             </div>
-            <p className="text-xs text-gray-400 mt-2">
-              {Math.round((stats.activeUsers / stats.totalUsers) * 100)}% of total users
-            </p>
+            <div className="pt-2 border-t border-gray-100">
+              <div className="grid grid-cols-2 gap-4 text-center">
+                <div>
+                  <p className="text-2xl font-bold text-gray-900">{stats.publishedCourses}</p>
+                  <p className="text-xs text-gray-500">Published Courses</p>
+                </div>
+                <div>
+                  <p className="text-2xl font-bold text-gray-900">{stats.totalMessages}</p>
+                  <p className="text-xs text-gray-500">Total Messages</p>
+                </div>
+              </div>
+            </div>
           </CardContent>
         </Card>
 
-        {/* Recent Enrollments */}
-        <Card className="lg:col-span-2">
-          <CardHeader className="pb-3">
+        {/* Recent New Users */}
+        <Card>
+          <CardHeader className="pb-2 flex flex-row items-center justify-between">
             <CardTitle className="text-base flex items-center gap-2">
               <UserPlus className="w-5 h-5 text-burgundy-500" />
-              Recent Enrollments
+              New Users
             </CardTitle>
+            <Link href="/admin/users">
+              <Button variant="ghost" size="sm" className="text-xs gap-1">
+                View All
+                <ChevronRight className="w-3 h-3" />
+              </Button>
+            </Link>
           </CardHeader>
-          <CardContent>
-            <div className="space-y-3">
-              {stats.recentEnrollments.map((enrollment: { id: string; enrolledAt: Date; user: { firstName: string | null; lastName: string | null }; course: { title: string } }) => (
-                <div
-                  key={enrollment.id}
-                  className="flex items-center justify-between py-2 border-b border-gray-100 last:border-0"
-                >
-                  <div>
-                    <p className="font-medium text-gray-900">
-                      {enrollment.user.firstName} {enrollment.user.lastName}
+          <CardContent className="p-0">
+            <div className="divide-y divide-gray-100">
+              {stats.recentUsers.map((user) => (
+                <div key={user.id} className="flex items-center gap-3 px-4 py-3 hover:bg-gray-50">
+                  <Avatar className="h-9 w-9">
+                    <AvatarImage src={user.avatar || undefined} />
+                    <AvatarFallback className="bg-burgundy-100 text-burgundy-700 text-sm">
+                      {user.firstName?.charAt(0)}{user.lastName?.charAt(0)}
+                    </AvatarFallback>
+                  </Avatar>
+                  <div className="flex-1 min-w-0">
+                    <p className="text-sm font-medium text-gray-900 truncate">
+                      {user.firstName} {user.lastName}
                     </p>
-                    <p className="text-sm text-gray-500">{enrollment.course.title}</p>
+                    <p className="text-xs text-gray-500 truncate">{user.email}</p>
                   </div>
                   <span className="text-xs text-gray-400">
-                    {formatDate(enrollment.enrolledAt)}
+                    {formatRelativeTime(user.createdAt)}
                   </span>
+                </div>
+              ))}
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* Top Courses */}
+        <Card>
+          <CardHeader className="pb-2 flex flex-row items-center justify-between">
+            <CardTitle className="text-base flex items-center gap-2">
+              <Star className="w-5 h-5 text-gold-500" />
+              Top Courses
+            </CardTitle>
+            <Link href="/admin/courses">
+              <Button variant="ghost" size="sm" className="text-xs gap-1">
+                View All
+                <ChevronRight className="w-3 h-3" />
+              </Button>
+            </Link>
+          </CardHeader>
+          <CardContent className="p-0">
+            <div className="divide-y divide-gray-100">
+              {stats.topCourses.map((course, index) => (
+                <div key={course.id} className="flex items-center gap-3 px-4 py-3 hover:bg-gray-50">
+                  <div className="w-8 h-8 bg-burgundy-100 rounded-lg flex items-center justify-center text-burgundy-700 font-bold text-sm">
+                    #{index + 1}
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <p className="text-sm font-medium text-gray-900 truncate">
+                      {course.title}
+                    </p>
+                    <div className="flex items-center gap-2 text-xs text-gray-500">
+                      <span className="flex items-center gap-1">
+                        <Users className="w-3 h-3" />
+                        {course._count.enrollments}
+                      </span>
+                      {course.analytics?.avgRating && (
+                        <span className="flex items-center gap-1">
+                          <Star className="w-3 h-3 fill-gold-400 text-gold-400" />
+                          {Number(course.analytics.avgRating).toFixed(1)}
+                        </span>
+                      )}
+                    </div>
+                  </div>
                 </div>
               ))}
             </div>
@@ -234,44 +437,128 @@ export default async function AdminDashboard() {
         </Card>
       </div>
 
-      {/* Quick Actions */}
-      <Card>
-        <CardHeader>
-          <CardTitle className="text-base">Quick Actions</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-            <a
-              href="/admin/courses"
-              className="p-4 border border-gray-200 rounded-lg hover:border-burgundy-200 hover:bg-burgundy-50 transition-colors text-center"
-            >
-              <BookOpen className="w-8 h-8 mx-auto text-burgundy-600 mb-2" />
-              <p className="font-medium text-gray-900">Manage Courses</p>
-            </a>
-            <a
-              href="/admin/users"
-              className="p-4 border border-gray-200 rounded-lg hover:border-burgundy-200 hover:bg-burgundy-50 transition-colors text-center"
-            >
-              <Users className="w-8 h-8 mx-auto text-burgundy-600 mb-2" />
-              <p className="font-medium text-gray-900">Manage Users</p>
-            </a>
-            <a
-              href="/admin/communications"
-              className="p-4 border border-gray-200 rounded-lg hover:border-burgundy-200 hover:bg-burgundy-50 transition-colors text-center"
-            >
-              <TrendingUp className="w-8 h-8 mx-auto text-burgundy-600 mb-2" />
-              <p className="font-medium text-gray-900">Send Bulk Email</p>
-            </a>
-            <a
-              href="/admin/communications"
-              className="p-4 border border-gray-200 rounded-lg hover:border-burgundy-200 hover:bg-burgundy-50 transition-colors text-center"
-            >
-              <Award className="w-8 h-8 mx-auto text-burgundy-600 mb-2" />
-              <p className="font-medium text-gray-900">Send Bulk DM</p>
-            </a>
-          </div>
-        </CardContent>
-      </Card>
+      {/* Third Row - Recent Activity & Quick Actions */}
+      <div className="grid lg:grid-cols-3 gap-6">
+        {/* Recent Enrollments */}
+        <Card className="lg:col-span-2">
+          <CardHeader className="pb-2 flex flex-row items-center justify-between">
+            <CardTitle className="text-base flex items-center gap-2">
+              <Play className="w-5 h-5 text-green-500" />
+              Recent Enrollments
+            </CardTitle>
+            <Badge variant="secondary" className="bg-green-100 text-green-700">
+              {stats.newUsersThisWeek} this week
+            </Badge>
+          </CardHeader>
+          <CardContent className="p-0">
+            <div className="divide-y divide-gray-100">
+              {stats.recentEnrollments.map((enrollment) => (
+                <div
+                  key={enrollment.id}
+                  className="flex items-center gap-4 px-4 py-3 hover:bg-gray-50"
+                >
+                  <Avatar className="h-10 w-10">
+                    <AvatarImage src={enrollment.user.avatar || undefined} />
+                    <AvatarFallback className="bg-burgundy-100 text-burgundy-700">
+                      {enrollment.user.firstName?.charAt(0)}{enrollment.user.lastName?.charAt(0)}
+                    </AvatarFallback>
+                  </Avatar>
+                  <div className="flex-1 min-w-0">
+                    <p className="text-sm font-medium text-gray-900">
+                      {enrollment.user.firstName} {enrollment.user.lastName}
+                    </p>
+                    <p className="text-xs text-gray-500">
+                      Enrolled in <span className="font-medium text-burgundy-600">{enrollment.course.title}</span>
+                    </p>
+                  </div>
+                  <div className="text-right">
+                    <span className="text-xs text-gray-400">
+                      {formatRelativeTime(enrollment.enrolledAt)}
+                    </span>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* Quick Actions */}
+        <Card>
+          <CardHeader className="pb-2">
+            <CardTitle className="text-base flex items-center gap-2">
+              <Zap className="w-5 h-5 text-burgundy-500" />
+              Quick Actions
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-2">
+            <Link href="/admin/courses" className="block">
+              <div className="flex items-center gap-3 p-3 rounded-lg border border-gray-200 hover:border-burgundy-300 hover:bg-burgundy-50 transition-all group">
+                <div className="w-10 h-10 bg-burgundy-100 rounded-lg flex items-center justify-center group-hover:bg-burgundy-200">
+                  <BookOpen className="w-5 h-5 text-burgundy-600" />
+                </div>
+                <div className="flex-1">
+                  <p className="text-sm font-medium text-gray-900 group-hover:text-burgundy-700">Manage Courses</p>
+                  <p className="text-xs text-gray-500">{stats.totalCourses} total</p>
+                </div>
+                <ChevronRight className="w-4 h-4 text-gray-400 group-hover:text-burgundy-600" />
+              </div>
+            </Link>
+            <Link href="/admin/users" className="block">
+              <div className="flex items-center gap-3 p-3 rounded-lg border border-gray-200 hover:border-burgundy-300 hover:bg-burgundy-50 transition-all group">
+                <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center group-hover:bg-blue-200">
+                  <Users className="w-5 h-5 text-blue-600" />
+                </div>
+                <div className="flex-1">
+                  <p className="text-sm font-medium text-gray-900 group-hover:text-burgundy-700">User Management</p>
+                  <p className="text-xs text-gray-500">{stats.totalUsers} users</p>
+                </div>
+                <ChevronRight className="w-4 h-4 text-gray-400 group-hover:text-burgundy-600" />
+              </div>
+            </Link>
+            <Link href="/admin/communications" className="block">
+              <div className="flex items-center gap-3 p-3 rounded-lg border border-gray-200 hover:border-burgundy-300 hover:bg-burgundy-50 transition-all group">
+                <div className="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center group-hover:bg-green-200">
+                  <Mail className="w-5 h-5 text-green-600" />
+                </div>
+                <div className="flex-1">
+                  <p className="text-sm font-medium text-gray-900 group-hover:text-burgundy-700">Communications</p>
+                  <p className="text-xs text-gray-500">Send bulk messages</p>
+                </div>
+                <ChevronRight className="w-4 h-4 text-gray-400 group-hover:text-burgundy-600" />
+              </div>
+            </Link>
+            <Link href="/admin/analytics" className="block">
+              <div className="flex items-center gap-3 p-3 rounded-lg border border-gray-200 hover:border-burgundy-300 hover:bg-burgundy-50 transition-all group">
+                <div className="w-10 h-10 bg-purple-100 rounded-lg flex items-center justify-center group-hover:bg-purple-200">
+                  <BarChart3 className="w-5 h-5 text-purple-600" />
+                </div>
+                <div className="flex-1">
+                  <p className="text-sm font-medium text-gray-900 group-hover:text-burgundy-700">Analytics</p>
+                  <p className="text-xs text-gray-500">View reports</p>
+                </div>
+                <ChevronRight className="w-4 h-4 text-gray-400 group-hover:text-burgundy-600" />
+              </div>
+            </Link>
+            <Link href="/messages" className="block">
+              <div className="flex items-center gap-3 p-3 rounded-lg border border-gray-200 hover:border-burgundy-300 hover:bg-burgundy-50 transition-all group relative">
+                <div className="w-10 h-10 bg-gold-100 rounded-lg flex items-center justify-center group-hover:bg-gold-200">
+                  <MessageSquare className="w-5 h-5 text-gold-600" />
+                </div>
+                <div className="flex-1">
+                  <p className="text-sm font-medium text-gray-900 group-hover:text-burgundy-700">Messages</p>
+                  <p className="text-xs text-gray-500">Direct messages</p>
+                </div>
+                {stats.unreadMessages > 0 && (
+                  <Badge className="bg-red-500 text-white text-xs">
+                    {stats.unreadMessages}
+                  </Badge>
+                )}
+                <ChevronRight className="w-4 h-4 text-gray-400 group-hover:text-burgundy-600" />
+              </div>
+            </Link>
+          </CardContent>
+        </Card>
+      </div>
     </div>
   );
 }

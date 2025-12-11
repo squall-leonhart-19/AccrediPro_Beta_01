@@ -6,7 +6,12 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Plus } from "lucide-react";
 
-export function CreatePostDialog() {
+interface CreatePostDialogProps {
+  communityId?: string;
+  communityName?: string;
+}
+
+export function CreatePostDialog({ communityId, communityName }: CreatePostDialogProps) {
   const router = useRouter();
   const [isOpen, setIsOpen] = useState(false);
   const [title, setTitle] = useState("");
@@ -23,7 +28,7 @@ export function CreatePostDialog() {
       const response = await fetch("/api/community", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ title, content }),
+        body: JSON.stringify({ title, content, communityId }),
       });
 
       const data = await response.json();
@@ -60,9 +65,15 @@ export function CreatePostDialog() {
         onClick={() => setIsOpen(false)}
       />
       <div className="relative bg-white rounded-lg shadow-xl w-full max-w-lg mx-4 p-6">
-        <h2 className="text-xl font-bold text-gray-900 mb-4">
+        <h2 className="text-xl font-bold text-gray-900 mb-1">
           Start a Discussion
         </h2>
+        {communityName && (
+          <p className="text-sm text-gray-500 mb-4">
+            Posting to {communityName}
+          </p>
+        )}
+        {!communityName && <div className="mb-4" />}
 
         {error && (
           <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-lg text-red-700 text-sm">

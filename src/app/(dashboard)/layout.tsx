@@ -4,6 +4,7 @@ import { authOptions } from "@/lib/auth";
 import prisma from "@/lib/prisma";
 import { DashboardNav } from "@/components/layout/dashboard-nav";
 import { SessionProvider } from "@/components/providers/session-provider";
+import { NotificationProvider } from "@/components/providers/notification-provider";
 import { OnboardingWrapper } from "@/components/onboarding/onboarding-wrapper";
 import { AchievementProvider } from "@/components/gamification/achievement-toast";
 
@@ -56,9 +57,10 @@ export default async function DashboardLayout({
 
   return (
     <SessionProvider>
-      <AchievementProvider>
-        <div className="min-h-screen bg-gray-50">
-          <DashboardNav />
+      <NotificationProvider>
+        <AchievementProvider>
+          <div className="min-h-screen bg-gray-50">
+            <DashboardNav />
 
           {/* Main content */}
           <main className="lg:pl-64 pt-16 lg:pt-0">
@@ -72,8 +74,10 @@ export default async function DashboardLayout({
               </OnboardingWrapper>
             </div>
           </main>
-        </div>
-      </AchievementProvider>
+
+          </div>
+        </AchievementProvider>
+      </NotificationProvider>
     </SessionProvider>
   );
 }

@@ -115,10 +115,11 @@ const walkthroughSteps: WalkthroughStep[] = [
 interface WalkthroughProps {
   userName: string;
   coachName?: string;
+  userId?: string;
   onComplete: () => void;
 }
 
-export function Walkthrough({ userName, coachName, onComplete }: WalkthroughProps) {
+export function Walkthrough({ userName, coachName, userId, onComplete }: WalkthroughProps) {
   const [currentStep, setCurrentStep] = useState(0);
   const [isVisible, setIsVisible] = useState(true);
   const router = useRouter();
@@ -146,16 +147,17 @@ export function Walkthrough({ userName, coachName, onComplete }: WalkthroughProp
   };
 
   const handleComplete = async () => {
-    try {
-      await fetch("/api/user/complete-onboarding", {
-        method: "POST",
-      });
-    } catch (error) {
-      console.error("Failed to save onboarding status:", error);
+    // Set tour complete in localStorage BEFORE redirect
+    // Always set it - with userId if available, without as fallback
+    if (userId) {
+      localStorage.setItem(`tour-complete-${userId}`, "true");
     }
+    // Also set a general flag as fallback
+    localStorage.setItem("tour-complete-general", "true");
+
     setIsVisible(false);
     onComplete();
-    router.push("/my-courses");
+    router.push("/start-here");
   };
 
   // Personalize description with names
@@ -189,13 +191,12 @@ export function Walkthrough({ userName, coachName, onComplete }: WalkthroughProp
               }}
             >
               <div
-                className={`w-3 h-3 ${
-                  i % 3 === 0
-                    ? "bg-gold-400"
-                    : i % 3 === 1
+                className={`w-3 h-3 ${i % 3 === 0
+                  ? "bg-gold-400"
+                  : i % 3 === 1
                     ? "bg-burgundy-400"
                     : "bg-white"
-                } ${i % 2 === 0 ? "rounded-full" : ""}`}
+                  } ${i % 2 === 0 ? "rounded-full" : ""}`}
                 style={{
                   transform: `rotate(${Math.random() * 360}deg)`,
                 }}
@@ -253,13 +254,12 @@ export function Walkthrough({ userName, coachName, onComplete }: WalkthroughProp
                 <button
                   key={index}
                   onClick={() => setCurrentStep(index)}
-                  className={`w-2.5 h-2.5 rounded-full transition-all ${
-                    index === currentStep
-                      ? "bg-burgundy-600 w-6"
-                      : index < currentStep
+                  className={`w-2.5 h-2.5 rounded-full transition-all ${index === currentStep
+                    ? "bg-burgundy-600 w-6"
+                    : index < currentStep
                       ? "bg-burgundy-300"
                       : "bg-gray-200"
-                  }`}
+                    }`}
                 />
               ))}
             </div>
@@ -282,7 +282,7 @@ export function Walkthrough({ userName, coachName, onComplete }: WalkthroughProp
               >
                 {currentStep === walkthroughSteps.length - 1 ? (
                   <>
-                    Start Learning
+                    Let's Go!
                     <Sparkles className="w-5 h-5 ml-2" />
                   </>
                 ) : (

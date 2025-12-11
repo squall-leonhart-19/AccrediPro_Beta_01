@@ -3,7 +3,7 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import prisma from "@/lib/prisma";
 import { onLessonCompleted, onCourseCompleted } from "@/lib/webhooks";
-import { sendCertificateEmail } from "@/lib/email";
+import { createCertificateOnCompletion } from "@/lib/certificate-service";
 
 export async function POST(request: NextRequest) {
   try {
@@ -47,6 +47,16 @@ export async function POST(request: NextRequest) {
     const actualCourseId = courseId || lesson.module.course.id;
     const actualModuleId = moduleId || lesson.module.id;
 
+    // Check if this is the user's first lesson ever
+    const existingCompletedLessons = await prisma.lessonProgress.count({
+      where: {
+        userId: session.user.id,
+        isCompleted: true,
+      },
+    });
+
+    const isFirstLessonEver = existingCompletedLessons === 0;
+
     // Mark lesson as complete
     await prisma.lessonProgress.upsert({
       where: {
@@ -70,6 +80,11 @@ export async function POST(request: NextRequest) {
     // Update streak and points
     await updateStreak(session.user.id);
     await awardPoints(session.user.id, 10, "lesson_complete");
+
+    // Award first step badge if this is the user's first lesson
+    if (isFirstLessonEver) {
+      await checkAndAwardBadge(session.user.id, "first_step");
+    }
 
     // Check module completion
     const moduleLessonIds = lesson.module.lessons.map((l) => l.id);
@@ -212,6 +227,9 @@ export async function POST(request: NextRequest) {
             message: `Congratulations! You've completed ${course.title}. Your certificate is being prepared.`,
           },
         });
+
+        // Create certificate and send email
+        await createCertificateOnCompletion(session.user.id, course.id);
       } else {
         await prisma.enrollment.update({
           where: {

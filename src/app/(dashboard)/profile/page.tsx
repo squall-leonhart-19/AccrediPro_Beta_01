@@ -3,6 +3,7 @@ import { authOptions } from "@/lib/auth";
 import prisma from "@/lib/prisma";
 import { redirect } from "next/navigation";
 import { Card, CardContent } from "@/components/ui/card";
+import { ProfileEditor } from "./profile-editor";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
@@ -19,6 +20,10 @@ import {
   Shield,
   Camera,
   Pencil,
+  Flame,
+  Star,
+  Lock,
+  Trophy,
 } from "lucide-react";
 
 async function getUserProfile(userId: string) {
@@ -47,6 +52,15 @@ async function getUserProfile(userId: string) {
           },
         },
       },
+      badges: {
+        include: {
+          badge: true,
+        },
+        orderBy: {
+          earnedAt: "desc",
+        },
+      },
+      streak: true,
       _count: {
         select: {
           communityPosts: true,
@@ -57,13 +71,23 @@ async function getUserProfile(userId: string) {
   });
 }
 
+async function getAllBadges() {
+  return prisma.badge.findMany({
+    orderBy: { points: "desc" },
+  });
+}
+
 export default async function ProfilePage() {
   const session = await getServerSession(authOptions);
   if (!session?.user?.id) {
     redirect("/login");
   }
 
-  const user = await getUserProfile(session.user.id);
+  const [user, allBadges] = await Promise.all([
+    getUserProfile(session.user.id),
+    getAllBadges(),
+  ]);
+
   if (!user) {
     redirect("/login");
   }
@@ -75,6 +99,11 @@ export default async function ProfilePage() {
   const avgProgress = totalCourses > 0
     ? user.enrollments.reduce((acc, e) => acc + e.progress, 0) / totalCourses
     : 0;
+
+  // Get earned badge IDs
+  const earnedBadgeIds = new Set(user.badges.map(ub => ub.badgeId));
+  const totalPoints = user.streak?.totalPoints || 0;
+  const currentStreak = user.streak?.currentStreak || 0;
 
   const formatDate = (date: Date) => {
     return new Date(date).toLocaleDateString("en-US", {
@@ -93,39 +122,22 @@ export default async function ProfilePage() {
         </div>
         <CardContent className="p-8 lg:p-10 relative">
           <div className="flex flex-col items-center text-center">
-            {/* Avatar */}
-            <div className="relative group mb-4">
-              <Avatar className="h-28 w-28 ring-4 ring-white/20 shadow-xl">
-                <AvatarImage src={user.avatar || undefined} />
-                <AvatarFallback className="bg-gradient-to-br from-gold-400 to-gold-600 text-burgundy-900 text-3xl font-bold">
-                  {initials}
-                </AvatarFallback>
-              </Avatar>
-              <button className="absolute inset-0 flex items-center justify-center bg-black/50 rounded-full opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer">
-                <div className="text-center">
-                  <Camera className="w-6 h-6 text-white mx-auto mb-1" />
-                  <span className="text-xs text-white font-medium">Change</span>
-                </div>
-              </button>
-            </div>
+            {/* Avatar and Bio - Client Component */}
+            <ProfileEditor
+              userId={session.user.id}
+              avatar={user.avatar}
+              bio={user.bio}
+              initials={initials}
+            />
 
             {/* Name and Role */}
-            <h1 className="text-3xl lg:text-4xl font-bold text-white mb-2">
+            <h1 className="text-3xl lg:text-4xl font-bold text-white mb-2 mt-4">
               {user.firstName} {user.lastName}
             </h1>
             <Badge className="bg-gold-400/20 text-gold-200 border-0 mb-3">
               {user.role}
             </Badge>
             <p className="text-burgundy-100">{user.email}</p>
-
-            {user.bio ? (
-              <p className="text-burgundy-100/80 mt-3 max-w-xl">{user.bio}</p>
-            ) : (
-              <button className="mt-3 text-sm text-gold-300 hover:text-gold-200 flex items-center gap-1">
-                <Pencil className="w-3 h-3" />
-                Add a bio
-              </button>
-            )}
 
             <div className="flex flex-wrap items-center justify-center gap-4 mt-6 text-burgundy-100">
               <div className="flex items-center gap-2 bg-white/10 backdrop-blur-sm px-4 py-2 rounded-full">
@@ -142,7 +154,49 @@ export default async function ProfilePage() {
       </Card>
 
       {/* Stats Cards */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+      <div className="grid grid-cols-2 lg:grid-cols-6 gap-4">
+        <Card className="card-premium">
+          <CardContent className="p-5">
+            <div className="flex items-center gap-3">
+              <div className="p-2.5 rounded-xl bg-amber-100">
+                <Star className="w-5 h-5 text-amber-600" />
+              </div>
+              <div>
+                <p className="text-2xl font-bold text-gray-900">{totalPoints}</p>
+                <p className="text-sm text-gray-500">Total Points</p>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+
+        <Card className="card-premium">
+          <CardContent className="p-5">
+            <div className="flex items-center gap-3">
+              <div className="p-2.5 rounded-xl bg-orange-100">
+                <Flame className="w-5 h-5 text-orange-600" />
+              </div>
+              <div>
+                <p className="text-2xl font-bold text-gray-900">{currentStreak}</p>
+                <p className="text-sm text-gray-500">Day Streak</p>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+
+        <Card className="card-premium">
+          <CardContent className="p-5">
+            <div className="flex items-center gap-3">
+              <div className="p-2.5 rounded-xl bg-purple-100">
+                <Trophy className="w-5 h-5 text-purple-600" />
+              </div>
+              <div>
+                <p className="text-2xl font-bold text-gray-900">{user.badges.length}</p>
+                <p className="text-sm text-gray-500">Badges</p>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+
         <Card className="card-premium">
           <CardContent className="p-5">
             <div className="flex items-center gap-3">
@@ -151,7 +205,7 @@ export default async function ProfilePage() {
               </div>
               <div>
                 <p className="text-2xl font-bold text-gray-900">{totalCourses}</p>
-                <p className="text-sm text-gray-500">Enrolled Courses</p>
+                <p className="text-sm text-gray-500">Courses</p>
               </div>
             </div>
           </CardContent>
@@ -175,21 +229,7 @@ export default async function ProfilePage() {
           <CardContent className="p-5">
             <div className="flex items-center gap-3">
               <div className="p-2.5 rounded-xl bg-gold-100">
-                <TrendingUp className="w-5 h-5 text-gold-600" />
-              </div>
-              <div>
-                <p className="text-2xl font-bold text-gray-900">{Math.round(avgProgress)}%</p>
-                <p className="text-sm text-gray-500">Avg Progress</p>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card className="card-premium">
-          <CardContent className="p-5">
-            <div className="flex items-center gap-3">
-              <div className="p-2.5 rounded-xl bg-purple-100">
-                <Award className="w-5 h-5 text-purple-600" />
+                <Award className="w-5 h-5 text-gold-600" />
               </div>
               <div>
                 <p className="text-2xl font-bold text-gray-900">{user.certificates.length}</p>
@@ -199,6 +239,58 @@ export default async function ProfilePage() {
           </CardContent>
         </Card>
       </div>
+
+      {/* Badges Section */}
+      <Card className="card-premium">
+        <CardContent className="p-6">
+          <h3 className="font-semibold text-gray-900 mb-4 flex items-center gap-2">
+            <Trophy className="w-5 h-5 text-purple-600" />
+            Achievements & Badges
+            <span className="text-sm font-normal text-gray-500">
+              ({user.badges.length}/{allBadges.length} unlocked)
+            </span>
+          </h3>
+          <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 gap-4">
+            {allBadges.map((badge) => {
+              const isEarned = earnedBadgeIds.has(badge.id);
+              const earnedBadge = user.badges.find(ub => ub.badgeId === badge.id);
+
+              return (
+                <div
+                  key={badge.id}
+                  className={`relative group flex flex-col items-center p-4 rounded-xl border-2 transition-all ${isEarned
+                    ? "bg-gradient-to-br from-white to-gray-50 border-gray-200 shadow-sm"
+                    : "bg-gray-100 border-gray-200 opacity-50"
+                    }`}
+                  title={badge.description}
+                >
+                  <div
+                    className={`text-3xl mb-2 ${isEarned ? "" : "grayscale"}`}
+                  >
+                    {badge.icon}
+                  </div>
+                  <p className={`text-xs font-medium text-center ${isEarned ? "text-gray-900" : "text-gray-500"}`}>
+                    {badge.name}
+                  </p>
+                  <p className={`text-xs text-center ${isEarned ? "text-amber-600" : "text-gray-400"}`}>
+                    +{badge.points} pts
+                  </p>
+                  {!isEarned && (
+                    <div className="absolute inset-0 flex items-center justify-center">
+                      <Lock className="w-4 h-4 text-gray-400" />
+                    </div>
+                  )}
+                  {isEarned && earnedBadge && (
+                    <p className="text-xs text-gray-400 mt-1">
+                      {new Date(earnedBadge.earnedAt).toLocaleDateString("en-US", { month: "short", day: "numeric" })}
+                    </p>
+                  )}
+                </div>
+              );
+            })}
+          </div>
+        </CardContent>
+      </Card>
 
       <div className="grid lg:grid-cols-3 gap-6">
         {/* Account Details */}
