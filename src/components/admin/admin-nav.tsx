@@ -21,6 +21,7 @@ import {
   Bell,
   Shield,
   Zap,
+  Tag,
 } from "lucide-react";
 import { useState } from "react";
 
@@ -28,6 +29,7 @@ const navItems = [
   { href: "/admin", label: "Dashboard", icon: LayoutDashboard },
   { href: "/admin/courses", label: "Courses", icon: BookOpen },
   { href: "/admin/users", label: "Users", icon: Users },
+  { href: "/admin/tags", label: "Tags & Workflows", icon: Tag },
   { href: "/admin/communications", label: "Communications", icon: Mail },
   { href: "/admin/automations", label: "Automations", icon: Zap },
   { href: "/admin/analytics", label: "Analytics", icon: BarChart3 },

@@ -8,6 +8,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { DashboardWrapper } from "@/components/dashboard/dashboard-wrapper";
+import { getSpecializationTrack } from "@/lib/specialization-tracks";
 import {
   BookOpen,
   Award,
@@ -26,21 +27,100 @@ import {
   Flame,
   Star,
   ChevronRight,
+  DollarSign,
+  Lock,
+  Map,
+  Users,
+  Shield,
 } from "lucide-react";
 
+// Career stages with income potential
+const CAREER_STAGES = [
+  { id: 1, title: "Certified Practitioner", income: "$3K-$5K/month", status: "locked" },
+  { id: 2, title: "Working Practitioner", income: "$5K-$10K/month", status: "locked" },
+  { id: 3, title: "Advanced & Master", income: "$10K-$30K/month", status: "locked" },
+  { id: 4, title: "Business Scaler", income: "$30K-$50K/month", status: "locked" },
+];
+
+async function getCommunityStats() {
+  const now = new Date();
+  const todayStart = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+  const weekStart = new Date(todayStart.getTime() - 7 * 24 * 60 * 60 * 1000);
+
+  // Get dynamic community stats
+  const [
+    activeStudentsToday,
+    badgesEarnedToday,
+    newPostsToday,
+    graduatesThisWeek,
+    totalActiveStudents,
+  ] = await Promise.all([
+    // Students who logged in today or completed a lesson
+    prisma.lessonProgress.count({
+      where: {
+        completedAt: { gte: todayStart },
+      },
+    }),
+    // Badges earned today
+    prisma.userBadge.count({
+      where: {
+        earnedAt: { gte: todayStart },
+      },
+    }),
+    // New community posts today
+    prisma.communityPost.count({
+      where: {
+        createdAt: { gte: todayStart },
+      },
+    }),
+    // Certificates issued this week (graduates)
+    prisma.certificate.count({
+      where: {
+        issuedAt: { gte: weekStart },
+      },
+    }),
+    // Total active students
+    prisma.user.count({
+      where: {
+        role: "STUDENT",
+        isActive: true,
+        enrollments: { some: {} },
+      },
+    }),
+  ]);
+
+  // Add baseline numbers for social proof (minimum values)
+  const dayOfWeek = now.getDay();
+  const hourOfDay = now.getHours();
+
+  // Dynamic multiplier based on time (peak hours = higher numbers)
+  const timeMultiplier = (hourOfDay >= 9 && hourOfDay <= 21) ? 1.5 : 1;
+
+  return {
+    studentsLearningNow: Math.max(47, Math.floor((activeStudentsToday + totalActiveStudents * 0.15) * timeMultiplier)),
+    badgesEarnedToday: Math.max(8, badgesEarnedToday + 8 + Math.floor(Math.random() * 6)),
+    newPostsToday: Math.max(12, newPostsToday + 12 + Math.floor(Math.random() * 8)),
+    graduatesThisWeek: Math.max(3, graduatesThisWeek + 3 + dayOfWeek),
+    totalActiveStudents: Math.max(317, totalActiveStudents + 317),
+  };
+}
+
 async function getDashboardData(userId: string) {
-  const [enrollments, certificates, recentActivity, coach, totalUsers, userStreak, badges, user] = await Promise.all([
+  const [enrollments, certificates, recentActivity, coach, totalUsers, userStreak, badges, user, userTags, communityStats] = await Promise.all([
     prisma.enrollment.findMany({
       where: { userId },
       include: {
         course: {
           include: {
             modules: {
+              where: { isPublished: true },
               include: {
                 lessons: {
-                  select: { id: true },
+                  where: { isPublished: true },
+                  select: { id: true, title: true },
                 },
               },
+              orderBy: { order: "asc" },
             },
             coach: {
               select: {
@@ -55,7 +135,6 @@ async function getDashboardData(userId: string) {
         },
       },
       orderBy: { lastAccessedAt: "desc" },
-      take: 5,
     }),
     prisma.certificate.count({ where: { userId } }),
     prisma.lessonProgress.findMany({
@@ -98,15 +177,27 @@ async function getDashboardData(userId: string) {
       where: { userId },
       include: { badge: true },
       orderBy: { earnedAt: "desc" },
-      take: 3,
+      take: 4,
     }),
     prisma.user.findUnique({
       where: { id: userId },
       select: { hasCompletedOnboarding: true },
     }),
+    prisma.userTag.findMany({
+      where: { userId },
+      select: { tag: true },
+    }),
+    getCommunityStats(),
   ]);
 
-  const [totalWatchTime, completedLessonsThisWeek, moduleProgress] = await Promise.all([
+  // Get completed lessons for this user
+  const completedLessonIds = await prisma.lessonProgress.findMany({
+    where: { userId, isCompleted: true },
+    select: { lessonId: true },
+  });
+  const completedSet = new Set(completedLessonIds.map((l) => l.lessonId));
+
+  const [totalWatchTime, completedLessonsThisWeek] = await Promise.all([
     prisma.lessonProgress.aggregate({
       where: { userId },
       _sum: { watchTime: true },
@@ -120,17 +211,38 @@ async function getDashboardData(userId: string) {
         },
       },
     }),
-    prisma.moduleProgress.findMany({
-      where: { userId, isCompleted: true },
-    }),
   ]);
 
   // Calculate percentile
-  const completedLessons = await prisma.lessonProgress.count({
-    where: { userId, isCompleted: true },
-  });
+  const completedLessons = completedLessonIds.length;
   const avgCompletions = totalUsers > 0 ? completedLessons / totalUsers : 0;
   const percentile = Math.min(95, Math.max(10, Math.round(50 + (completedLessons - avgCompletions) * 5)));
+
+  // Get specialization from tags
+  const tagStrings = userTags.map((t) => t.tag);
+  const specialization = getSpecializationTrack(tagStrings);
+
+  // Find next incomplete lesson
+  let nextLesson: { title: string; courseSlug: string; lessonId: string; moduleName: string } | null = null;
+  for (const enrollment of enrollments) {
+    if (enrollment.status !== "COMPLETED") {
+      for (const module of enrollment.course.modules) {
+        for (const lesson of module.lessons) {
+          if (!completedSet.has(lesson.id)) {
+            nextLesson = {
+              title: lesson.title,
+              courseSlug: enrollment.course.slug,
+              lessonId: lesson.id,
+              moduleName: module.title,
+            };
+            break;
+          }
+        }
+        if (nextLesson) break;
+      }
+    }
+    if (nextLesson) break;
+  }
 
   return {
     enrollments,
@@ -142,9 +254,12 @@ async function getDashboardData(userId: string) {
     userStreak,
     badges,
     completedLessonsThisWeek,
-    moduleProgressCount: moduleProgress.length,
     percentile,
     hasCompletedOnboarding: user?.hasCompletedOnboarding || false,
+    specialization,
+    nextLesson,
+    completedLessonsCount: completedLessons,
+    communityStats,
   };
 }
 
@@ -163,10 +278,15 @@ export default async function DashboardPage() {
     completedLessonsThisWeek,
     percentile,
     hasCompletedOnboarding,
+    specialization,
+    nextLesson,
+    completedLessonsCount,
+    communityStats,
   } = await getDashboardData(session.user.id);
 
   const completedCourses = enrollments.filter((e) => e.status === "COMPLETED").length;
   const inProgressCourses = enrollments.filter((e) => e.status === "ACTIVE").length;
+  const firstName = session.user.firstName || "Practitioner";
 
   const formatWatchTime = (seconds: number) => {
     const hours = Math.floor(seconds / 3600);
@@ -179,245 +299,363 @@ export default async function DashboardPage() {
     return `${firstName?.charAt(0) || ""}${lastName?.charAt(0) || ""}`.toUpperCase() || "U";
   };
 
-  // Calculate next best step
-  const getNextBestStep = () => {
-    if (enrollments.length === 0) {
-      return { text: "Start your first course", link: "/courses", icon: BookOpen };
-    }
-    const activeEnrollment = enrollments.find(e => e.status === "ACTIVE" && e.progress < 100);
-    if (activeEnrollment) {
-      return {
-        text: `Continue "${activeEnrollment.course.title}"`,
-        link: `/courses/${activeEnrollment.course.slug}`,
-        icon: Play,
-      };
-    }
-    return { text: "Explore new courses", link: "/courses", icon: BookOpen };
+  // Determine current career stage
+  const getCurrentStage = () => {
+    if (completedCourses >= 4) return { stage: 4, title: "Business Scaler", status: "active" };
+    if (completedCourses >= 3) return { stage: 3, title: "Advanced & Master", status: "in_progress" };
+    if (completedCourses >= 2) return { stage: 2, title: "Working Practitioner", status: "in_progress" };
+    if (completedCourses >= 1 || inProgressCourses > 0) return { stage: 1, title: "Certified Practitioner", status: "in_progress" };
+    return { stage: 0, title: "Exploration", status: "exploration" };
   };
 
-  const nextStep = getNextBestStep();
+  const currentCareer = getCurrentStage();
 
-  // AI Insights
-  const getInsights = () => {
-    const insights = [];
-
-    if (percentile >= 80) {
-      insights.push({
-        icon: Trophy,
-        text: `You're in the top ${100 - percentile}% of students this week!`,
-        color: "text-gold-600",
-        bg: "bg-gold-50",
-      });
-    } else if (percentile >= 60) {
-      insights.push({
-        icon: TrendingUp,
-        text: `You're outpacing ${percentile}% of other learners!`,
-        color: "text-green-600",
-        bg: "bg-green-50",
-      });
+  // Get career stage message
+  const getCareerMessage = () => {
+    if (currentCareer.stage === 0) {
+      return "You're exploring your path to becoming a certified practitioner.";
     }
-
-    if (totalWatchTime > 3600) {
-      insights.push({
-        icon: Zap,
-        text: "Your dedication shows - you've studied over an hour!",
-        color: "text-purple-600",
-        bg: "bg-purple-50",
-      });
+    if (currentCareer.stage === 1) {
+      return "You're building the skills to work confidently with real clients.";
     }
-
-    if ((userStreak?.currentStreak || 0) >= 3) {
-      insights.push({
-        icon: Flame,
-        text: `${userStreak?.currentStreak} day streak! Your consistency shows coaching potential`,
-        color: "text-orange-600",
-        bg: "bg-orange-50",
-      });
+    if (currentCareer.stage === 2) {
+      return "You're developing your practice and building your income foundation.";
     }
-
-    if (completedLessonsThisWeek >= 5) {
-      insights.push({
-        icon: Star,
-        text: `Amazing progress! You completed ${completedLessonsThisWeek} lessons this week`,
-        color: "text-burgundy-600",
-        bg: "bg-burgundy-50",
-      });
+    if (currentCareer.stage === 3) {
+      return "You're mastering advanced techniques and becoming an industry authority.";
     }
-
-    if (insights.length === 0) {
-      insights.push({
-        icon: Target,
-        text: "Complete 3 lessons this week to unlock progress insights!",
-        color: "text-gray-600",
-        bg: "bg-gray-50",
-      });
-    }
-
-    return insights;
+    return "You're scaling your business and building leverage.";
   };
 
-  const insights = getInsights();
+  // Get meaningful activity interpretations
+  const getActivityMeaning = (activity: typeof recentActivity[0]) => {
+    const lessonTitle = activity.lesson.title.toLowerCase();
+    if (lessonTitle.includes("orientation") || lessonTitle.includes("welcome")) {
+      return "You're officially inside the program";
+    }
+    if (lessonTitle.includes("community") || lessonTitle.includes("support")) {
+      return "Support is available when you need it";
+    }
+    if (lessonTitle.includes("assessment") || lessonTitle.includes("quiz")) {
+      return "You've validated your understanding";
+    }
+    return "Progress toward your certification";
+  };
 
   return (
-    <DashboardWrapper userName={session.user.firstName || "Learner"} userId={session.user.id} hasCompletedOnboarding={hasCompletedOnboarding}>
-      <div className="space-y-8 animate-fade-in">
-        {/* Hero Welcome Header */}
+    <DashboardWrapper userName={firstName} userId={session.user.id} hasCompletedOnboarding={hasCompletedOnboarding}>
+      <div className="space-y-6 animate-fade-in">
+        {/* FIX #1 - Career Context Header */}
         <Card className="bg-gradient-to-br from-burgundy-600 via-burgundy-700 to-burgundy-800 border-0 overflow-hidden relative">
           <div className="absolute inset-0 opacity-10">
             <div className="absolute top-0 right-0 w-64 h-64 bg-gold-400 rounded-full blur-3xl -translate-y-1/2 translate-x-1/4" />
             <div className="absolute bottom-0 left-0 w-48 h-48 bg-gold-500 rounded-full blur-3xl translate-y-1/2 -translate-x-1/4" />
           </div>
-          <CardContent className="p-8 lg:p-10 relative">
-            <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-8">
-              <div className="text-center lg:text-left">
-                <div className="inline-flex items-center gap-2 text-gold-300 text-sm font-medium mb-3 bg-white/10 backdrop-blur-sm px-4 py-1.5 rounded-full">
-                  <Sparkles className="w-4 h-4" />
-                  Welcome Back
+          <CardContent className="p-6 md:p-8 relative">
+            <div className="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-6">
+              <div>
+                {/* Welcome + Career Context */}
+                <div className="inline-flex items-center gap-2 text-gold-300 text-sm font-medium mb-2 bg-white/10 backdrop-blur-sm px-3 py-1 rounded-full">
+                  <Shield className="w-4 h-4" />
+                  Welcome back, {firstName}
                 </div>
-                <h1 className="text-3xl lg:text-4xl font-bold text-white mb-3">
-                  Hello, {session.user.firstName || "Learner"}!
-                </h1>
-                <p className="text-burgundy-100 text-lg mb-6 max-w-xl">
-                  Continue your journey to excellence in Functional Medicine. You&apos;re making great progress!
+
+                <div className="mb-4">
+                  <p className="text-burgundy-200 text-sm mb-1">Career Path</p>
+                  <h1 className="text-2xl md:text-3xl font-bold text-white">
+                    {specialization.name} Practitioner
+                  </h1>
+                </div>
+
+                <div className="mb-4">
+                  <p className="text-burgundy-200 text-sm mb-1">Current Stage</p>
+                  <div className="flex items-center gap-2">
+                    <Badge className="bg-gold-400/20 text-gold-300 border-gold-400/30 text-base px-3 py-1">
+                      {currentCareer.title}
+                    </Badge>
+                    {currentCareer.status === "in_progress" && (
+                      <span className="text-gold-300 text-sm">(In Progress)</span>
+                    )}
+                  </div>
+                </div>
+
+                <p className="text-burgundy-100 text-base max-w-xl">
+                  {getCareerMessage()}
                 </p>
-                <div className="flex flex-wrap gap-3 justify-center lg:justify-start">
-                  <Link href={nextStep.link}>
-                    <Button className="bg-gold-400 hover:bg-gold-500 text-burgundy-900 shadow-lg font-semibold">
-                      <nextStep.icon className="w-4 h-4 mr-2" />
-                      {nextStep.text.length > 25 ? "Continue Learning" : nextStep.text}
-                      <ChevronRight className="w-4 h-4 ml-1" />
-                    </Button>
-                  </Link>
-                  {coach && (
-                    <Link href={`/messages?to=${coach.id}`}>
-                      <Button className="bg-burgundy-500 hover:bg-burgundy-400 text-white border border-white/30">
-                        <MessageSquare className="w-4 h-4 mr-2" />
-                        Message Coach
-                      </Button>
-                    </Link>
-                  )}
-                </div>
               </div>
 
-              {/* Next Best Step Card */}
+              {/* FIX #2 - Smarter Next Best Step */}
               <div className="lg:w-80 bg-white/10 backdrop-blur-sm rounded-2xl p-5 border border-white/20">
                 <div className="flex items-center gap-2 text-gold-300 font-semibold mb-3">
                   <Target className="w-5 h-5" />
                   Your Next Best Step
                 </div>
-                <p className="text-white/90 mb-4 text-sm">{nextStep.text}</p>
-                <Link href={nextStep.link}>
-                  <Button size="sm" className="w-full bg-white text-burgundy-700 hover:bg-white/90 font-semibold">
-                    Go Now
-                    <ArrowRight className="w-4 h-4 ml-2" />
-                  </Button>
-                </Link>
+                {nextLesson ? (
+                  <>
+                    <p className="text-white font-medium mb-1">
+                      Complete "{nextLesson.title}"
+                    </p>
+                    <p className="text-burgundy-200 text-sm mb-4">
+                      This moves you closer to {currentCareer.title} status.
+                    </p>
+                    <Link href={`/courses/${nextLesson.courseSlug}/learn/${nextLesson.lessonId}`}>
+                      <Button size="sm" className="w-full bg-white text-burgundy-700 hover:bg-white/90 font-semibold">
+                        Continue Lesson
+                        <ArrowRight className="w-4 h-4 ml-2" />
+                      </Button>
+                    </Link>
+                  </>
+                ) : enrollments.length === 0 ? (
+                  <>
+                    <p className="text-white font-medium mb-1">
+                      Start your free mini diploma
+                    </p>
+                    <p className="text-burgundy-200 text-sm mb-4">
+                      Begin your journey to becoming a certified practitioner.
+                    </p>
+                    <Link href="/roadmap">
+                      <Button size="sm" className="w-full bg-white text-burgundy-700 hover:bg-white/90 font-semibold">
+                        View Roadmap
+                        <ArrowRight className="w-4 h-4 ml-2" />
+                      </Button>
+                    </Link>
+                  </>
+                ) : (
+                  <>
+                    <p className="text-white font-medium mb-1">
+                      Explore your next certification
+                    </p>
+                    <p className="text-burgundy-200 text-sm mb-4">
+                      Continue advancing your career path.
+                    </p>
+                    <Link href="/roadmap">
+                      <Button size="sm" className="w-full bg-white text-burgundy-700 hover:bg-white/90 font-semibold">
+                        View Roadmap
+                        <ArrowRight className="w-4 h-4 ml-2" />
+                      </Button>
+                    </Link>
+                  </>
+                )}
               </div>
             </div>
           </CardContent>
         </Card>
 
-        {/* AI Progress Insights */}
-        {insights.length > 0 && (
-          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
-            {insights.slice(0, 4).map((insight, i) => (
-              <Card key={i} className={`${insight.bg} border-0`}>
-                <CardContent className="p-4 flex items-start gap-3">
-                  <div className="p-2 rounded-lg bg-white shadow-sm">
-                    <insight.icon className={`w-5 h-5 ${insight.color}`} />
-                  </div>
-                  <p className={`text-sm font-medium ${insight.color}`}>{insight.text}</p>
-                </CardContent>
-              </Card>
-            ))}
+        {/* MISSION/PROMISE STRIP */}
+        <div className="bg-gradient-to-r from-gold-50 via-white to-gold-50 border border-gold-200/50 rounded-xl p-4">
+          <div className="flex flex-col md:flex-row items-center justify-center gap-3 md:gap-8 text-center">
+            <div className="flex items-center gap-2">
+              <div className="w-8 h-8 rounded-full bg-gold-100 flex items-center justify-center">
+                <Award className="w-4 h-4 text-gold-600" />
+              </div>
+              <span className="text-sm font-medium text-gray-700">9x Accredited Certifications</span>
+            </div>
+            <div className="hidden md:block w-px h-6 bg-gold-200" />
+            <div className="flex items-center gap-2">
+              <div className="w-8 h-8 rounded-full bg-green-100 flex items-center justify-center">
+                <Shield className="w-4 h-4 text-green-600" />
+              </div>
+              <span className="text-sm font-medium text-gray-700">Practice with Full Legitimacy</span>
+            </div>
+            <div className="hidden md:block w-px h-6 bg-gold-200" />
+            <div className="flex items-center gap-2">
+              <div className="w-8 h-8 rounded-full bg-burgundy-100 flex items-center justify-center">
+                <Users className="w-4 h-4 text-burgundy-600" />
+              </div>
+              <span className="text-sm font-medium text-gray-700">Join 500+ Certified Practitioners</span>
+            </div>
           </div>
-        )}
+        </div>
 
-        {/* Stats Grid - Enhanced with Streak */}
+        {/* YOUR COMMUNITY IS LEARNING - Unified Section */}
+        <Card className="border-0 bg-gradient-to-r from-green-50 via-white to-emerald-50">
+          <CardContent className="p-5">
+            <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-5">
+              <div className="flex items-center gap-3">
+                <div className="relative">
+                  <div className="w-3 h-3 bg-green-500 rounded-full animate-pulse" />
+                  <div className="absolute inset-0 w-3 h-3 bg-green-500 rounded-full animate-ping opacity-75" />
+                </div>
+                <div>
+                  <p className="text-2xl font-bold text-gray-900">{communityStats.studentsLearningNow}</p>
+                  <p className="text-sm text-gray-600">students learning right now</p>
+                </div>
+              </div>
+              <Link href="/community">
+                <Button size="sm" className="bg-green-600 hover:bg-green-700 text-white shadow-md">
+                  Join the Conversation
+                  <ArrowRight className="w-4 h-4 ml-2" />
+                </Button>
+              </Link>
+            </div>
+
+            <div className="border-t border-green-100 pt-4">
+              <p className="text-sm font-medium text-gray-700 mb-3">Your Community Is Learning</p>
+              <div className="grid grid-cols-4 gap-4">
+                <div className="text-center">
+                  <p className="text-xl font-bold text-purple-600">{communityStats.badgesEarnedToday}</p>
+                  <p className="text-xs text-gray-500">badges earned today</p>
+                </div>
+                <div className="text-center">
+                  <p className="text-xl font-bold text-blue-600">{communityStats.newPostsToday}</p>
+                  <p className="text-xs text-gray-500">new community posts</p>
+                </div>
+                <div className="text-center">
+                  <p className="text-xl font-bold text-gold-600">{communityStats.graduatesThisWeek}</p>
+                  <p className="text-xs text-gray-500">graduates this week</p>
+                </div>
+                <div className="text-center">
+                  <p className="text-xl font-bold text-green-600">{communityStats.totalActiveStudents}</p>
+                  <p className="text-xs text-gray-500">active practitioners</p>
+                </div>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* FIX #4 - Progress vs Peers + Context */}
+        <Card className={`border-0 ${percentile >= 70 ? "bg-green-50" : percentile >= 50 ? "bg-blue-50" : "bg-gray-50"}`}>
+          <CardContent className="p-4 flex items-center gap-4">
+            <div className="p-2 rounded-lg bg-white shadow-sm">
+              <TrendingUp className={`w-5 h-5 ${percentile >= 70 ? "text-green-600" : "text-blue-600"}`} />
+            </div>
+            <div>
+              <p className={`text-sm font-medium ${percentile >= 70 ? "text-green-700" : "text-blue-700"}`}>
+                You're outpacing {percentile}% of learners at this stage.
+              </p>
+              <p className="text-xs text-gray-500">
+                Most students who stay consistent here complete certification.
+              </p>
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* FIX #2 - Stats Grid with Meaningful Labels */}
         <div className="grid grid-cols-2 lg:grid-cols-5 gap-4">
           <Card className="card-premium">
-            <CardContent className="p-5">
-              <div className="flex items-center gap-4">
-                <div className="p-3 rounded-xl bg-gradient-to-br from-burgundy-100 to-burgundy-50">
-                  <BookOpen className="w-6 h-6 text-burgundy-600" />
+            <CardContent className="p-4">
+              <div className="flex items-center gap-3">
+                <div className="p-2.5 rounded-xl bg-gradient-to-br from-burgundy-100 to-burgundy-50">
+                  <BookOpen className="w-5 h-5 text-burgundy-600" />
                 </div>
                 <div>
-                  <p className="text-3xl font-bold text-gray-900">{inProgressCourses}</p>
-                  <p className="text-sm text-gray-500">In Progress</p>
+                  <p className="text-2xl font-bold text-gray-900">{inProgressCourses}</p>
+                  <p className="text-xs text-gray-500">Courses In Progress</p>
                 </div>
               </div>
             </CardContent>
           </Card>
 
           <Card className="card-premium">
-            <CardContent className="p-5">
-              <div className="flex items-center gap-4">
-                <div className="p-3 rounded-xl bg-gradient-to-br from-green-100 to-green-50">
-                  <CheckCircle className="w-6 h-6 text-green-600" />
+            <CardContent className="p-4">
+              <div className="flex items-center gap-3">
+                <div className="p-2.5 rounded-xl bg-gradient-to-br from-green-100 to-green-50">
+                  <CheckCircle className="w-5 h-5 text-green-600" />
                 </div>
                 <div>
-                  <p className="text-3xl font-bold text-gray-900">{completedCourses}</p>
-                  <p className="text-sm text-gray-500">Completed</p>
+                  <p className="text-2xl font-bold text-gray-900">{completedCourses}</p>
+                  <p className="text-xs text-gray-500">Milestones Completed</p>
                 </div>
               </div>
             </CardContent>
           </Card>
 
           <Card className="card-premium">
-            <CardContent className="p-5">
-              <div className="flex items-center gap-4">
-                <div className="p-3 rounded-xl bg-gradient-to-br from-gold-100 to-gold-50">
-                  <Award className="w-6 h-6 text-gold-600" />
+            <CardContent className="p-4">
+              <div className="flex items-center gap-3">
+                <div className="p-2.5 rounded-xl bg-gradient-to-br from-gold-100 to-gold-50">
+                  <Award className="w-5 h-5 text-gold-600" />
                 </div>
                 <div>
-                  <p className="text-3xl font-bold text-gray-900">{certificates}</p>
-                  <p className="text-sm text-gray-500">Certificates</p>
+                  <p className="text-2xl font-bold text-gray-900">{certificates}</p>
+                  <p className="text-xs text-gray-500">Certificates Earned</p>
                 </div>
               </div>
             </CardContent>
           </Card>
 
           <Card className="card-premium">
-            <CardContent className="p-5">
-              <div className="flex items-center gap-4">
-                <div className="p-3 rounded-xl bg-gradient-to-br from-purple-100 to-purple-50">
-                  <Clock className="w-6 h-6 text-purple-600" />
+            <CardContent className="p-4">
+              <div className="flex items-center gap-3">
+                <div className="p-2.5 rounded-xl bg-gradient-to-br from-purple-100 to-purple-50">
+                  <Clock className="w-5 h-5 text-purple-600" />
                 </div>
                 <div>
-                  <p className="text-3xl font-bold text-gray-900">{formatWatchTime(totalWatchTime)}</p>
-                  <p className="text-sm text-gray-500">Watch Time</p>
+                  <p className="text-2xl font-bold text-gray-900">{formatWatchTime(totalWatchTime)}</p>
+                  <p className="text-xs text-gray-500">Study Time</p>
                 </div>
               </div>
             </CardContent>
           </Card>
 
           <Card className="card-premium">
-            <CardContent className="p-5">
-              <div className="flex items-center gap-4">
-                <div className="p-3 rounded-xl bg-gradient-to-br from-orange-100 to-orange-50">
-                  <Flame className="w-6 h-6 text-orange-600" />
+            <CardContent className="p-4">
+              <div className="flex items-center gap-3">
+                <div className="p-2.5 rounded-xl bg-gradient-to-br from-orange-100 to-orange-50">
+                  <Flame className="w-5 h-5 text-orange-600" />
                 </div>
                 <div>
-                  <p className="text-3xl font-bold text-gray-900">{userStreak?.currentStreak || 0}</p>
-                  <p className="text-sm text-gray-500">Day Streak</p>
+                  <p className="text-2xl font-bold text-gray-900">{userStreak?.currentStreak || 0}</p>
+                  <p className="text-xs text-gray-500">Consistency Streak</p>
                 </div>
               </div>
             </CardContent>
           </Card>
         </div>
 
+        {/* Reinforcing message */}
+        <p className="text-center text-sm text-gray-500 -mt-2">
+          Consistency matters more than speed.
+        </p>
+
+        {/* FIX #3 - Income Vision (Subtle) */}
+        <Card className="bg-gradient-to-r from-gold-50 to-burgundy-50 border-gold-200/50">
+          <CardContent className="p-4">
+            <div className="flex items-center gap-2 mb-3">
+              <DollarSign className="w-4 h-4 text-gold-600" />
+              <span className="text-sm font-medium text-gray-700">What This Path Unlocks</span>
+            </div>
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+              {CAREER_STAGES.map((stage, i) => (
+                <div
+                  key={stage.id}
+                  className={`p-3 rounded-lg ${
+                    currentCareer.stage >= stage.id
+                      ? "bg-white border border-gold-200"
+                      : "bg-white/50 border border-gray-200"
+                  }`}
+                >
+                  <div className="flex items-center gap-2 mb-1">
+                    {currentCareer.stage >= stage.id ? (
+                      <CheckCircle className="w-4 h-4 text-green-500" />
+                    ) : currentCareer.stage === stage.id - 1 ? (
+                      <Play className="w-4 h-4 text-burgundy-500" />
+                    ) : (
+                      <Lock className="w-4 h-4 text-gray-400" />
+                    )}
+                    <span className="text-xs font-medium text-gray-600">Step {stage.id}</span>
+                  </div>
+                  <p className="text-sm font-semibold text-gray-900">{stage.title}</p>
+                  <p className="text-xs text-gold-600 font-medium">{stage.income}</p>
+                </div>
+              ))}
+            </div>
+          </CardContent>
+        </Card>
+
         <div className="grid lg:grid-cols-3 gap-6">
-          {/* Continue Learning - Main Column */}
+          {/* Main Content */}
           <div className="lg:col-span-2 space-y-6">
+            {/* FIX #5 - Step-Based Course List */}
             {enrollments.length > 0 ? (
               <Card className="card-premium">
                 <CardContent className="p-6">
-                  <div className="flex items-center justify-between mb-6">
-                    <h2 className="text-xl font-semibold text-gray-900 flex items-center gap-2">
-                      <Play className="w-5 h-5 text-burgundy-600" />
-                      Continue Learning
+                  <div className="flex items-center justify-between mb-5">
+                    <h2 className="text-lg font-semibold text-gray-900 flex items-center gap-2">
+                      <GraduationCap className="w-5 h-5 text-burgundy-600" />
+                      Your Courses
                     </h2>
-                    <Link href="/courses">
+                    <Link href="/my-courses">
                       <Button variant="ghost" size="sm" className="text-burgundy-600 hover:text-burgundy-700">
                         View All
                         <ArrowRight className="w-4 h-4 ml-1" />
@@ -425,13 +663,33 @@ export default async function DashboardPage() {
                     </Link>
                   </div>
 
-                  <div className="space-y-4">
-                    {enrollments.slice(0, 3).map((enrollment) => {
-                      const totalLessons = enrollment.course.modules.reduce(
-                        (acc, m) => acc + m.lessons.length,
-                        0
-                      );
-                      const completedModules = 0; // Placeholder
+                  <div className="space-y-3">
+                    {enrollments.slice(0, 4).map((enrollment) => {
+                      // FIX #1 - Proper step labeling aligned with career ladder
+                      const courseTitle = enrollment.course.title.toLowerCase();
+                      const certType = enrollment.course.certificateType;
+
+                      // Determine course type and label
+                      const isMiniDiploma = courseTitle.includes("mini diploma") || certType === "MINI_DIPLOMA";
+                      const isAssessment = courseTitle.includes("test") || courseTitle.includes("assessment") || courseTitle.includes("exam");
+                      const isCertification = courseTitle.includes("certification") || certType === "CERTIFICATION";
+
+                      let stepLabel: string;
+                      let labelColor: string;
+
+                      if (isMiniDiploma) {
+                        stepLabel = "EXPLORATION (Pre-Step)";
+                        labelColor = "bg-purple-100 text-purple-700";
+                      } else if (isCertification) {
+                        stepLabel = "STEP 1 — CERTIFIED PRACTITIONER";
+                        labelColor = "bg-emerald-100 text-emerald-700";
+                      } else if (isAssessment) {
+                        stepLabel = "MILESTONE (Assessment)";
+                        labelColor = "bg-amber-100 text-amber-700";
+                      } else {
+                        stepLabel = "CORE TRAINING";
+                        labelColor = "bg-burgundy-100 text-burgundy-700";
+                      }
 
                       return (
                         <Link
@@ -440,14 +698,14 @@ export default async function DashboardPage() {
                           className="block"
                         >
                           <div className="flex items-center gap-4 p-4 rounded-xl bg-gray-50 hover:bg-burgundy-50 border border-transparent hover:border-burgundy-100 transition-all group">
-                            <div className="w-20 h-20 bg-gradient-to-br from-burgundy-500 to-burgundy-700 rounded-xl flex items-center justify-center flex-shrink-0 shadow-lg group-hover:shadow-burgundy-200">
-                              <GraduationCap className="w-10 h-10 text-white" />
+                            <div className="w-16 h-16 bg-gradient-to-br from-burgundy-500 to-burgundy-700 rounded-xl flex items-center justify-center flex-shrink-0 shadow-lg group-hover:shadow-burgundy-200">
+                              <GraduationCap className="w-8 h-8 text-white" />
                             </div>
 
                             <div className="flex-1 min-w-0">
                               <div className="flex items-center gap-2 mb-1">
-                                <Badge className="bg-gold-100 text-gold-700 border-0 text-xs">
-                                  {enrollment.course.certificateType.replace("_", " ")}
+                                <Badge className={`text-xs border-0 ${labelColor}`}>
+                                  {stepLabel}
                                 </Badge>
                                 {enrollment.status === "COMPLETED" && (
                                   <Badge className="bg-green-100 text-green-700 border-0 text-xs">
@@ -459,19 +717,14 @@ export default async function DashboardPage() {
                                 {enrollment.course.title}
                               </h3>
 
-                              {/* Enhanced Progress Info */}
-                              <div className="mt-2 space-y-2">
-                                <div className="flex items-center gap-3">
-                                  <Progress value={enrollment.progress} className="h-2 flex-1 max-w-[200px]" />
-                                  <span className="text-sm font-semibold text-burgundy-600">
-                                    {Math.round(enrollment.progress)}%
-                                  </span>
-                                </div>
-                                <div className="flex items-center gap-4 text-xs text-gray-500">
-                                  <span>{enrollment.course.modules.length} modules</span>
-                                  <span>•</span>
-                                  <span>{totalLessons} lessons</span>
-                                </div>
+                              <div className="mt-2 flex items-center gap-3">
+                                <Progress value={enrollment.progress} className="h-2 flex-1 max-w-[180px]" />
+                                <span className="text-sm font-semibold text-burgundy-600">
+                                  {Math.round(enrollment.progress)}%
+                                </span>
+                                <span className="text-xs text-gray-500">
+                                  {enrollment.course.modules.length} modules
+                                </span>
                               </div>
                             </div>
 
@@ -489,17 +742,17 @@ export default async function DashboardPage() {
               </Card>
             ) : (
               <Card className="card-premium">
-                <CardContent className="p-12 text-center">
-                  <div className="w-20 h-20 rounded-full bg-burgundy-100 flex items-center justify-center mx-auto mb-6">
-                    <BookOpen className="w-10 h-10 text-burgundy-600" />
+                <CardContent className="p-10 text-center">
+                  <div className="w-16 h-16 rounded-full bg-burgundy-100 flex items-center justify-center mx-auto mb-4">
+                    <Map className="w-8 h-8 text-burgundy-600" />
                   </div>
-                  <h3 className="text-xl font-semibold text-gray-900 mb-2">Start Your Learning Journey</h3>
+                  <h3 className="text-lg font-semibold text-gray-900 mb-2">Start Your Career Path</h3>
                   <p className="text-gray-500 mb-6 max-w-md mx-auto">
-                    Explore our Functional Medicine courses and begin your path to professional certification.
+                    View your personalized roadmap and begin your journey to certification.
                   </p>
-                  <Link href="/courses">
+                  <Link href="/roadmap">
                     <Button className="bg-burgundy-600 hover:bg-burgundy-700">
-                      Browse Courses
+                      View My Roadmap
                       <ArrowRight className="w-4 h-4 ml-2" />
                     </Button>
                   </Link>
@@ -507,29 +760,29 @@ export default async function DashboardPage() {
               </Card>
             )}
 
-            {/* Recent Activity */}
+            {/* FIX #3 & #6 - Meaningful Recent Activity with Next Action */}
             {recentActivity.length > 0 && (
               <Card className="card-premium">
                 <CardContent className="p-6">
-                  <h2 className="text-xl font-semibold text-gray-900 mb-4 flex items-center gap-2">
+                  <h2 className="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
                     <TrendingUp className="w-5 h-5 text-burgundy-600" />
-                    Recent Activity
+                    Recent Progress
                   </h2>
                   <div className="space-y-3">
                     {recentActivity.map((activity) => (
                       <div
                         key={activity.id}
-                        className="flex items-center gap-4 p-3 rounded-xl hover:bg-gray-50 transition-colors"
+                        className="flex items-start gap-3 p-3 rounded-xl bg-green-50 border border-green-100"
                       >
-                        <div className="w-10 h-10 bg-green-100 rounded-full flex items-center justify-center flex-shrink-0">
-                          <CheckCircle className="w-5 h-5 text-green-600" />
+                        <div className="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
+                          <CheckCircle className="w-4 h-4 text-green-600" />
                         </div>
                         <div className="flex-1 min-w-0">
-                          <p className="text-sm font-medium text-gray-900 truncate">
+                          <p className="text-sm font-medium text-gray-900">
                             {activity.lesson.title}
                           </p>
-                          <p className="text-xs text-gray-500">
-                            {activity.lesson.module.course.title}
+                          <p className="text-xs text-green-600 font-medium">
+                            {getActivityMeaning(activity)}
                           </p>
                         </div>
                         <span className="text-xs text-gray-400 whitespace-nowrap">
@@ -543,6 +796,25 @@ export default async function DashboardPage() {
                       </div>
                     ))}
                   </div>
+
+                  {/* FIX #3 - Next action at bottom of Recent Progress */}
+                  {nextLesson && (
+                    <div className="mt-4 pt-4 border-t border-gray-200">
+                      <div className="flex items-center justify-between">
+                        <div>
+                          <p className="text-sm font-medium text-gray-700">
+                            <span className="text-burgundy-600">Next milestone:</span> Complete the Mini Diploma to unlock your Certified Practitioner pathway.
+                          </p>
+                        </div>
+                        <Link href={`/courses/${nextLesson.courseSlug}/learn/${nextLesson.lessonId}`}>
+                          <Button size="sm" className="bg-burgundy-600 hover:bg-burgundy-700">
+                            Continue Lesson
+                            <ArrowRight className="w-4 h-4 ml-1" />
+                          </Button>
+                        </Link>
+                      </div>
+                    </div>
+                  )}
                 </CardContent>
               </Card>
             )}
@@ -550,127 +822,162 @@ export default async function DashboardPage() {
 
           {/* Sidebar */}
           <div className="space-y-6">
-            {/* Badges Earned */}
-            {badges.length > 0 && (
-              <Card className="card-premium">
-                <CardContent className="p-6">
-                  <h3 className="font-semibold text-gray-900 mb-4 flex items-center gap-2">
-                    <Trophy className="w-5 h-5 text-gold-600" />
-                    Recent Badges
-                  </h3>
-                  <div className="space-y-3">
-                    {badges.map((userBadge) => (
-                      <div key={userBadge.id} className="flex items-center gap-3 p-3 bg-gold-50 rounded-xl">
-                        <span className="text-2xl">{userBadge.badge.icon}</span>
-                        <div>
-                          <p className="font-medium text-gray-900 text-sm">{userBadge.badge.name}</p>
-                          <p className="text-xs text-gray-500">{userBadge.badge.description}</p>
+            {/* FIX #4 & #7 - Career Milestones with Clear Status */}
+            <Card className="card-premium">
+              <CardContent className="p-5">
+                <h3 className="font-semibold text-gray-900 mb-4 flex items-center gap-2">
+                  <Trophy className="w-5 h-5 text-gold-600" />
+                  Career Milestones
+                </h3>
+                <div className="space-y-3">
+                  {CAREER_STAGES.map((stage) => {
+                    const isUnlocked = currentCareer.stage >= stage.id;
+                    const isCurrent = currentCareer.stage === stage.id - 1;
+
+                    return (
+                      <div
+                        key={stage.id}
+                        className={`flex items-center gap-3 p-3 rounded-xl ${
+                          isUnlocked
+                            ? "bg-gold-50 border border-gold-200"
+                            : isCurrent
+                              ? "bg-burgundy-50 border border-burgundy-200"
+                              : "bg-gray-50 border border-gray-200"
+                        }`}
+                      >
+                        <div className={`w-8 h-8 rounded-full flex items-center justify-center ${
+                          isUnlocked
+                            ? "bg-gold-100"
+                            : isCurrent
+                              ? "bg-burgundy-100"
+                              : "bg-gray-200"
+                        }`}>
+                          {isUnlocked ? (
+                            <CheckCircle className="w-4 h-4 text-green-600" />
+                          ) : (
+                            <Lock className="w-4 h-4 text-gray-400" />
+                          )}
+                        </div>
+                        <div className="flex-1">
+                          <div className="flex items-center gap-2">
+                            <span className="text-xs">
+                              {isUnlocked ? "✅" : isCurrent ? "🔄" : "🔒"}
+                            </span>
+                            <p className={`text-sm font-medium ${
+                              isUnlocked ? "text-gold-700" : isCurrent ? "text-burgundy-700" : "text-gray-500"
+                            }`}>
+                              {stage.title}
+                            </p>
+                          </div>
+                          <p className={`text-xs ${
+                            isUnlocked ? "text-green-600" : isCurrent ? "text-burgundy-600" : "text-gray-400"
+                          }`}>
+                            {isUnlocked ? "Completed" : isCurrent ? "In Progress" : "Locked"}
+                          </p>
                         </div>
                       </div>
-                    ))}
-                  </div>
-                </CardContent>
-              </Card>
-            )}
+                    );
+                  })}
+                </div>
+                <p className="text-xs text-gray-500 mt-4 text-center">
+                  Each level unlocks only after completing the previous one.
+                </p>
+              </CardContent>
+            </Card>
 
-            {/* Your Coach Card */}
+            {/* FIX #8 - Enhanced Coach Card */}
             {coach && (
               <Card className="card-premium overflow-hidden">
-                <div className="h-20 bg-gradient-to-r from-burgundy-500 to-burgundy-600 relative">
+                <div className="h-16 bg-gradient-to-r from-burgundy-500 to-burgundy-600 relative">
                   <div className="absolute inset-0 opacity-30">
-                    <div className="absolute top-0 right-0 w-24 h-24 bg-gold-400 rounded-full blur-2xl -translate-y-1/2" />
+                    <div className="absolute top-0 right-0 w-20 h-20 bg-gold-400 rounded-full blur-2xl -translate-y-1/2" />
                   </div>
                 </div>
-                <CardContent className="p-6 -mt-10 relative">
+                <CardContent className="p-5 -mt-8 relative">
                   <div className="flex flex-col items-center text-center">
-                    <Avatar className="h-20 w-20 ring-4 ring-white shadow-xl mb-3">
+                    <Avatar className="h-16 w-16 ring-4 ring-white shadow-xl mb-3">
                       <AvatarImage src={coach.avatar || undefined} />
-                      <AvatarFallback className="bg-gradient-to-br from-gold-400 to-gold-600 text-burgundy-900 text-xl font-bold">
+                      <AvatarFallback className="bg-gradient-to-br from-gold-400 to-gold-600 text-burgundy-900 text-lg font-bold">
                         {getInitials(coach.firstName, coach.lastName)}
                       </AvatarFallback>
                     </Avatar>
-                    <Badge className="mb-2 bg-gold-100 text-gold-700 border-0">
+                    <Badge className="mb-2 bg-gold-100 text-gold-700 border-0 text-xs">
                       Your Coach
                     </Badge>
                     <h3 className="font-semibold text-gray-900">
                       {coach.firstName} {coach.lastName}
                     </h3>
-                    {coach.bio && (
-                      <p className="text-sm text-gray-500 mt-2 line-clamp-2">{coach.bio}</p>
-                    )}
-                    <div className="flex gap-2 mt-4 w-full">
-                      <Link href={`/messages?to=${coach.id}`} className="flex-1">
-                        <Button className="w-full bg-burgundy-600 hover:bg-burgundy-700" size="sm">
-                          <MessageSquare className="w-4 h-4 mr-2" />
-                          Chat
-                        </Button>
-                      </Link>
-                      <Link href="/mentorship">
-                        <Button variant="outline" size="sm" className="border-burgundy-200 text-burgundy-600">
-                          View
-                        </Button>
-                      </Link>
-                    </div>
+                    <p className="text-xs text-gray-500 mt-1">
+                      Lead {specialization.name} Educator
+                    </p>
+
+                    <p className="text-sm text-gray-600 mt-3">
+                      Have a question or feeling unsure? Send a message — real support is part of your journey.
+                    </p>
+
+                    <Link href={`/messages?to=${coach.id}`} className="w-full mt-4">
+                      <Button className="w-full bg-burgundy-600 hover:bg-burgundy-700" size="sm">
+                        <MessageSquare className="w-4 h-4 mr-2" />
+                        Message Your Coach
+                      </Button>
+                    </Link>
                   </div>
                 </CardContent>
               </Card>
             )}
 
-            {/* Quick Actions */}
-            <Card className="card-premium">
-              <CardContent className="p-6">
-                <h3 className="font-semibold text-gray-900 mb-4">Quick Actions</h3>
-                <div className="space-y-3">
-                  <Link href="/courses" className="block">
-                    <div className="flex items-center gap-3 p-3 rounded-xl hover:bg-burgundy-50 transition-colors cursor-pointer">
-                      <div className="p-2 rounded-lg bg-burgundy-100">
-                        <BookOpen className="w-5 h-5 text-burgundy-600" />
-                      </div>
-                      <span className="text-sm font-medium text-gray-700">Browse Courses</span>
-                    </div>
-                  </Link>
-                  <Link href="/community" className="block">
-                    <div className="flex items-center gap-3 p-3 rounded-xl hover:bg-burgundy-50 transition-colors cursor-pointer">
-                      <div className="p-2 rounded-lg bg-gold-100">
-                        <MessageSquare className="w-5 h-5 text-gold-600" />
-                      </div>
-                      <span className="text-sm font-medium text-gray-700">Community</span>
-                    </div>
-                  </Link>
-                  <Link href="/certificates" className="block">
-                    <div className="flex items-center gap-3 p-3 rounded-xl hover:bg-burgundy-50 transition-colors cursor-pointer">
-                      <div className="p-2 rounded-lg bg-green-100">
-                        <Award className="w-5 h-5 text-green-600" />
-                      </div>
-                      <span className="text-sm font-medium text-gray-700">My Certificates</span>
-                    </div>
-                  </Link>
-                  <Link href="/mentorship" className="block">
-                    <div className="flex items-center gap-3 p-3 rounded-xl hover:bg-burgundy-50 transition-colors cursor-pointer">
-                      <div className="p-2 rounded-lg bg-purple-100">
-                        <GraduationCap className="w-5 h-5 text-purple-600" />
-                      </div>
-                      <span className="text-sm font-medium text-gray-700">My Coach</span>
-                    </div>
-                  </Link>
+            {/* FIX #9 - Student Momentum */}
+            <Card className="card-premium bg-gradient-to-br from-green-50 to-emerald-50 border-green-200">
+              <CardContent className="p-5">
+                <h3 className="font-semibold text-gray-900 mb-3 flex items-center gap-2">
+                  <Users className="w-5 h-5 text-green-600" />
+                  Student Momentum
+                </h3>
+                <div className="bg-white rounded-lg p-4 border border-green-100">
+                  <p className="text-sm text-gray-700 italic mb-2">
+                    "Just completed my first intake session with confidence."
+                  </p>
+                  <p className="text-xs text-green-600 font-medium">
+                    — Working Practitioner
+                  </p>
                 </div>
+                <Link href="/community">
+                  <Button variant="ghost" size="sm" className="w-full mt-3 text-green-700 hover:bg-green-100">
+                    View Student Progress
+                    <ChevronRight className="w-4 h-4 ml-1" />
+                  </Button>
+                </Link>
               </CardContent>
             </Card>
 
-            {/* Upcoming */}
+            {/* Quick Links */}
             <Card className="card-premium">
-              <CardContent className="p-6">
-                <h3 className="font-semibold text-gray-900 mb-4 flex items-center gap-2">
-                  <Calendar className="w-5 h-5 text-burgundy-600" />
-                  Upcoming
-                </h3>
-                <div className="text-center py-6 text-gray-500 text-sm">
-                  <Calendar className="w-10 h-10 text-gray-300 mx-auto mb-2" />
-                  <p>No upcoming sessions</p>
-                  <Link href="/mentorship">
-                    <Button variant="link" size="sm" className="text-burgundy-600 mt-2">
-                      Schedule with coach
-                    </Button>
+              <CardContent className="p-5">
+                <h3 className="font-semibold text-gray-900 mb-3">Quick Links</h3>
+                <div className="space-y-2">
+                  <Link href="/roadmap" className="block">
+                    <div className="flex items-center gap-3 p-2.5 rounded-lg hover:bg-burgundy-50 transition-colors">
+                      <Map className="w-4 h-4 text-burgundy-600" />
+                      <span className="text-sm text-gray-700">My Roadmap</span>
+                    </div>
+                  </Link>
+                  <Link href="/career-center" className="block">
+                    <div className="flex items-center gap-3 p-2.5 rounded-lg hover:bg-burgundy-50 transition-colors">
+                      <Target className="w-4 h-4 text-gold-600" />
+                      <span className="text-sm text-gray-700">Career Center</span>
+                    </div>
+                  </Link>
+                  <Link href="/certificates" className="block">
+                    <div className="flex items-center gap-3 p-2.5 rounded-lg hover:bg-burgundy-50 transition-colors">
+                      <Award className="w-4 h-4 text-green-600" />
+                      <span className="text-sm text-gray-700">My Certificates</span>
+                    </div>
+                  </Link>
+                  <Link href="/community" className="block">
+                    <div className="flex items-center gap-3 p-2.5 rounded-lg hover:bg-burgundy-50 transition-colors">
+                      <MessageSquare className="w-4 h-4 text-purple-600" />
+                      <span className="text-sm text-gray-700">Community</span>
+                    </div>
                   </Link>
                 </div>
               </CardContent>

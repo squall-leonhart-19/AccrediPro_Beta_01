@@ -29,6 +29,7 @@ import {
   TrendingUp,
   Trash2,
   AlertTriangle,
+  Tag,
 } from "lucide-react";
 import {
   DropdownMenu,
@@ -83,6 +84,12 @@ interface User {
     };
   }[];
   streak: UserStreak | null;
+  tags: {
+    id: string;
+    tag: string;
+    value: string | null;
+    createdAt: Date;
+  }[];
   _count: {
     certificates: number;
     progress: number;
@@ -622,6 +629,12 @@ export function UsersClient({ users, courses }: UsersClientProps) {
                                 via {user.leadSource}{user.leadSourceDetail ? ` - ${user.leadSourceDetail}` : ""}
                               </p>
                             )}
+                            {user.tags && user.tags.length > 0 && (
+                              <div className="flex items-center gap-1 mt-1">
+                                <Tag className="w-3 h-3 text-purple-500" />
+                                <span className="text-xs text-purple-600">{user.tags.length} tag{user.tags.length > 1 ? "s" : ""}</span>
+                              </div>
+                            )}
                           </div>
                         </div>
                       </td>
@@ -900,6 +913,32 @@ export function UsersClient({ users, courses }: UsersClientProps) {
                             <p className="mt-1 text-gray-700">{selectedUser.bio}</p>
                           </div>
                         )}
+                      </div>
+                    </div>
+                  )}
+
+                  {/* User Tags */}
+                  {selectedUser.tags && selectedUser.tags.length > 0 && (
+                    <div className="p-4 bg-purple-50 rounded-lg border border-purple-200">
+                      <p className="text-sm font-semibold text-purple-800 mb-3">🏷️ Tags</p>
+                      <div className="flex flex-wrap gap-2">
+                        {selectedUser.tags.map((tag) => (
+                          <Badge
+                            key={tag.id}
+                            className={`text-xs ${
+                              tag.tag.startsWith("lead:")
+                                ? "bg-blue-100 text-blue-700 border-blue-200"
+                                : tag.tag.startsWith("interest:")
+                                ? "bg-green-100 text-green-700 border-green-200"
+                                : tag.tag.startsWith("completed:")
+                                ? "bg-gold-100 text-gold-700 border-gold-200"
+                                : "bg-gray-100 text-gray-700 border-gray-200"
+                            }`}
+                          >
+                            {tag.tag}
+                            {tag.value && ` (${tag.value})`}
+                          </Badge>
+                        ))}
                       </div>
                     </div>
                   )}

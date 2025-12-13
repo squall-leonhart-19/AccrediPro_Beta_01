@@ -3,6 +3,26 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import prisma from "@/lib/prisma";
 
+// Banned keywords for auto-moderation (server-side check)
+const BANNED_KEYWORDS = [
+  "refund",
+  "scam",
+  "fraud",
+  "lawsuit",
+  "sue",
+  "money back",
+  "rip off",
+  "ripoff",
+  "waste of money",
+  "pyramid scheme",
+  "mlm",
+];
+
+function containsBannedContent(text: string): boolean {
+  const lowerText = text.toLowerCase();
+  return BANNED_KEYWORDS.some(keyword => lowerText.includes(keyword));
+}
+
 export async function POST(request: NextRequest) {
   try {
     const session = await getServerSession(authOptions);
@@ -19,6 +39,14 @@ export async function POST(request: NextRequest) {
     if (!postId || !content) {
       return NextResponse.json(
         { success: false, error: "Post ID and content are required" },
+        { status: 400 }
+      );
+    }
+
+    // Server-side moderation check
+    if (containsBannedContent(content)) {
+      return NextResponse.json(
+        { success: false, error: "Your comment contains content that violates community guidelines. Please review and try again." },
         { status: 400 }
       );
     }

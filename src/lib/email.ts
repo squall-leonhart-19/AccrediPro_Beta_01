@@ -2,7 +2,7 @@ import { Resend } from "resend";
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 
-const FROM_EMAIL = process.env.FROM_EMAIL || "AccrediPro <noreply@accredipro.com>";
+const FROM_EMAIL = process.env.FROM_EMAIL || "AccrediPro <noreply@accredipro-certificate.com>";
 
 interface SendEmailOptions {
   to: string | string[];
@@ -258,6 +258,89 @@ export async function sendCertificateEmail(
   return sendEmail({
     to: email,
     subject: `Certificate Earned: ${courseTitle} - AccrediPro`,
+    html,
+  });
+}
+
+// Lead capture welcome email
+interface LeadWelcomeEmailOptions {
+  to: string;
+  firstName: string;
+  specialization: string;
+  isNewUser: boolean;
+}
+
+export async function sendLeadWelcomeEmail({ to, firstName, specialization, isNewUser }: LeadWelcomeEmailOptions) {
+  const loginUrl = `${process.env.NEXTAUTH_URL}/login`;
+  const roadmapUrl = `${process.env.NEXTAUTH_URL}/roadmap`;
+
+  const html = `
+    <!DOCTYPE html>
+    <html>
+      <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Welcome to Your ${specialization} Journey - AccrediPro</title>
+      </head>
+      <body style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif; line-height: 1.6; color: #333; max-width: 600px; margin: 0 auto; padding: 20px; background-color: #f5f5f5;">
+        <div style="background: white; border-radius: 16px; overflow: hidden; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
+          <div style="background: linear-gradient(135deg, #722F37 0%, #8B3A42 100%); padding: 40px 30px; text-align: center;">
+            <h1 style="color: #D4AF37; margin: 0; font-size: 28px;">AccrediPro</h1>
+            <p style="color: rgba(255,255,255,0.8); margin: 5px 0; font-size: 14px;">Your ${specialization} Journey Begins</p>
+          </div>
+
+          <div style="padding: 40px 30px;">
+            <h2 style="color: #722F37; margin-top: 0; font-size: 24px;">Welcome, ${firstName}!</h2>
+
+            <p style="color: #555; font-size: 16px;">You've taken the first step toward becoming a certified ${specialization} practitioner. We're thrilled to have you here!</p>
+
+            <div style="background: linear-gradient(135deg, #FDF5E6 0%, #FFF8DC 100%); border: 1px solid #D4AF37; border-radius: 12px; padding: 20px; margin: 20px 0;">
+              <p style="margin: 0; font-size: 14px; color: #8B7355;">Your personalized roadmap is ready:</p>
+              <p style="margin: 8px 0 0 0; font-size: 20px; font-weight: bold; color: #722F37;">${specialization} Career Path</p>
+            </div>
+
+            ${isNewUser ? `
+            <div style="background: #f0f7ff; border: 1px solid #3b82f6; border-radius: 12px; padding: 20px; margin: 20px 0;">
+              <p style="margin: 0 0 10px 0; font-size: 14px; color: #1e40af; font-weight: bold;">Your Login Credentials:</p>
+              <p style="margin: 0; font-size: 14px; color: #1e40af;">Email: <strong>${to}</strong></p>
+              <p style="margin: 5px 0 0 0; font-size: 14px; color: #1e40af;">Password: <strong>accredipro123</strong></p>
+              <p style="margin: 10px 0 0 0; font-size: 12px; color: #6b7280;">(We recommend changing your password after first login)</p>
+            </div>
+            ` : `
+            <p style="color: #555; font-size: 14px; background: #f0fdf4; padding: 15px; border-radius: 8px; border: 1px solid #22c55e;">
+              We noticed you already have an account. Log in with your existing credentials to see your updated roadmap!
+            </p>
+            `}
+
+            <p style="color: #555; font-size: 16px;">Here's what you'll discover in your roadmap:</p>
+            <ul style="color: #555; font-size: 15px; padding-left: 20px;">
+              <li style="margin: 10px 0;">Your personalized 4-step career path</li>
+              <li style="margin: 10px 0;">Income potential at each step</li>
+              <li style="margin: 10px 0;">Free mini diploma to get started</li>
+              <li style="margin: 10px 0;">Direct access to your mentor</li>
+            </ul>
+
+            <div style="text-align: center; margin: 30px 0;">
+              <a href="${loginUrl}" style="background: linear-gradient(135deg, #722F37 0%, #8B3A42 100%); color: white; padding: 16px 40px; text-decoration: none; border-radius: 8px; display: inline-block; font-weight: bold; font-size: 16px; box-shadow: 0 4px 12px rgba(114,47,55,0.3);">Login & View My Roadmap</a>
+            </div>
+
+            <div style="background: #f8f9fa; border-radius: 8px; padding: 20px; margin-top: 30px;">
+              <p style="margin: 0; font-size: 14px; color: #666;"><strong>Questions?</strong> Once logged in, you can message your mentor directly from your dashboard. We're here to support you every step of the way.</p>
+            </div>
+          </div>
+
+          <div style="background: #f8f9fa; padding: 20px 30px; text-align: center; border-top: 1px solid #eee;">
+            <p style="margin: 0; color: #999; font-size: 12px;">AccrediPro Academy - Veritas Et Excellentia</p>
+            <p style="margin: 5px 0 0 0; color: #999; font-size: 11px;">Truth and Excellence in Education</p>
+          </div>
+        </div>
+      </body>
+    </html>
+  `;
+
+  return sendEmail({
+    to,
+    subject: `Welcome to Your ${specialization} Journey - AccrediPro`,
     html,
   });
 }

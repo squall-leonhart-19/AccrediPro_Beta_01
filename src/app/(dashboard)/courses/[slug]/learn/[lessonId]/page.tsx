@@ -27,7 +27,6 @@ import {
 import { WistiaPlayer } from "@/components/courses/wistia-player";
 import { LessonSidebar } from "@/components/courses/lesson-sidebar";
 import { MarkCompleteButton } from "@/components/courses/mark-complete-button";
-import { LessonNavigation } from "@/components/courses/lesson-navigation";
 import { BottomLessonNav } from "@/components/courses/bottom-lesson-nav";
 
 async function getLesson(lessonId: string) {
@@ -421,20 +420,8 @@ export default async function LessonPage({
                 </div>
               )}
 
-              {/* Navigation Footer */}
-              <LessonNavigation
-                courseSlug={slug}
-                courseId={course.id}
-                moduleId={lesson.module.id}
-                lessonId={lesson.id}
-                courseName={course.title}
-                prevLesson={prevLesson}
-                nextLesson={nextLesson}
-                isCompleted={isCompleted}
-                completedLessons={completedLessons}
-                totalLessons={totalLessons}
-                canAccessNextLesson={canAccessNextLesson}
-              />
+              {/* Spacer for fixed bottom navigation */}
+              <div className="h-24" />
             </div>
           </div>
 

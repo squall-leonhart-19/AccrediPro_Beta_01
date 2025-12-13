@@ -73,7 +73,7 @@ async function getSarahCoach() {
   const sarah = await prisma.user.findFirst({
     where: {
       OR: [
-        { email: "coach@accredipro.com" },
+        { email: "coach@accredipro-certificate.com" },
         { role: "MENTOR", firstName: { contains: "Sarah" } },
         { role: "ADMIN" },
       ],

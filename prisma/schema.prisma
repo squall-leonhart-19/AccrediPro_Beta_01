@@ -33,7 +33,7 @@ model User {
   leadSource        String?   // Where they came from (freebie, webinar, etc.)
   leadSourceDetail  String?   // Specific detail (which freebie, etc.)
   assignedCoachId   String?   // Auto-assigned coach based on category
-  
+
   // Mini Diploma Freebie (Lead Magnet)
   miniDiplomaCategory String?  // functional-medicine, autism, gut-health, etc.
   miniDiplomaOptinAt  DateTime? // When they opted in
@@ -90,6 +90,8 @@ model User {
   assignedCoach     User?             @relation("CoachAssignment", fields: [assignedCoachId], references: [id])
   assignedStudents  User[]            @relation("CoachAssignment")
   coachedCommunities CategoryCommunity[] @relation("CommunityCoach")
+  wishlist          Wishlist[]
+  dfyPurchases      DFYPurchase[]
 
   @@index([email])
   @@index([role])
@@ -192,6 +194,7 @@ model Course {
   reviews         CourseReview[]
   analytics       CourseAnalytics?
   offers          OfferCourse[]
+  wishlist        Wishlist[]
 
   @@index([slug])
   @@index([categoryId])
@@ -400,6 +403,22 @@ model Certificate {
   @@unique([userId, courseId])
   @@index([certificateNumber])
   @@index([userId])
+}
+
+// ==================== WISHLIST ====================
+
+model Wishlist {
+  id        String   @id @default(cuid())
+  userId    String
+  courseId  String
+  createdAt DateTime @default(now())
+
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  course    Course   @relation(fields: [courseId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, courseId])
+  @@index([userId])
+  @@index([courseId])
 }
 
 // ==================== MESSAGING & COMMUNITY ====================
@@ -866,6 +885,23 @@ model LoginHistory {
   @@index([userId])
   @@index([createdAt])
   @@index([isFirstLogin])
+}
+
+// ==================== NICHE COACH ASSIGNMENT ====================
+
+model NicheCoach {
+  id          String   @id @default(cuid())
+  niche       String   @unique // e.g., "functional-medicine", "womens-health", "gut-health"
+  coachId     String
+  displayName String   // e.g., "Functional Medicine", "Women's Health"
+  description String?
+  isActive    Boolean  @default(true)
+
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([niche])
+  @@index([coachId])
 }
 
 // ==================== CATEGORY COMMUNITIES ====================
@@ -1712,9 +1748,10 @@ model DFYPurchase {
   status          PurchaseStatus @default(COMPLETED)
   
   createdAt       DateTime    @default(now())
-  
+
+  user            User        @relation(fields: [userId], references: [id], onDelete: Cascade)
   product         DFYProduct  @relation(fields: [productId], references: [id])
-  
+
   @@unique([userId, productId])
   @@index([userId])
   @@index([productId])

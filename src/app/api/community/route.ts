@@ -3,6 +3,26 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import prisma from "@/lib/prisma";
 
+// Banned keywords for auto-moderation (server-side check)
+const BANNED_KEYWORDS = [
+  "refund",
+  "scam",
+  "fraud",
+  "lawsuit",
+  "sue",
+  "money back",
+  "rip off",
+  "ripoff",
+  "waste of money",
+  "pyramid scheme",
+  "mlm",
+];
+
+function containsBannedContent(text: string): boolean {
+  const lowerText = text.toLowerCase();
+  return BANNED_KEYWORDS.some(keyword => lowerText.includes(keyword));
+}
+
 export async function POST(request: NextRequest) {
   try {
     const session = await getServerSession(authOptions);
@@ -14,12 +34,28 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const { title, content, communityId } = await request.json();
+    const { title, content, communityId, category } = await request.json();
 
     if (!title || !content) {
       return NextResponse.json(
         { success: false, error: "Title and content are required" },
         { status: 400 }
+      );
+    }
+
+    // Server-side moderation check
+    if (containsBannedContent(title) || containsBannedContent(content)) {
+      return NextResponse.json(
+        { success: false, error: "Your post contains content that violates community guidelines. Please review and try again." },
+        { status: 400 }
+      );
+    }
+
+    // Check if trying to post to admin-only category (introductions)
+    if (category === "introductions" && session.user.role !== "ADMIN") {
+      return NextResponse.json(
+        { success: false, error: "Only admins can create posts in Introduce Yourself. Please comment on the existing post instead!" },
+        { status: 403 }
       );
     }
 
@@ -63,6 +99,7 @@ export async function POST(request: NextRequest) {
         content,
         authorId: session.user.id,
         communityId: communityId || null,
+        category: category || null,
       },
     });
 

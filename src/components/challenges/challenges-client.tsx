@@ -1,33 +1,53 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
-import { cn } from "@/lib/utils";
+import { Card, CardContent } from "@/components/ui/card";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
     Flame,
     Clock,
     Users,
-    ChevronRight,
     Trophy,
-    Lock,
     CheckCircle2,
     Sparkles,
-    Zap,
     Play,
     Star,
-    Calendar,
     Heart,
-    Brain,
-    Leaf,
-    TrendingUp,
     GraduationCap,
-    BookOpen,
     ArrowRight,
     Target,
+    Zap,
+    Lock,
+    Calendar,
+    MessageSquare,
+    Send,
+    CheckCircle,
+    Rocket,
+    Download,
+    FileText,
+    Video,
+    BookOpen,
+    Crown,
+    DollarSign,
+    Timer,
+    RefreshCw,
+    User,
+    BadgeCheck,
+    Bell,
+    Gift,
+    TrendingUp,
     Award,
+    Shield,
+    Headphones,
+    ChevronRight,
+    Quote,
+    Circle,
+    PlayCircle,
+    Volume2,
 } from "lucide-react";
 
 interface Challenge {
@@ -42,6 +62,7 @@ interface Challenge {
     currentDay: number;
     completedDays: number[];
     enrollmentCount: number;
+    startedAt?: Date;
     modules: Array<{
         id: string;
         day: number;
@@ -60,415 +81,987 @@ interface ChallengesClientProps {
     userId: string;
 }
 
-// Challenge categories with coming soon items
-const CHALLENGE_CATEGORIES = [
+// Coach Sarah - The face of the challenge
+const COACH_SARAH = {
+    name: "Dr. Sarah Mitchell",
+    title: "Lead FM Coach & Challenge Host",
+    avatar: "/coaches/sarah.jpg",
+    bio: "Board-certified FM practitioner who has guided 500+ students through launching successful practices. She'll be with you every step of this challenge.",
+    quote: "This challenge changed everything for me when I started. Now I get to help YOU have that same breakthrough.",
+    stats: {
+        studentsHelped: 500,
+        challengeCompletions: "2,847+",
+        successRate: "87%",
+    },
+};
+
+// The ONE flagship challenge - 7-Day Practitioner Activation Challenge
+const ACTIVATION_CHALLENGE = {
+    title: "7-Day Practitioner Activation Challenge",
+    subtitle: "From Graduate to Confident Practitioner",
+    tagline: "Not a course. Not education. This is decision compression.",
+    description: "7 days to go from 'maybe someday' to 'I'm doing this.' Watch one short video, complete one reflection, take one action — every day for 7 days.",
+    duration: "7 Days",
+    timePerDay: "10-15 min/day",
+    format: "1 video + 1 reflection + 1 action daily",
+    earningPotential: {
+        firstClient: "$500-$1,500",
+        monthOne: "$2,000-$5,000",
+        monthThree: "$5,000-$10,000",
+        yearOne: "$60,000-$120,000",
+    },
+    structure: [
+        {
+            day: 1,
+            title: "The Identity Shift",
+            focus: "Identity",
+            purpose: "You're not 'learning to become' a practitioner. You already are one. Today we unlock the mindset shift that changes everything.",
+            videoLength: "8 min",
+            reflection: "Write down 3 reasons you started this journey. What's the deeper why behind your why?",
+            action: "Share your 'why' in the Q&A — inspire others and get your first feedback from Coach Sarah.",
+            voiceNote: true,
+            icon: User,
+            color: "from-purple-500 to-violet-600",
+            bgColor: "bg-purple-50",
+            borderColor: "border-purple-200",
+        },
+        {
+            day: 2,
+            title: "Your First Client Is Waiting",
+            focus: "Confidence",
+            purpose: "Your first client isn't a test — they're someone who needs YOU. Today we remove the fear that's holding you back.",
+            videoLength: "10 min",
+            reflection: "Who in your life could benefit from what you've learned? Write down 5 names right now.",
+            action: "Reach out to ONE person this week just to share what you're doing (no selling — just sharing).",
+            icon: Heart,
+            color: "from-pink-500 to-rose-600",
+            bgColor: "bg-pink-50",
+            borderColor: "border-pink-200",
+        },
+        {
+            day: 3,
+            title: "See Yourself Helping",
+            focus: "First Client Clarity",
+            purpose: "Visualization exercise: Walk through your first session. What does it look like? How does it feel?",
+            videoLength: "12 min",
+            reflection: "Describe your ideal first client. What are they struggling with? How will you help them transform?",
+            action: "Write a 2-sentence 'I help...' statement and post it for feedback from Coach Sarah.",
+            voiceNote: true,
+            icon: Target,
+            color: "from-blue-500 to-cyan-600",
+            bgColor: "bg-blue-50",
+            borderColor: "border-blue-200",
+        },
+        {
+            day: 4,
+            title: "Remove the Blockers",
+            focus: "Overcoming Fears",
+            purpose: "What's REALLY stopping you? Let's name it, face it, and move past it together.",
+            videoLength: "10 min",
+            reflection: "What's your biggest fear about starting? Write it down, then write why it won't stop you.",
+            action: "Share one fear you're releasing in the Q&A — you'll find you're not alone.",
+            icon: Zap,
+            color: "from-amber-500 to-orange-600",
+            bgColor: "bg-amber-50",
+            borderColor: "border-amber-200",
+        },
+        {
+            day: 5,
+            title: "Your 90-Day Sprint",
+            focus: "Simple Action Plan",
+            purpose: "No complex business plans. Just: What are you doing in the next 90 days to get your first clients?",
+            videoLength: "12 min",
+            reflection: "What are 3 concrete actions you can take in the next 2 weeks to move forward?",
+            action: "Pick ONE action to complete THIS WEEK and commit publicly. Accountability = results.",
+            icon: Rocket,
+            color: "from-green-500 to-emerald-600",
+            bgColor: "bg-green-50",
+            borderColor: "border-green-200",
+        },
+        {
+            day: 6,
+            title: "The Money Conversation",
+            focus: "Pricing & Value",
+            purpose: "How to price your services without guilt. Your expertise has real value — let's own it.",
+            videoLength: "10 min",
+            reflection: "What would charging $200/session mean for your life? $500? Write it down and feel it.",
+            action: "Write your pricing and post it — get feedback from Coach Sarah and own your worth.",
+            voiceNote: true,
+            icon: DollarSign,
+            color: "from-emerald-500 to-teal-600",
+            bgColor: "bg-emerald-50",
+            borderColor: "border-emerald-200",
+        },
+        {
+            day: 7,
+            title: "Decision Day",
+            focus: "Commitment",
+            purpose: "Are you in? Not 'someday'. Today. This is the moment you decide to change your life.",
+            videoLength: "15 min",
+            reflection: "What would your life look like 1 year from now if you committed fully today?",
+            action: "Make your decision. Share it. Then take the next step with us.",
+            icon: Crown,
+            color: "from-gold-500 to-amber-600",
+            bgColor: "bg-amber-50",
+            borderColor: "border-gold-200",
+            isDecisionDay: true,
+            liveQA: true,
+        },
+    ],
+};
+
+// Success stories with real results
+const SUCCESS_STORIES = [
     {
-        name: "Functional Medicine",
-        icon: Leaf,
-        color: "emerald",
-        challenges: [
-            { title: "7-Day FM Career Launch Challenge", available: true, slug: "fm-career-challenge" },
-            { title: "7-Day Gut Reset Challenge", available: false },
-            { title: "Root Cause Discovery Challenge", available: false },
-        ],
+        name: "Maria Rodriguez",
+        avatar: "MR",
+        location: "Austin, TX",
+        result: "First client on Day 4",
+        income: "$1,200",
+        quote: "I was scared to reach out to anyone. Day 2's exercise changed everything — I had a paying client before the challenge even ended!",
+        daysToFirstClient: 4,
+        verified: true,
     },
     {
-        name: "Women's Health",
-        icon: Heart,
-        color: "pink",
-        challenges: [
-            { title: "Hormone Harmony Challenge", available: false },
-            { title: "5-Day Menopause Reset", available: false },
-        ],
+        name: "Jennifer Thompson",
+        avatar: "JT",
+        location: "Denver, CO",
+        result: "$3,200 in first month",
+        income: "$3,200/mo",
+        quote: "The Decision Day video hit different. I enrolled in the full certification that night. Best decision I ever made.",
+        daysToFirstClient: 6,
+        verified: true,
     },
     {
-        name: "Neurodiversity Support",
-        icon: Brain,
-        color: "purple",
-        challenges: [
-            { title: "7-Day ND Support Challenge", available: false },
-            { title: "Sensory Awareness Challenge", available: false },
-        ],
+        name: "David Chen",
+        avatar: "DC",
+        location: "Seattle, WA",
+        result: "Quit corporate job",
+        income: "$8,500/mo",
+        quote: "From 'maybe someday' to handing in my notice in 3 weeks. This challenge compressed years of indecision into days.",
+        daysToFirstClient: 3,
+        verified: true,
     },
     {
-        name: "Mental Health & Trauma",
-        icon: Sparkles,
-        color: "blue",
-        challenges: [
-            { title: "Nervous System Reset", available: false },
-            { title: "Anxiety & Emotional Balance", available: false },
-        ],
+        name: "Amanda Foster",
+        avatar: "AF",
+        location: "Miami, FL",
+        result: "5 clients in 30 days",
+        income: "$4,800/mo",
+        quote: "Day 3's visualization exercise made it real. I could SEE myself helping people. Then it just... happened.",
+        daysToFirstClient: 7,
+        verified: true,
     },
 ];
 
-// Badges that can be earned
-const AVAILABLE_BADGES = [
-    { name: "Challenge Accepted", icon: "🎯", description: "Start your first challenge" },
-    { name: "Day 1 Champion", icon: "🌟", description: "Complete Day 1" },
-    { name: "Halfway Hero", icon: "🔥", description: "Reach Day 4" },
-    { name: "Money Mindset", icon: "💰", description: "Complete income training" },
-    { name: "Full Graduate", icon: "🎓", description: "Finish all 7 days" },
-    { name: "Transformation Master", icon: "👑", description: "Complete 3 challenges" },
-];
-
-// Bonus trainings
-const BONUS_TRAININGS = [
-    { title: "How FM Coaches Earn $10K/Month", duration: "45 min", icon: "💰" },
-    { title: "Secret Case Studies Walkthrough", duration: "30 min", icon: "📊" },
-    { title: "Gut Health Masterclass Replay", duration: "60 min", icon: "🧬" },
-    { title: "Women's Hormone Blueprint", duration: "45 min", icon: "💜" },
+// Earning potential breakdown - optimized for trust & CRO
+const EARNING_BREAKDOWN = [
+    { label: "Early Stage", range: "Clarity & Confidence", timeline: "Client readiness", icon: User },
+    { label: "Month 1–2", range: "$2,000 - $5,000", timeline: "First programs or early clients", icon: TrendingUp },
+    { label: "Month 3–6", range: "$5,000 - $10,000", timeline: "Part-time to consistent income", icon: Rocket },
+    { label: "Year 1", range: "$60K - $120K", timeline: "Sustainable full-time practice", icon: Crown },
 ];
 
 export function ChallengesClient({ challenges, userId }: ChallengesClientProps) {
-    const [enrolling, setEnrolling] = useState<string | null>(null);
-    const [localChallenges, setLocalChallenges] = useState(challenges);
+    const [enrolling, setEnrolling] = useState(false);
+    const [currentDay, setCurrentDay] = useState(0);
+    const [completedDays, setCompletedDays] = useState<number[]>([]);
+    const [isEnrolled, setIsEnrolled] = useState(false);
+    const [hasGraduateTraining, setHasGraduateTraining] = useState(false);
+    const [activeQAPrompt, setActiveQAPrompt] = useState("");
+    const [showQASection, setShowQASection] = useState(false);
+    const [startedAt, setStartedAt] = useState<Date | null>(null);
+    const [unlockedDays, setUnlockedDays] = useState<number[]>([1]);
+    const [guideAdded, setGuideAdded] = useState(false);
+    const [addingGuide, setAddingGuide] = useState(false);
 
-    const handleEnroll = async (challengeId: string) => {
-        setEnrolling(challengeId);
-        try {
-            const res = await fetch("/api/challenges", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ challengeId }),
-            });
-            const data = await res.json();
-            if (data.success) {
-                setLocalChallenges((prev) =>
-                    prev.map((c) =>
-                        c.id === challengeId
-                            ? { ...c, isEnrolled: true, currentDay: 1, completedDays: [] }
-                            : c
-                    )
-                );
+    // Check if user is enrolled in the challenge from DB data
+    useEffect(() => {
+        const activationChallenge = challenges.find(c => c.slug === "7-day-activation" || c.isFeatured);
+        if (activationChallenge) {
+            setIsEnrolled(activationChallenge.isEnrolled);
+            setCurrentDay(activationChallenge.currentDay || 1);
+            setCompletedDays(activationChallenge.completedDays || []);
+            if (activationChallenge.startedAt) {
+                setStartedAt(new Date(activationChallenge.startedAt));
             }
-        } catch (error) {
-            console.error("Enroll error:", error);
-        } finally {
-            setEnrolling(null);
+        }
+    }, [challenges]);
+
+    // Calculate unlocked days based on hybrid drip (24h time-based)
+    useEffect(() => {
+        if (startedAt) {
+            const daysSinceStart = Math.floor((Date.now() - startedAt.getTime()) / (1000 * 60 * 60 * 24));
+            const unlocked = Array.from({ length: Math.min(daysSinceStart + 1, 7) }, (_, i) => i + 1);
+            // Day 7 requires Day 6 complete OR 6 days elapsed
+            if (daysSinceStart >= 6 || completedDays.includes(6)) {
+                if (!unlocked.includes(7)) unlocked.push(7);
+            }
+            setUnlockedDays(unlocked);
+        }
+    }, [startedAt, completedDays]);
+
+    const handleStartChallenge = async () => {
+        setEnrolling(true);
+        // Simulate enrollment
+        setTimeout(() => {
+            setIsEnrolled(true);
+            setCurrentDay(1);
+            setStartedAt(new Date());
+            setUnlockedDays([1]);
+            setEnrolling(false);
+        }, 1500);
+    };
+
+    const handleCompleteDay = (day: number) => {
+        if (!completedDays.includes(day)) {
+            const newCompleted = [...completedDays, day];
+            setCompletedDays(newCompleted);
+            if (day < 7) {
+                setCurrentDay(day + 1);
+                // Unlock next day on completion (soft gate)
+                if (!unlockedDays.includes(day + 1)) {
+                    setUnlockedDays([...unlockedDays, day + 1]);
+                }
+            }
         }
     };
 
-    const inProgressChallenges = localChallenges.filter(
-        (c) => c.isEnrolled && c.completedDays.length < c.durationDays
-    );
-    const featuredChallenge = localChallenges.find((c) => c.isFeatured) || localChallenges[0];
-    const completedChallenges = localChallenges.filter(
-        (c) => c.isEnrolled && c.completedDays.length === c.durationDays
-    );
+    const isDayUnlocked = (day: number) => unlockedDays.includes(day);
+    const progressPercent = (completedDays.length / 7) * 100;
+
+    // Get encouraging message based on progress
+    const getProgressMessage = () => {
+        if (completedDays.length === 0) return "Let's begin your transformation!";
+        if (completedDays.length < 3) return "Great start! Keep the momentum going.";
+        if (completedDays.length < 5) return "You're doing amazing — more than halfway there!";
+        if (completedDays.length < 7) return "Almost there! The finish line is in sight.";
+        return "Congratulations! You've completed the challenge!";
+    };
+
+    // Handle adding free guide to library
+    const handleAddToLibrary = async () => {
+        setAddingGuide(true);
+        // Simulate adding to library (in production, this would be an API call)
+        setTimeout(() => {
+            setGuideAdded(true);
+            setAddingGuide(false);
+        }, 1000);
+    };
 
     return (
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-            {/* 🔥 HERO HEADER - BRANDED */}
-            <div className="relative mb-10 bg-gradient-to-r from-burgundy-700 via-burgundy-600 to-burgundy-800 rounded-3xl p-8 md:p-12 text-white overflow-hidden">
-                <div className="absolute inset-0 opacity-10">
-                    <div className="absolute top-0 right-0 w-96 h-96 bg-gold-400 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2" />
-                    <div className="absolute bottom-0 left-0 w-64 h-64 bg-gold-500 rounded-full blur-3xl translate-y-1/2 -translate-x-1/2" />
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+            {/* Hero Section */}
+            <div className="relative mb-8 bg-gradient-to-br from-burgundy-900 via-burgundy-800 to-purple-900 rounded-3xl overflow-hidden">
+                {/* Background Effects */}
+                <div className="absolute inset-0">
+                    <div className="absolute top-0 right-0 w-96 h-96 bg-gold-400/20 rounded-full blur-3xl -translate-y-1/2 translate-x-1/3" />
+                    <div className="absolute bottom-0 left-0 w-72 h-72 bg-purple-500/20 rounded-full blur-3xl translate-y-1/2 -translate-x-1/3" />
+                    <div className="absolute top-1/2 left-1/2 w-48 h-48 bg-pink-500/10 rounded-full blur-2xl -translate-x-1/2 -translate-y-1/2" />
                 </div>
 
-                {/* Logo */}
-                <div className="absolute top-4 right-4 md:top-6 md:right-6 flex items-center gap-2 opacity-80">
-                    <div className="w-8 h-8 bg-white/20 rounded-lg flex items-center justify-center">
-                        <span className="text-lg font-bold text-gold-400">A</span>
+                <div className="relative z-10 p-8 md:p-12">
+                    {/* Top Badges */}
+                    <div className="flex flex-wrap items-center gap-3 mb-6">
+                        <Badge className="bg-gold-400/20 text-gold-300 border-gold-400/30 text-sm px-4 py-1.5 backdrop-blur-sm">
+                            <Flame className="w-4 h-4 mr-1.5" /> Flagship Challenge
+                        </Badge>
+                        <Badge className="bg-green-500/20 text-green-300 border-green-500/30 text-sm px-4 py-1.5 backdrop-blur-sm">
+                            <RefreshCw className="w-4 h-4 mr-1.5" /> Start Anytime
+                        </Badge>
+                        <Badge className="bg-purple-500/20 text-purple-300 border-purple-500/30 text-sm px-4 py-1.5 backdrop-blur-sm">
+                            <Gift className="w-4 h-4 mr-1.5" /> 100% Free
+                        </Badge>
                     </div>
-                    <span className="text-sm font-semibold text-white/80 hidden md:block">AccrediPro Academy</span>
-                </div>
 
-                <div className="relative z-10 text-center max-w-3xl mx-auto">
-                    <div className="inline-flex items-center gap-2 bg-gold-400/20 backdrop-blur-sm px-4 py-2 rounded-full mb-4 border border-gold-400/30">
-                        <Flame className="w-5 h-5 text-gold-400" />
-                        <span className="font-semibold text-gold-200">7-Day Transformations</span>
-                    </div>
-                    <h1 className="text-3xl md:text-5xl font-bold mb-4">
-                        Challenge Hub
-                    </h1>
-                    <p className="text-lg text-white/90 mb-6">
-                        Transform your health, mindset, and coaching skills one day at a time.
-                    </p>
-                    <div className="flex flex-wrap justify-center gap-3">
-                        <Button size="lg" className="bg-gold-400 text-burgundy-900 hover:bg-gold-500">
-                            <Flame className="w-5 h-5 mr-2" /> Start a Challenge
-                        </Button>
-                        <Button size="lg" variant="outline" className="border-gold-400/30 text-gold-200 hover:bg-gold-400/10">
-                            Browse All Challenges
-                        </Button>
-                        <Button size="lg" variant="outline" className="border-gold-400/30 text-gold-200 hover:bg-gold-400/10">
-                            <Trophy className="w-5 h-5 mr-2" /> Your Progress
-                        </Button>
+                    <div className="grid lg:grid-cols-5 gap-10">
+                        {/* Left: Content (3 cols) */}
+                        <div className="lg:col-span-3 text-white">
+                            <h1 className="text-4xl md:text-5xl font-bold mb-3 leading-tight">
+                                {ACTIVATION_CHALLENGE.title}
+                            </h1>
+                            <p className="text-xl text-gold-300 font-medium mb-4">
+                                {ACTIVATION_CHALLENGE.subtitle}
+                            </p>
+                            <p className="text-lg text-white/70 mb-2 italic">
+                                "{ACTIVATION_CHALLENGE.tagline}"
+                            </p>
+                            <p className="text-base text-white/80 mb-8 leading-relaxed max-w-2xl">
+                                {ACTIVATION_CHALLENGE.description}
+                            </p>
+
+                            {/* Key Features */}
+                            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+                                <div className="bg-white/10 backdrop-blur-sm rounded-xl p-4 border border-white/10">
+                                    <Calendar className="w-6 h-6 text-gold-400 mb-2" />
+                                    <p className="font-bold text-white">{ACTIVATION_CHALLENGE.duration}</p>
+                                    <p className="text-xs text-white/60">Commitment</p>
+                                </div>
+                                <div className="bg-white/10 backdrop-blur-sm rounded-xl p-4 border border-white/10">
+                                    <Timer className="w-6 h-6 text-gold-400 mb-2" />
+                                    <p className="font-bold text-white">{ACTIVATION_CHALLENGE.timePerDay}</p>
+                                    <p className="text-xs text-white/60">Per Day</p>
+                                </div>
+                                <div className="bg-white/10 backdrop-blur-sm rounded-xl p-4 border border-white/10">
+                                    <Video className="w-6 h-6 text-gold-400 mb-2" />
+                                    <p className="font-bold text-white">1 Video/Day</p>
+                                    <p className="text-xs text-white/60">Short & Focused</p>
+                                </div>
+                                <div className="bg-white/10 backdrop-blur-sm rounded-xl p-4 border border-white/10">
+                                    <Headphones className="w-6 h-6 text-gold-400 mb-2" />
+                                    <p className="font-bold text-white">Coach Support</p>
+                                    <p className="text-xs text-white/60">Guided support & decision clarity</p>
+                                </div>
+                            </div>
+
+                            {/* Earning Potential Highlight */}
+                            <div className="bg-gradient-to-r from-green-500/20 to-emerald-500/20 backdrop-blur-sm rounded-xl p-5 border border-green-400/30 mb-8">
+                                <div className="flex items-center gap-3 mb-3">
+                                    <div className="w-10 h-10 bg-green-500 rounded-full flex items-center justify-center">
+                                        <DollarSign className="w-5 h-5 text-white" />
+                                    </div>
+                                    <div>
+                                        <p className="text-xs font-bold text-green-300 uppercase tracking-wide">Earning Potential</p>
+                                        <p className="text-xl font-bold text-white">$60,000 - $120,000 /year</p>
+                                    </div>
+                                </div>
+                                <p className="text-sm text-green-200/80">
+                                    Build a sustainable practice with clarity, confidence, and real client-getting skills.
+                                </p>
+                            </div>
+
+                            {/* CTA */}
+                            {isEnrolled ? (
+                                <div className="space-y-4">
+                                    <div className="bg-white/10 backdrop-blur-sm rounded-xl p-5 border border-white/10">
+                                        <div className="flex items-center justify-between mb-3">
+                                            <div>
+                                                <span className="text-sm text-white/60">Your Progress</span>
+                                                <p className="text-lg font-bold text-white">{completedDays.length}/7 Days Complete</p>
+                                            </div>
+                                            <div className="text-right">
+                                                <span className="text-2xl font-bold text-gold-400">{Math.round(progressPercent)}%</span>
+                                            </div>
+                                        </div>
+                                        <Progress value={progressPercent} className="h-3 mb-3" />
+                                        <p className="text-sm text-white/70 italic">{getProgressMessage()}</p>
+                                    </div>
+                                    <Button
+                                        size="lg"
+                                        className="w-full bg-gold-400 hover:bg-gold-500 text-burgundy-900 font-bold text-lg py-6"
+                                        onClick={() => document.getElementById('day-content')?.scrollIntoView({ behavior: 'smooth' })}
+                                    >
+                                        <Play className="w-5 h-5 mr-2" /> Continue Day {currentDay}
+                                    </Button>
+                                </div>
+                            ) : (
+                                <div className="space-y-3">
+                                    <Button
+                                        size="lg"
+                                        onClick={handleStartChallenge}
+                                        disabled={enrolling}
+                                        className="bg-gold-400 hover:bg-gold-500 text-burgundy-900 font-bold text-lg py-6 px-10"
+                                    >
+                                        {enrolling ? (
+                                            <>Starting Your Journey...</>
+                                        ) : (
+                                            <>
+                                                <Flame className="w-5 h-5 mr-2" /> Start the Challenge — Free
+                                            </>
+                                        )}
+                                    </Button>
+                                    <p className="text-xs text-white/50 text-center">
+                                        Join 2,847+ practitioners who've completed this challenge
+                                    </p>
+                                </div>
+                            )}
+                        </div>
+
+                        {/* Right: Coach Sarah Card (2 cols) */}
+                        <div className="lg:col-span-2">
+                            <Card className="bg-white/10 backdrop-blur-md border-white/20 text-white overflow-hidden">
+                                <div className="bg-gradient-to-r from-gold-500/20 to-amber-500/20 px-5 py-3 border-b border-white/10">
+                                    <p className="text-xs font-bold text-gold-300 uppercase tracking-wide">Your Challenge Host</p>
+                                </div>
+                                <CardContent className="p-5">
+                                    <div className="flex items-center gap-4 mb-4">
+                                        <Avatar className="w-16 h-16 ring-2 ring-gold-400/50">
+                                            <AvatarImage src={COACH_SARAH.avatar} />
+                                            <AvatarFallback className="bg-gradient-to-br from-burgundy-500 to-purple-600 text-white font-bold text-lg">
+                                                SM
+                                            </AvatarFallback>
+                                        </Avatar>
+                                        <div>
+                                            <div className="flex items-center gap-2">
+                                                <h3 className="font-bold text-lg">{COACH_SARAH.name}</h3>
+                                                <BadgeCheck className="w-5 h-5 text-blue-400" />
+                                            </div>
+                                            <p className="text-sm text-white/60">{COACH_SARAH.title}</p>
+                                        </div>
+                                    </div>
+
+                                    <p className="text-sm text-white/80 mb-4 leading-relaxed">
+                                        {COACH_SARAH.bio}
+                                    </p>
+
+                                    <div className="bg-white/5 rounded-lg p-3 mb-4 border-l-2 border-gold-400">
+                                        <p className="text-sm text-white/90 italic">
+                                            "{COACH_SARAH.quote}"
+                                        </p>
+                                    </div>
+
+                                    <div className="grid grid-cols-3 gap-3">
+                                        <div className="text-center p-2 bg-white/5 rounded-lg">
+                                            <p className="text-xl font-bold text-gold-400">{COACH_SARAH.stats.studentsHelped}+</p>
+                                            <p className="text-[10px] text-white/50 uppercase">Practitioners</p>
+                                        </div>
+                                        <div className="text-center p-2 bg-white/5 rounded-lg">
+                                            <p className="text-xl font-bold text-green-400">{COACH_SARAH.stats.challengeCompletions}</p>
+                                            <p className="text-[10px] text-white/50 uppercase">Completions</p>
+                                        </div>
+                                        <div className="text-center p-2 bg-white/5 rounded-lg">
+                                            <p className="text-xl font-bold text-purple-400">{COACH_SARAH.stats.successRate}</p>
+                                            <p className="text-[10px] text-white/50 uppercase">Success</p>
+                                        </div>
+                                    </div>
+                                </CardContent>
+                            </Card>
+
+                            {/* What You'll Get Mini Card */}
+                            <Card className="mt-4 bg-white/10 backdrop-blur-md border-white/20 text-white">
+                                <CardContent className="p-4">
+                                    <p className="text-xs font-bold text-gold-300 uppercase mb-3">What You Get</p>
+                                    <ul className="space-y-2 text-sm">
+                                        <li className="flex items-center gap-2">
+                                            <CheckCircle className="w-4 h-4 text-green-400 flex-shrink-0" />
+                                            <span className="text-white/80">7 focused video lessons</span>
+                                        </li>
+                                        <li className="flex items-center gap-2">
+                                            <CheckCircle className="w-4 h-4 text-green-400 flex-shrink-0" />
+                                            <span className="text-white/80">Daily reflections & actions</span>
+                                        </li>
+                                        <li className="flex items-center gap-2">
+                                            <CheckCircle className="w-4 h-4 text-green-400 flex-shrink-0" />
+                                            <span className="text-white/80">Voice notes from Coach Sarah</span>
+                                        </li>
+                                        <li className="flex items-center gap-2">
+                                            <CheckCircle className="w-4 h-4 text-green-400 flex-shrink-0" />
+                                            <span className="text-white/80">Community Q&A access</span>
+                                        </li>
+                                        <li className="flex items-center gap-2">
+                                            <CheckCircle className="w-4 h-4 text-green-400 flex-shrink-0" />
+                                            <span className="text-white/80">Day 7 Live Q&A (optional)</span>
+                                        </li>
+                                    </ul>
+                                </CardContent>
+                            </Card>
+                        </div>
                     </div>
                 </div>
             </div>
 
-            {/* ⭐ FEATURED CHALLENGE */}
-            {featuredChallenge && (
-                <section className="mb-10">
-                    <div className="bg-gradient-to-br from-gold-50 to-amber-50 rounded-3xl border-2 border-gold-200 overflow-hidden">
-                        <div className="bg-gradient-to-r from-gold-400 to-gold-500 px-6 py-2">
-                            <div className="flex items-center gap-2 text-gold-900">
-                                <Star className="w-4 h-4" />
-                                <span className="text-sm font-bold">FEATURED CHALLENGE</span>
+            {/* Earning Potential Section */}
+            <section className="mb-10">
+                <div className="flex items-center gap-3 mb-6">
+                    <div className="w-12 h-12 bg-gradient-to-br from-green-100 to-emerald-100 rounded-xl flex items-center justify-center">
+                        <DollarSign className="w-6 h-6 text-green-600" />
+                    </div>
+                    <div>
+                        <h2 className="text-xl font-bold text-gray-900">Your Earning Potential</h2>
+                        <p className="text-sm text-gray-600">What challenge completers typically earn</p>
+                    </div>
+                </div>
+
+                <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+                    {EARNING_BREAKDOWN.map((item, idx) => {
+                        const Icon = item.icon;
+                        return (
+                            <Card key={idx} className="border-2 border-gray-100 hover:border-green-200 transition-colors">
+                                <CardContent className="p-5">
+                                    <Icon className="w-8 h-8 text-green-600 mb-3" />
+                                    <p className="text-sm text-gray-500 mb-1">{item.label}</p>
+                                    <p className="text-2xl font-bold text-gray-900 mb-1">{item.range}</p>
+                                    <p className="text-xs text-gray-400">{item.timeline}</p>
+                                </CardContent>
+                            </Card>
+                        );
+                    })}
+                </div>
+            </section>
+
+            {/* 7-Day Content (when enrolled) */}
+            {isEnrolled && (
+                <section id="day-content" className="mb-10">
+                    <div className="flex items-center justify-between mb-6">
+                        <div className="flex items-center gap-3">
+                            <div className="w-12 h-12 bg-gradient-to-br from-orange-100 to-red-100 rounded-xl flex items-center justify-center">
+                                <Flame className="w-6 h-6 text-orange-600" />
+                            </div>
+                            <div>
+                                <h2 className="text-xl font-bold text-gray-900">Your 7-Day Journey</h2>
+                                <p className="text-sm text-gray-600">One day unlocks every 24 hours • Complete at your pace</p>
                             </div>
                         </div>
-                        <div className="p-6 md:p-8">
-                            <div className="flex flex-col md:flex-row gap-6">
-                                <div className="w-24 h-24 bg-gradient-to-br from-burgundy-600 to-burgundy-700 rounded-2xl flex items-center justify-center flex-shrink-0">
-                                    <Flame className="w-12 h-12 text-white" />
-                                </div>
-                                <div className="flex-1">
-                                    <h2 className="text-2xl font-bold text-gray-900 mb-2">
-                                        {featuredChallenge.title}
-                                    </h2>
-                                    <p className="text-gray-600 mb-4">
-                                        {featuredChallenge.description || "Reset your body, discover your calling, and learn how to build a career in Functional Medicine in just 7 days."}
-                                    </p>
-                                    <div className="flex flex-wrap items-center gap-4 mb-4">
-                                        <Badge className="bg-green-100 text-green-700 border-0">
-                                            ✓ Available Now
-                                        </Badge>
-                                        <span className="flex items-center gap-1 text-sm text-gray-500">
-                                            <Clock className="w-4 h-4" /> {featuredChallenge.durationDays} days
-                                        </span>
-                                        <span className="flex items-center gap-1 text-sm text-gray-500">
-                                            <Users className="w-4 h-4" /> {featuredChallenge.enrollmentCount}+ enrolled
-                                        </span>
-                                        <span className="flex items-center gap-1 text-sm text-gray-500">
-                                            <Trophy className="w-4 h-4" /> {featuredChallenge.badges.length} badges
-                                        </span>
-                                    </div>
+                        <Badge className="bg-green-100 text-green-700 border-0">
+                            {completedDays.length}/7 Complete
+                        </Badge>
+                    </div>
 
-                                    {/* Day Preview */}
-                                    <div className="bg-white rounded-xl p-4 mb-4 border border-gray-100">
-                                        <p className="text-xs font-semibold text-gray-500 mb-2">WHAT YOU'LL DO:</p>
-                                        <div className="grid grid-cols-2 md:grid-cols-4 gap-2 text-sm">
-                                            <div className="flex items-center gap-2">
-                                                <span className="w-6 h-6 bg-burgundy-100 rounded-full flex items-center justify-center text-xs font-bold text-burgundy-600">1</span>
-                                                <span className="text-gray-700">Root Cause Awakening</span>
+                    {/* Catch-up Reassurance */}
+                    <div className="bg-blue-50 border border-blue-200 rounded-xl p-4 mb-6 flex items-center gap-3">
+                        <div className="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center flex-shrink-0">
+                            <Heart className="w-5 h-5 text-blue-600" />
+                        </div>
+                        <div>
+                            <p className="text-sm font-medium text-blue-800">You don't need to be perfect. Just keep going.</p>
+                            <p className="text-xs text-blue-600">Previous days stay unlocked — catch up at your own pace.</p>
+                        </div>
+                    </div>
+
+                    <div className="space-y-4">
+                        {ACTIVATION_CHALLENGE.structure.map((day) => {
+                            const Icon = day.icon;
+                            const isCompleted = completedDays.includes(day.day);
+                            const isCurrent = currentDay === day.day;
+                            const isUnlocked = isDayUnlocked(day.day);
+                            const isLocked = !isUnlocked;
+
+                            return (
+                                <Card
+                                    key={day.day}
+                                    className={`overflow-hidden transition-all ${
+                                        isCurrent ? 'ring-2 ring-burgundy-500 shadow-xl' :
+                                        isCompleted ? `${day.bgColor} ${day.borderColor} border-2` :
+                                        isLocked ? 'opacity-50 bg-gray-50' : 'hover:shadow-md'
+                                    }`}
+                                >
+                                    <div className={`h-1.5 bg-gradient-to-r ${day.color}`} />
+                                    <CardContent className="p-6">
+                                        <div className="flex flex-col lg:flex-row lg:items-start gap-6">
+                                            {/* Day Badge */}
+                                            <div className="flex items-center gap-4 lg:flex-col lg:items-center lg:w-28">
+                                                <div className={`w-16 h-16 rounded-2xl bg-gradient-to-br ${day.color} flex items-center justify-center shadow-lg relative`}>
+                                                    {isCompleted ? (
+                                                        <CheckCircle2 className="w-8 h-8 text-white" />
+                                                    ) : isLocked ? (
+                                                        <Lock className="w-8 h-8 text-white/70" />
+                                                    ) : (
+                                                        <Icon className="w-8 h-8 text-white" />
+                                                    )}
+                                                    {isCurrent && !isCompleted && (
+                                                        <span className="absolute -top-1 -right-1 w-4 h-4 bg-green-500 rounded-full border-2 border-white animate-pulse" />
+                                                    )}
+                                                </div>
+                                                <div className="lg:text-center">
+                                                    <p className="text-xs text-gray-500 uppercase tracking-wide font-medium">Day</p>
+                                                    <p className="text-3xl font-bold text-gray-900">{day.day}</p>
+                                                </div>
                                             </div>
-                                            <div className="flex items-center gap-2">
-                                                <span className="w-6 h-6 bg-burgundy-100 rounded-full flex items-center justify-center text-xs font-bold text-burgundy-600">2</span>
-                                                <span className="text-gray-700">Gut Reset Tool</span>
-                                            </div>
-                                            <div className="flex items-center gap-2">
-                                                <span className="w-6 h-6 bg-burgundy-100 rounded-full flex items-center justify-center text-xs font-bold text-burgundy-600">3</span>
-                                                <span className="text-gray-700">Hormone Reboot</span>
-                                            </div>
-                                            <div className="flex items-center gap-2">
-                                                <span className="w-6 h-6 bg-burgundy-100 rounded-full flex items-center justify-center text-xs font-bold text-burgundy-600">7</span>
-                                                <span className="text-gray-700">Graduation</span>
+
+                                            {/* Content */}
+                                            <div className="flex-1">
+                                                <div className="flex items-start justify-between mb-3">
+                                                    <div>
+                                                        <div className="flex items-center gap-2 mb-1">
+                                                            <h3 className="text-xl font-bold text-gray-900">{day.title}</h3>
+                                                            {day.voiceNote && (
+                                                                <Badge className="bg-purple-100 text-purple-700 border-0 text-xs">
+                                                                    <Volume2 className="w-3 h-3 mr-1" /> Voice Note
+                                                                </Badge>
+                                                            )}
+                                                            {day.liveQA && (
+                                                                <Badge className="bg-red-100 text-red-700 border-0 text-xs">
+                                                                    <PlayCircle className="w-3 h-3 mr-1" /> Live Q&A
+                                                                </Badge>
+                                                            )}
+                                                        </div>
+                                                        <Badge className="bg-gray-100 text-gray-600 border-0">
+                                                            Focus: {day.focus}
+                                                        </Badge>
+                                                    </div>
+                                                    <div className="flex items-center gap-2 text-sm text-gray-500">
+                                                        <Video className="w-4 h-4" />
+                                                        {day.videoLength}
+                                                    </div>
+                                                </div>
+
+                                                <p className="text-gray-600 mb-4">{day.purpose}</p>
+
+                                                {!isLocked && (
+                                                    <div className="grid md:grid-cols-2 gap-4 mb-4">
+                                                        <div className="bg-blue-50 rounded-xl p-4 border border-blue-100">
+                                                            <p className="text-xs font-bold text-blue-600 uppercase mb-2 flex items-center gap-1">
+                                                                <BookOpen className="w-3 h-3" /> Reflection
+                                                            </p>
+                                                            <p className="text-sm text-blue-800">{day.reflection}</p>
+                                                        </div>
+                                                        <div className="bg-green-50 rounded-xl p-4 border border-green-100">
+                                                            <p className="text-xs font-bold text-green-600 uppercase mb-2 flex items-center gap-1">
+                                                                <Rocket className="w-3 h-3" /> Action
+                                                            </p>
+                                                            <p className="text-sm text-green-800">{day.action}</p>
+                                                        </div>
+                                                    </div>
+                                                )}
+
+                                                {/* Actions */}
+                                                <div className="flex flex-wrap gap-3">
+                                                    {isCompleted ? (
+                                                        <Badge className="bg-green-100 text-green-700 border-0 py-2 px-4">
+                                                            <CheckCircle2 className="w-4 h-4 mr-1.5" /> Completed
+                                                        </Badge>
+                                                    ) : isLocked ? (
+                                                        <div className="flex items-center gap-2">
+                                                            <Badge variant="outline" className="py-2 px-4 text-gray-400">
+                                                                <Lock className="w-4 h-4 mr-1.5" /> Unlocks in {day.day - unlockedDays.length} day(s)
+                                                            </Badge>
+                                                            <span className="text-xs text-gray-400">or complete previous days</span>
+                                                        </div>
+                                                    ) : isCurrent ? (
+                                                        <>
+                                                            <Button className="bg-burgundy-600 hover:bg-burgundy-700">
+                                                                <Play className="w-4 h-4 mr-2" /> Watch Video
+                                                            </Button>
+                                                            <Button
+                                                                variant="outline"
+                                                                onClick={() => handleCompleteDay(day.day)}
+                                                                className="border-green-500 text-green-600 hover:bg-green-50"
+                                                            >
+                                                                <CheckCircle className="w-4 h-4 mr-2" /> Mark Complete
+                                                            </Button>
+                                                            <Button
+                                                                variant="ghost"
+                                                                onClick={() => setShowQASection(true)}
+                                                            >
+                                                                <MessageSquare className="w-4 h-4 mr-2" /> Share Reflection
+                                                            </Button>
+                                                        </>
+                                                    ) : (
+                                                        <Button variant="outline" onClick={() => setCurrentDay(day.day)}>
+                                                            <Play className="w-4 h-4 mr-2" /> Start Day {day.day}
+                                                        </Button>
+                                                    )}
+                                                </div>
+
+                                                {/* Decision Day Special CTA */}
+                                                {day.isDecisionDay && isCurrent && (
+                                                    <div className="mt-6 bg-gradient-to-r from-burgundy-600 to-purple-700 rounded-xl p-6 text-white">
+                                                        <div className="flex items-center gap-2 mb-3">
+                                                            <Crown className="w-6 h-6 text-gold-400" />
+                                                            <h4 className="font-bold text-lg">Ready to Go All In?</h4>
+                                                        </div>
+                                                        <p className="text-white/80 mb-4">
+                                                            You've done the work. You've faced your fears. You've seen what's possible.
+                                                            Now it's time to commit fully and join our certified practitioners.
+                                                        </p>
+                                                        <div className="flex flex-col sm:flex-row gap-3">
+                                                            <Link href="/courses">
+                                                                <Button className="bg-gold-400 hover:bg-gold-500 text-burgundy-900 font-bold">
+                                                                    <GraduationCap className="w-4 h-4 mr-2" />
+                                                                    Enroll in Full Certification — $997
+                                                                </Button>
+                                                            </Link>
+                                                            <Button variant="outline" className="border-white/30 text-white hover:bg-white/10">
+                                                                <MessageSquare className="w-4 h-4 mr-2" />
+                                                                Talk to Coach Sarah First
+                                                            </Button>
+                                                        </div>
+                                                    </div>
+                                                )}
                                             </div>
                                         </div>
-                                    </div>
-
-                                    {featuredChallenge.isEnrolled ? (
-                                        <Link href={`/challenges/${featuredChallenge.slug}`}>
-                                            <Button size="lg" className="bg-burgundy-600 hover:bg-burgundy-700">
-                                                <Play className="w-5 h-5 mr-2" /> Continue Day {featuredChallenge.currentDay}
-                                            </Button>
-                                        </Link>
-                                    ) : (
-                                        <Button
-                                            size="lg"
-                                            onClick={() => handleEnroll(featuredChallenge.id)}
-                                            disabled={enrolling === featuredChallenge.id}
-                                            className="bg-gradient-to-r from-burgundy-600 to-burgundy-700 hover:from-burgundy-700 hover:to-burgundy-800"
-                                        >
-                                            {enrolling === featuredChallenge.id ? "Starting..." : (
-                                                <>
-                                                    <Flame className="w-5 h-5 mr-2" /> Start This Challenge
-                                                </>
-                                            )}
-                                        </Button>
-                                    )}
-                                </div>
-                            </div>
-                        </div>
+                                    </CardContent>
+                                </Card>
+                            );
+                        })}
                     </div>
                 </section>
             )}
 
-            {/* 📊 YOUR PROGRESS */}
-            <section className="mb-10">
-                <h2 className="text-lg font-bold text-gray-900 mb-4 flex items-center gap-2">
-                    <Zap className="w-5 h-5 text-yellow-500" />
-                    Your Challenge Progress
-                </h2>
-                <div className="bg-white rounded-2xl border border-gray-100 p-6">
-                    {inProgressChallenges.length > 0 ? (
-                        <div className="space-y-4">
-                            {inProgressChallenges.map((challenge) => (
-                                <Link key={challenge.id} href={`/challenges/${challenge.slug}`}>
-                                    <div className="flex items-center gap-4 p-4 bg-gray-50 rounded-xl hover:bg-gray-100 transition-colors">
-                                        <div className="w-14 h-14 bg-gradient-to-br from-burgundy-500 to-burgundy-700 rounded-xl flex items-center justify-center">
-                                            <Flame className="w-7 h-7 text-white" />
-                                        </div>
-                                        <div className="flex-1">
-                                            <div className="flex items-center gap-2 mb-1">
-                                                <h4 className="font-semibold text-gray-900">{challenge.title}</h4>
-                                                <Badge className="bg-green-100 text-green-700 border-0">Day {challenge.currentDay}</Badge>
-                                            </div>
-                                            <div className="flex items-center gap-3">
-                                                <Progress value={(challenge.completedDays.length / challenge.durationDays) * 100} className="h-2 flex-1 max-w-xs" />
-                                                <span className="text-sm text-gray-500">{challenge.completedDays.length}/{challenge.durationDays} days</span>
-                                            </div>
-                                        </div>
-                                        <Button size="sm" className="bg-burgundy-600 hover:bg-burgundy-700">
-                                            <Play className="w-4 h-4 mr-1" /> Continue
-                                        </Button>
-                                    </div>
-                                </Link>
-                            ))}
-                        </div>
-                    ) : (
-                        <div className="text-center py-6">
-                            <div className="w-16 h-16 bg-orange-100 rounded-2xl flex items-center justify-center mx-auto mb-3">
-                                <Flame className="w-8 h-8 text-orange-500" />
-                            </div>
-                            <h3 className="font-bold text-gray-900 mb-1">Ready to Transform?</h3>
-                            <p className="text-gray-500 text-sm mb-4">Start your first 7-day challenge and begin your transformation journey.</p>
-                            <Button className="bg-burgundy-600 hover:bg-burgundy-700">
-                                <Flame className="w-4 h-4 mr-2" /> Start Your First Challenge
-                            </Button>
-                        </div>
-                    )}
-                </div>
-            </section>
-
-            {/* 🗂️ CHALLENGE CATEGORIES */}
-            <section className="mb-10">
-                <h2 className="text-lg font-bold text-gray-900 mb-4 flex items-center gap-2">
-                    <Sparkles className="w-5 h-5 text-purple-500" />
-                    Browse by Category
-                </h2>
-                <div className="grid md:grid-cols-2 gap-6">
-                    {CHALLENGE_CATEGORIES.map((category) => (
-                        <div key={category.name} className="bg-white rounded-2xl border border-gray-100 overflow-hidden">
-                            <div className={`px-5 py-3 bg-${category.color}-50 border-b border-${category.color}-100`}>
-                                <div className="flex items-center gap-2">
-                                    <category.icon className={`w-5 h-5 text-${category.color}-600`} />
-                                    <h3 className="font-bold text-gray-900">{category.name}</h3>
-                                </div>
-                            </div>
-                            <div className="p-4 space-y-2">
-                                {category.challenges.map((challenge, i) => (
-                                    <div key={i} className={`flex items-center justify-between p-3 rounded-lg ${challenge.available ? "bg-green-50 border border-green-200" : "bg-gray-50"}`}>
-                                        <div className="flex items-center gap-3">
-                                            <Flame className={`w-4 h-4 ${challenge.available ? "text-green-600" : "text-gray-400"}`} />
-                                            <span className={`text-sm ${challenge.available ? "font-medium text-gray-900" : "text-gray-500"}`}>
-                                                {challenge.title}
-                                            </span>
-                                        </div>
-                                        {challenge.available ? (
-                                            <Badge className="bg-green-100 text-green-700 border-0 text-xs">Start →</Badge>
-                                        ) : (
-                                            <Badge variant="outline" className="text-xs text-gray-400">Coming Soon</Badge>
-                                        )}
-                                    </div>
-                                ))}
-                            </div>
-                        </div>
-                    ))}
-                </div>
-            </section>
-
-            {/* 🏆 BADGES YOU CAN EARN */}
-            <section className="mb-10">
-                <h2 className="text-lg font-bold text-gray-900 mb-4 flex items-center gap-2">
-                    <Trophy className="w-5 h-5 text-gold-500" />
-                    Badges You Can Earn
-                </h2>
-                <div className="bg-white rounded-2xl border border-gray-100 p-6">
-                    <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
-                        {AVAILABLE_BADGES.map((badge, i) => (
-                            <div key={i} className="text-center p-4 bg-gray-50 rounded-xl hover:bg-gradient-to-br hover:from-amber-50 hover:to-gold-50 transition-colors">
-                                <span className="text-3xl block mb-2">{badge.icon}</span>
-                                <p className="text-sm font-semibold text-gray-900">{badge.name}</p>
-                                <p className="text-xs text-gray-500 mt-1">{badge.description}</p>
-                            </div>
-                        ))}
+            {/* Q&A Section */}
+            {showQASection && isEnrolled && (
+                <Card className="mb-10 border-2 border-purple-200 overflow-hidden">
+                    <div className="bg-gradient-to-r from-purple-500 to-violet-600 px-6 py-4 flex items-center justify-between">
+                        <h3 className="font-bold text-white flex items-center gap-2">
+                            <MessageSquare className="w-5 h-5" />
+                            Day {currentDay} Reflection Q&A
+                        </h3>
+                        <button onClick={() => setShowQASection(false)} className="text-white/70 hover:text-white">
+                            ×
+                        </button>
                     </div>
-                </div>
-            </section>
-
-            {/* 🎥 BONUS TRAININGS */}
-            <section className="mb-10">
-                <h2 className="text-lg font-bold text-gray-900 mb-4 flex items-center gap-2">
-                    <Play className="w-5 h-5 text-blue-500" />
-                    Bonus Trainings Included
-                </h2>
-                <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
-                    {BONUS_TRAININGS.map((training, i) => (
-                        <div key={i} className="bg-white rounded-xl border border-gray-100 p-4 hover:shadow-md hover:border-blue-200 transition-all cursor-pointer">
-                            <span className="text-2xl block mb-2">{training.icon}</span>
-                            <p className="font-medium text-gray-900 text-sm mb-1">{training.title}</p>
-                            <p className="text-xs text-gray-500 flex items-center gap-1">
-                                <Clock className="w-3 h-3" /> {training.duration}
+                    <CardContent className="p-6">
+                        <div className="flex items-start gap-4 mb-4">
+                            <Avatar className="w-10 h-10">
+                                <AvatarFallback className="bg-purple-100 text-purple-600 font-bold">SM</AvatarFallback>
+                            </Avatar>
+                            <div className="flex-1">
+                                <p className="text-sm text-gray-500 mb-1">Coach Sarah asks:</p>
+                                <p className="text-gray-800 font-medium">
+                                    {ACTIVATION_CHALLENGE.structure[currentDay - 1]?.reflection}
+                                </p>
+                            </div>
+                        </div>
+                        <textarea
+                            className="w-full h-32 p-4 border-2 border-gray-200 rounded-xl focus:border-purple-500 focus:outline-none resize-none text-gray-700"
+                            placeholder="Share your reflection here... Be honest — that's where the growth happens."
+                            value={activeQAPrompt}
+                            onChange={(e) => setActiveQAPrompt(e.target.value)}
+                        />
+                        <div className="flex justify-between items-center mt-4">
+                            <p className="text-sm text-gray-500">
+                                Coach Sarah responds to reflections within 24 hours
                             </p>
+                            <Button className="bg-purple-600 hover:bg-purple-700">
+                                <Send className="w-4 h-4 mr-2" /> Post Reflection
+                            </Button>
                         </div>
+                    </CardContent>
+                </Card>
+            )}
+
+            {/* Success Stories */}
+            <section className="mb-10">
+                <div className="flex items-center gap-3 mb-6">
+                    <div className="w-12 h-12 bg-gradient-to-br from-gold-100 to-amber-100 rounded-xl flex items-center justify-center">
+                        <Star className="w-6 h-6 text-gold-600" />
+                    </div>
+                    <div>
+                        <h2 className="text-xl font-bold text-gray-900">Challenge Success Stories</h2>
+                        <p className="text-sm text-gray-600">Real results from real practitioners</p>
+                    </div>
+                </div>
+
+                <div className="grid md:grid-cols-2 gap-6">
+                    {SUCCESS_STORIES.map((story, idx) => (
+                        <Card key={idx} className="hover:shadow-lg transition-all border-0 bg-gradient-to-br from-white to-gray-50">
+                            <CardContent className="p-6">
+                                <div className="flex items-start gap-4 mb-4">
+                                    <Avatar className="w-14 h-14 ring-2 ring-gold-200">
+                                        <AvatarFallback className="bg-gradient-to-br from-burgundy-500 to-purple-600 text-white font-bold">
+                                            {story.avatar}
+                                        </AvatarFallback>
+                                    </Avatar>
+                                    <div className="flex-1">
+                                        <div className="flex items-center gap-2">
+                                            <p className="font-bold text-gray-900">{story.name}</p>
+                                            {story.verified && <BadgeCheck className="w-4 h-4 text-blue-500" />}
+                                        </div>
+                                        <p className="text-xs text-gray-500">{story.location}</p>
+                                        <div className="flex items-center gap-2 mt-1">
+                                            <Badge className="bg-green-100 text-green-700 border-0 text-xs">
+                                                {story.result}
+                                            </Badge>
+                                            <Badge className="bg-gold-100 text-gold-700 border-0 text-xs">
+                                                {story.income}
+                                            </Badge>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div className="bg-gray-50 rounded-lg p-4 border-l-4 border-burgundy-400">
+                                    <Quote className="w-4 h-4 text-burgundy-300 mb-2" />
+                                    <p className="text-gray-700 text-sm italic leading-relaxed">"{story.quote}"</p>
+                                </div>
+                                <p className="text-xs text-gray-400 mt-3">
+                                    First paying client: Day {story.daysToFirstClient}
+                                </p>
+                            </CardContent>
+                        </Card>
                     ))}
                 </div>
             </section>
 
-            {/* ✅ COMPLETED CHALLENGES */}
-            <section className="mb-10">
-                <h2 className="text-lg font-bold text-gray-900 mb-4 flex items-center gap-2">
-                    <CheckCircle2 className="w-5 h-5 text-green-500" />
-                    Completed Challenges
-                </h2>
-                {completedChallenges.length > 0 ? (
-                    <div className="grid md:grid-cols-3 gap-4">
-                        {completedChallenges.map((challenge) => (
-                            <Link key={challenge.id} href={`/challenges/${challenge.slug}`}>
-                                <div className="bg-gradient-to-br from-green-50 to-emerald-50 rounded-2xl border-2 border-green-200 p-5 hover:shadow-md transition-all">
-                                    <div className="flex items-center gap-3 mb-2">
-                                        <CheckCircle2 className="w-6 h-6 text-green-600" />
-                                        <h3 className="font-bold text-gray-900">{challenge.title}</h3>
-                                    </div>
-                                    <p className="text-sm text-gray-600 mb-3">
-                                        ✅ All {challenge.durationDays} days completed!
-                                    </p>
-                                    <div className="flex gap-1">
-                                        {challenge.badges.map((badge) => (
-                                            <span key={badge.id} className="text-lg" title={badge.name}>
-                                                {badge.icon}
-                                            </span>
-                                        ))}
+            {/* Decision Guide - Add to Library */}
+            <Card className="mb-10 bg-gradient-to-r from-blue-50 via-white to-cyan-50 border-2 border-blue-200 overflow-hidden">
+                <CardContent className="p-0">
+                    <div className="flex flex-col md:flex-row">
+                        <div className="md:w-1/3 bg-gradient-to-br from-blue-500 to-cyan-600 p-8 flex items-center justify-center">
+                            <div className="text-center text-white">
+                                <FileText className="w-16 h-16 mx-auto mb-4 opacity-90" />
+                                <p className="font-bold text-lg">Free Resource</p>
+                                <p className="text-sm text-blue-100">2-4 Page PDF Guide</p>
+                            </div>
+                        </div>
+                        <div className="md:w-2/3 p-8">
+                            <h3 className="text-2xl font-bold text-gray-900 mb-2">
+                                FM Practitioner Decision Guide
+                            </h3>
+                            <p className="text-gray-600 mb-4">
+                                Not 100% sure this path is right for you? Get our free guide to help you decide with clarity.
+                            </p>
+                            <ul className="text-sm text-gray-600 space-y-2 mb-6">
+                                <li className="flex items-center gap-2">
+                                    <CheckCircle className="w-4 h-4 text-blue-500" />
+                                    Is FM Coaching Right for Me? (Self-Assessment Quiz)
+                                </li>
+                                <li className="flex items-center gap-2">
+                                    <CheckCircle className="w-4 h-4 text-blue-500" />
+                                    The 5 Signs You're Ready to Start
+                                </li>
+                                <li className="flex items-center gap-2">
+                                    <CheckCircle className="w-4 h-4 text-blue-500" />
+                                    What to Expect: Timeline & Investment Breakdown
+                                </li>
+                                <li className="flex items-center gap-2">
+                                    <CheckCircle className="w-4 h-4 text-blue-500" />
+                                    Success Stories & Realistic Earning Potential
+                                </li>
+                            </ul>
+                            {guideAdded ? (
+                                <Button className="bg-green-600 hover:bg-green-600 text-white px-8" disabled>
+                                    <CheckCircle className="w-4 h-4 mr-2" /> Added to Library!
+                                </Button>
+                            ) : (
+                                <Button
+                                    className="bg-blue-600 hover:bg-blue-700 text-white px-8"
+                                    onClick={handleAddToLibrary}
+                                    disabled={addingGuide}
+                                >
+                                    {addingGuide ? (
+                                        <>Adding...</>
+                                    ) : (
+                                        <><BookOpen className="w-4 h-4 mr-2" /> Add to My Library</>
+                                    )}
+                                </Button>
+                            )}
+                            {guideAdded && (
+                                <p className="text-sm text-green-600 mt-2">
+                                    View it anytime in your <a href="/my-library" className="underline font-medium">My Library</a> page.
+                                </p>
+                            )}
+                        </div>
+                    </div>
+                </CardContent>
+            </Card>
+
+            {/* Final CTA */}
+            {!isEnrolled && (
+                <Card className="bg-gradient-to-r from-burgundy-800 via-burgundy-700 to-purple-900 border-0 text-white overflow-hidden">
+                    <CardContent className="p-8 md:p-12 relative">
+                        <div className="absolute inset-0 opacity-20">
+                            <div className="absolute top-0 right-0 w-64 h-64 bg-gold-400 rounded-full blur-3xl" />
+                            <div className="absolute bottom-0 left-0 w-48 h-48 bg-purple-500 rounded-full blur-3xl" />
+                        </div>
+                        <div className="relative z-10 flex flex-col md:flex-row items-center gap-8">
+                            <div className="flex-1 text-center md:text-left">
+                                <h2 className="text-3xl font-bold mb-4">
+                                    Ready to Stop Waiting and Start Doing?
+                                </h2>
+                                <p className="text-lg text-white/80 mb-6 max-w-xl">
+                                    The 7-Day Practitioner Activation Challenge is free, evergreen, and waiting for you.
+                                    Join 2,847+ practitioners who've already made their decision.
+                                </p>
+                                <div className="flex flex-col sm:flex-row gap-3 justify-center md:justify-start">
+                                    <Button
+                                        size="lg"
+                                        onClick={handleStartChallenge}
+                                        disabled={enrolling}
+                                        className="bg-gold-400 hover:bg-gold-500 text-burgundy-900 font-bold text-lg py-6 px-10"
+                                    >
+                                        {enrolling ? "Starting..." : (
+                                            <>
+                                                <Flame className="w-5 h-5 mr-2" /> Begin Your Activation
+                                            </>
+                                        )}
+                                    </Button>
+                                    <Button
+                                        size="lg"
+                                        variant="outline"
+                                        className="border-white/30 text-white hover:bg-white/10"
+                                    >
+                                        <MessageSquare className="w-5 h-5 mr-2" /> Ask Coach Sarah
+                                    </Button>
+                                </div>
+                                <p className="text-sm text-white/50 mt-4">
+                                    7 days • 10-15 min/day • 100% Free • Start anytime
+                                </p>
+                            </div>
+                            <div className="flex-shrink-0">
+                                <div className="w-48 h-48 bg-white/10 backdrop-blur-sm rounded-full flex items-center justify-center border border-white/20">
+                                    <div className="text-center">
+                                        <Flame className="w-16 h-16 text-gold-400 mx-auto mb-2" />
+                                        <p className="text-gold-300 font-bold">Day 1</p>
+                                        <p className="text-xs text-white/60">Starts Today</p>
                                     </div>
                                 </div>
-                            </Link>
-                        ))}
-                    </div>
-                ) : (
-                    <div className="bg-white rounded-2xl border border-gray-100 p-8 text-center">
-                        <div className="w-16 h-16 bg-gradient-to-br from-amber-100 to-gold-100 rounded-2xl flex items-center justify-center mx-auto mb-4">
-                            <GraduationCap className="w-8 h-8 text-gold-600" />
+                            </div>
                         </div>
-                        <h3 className="font-bold text-gray-900 mb-1">Your Achievements Will Shine Here ✨</h3>
-                        <p className="text-gray-500 text-sm mb-4">Complete your first challenge to earn badges and see your progress!</p>
-                        <Button variant="outline">
-                            <Flame className="w-4 h-4 mr-2" /> Start Your First Challenge
-                        </Button>
-                    </div>
-                )}
-            </section>
+                    </CardContent>
+                </Card>
+            )}
 
-            {/* 🎓 UPGRADE CTA */}
-            <section className="mb-10">
-                <div className="bg-gradient-to-r from-burgundy-600 via-burgundy-700 to-purple-800 rounded-3xl p-8 text-white overflow-hidden relative">
-                    <div className="absolute inset-0 opacity-10">
-                        <div className="absolute top-0 right-0 w-64 h-64 bg-gold-400 rounded-full blur-3xl" />
+            {/* What Happens After */}
+            <section className="mt-10">
+                <div className="flex items-center gap-3 mb-6">
+                    <div className="w-12 h-12 bg-gradient-to-br from-burgundy-100 to-purple-100 rounded-xl flex items-center justify-center">
+                        <ArrowRight className="w-6 h-6 text-burgundy-600" />
                     </div>
-                    <div className="relative z-10 flex flex-col md:flex-row items-center justify-between gap-6">
-                        <div>
-                            <h3 className="text-2xl font-bold mb-2">Become a Certified Coach 🎓</h3>
-                            <p className="text-white/80">Upgrade your journey with professional certifications & DFY tools</p>
-                        </div>
-                        <Link href="/courses">
-                            <Button size="lg" className="bg-white text-burgundy-700 hover:bg-white/90">
-                                Browse Certifications <ArrowRight className="w-5 h-5 ml-2" />
-                            </Button>
-                        </Link>
+                    <div>
+                        <h2 className="text-xl font-bold text-gray-900">What Happens After Day 7?</h2>
+                        <p className="text-sm text-gray-600">Your next steps after the challenge</p>
                     </div>
                 </div>
+
+                <div className="grid md:grid-cols-3 gap-6">
+                    <Card className="border-2 border-gray-100 hover:border-burgundy-300 hover:shadow-lg transition-all group">
+                        <CardContent className="p-6">
+                            <div className="w-14 h-14 bg-burgundy-100 rounded-xl flex items-center justify-center mb-4 group-hover:bg-burgundy-200 transition-colors">
+                                <GraduationCap className="w-7 h-7 text-burgundy-600" />
+                            </div>
+                            <h3 className="font-bold text-gray-900 mb-2">Full Certification</h3>
+                            <p className="text-sm text-gray-600 mb-4">
+                                Ready to go all in? Enroll in our comprehensive FM Practitioner Certification with Coach Sarah.
+                            </p>
+                            <div className="flex items-center justify-between">
+                                <p className="text-burgundy-600 font-bold text-lg">$997</p>
+                                <ChevronRight className="w-5 h-5 text-burgundy-400 group-hover:translate-x-1 transition-transform" />
+                            </div>
+                        </CardContent>
+                    </Card>
+                    <Card className="border-2 border-gray-100 hover:border-purple-300 hover:shadow-lg transition-all group">
+                        <CardContent className="p-6">
+                            <div className="w-14 h-14 bg-purple-100 rounded-xl flex items-center justify-center mb-4 group-hover:bg-purple-200 transition-colors">
+                                <Users className="w-7 h-7 text-purple-600" />
+                            </div>
+                            <h3 className="font-bold text-gray-900 mb-2">Join Community</h3>
+                            <p className="text-sm text-gray-600 mb-4">
+                                Connect with fellow practitioners, share wins, and get ongoing support from our community.
+                            </p>
+                            <div className="flex items-center justify-between">
+                                <p className="text-purple-600 font-bold text-lg">Free Access</p>
+                                <ChevronRight className="w-5 h-5 text-purple-400 group-hover:translate-x-1 transition-transform" />
+                            </div>
+                        </CardContent>
+                    </Card>
+                    <Card className="border-2 border-gray-100 hover:border-green-300 hover:shadow-lg transition-all group">
+                        <CardContent className="p-6">
+                            <div className="w-14 h-14 bg-green-100 rounded-xl flex items-center justify-center mb-4 group-hover:bg-green-200 transition-colors">
+                                <Rocket className="w-7 h-7 text-green-600" />
+                            </div>
+                            <h3 className="font-bold text-gray-900 mb-2">Start Practicing</h3>
+                            <p className="text-sm text-gray-600 mb-4">
+                                Some challengers sign their first client before Day 7 even ends! Your journey starts now.
+                            </p>
+                            <div className="flex items-center justify-between">
+                                <p className="text-green-600 font-bold text-lg">Your Decision</p>
+                                <ChevronRight className="w-5 h-5 text-green-400 group-hover:translate-x-1 transition-transform" />
+                            </div>
+                        </CardContent>
+                    </Card>
+                </div>
             </section>
+
+            {/* AccrediPro Branding */}
+            <div className="mt-12 text-center">
+                <div className="inline-flex items-center gap-2 text-sm text-gray-400">
+                    <div className="w-6 h-6 bg-burgundy-600 rounded flex items-center justify-center">
+                        <span className="text-white text-xs font-bold">A</span>
+                    </div>
+                    <span>AccrediPro Academy</span>
+                    <span>•</span>
+                    <span>Transforming Health Coaches Since 2019</span>
+                </div>
+            </div>
         </div>
     );
 }

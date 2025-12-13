@@ -18,6 +18,15 @@ async function getUsers() {
           },
         },
       },
+      tags: {
+        select: {
+          id: true,
+          tag: true,
+          value: true,
+          createdAt: true,
+        },
+        orderBy: { createdAt: "desc" },
+      },
       streak: true,
       _count: {
         select: {

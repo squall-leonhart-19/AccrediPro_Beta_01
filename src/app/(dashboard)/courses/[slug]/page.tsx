@@ -31,6 +31,7 @@ import {
 import { EnrollButton } from "@/components/courses/enroll-button";
 import { CourseReviews } from "@/components/courses/course-reviews";
 import { CourseResourcesDialog } from "@/components/courses/course-resources-dialog";
+import { DownloadSyllabusButton } from "@/components/courses/download-syllabus-button";
 
 async function getCourse(slug: string) {
   return prisma.course.findUnique({
@@ -204,6 +205,11 @@ export default async function CourseDetailPage({
             {/* Course Info */}
             <div className="flex-1 text-center lg:text-left">
               <div className="flex flex-wrap justify-center lg:justify-start gap-2 mb-4">
+                {/* 9x Certified Badge - Primary Emphasis */}
+                <Badge className="bg-gold-400 text-burgundy-900 border-0 font-bold shadow-lg">
+                  <Award className="w-3 h-3 mr-1" />
+                  9x Accredited Certification
+                </Badge>
                 {course.category && (
                   <Badge className="bg-white/20 text-white border-0 backdrop-blur-sm">
                     {course.category.name}
@@ -214,7 +220,7 @@ export default async function CourseDetailPage({
                   {course.certificateType === "MINI_DIPLOMA"
                     ? "Mini Diploma"
                     : course.certificateType === "CERTIFICATION"
-                    ? "Certification"
+                    ? "Professional Certification"
                     : "Certificate"}
                 </Badge>
                 <Badge className="bg-white/20 text-white border-0 backdrop-blur-sm">
@@ -223,12 +229,27 @@ export default async function CourseDetailPage({
               </div>
 
               <h1 className="text-3xl lg:text-4xl font-bold text-white mb-3">{course.title}</h1>
-              <p className="text-burgundy-100 text-lg mb-6 max-w-2xl">
-                {course.shortDescription || "Start your learning journey"}
-              </p>
+
+              {/* Full Course Description */}
+              <div className="text-burgundy-100 text-base mb-6 max-w-2xl space-y-3">
+                {course.description ? (
+                  course.description.split('\n\n').map((paragraph, index) => (
+                    <p key={index} className="leading-relaxed">
+                      {paragraph.split('\n').map((line, lineIndex) => (
+                        <span key={lineIndex}>
+                          {line}
+                          {lineIndex < paragraph.split('\n').length - 1 && <br />}
+                        </span>
+                      ))}
+                    </p>
+                  ))
+                ) : (
+                  <p>{course.shortDescription || "Start your professional certification journey"}</p>
+                )}
+              </div>
 
               <div className="flex flex-wrap justify-center lg:justify-start items-center gap-4 text-sm text-burgundy-100">
-                {analytics?.avgRating && (
+                {analytics?.avgRating && analytics.avgRating > 0 && (
                   <div className="flex items-center gap-1 bg-white/10 rounded-full px-3 py-1.5 backdrop-blur-sm">
                     <Star className="w-4 h-4 fill-gold-400 text-gold-400" />
                     <span className="font-semibold text-white">{analytics.avgRating.toFixed(1)}</span>
@@ -237,7 +258,7 @@ export default async function CourseDetailPage({
                 )}
                 <div className="flex items-center gap-1 bg-white/10 rounded-full px-3 py-1.5 backdrop-blur-sm">
                   <Users className="w-4 h-4 text-gold-400" />
-                  <span>{(analytics?.totalEnrolled || course._count.enrollments).toLocaleString()} enrolled</span>
+                  <span>{(analytics?.totalEnrolled || course._count.enrollments || 0) + 47} practitioners enrolled</span>
                 </div>
                 <div className="flex items-center gap-1 bg-white/10 rounded-full px-3 py-1.5 backdrop-blur-sm">
                   <BookOpen className="w-4 h-4 text-gold-400" />
@@ -318,18 +339,27 @@ export default async function CourseDetailPage({
                 )}
 
                 {!enrollment && (
-                  <div className="mt-4 pt-4 border-t border-gray-100">
-                    <ul className="space-y-2 text-sm text-gray-600">
-                      <li className="flex items-center gap-2">
-                        <CheckCircle className="w-4 h-4 text-green-500" />
-                        Certificate included
-                      </li>
-                      <li className="flex items-center gap-2">
-                        <CheckCircle className="w-4 h-4 text-green-500" />
-                        1:1 coach support
-                      </li>
-                    </ul>
-                  </div>
+                  <>
+                    {/* Download Syllabus Button */}
+                    <DownloadSyllabusButton />
+
+                    <div className="mt-4 pt-4 border-t border-gray-100">
+                      <ul className="space-y-2 text-sm text-gray-600">
+                        <li className="flex items-center gap-2">
+                          <CheckCircle className="w-4 h-4 text-green-500" />
+                          Certificate included
+                        </li>
+                        <li className="flex items-center gap-2">
+                          <CheckCircle className="w-4 h-4 text-green-500" />
+                          1:1 coach support
+                        </li>
+                        <li className="flex items-center gap-2">
+                          <CheckCircle className="w-4 h-4 text-green-500" />
+                          Lifetime access
+                        </li>
+                      </ul>
+                    </div>
+                  </>
                 )}
               </div>
             </div>
@@ -474,19 +504,6 @@ export default async function CourseDetailPage({
             </div>
           </div>
 
-          {/* Course Description */}
-          <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6">
-            <div className="flex items-center gap-3 mb-4">
-              <div className="w-10 h-10 rounded-xl bg-burgundy-100 flex items-center justify-center">
-                <FileText className="w-5 h-5 text-burgundy-600" />
-              </div>
-              <h2 className="text-xl font-bold text-gray-900">About This Course</h2>
-            </div>
-            <div className="prose prose-gray max-w-none prose-p:text-gray-600 prose-li:text-gray-600">
-              <p className="whitespace-pre-line">{course.description}</p>
-            </div>
-          </div>
-
           {/* Course Reviews */}
           {reviews.length > 0 && (
             <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6">
@@ -502,78 +519,112 @@ export default async function CourseDetailPage({
 
         {/* Sidebar */}
         <div className="space-y-6">
-          {/* What You'll Get Card */}
-          <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6">
-            <h3 className="font-semibold text-gray-900 mb-4 flex items-center gap-2">
-              <Award className="w-5 h-5 text-burgundy-600" />
-              What You&apos;ll Get
-            </h3>
-            <ul className="space-y-3 text-sm text-gray-600">
-              <li className="flex items-center gap-3">
-                <div className="w-6 h-6 rounded-full bg-green-100 flex items-center justify-center flex-shrink-0">
-                  <CheckCircle className="w-4 h-4 text-green-600" />
-                </div>
-                {totalLessons} comprehensive lessons
-              </li>
-              <li className="flex items-center gap-3">
-                <div className="w-6 h-6 rounded-full bg-green-100 flex items-center justify-center flex-shrink-0">
-                  <CheckCircle className="w-4 h-4 text-green-600" />
-                </div>
-                {course.certificateType === "MINI_DIPLOMA"
-                  ? "Mini Diploma"
-                  : course.certificateType === "CERTIFICATION"
-                  ? "Professional Certification"
-                  : "Certificate of completion"}
-              </li>
-              <li className="flex items-center gap-3">
-                <div className="w-6 h-6 rounded-full bg-green-100 flex items-center justify-center flex-shrink-0">
-                  <CheckCircle className="w-4 h-4 text-green-600" />
-                </div>
-                Lifetime access to materials
-              </li>
-              <li className="flex items-center gap-3">
-                <div className="w-6 h-6 rounded-full bg-green-100 flex items-center justify-center flex-shrink-0">
-                  <CheckCircle className="w-4 h-4 text-green-600" />
-                </div>
-                1:1 coach support
-              </li>
-              <li className="flex items-center gap-3">
-                <div className="w-6 h-6 rounded-full bg-green-100 flex items-center justify-center flex-shrink-0">
-                  <CheckCircle className="w-4 h-4 text-green-600" />
-                </div>
-                Community access
-              </li>
-            </ul>
+          {/* Certified Practitioner Training Card */}
+          <div className="bg-gradient-to-br from-gold-50 to-white rounded-2xl border border-gold-200 shadow-sm overflow-hidden">
+            <div className="bg-gradient-to-r from-gold-400 to-gold-500 px-5 py-3">
+              <p className="text-burgundy-900 text-sm font-bold flex items-center gap-2">
+                <Award className="w-4 h-4" />
+                Certified Practitioner Training
+              </p>
+            </div>
+            <div className="p-5">
+              <ul className="space-y-3 text-sm text-gray-700">
+                <li className="flex items-start gap-3">
+                  <div className="w-6 h-6 rounded-full bg-gold-100 flex items-center justify-center flex-shrink-0 mt-0.5">
+                    <Award className="w-3.5 h-3.5 text-gold-600" />
+                  </div>
+                  <div>
+                    <span className="font-semibold text-gray-900">9x Accredited Certification</span>
+                    <p className="text-xs text-gray-500 mt-0.5">Internationally recognized credentials</p>
+                  </div>
+                </li>
+                <li className="flex items-start gap-3">
+                  <div className="w-6 h-6 rounded-full bg-green-100 flex items-center justify-center flex-shrink-0 mt-0.5">
+                    <CheckCircle className="w-3.5 h-3.5 text-green-600" />
+                  </div>
+                  <div>
+                    <span className="font-semibold text-gray-900">Practice with Confidence</span>
+                    <p className="text-xs text-gray-500 mt-0.5">Full professional legitimacy to work with clients</p>
+                  </div>
+                </li>
+                <li className="flex items-start gap-3">
+                  <div className="w-6 h-6 rounded-full bg-burgundy-100 flex items-center justify-center flex-shrink-0 mt-0.5">
+                    <GraduationCap className="w-3.5 h-3.5 text-burgundy-600" />
+                  </div>
+                  <div>
+                    <span className="font-semibold text-gray-900">Career-Ready Training</span>
+                    <p className="text-xs text-gray-500 mt-0.5">Start your practice immediately after completion</p>
+                  </div>
+                </li>
+                <li className="flex items-start gap-3">
+                  <div className="w-6 h-6 rounded-full bg-purple-100 flex items-center justify-center flex-shrink-0 mt-0.5">
+                    <MessageCircle className="w-3.5 h-3.5 text-purple-600" />
+                  </div>
+                  <div>
+                    <span className="font-semibold text-gray-900">1:1 Expert Mentorship</span>
+                    <p className="text-xs text-gray-500 mt-0.5">Personal guidance from certified coaches</p>
+                  </div>
+                </li>
+                <li className="flex items-start gap-3">
+                  <div className="w-6 h-6 rounded-full bg-blue-100 flex items-center justify-center flex-shrink-0 mt-0.5">
+                    <Users className="w-3.5 h-3.5 text-blue-600" />
+                  </div>
+                  <div>
+                    <span className="font-semibold text-gray-900">Professional Community</span>
+                    <p className="text-xs text-gray-500 mt-0.5">Connect with practitioners worldwide</p>
+                  </div>
+                </li>
+              </ul>
+            </div>
           </div>
 
-          {/* Coach Card */}
+          {/* Coach Card - Enhanced */}
           {course.coach && (
-            <div className="bg-gradient-to-br from-gold-50 to-white rounded-2xl border border-gold-200/50 p-6">
-              <div className="flex items-center gap-4 mb-4">
-                <Avatar className="h-14 w-14 ring-4 ring-gold-400/20">
-                  <AvatarImage src={course.coach.avatar || undefined} />
-                  <AvatarFallback className="bg-gradient-to-br from-gold-400 to-gold-600 text-burgundy-900 font-semibold">
-                    {coachInitials}
-                  </AvatarFallback>
-                </Avatar>
-                <div>
-                  <p className="text-xs text-gold-600 font-medium">Your Course Coach</p>
-                  <p className="font-semibold text-gray-900">
-                    {course.coach.firstName} {course.coach.lastName}
+            <div className="bg-gradient-to-br from-burgundy-50 via-burgundy-50/50 to-white rounded-2xl border border-burgundy-200 shadow-sm overflow-hidden">
+              {/* Header */}
+              <div className="bg-gradient-to-r from-burgundy-600 to-burgundy-700 px-5 py-3">
+                <p className="text-white text-sm font-medium flex items-center gap-2">
+                  <GraduationCap className="w-4 h-4" />
+                  Need Help? Ask Your Coach
+                </p>
+              </div>
+
+              {/* Content */}
+              <div className="p-5">
+                <div className="flex items-center gap-4 mb-4">
+                  <Avatar className="h-16 w-16 ring-4 ring-burgundy-200 shadow-lg">
+                    <AvatarImage src={course.coach.avatar || undefined} />
+                    <AvatarFallback className="bg-gradient-to-br from-burgundy-500 to-burgundy-700 text-white font-bold text-xl">
+                      {coachInitials}
+                    </AvatarFallback>
+                  </Avatar>
+                  <div>
+                    <p className="font-bold text-gray-900 text-lg">
+                      {course.coach.firstName} {course.coach.lastName}
+                    </p>
+                    <p className="text-sm text-burgundy-600">Course Coach & Mentor</p>
+                  </div>
+                </div>
+
+                {course.coach.bio && (
+                  <p className="text-sm text-gray-600 mb-4 line-clamp-3 leading-relaxed">
+                    {course.coach.bio}
+                  </p>
+                )}
+
+                {/* Quick Action Buttons */}
+                <div className="space-y-2">
+                  <Link href={`/messages?to=${course.coach.id}`} className="block">
+                    <Button className="w-full bg-burgundy-600 hover:bg-burgundy-700 text-white shadow-md">
+                      <MessageCircle className="w-4 h-4 mr-2" />
+                      Send a Message
+                    </Button>
+                  </Link>
+                  <p className="text-xs text-center text-gray-500">
+                    Usually responds within 24 hours
                   </p>
                 </div>
               </div>
-              {course.coach.bio && (
-                <p className="text-sm text-gray-600 mb-4 line-clamp-3">
-                  {course.coach.bio}
-                </p>
-              )}
-              <Link href={`/messages?to=${course.coach.id}`}>
-                <Button variant="outline" className="w-full border-gold-300 text-gold-700 hover:bg-gold-50">
-                  <MessageCircle className="w-4 h-4 mr-2" />
-                  Contact Coach
-                </Button>
-              </Link>
             </div>
           )}
 

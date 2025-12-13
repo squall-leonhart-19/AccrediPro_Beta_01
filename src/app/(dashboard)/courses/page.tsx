@@ -67,13 +67,21 @@ async function getActiveSpecialOffers() {
   });
 }
 
+async function getUserWishlist(userId: string) {
+  return prisma.wishlist.findMany({
+    where: { userId },
+    select: { courseId: true },
+  });
+}
+
 export default async function CoursesPage() {
   const session = await getServerSession(authOptions);
-  const [courses, categories, enrollments, specialOffers] = await Promise.all([
+  const [courses, categories, enrollments, specialOffers, wishlist] = await Promise.all([
     getCourses(),
     getCategories(),
     session?.user?.id ? getUserEnrollments(session.user.id) : [],
     getActiveSpecialOffers(),
+    session?.user?.id ? getUserWishlist(session.user.id) : [],
   ]);
 
   // Transform the data for the client component
@@ -132,6 +140,8 @@ export default async function CoursesPage() {
     courses: offer.courses.map((c) => c.courseId),
   }));
 
+  const wishlistIds = wishlist.map((w) => w.courseId);
+
   return (
     <div className="animate-fade-in">
       <CourseCatalogFilters
@@ -139,6 +149,8 @@ export default async function CoursesPage() {
         categories={categoriesData}
         enrollments={enrollmentsData}
         specialOffers={specialOffersData}
+        wishlistIds={wishlistIds}
+        isLoggedIn={!!session?.user?.id}
       />
     </div>
   );

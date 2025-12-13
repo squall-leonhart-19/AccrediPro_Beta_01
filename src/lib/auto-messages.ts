@@ -6,6 +6,30 @@ interface TriggerAutoMessageOptions {
   triggerValue?: string; // e.g., course ID
 }
 
+// Welcome voice message URL from Sarah
+const SARAH_WELCOME_VOICE_URL = "/audio/sarah-welcome.mp3";
+
+/**
+ * Creates the personalized welcome message content for first login
+ */
+function getWelcomeMessage(firstName: string): string {
+  return `Hey ${firstName}! 👋
+
+Welcome to AccrediPro! I'm so excited you're here.
+
+I'm Sarah, your personal coach, and I wanted to personally welcome you to our community.
+
+Here's what you can expect:
+• **Your Dashboard** - Track your progress and see your personalized roadmap
+• **My Coach** - Chat with me anytime you need guidance or have questions
+• **Courses** - Start your learning journey with our certifications
+• **Community** - Connect with fellow students and practitioners
+
+I'm here to support you every step of the way. Don't hesitate to message me if you have any questions!
+
+Let's get started on your transformation journey! 🌟`;
+}
+
 /**
  * Triggers automatic messages based on user events
  */
@@ -21,36 +45,21 @@ export async function triggerAutoMessage({
       select: {
         id: true,
         firstName: true,
+        lastName: true,
         assignedCoachId: true,
       },
     });
 
     if (!user) return;
 
-    // Get active auto-messages for this trigger
-    const autoMessages = await prisma.autoMessage.findMany({
-      where: {
-        trigger,
-        isActive: true,
-        OR: [
-          { triggerValue: null }, // Generic message for this trigger
-          { triggerValue: triggerValue || null }, // Specific to this value (e.g., course)
-        ],
-      },
-      orderBy: { priority: "desc" },
-    });
-
-    if (autoMessages.length === 0) return;
-
-    // Get a coach to send from
+    // Get a coach to send from (prefer assigned coach, then Sarah, then any admin)
     let coachId = user.assignedCoachId;
 
-    // If user doesn't have an assigned coach, try to find Sarah or any admin
     if (!coachId) {
       const defaultCoach = await prisma.user.findFirst({
         where: {
           OR: [
-            { email: "coach@accredipro.com" },
+            { email: "coach@accredipro-certificate.com" },
             { role: "ADMIN" },
             { role: "MENTOR" },
           ],
@@ -66,6 +75,27 @@ export async function triggerAutoMessage({
       console.warn("No coach available to send auto-message");
       return;
     }
+
+    // SPECIAL HANDLING: First login welcome message with voice
+    if (trigger === "first_login") {
+      await sendFirstLoginWelcome(userId, user.firstName || "there", coachId);
+      return; // Don't process other auto-messages for first login
+    }
+
+    // Get active auto-messages for this trigger
+    const autoMessages = await prisma.autoMessage.findMany({
+      where: {
+        trigger,
+        isActive: true,
+        OR: [
+          { triggerValue: null }, // Generic message for this trigger
+          { triggerValue: triggerValue || null }, // Specific to this value (e.g., course)
+        ],
+      },
+      orderBy: { priority: "desc" },
+    });
+
+    if (autoMessages.length === 0) return;
 
     // Process each auto-message
     for (const autoMessage of autoMessages) {
@@ -116,6 +146,65 @@ export async function triggerAutoMessage({
     }
   } catch (error) {
     console.error("Error triggering auto-message:", error);
+  }
+}
+
+/**
+ * Sends personalized first login welcome message with voice from Sarah
+ */
+async function sendFirstLoginWelcome(userId: string, firstName: string, coachId: string) {
+  try {
+    // Check if we've already sent a welcome message
+    const existingWelcome = await prisma.message.findFirst({
+      where: {
+        receiverId: userId,
+        content: { contains: "Welcome to AccrediPro" },
+        createdAt: { gte: new Date(Date.now() - 24 * 60 * 60 * 1000) },
+      },
+    });
+
+    if (existingWelcome) {
+      return; // Already sent
+    }
+
+    // Create the welcome text message
+    const welcomeContent = getWelcomeMessage(firstName);
+
+    await prisma.message.create({
+      data: {
+        senderId: coachId,
+        receiverId: userId,
+        content: welcomeContent,
+        messageType: "DIRECT",
+      },
+    });
+
+    // Create the voice message (using voiceUrl field)
+    await prisma.message.create({
+      data: {
+        senderId: coachId,
+        receiverId: userId,
+        content: `🎤 Voice message from your coach`,
+        voiceUrl: SARAH_WELCOME_VOICE_URL,
+        voiceDuration: 45, // Approximate duration
+        messageType: "DIRECT",
+      },
+    });
+
+    // Create notification
+    await prisma.notification.create({
+      data: {
+        userId,
+        type: "NEW_MESSAGE",
+        title: "Welcome message from your coach! 🎉",
+        message: "Sarah has sent you a personalized welcome message with a voice note",
+        data: { senderId: coachId },
+      },
+    });
+
+    console.log(`Sent first login welcome to user ${userId}`);
+  } catch (error) {
+    console.error("Error sending first login welcome:", error);
   }
 }
 
