@@ -69,6 +69,7 @@ export default async function DashboardLayout({
                 hasCompletedOnboarding={hasCompletedOnboarding}
                 userName={userName}
                 coachName={coachName}
+                userId={session.user.id}
               >
                 {children}
               </OnboardingWrapper>

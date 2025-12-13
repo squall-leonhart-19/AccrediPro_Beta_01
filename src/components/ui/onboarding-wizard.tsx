@@ -20,60 +20,226 @@ import {
     Globe,
     MapPin,
     Phone,
+    DollarSign,
+    Rocket,
+    Calendar,
+    Star,
+    Zap,
+    TrendingUp,
+    Award,
+    AlertCircle,
 } from "lucide-react";
 
-// Goal options
-const GOALS = [
-    { id: "learn", label: "Learn coaching skills", icon: BookOpen, color: "blue" },
-    { id: "career", label: "Explore a new career", icon: Briefcase, color: "purple" },
-    { id: "health", label: "Improve my own health", icon: Heart, color: "emerald" },
-    { id: "family", label: "Support my family", icon: Users, color: "pink" },
-    { id: "business", label: "Build a coaching business", icon: Target, color: "amber" },
+// Step 1: Primary Goal (Segmentation)
+const PRIMARY_GOALS = [
+    {
+        id: "career_change",
+        label: "Start a new career as a health coach",
+        icon: Rocket,
+        color: "purple",
+        description: "Leave my current job and become a full-time coach",
+        segment: "career_changer"
+    },
+    {
+        id: "side_income",
+        label: "Build a profitable side business",
+        icon: DollarSign,
+        color: "emerald",
+        description: "Add $2K-$5K/month while keeping my current job",
+        segment: "side_hustle"
+    },
+    {
+        id: "existing_practice",
+        label: "Add certifications to my existing practice",
+        icon: Award,
+        color: "blue",
+        description: "I'm already a practitioner and want to expand",
+        segment: "existing_practitioner"
+    },
+    {
+        id: "personal_growth",
+        label: "Learn for personal development",
+        icon: Heart,
+        color: "pink",
+        description: "Help myself and family with health knowledge",
+        segment: "personal"
+    },
 ];
 
-// Niche options
-const NICHES = [
-    "Gut Health", "Hormone Health", "Women's Health", "Weight Management",
-    "Functional Medicine", "Nutrition", "Mental Wellness", "Stress Management",
-    "Sleep Optimization", "Autoimmune Support", "Sports Nutrition", "Holistic Health",
+// Step 2: Income Goals (AOV indicator)
+const INCOME_GOALS = [
+    {
+        id: "under_2k",
+        label: "Under $2,000/month",
+        emoji: "🌱",
+        description: "Starting small and building up",
+        aov_tier: "starter"
+    },
+    {
+        id: "2k_5k",
+        label: "$2,000 - $5,000/month",
+        emoji: "🌿",
+        description: "Comfortable part-time income",
+        aov_tier: "growth"
+    },
+    {
+        id: "5k_10k",
+        label: "$5,000 - $10,000/month",
+        emoji: "🌳",
+        description: "Full-time coaching income",
+        aov_tier: "professional"
+    },
+    {
+        id: "10k_plus",
+        label: "$10,000+/month",
+        emoji: "🚀",
+        description: "Building a thriving practice",
+        aov_tier: "premium"
+    },
 ];
 
-// Experience levels
-const EXPERIENCE_LEVELS = [
-    { id: "beginner", label: "Beginner", description: "I'm just starting my journey", emoji: "🌱" },
-    { id: "intermediate", label: "Intermediate", description: "I have some knowledge or training", emoji: "🌿" },
-    { id: "advanced", label: "Advanced / Already a coach", description: "I'm practicing or certified", emoji: "🌳" },
+// Step 3: Timeline/Urgency (CRO indicator)
+const TIMELINE_OPTIONS = [
+    {
+        id: "asap",
+        label: "As soon as possible!",
+        emoji: "🔥",
+        description: "I'm ready to start today",
+        urgency: "hot"
+    },
+    {
+        id: "1_3_months",
+        label: "Within 1-3 months",
+        emoji: "⏰",
+        description: "I have a clear timeline",
+        urgency: "warm"
+    },
+    {
+        id: "3_6_months",
+        label: "Within 3-6 months",
+        emoji: "📅",
+        description: "Planning ahead",
+        urgency: "nurture"
+    },
+    {
+        id: "exploring",
+        label: "Just exploring for now",
+        emoji: "👀",
+        description: "Researching my options",
+        urgency: "cold"
+    },
 ];
 
-// Weekly hours commitment
-const WEEKLY_HOURS = [
-    { id: "1-3", label: "1-3 hours/week", description: "Light pace", emoji: "🐢" },
-    { id: "4-7", label: "4-7 hours/week", description: "Moderate pace", emoji: "🚶" },
-    { id: "8-15", label: "8-15 hours/week", description: "Intensive pace", emoji: "🏃" },
-    { id: "15+", label: "15+ hours/week", description: "Full commitment", emoji: "🚀" },
+// Step 4: Current Situation (Segmentation for messaging)
+const CURRENT_SITUATIONS = [
+    {
+        id: "employed_unhappy",
+        label: "Employed but unfulfilled",
+        emoji: "😔",
+        description: "Ready for a meaningful change",
+    },
+    {
+        id: "employed_stable",
+        label: "Employed and want a side income",
+        emoji: "💼",
+        description: "Looking for additional revenue streams",
+    },
+    {
+        id: "stay_at_home",
+        label: "Stay-at-home parent/caregiver",
+        emoji: "🏠",
+        description: "Want flexible work from home",
+    },
+    {
+        id: "already_coach",
+        label: "Already a coach/practitioner",
+        emoji: "⭐",
+        description: "Want to add new certifications",
+    },
+    {
+        id: "health_professional",
+        label: "Healthcare professional",
+        emoji: "🩺",
+        description: "Nurse, dietitian, therapist, etc.",
+    },
+    {
+        id: "other",
+        label: "Other",
+        emoji: "✨",
+        description: "My situation is unique",
+    },
 ];
 
-// How they heard about us
-const REFERRAL_SOURCES = [
-    "Google Search",
-    "Facebook/Instagram",
-    "YouTube",
-    "Friend or Family",
-    "Another Coach",
-    "Podcast",
-    "Blog Article",
-    "Other",
+// Step 5: Investment Readiness (Critical for AOV/Sales)
+const INVESTMENT_READINESS = [
+    {
+        id: "ready_now",
+        label: "I'm ready to invest in my future now",
+        emoji: "💎",
+        description: "I understand education is an investment",
+        ready: "hot"
+    },
+    {
+        id: "need_details",
+        label: "I need to see pricing and options first",
+        emoji: "📋",
+        description: "Show me what's available",
+        ready: "warm"
+    },
+    {
+        id: "saving_up",
+        label: "I'm saving up for this",
+        emoji: "🐷",
+        description: "Will be ready in a few months",
+        ready: "nurture"
+    },
+    {
+        id: "free_only",
+        label: "I'm only interested in free resources",
+        emoji: "🆓",
+        description: "Not ready to invest yet",
+        ready: "cold"
+    },
+];
+
+// Step 6: Biggest Obstacle (Pain points for marketing)
+const OBSTACLES = [
+    { id: "time", label: "Not enough time", emoji: "⏰" },
+    { id: "money", label: "Financial constraints", emoji: "💰" },
+    { id: "confidence", label: "Lack of confidence", emoji: "🤔" },
+    { id: "knowledge", label: "Not sure where to start", emoji: "📚" },
+    { id: "support", label: "Need more support/guidance", emoji: "🤝" },
+    { id: "credentials", label: "Need proper certifications", emoji: "📜" },
+];
+
+// Step 7: Health Niche Interest
+const HEALTH_NICHES = [
+    "Gut Health & Digestion",
+    "Hormone Balance",
+    "Women's Health",
+    "Weight Management",
+    "Functional Nutrition",
+    "Mental Wellness & Anxiety",
+    "Stress & Burnout",
+    "Sleep Optimization",
+    "Autoimmune Conditions",
+    "Sports & Fitness Nutrition",
+    "Anti-Aging & Longevity",
+    "Holistic Wellness",
 ];
 
 interface OnboardingData {
-    goal: string;
+    primaryGoal: string;
+    incomeGoal: string;
+    timeline: string;
+    currentSituation: string;
+    investmentReadiness: string;
+    obstacles: string[];
     niches: string[];
-    experience: string;
-    weeklyHours: string;
-    referralSource: string;
     phone: string;
     location: string;
-    biggestChallenge: string;
+    referralSource: string;
+    personalMessage: string;
 }
 
 interface OnboardingWizardProps {
@@ -85,27 +251,32 @@ interface OnboardingWizardProps {
 export function OnboardingWizard({ onComplete, userName, userId }: OnboardingWizardProps) {
     const [step, setStep] = useState(1);
     const [data, setData] = useState<OnboardingData>({
-        goal: "",
+        primaryGoal: "",
+        incomeGoal: "",
+        timeline: "",
+        currentSituation: "",
+        investmentReadiness: "",
+        obstacles: [],
         niches: [],
-        experience: "",
-        weeklyHours: "",
-        referralSource: "",
         phone: "",
         location: "",
-        biggestChallenge: "",
+        referralSource: "",
+        personalMessage: "",
     });
 
-    const totalSteps = 6;
+    const totalSteps = 8;
     const progress = (step / totalSteps) * 100;
 
     const canProceed = () => {
         switch (step) {
-            case 1: return data.goal !== "";
-            case 2: return data.niches.length > 0;
-            case 3: return data.experience !== "";
-            case 4: return data.weeklyHours !== "";
-            case 5: return true; // Contact info is optional
-            case 6: return true; // Challenge is optional
+            case 1: return data.primaryGoal !== "";
+            case 2: return data.incomeGoal !== "";
+            case 3: return data.timeline !== "";
+            case 4: return data.currentSituation !== "";
+            case 5: return data.investmentReadiness !== "";
+            case 6: return data.obstacles.length > 0;
+            case 7: return data.niches.length > 0;
+            case 8: return true; // Contact info optional
             default: return true;
         }
     };
@@ -127,11 +298,32 @@ export function OnboardingWizard({ onComplete, userName, userId }: OnboardingWiz
     };
 
     const handleComplete = async () => {
-        // Save to localStorage for immediate UI (user-specific)
+        // Save to localStorage for immediate UI
         if (userId) {
             localStorage.setItem(`onboarding-complete-${userId}`, "true");
             localStorage.setItem(`user-onboarding-data-${userId}`, JSON.stringify(data));
         }
+
+        // Determine lead score based on responses
+        let leadScore = 0;
+
+        // Income goal scoring
+        if (data.incomeGoal === "10k_plus") leadScore += 30;
+        else if (data.incomeGoal === "5k_10k") leadScore += 25;
+        else if (data.incomeGoal === "2k_5k") leadScore += 15;
+        else leadScore += 5;
+
+        // Timeline scoring
+        if (data.timeline === "asap") leadScore += 30;
+        else if (data.timeline === "1_3_months") leadScore += 20;
+        else if (data.timeline === "3_6_months") leadScore += 10;
+        else leadScore += 0;
+
+        // Investment readiness scoring
+        if (data.investmentReadiness === "ready_now") leadScore += 40;
+        else if (data.investmentReadiness === "need_details") leadScore += 25;
+        else if (data.investmentReadiness === "saving_up") leadScore += 10;
+        else leadScore += 0;
 
         // Save to database via API
         try {
@@ -139,13 +331,18 @@ export function OnboardingWizard({ onComplete, userName, userId }: OnboardingWiz
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({
-                    learningGoal: data.goal,
+                    learningGoal: data.primaryGoal,
                     focusAreas: data.niches,
-                    experienceLevel: data.experience,
-                    weeklyHours: parseInt(data.weeklyHours.split("-")[0]) || 5,
+                    incomeGoal: data.incomeGoal,
+                    timeline: data.timeline,
+                    currentSituation: data.currentSituation,
+                    investmentReadiness: data.investmentReadiness,
+                    obstacles: data.obstacles,
                     phone: data.phone || undefined,
                     location: data.location || undefined,
-                    healthBackground: data.biggestChallenge || undefined,
+                    referralSource: data.referralSource || undefined,
+                    personalMessage: data.personalMessage || undefined,
+                    leadScore: leadScore,
                 }),
             });
         } catch (error) {
@@ -155,13 +352,39 @@ export function OnboardingWizard({ onComplete, userName, userId }: OnboardingWiz
         onComplete(data);
     };
 
-    const stepTitles = [
-        "What brings you here?",
-        "What topics interest you most?",
-        "How experienced are you?",
-        "How much time can you commit?",
-        "Let's stay connected",
-        "What's your biggest challenge?",
+    const stepContent = [
+        {
+            title: `Hey ${userName || "there"}! What's your #1 goal?`,
+            subtitle: "This helps us personalize your learning path"
+        },
+        {
+            title: "What's your income goal?",
+            subtitle: "Be ambitious! We'll show you exactly how to get there"
+        },
+        {
+            title: "When do you want to get started?",
+            subtitle: "We'll help you create a realistic action plan"
+        },
+        {
+            title: "Tell us about your current situation",
+            subtitle: "We've helped thousands of people just like you"
+        },
+        {
+            title: "How do you feel about investing in your education?",
+            subtitle: "Your honest answer helps us serve you better"
+        },
+        {
+            title: "What's been holding you back?",
+            subtitle: "Select all that apply - we have solutions for each"
+        },
+        {
+            title: "What health topics interest you most?",
+            subtitle: "Pick up to 3 - we'll recommend the perfect courses"
+        },
+        {
+            title: "Almost done! A few quick details...",
+            subtitle: "Optional but helps us support you better"
+        },
     ];
 
     return (
@@ -172,46 +395,193 @@ export function OnboardingWizard({ onComplete, userName, userId }: OnboardingWiz
                     <div className="flex items-center justify-between mb-4">
                         <div className="flex items-center gap-2">
                             <Sparkles className="w-5 h-5 text-yellow-300" />
-                            <span className="text-sm font-medium text-white/80">Tell Us About You</span>
+                            <span className="text-sm font-medium text-white/80">Personalization Quiz</span>
                         </div>
                         <span className="text-sm text-white/60">Step {step} of {totalSteps}</span>
                     </div>
-                    <h2 className="text-2xl font-bold mb-2">{stepTitles[step - 1]}</h2>
-                    <Progress value={progress} className="h-2 bg-white/20" />
+                    <h2 className="text-2xl font-bold mb-1">{stepContent[step - 1].title}</h2>
+                    <p className="text-white/70 text-sm">{stepContent[step - 1].subtitle}</p>
+                    <Progress value={progress} className="h-2 bg-white/20 mt-4" />
                 </div>
 
                 {/* Content */}
-                <div className="p-8 overflow-y-auto flex-1">
-                    {/* Step 1: Goal */}
+                <div className="p-6 overflow-y-auto flex-1">
+                    {/* Step 1: Primary Goal */}
                     {step === 1 && (
                         <div className="space-y-3">
-                            {GOALS.map((goal) => (
+                            {PRIMARY_GOALS.map((goal) => (
                                 <button
                                     key={goal.id}
-                                    onClick={() => setData({ ...data, goal: goal.id })}
-                                    className={`w-full flex items-center gap-4 p-4 rounded-xl border-2 transition-all ${data.goal === goal.id
-                                        ? "border-burgundy-500 bg-burgundy-50"
-                                        : "border-gray-200 hover:border-gray-300"
+                                    onClick={() => setData({ ...data, primaryGoal: goal.id })}
+                                    className={`w-full flex items-center gap-4 p-4 rounded-xl border-2 transition-all ${data.primaryGoal === goal.id
+                                        ? "border-burgundy-500 bg-burgundy-50 shadow-md"
+                                        : "border-gray-200 hover:border-gray-300 hover:bg-gray-50"
                                         }`}
                                 >
-                                    <div className={`w-12 h-12 rounded-xl bg-${goal.color}-100 flex items-center justify-center`}>
+                                    <div className={`w-12 h-12 rounded-xl bg-${goal.color}-100 flex items-center justify-center flex-shrink-0`}>
                                         <goal.icon className={`w-6 h-6 text-${goal.color}-600`} />
                                     </div>
-                                    <span className="text-lg font-medium text-gray-900">{goal.label}</span>
-                                    {data.goal === goal.id && (
-                                        <Check className="w-5 h-5 text-burgundy-600 ml-auto" />
+                                    <div className="text-left flex-1">
+                                        <p className="font-semibold text-gray-900">{goal.label}</p>
+                                        <p className="text-sm text-gray-500">{goal.description}</p>
+                                    </div>
+                                    {data.primaryGoal === goal.id && (
+                                        <Check className="w-6 h-6 text-burgundy-600 flex-shrink-0" />
                                     )}
                                 </button>
                             ))}
                         </div>
                     )}
 
-                    {/* Step 2: Niche */}
+                    {/* Step 2: Income Goal */}
                     {step === 2 && (
+                        <div className="space-y-3">
+                            {INCOME_GOALS.map((goal) => (
+                                <button
+                                    key={goal.id}
+                                    onClick={() => setData({ ...data, incomeGoal: goal.id })}
+                                    className={`w-full flex items-center gap-4 p-5 rounded-xl border-2 transition-all ${data.incomeGoal === goal.id
+                                        ? "border-burgundy-500 bg-burgundy-50 shadow-md"
+                                        : "border-gray-200 hover:border-gray-300 hover:bg-gray-50"
+                                        }`}
+                                >
+                                    <span className="text-3xl">{goal.emoji}</span>
+                                    <div className="text-left flex-1">
+                                        <p className="font-semibold text-gray-900 text-lg">{goal.label}</p>
+                                        <p className="text-sm text-gray-500">{goal.description}</p>
+                                    </div>
+                                    {data.incomeGoal === goal.id && (
+                                        <Check className="w-6 h-6 text-burgundy-600 flex-shrink-0" />
+                                    )}
+                                </button>
+                            ))}
+                            <p className="text-center text-sm text-gray-500 mt-4 bg-gold-50 p-3 rounded-lg border border-gold-200">
+                                <TrendingUp className="w-4 h-4 inline mr-1 text-gold-600" />
+                                Our graduates average <span className="font-bold text-burgundy-700">$4,200/month</span> within their first year!
+                            </p>
+                        </div>
+                    )}
+
+                    {/* Step 3: Timeline */}
+                    {step === 3 && (
+                        <div className="space-y-3">
+                            {TIMELINE_OPTIONS.map((option) => (
+                                <button
+                                    key={option.id}
+                                    onClick={() => setData({ ...data, timeline: option.id })}
+                                    className={`w-full flex items-center gap-4 p-5 rounded-xl border-2 transition-all ${data.timeline === option.id
+                                        ? "border-burgundy-500 bg-burgundy-50 shadow-md"
+                                        : "border-gray-200 hover:border-gray-300 hover:bg-gray-50"
+                                        }`}
+                                >
+                                    <span className="text-3xl">{option.emoji}</span>
+                                    <div className="text-left flex-1">
+                                        <p className="font-semibold text-gray-900 text-lg">{option.label}</p>
+                                        <p className="text-sm text-gray-500">{option.description}</p>
+                                    </div>
+                                    {data.timeline === option.id && (
+                                        <Check className="w-6 h-6 text-burgundy-600 flex-shrink-0" />
+                                    )}
+                                </button>
+                            ))}
+                        </div>
+                    )}
+
+                    {/* Step 4: Current Situation */}
+                    {step === 4 && (
+                        <div className="grid grid-cols-2 gap-3">
+                            {CURRENT_SITUATIONS.map((situation) => (
+                                <button
+                                    key={situation.id}
+                                    onClick={() => setData({ ...data, currentSituation: situation.id })}
+                                    className={`flex flex-col items-center gap-2 p-4 rounded-xl border-2 transition-all text-center ${data.currentSituation === situation.id
+                                        ? "border-burgundy-500 bg-burgundy-50 shadow-md"
+                                        : "border-gray-200 hover:border-gray-300 hover:bg-gray-50"
+                                        }`}
+                                >
+                                    <span className="text-3xl">{situation.emoji}</span>
+                                    <p className="font-medium text-gray-900 text-sm">{situation.label}</p>
+                                    <p className="text-xs text-gray-500">{situation.description}</p>
+                                </button>
+                            ))}
+                        </div>
+                    )}
+
+                    {/* Step 5: Investment Readiness */}
+                    {step === 5 && (
+                        <div className="space-y-3">
+                            {INVESTMENT_READINESS.map((option) => (
+                                <button
+                                    key={option.id}
+                                    onClick={() => setData({ ...data, investmentReadiness: option.id })}
+                                    className={`w-full flex items-center gap-4 p-5 rounded-xl border-2 transition-all ${data.investmentReadiness === option.id
+                                        ? "border-burgundy-500 bg-burgundy-50 shadow-md"
+                                        : "border-gray-200 hover:border-gray-300 hover:bg-gray-50"
+                                        }`}
+                                >
+                                    <span className="text-3xl">{option.emoji}</span>
+                                    <div className="text-left flex-1">
+                                        <p className="font-semibold text-gray-900">{option.label}</p>
+                                        <p className="text-sm text-gray-500">{option.description}</p>
+                                    </div>
+                                    {data.investmentReadiness === option.id && (
+                                        <Check className="w-6 h-6 text-burgundy-600 flex-shrink-0" />
+                                    )}
+                                </button>
+                            ))}
+                            <p className="text-center text-sm text-gray-500 mt-4 bg-blue-50 p-3 rounded-lg border border-blue-200">
+                                <Star className="w-4 h-4 inline mr-1 text-blue-600" />
+                                We offer flexible payment plans and scholarships for qualified students!
+                            </p>
+                        </div>
+                    )}
+
+                    {/* Step 6: Obstacles */}
+                    {step === 6 && (
+                        <div className="space-y-4">
+                            <div className="grid grid-cols-2 gap-3">
+                                {OBSTACLES.map((obstacle) => (
+                                    <button
+                                        key={obstacle.id}
+                                        onClick={() => {
+                                            if (data.obstacles.includes(obstacle.id)) {
+                                                setData({ ...data, obstacles: data.obstacles.filter(o => o !== obstacle.id) });
+                                            } else {
+                                                setData({ ...data, obstacles: [...data.obstacles, obstacle.id] });
+                                            }
+                                        }}
+                                        className={`flex items-center gap-3 p-4 rounded-xl border-2 transition-all ${data.obstacles.includes(obstacle.id)
+                                            ? "border-burgundy-500 bg-burgundy-50 shadow-md"
+                                            : "border-gray-200 hover:border-gray-300 hover:bg-gray-50"
+                                            }`}
+                                    >
+                                        <span className="text-2xl">{obstacle.emoji}</span>
+                                        <span className="font-medium text-gray-900 text-sm">{obstacle.label}</span>
+                                        {data.obstacles.includes(obstacle.id) && (
+                                            <Check className="w-5 h-5 text-burgundy-600 ml-auto flex-shrink-0" />
+                                        )}
+                                    </button>
+                                ))}
+                            </div>
+                            {data.obstacles.length > 0 && (
+                                <div className="bg-green-50 p-4 rounded-xl border border-green-200">
+                                    <p className="text-sm text-green-800 flex items-start gap-2">
+                                        <Zap className="w-5 h-5 text-green-600 flex-shrink-0 mt-0.5" />
+                                        <span>
+                                            <strong>Good news!</strong> We've helped over 2,500+ students overcome these exact challenges with our proven system.
+                                        </span>
+                                    </p>
+                                </div>
+                            )}
+                        </div>
+                    )}
+
+                    {/* Step 7: Health Niches */}
+                    {step === 7 && (
                         <div>
-                            <p className="text-gray-500 mb-4">Select all that interest you (choose up to 3)</p>
+                            <p className="text-gray-500 mb-4">Select up to 3 topics that excite you most</p>
                             <div className="flex flex-wrap gap-3">
-                                {NICHES.map((niche) => (
+                                {HEALTH_NICHES.map((niche) => (
                                     <button
                                         key={niche}
                                         onClick={() => {
@@ -222,7 +592,7 @@ export function OnboardingWizard({ onComplete, userName, userId }: OnboardingWiz
                                             }
                                         }}
                                         className={`px-4 py-2.5 rounded-full text-sm font-medium transition-all ${data.niches.includes(niche)
-                                            ? "bg-burgundy-600 text-white"
+                                            ? "bg-burgundy-600 text-white shadow-md"
                                             : "bg-gray-100 text-gray-700 hover:bg-gray-200"
                                             }`}
                                     >
@@ -231,143 +601,88 @@ export function OnboardingWizard({ onComplete, userName, userId }: OnboardingWiz
                                 ))}
                             </div>
                             {data.niches.length > 0 && (
-                                <p className="text-sm text-burgundy-600 mt-4">
-                                    Selected: {data.niches.join(", ")}
-                                </p>
+                                <div className="mt-4 p-3 bg-burgundy-50 border border-burgundy-200 rounded-xl">
+                                    <p className="text-sm text-burgundy-700">
+                                        <strong>Your focus areas:</strong> {data.niches.join(", ")}
+                                    </p>
+                                </div>
                             )}
                         </div>
                     )}
 
-                    {/* Step 3: Experience */}
-                    {step === 3 && (
-                        <div className="space-y-3">
-                            {EXPERIENCE_LEVELS.map((level) => (
-                                <button
-                                    key={level.id}
-                                    onClick={() => setData({ ...data, experience: level.id })}
-                                    className={`w-full flex items-center gap-4 p-5 rounded-xl border-2 transition-all ${data.experience === level.id
-                                        ? "border-burgundy-500 bg-burgundy-50"
-                                        : "border-gray-200 hover:border-gray-300"
-                                        }`}
-                                >
-                                    <span className="text-3xl">{level.emoji}</span>
-                                    <div className="text-left">
-                                        <p className="text-lg font-medium text-gray-900">{level.label}</p>
-                                        <p className="text-sm text-gray-500">{level.description}</p>
-                                    </div>
-                                    {data.experience === level.id && (
-                                        <Check className="w-5 h-5 text-burgundy-600 ml-auto" />
-                                    )}
-                                </button>
-                            ))}
-                        </div>
-                    )}
-
-                    {/* Step 4: Weekly Hours */}
-                    {step === 4 && (
-                        <div className="space-y-3">
-                            <p className="text-gray-500 mb-4">How much time can you dedicate to learning each week?</p>
-                            {WEEKLY_HOURS.map((hours) => (
-                                <button
-                                    key={hours.id}
-                                    onClick={() => setData({ ...data, weeklyHours: hours.id })}
-                                    className={`w-full flex items-center gap-4 p-5 rounded-xl border-2 transition-all ${data.weeklyHours === hours.id
-                                        ? "border-burgundy-500 bg-burgundy-50"
-                                        : "border-gray-200 hover:border-gray-300"
-                                        }`}
-                                >
-                                    <span className="text-3xl">{hours.emoji}</span>
-                                    <div className="text-left">
-                                        <p className="text-lg font-medium text-gray-900">{hours.label}</p>
-                                        <p className="text-sm text-gray-500">{hours.description}</p>
-                                    </div>
-                                    {data.weeklyHours === hours.id && (
-                                        <Check className="w-5 h-5 text-burgundy-600 ml-auto" />
-                                    )}
-                                </button>
-                            ))}
-                        </div>
-                    )}
-
-                    {/* Step 5: Contact Info */}
-                    {step === 5 && (
-                        <div className="space-y-6">
-                            <p className="text-gray-500">We'd love to personalize your experience (optional)</p>
-
-                            <div className="space-y-4">
-                                <div>
-                                    <label className="flex items-center gap-2 text-sm font-medium text-gray-700 mb-2">
-                                        <Phone className="w-4 h-4" />
-                                        Phone Number
-                                    </label>
-                                    <Input
-                                        type="tel"
-                                        placeholder="+1 (555) 000-0000"
-                                        value={data.phone}
-                                        onChange={(e) => setData({ ...data, phone: e.target.value })}
-                                        className="h-12"
-                                    />
-                                </div>
-
-                                <div>
-                                    <label className="flex items-center gap-2 text-sm font-medium text-gray-700 mb-2">
-                                        <MapPin className="w-4 h-4" />
-                                        Where are you based?
-                                    </label>
-                                    <Input
-                                        type="text"
-                                        placeholder="City, Country"
-                                        value={data.location}
-                                        onChange={(e) => setData({ ...data, location: e.target.value })}
-                                        className="h-12"
-                                    />
-                                </div>
-
-                                <div>
-                                    <label className="flex items-center gap-2 text-sm font-medium text-gray-700 mb-2">
-                                        <Globe className="w-4 h-4" />
-                                        How did you hear about us?
-                                    </label>
-                                    <div className="flex flex-wrap gap-2">
-                                        {REFERRAL_SOURCES.map((source) => (
-                                            <button
-                                                key={source}
-                                                onClick={() => setData({ ...data, referralSource: source })}
-                                                className={`px-3 py-1.5 rounded-full text-sm font-medium transition-all ${data.referralSource === source
-                                                    ? "bg-burgundy-600 text-white"
-                                                    : "bg-gray-100 text-gray-700 hover:bg-gray-200"
-                                                    }`}
-                                            >
-                                                {source}
-                                            </button>
-                                        ))}
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    )}
-
-                    {/* Step 6: Biggest Challenge */}
-                    {step === 6 && (
-                        <div className="space-y-6">
+                    {/* Step 8: Contact & Final */}
+                    {step === 8 && (
+                        <div className="space-y-5">
                             <div>
-                                <p className="text-gray-500 mb-4">
-                                    This helps us personalize your learning experience
-                                </p>
-                                <Textarea
-                                    placeholder="e.g., I want to help clients with gut health but don't know where to start..."
-                                    value={data.biggestChallenge}
-                                    onChange={(e) => setData({ ...data, biggestChallenge: e.target.value })}
-                                    rows={5}
-                                    className="resize-none text-lg"
+                                <label className="flex items-center gap-2 text-sm font-medium text-gray-700 mb-2">
+                                    <Phone className="w-4 h-4" />
+                                    WhatsApp / Phone (for support)
+                                </label>
+                                <Input
+                                    type="tel"
+                                    placeholder="+1 (555) 000-0000"
+                                    value={data.phone}
+                                    onChange={(e) => setData({ ...data, phone: e.target.value })}
+                                    className="h-12"
                                 />
+                            </div>
+
+                            <div>
+                                <label className="flex items-center gap-2 text-sm font-medium text-gray-700 mb-2">
+                                    <MapPin className="w-4 h-4" />
+                                    Location
+                                </label>
+                                <Input
+                                    type="text"
+                                    placeholder="City, Country"
+                                    value={data.location}
+                                    onChange={(e) => setData({ ...data, location: e.target.value })}
+                                    className="h-12"
+                                />
+                            </div>
+
+                            <div>
+                                <label className="flex items-center gap-2 text-sm font-medium text-gray-700 mb-2">
+                                    <Globe className="w-4 h-4" />
+                                    How did you discover us?
+                                </label>
+                                <Input
+                                    type="text"
+                                    placeholder="Google, Instagram, friend referral, etc."
+                                    value={data.referralSource}
+                                    onChange={(e) => setData({ ...data, referralSource: e.target.value })}
+                                    className="h-12"
+                                />
+                            </div>
+
+                            <div>
+                                <label className="flex items-center gap-2 text-sm font-medium text-gray-700 mb-2">
+                                    <Heart className="w-4 h-4" />
+                                    Anything else you'd like us to know?
+                                </label>
+                                <Textarea
+                                    placeholder="Share your story, questions, or what you're most excited about..."
+                                    value={data.personalMessage}
+                                    onChange={(e) => setData({ ...data, personalMessage: e.target.value })}
+                                    rows={3}
+                                    className="resize-none"
+                                />
+                            </div>
+
+                            <div className="bg-gradient-to-r from-gold-50 to-amber-50 p-4 rounded-xl border border-gold-200">
+                                <p className="text-sm text-amber-800 flex items-start gap-2">
+                                    <Award className="w-5 h-5 text-gold-600 flex-shrink-0 mt-0.5" />
+                                    <span>
+                                        <strong>Your personalized dashboard is almost ready!</strong> Click finish to see your custom learning path and exclusive offers.
+                                    </span>
+                                </p>
                             </div>
                         </div>
                     )}
                 </div>
 
                 {/* Footer */}
-                <div className="px-8 pb-8 flex items-center justify-between flex-shrink-0 bg-white border-t border-gray-100 pt-4">
+                <div className="px-6 pb-6 flex items-center justify-between flex-shrink-0 bg-white border-t border-gray-100 pt-4">
                     <div>
                         {step > 1 && (
                             <Button
@@ -379,7 +694,7 @@ export function OnboardingWizard({ onComplete, userName, userId }: OnboardingWiz
                         )}
                     </div>
                     <div className="flex gap-3">
-                        {step >= 5 && (
+                        {step === 8 && (
                             <Button
                                 variant="ghost"
                                 onClick={handleSkip}
@@ -390,11 +705,11 @@ export function OnboardingWizard({ onComplete, userName, userId }: OnboardingWiz
                         <Button
                             onClick={handleNext}
                             disabled={!canProceed()}
-                            className="bg-burgundy-600 hover:bg-burgundy-700 px-6"
+                            className="bg-burgundy-600 hover:bg-burgundy-700 px-6 py-5 text-base"
                         >
                             {step === totalSteps ? (
                                 <>
-                                    Done <ArrowRight className="w-4 h-4 ml-2" />
+                                    Finish & See My Dashboard <Sparkles className="w-4 h-4 ml-2" />
                                 </>
                             ) : (
                                 <>

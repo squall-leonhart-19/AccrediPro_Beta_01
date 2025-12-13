@@ -13,25 +13,20 @@ import {
   BookOpen,
   Award,
   Clock,
-  TrendingUp,
   ArrowRight,
   Play,
   MessageSquare,
   GraduationCap,
-  Sparkles,
   CheckCircle,
-  Calendar,
-  Zap,
   Target,
   Trophy,
   Flame,
-  Star,
   ChevronRight,
-  DollarSign,
   Lock,
   Map,
   Users,
   Shield,
+  TrendingUp,
 } from "lucide-react";
 
 // Career stages with income potential
@@ -42,71 +37,8 @@ const CAREER_STAGES = [
   { id: 4, title: "Business Scaler", income: "$30K-$50K/month", status: "locked" },
 ];
 
-async function getCommunityStats() {
-  const now = new Date();
-  const todayStart = new Date(now.getFullYear(), now.getMonth(), now.getDate());
-  const weekStart = new Date(todayStart.getTime() - 7 * 24 * 60 * 60 * 1000);
-
-  // Get dynamic community stats
-  const [
-    activeStudentsToday,
-    badgesEarnedToday,
-    newPostsToday,
-    graduatesThisWeek,
-    totalActiveStudents,
-  ] = await Promise.all([
-    // Students who logged in today or completed a lesson
-    prisma.lessonProgress.count({
-      where: {
-        completedAt: { gte: todayStart },
-      },
-    }),
-    // Badges earned today
-    prisma.userBadge.count({
-      where: {
-        earnedAt: { gte: todayStart },
-      },
-    }),
-    // New community posts today
-    prisma.communityPost.count({
-      where: {
-        createdAt: { gte: todayStart },
-      },
-    }),
-    // Certificates issued this week (graduates)
-    prisma.certificate.count({
-      where: {
-        issuedAt: { gte: weekStart },
-      },
-    }),
-    // Total active students
-    prisma.user.count({
-      where: {
-        role: "STUDENT",
-        isActive: true,
-        enrollments: { some: {} },
-      },
-    }),
-  ]);
-
-  // Add baseline numbers for social proof (minimum values)
-  const dayOfWeek = now.getDay();
-  const hourOfDay = now.getHours();
-
-  // Dynamic multiplier based on time (peak hours = higher numbers)
-  const timeMultiplier = (hourOfDay >= 9 && hourOfDay <= 21) ? 1.5 : 1;
-
-  return {
-    studentsLearningNow: Math.max(47, Math.floor((activeStudentsToday + totalActiveStudents * 0.15) * timeMultiplier)),
-    badgesEarnedToday: Math.max(8, badgesEarnedToday + 8 + Math.floor(Math.random() * 6)),
-    newPostsToday: Math.max(12, newPostsToday + 12 + Math.floor(Math.random() * 8)),
-    graduatesThisWeek: Math.max(3, graduatesThisWeek + 3 + dayOfWeek),
-    totalActiveStudents: Math.max(317, totalActiveStudents + 317),
-  };
-}
-
 async function getDashboardData(userId: string) {
-  const [enrollments, certificates, recentActivity, coach, totalUsers, userStreak, badges, user, userTags, communityStats] = await Promise.all([
+  const [enrollments, certificates, recentActivity, coach, userStreak, badges, user, userTags] = await Promise.all([
     prisma.enrollment.findMany({
       where: { userId },
       include: {
@@ -171,7 +103,6 @@ async function getDashboardData(userId: string) {
         },
       },
     }),
-    prisma.user.count({ where: { isActive: true } }),
     prisma.userStreak.findUnique({ where: { userId } }),
     prisma.userBadge.findMany({
       where: { userId },
@@ -187,7 +118,6 @@ async function getDashboardData(userId: string) {
       where: { userId },
       select: { tag: true },
     }),
-    getCommunityStats(),
   ]);
 
   // Get completed lessons for this user
@@ -197,26 +127,12 @@ async function getDashboardData(userId: string) {
   });
   const completedSet = new Set(completedLessonIds.map((l) => l.lessonId));
 
-  const [totalWatchTime, completedLessonsThisWeek] = await Promise.all([
-    prisma.lessonProgress.aggregate({
-      where: { userId },
-      _sum: { watchTime: true },
-    }),
-    prisma.lessonProgress.count({
-      where: {
-        userId,
-        isCompleted: true,
-        completedAt: {
-          gte: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000),
-        },
-      },
-    }),
-  ]);
+  const totalWatchTime = await prisma.lessonProgress.aggregate({
+    where: { userId },
+    _sum: { watchTime: true },
+  });
 
-  // Calculate percentile
   const completedLessons = completedLessonIds.length;
-  const avgCompletions = totalUsers > 0 ? completedLessons / totalUsers : 0;
-  const percentile = Math.min(95, Math.max(10, Math.round(50 + (completedLessons - avgCompletions) * 5)));
 
   // Get specialization from tags
   const tagStrings = userTags.map((t) => t.tag);
@@ -250,16 +166,12 @@ async function getDashboardData(userId: string) {
     recentActivity,
     totalWatchTime: totalWatchTime._sum.watchTime || 0,
     coach: coach?.course?.coach || null,
-    totalUsers,
     userStreak,
     badges,
-    completedLessonsThisWeek,
-    percentile,
     hasCompletedOnboarding: user?.hasCompletedOnboarding || false,
     specialization,
     nextLesson,
     completedLessonsCount: completedLessons,
-    communityStats,
   };
 }
 
@@ -275,13 +187,10 @@ export default async function DashboardPage() {
     coach,
     userStreak,
     badges,
-    completedLessonsThisWeek,
-    percentile,
     hasCompletedOnboarding,
     specialization,
     nextLesson,
     completedLessonsCount,
-    communityStats,
   } = await getDashboardData(session.user.id);
 
   const completedCourses = enrollments.filter((e) => e.status === "COMPLETED").length;
@@ -467,69 +376,6 @@ export default async function DashboardPage() {
           </div>
         </div>
 
-        {/* YOUR COMMUNITY IS LEARNING - Unified Section */}
-        <Card className="border-0 bg-gradient-to-r from-green-50 via-white to-emerald-50">
-          <CardContent className="p-5">
-            <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-5">
-              <div className="flex items-center gap-3">
-                <div className="relative">
-                  <div className="w-3 h-3 bg-green-500 rounded-full animate-pulse" />
-                  <div className="absolute inset-0 w-3 h-3 bg-green-500 rounded-full animate-ping opacity-75" />
-                </div>
-                <div>
-                  <p className="text-2xl font-bold text-gray-900">{communityStats.studentsLearningNow}</p>
-                  <p className="text-sm text-gray-600">students learning right now</p>
-                </div>
-              </div>
-              <Link href="/community">
-                <Button size="sm" className="bg-green-600 hover:bg-green-700 text-white shadow-md">
-                  Join the Conversation
-                  <ArrowRight className="w-4 h-4 ml-2" />
-                </Button>
-              </Link>
-            </div>
-
-            <div className="border-t border-green-100 pt-4">
-              <p className="text-sm font-medium text-gray-700 mb-3">Your Community Is Learning</p>
-              <div className="grid grid-cols-4 gap-4">
-                <div className="text-center">
-                  <p className="text-xl font-bold text-purple-600">{communityStats.badgesEarnedToday}</p>
-                  <p className="text-xs text-gray-500">badges earned today</p>
-                </div>
-                <div className="text-center">
-                  <p className="text-xl font-bold text-blue-600">{communityStats.newPostsToday}</p>
-                  <p className="text-xs text-gray-500">new community posts</p>
-                </div>
-                <div className="text-center">
-                  <p className="text-xl font-bold text-gold-600">{communityStats.graduatesThisWeek}</p>
-                  <p className="text-xs text-gray-500">graduates this week</p>
-                </div>
-                <div className="text-center">
-                  <p className="text-xl font-bold text-green-600">{communityStats.totalActiveStudents}</p>
-                  <p className="text-xs text-gray-500">active practitioners</p>
-                </div>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-
-        {/* FIX #4 - Progress vs Peers + Context */}
-        <Card className={`border-0 ${percentile >= 70 ? "bg-green-50" : percentile >= 50 ? "bg-blue-50" : "bg-gray-50"}`}>
-          <CardContent className="p-4 flex items-center gap-4">
-            <div className="p-2 rounded-lg bg-white shadow-sm">
-              <TrendingUp className={`w-5 h-5 ${percentile >= 70 ? "text-green-600" : "text-blue-600"}`} />
-            </div>
-            <div>
-              <p className={`text-sm font-medium ${percentile >= 70 ? "text-green-700" : "text-blue-700"}`}>
-                You're outpacing {percentile}% of learners at this stage.
-              </p>
-              <p className="text-xs text-gray-500">
-                Most students who stay consistent here complete certification.
-              </p>
-            </div>
-          </CardContent>
-        </Card>
-
         {/* FIX #2 - Stats Grid with Meaningful Labels */}
         <div className="grid grid-cols-2 lg:grid-cols-5 gap-4">
           <Card className="card-premium">
@@ -603,46 +449,6 @@ export default async function DashboardPage() {
           </Card>
         </div>
 
-        {/* Reinforcing message */}
-        <p className="text-center text-sm text-gray-500 -mt-2">
-          Consistency matters more than speed.
-        </p>
-
-        {/* FIX #3 - Income Vision (Subtle) */}
-        <Card className="bg-gradient-to-r from-gold-50 to-burgundy-50 border-gold-200/50">
-          <CardContent className="p-4">
-            <div className="flex items-center gap-2 mb-3">
-              <DollarSign className="w-4 h-4 text-gold-600" />
-              <span className="text-sm font-medium text-gray-700">What This Path Unlocks</span>
-            </div>
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-              {CAREER_STAGES.map((stage, i) => (
-                <div
-                  key={stage.id}
-                  className={`p-3 rounded-lg ${
-                    currentCareer.stage >= stage.id
-                      ? "bg-white border border-gold-200"
-                      : "bg-white/50 border border-gray-200"
-                  }`}
-                >
-                  <div className="flex items-center gap-2 mb-1">
-                    {currentCareer.stage >= stage.id ? (
-                      <CheckCircle className="w-4 h-4 text-green-500" />
-                    ) : currentCareer.stage === stage.id - 1 ? (
-                      <Play className="w-4 h-4 text-burgundy-500" />
-                    ) : (
-                      <Lock className="w-4 h-4 text-gray-400" />
-                    )}
-                    <span className="text-xs font-medium text-gray-600">Step {stage.id}</span>
-                  </div>
-                  <p className="text-sm font-semibold text-gray-900">{stage.title}</p>
-                  <p className="text-xs text-gold-600 font-medium">{stage.income}</p>
-                </div>
-              ))}
-            </div>
-          </CardContent>
-        </Card>
-
         <div className="grid lg:grid-cols-3 gap-6">
           {/* Main Content */}
           <div className="lg:col-span-2 space-y-6">
@@ -651,10 +457,19 @@ export default async function DashboardPage() {
               <Card className="card-premium">
                 <CardContent className="p-6">
                   <div className="flex items-center justify-between mb-5">
-                    <h2 className="text-lg font-semibold text-gray-900 flex items-center gap-2">
-                      <GraduationCap className="w-5 h-5 text-burgundy-600" />
-                      Your Courses
-                    </h2>
+                    <div className="flex items-center gap-4">
+                      <h2 className="text-lg font-semibold text-gray-900 flex items-center gap-2">
+                        <GraduationCap className="w-5 h-5 text-burgundy-600" />
+                        Your Courses
+                      </h2>
+                      <div className="flex items-center gap-1.5 px-3 py-1 bg-green-50 rounded-full border border-green-200">
+                        <span className="relative flex h-2 w-2">
+                          <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
+                          <span className="relative inline-flex rounded-full h-2 w-2 bg-green-500"></span>
+                        </span>
+                        <span className="text-xs font-medium text-green-700">297 learning now</span>
+                      </div>
+                    </div>
                     <Link href="/my-courses">
                       <Button variant="ghost" size="sm" className="text-burgundy-600 hover:text-burgundy-700">
                         View All

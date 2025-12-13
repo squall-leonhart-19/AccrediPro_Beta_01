@@ -29,26 +29,27 @@ import {
   Package,
   Trophy,
   Flame,
+  ShoppingBag,
 } from "lucide-react";
 import { useState, useTransition } from "react";
 
 const navItems = [
-  { href: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
-  { href: "/start-here", label: "Start Here", icon: GraduationCap },
-  { href: "/my-courses", label: "My Courses", icon: BookOpen },
-  { href: "/courses", label: "Catalog", icon: Library },
-  { href: "/roadmap", label: "Your Roadmap", icon: Map },
-  { href: "/career-center", label: "Career Center", icon: Briefcase },
-  { href: "/programs", label: "Client Program Library", icon: Package },
-  { href: "/community", label: "Community", icon: Users },
-  { href: "/messages", label: "Private Mentor Chat", icon: MessageSquare, notificationKey: "messages" as const },
-  { href: "/challenges", label: "Challenges", icon: Flame },
-  { href: "/gamification", label: "XP & Levels", icon: Trophy },
-  { href: "/certificates", label: "Certificates", icon: Award },
-  { href: "/my-library", label: "My Library", icon: Library },
-  { href: "/training", label: "Training", icon: GraduationCap },
-  { href: "/help", label: "Help & Support", icon: HelpCircle },
-  { href: "/profile", label: "Profile", icon: User },
+  { href: "/dashboard", label: "Dashboard", icon: LayoutDashboard, tourId: "dashboard" },
+  { href: "/start-here", label: "Start Here", icon: GraduationCap, tourId: "start-here" },
+  { href: "/my-courses", label: "My Courses", icon: BookOpen, tourId: "my-courses" },
+  { href: "/courses", label: "Catalog", icon: Library, tourId: "catalog" },
+  { href: "/roadmap", label: "Your Roadmap", icon: Map, tourId: "roadmap" },
+  { href: "/career-center", label: "Career Center", icon: Briefcase, tourId: "career-center" },
+  { href: "/programs", label: "Client Program Library", icon: Package, tourId: "programs" },
+  { href: "/community", label: "Community", icon: Users, tourId: "community" },
+  { href: "/messages", label: "Private Mentor Chat", icon: MessageSquare, notificationKey: "messages" as const, tourId: "messages" },
+  { href: "/challenges", label: "Challenges", icon: Flame, tourId: "challenges" },
+  { href: "/certificates", label: "Certificates", icon: Award, tourId: "certificates" },
+  { href: "/my-library", label: "My Library", icon: Library, tourId: "my-library" },
+  { href: "/ebooks", label: "Professional Library", icon: ShoppingBag, tourId: "ebooks" },
+  { href: "/training", label: "Training", icon: GraduationCap, tourId: "training" },
+  { href: "/help", label: "Help & Support", icon: HelpCircle, tourId: "help" },
+  { href: "/profile", label: "My Account", icon: User, tourId: "profile" },
 ];
 
 const coachNavItems = [
@@ -119,6 +120,7 @@ export function DashboardNav() {
                 key={item.href}
                 onClick={() => handleNavigation(item.href)}
                 disabled={isPending}
+                data-tour={item.tourId}
                 className={cn(
                   "w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-all duration-150 relative",
                   isActive
@@ -302,6 +304,7 @@ export function DashboardNav() {
                 <button
                   key={item.href}
                   onClick={() => handleNavigation(item.href)}
+                  data-tour={`mobile-${item.tourId}`}
                   className={cn(
                     "w-full flex items-center gap-3 px-4 py-3.5 rounded-xl text-base font-medium transition-all",
                     isActive

@@ -342,15 +342,59 @@ export function ChallengesClient({ challenges, userId }: ChallengesClientProps) 
     // Handle adding free guide to library
     const handleAddToLibrary = async () => {
         setAddingGuide(true);
-        // Simulate adding to library (in production, this would be an API call)
-        setTimeout(() => {
-            setGuideAdded(true);
+        try {
+            const response = await fetch("/api/user/library", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    resourceId: "fm-practitioner-decision-guide",
+                    resourceType: "free-guide"
+                })
+            });
+
+            if (response.ok) {
+                setGuideAdded(true);
+                // Also store in localStorage for immediate UI feedback
+                localStorage.setItem("fm-decision-guide-added", "true");
+            } else {
+                console.error("Failed to add guide to library");
+            }
+        } catch (error) {
+            console.error("Error adding guide to library:", error);
+        } finally {
             setAddingGuide(false);
-        }, 1000);
+        }
     };
 
+    // Check if guide was already added on mount
+    useEffect(() => {
+        const checkGuideStatus = async () => {
+            // First check localStorage for immediate feedback
+            if (localStorage.getItem("fm-decision-guide-added") === "true") {
+                setGuideAdded(true);
+                return;
+            }
+
+            // Then verify with API
+            try {
+                const response = await fetch("/api/user/library?resourceId=fm-practitioner-decision-guide");
+                if (response.ok) {
+                    const data = await response.json();
+                    if (data.hasResource) {
+                        setGuideAdded(true);
+                        localStorage.setItem("fm-decision-guide-added", "true");
+                    }
+                }
+            } catch (error) {
+                console.error("Error checking guide status:", error);
+            }
+        };
+
+        checkGuideStatus();
+    }, []);
+
     return (
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div className="px-4 sm:px-6 lg:px-8 py-8">
             {/* Hero Section */}
             <div className="relative mb-8 bg-gradient-to-br from-burgundy-900 via-burgundy-800 to-purple-900 rounded-3xl overflow-hidden">
                 {/* Background Effects */}
@@ -761,7 +805,7 @@ export function ChallengesClient({ challenges, userId }: ChallengesClientProps) 
                                                                     Enroll in Full Certification — $997
                                                                 </Button>
                                                             </Link>
-                                                            <Button variant="outline" className="border-white/30 text-white hover:bg-white/10">
+                                                            <Button className="bg-white/10 border border-white/30 text-white hover:bg-white/20">
                                                                 <MessageSquare className="w-4 h-4 mr-2" />
                                                                 Talk to Coach Sarah First
                                                             </Button>
@@ -966,8 +1010,7 @@ export function ChallengesClient({ challenges, userId }: ChallengesClientProps) 
                                     </Button>
                                     <Button
                                         size="lg"
-                                        variant="outline"
-                                        className="border-white/30 text-white hover:bg-white/10"
+                                        className="bg-white/10 border border-white/30 text-white hover:bg-white/20"
                                     >
                                         <MessageSquare className="w-5 h-5 mr-2" /> Ask Coach Sarah
                                     </Button>

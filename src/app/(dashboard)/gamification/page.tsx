@@ -95,7 +95,7 @@ export default function GamificationPage() {
 
     return (
         <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-purple-50/30">
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+            <div className="px-4 sm:px-6 lg:px-8 py-8">
 
                 {/* Hero Header - AccrediPro Branded */}
                 <div className="relative mb-8 bg-gradient-to-r from-burgundy-700 via-burgundy-600 to-burgundy-800 rounded-3xl p-8 md:p-12 text-white overflow-hidden">

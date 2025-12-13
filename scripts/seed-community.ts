@@ -2155,7 +2155,7 @@ async function main() {
   let sarah = await prisma.user.findFirst({
     where: {
       OR: [
-        { email: "coach@accredipro.com" },
+        { email: "coach@accredipro-certificate.com" },
         { role: "MENTOR" },
         { role: "ADMIN" },
       ],
@@ -2167,7 +2167,7 @@ async function main() {
     const password = await bcrypt.hash('Coach123!', 12);
     sarah = await prisma.user.create({
       data: {
-        email: 'coach@accredipro.com',
+        email: 'coach@accredipro-certificate.com',
         passwordHash: password,
         firstName: 'Dr. Sarah',
         lastName: 'Mitchell',

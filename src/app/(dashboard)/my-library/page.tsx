@@ -47,6 +47,7 @@ const MY_EBOOKS = [
         title: "The Practitioner Reality Playbook",
         subtitle: "What They Don't Teach in Certification Programs",
         description: "The real-world guide for new functional medicine practitioners. Covers everything from setting up your practice to handling difficult clients, managing boundaries, and building sustainable income.",
+        valueProp: "The #1 reason new practitioners fail—and how to avoid it.",
         author: "AccrediPro Academy",
         pages: 52,
         icon: "📘",
@@ -54,6 +55,8 @@ const MY_EBOOKS = [
         topics: ["Practice Setup", "Client Management", "Boundaries", "Business Basics"],
         readTime: "2-3 hours",
         unlockedDate: "2024-11-15",
+        isFree: true,
+        unlockCondition: "Mini Diploma Graduate or Challenge Day 1",
         chapters: [
             {
                 title: "Introduction: The Reality Nobody Talks About",
@@ -927,834 +930,11 @@ Welcome to the practitioner life. You've got this.`
         ]
     },
     {
-        id: "gut-health-practitioner",
-        title: "Gut Health Protocol Guide",
-        subtitle: "Advanced Strategies for Practitioners",
-        description: "Deep-dive into gut health protocols. Covers SIBO, dysbiosis, leaky gut, and more with specific testing and treatment approaches.",
-        author: "AccrediPro Academy",
-        pages: 62,
-        icon: "🍃",
-        category: "gut",
-        topics: ["SIBO", "Dysbiosis", "Leaky Gut", "Testing", "Protocols"],
-        readTime: "3-4 hours",
-        unlockedDate: "2024-11-20",
-        chapters: [
-            {
-                title: "Introduction to Gut Health in Practice",
-                readTime: "8 min",
-                content: `Gut health is the foundation of almost everything you'll address as a functional medicine practitioner. Up to 70% of clients present with digestive complaints—whether that's their primary concern or a secondary issue they "just live with."
-
-This guide will help you:
-• Confidently assess and address common gut conditions
-• Interpret functional testing (stool, breath, bloodwork)
-• Design effective protocols that get results
-• Know when you're in over your head and need to refer
-
-THE GUT-EVERYTHING CONNECTION
-
-Gut dysfunction impacts:
-• Immune function (70%+ of immune system is in the gut)
-• Mood and cognition (gut-brain axis)
-• Hormones (especially estrogen metabolism)
-• Energy and nutrient status
-• Skin health
-• Inflammation systemically
-
-When in doubt, start with the gut.
-
----
-
-SCOPE CHECK: WHAT YOU CAN AND CAN'T DO
-
-You CAN:
-• Recommend dietary changes
-• Suggest supplements (within scope)
-• Order and interpret functional tests (if trained)
-• Support lifestyle modifications
-• Work alongside medical providers
-
-You CANNOT:
-• Diagnose disease
-• Prescribe medications
-• Treat without appropriate assessment
-• Work outside your training
-
-When something is beyond your scope, refer. A good referral builds trust.`
-            },
-            {
-                title: "Chapter 1: Comprehensive Gut Assessment",
-                readTime: "15 min",
-                content: `THE ASSESSMENT FLOW
-
-Before you can help, you need to understand. A thorough assessment includes:
-
-1. DETAILED SYMPTOM HISTORY
-• When did symptoms start?
-• What makes them better/worse?
-• Frequency and severity
-• Impact on daily life
-• Previous testing and treatments
-
-2. DIETARY ASSESSMENT
-• Current diet (food diary if possible)
-• Food sensitivities/reactions
-• Eating patterns (speed, timing, stress)
-• Hydration status
-• Recent dietary changes
-
-3. LIFESTYLE FACTORS
-• Stress levels and management
-• Sleep quality and quantity
-• Movement/exercise
-• Work and home environment
-• Travel history
-
-4. MEDICAL HISTORY
-• Medication history (especially antibiotics, PPIs, NSAIDs)
-• Surgical history (especially abdominal)
-• Previous diagnoses
-• Family history
-
-5. RED FLAGS TO REFER
-• Unintended weight loss (>10% body weight)
-• Blood in stool
-• New onset symptoms over 50
-• Severe or progressive symptoms
-• Symptoms that wake from sleep
-• Signs of obstruction
-
----
-
-KEY QUESTIONS TO ASK
-
-Stool patterns:
-"What does a typical bowel movement look like for you? How often? Any changes in color, consistency, or urgency?"
-
-Bloating:
-"When does bloating happen? After eating specific foods? All the time? Does it get better overnight?"
-
-Pain:
-"Where exactly is the pain? What does it feel like? What brings it on? What relieves it?"
-
-History:
-"When was the last time you felt really good digestively? What changed?"
-
-Food reactions:
-"Are there specific foods you avoid? What happens when you eat them?"
-
----
-
-THE BRISTOL STOOL CHART
-
-Essential tool for client conversations:
-• Type 1-2: Constipation
-• Type 3-4: Optimal
-• Type 5-7: Diarrhea
-
-Teach your clients to recognize their patterns. This becomes valuable data.
-
----
-
-DOCUMENTING YOUR ASSESSMENT
-
-Good documentation protects you and helps track progress.
-
-Include:
-• Chief complaint
-• Symptom timeline
-• Assessment findings
-• Working hypothesis
-• Plan with rationale
-• Follow-up timeline
-• Any referrals made
-
-Keep notes organized and accessible. You'll thank yourself later.`
-            },
-            {
-                title: "Chapter 2: SIBO - Assessment and Protocols",
-                readTime: "18 min",
-                content: `WHAT IS SIBO?
-
-Small Intestinal Bacterial Overgrowth (SIBO) occurs when bacteria that normally live in the large intestine migrate to the small intestine. This causes:
-• Fermentation of food in the wrong place
-• Nutrient malabsorption
-• Bloating, gas, altered bowel habits
-• Systemic symptoms (brain fog, fatigue, skin issues)
-
-SIBO is one of the most common underlying causes of IBS-like symptoms.
-
----
-
-TYPES OF SIBO
-
-Hydrogen-dominant:
-• Associated with diarrhea
-• Often responds faster to treatment
-
-Methane-dominant (now called IMO):
-• Associated with constipation
-• Can be more stubborn to treat
-• Often requires different interventions
-
-Hydrogen sulfide:
-• Emerging research
-• May cause different symptom patterns
-• Testing is newer and less standardized
-
-Many clients have mixed types.
-
----
-
-TESTING FOR SIBO
-
-Lactulose breath test:
-• Most common SIBO test
-• Measures hydrogen and methane over 2-3 hours
-• Requires proper preparation (24-hour prep diet)
-• Interpretation requires training
-
-Positive results:
-• Hydrogen rise >20 ppm within 90 minutes
-• Methane >10 ppm at any point
-• Early peak followed by second peak
-
-Limitations:
-• False negatives occur
-• Doesn't test for hydrogen sulfide directly
-• Timing and prep matter significantly
-
-When to test:
-• Bloating worse after eating
-• Symptoms improve with fasting
-• Previous antibiotic history
-• Post-infectious IBS pattern
-• Chronic symptoms despite dietary changes
-
----
-
-SIBO PROTOCOLS
-
-The 4-Phase Approach:
-
-PHASE 1: PREPARATION (1-2 weeks)
-• Support digestion (bitters, enzymes)
-• Basic gut-supportive diet
-• Address constipation if present
-• Ensure proper bowel transit
-
-PHASE 2: ERADICATION (2-6 weeks)
-• Antimicrobial herbs OR
-• Elemental diet OR
-• Work with MD for rifaximin (prescription)
-
-Common herbal protocols:
-Option A:
-• Berberine 500mg 2-3x daily
-• Oregano oil 200mg 2x daily
-• With meals for 4-6 weeks
-
-Option B:
-• Allicin (garlic) 450mg 2x daily
-• Neem 300mg 2x daily
-• For 4-6 weeks
-
-For methane:
-Add:
-• Atrantil 2 caps 3x daily
-• Or allicin specifically
-
-PHASE 3: REPAIR (4-8 weeks)
-• L-glutamine 5-10g daily
-• Zinc carnosine 75-150mg daily
-• Aloe vera
-• Collagen peptides
-• Anti-inflammatory diet
-
-PHASE 4: PREVENTION
-• Meal spacing (4-5 hours between meals)
-• Prokinetics (ginger, MotilPro)
-• Stress management
-• Address underlying cause
-
----
-
-COMMON PITFALLS
-
-• Treating without testing (you don't know what you're fighting)
-• Not addressing root cause (SIBO recurs without this)
-• Too aggressive treatment (die-off can be debilitating)
-• Skipping the prevention phase
-• Not allowing enough time
-
-SIBO is a marathon, not a sprint. Set expectations accordingly.`
-            },
-            {
-                title: "Chapter 3: The 5R Protocol",
-                readTime: "15 min",
-                content: `THE 5R FRAMEWORK
-
-The 5R protocol is the foundational approach for gut healing. Each step builds on the previous.
-
----
-
-1. REMOVE
-
-What to remove:
-• Food triggers (elimination diet if needed)
-• Pathogens (SIBO, yeast, parasites)
-• Medications if possible (work with MD)
-• Environmental toxins
-• Stressors
-
-How to identify what to remove:
-• Elimination diet (gold standard for food triggers)
-• Functional testing (stool, breath test)
-• Symptom tracking
-• Sometimes trial and error
-
-Common culprits:
-• Gluten
-• Dairy
-• Refined sugar
-• Processed foods
-• Excessive alcohol
-• NSAIDs
-
-Timeline: 2-4 weeks for basic removal, longer for pathogen eradication
-
----
-
-2. REPLACE
-
-What may need replacing:
-• Digestive enzymes (if not making enough)
-• Stomach acid (if hypochlorhydria)
-• Bile support (if fat maldigestion)
-
-Signs replacement is needed:
-• Bloating/fullness after meals
-• Undigested food in stool
-• Fatty/floating stools
-• Deficient in fat-soluble vitamins
-
-Options:
-• Digestive bitters before meals
-• Broad-spectrum enzymes with meals
-• Betaine HCl (with testing protocol)
-• Ox bile for fat digestion
-
-Timeline: Ongoing with meals as needed
-
----
-
-3. REINOCULATE
-
-Goal: Restore healthy microbiome diversity
-
-Approaches:
-• Probiotic supplements
-• Fermented foods
-• Prebiotic fibers
-• Diet diversity
-
-Probiotic selection:
-• Start low, go slow
-• Multi-strain formulas for general support
-• Specific strains for specific conditions
-• Quality matters (stability, viability)
-
-Prebiotic foods:
-• Garlic, onion, leeks
-• Asparagus, artichoke
-• Bananas (especially green)
-• Oats, flaxseed
-
-Note: If SIBO is present, prebiotics may need to wait until after eradication.
-
-Timeline: 4-12 weeks, sometimes ongoing
-
----
-
-4. REPAIR
-
-Goal: Heal the gut lining
-
-Key nutrients:
-• L-glutamine (5-10g daily) - primary fuel for enterocytes
-• Zinc carnosine (75-150mg daily) - mucosal healing
-• Collagen/bone broth - gut lining support
-• Omega-3s - anti-inflammatory
-• Vitamin D - epithelial integrity
-• Aloe vera - soothing and healing
-• Marshmallow root, slippery elm - mucosal support
-
-Signs lining needs repair:
-• Food sensitivities (especially new ones)
-• Systemic inflammation
-• Autoimmune patterns
-• Multiple food reactions
-• Positive zonulin or LPS antibodies
-
-Timeline: 4-12 weeks minimum, often 3-6 months
-
----
-
-5. REBALANCE
-
-Address lifestyle factors:
-• Stress management (crucial!)
-• Sleep optimization
-• Movement/exercise
-• Mind-body practices
-• Social connection
-
-Why this matters:
-• Gut-brain axis is bidirectional
-• Stress directly impacts gut motility and secretions
-• Chronic stress prevents healing
-• Lifestyle factors are often the root cause
-
-Practical interventions:
-• Vagal toning (breathing, cold exposure)
-• Mindful eating practices
-• Regular physical activity
-• Adequate sleep (7-9 hours)
-• Stress reduction techniques
-
-Timeline: Ongoing lifestyle modification
-
----
-
-CUSTOMIZING THE 5R
-
-Not every client needs every step equally. Customize based on:
-• Assessment findings
-• Testing results
-• What's already been tried
-• Current symptoms
-• Client capacity
-
-The 5R is a framework, not a rigid protocol.`
-            },
-            {
-                title: "Chapter 4: Diet Protocols for Gut Healing",
-                readTime: "18 min",
-                content: `CHOOSING THE RIGHT DIET
-
-No single diet works for everyone. Selection depends on:
-• Current symptoms
-• Testing results
-• Previous dietary attempts
-• Client's lifestyle and capacity
-• Root cause identification
-
-THE ELIMINATION DIET
-
-Purpose: Identify food triggers
-
-Basic protocol:
-• Remove: gluten, dairy, eggs, soy, corn, nightshades, nuts, seeds, sugar, alcohol
-• Duration: 3-4 weeks
-• Then: Systematic reintroduction (one food every 3 days)
-
-When to use:
-• Multiple food reactions
-• Unknown triggers
-• Failed previous approaches
-• Systemic inflammation
-
-Client education:
-• It's temporary, not forever
-• The goal is information
-• Strict compliance for accurate results
-• Detailed symptom tracking essential
-
----
-
-LOW-FODMAP DIET
-
-What: Reduces fermentable carbohydrates that feed bacteria
-
-FODMAP = Fermentable Oligosaccharides, Disaccharides, Monosaccharides, And Polyols
-
-When to use:
-• SIBO (especially during treatment)
-• IBS symptoms
-• Significant bloating with specific foods
-• When bacterial overgrowth suspected
-
-Phases:
-1. Elimination (2-6 weeks): Remove high-FODMAP foods
-2. Reintroduction (6-8 weeks): Systematic testing of FODMAP groups
-3. Personalization: Long-term modified approach
-
-High-FODMAP foods to avoid:
-• Onions, garlic
-• Wheat, rye
-• Apples, pears, watermelon
-• Dairy with lactose
-• Legumes
-• Sugar alcohols
-
-Caution:
-• Not meant to be long-term
-• Can reduce microbiome diversity if prolonged
-• Requires education for proper execution
-
----
-
-ANTI-INFLAMMATORY DIET
-
-What: Reduces inflammatory foods, increases anti-inflammatory nutrients
-
-When to use:
-• Chronic inflammation
-• Autoimmune patterns
-• Healing phase of gut protocol
-• General maintenance
-
-Core principles:
-• Remove: processed foods, sugar, refined oils, alcohol
-• Increase: vegetables, omega-3s, herbs/spices, colorful plants
-• Emphasize: whole foods, quality proteins, healthy fats
-
-Foods to emphasize:
-• Fatty fish (salmon, sardines)
-• Leafy greens
-• Berries
-• Turmeric, ginger
-• Bone broth
-• Extra virgin olive oil
-
----
-
-SPECIFIC CARBOHYDRATE DIET (SCD)
-
-What: Removes complex carbohydrates that may feed pathogens
-
-When to use:
-• IBD support
-• Severe gut dysbiosis
-• When other approaches fail
-
-Principles:
-• Only "allowed" carbs (monosaccharides)
-• Removes all grains, potatoes, most starches
-• Emphasizes specific yogurt, nuts, fruits
-• Very restrictive
-
-Caution: Requires significant commitment. Not for everyone.
-
----
-
-AUTOIMMUNE PROTOCOL (AIP)
-
-What: Elimination diet specifically for autoimmune conditions
-
-When to use:
-• Hashimoto's, RA, MS, other autoimmune
-• Suspected autoimmune gut issues
-• When elimination diet needs to go deeper
-
-Removes (in addition to basic elimination):
-• Nightshades
-• Eggs
-• Nuts and seeds
-• Coffee
-• Alcohol
-• Spices from seeds
-
-Phases:
-1. Elimination (30-60 days)
-2. Reintroduction (slow and systematic)
-3. Personalization
-
-This is the most restrictive approach. Reserve for when needed.
-
----
-
-IMPLEMENTATION TIPS
-
-Start where they are:
-• If they eat fast food daily, jumping to AIP won't work
-• Meet them where they are
-• Small steps build momentum
-
-Make it practical:
-• Provide meal plans
-• Simple recipes
-• Shopping lists
-• Batch cooking strategies
-
-Set expectations:
-• It takes time to see results
-• Symptoms may temporarily worsen (die-off, adjustment)
-• Compliance matters
-• This is diagnostic, not forever
-
-Support adherence:
-• Regular check-ins
-• Troubleshooting sessions
-• Flexibility where possible
-• Celebrate wins`
-            },
-            {
-                title: "Chapter 5: Interpreting Functional Testing",
-                readTime: "20 min",
-                content: `WHY FUNCTIONAL TESTING?
-
-Standard labs miss a lot. Functional testing provides:
-• Earlier detection of dysfunction
-• Insight into root causes
-• Objective data for protocol design
-• Progress tracking
-
-Limitation: Testing is a tool, not a diagnosis. Always correlate with symptoms.
-
----
-
-COMPREHENSIVE STOOL TESTING
-
-What it measures:
-• Digestive function markers
-• Inflammatory markers
-• Microbiome composition
-• Pathogens (bacteria, yeast, parasites)
-• Immune markers
-
-Key markers to evaluate:
-
-DIGESTION:
-• Pancreatic elastase-1: <200 mcg/g suggests insufficiency
-• Fat: High levels suggest maldigestion
-• Muscle and vegetable fibers: High suggests inadequate chewing/enzymes
-
-INFLAMMATION:
-• Calprotectin: >50-100 mcg/g indicates intestinal inflammation
-• Lactoferrin: Elevated with active inflammation
-• Secretory IgA: Low (<400) indicates mucosal vulnerability; high (>2000) indicates immune response
-
-MICROBIOME:
-• Diversity: Higher diversity generally better
-• Commensal bacteria: Looking for adequate beneficial species
-• Dysbiotic bacteria: Opportunistic overgrowths
-
-PATHOGENS:
-• Bacteria: H. pylori, opportunistic overgrowths
-• Yeast: Candida species
-• Parasites: Various
-
-ZONULIN:
-• Marker for intestinal permeability
-• Elevated suggests "leaky gut"
-
----
-
-SIBO BREATH TEST INTERPRETATION
-
-Positive hydrogen:
-• Rise of >20 ppm within 90-120 minutes
-• Earlier rise suggests more proximal overgrowth
-
-Positive methane:
-• >10 ppm at any point during test
-• Often associated with constipation
-• May be present throughout test
-
-Patterns:
-• Early peak: Upper small intestine involvement
-• Double peak: Both small and large intestine
-• Flat line: Possible hydrogen sulfide or non-producer
-
-Post-treatment testing:
-• Wait 2-4 weeks after treatment
-• Retest to confirm eradication
-• Some practitioners skip if symptoms resolve
-
----
-
-FOOD SENSITIVITY TESTING
-
-IgG testing:
-• Controversial in the field
-• May indicate foods frequently eaten
-• Use as guide, not gospel
-• Elimination diet remains gold standard
-
-When it can help:
-• Client can't tolerate full elimination
-• Multiple symptoms, no clear pattern
-• As a starting point for elimination
-
-Interpret with caution:
-• High IgG doesn't always mean problematic
-• Can guide where to start
-• Always confirm with elimination/reintroduction
-
----
-
-ORGANIC ACIDS TEST (OAT)
-
-What it measures:
-• Metabolic markers in urine
-• Yeast and bacterial metabolites
-• Nutrient markers
-• Neurotransmitter metabolites
-• Detoxification markers
-
-Gut-related markers:
-• Arabinose: Yeast/Candida marker
-• HPHPA: Clostridia marker
-• Various organic acids indicating dysbiosis
-
-When to use:
-• Suspected yeast overgrowth
-• Brain fog, mood issues with gut symptoms
-• Fatigue with digestive complaints
-
----
-
-PUTTING IT TOGETHER
-
-Testing is most useful when:
-• Correlated with symptoms
-• Used to guide protocol decisions
-• Repeated to track progress
-
-Testing is least useful when:
-• Used in isolation
-• Interpreted literally without clinical context
-• Used to treat numbers, not people
-
-Golden rule: Treat the patient, not the lab.`
-            },
-            {
-                title: "Chapter 6: Troubleshooting and Complex Cases",
-                readTime: "15 min",
-                content: `WHEN PROTOCOLS DON'T WORK
-
-You will have clients who don't respond as expected. This is normal.
-
-Troubleshooting checklist:
-
-1. COMPLIANCE CHECK
-• Are they actually following the protocol?
-• All of it, or just some?
-• Are they being honest about it?
-• What's getting in the way?
-
-2. MISSED ROOT CAUSE
-• Did you address the actual cause?
-• Multiple things happening?
-• Something outside gut (thyroid, blood sugar, etc.)?
-• Stress overwhelming everything else?
-
-3. PROTOCOL ISSUES
-• Right approach, wrong timing?
-• Dosing issues?
-• Quality of products?
-• Interactions with medications?
-
-4. SOMETHING ELSE GOING ON
-• Red flags present?
-• Need further testing?
-• Need referral?
-
----
-
-COMMON STUCK POINTS
-
-Client improves, then plateaus:
-• May have addressed one issue but another remains
-• Consider retesting
-• Look at what phase they're in
-• May need to maintain before progressing
-
-Symptoms get worse with treatment:
-• Die-off reaction (temporary)
-• Reaction to supplements
-• Wrong diagnosis
-• Too aggressive approach
-
-Solution: Slow down, reduce doses, support drainage
-
-Chronic constipation despite protocol:
-• Is it actually SIBO-related?
-• Thyroid function?
-• Magnesium status?
-• Hydration?
-• Vagal tone?
-• Physical issues (pelvic floor)?
-
-SIBO keeps recurring:
-• Not addressing underlying cause
-• Structural issues (adhesions, surgeries)
-• Motility dysfunction (need prokinetics)
-• Stress and lifestyle factors
-• Food poisoning antibodies (anti-vinculin, anti-CdtB)
-
-Multiple food sensitivities:
-• Usually indicates leaky gut
-• Focus on repair before restriction
-• Consider histamine intolerance
-• Look for hidden inflammation
-• May need extended healing time
-
----
-
-COMPLEX CASE CONSIDERATIONS
-
-Autoimmune + gut issues:
-• Often connected
-• Gut healing supports autoimmune management
-• AIP diet may be indicated
-• Longer healing timeline
-• Work with their medical team
-
-SIBO + SIFO (fungal):
-• Can coexist
-• May need to address both
-• Antifungal support
-• Sugar/yeast restriction
-
-Post-infectious gut issues:
-• Different approach than dysbiosis
-• May have antibody component
-• Prokinetics especially important
-• Often longer recovery
-
-Eating disorder history:
-• Tread carefully with restrictions
-• Work with ED specialist
-• Non-diet-focused approaches
-• Relationship with food matters more
-
----
-
-WHEN TO REFER
-
-Red flags (always refer):
-• Blood in stool
-• Unintended weight loss
-• New symptoms over 50
-• Family history of GI cancers
-• Signs of obstruction
-
-Beyond scope:
-• When condition requires diagnosis
-• When prescription needed
-• When symptoms don't match testing
-• When you've tried everything
-
-Not a failure to refer—it's good practice.`
-            }
-        ]
-    },
-    {
         id: "scope-ethics-guide",
         title: "Scope of Practice & Ethics Guide",
         subtitle: "Protecting Yourself While Helping Clients",
         description: "Navigate the legal and ethical landscape of functional medicine practice. Know exactly what you can and cannot do, say, and recommend.",
+        valueProp: "One wrong word can end your career—here's how to stay safe.",
         author: "AccrediPro Academy",
         pages: 48,
         icon: "⚖️",
@@ -1762,6 +942,8 @@ Not a failure to refer—it's good practice.`
         topics: ["Legal Boundaries", "Scope of Practice", "Documentation", "Liability Protection"],
         readTime: "2 hours",
         unlockedDate: "2024-12-01",
+        isFree: true,
+        unlockCondition: "Mini Diploma Graduate or Challenge Day 4",
         chapters: [
             {
                 title: "Introduction: Why Scope Matters",
@@ -2120,6 +1302,2039 @@ These rules will protect you 99% of the time.`
             }
         ]
     },
+    {
+        id: "your-first-client-overview",
+        title: "Your First Client (Overview Edition)",
+        subtitle: "A Sneak Peek at Landing Your First Paying Client",
+        description: "Get a taste of what it takes to attract, convert, and serve your first paying client. This lite overview gives you the framework—the full guide is unlocked when you're ready to take action.",
+        valueProp: "Your first client is closer than you think—here's the roadmap.",
+        author: "AccrediPro Academy",
+        pages: 24,
+        icon: "🎯",
+        category: "core",
+        topics: ["Client Acquisition", "First Steps", "Confidence Building", "Action Plan"],
+        readTime: "45 min",
+        unlockedDate: "2024-12-10",
+        isFree: true,
+        unlockCondition: "Challenge Day 3 or Day 5",
+        chapters: [
+            {
+                title: "Introduction: Your First Client is Waiting",
+                readTime: "5 min",
+                isHtml: true,
+                content: `<div class="ebook-content">
+  <!-- AccrediPro Logo Header -->
+  <div class="flex justify-center mb-8">
+    <div class="text-center">
+      <div class="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-br from-burgundy-600 to-burgundy-800 rounded-2xl shadow-lg mb-4">
+        <svg xmlns="http://www.w3.org/2000/svg" class="w-10 h-10 text-gold-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="10"/>
+          <circle cx="12" cy="12" r="3"/>
+        </svg>
+      </div>
+      <p class="text-sm font-semibold text-burgundy-600 tracking-wider uppercase">AccrediPro Academy</p>
+      <p class="text-xs text-gray-500">Overview Edition</p>
+    </div>
+  </div>
+
+  <!-- Opening Message -->
+  <div class="bg-gradient-to-r from-emerald-50 to-teal-50 border-l-4 border-emerald-600 p-6 rounded-r-xl mb-8">
+    <p class="text-xl font-semibold text-emerald-800 italic">
+      "The hardest part isn't getting good at what you do—it's getting started."
+    </p>
+  </div>
+
+  <p class="text-lg text-gray-700 leading-relaxed mb-6">
+    You've completed your training. You know the theory. But there's a gap between <strong>knowing</strong> and <strong>doing</strong>.
+  </p>
+
+  <p class="text-lg text-gray-700 leading-relaxed mb-6">
+    This overview is your first step across that gap. We're going to show you the exact path to your first paying client—no fluff, no theory, just actionable steps.
+  </p>
+
+  <!-- What's Inside Box -->
+  <div class="bg-burgundy-900 text-white rounded-2xl p-6 mb-8">
+    <div class="flex items-center gap-3 mb-4">
+      <div class="w-10 h-10 bg-gold-400 rounded-xl flex items-center justify-center">
+        <span class="text-xl">🎯</span>
+      </div>
+      <h3 class="text-lg font-bold text-gold-400">What's In This Overview</h3>
+    </div>
+    <ul class="space-y-3">
+      <li class="flex items-start gap-3">
+        <span class="w-6 h-6 bg-burgundy-700 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
+          <span class="text-gold-400 text-sm">1</span>
+        </span>
+        <span>The <strong class="text-gold-300">3-Step Framework</strong> for finding clients</span>
+      </li>
+      <li class="flex items-start gap-3">
+        <span class="w-6 h-6 bg-burgundy-700 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
+          <span class="text-gold-400 text-sm">2</span>
+        </span>
+        <span>The <strong class="text-gold-300">#1 mindset shift</strong> that changes everything</span>
+      </li>
+      <li class="flex items-start gap-3">
+        <span class="w-6 h-6 bg-burgundy-700 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
+          <span class="text-gold-400 text-sm">3</span>
+        </span>
+        <span>Your <strong class="text-gold-300">7-Day Action Plan</strong> to get started</span>
+      </li>
+    </ul>
+  </div>
+
+  <!-- Reality Check -->
+  <div class="bg-amber-50 border border-amber-200 rounded-xl p-6 mb-8">
+    <div class="flex items-start gap-4">
+      <div class="w-12 h-12 bg-amber-100 rounded-full flex items-center justify-center flex-shrink-0">
+        <span class="text-2xl">💡</span>
+      </div>
+      <div>
+        <p class="font-semibold text-gray-900 mb-2">This is an Overview Edition</p>
+        <p class="text-gray-600">
+          This lite version gives you the core framework. The full "Your First Client" guide with scripts, templates, and deep-dive strategies is available in the Professional Library.
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <!-- CTA -->
+  <div class="bg-gradient-to-r from-emerald-600 to-teal-600 rounded-2xl p-6 text-center">
+    <p class="text-white text-lg font-medium">
+      Ready to meet your first client? Let's build your foundation.
+    </p>
+    <p class="text-emerald-100 text-sm mt-2">Click "Next" to learn the 3-Step Framework →</p>
+  </div>
+</div>`
+            },
+            {
+                title: "Chapter 1: The 3-Step Framework",
+                readTime: "8 min",
+                content: `THE SIMPLE TRUTH ABOUT GETTING CLIENTS
+
+Forget everything you've heard about "building funnels" and "scaling your business."
+
+Your first client doesn't come from:
+• A perfect website
+• A huge social media following
+• Expensive ads
+• Complex marketing systems
+
+Your first client comes from: CONVERSATIONS.
+
+---
+
+THE 3-STEP FRAMEWORK
+
+STEP 1: VISIBILITY
+People can't hire you if they don't know you exist.
+
+This doesn't mean "going viral" or posting constantly.
+It means: letting the people who already know you understand what you do now.
+
+Simple actions:
+• Update your social media bio
+• Tell 10 people this week what you do
+• Post ONE helpful thing on social media
+• Add your new work to your email signature
+
+---
+
+STEP 2: VALUE
+Before someone pays you, they need to trust you can help them.
+
+Give value BEFORE asking for anything:
+• Share helpful tips (not full protocols)
+• Answer questions in communities
+• Offer insight, not overwhelm
+• Be genuinely helpful, not "salesy"
+
+The goal: When they think of [your specialty], they think of YOU.
+
+---
+
+STEP 3: INVITATION
+Most new practitioners wait to be "found."
+
+The ones who succeed? They invite people in.
+
+This isn't pushy. It's service.
+
+"Hey, I've started working with clients on [specific issue]. If you know anyone struggling with [symptom], I'd love to help. Feel free to pass along my info."
+
+That's it. Simple. Direct. Effective.
+
+---
+
+THE FORMULA
+
+Visibility + Value + Invitation = Clients
+
+Skip any step, and you'll struggle.
+• Visibility without value = people see you but don't trust you
+• Value without invitation = people love your content but don't know they can hire you
+• Invitation without visibility = nobody sees your offer
+
+All three together? Your first client is inevitable.`
+            },
+            {
+                title: "Chapter 2: The Mindset Shift",
+                readTime: "6 min",
+                content: `THE #1 THING HOLDING YOU BACK
+
+It's not your skills.
+It's not your certification.
+It's not your lack of experience.
+
+It's this thought: "Who am I to help someone?"
+
+---
+
+IMPOSTER SYNDROME IS UNIVERSAL
+
+Every practitioner you admire?
+They felt exactly like you do now.
+
+The difference: They started anyway.
+
+Here's what you need to understand:
+• You don't need to know everything
+• You need to know MORE than your client about their issue
+• You DO. You've been trained.
+
+---
+
+THE REFRAME
+
+Old thinking: "I'm not ready."
+New thinking: "Someone needs what I know RIGHT NOW."
+
+Old thinking: "What if I mess up?"
+New thinking: "What if I help them change their life?"
+
+Old thinking: "I need more training first."
+New thinking: "I need more PRACTICE, which means I need CLIENTS."
+
+---
+
+THE TRUTH ABOUT EXPERTISE
+
+Your clients don't need a guru.
+They need someone a few steps ahead who genuinely cares.
+
+That's you.
+
+You've invested in learning. You've done the work.
+Now it's time to USE it.
+
+---
+
+YOUR FIRST CLIENT DOESN'T NEED YOU TO BE PERFECT
+
+They need you to:
+• Listen
+• Care
+• Apply what you've learned
+• Be honest about what you know and don't know
+
+That's it. You can do all of those things TODAY.
+
+---
+
+PERMISSION GRANTED
+
+Consider this your permission slip:
+• You ARE ready enough
+• You CAN help people
+• You SHOULD start now
+• You WILL figure it out as you go
+
+Every expert was once a beginner.
+Your journey starts with one client.`
+            },
+            {
+                title: "Chapter 3: Your 7-Day Action Plan",
+                readTime: "7 min",
+                content: `7 DAYS TO YOUR FIRST CLIENT CONVERSATION
+
+This isn't about getting a paying client in 7 days.
+It's about building momentum and opening doors.
+
+---
+
+DAY 1: DECLARE IT
+• Tell 3 people today: "I'm now taking clients for [specialty]"
+• Update your social media bio
+• Write down: "My ideal client is [describe them]"
+
+Why it matters: You can't get clients for something people don't know you do.
+
+---
+
+DAY 2: PLANT SEEDS
+• Post something helpful on social media related to your specialty
+• Send a message to someone who might know your ideal client
+• Text: "Hey! I've started helping people with [issue]. If you hear of anyone struggling with this, would you pass along my info?"
+
+Why it matters: Your first client likely comes from your network or their network.
+
+---
+
+DAY 3: ADD VALUE
+• Answer a question in a Facebook group or community
+• Share a quick tip on social media
+• Help someone without expecting anything back
+
+Why it matters: Value builds trust. Trust leads to clients.
+
+---
+
+DAY 4: SHOW YOUR FACE
+• Go live for 60 seconds sharing one tip
+• OR record a short video/voice note and share it
+• OR write a longer post sharing your story
+
+Why it matters: People hire people. They need to see YOU.
+
+---
+
+DAY 5: FOLLOW UP
+• Re-reach out to the people from Day 2
+• "Hey! Just following up—any thoughts on what I mentioned?"
+• Don't be afraid to be "annoying." Most people just forgot.
+
+Why it matters: Fortune is in the follow-up. Period.
+
+---
+
+DAY 6: MAKE AN OFFER
+• Create a simple offer: "I'm taking 3 clients for [X]. Here's what's included..."
+• Share it somewhere: social media, email, text to your network
+• Include a clear next step: "Book a call here" or "DM me 'interested'"
+
+Why it matters: People can't buy what you're not selling.
+
+---
+
+DAY 7: REFLECT & REPEAT
+• What worked this week?
+• What felt hard?
+• Who responded positively?
+• What will you do next week?
+
+Why it matters: Progress beats perfection. Keep going.
+
+---
+
+WHAT HAPPENS NEXT
+
+If you followed these steps, you've likely had at least one conversation.
+
+That conversation might become a client.
+Or it might lead to someone who becomes a client.
+
+Either way, you've started. That's everything.
+
+---
+
+READY FOR MORE?
+
+This overview gave you the framework.
+
+The full "Your First Client" guide includes:
+• Word-for-word scripts for every conversation
+• Templates for your offers and follow-ups
+• The exact discovery call framework
+• How to handle objections with confidence
+• Advanced strategies for consistent client flow
+
+Available in the Professional Library when you're ready to go deeper.
+
+Your first client is waiting. Now go find them.`
+            }
+        ]
+    },
+    // FLAGSHIP FREE GUIDE - $5K/Month Realistic Guide
+    {
+        id: "5k-month-realistic-guide",
+        title: "The $5K/Month Realistic Guide",
+        subtitle: "Your First Clients Without Social Media Overwhelm",
+        description: "The step-by-step roadmap to earning $5,000/month as a health practitioner—without needing a huge following, fancy website, or expensive ads. Built for beginners who want real results.",
+        valueProp: "What if 5 clients/month could change your life?",
+        author: "AccrediPro Academy",
+        pages: 78,
+        icon: "💰",
+        category: "core",
+        topics: ["Income Strategy", "Client Acquisition", "Pricing", "Action Plan"],
+        readTime: "3-4 hours",
+        unlockedDate: "2024-12-13",
+        isFree: true,
+        unlockCondition: "Challenge Completion or Mini Diploma Graduate",
+        chapters: [
+            {
+                title: "Introduction: Why $5K is the Magic Number",
+                readTime: "8 min",
+                isHtml: true,
+                content: `<div class="ebook-content">
+  <!-- AccrediPro Logo Header -->
+  <div class="flex justify-center mb-8">
+    <div class="text-center">
+      <div class="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-br from-emerald-600 to-emerald-800 rounded-2xl shadow-lg mb-4">
+        <svg xmlns="http://www.w3.org/2000/svg" class="w-10 h-10 text-gold-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="12" y1="1" x2="12" y2="23"/>
+          <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>
+        </svg>
+      </div>
+      <p class="text-sm font-semibold text-emerald-600 tracking-wider uppercase">AccrediPro Academy</p>
+      <p class="text-xs text-gray-500">Flagship FREE Guide</p>
+    </div>
+  </div>
+
+  <!-- Opening Message -->
+  <div class="bg-gradient-to-r from-emerald-50 to-teal-50 border-l-4 border-emerald-600 p-6 rounded-r-xl mb-8">
+    <p class="text-xl font-semibold text-emerald-800 italic">
+      "What if just 5 clients per month could change your entire life?"
+    </p>
+  </div>
+
+  <p class="text-lg text-gray-700 leading-relaxed mb-6">
+    This isn't a "scale to 6 figures" hustle guide. This is the <strong>realistic, step-by-step path</strong> to your first $5,000/month as a health practitioner.
+  </p>
+
+  <!-- Why $5K Box -->
+  <div class="bg-emerald-900 text-white rounded-2xl p-6 mb-8">
+    <div class="flex items-center gap-3 mb-4">
+      <div class="w-10 h-10 bg-gold-400 rounded-xl flex items-center justify-center">
+        <span class="text-xl">💰</span>
+      </div>
+      <h3 class="text-lg font-bold text-gold-400">Why $5,000/Month?</h3>
+    </div>
+    <ul class="space-y-3">
+      <li class="flex items-start gap-3">
+        <span class="w-6 h-6 bg-emerald-700 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
+          <span class="text-gold-400 text-sm">✓</span>
+        </span>
+        <span>It's <strong class="text-gold-300">achievable</strong> with just 4-6 clients</span>
+      </li>
+      <li class="flex items-start gap-3">
+        <span class="w-6 h-6 bg-emerald-700 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
+          <span class="text-gold-400 text-sm">✓</span>
+        </span>
+        <span>It replaces most <strong class="text-gold-300">full-time jobs</strong></span>
+      </li>
+      <li class="flex items-start gap-3">
+        <span class="w-6 h-6 bg-emerald-700 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
+          <span class="text-gold-400 text-sm">✓</span>
+        </span>
+        <span>It proves your <strong class="text-gold-300">business works</strong></span>
+      </li>
+      <li class="flex items-start gap-3">
+        <span class="w-6 h-6 bg-emerald-700 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
+          <span class="text-gold-400 text-sm">✓</span>
+        </span>
+        <span>It's the <strong class="text-gold-300">foundation</strong> for everything bigger</span>
+      </li>
+    </ul>
+  </div>
+
+  <!-- The Math -->
+  <div class="bg-white border-2 border-emerald-200 rounded-2xl p-6 mb-8">
+    <h3 class="text-xl font-bold text-gray-900 mb-4 flex items-center gap-2">
+      <span class="w-8 h-8 bg-emerald-100 rounded-lg flex items-center justify-center">📊</span>
+      The Simple Math
+    </h3>
+    <div class="grid grid-cols-2 gap-4 text-center">
+      <div class="bg-emerald-50 rounded-xl p-4">
+        <p class="text-3xl font-bold text-emerald-700">5</p>
+        <p class="text-sm text-gray-600">Clients per month</p>
+      </div>
+      <div class="bg-emerald-50 rounded-xl p-4">
+        <p class="text-3xl font-bold text-emerald-700">$1,000</p>
+        <p class="text-sm text-gray-600">Per client package</p>
+      </div>
+    </div>
+    <div class="mt-4 text-center p-4 bg-gradient-to-r from-emerald-600 to-teal-600 rounded-xl text-white">
+      <p class="text-2xl font-bold">= $5,000/month</p>
+      <p class="text-sm text-emerald-100">That's it. No complicated funnels.</p>
+    </div>
+  </div>
+
+  <!-- What's Inside -->
+  <div class="mb-8">
+    <h3 class="text-xl font-bold text-gray-900 mb-4">What You'll Learn in This Guide:</h3>
+    <div class="grid gap-3">
+      <div class="flex items-center gap-3 p-3 bg-green-50 rounded-lg border border-green-100">
+        <div class="w-6 h-6 bg-green-500 rounded-full flex items-center justify-center">
+          <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
+            <polyline points="20 6 9 17 4 12"/>
+          </svg>
+        </div>
+        <span class="text-gray-700">The <strong>exact pricing formula</strong> for $1,000+ packages</span>
+      </div>
+      <div class="flex items-center gap-3 p-3 bg-green-50 rounded-lg border border-green-100">
+        <div class="w-6 h-6 bg-green-500 rounded-full flex items-center justify-center">
+          <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
+            <polyline points="20 6 9 17 4 12"/>
+          </svg>
+        </div>
+        <span class="text-gray-700">Where your first 5 clients are <strong>already hiding</strong></span>
+      </div>
+      <div class="flex items-center gap-3 p-3 bg-green-50 rounded-lg border border-green-100">
+        <div class="w-6 h-6 bg-green-500 rounded-full flex items-center justify-center">
+          <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
+            <polyline points="20 6 9 17 4 12"/>
+          </svg>
+        </div>
+        <span class="text-gray-700">How to <strong>close consultations</strong> without being salesy</span>
+      </div>
+      <div class="flex items-center gap-3 p-3 bg-green-50 rounded-lg border border-green-100">
+        <div class="w-6 h-6 bg-green-500 rounded-full flex items-center justify-center">
+          <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
+            <polyline points="20 6 9 17 4 12"/>
+          </svg>
+        </div>
+        <span class="text-gray-700">The <strong>30-day action plan</strong> to hit $5K</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- CTA -->
+  <div class="bg-gradient-to-r from-emerald-600 to-teal-600 rounded-2xl p-6 text-center">
+    <p class="text-white text-lg font-medium">
+      Ready to build your $5K/month foundation?
+    </p>
+    <p class="text-emerald-100 text-sm mt-2">Click "Next" to start with the mindset shift →</p>
+  </div>
+</div>`
+            },
+            {
+                title: "Chapter 1: The Mindset Shift — Stop Thinking Like an Employee",
+                readTime: "10 min",
+                content: `THE BIGGEST MISTAKE NEW PRACTITIONERS MAKE
+
+You've been trained to think like an employee:
+• Trade time for money
+• Wait to be given opportunities
+• Undervalue your expertise
+• Need "permission" to charge
+
+This mindset will keep you stuck forever.
+
+---
+
+THE PRACTITIONER MINDSET
+
+✓ You solve problems worth paying for
+✓ Your value isn't your time—it's your transformation
+✓ Clients are LOOKING for you (you just need to be visible)
+✓ Charging well is an act of service, not selfishness
+
+When you charge $150/hour, you attract tire-kickers.
+When you charge $1,000 for a transformation, you attract committed clients.
+
+---
+
+WHY UNDERCHARGING HURTS EVERYONE
+
+When you undercharge:
+• You resent the work
+• Clients don't take it seriously
+• You burn out faster
+• You can't sustain your practice
+
+When you charge appropriately:
+• Clients are invested and follow through
+• You have energy to show up fully
+• You can afford to keep learning
+• Your business is sustainable
+
+---
+
+THE PERMISSION YOU NEED
+
+Here it is: You're allowed to make money helping people.
+
+In fact, you're supposed to.
+
+How else will you:
+• Keep your practice running?
+• Continue your education?
+• Be present for clients long-term?
+• Actually make this a career?
+
+Charging is not optional. It's essential.
+
+---
+
+REFRAME: SERVICE, NOT SALES
+
+Old thought: "I feel guilty asking for money"
+New thought: "If I can help them, not offering is a disservice"
+
+Old thought: "I'm not experienced enough to charge that"
+New thought: "My clients pay for the transformation, not my resume"
+
+Old thought: "What if they can't afford it?"
+New thought: "My ideal clients can. Others aren't my clients."
+
+---
+
+YOUR FIRST ASSIGNMENT
+
+Write this down and put it somewhere you'll see daily:
+
+"I help people transform their health.
+That transformation is valuable.
+Charging for it is an act of service."
+
+Believe it. Live it. Build from it.`
+            },
+            {
+                title: "Chapter 2: The Math Behind $5K (It's Simpler Than You Think)",
+                readTime: "8 min",
+                content: `LET'S DO THE MATH
+
+$5,000/month can happen many ways:
+
+OPTION A: 5 clients × $1,000 package
+OPTION B: 10 clients × $500 package
+OPTION C: 4 clients × $1,250 package
+OPTION D: 3 clients × $1,667 package
+
+Which sounds more sustainable?
+
+---
+
+WHY FEWER, HIGHER-VALUE CLIENTS WIN
+
+5 clients at $1,000 means:
+• 5 discovery calls per month (maybe 10-15 to get 5 yeses)
+• 5 intensive client relationships
+• Time to deliver exceptional results
+• Referrals from happy clients
+
+50 clients at $100 means:
+• Constant hustling for new leads
+• Shallow relationships
+• No time for exceptional work
+• Burnout city
+
+---
+
+THE $1,000 PACKAGE BREAKDOWN
+
+What justifies $1,000?
+
+Example 3-Month Package:
+• Initial 90-min comprehensive consultation ($300 value)
+• 6 follow-up sessions at 45 min each ($600 value)
+• Custom protocol development ($200 value)
+• Email/message support ($200 value)
+• Resource library access ($100 value)
+• Supplement guidance ($100 value)
+
+Total perceived value: $1,500+
+Your price: $997-1,200
+
+This isn't expensive. It's VALUABLE.
+
+---
+
+THE REAL QUESTION
+
+Would you pay $1,000 to:
+• Finally understand your health?
+• Have a guide through your healing journey?
+• Stop guessing and start progressing?
+• Have someone in your corner for 3 months?
+
+Your future clients would. And will.
+
+---
+
+YOUR PRICING WORKSHEET
+
+Calculate your own numbers:
+
+Target monthly income: $______
+Package price: $______
+Clients needed per month: ______
+
+Example:
+$5,000 ÷ $1,000 = 5 clients
+
+That's one client per week, plus one more.
+
+Suddenly $5K doesn't seem impossible, does it?`
+            },
+            {
+                title: "Chapter 3: Finding Clients in Your Existing Network",
+                readTime: "12 min",
+                content: `YOUR FIRST CLIENTS ARE NOT STRANGERS
+
+Here's the secret nobody tells you:
+
+Your first 5 clients are probably people who already know you exist.
+
+They're:
+• Friends of friends who've heard you talking about health
+• Family members who've seen your journey
+• Acquaintances who've asked for your advice before
+• Social media followers who've engaged with your content
+• Former colleagues who know you changed careers
+
+---
+
+THE "WHO DO I KNOW?" EXERCISE
+
+Make a list of:
+
+1. People who've asked you health questions before
+2. People who've commented on your health journey
+3. People who you know are struggling with health issues
+4. People in your network who might know your ideal client
+5. Anyone who's said "let me know when you're taking clients"
+
+This list is GOLD. Don't skip it.
+
+---
+
+THE WARM OUTREACH SCRIPT
+
+Don't be salesy. Be helpful.
+
+"Hey [Name]! I'm officially taking clients now for [specialty].
+I remembered you mentioned struggling with [issue] a while back.
+If that's still going on, I'd love to chat and see if I can help.
+No pressure either way—just wanted you to know I'm here!"
+
+Simple. Direct. Not pushy.
+
+---
+
+THE REFERRAL ASK
+
+Even if someone doesn't need your help:
+
+"Hey [Name]! I'm now helping people with [issue].
+Do you know anyone who might be struggling with this?
+I'd really appreciate any introductions—and they'd get
+a free consultation to see if we're a good fit."
+
+Most people WANT to help. You just have to ask.
+
+---
+
+THE COMMUNITY TAP
+
+Where do you already hang out?
+
+• Church/spiritual community
+• Kids' school parent groups
+• Hobby groups (running club, book club, etc.)
+• Professional networks
+• Online communities you're part of
+
+These people already know and trust you.
+
+---
+
+ACTION STEPS
+
+This week:
+1. Make your "warm list" of 20+ people
+2. Send 5 genuine outreach messages
+3. Post ONE thing about what you do on social media
+4. Ask 3 people for referrals
+
+Your first client is closer than you think.`
+            },
+            {
+                title: "Chapter 4: The Discovery Call That Converts",
+                readTime: "15 min",
+                content: `THE DISCOVERY CALL IS NOT A CONSULTATION
+
+Biggest mistake: Giving away the consultation for free.
+
+The discovery call is:
+✓ 15-20 minutes MAX
+✓ To determine if you're a fit
+✓ To understand their situation
+✓ To share how you work
+✓ To invite them to the paid program
+
+It is NOT:
+✗ A full health history
+✗ Protocol recommendations
+✗ Free coaching
+✗ An hour of your time
+
+---
+
+THE DISCOVERY CALL FRAMEWORK
+
+MINUTE 0-2: Build rapport
+"Thanks so much for booking! How are you doing today?"
+
+MINUTE 2-7: Understand their situation
+"Tell me what's going on with your health right now."
+"How long has this been happening?"
+"What have you tried so far?"
+
+MINUTE 7-12: Paint the future
+"What would it look like if this was resolved?"
+"What would change in your life?"
+
+MINUTE 12-17: Share your approach
+"Based on what you've shared, here's how I work..."
+"My [X-month] program is designed for exactly this..."
+
+MINUTE 17-20: The invitation
+"Do you have any questions about the program?"
+"Would you like to move forward?"
+
+---
+
+HANDLING "HOW MUCH?"
+
+When they ask about price (they will):
+
+"The investment for my 3-month program is $997.
+This includes [brief overview of what's included].
+
+Many clients find that finally solving this issue
+is worth far more than the investment.
+
+Does that feel like it could work for you?"
+
+Then STOP TALKING. Let them respond.
+
+---
+
+HANDLING "I NEED TO THINK ABOUT IT"
+
+"Of course—this is an important decision.
+What specifically do you want to think about?
+Sometimes I can help clarify right now."
+
+Often, they have a specific question or objection.
+Address it directly.
+
+---
+
+HANDLING "IT'S TOO EXPENSIVE"
+
+"I understand—investing in health is a significant decision.
+Can I ask what you were expecting to invest?
+
+[Listen]
+
+My program is designed to give you [transformation].
+If budget is a concern, I also offer [payment plan].
+
+What matters most is whether this is the right fit for you."
+
+---
+
+THE FOLLOW-UP
+
+If they don't decide on the call:
+
+Within 24 hours:
+"Hi [Name]! It was great chatting with you today.
+I'm here if any questions come up.
+Just reply to this message anytime."
+
+After 3-5 days (if no response):
+"Hey [Name]! Just following up on our conversation.
+I have one spot opening up next week if you'd like to move forward.
+Let me know either way—no pressure!"
+
+Follow-up is where most sales happen.`
+            },
+            {
+                title: "Chapter 5: Your $1,000+ Package Structure",
+                readTime: "12 min",
+                content: `STOP SELLING SESSIONS. START SELLING TRANSFORMATION.
+
+Single sessions:
+• Attract price-shoppers
+• Create inconsistent income
+• Don't allow real transformation
+• Keep you hustling forever
+
+Packages:
+• Attract committed clients
+• Create predictable income
+• Allow real transformation
+• Build sustainable practice
+
+---
+
+THE TRANSFORMATION PACKAGE FORMULA
+
+Duration: 3-4 months (minimum for real results)
+
+Include:
+1. Comprehensive Initial Assessment (90 min)
+   - Full health history
+   - Lifestyle evaluation
+   - Goal setting
+   - Initial recommendations
+
+2. Follow-Up Sessions (6-8 sessions)
+   - Progress check-ins
+   - Protocol adjustments
+   - Troubleshooting
+   - Accountability
+
+3. Between-Session Support
+   - Limited email/message access
+   - Quick questions answered
+   - Keeps them on track
+
+4. Resources & Tools
+   - Meal plans or guides
+   - Supplement protocols
+   - Educational materials
+   - Tracking tools
+
+---
+
+PRICING YOUR PACKAGE
+
+Calculate your minimum:
+• What do you need to earn per month?
+• How many clients can you realistically serve?
+• Divide to get your minimum per client
+
+Add for value:
+• What is this transformation worth to them?
+• What have they already spent trying to fix this?
+• What would they pay to have this solved?
+
+Market check:
+• What do similar practitioners charge?
+• (Don't copy—just understand the range)
+
+Your price: Should feel slightly uncomfortable.
+If it feels totally comfortable, you're undercharging.
+
+---
+
+SAMPLE PACKAGE: THE FOUNDATION PROGRAM
+
+"The Foundation Program"
+3-Month Comprehensive Wellness Program
+
+What's Included:
+✓ 90-minute initial consultation
+✓ 6 bi-weekly follow-up sessions
+✓ Custom nutrition & lifestyle protocol
+✓ Supplement recommendations
+✓ Email support between sessions
+✓ Resource library access
+
+Investment: $997
+
+Payment plan available: 3 payments of $367
+
+---
+
+PRESENTING YOUR PACKAGE
+
+"Based on everything you've shared, my Foundation Program
+would be perfect for you.
+
+It's a 3-month program where we work together to
+[specific outcome they want].
+
+You'll get [quick overview of what's included].
+
+The investment is $997, and I do offer a payment plan
+if that's helpful.
+
+What questions do you have?"
+
+Notice: No apologizing. No justifying. Just stating.`
+            },
+            {
+                title: "Chapter 6: Simple Marketing Without Social Media Overwhelm",
+                readTime: "12 min",
+                content: `YOU DON'T NEED TO GO VIRAL
+
+The myth: You need thousands of followers to get clients.
+The truth: You need to be visible to the RIGHT people.
+
+5 clients per month requires:
+• Maybe 10-15 discovery calls
+• Maybe 30-50 people aware of your offer
+• Maybe 100-200 people who know what you do
+
+That's it. Not millions. Hundreds.
+
+---
+
+THE MINIMUM VIABLE MARKETING PLAN
+
+Pick ONE platform. Master it. Ignore the rest.
+
+Options:
+• Instagram (visual, health-focused audience)
+• Facebook (groups, local community)
+• LinkedIn (professional audience)
+• Email (your own list)
+
+For most health practitioners: Instagram or Facebook.
+
+---
+
+THE SIMPLE CONTENT STRATEGY
+
+Post 3-5 times per week. That's it.
+
+Content types to rotate:
+
+1. EDUCATIONAL (2x/week)
+   - Tips related to your specialty
+   - Common mistakes
+   - Myth-busting
+
+2. STORY (1x/week)
+   - Your journey
+   - Client wins (with permission)
+   - Behind the scenes
+
+3. ENGAGEMENT (1x/week)
+   - Ask a question
+   - Poll your audience
+   - Invite conversation
+
+4. OFFER (1x/week)
+   - Remind people you take clients
+   - Share how to work with you
+   - Testimonials with CTA
+
+---
+
+THE 30-MINUTE DAILY ROUTINE
+
+10 min: Create one piece of content (or repurpose)
+10 min: Engage with others (comment, respond, connect)
+10 min: Direct outreach (DMs, follow-ups)
+
+That's your marketing. 30 minutes. Done.
+
+---
+
+WHAT TO SAY IN YOUR BIO
+
+Include:
+• Who you help (specific)
+• What transformation you provide
+• How to take the next step
+
+Example:
+"Helping busy moms beat exhaustion & brain fog
+Gut health specialist | Functional nutrition
+📩 DM 'ENERGY' for free assessment"
+
+---
+
+THE CONTENT BANK
+
+Batch create content on ONE day:
+• Sunday: Plan your 5 posts for the week
+• Write captions
+• Choose images
+• Schedule if possible
+
+Don't create daily. That's exhausting.
+
+---
+
+REMEMBER
+
+Marketing is just: Letting people know you can help them.
+
+That's it. It doesn't have to be complicated.
+
+Your first 5 clients are probably:
+• People who already follow you
+• People one connection away
+• People in your existing community
+
+Reach them first. Scaling comes later.`
+            },
+            {
+                title: "Chapter 7: Building Your Minimum Viable Practice",
+                readTime: "10 min",
+                content: `YOU DON'T NEED A PERFECT SETUP
+
+What you DON'T need to start:
+✗ A fancy website
+✗ A logo
+✗ Business cards
+✗ An office
+✗ A complicated booking system
+✗ A professional photoshoot
+✗ A registered LLC (yet)
+
+What you DO need:
+✓ A way to book calls (Calendly free version works)
+✓ A way to meet (Zoom free version works)
+✓ A way to collect payment (Stripe, PayPal, Venmo)
+✓ A way to take notes (Google Docs works)
+✓ An intake form (Google Forms works)
+
+That's it. Really.
+
+---
+
+THE MVP TECH STACK (FREE VERSION)
+
+Scheduling: Calendly (free)
+Video calls: Zoom (free)
+Payments: Stripe or PayPal
+Documents: Google Drive
+Intake forms: Google Forms or Typeform (free)
+Email: Gmail
+Notes: Google Docs or Notion (free)
+
+Total cost: $0
+
+Upgrade later when you're making money.
+
+---
+
+YOUR FIRST INTAKE FORM
+
+Keep it simple. Include:
+
+1. Basic info (name, email, age, location)
+2. Main health concern (what brought them to you?)
+3. Health history highlights
+4. Current medications/supplements
+5. What they've tried before
+6. Goals for working with you
+7. Any other info you should know
+
+Send before the first session. Review before the call.
+
+---
+
+YOUR SESSION NOTES TEMPLATE
+
+For each session, document:
+
+Date:
+Main topics discussed:
+Current symptoms/status:
+Recommendations made:
+Client commitments:
+Follow-up plan:
+Notes for next session:
+
+Keep it simple. Keep it consistent.
+
+---
+
+THE $0 WEBSITE
+
+If you're not ready for a website, use:
+
+• A Link in Bio tool (Linktree, Stan Store)
+• Your Instagram/Facebook as your "home base"
+• A simple Carrd page ($0 or $19/year)
+• Google Business Profile (free, great for local)
+
+Your website doesn't need to make money.
+YOUR CONVERSATIONS make money.
+
+---
+
+WHEN TO UPGRADE
+
+Upgrade your systems when:
+• You're consistently at 5+ clients/month
+• A limitation is actually costing you clients
+• You have revenue to invest
+
+Not before. Start scrappy. Stay scrappy until it matters.`
+            },
+            {
+                title: "Chapter 8: The 30-Day Sprint to Your First $5K",
+                readTime: "15 min",
+                content: `YOUR 30-DAY ACTION PLAN
+
+This isn't theory. This is your daily playbook.
+
+---
+
+WEEK 1: FOUNDATION (Days 1-7)
+
+Day 1:
+□ Write your "who I help" statement (one sentence)
+□ Decide your package price ($997-1,200)
+□ Set up Calendly for discovery calls
+
+Day 2:
+□ Create your intake form
+□ Write your session notes template
+□ Set up payment method (Stripe/PayPal)
+
+Day 3:
+□ Make your "warm list" of 30+ people
+□ Update your social media bio
+□ Tell 5 people what you do now
+
+Day 4:
+□ Write your discovery call script
+□ Practice it out loud 3 times
+□ Send 5 warm outreach messages
+
+Day 5:
+□ Create 5 pieces of content (batch)
+□ Post your first piece
+□ Engage for 30 minutes
+
+Day 6:
+□ Follow up with Day 4 outreach
+□ Send 5 more outreach messages
+□ Post content #2
+
+Day 7:
+□ Review your week
+□ Count: How many conversations started?
+□ Plan: What needs adjusting?
+
+---
+
+WEEK 2: MOMENTUM (Days 8-14)
+
+Day 8-14: Daily routine
+□ Post one piece of content
+□ Engage for 20 minutes
+□ Send 3 outreach messages
+□ Follow up with previous conversations
+□ Book discovery calls
+
+Goal for Week 2: 3-5 discovery calls booked
+
+---
+
+WEEK 3: CONVERSION (Days 15-21)
+
+Day 15-21: Daily routine
+□ Conduct discovery calls
+□ Follow up with people who said "let me think"
+□ Continue content + outreach
+□ Ask for referrals from everyone you talk to
+
+Goal for Week 3: 1-2 clients enrolled
+
+---
+
+WEEK 4: EXPANSION (Days 22-30)
+
+Day 22-30:
+□ Deliver exceptional service to new clients
+□ Continue discovery calls
+□ Expand outreach to second-degree connections
+□ Post client wins (with permission)
+□ Ask happy clients for referrals
+
+Goal for Week 4: 2-3 more clients enrolled
+
+---
+
+THE DAILY NON-NEGOTIABLES
+
+Every single day:
+1. One piece of visibility (post, story, DM)
+2. Three outreach messages
+3. Follow up with open conversations
+
+15-30 minutes. That's all it takes.
+
+---
+
+TRACKING YOUR PROGRESS
+
+Keep a simple tracker:
+
+Week 1:
+- Outreach sent: ___
+- Conversations started: ___
+- Discovery calls booked: ___
+
+Week 2:
+- Discovery calls conducted: ___
+- Clients enrolled: ___
+- Revenue: $___
+
+Track what matters. Improve what you track.`
+            },
+            {
+                title: "Chapter 9: Handling Objections Like a Pro",
+                readTime: "10 min",
+                content: `OBJECTIONS ARE NOT REJECTION
+
+When someone objects, they're saying:
+"I'm interested, but I have a concern."
+
+Your job: Address the concern, not argue.
+
+---
+
+THE TOP 5 OBJECTIONS (AND HOW TO HANDLE THEM)
+
+OBJECTION 1: "I need to think about it"
+
+What it usually means:
+- They have a specific concern they haven't voiced
+- They want to check with spouse/budget
+- They need more information
+
+Response:
+"Of course—it's a big decision. What specifically
+would you like to think about? Sometimes I can
+help clarify right here."
+
+Then listen. Address what comes up.
+
+---
+
+OBJECTION 2: "It's too expensive"
+
+What it usually means:
+- They don't see the value yet
+- They're comparing to cheaper alternatives
+- Budget is genuinely tight
+
+Response:
+"I hear you. Investing in health is significant.
+Can I ask—what have you already spent trying
+to solve this issue? [Listen]
+
+My program is designed to actually resolve this,
+not just patch it temporarily. Does that
+perspective help?"
+
+Or offer payment plan: "I do have a 3-payment
+option if that would make it more accessible."
+
+---
+
+OBJECTION 3: "I don't have time"
+
+What it usually means:
+- Health isn't priority enough (yet)
+- They don't understand the time commitment
+- Life is genuinely chaotic right now
+
+Response:
+"I totally understand—life is busy.
+Here's the thing: the sessions are just 45 minutes
+bi-weekly. The real question is: can you afford
+NOT to address this? How is this health issue
+affecting your time and energy right now?"
+
+---
+
+OBJECTION 4: "I want to try on my own first"
+
+What it usually means:
+- They've been burned before
+- They want to prove they don't need help
+- They're scared to commit
+
+Response:
+"I respect that. You know yourself best.
+Can I ask: how long have you been working
+on this on your own? [Listen]
+
+Sometimes having a guide just shortcuts
+the process significantly. When you're ready
+for support, I'm here."
+
+---
+
+OBJECTION 5: "I need to ask my spouse/partner"
+
+What it usually means:
+- Genuine: They share financial decisions
+- Sometimes: It's an easy out
+
+Response:
+"Absolutely—important decisions should
+include your partner. Would it help if
+I sent you information you could share
+with them? Or if they have questions,
+I'm happy to chat with both of you."
+
+---
+
+THE GOLDEN RULE
+
+Never push. Never beg. Never convince.
+
+Your job is to:
+1. Understand their concern
+2. Provide helpful information
+3. Make it easy to say yes
+4. Be okay if they say no
+
+The right clients say yes. The wrong ones don't.
+Both are okay.`
+            },
+            {
+                title: "Chapter 10: Creating Referral Momentum",
+                readTime: "10 min",
+                content: `REFERRALS ARE THE SECRET TO SUSTAINABLE $5K+ MONTHS
+
+New practitioners hustle for every client.
+Established practitioners get referrals.
+
+The difference? Asking for them.
+
+---
+
+WHEN TO ASK FOR REFERRALS
+
+Best times:
+• After a client has a breakthrough
+• At the midpoint of their program (when they're excited)
+• At the end of their program
+• When they randomly thank you
+
+Key: Ask when they're feeling great about working with you.
+
+---
+
+THE REFERRAL ASK (CLIENTS)
+
+"[Name], I love working with you!
+I'm curious—do you know anyone else who
+might be struggling with similar issues?
+
+I have one spot opening up next month and
+I'd love your recommendation. They'd get
+a free consultation to see if we're a fit."
+
+That's it. Simple and direct.
+
+---
+
+THE REFERRAL ASK (NON-CLIENTS)
+
+For people in your network who haven't worked with you:
+
+"Hey [Name]! I'm taking on new clients
+for [specific issue] this month.
+
+If you know anyone struggling with
+[symptom/problem], I'd appreciate you
+passing along my info. They'd get a free
+consultation—no commitment."
+
+---
+
+MAKING REFERRALS EASY
+
+Give people:
+• A simple link to your booking page
+• A brief description of who you help
+• Your contact info
+
+Example:
+"If you know anyone struggling with gut issues,
+here's my booking link: [link]
+Or they can DM me on Instagram @yourhandle"
+
+Remove friction. Make it one-click.
+
+---
+
+REFERRAL REWARDS (OPTIONAL)
+
+Consider offering:
+• $50 credit toward future services
+• Free session add-on
+• Gift card
+• Donation to charity in their name
+
+But honestly? Most people refer because
+they like helping—not for rewards.
+
+---
+
+THE REFERRAL FLYWHEEL
+
+Month 1: 5 clients from outreach
+→ 2 referrals
+Month 2: 3 from outreach + 2 referrals = 5 clients
+→ 3 referrals
+Month 3: 2 from outreach + 3 referrals = 5 clients
+→ 4 referrals
+Month 4: 1 from outreach + 4 referrals = 5 clients
+
+Eventually, your practice grows itself.
+
+---
+
+TESTIMONIALS = REFERRAL FUEL
+
+After a win, ask:
+"Would you be willing to share a few sentences
+about your experience? It helps other people
+who are struggling know they're not alone
+and that support exists."
+
+Post these everywhere. They do the selling for you.`
+            },
+            {
+                title: "Chapter 11: What to Do When It's Not Working",
+                readTime: "12 min",
+                content: `IT'S NOT WORKING? LET'S DIAGNOSE.
+
+Before you panic, let's troubleshoot systematically.
+
+---
+
+PROBLEM: Not getting enough discovery calls
+
+Check these:
+• Are you actually telling people what you do?
+• Are you reaching out enough? (3+ times/day)
+• Is your messaging clear about WHO you help?
+• Are you following up with interested people?
+
+Fix it:
+• Double your outreach volume
+• Make your niche more specific
+• Share more about what you do publicly
+• Follow up 2-3 times before moving on
+
+---
+
+PROBLEM: Discovery calls not converting
+
+Check these:
+• Are you talking too much about yourself?
+• Are you giving away the consultation for free?
+• Are you asking about their goals/pain?
+• Are you confidently presenting your offer?
+• Are you handling objections or avoiding them?
+
+Fix it:
+• Let them talk 70% of the time
+• Save recommendations for paid clients
+• Focus on their transformation
+• Practice your pitch until it's natural
+• Address objections head-on
+
+---
+
+PROBLEM: People say it's too expensive
+
+Check these:
+• Are you leading with value or price?
+• Have you established the transformation they want?
+• Are you offering payment plans?
+• Are you talking to the right people?
+
+Fix it:
+• Don't mention price until they're excited
+• Paint the picture of life after transformation
+• Always offer a payment plan option
+• Find people who value health AND have resources
+
+---
+
+PROBLEM: No time to do marketing
+
+Check these:
+• Are you overcomplicating marketing?
+• Are you trying to be on every platform?
+• Are you batching content or creating daily?
+• Is this actually a time issue or a fear issue?
+
+Fix it:
+• Minimum viable marketing: 30 min/day
+• Pick ONE platform only
+• Batch content on one day per week
+• Be honest—is fear disguised as "no time"?
+
+---
+
+THE REAL QUESTION
+
+Usually, when it's "not working," it's one of two things:
+
+1. Volume issue: You're not doing enough
+   → Solution: More outreach, more content, more conversations
+
+2. Skill issue: You're doing the wrong things
+   → Solution: Get feedback, get coached, refine your approach
+
+Which one is it for you?
+
+---
+
+WHEN TO ADJUST VS. WHEN TO PERSIST
+
+Adjust when:
+• You've done 30+ outreach messages with no response
+• You've had 10+ discovery calls with no sales
+• Your feedback consistently points to the same issue
+
+Persist when:
+• You've only been at it for 2 weeks
+• You haven't actually done the volume required
+• You're changing things before giving them time to work
+
+Most people quit too early. Don't be most people.`
+            },
+            {
+                title: "Chapter 12: From $5K to $10K and Beyond",
+                readTime: "10 min",
+                content: `YOU HIT $5K. NOW WHAT?
+
+First: Celebrate. This is a huge milestone.
+
+$5K/month means:
+• Your business works
+• People pay you for your expertise
+• You can sustain this career
+
+Now let's talk about what's next.
+
+---
+
+THE PATH TO $10K
+
+OPTION 1: More clients at the same price
+$10K = 10 clients × $1,000
+
+Pros: Simple, proven system
+Cons: More time commitment, capacity limits
+
+OPTION 2: Same clients at higher price
+$10K = 5 clients × $2,000
+
+Pros: No extra time, premium positioning
+Cons: Need to justify higher price
+
+OPTION 3: Mix of both
+$10K = 7 clients × $1,400
+
+Pros: Balanced approach
+Cons: Need both more clients AND higher prices
+
+---
+
+RAISING YOUR PRICES
+
+When to raise:
+• You're fully booked
+• You're getting mostly yeses
+• Your results are consistently good
+• It's been 6+ months at current price
+
+How to raise:
+• New clients get new prices immediately
+• Existing clients get grandfather period
+• Raise by meaningful amount ($200-500)
+
+---
+
+ADDING REVENUE STREAMS
+
+Once your 1:1 is stable, consider:
+
+GROUP PROGRAM
+• 6-12 people
+• Lower price per person
+• Higher revenue per hour
+• Great for your best content
+
+DIGITAL PRODUCTS
+• E-books, courses, templates
+• One-time creation, ongoing sales
+• Requires audience
+
+VIP/INTENSIVE OPTIONS
+• Full-day or weekend intensive
+• Premium pricing ($2,500-5,000+)
+• For clients who want faster results
+
+---
+
+THE COMPOUND EFFECT
+
+Year 1: $5K/month = $60K
+Year 2: $8K/month = $96K
+Year 3: $10K/month = $120K
+Year 4: $15K/month = $180K
+
+Each year builds on the last.
+
+Your skills improve.
+Your reputation grows.
+Your systems get better.
+Referrals compound.
+
+$5K is just the beginning.
+
+---
+
+BUT FIRST...
+
+Master $5K before chasing $10K.
+
+Don't get distracted by shiny strategies.
+Don't spread yourself thin.
+Don't skip the fundamentals.
+
+$5K consistently > $10K occasionally
+
+Build the foundation. Then expand.`
+            },
+            {
+                title: "Chapter 13: Your Money Mindset Check",
+                readTime: "8 min",
+                content: `THIS CHAPTER MIGHT BE THE MOST IMPORTANT ONE
+
+You can have the best strategies in the world.
+But if your money mindset is broken, you'll sabotage yourself.
+
+---
+
+COMMON MONEY BLOCKS
+
+"I feel guilty charging for health help"
+Reality: Charging allows you to sustain helping people.
+Reframe: "My fee funds my ability to serve."
+
+"Who would pay ME for this?"
+Reality: People pay for transformation, not credentials.
+Reframe: "My clients pay for results, which I deliver."
+
+"My friends/family could never afford this"
+Reality: Your friends/family aren't your target market.
+Reframe: "My ideal clients value AND can afford this."
+
+"I should help everyone who needs it"
+Reality: You can't serve everyone sustainably.
+Reframe: "I serve my ideal clients excellently."
+
+"Rich people are greedy"
+Reality: Wealth is neutral. Intent matters.
+Reframe: "Money is a tool. I use it for good."
+
+---
+
+THE CHARGING TEST
+
+Can you say this out loud without flinching?
+
+"My 3-month program is $997."
+
+If you stumbled, hesitated, or felt weird:
+• Practice saying it 50 times
+• Say it to yourself in the mirror
+• Record yourself and listen back
+• Practice with a friend
+
+Until it feels as natural as saying your name.
+
+---
+
+YOUR MONEY STORY
+
+Write this out:
+
+1. What did you learn about money growing up?
+2. What do you believe about people who have money?
+3. What do you believe you deserve to earn?
+4. What scares you about earning more?
+
+Your stories shape your reality.
+Rewrite the ones that aren't serving you.
+
+---
+
+AFFIRMATIONS THAT WORK
+
+Don't just say them. BELIEVE them.
+
+"I deserve to be compensated for my expertise."
+"People happily pay for the value I provide."
+"Money flows to me easily and consistently."
+"I am worthy of a thriving practice."
+"Charging well is an act of service."
+
+Read these daily. Let them sink in.
+
+---
+
+THE TRUTH
+
+Your income is not a measure of your worth.
+But it IS a measure of the value you allow yourself to receive.
+
+Allow yourself to receive.`
+            },
+            {
+                title: "Chapter 14: Week-by-Week Implementation Calendar",
+                readTime: "10 min",
+                content: `YOUR 8-WEEK ROADMAP TO $5K/MONTH
+
+Print this. Post it. Follow it.
+
+---
+
+WEEK 1: SETUP
+□ Define your niche (who + what problem)
+□ Create your package ($997-1,200)
+□ Set up booking system (Calendly)
+□ Set up payment system (Stripe/PayPal)
+□ Create intake form
+□ Write discovery call script
+
+End of Week 1: Ready to take clients
+
+---
+
+WEEK 2: WARM OUTREACH
+□ Make list of 50+ warm contacts
+□ Send 25 outreach messages
+□ Follow up with responders
+□ Post announcement on social media
+□ Update all bios/profiles
+
+End of Week 2: 5-10 conversations started
+
+---
+
+WEEK 3: DISCOVERY CALLS
+□ Book 5+ discovery calls
+□ Conduct calls using script
+□ Follow up with "thinking about it" folks
+□ Continue outreach (15 more messages)
+□ Start consistent content (1/day)
+
+End of Week 3: 1-2 clients enrolled
+
+---
+
+WEEK 4: MOMENTUM
+□ Deliver excellent sessions to new clients
+□ 5 more discovery calls
+□ Continue content + engagement
+□ Ask for referrals from everyone
+□ Refine what's working
+
+End of Week 4: 2-4 clients total
+
+---
+
+WEEK 5: EXPANSION
+□ Expand to second-degree connections
+□ Join/engage in relevant communities
+□ 5 more discovery calls
+□ Get first testimonial (even from practice clients)
+□ Post client wins
+
+End of Week 5: 3-5 clients total
+
+---
+
+WEEK 6: OPTIMIZATION
+□ Review what's converting (and what's not)
+□ Double down on working strategies
+□ Cut what's not working
+□ 5 more discovery calls
+□ Increase referral asks
+
+End of Week 6: 4-6 clients total
+
+---
+
+WEEK 7: SCALE
+□ Continue proven outreach methods
+□ 5+ discovery calls
+□ Establish content routine
+□ Build referral momentum
+□ Consider raising prices for new clients
+
+End of Week 7: 5+ clients total
+
+---
+
+WEEK 8: SUSTAIN
+□ Document your systems
+□ Celebrate hitting $5K!
+□ Plan for next month
+□ Identify bottlenecks to address
+□ Set goal for month 2
+
+End of Week 8: $5K/month achieved!
+
+---
+
+DAILY CHECKLIST (Every day, weeks 2-8)
+
+□ 3 outreach messages
+□ 1 piece of content
+□ 20 min engagement
+□ Follow up with open conversations
+□ Update your tracker
+
+Consistency beats intensity. Every single day.`
+            },
+            {
+                title: "Chapter 15: Your First Day Starts Now",
+                readTime: "6 min",
+                isHtml: true,
+                content: `<div class="ebook-content">
+  <!-- Celebration Header -->
+  <div class="bg-gradient-to-r from-emerald-600 to-teal-600 rounded-2xl p-8 text-white text-center mb-8">
+    <div class="text-5xl mb-4">🎉</div>
+    <h2 class="text-2xl font-bold mb-2">You Made It!</h2>
+    <p class="text-emerald-100">You now have everything you need to hit $5K/month.</p>
+  </div>
+
+  <!-- Recap Box -->
+  <div class="bg-white border-2 border-emerald-200 rounded-2xl p-6 mb-8">
+    <h3 class="text-xl font-bold text-gray-900 mb-4">Quick Recap: What You Learned</h3>
+    <div class="space-y-3">
+      <div class="flex items-center gap-3">
+        <span class="w-8 h-8 bg-emerald-100 rounded-full flex items-center justify-center text-emerald-700 font-bold">1</span>
+        <span class="text-gray-700">The mindset shift from employee to practitioner</span>
+      </div>
+      <div class="flex items-center gap-3">
+        <span class="w-8 h-8 bg-emerald-100 rounded-full flex items-center justify-center text-emerald-700 font-bold">2</span>
+        <span class="text-gray-700">The simple math: 5 clients × $1,000 = $5K</span>
+      </div>
+      <div class="flex items-center gap-3">
+        <span class="w-8 h-8 bg-emerald-100 rounded-full flex items-center justify-center text-emerald-700 font-bold">3</span>
+        <span class="text-gray-700">Finding clients in your existing network</span>
+      </div>
+      <div class="flex items-center gap-3">
+        <span class="w-8 h-8 bg-emerald-100 rounded-full flex items-center justify-center text-emerald-700 font-bold">4</span>
+        <span class="text-gray-700">The discovery call framework that converts</span>
+      </div>
+      <div class="flex items-center gap-3">
+        <span class="w-8 h-8 bg-emerald-100 rounded-full flex items-center justify-center text-emerald-700 font-bold">5</span>
+        <span class="text-gray-700">Creating and pricing your transformation package</span>
+      </div>
+      <div class="flex items-center gap-3">
+        <span class="w-8 h-8 bg-emerald-100 rounded-full flex items-center justify-center text-emerald-700 font-bold">6</span>
+        <span class="text-gray-700">Simple marketing without overwhelm</span>
+      </div>
+      <div class="flex items-center gap-3">
+        <span class="w-8 h-8 bg-emerald-100 rounded-full flex items-center justify-center text-emerald-700 font-bold">7</span>
+        <span class="text-gray-700">Building your minimum viable practice</span>
+      </div>
+      <div class="flex items-center gap-3">
+        <span class="w-8 h-8 bg-emerald-100 rounded-full flex items-center justify-center text-emerald-700 font-bold">8</span>
+        <span class="text-gray-700">The 30-day sprint to your first $5K</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- The Truth -->
+  <div class="bg-amber-50 border-l-4 border-amber-500 p-6 rounded-r-xl mb-8">
+    <h3 class="font-bold text-gray-900 mb-2">The Truth About Success</h3>
+    <p class="text-gray-700">
+      The difference between practitioners who hit $5K/month and those who don't isn't talent.
+      It isn't credentials. It isn't luck.
+    </p>
+    <p class="text-gray-700 mt-2">
+      <strong>It's action.</strong> Consistent, imperfect, persistent action.
+    </p>
+  </div>
+
+  <!-- Your Commitment -->
+  <div class="bg-burgundy-900 text-white rounded-2xl p-6 mb-8">
+    <h3 class="text-lg font-bold text-gold-400 mb-4">Your Commitment</h3>
+    <p class="text-burgundy-100 mb-4">Say this out loud:</p>
+    <p class="text-xl italic text-white">
+      "I commit to taking action every day for the next 30 days.
+      I will reach out. I will show up. I will serve.
+      I will hit $5K/month because I refuse to give up."
+    </p>
+  </div>
+
+  <!-- Day 1 Actions -->
+  <div class="bg-emerald-50 border border-emerald-200 rounded-xl p-6 mb-8">
+    <h3 class="text-lg font-bold text-emerald-800 mb-4">🚀 Your Day 1 Actions</h3>
+    <div class="space-y-3">
+      <div class="flex items-center gap-3 p-3 bg-white rounded-lg">
+        <div class="w-6 h-6 border-2 border-emerald-500 rounded flex items-center justify-center flex-shrink-0">
+          <span class="text-emerald-600 text-xs">□</span>
+        </div>
+        <span class="text-gray-700">Tell ONE person what you do now</span>
+      </div>
+      <div class="flex items-center gap-3 p-3 bg-white rounded-lg">
+        <div class="w-6 h-6 border-2 border-emerald-500 rounded flex items-center justify-center flex-shrink-0">
+          <span class="text-emerald-600 text-xs">□</span>
+        </div>
+        <span class="text-gray-700">Set up your Calendly booking link</span>
+      </div>
+      <div class="flex items-center gap-3 p-3 bg-white rounded-lg">
+        <div class="w-6 h-6 border-2 border-emerald-500 rounded flex items-center justify-center flex-shrink-0">
+          <span class="text-emerald-600 text-xs">□</span>
+        </div>
+        <span class="text-gray-700">Write your "who I help" statement</span>
+      </div>
+      <div class="flex items-center gap-3 p-3 bg-white rounded-lg">
+        <div class="w-6 h-6 border-2 border-emerald-500 rounded flex items-center justify-center flex-shrink-0">
+          <span class="text-emerald-600 text-xs">□</span>
+        </div>
+        <span class="text-gray-700">Decide your package price: $______</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Final Message -->
+  <div class="text-center mb-8">
+    <h3 class="text-2xl font-bold text-gray-900 mb-4">Your First Client is Waiting</h3>
+    <p class="text-lg text-gray-600 mb-6">
+      They're out there right now, struggling with the exact thing you can help with.
+      They just don't know you exist yet.
+    </p>
+    <p class="text-lg text-gray-600">
+      Go find them.
+    </p>
+  </div>
+
+  <!-- CTA -->
+  <div class="bg-gradient-to-r from-emerald-600 to-teal-600 rounded-2xl p-8 text-center">
+    <p class="text-2xl font-bold text-white mb-2">
+      $5K/month starts today.
+    </p>
+    <p class="text-emerald-100">
+      You've got this. Now go make it happen. 💪
+    </p>
+  </div>
+
+  <!-- Footer -->
+  <div class="mt-8 pt-6 border-t border-gray-100 text-center">
+    <p class="text-sm text-gray-500">
+      Made with 💚 by AccrediPro Academy
+    </p>
+    <p class="text-xs text-gray-400 mt-2">
+      Questions? We're here to help. Keep going!
+    </p>
+  </div>
+</div>`
+            }
+        ]
+    },
+    // NOTE: Purchasable ebooks are in the Professional Library (/ebooks)
+    // My Library only shows FREE ebooks (unlocked via progress) + purchased ebooks
 ];
 
 // Types for progress tracking
@@ -2243,6 +3458,7 @@ export default function MyLibraryPage() {
 
     const inProgressCount = MY_EBOOKS.filter(e => readingProgress[e.id]?.started && !isEbookComplete(e.id, e.chapters.length)).length;
     const completedCount = MY_EBOOKS.filter(e => isEbookComplete(e.id, e.chapters.length)).length;
+    const freeCount = MY_EBOOKS.filter(e => e.isFree).length;
 
     // READING VIEW
     if (readingEbook) {
@@ -2253,7 +3469,7 @@ export default function MyLibraryPage() {
             <div className="min-h-screen bg-gray-50">
                 {/* Reading Header */}
                 <div className="bg-white border-b border-gray-200 sticky top-0 z-20">
-                    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+                    <div className="px-4 sm:px-6 lg:px-8 py-4">
                         <div className="flex items-center justify-between">
                             <div className="flex items-center gap-4">
                                 <Button variant="ghost" onClick={() => { setReadingEbook(null); setCurrentChapter(0); setShowTOC(false); }}>
@@ -2330,7 +3546,7 @@ export default function MyLibraryPage() {
                 )}
 
                 {/* Reading Content */}
-                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+                <div className="px-4 sm:px-6 lg:px-8 py-8">
                     <div className="flex gap-8">
                         {/* Chapter Sidebar */}
                         <div className="hidden lg:block w-72 flex-shrink-0">
@@ -2414,7 +3630,7 @@ export default function MyLibraryPage() {
     // LIBRARY VIEW
     return (
         <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-burgundy-50/30">
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+            <div className="px-4 sm:px-6 lg:px-8 py-8">
 
                 {/* Header */}
                 <div className="relative mb-10 bg-gradient-to-r from-burgundy-700 via-burgundy-600 to-burgundy-800 rounded-3xl p-8 md:p-12 text-white overflow-hidden">
@@ -2437,11 +3653,11 @@ export default function MyLibraryPage() {
                         </p>
 
                         <div className="flex flex-wrap gap-4 text-sm">
-                            <div className="flex items-center gap-2 bg-white/10 px-4 py-2 rounded-full">
-                                <BookOpen className="w-4 h-4" /> {MY_EBOOKS.length} E-Books
+                            <div className="flex items-center gap-2 bg-green-500/20 px-4 py-2 rounded-full border border-green-400/30">
+                                <Sparkles className="w-4 h-4 text-green-300" /> {freeCount} Free Resources
                             </div>
                             <div className="flex items-center gap-2 bg-white/10 px-4 py-2 rounded-full">
-                                <PlayCircle className="w-4 h-4" /> {inProgressCount} In Progress
+                                <PlayCircle className="w-4 h-4" /> {inProgressCount} Reading
                             </div>
                             <div className="flex items-center gap-2 bg-white/10 px-4 py-2 rounded-full">
                                 <CheckCircle2 className="w-4 h-4" /> {completedCount} Completed
@@ -2484,12 +3700,12 @@ export default function MyLibraryPage() {
                 )}
 
                 {/* Tabs */}
-                <div className="flex gap-2 mb-6">
+                <div className="flex flex-wrap gap-2 mb-6">
                     <button onClick={() => setActiveTab("all")} className={`px-5 py-2.5 rounded-xl font-medium text-sm transition-all ${activeTab === "all" ? "bg-burgundy-600 text-white" : "bg-white text-gray-600 hover:bg-gray-50 border border-gray-200"}`}>
                         All ({MY_EBOOKS.length})
                     </button>
                     <button onClick={() => setActiveTab("inprogress")} className={`px-5 py-2.5 rounded-xl font-medium text-sm transition-all ${activeTab === "inprogress" ? "bg-burgundy-600 text-white" : "bg-white text-gray-600 hover:bg-gray-50 border border-gray-200"}`}>
-                        <PlayCircle className="w-4 h-4 inline mr-1" /> In Progress ({inProgressCount})
+                        <PlayCircle className="w-4 h-4 inline mr-1" /> Reading ({inProgressCount})
                     </button>
                     <button onClick={() => setActiveTab("completed")} className={`px-5 py-2.5 rounded-xl font-medium text-sm transition-all ${activeTab === "completed" ? "bg-burgundy-600 text-white" : "bg-white text-gray-600 hover:bg-gray-50 border border-gray-200"}`}>
                         <CheckCircle2 className="w-4 h-4 inline mr-1" /> Completed ({completedCount})
@@ -2528,12 +3744,17 @@ export default function MyLibraryPage() {
                         const hasStarted = readingProgress[ebook.id]?.started;
 
                         return (
-                            <div key={ebook.id} className="bg-white rounded-2xl border border-gray-100 overflow-hidden hover:shadow-lg transition-all group">
+                            <div key={ebook.id} className="bg-white rounded-2xl border border-gray-100 overflow-hidden transition-all group hover:shadow-lg hover:border-burgundy-200">
                                 <div className="p-6">
                                     <div className="flex items-start justify-between mb-4">
                                         <span className="text-4xl">{ebook.icon}</span>
                                         <div className="flex items-center gap-2">
-                                            {isComplete && <Badge className="bg-burgundy-100 text-burgundy-700 border-0 text-xs">✓ Complete</Badge>}
+                                            {ebook.isFree && (
+                                                <Badge className="bg-green-100 text-green-700 border-0 text-xs flex items-center gap-1">
+                                                    <Sparkles className="w-3 h-3" /> Graduate Resource
+                                                </Badge>
+                                            )}
+                                            {isComplete && <Badge className="bg-burgundy-100 text-burgundy-700 border-0 text-xs">Complete</Badge>}
                                             {!isComplete && progress > 0 && <Badge className="bg-blue-100 text-blue-700 border-0 text-xs">{progress}%</Badge>}
                                             <Button variant="ghost" size="sm" onClick={() => toggleSaved(ebook.id)} className={savedEbooks.includes(ebook.id) ? "text-burgundy-600" : "text-gray-400"}>
                                                 {savedEbooks.includes(ebook.id) ? <BookmarkCheck className="w-5 h-5" /> : <Bookmark className="w-5 h-5" />}
@@ -2541,10 +3762,25 @@ export default function MyLibraryPage() {
                                         </div>
                                     </div>
 
-                                    <h3 className="text-lg font-bold text-gray-900 mb-1 group-hover:text-burgundy-600 transition-colors">{ebook.title}</h3>
-                                    <p className="text-sm text-burgundy-600 mb-2">{ebook.subtitle}</p>
+                                    <h3 className="text-lg font-bold mb-1 transition-colors text-gray-900 group-hover:text-burgundy-600">{ebook.title}</h3>
+                                    <p className="text-sm mb-2 text-burgundy-600">{ebook.subtitle}</p>
+
+                                    {/* Unlock Condition Badge */}
+                                    {ebook.unlockCondition && (
+                                        <div className="flex items-center gap-2 mb-3 p-2 bg-green-50 rounded-lg border border-green-100">
+                                            <CheckCircle2 className="w-4 h-4 text-green-600" />
+                                            <span className="text-xs text-green-700 font-medium">Unlocked: {ebook.unlockCondition}</span>
+                                        </div>
+                                    )}
+
+                                    {/* Value Prop Blurb */}
+                                    {ebook.valueProp && (
+                                        <p className="text-sm font-medium px-3 py-2 rounded-lg mb-3 italic text-amber-700 bg-amber-50">
+                                            &ldquo;{ebook.valueProp}&rdquo;
+                                        </p>
+                                    )}
+
                                     <p className="text-gray-600 text-sm mb-3 line-clamp-2">{ebook.description}</p>
-                                    <p className="text-xs text-gray-500 mb-3">By {ebook.author}</p>
 
                                     <div className="flex flex-wrap gap-2 mb-3">
                                         {ebook.topics.slice(0, 2).map((topic) => (
@@ -2553,7 +3789,7 @@ export default function MyLibraryPage() {
                                     </div>
 
                                     <div className="flex items-center text-xs text-gray-500 mb-4">
-                                        <span><FileText className="w-3 h-3 inline mr-1" />{ebook.chapters.length} chapters</span>
+                                        <span><FileText className="w-3 h-3 inline mr-1" />{ebook.chapters.length > 0 ? `${ebook.chapters.length} chapters` : `${ebook.pages} pages`}</span>
                                         <span className="mx-2">•</span>
                                         <span><Clock className="w-3 h-3 inline mr-1" />{ebook.readTime}</span>
                                     </div>
@@ -2588,21 +3824,24 @@ export default function MyLibraryPage() {
                     </div>
                 )}
 
-                {/* Get More CTA */}
-                <div className="mt-12 bg-gradient-to-r from-burgundy-600 to-burgundy-700 rounded-2xl p-8 text-white">
-                    <div className="flex flex-col md:flex-row items-center justify-between gap-6">
+                {/* Expand Your Library CTA */}
+                <div className="mt-12 bg-gradient-to-r from-burgundy-700 via-burgundy-600 to-purple-700 rounded-2xl p-8 text-white overflow-hidden relative">
+                    <div className="absolute inset-0 opacity-10">
+                        <div className="absolute top-0 right-0 w-64 h-64 bg-gold-400 rounded-full blur-3xl -translate-y-1/2 translate-x-1/4" />
+                    </div>
+                    <div className="relative flex flex-col md:flex-row items-center justify-between gap-6">
                         <div className="flex items-center gap-4">
-                            <div className="w-16 h-16 bg-white/20 rounded-2xl flex items-center justify-center">
-                                <Sparkles className="w-8 h-8" />
+                            <div className="w-16 h-16 bg-gold-400/20 backdrop-blur rounded-2xl flex items-center justify-center border border-gold-400/30">
+                                <Sparkles className="w-8 h-8 text-gold-300" />
                             </div>
                             <div>
-                                <h2 className="text-2xl font-bold mb-1">Expand Your Library</h2>
-                                <p className="text-white/80">Browse more professional e-books and bundles</p>
+                                <h2 className="text-2xl font-bold mb-1">Expand Your Professional Library</h2>
+                                <p className="text-white/80">Premium guides, templates, and protocol bundles for practitioners</p>
                             </div>
                         </div>
                         <a href="/ebooks">
-                            <Button className="bg-white text-burgundy-700 hover:bg-burgundy-50 font-semibold px-6 py-6 text-lg">
-                                <ShoppingBag className="w-5 h-5 mr-2" /> Visit E-Book Store <ChevronRight className="w-5 h-5 ml-2" />
+                            <Button className="bg-gold-500 hover:bg-gold-600 text-burgundy-900 font-semibold px-6 py-6 text-lg shadow-lg">
+                                <Library className="w-5 h-5 mr-2" /> Browse Resources <ChevronRight className="w-5 h-5 ml-2" />
                             </Button>
                         </a>
                     </div>

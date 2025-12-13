@@ -124,8 +124,8 @@ async function main() {
   let coach = await prisma.user.findFirst({
     where: {
       OR: [
-        { email: "coach@accredipro.com" },
-        { email: "sarah@accredipro.com" },
+        { email: "coach@accredipro-certificate.com" },
+        { email: "sarah@accredipro-certificate.com" },
         { role: "MENTOR", firstName: { contains: "Sarah" } },
         { role: "ADMIN" },
       ],
@@ -139,7 +139,7 @@ async function main() {
     console.log('No coach found, creating Sarah...');
     coach = await prisma.user.create({
       data: {
-        email: "coach@accredipro.com",
+        email: "coach@accredipro-certificate.com",
         firstName: "Sarah",
         lastName: "Mitchell",
         role: "MENTOR",

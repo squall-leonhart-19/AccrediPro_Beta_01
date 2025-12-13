@@ -1,13 +1,15 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Walkthrough } from "./walkthrough";
+import { useRouter } from "next/navigation";
+import { InteractiveTour } from "@/components/ui/interactive-tour";
 
 interface OnboardingWrapperProps {
   children: React.ReactNode;
   hasCompletedOnboarding: boolean;
   userName: string;
   coachName?: string;
+  userId: string;
 }
 
 export function OnboardingWrapper({
@@ -15,31 +17,44 @@ export function OnboardingWrapper({
   hasCompletedOnboarding,
   userName,
   coachName,
+  userId,
 }: OnboardingWrapperProps) {
-  const [showWalkthrough, setShowWalkthrough] = useState(false);
+  const [showTour, setShowTour] = useState(false);
   const [isClient, setIsClient] = useState(false);
+  const router = useRouter();
 
   useEffect(() => {
     setIsClient(true);
-    // Small delay to let the page render first
-    if (!hasCompletedOnboarding) {
-      const timer = setTimeout(() => setShowWalkthrough(true), 500);
+
+    // Check if tour was already completed
+    const tourComplete = localStorage.getItem(`tour-complete-${userId}`) === "true";
+
+    // Show tour if onboarding not complete AND tour not completed
+    if (!hasCompletedOnboarding && !tourComplete) {
+      // Small delay to let the page render first
+      const timer = setTimeout(() => setShowTour(true), 500);
       return () => clearTimeout(timer);
     }
-  }, [hasCompletedOnboarding]);
+  }, [hasCompletedOnboarding, userId]);
 
   const handleComplete = () => {
-    setShowWalkthrough(false);
+    setShowTour(false);
+    router.push("/start-here");
+  };
+
+  const handleSkip = () => {
+    setShowTour(false);
+    router.push("/start-here");
   };
 
   return (
     <>
       {children}
-      {isClient && showWalkthrough && (
-        <Walkthrough
-          userName={userName}
-          coachName={coachName}
+      {isClient && showTour && (
+        <InteractiveTour
           onComplete={handleComplete}
+          onSkip={handleSkip}
+          userId={userId}
         />
       )}
     </>

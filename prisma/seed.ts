@@ -29,10 +29,10 @@ async function main() {
   // Create Admin User
   const adminPassword = await bcrypt.hash('Admin123!', 12);
   const admin = await prisma.user.upsert({
-    where: { email: 'admin@accredipro.com' },
+    where: { email: 'admin@accredipro-certificate.com' },
     update: {},
     create: {
-      email: 'admin@accredipro.com',
+      email: 'admin@accredipro-certificate.com',
       passwordHash: adminPassword,
       firstName: 'Admin',
       lastName: 'AccrediPro',
@@ -46,14 +46,14 @@ async function main() {
   // Create Coach (for 1:1 mentorship)
   const coachPassword = await bcrypt.hash('Coach123!', 12);
   const coach = await prisma.user.upsert({
-    where: { email: 'coach@accredipro.com' },
+    where: { email: 'coach@accredipro-certificate.com' },
     update: {
       firstName: 'Dr. Sarah',
       lastName: 'Mitchell',
       bio: 'Board-certified Functional Medicine practitioner with 15+ years experience. Passionate about helping health professionals integrate functional medicine into their practice.',
     },
     create: {
-      email: 'coach@accredipro.com',
+      email: 'coach@accredipro-certificate.com',
       passwordHash: coachPassword,
       firstName: 'Dr. Sarah',
       lastName: 'Mitchell',
@@ -68,14 +68,14 @@ async function main() {
   // Create Instructor
   const instructorPassword = await bcrypt.hash('Instructor123!', 12);
   const instructor = await prisma.user.upsert({
-    where: { email: 'instructor@accredipro.com' },
+    where: { email: 'instructor@accredipro-certificate.com' },
     update: {
       firstName: 'Dr. Emily',
       lastName: 'Chen',
       bio: 'Leading expert in Functional Medicine education. Author of "The Functional Approach" and founder of the Institute for Integrative Health.',
     },
     create: {
-      email: 'instructor@accredipro.com',
+      email: 'instructor@accredipro-certificate.com',
       passwordHash: instructorPassword,
       firstName: 'Dr. Emily',
       lastName: 'Chen',
@@ -90,10 +90,10 @@ async function main() {
   // Create Demo Student
   const studentPassword = await bcrypt.hash('Student123!', 12);
   const student = await prisma.user.upsert({
-    where: { email: 'student@accredipro.com' },
+    where: { email: 'student@accredipro-certificate.com' },
     update: {},
     create: {
-      email: 'student@accredipro.com',
+      email: 'student@accredipro-certificate.com',
       passwordHash: studentPassword,
       firstName: 'Jennifer',
       lastName: 'Smith',
@@ -910,10 +910,10 @@ The AccrediPro Team`,
   console.log('\n🎉 Database seeded successfully!\n');
   console.log('📋 Login Credentials:');
   console.log('─────────────────────────────────────────');
-  console.log('Admin:      admin@accredipro.com / Admin123!');
-  console.log('Coach:      coach@accredipro.com / Coach123!');
-  console.log('Instructor: instructor@accredipro.com / Instructor123!');
-  console.log('Student:    student@accredipro.com / Student123!');
+  console.log('Admin:      admin@accredipro-certificate.com / Admin123!');
+  console.log('Coach:      coach@accredipro-certificate.com / Coach123!');
+  console.log('Instructor: instructor@accredipro-certificate.com / Instructor123!');
+  console.log('Student:    student@accredipro-certificate.com / Student123!');
   console.log('─────────────────────────────────────────\n');
   console.log('📚 Courses Created:');
   console.log('1. Functional Medicine Certification ($997)');
