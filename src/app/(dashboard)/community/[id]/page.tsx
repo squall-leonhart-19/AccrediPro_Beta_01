@@ -29,6 +29,16 @@ async function getPost(postId: string, userId: string) {
               role: true,
             },
           },
+          likes: {
+            where: { userId },
+            select: { id: true },
+          },
+          reactions: {
+            select: {
+              emoji: true,
+              userId: true,
+            },
+          },
           replies: {
             include: {
               author: {
@@ -38,6 +48,16 @@ async function getPost(postId: string, userId: string) {
                   lastName: true,
                   avatar: true,
                   role: true,
+                },
+              },
+              likes: {
+                where: { userId },
+                select: { id: true },
+              },
+              reactions: {
+                select: {
+                  emoji: true,
+                  userId: true,
                 },
               },
             },
@@ -66,6 +86,20 @@ async function getPost(postId: string, userId: string) {
   }
 
   return post;
+}
+
+// Helper to get reaction counts
+function getReactionCounts(reactions: { emoji: string; userId: string }[]) {
+  const counts: Record<string, number> = {};
+  reactions.forEach((r) => {
+    counts[r.emoji] = (counts[r.emoji] || 0) + 1;
+  });
+  return counts;
+}
+
+// Helper to get user's reactions
+function getUserReactions(reactions: { emoji: string; userId: string }[], userId: string) {
+  return reactions.filter((r) => r.userId === userId).map((r) => r.emoji);
 }
 
 export default async function CommunityPostPage({
@@ -102,12 +136,20 @@ export default async function CommunityPostPage({
       createdAt: comment.createdAt,
       parentId: comment.parentId,
       author: comment.author,
+      likeCount: comment.likeCount,
+      isLiked: comment.likes.length > 0,
+      reactions: getReactionCounts(comment.reactions),
+      userReactions: getUserReactions(comment.reactions, session.user.id),
       replies: comment.replies.map((reply) => ({
         id: reply.id,
         content: reply.content,
         createdAt: reply.createdAt,
         parentId: reply.parentId,
         author: reply.author,
+        likeCount: reply.likeCount,
+        isLiked: reply.likes.length > 0,
+        reactions: getReactionCounts(reply.reactions),
+        userReactions: getUserReactions(reply.reactions, session.user.id),
         replies: [] as never[],
       })),
     })),

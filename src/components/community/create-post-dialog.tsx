@@ -4,16 +4,13 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Badge } from "@/components/ui/badge";
 import {
   Plus,
   X,
   AlertTriangle,
   MessageSquare,
-  Lightbulb,
   HelpCircle,
   Trophy,
-  Rocket,
   GraduationCap,
   Bold,
   Italic,
@@ -23,12 +20,11 @@ import {
 } from "lucide-react";
 
 // Categories that users can post to
+// Note: "introductions" and "tips" are comment-only (users can only comment on existing posts)
 const POST_CATEGORIES = [
-  { id: "tips", label: "Daily Coach Tips", icon: Lightbulb, color: "bg-green-100 text-green-700" },
-  { id: "questions", label: "Questions & Help", icon: HelpCircle, color: "bg-blue-100 text-blue-700" },
   { id: "wins", label: "Share Your Wins", icon: Trophy, color: "bg-amber-100 text-amber-700" },
-  { id: "momentum", label: "Practice Momentum", icon: Rocket, color: "bg-purple-100 text-purple-700", isNew: true },
-  { id: "graduates", label: "Graduates", icon: GraduationCap, color: "bg-emerald-100 text-emerald-700" },
+  { id: "graduates", label: "New Graduates", icon: GraduationCap, color: "bg-emerald-100 text-emerald-700" },
+  { id: "questions", label: "Questions & Help", icon: HelpCircle, color: "bg-blue-100 text-blue-700" },
 ];
 
 // Banned keywords for auto-moderation
@@ -263,9 +259,6 @@ export function CreatePostDialog({ communityId, communityName, defaultCategory }
                   >
                     <cat.icon className="w-4 h-4" />
                     {cat.label}
-                    {"isNew" in cat && cat.isNew && (
-                      <Badge className="bg-purple-500 text-white border-0 text-[10px] ml-1">NEW</Badge>
-                    )}
                   </button>
                 ))}
               </div>

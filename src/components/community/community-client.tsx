@@ -21,31 +21,21 @@ import {
   Lightbulb,
   Megaphone,
   Hand,
-  Rocket,
   GraduationCap,
-  DollarSign,
-  Target,
   Shield,
   ArrowRight,
   CheckCircle,
-  Zap,
   MessageCircle,
   Award,
   Flame,
   BadgeCheck,
   Headphones,
-  Crown,
   ChevronDown,
 } from "lucide-react";
 import { CreatePostDialog } from "@/components/community/create-post-dialog";
 
-// Emoji reactions
-const REACTIONS = [
-  { id: "like", emoji: "❤️", label: "Love" },
-  { id: "celebrate", emoji: "🎉", label: "Celebrate" },
-  { id: "helpful", emoji: "💡", label: "Helpful" },
-  { id: "inspiring", emoji: "🔥", label: "Inspiring" },
-];
+// Emoji reactions - same as post detail page
+const REACTION_EMOJIS = ["❤️", "🔥", "👏", "💯", "🎉", "💪", "⭐", "🙌"];
 
 // Sort options
 const SORT_OPTIONS = [
@@ -56,13 +46,14 @@ const SORT_OPTIONS = [
 ];
 
 // Post categories for filtering within communities
+// Order: Introduce Yourself, Daily Coach Tips, Share Your Wins (merged), New Graduates, Questions & Help (last)
+// Comment-only: introductions, tips (users can only comment, not create new posts)
 const postCategories = [
-  { id: "introductions", label: "Introduce Yourself", icon: Hand, color: "bg-pink-100 text-pink-700", bgGradient: "from-pink-50 to-rose-50", adminOnly: true },
-  { id: "tips", label: "Daily Coach Tips", icon: Lightbulb, color: "bg-green-100 text-green-700", bgGradient: "from-green-50 to-emerald-50" },
-  { id: "questions", label: "Questions & Help", icon: HelpCircle, color: "bg-blue-100 text-blue-700", bgGradient: "from-blue-50 to-sky-50" },
+  { id: "introductions", label: "Introduce Yourself", icon: Hand, color: "bg-pink-100 text-pink-700", bgGradient: "from-pink-50 to-rose-50", commentOnly: true },
+  { id: "tips", label: "Daily Coach Tips", icon: Lightbulb, color: "bg-green-100 text-green-700", bgGradient: "from-green-50 to-emerald-50", commentOnly: true },
   { id: "wins", label: "Share Your Wins", icon: Trophy, color: "bg-amber-100 text-amber-700", bgGradient: "from-amber-50 to-yellow-50" },
-  { id: "momentum", label: "Practice Momentum", icon: Rocket, color: "bg-purple-100 text-purple-700", bgGradient: "from-purple-50 to-violet-50", isNew: true },
-  { id: "graduates", label: "Graduates", icon: GraduationCap, color: "bg-emerald-100 text-emerald-700", bgGradient: "from-emerald-50 to-teal-50" },
+  { id: "graduates", label: "New Graduates", icon: GraduationCap, color: "bg-emerald-100 text-emerald-700", bgGradient: "from-emerald-50 to-teal-50" },
+  { id: "questions", label: "Questions & Help", icon: HelpCircle, color: "bg-blue-100 text-blue-700", bgGradient: "from-blue-50 to-sky-50" },
 ];
 
 // Featured graduates pool - rotates daily
@@ -141,7 +132,15 @@ const getDailyFeaturedGraduate = () => {
   return FEATURED_GRADUATES[dayOfYear % FEATURED_GRADUATES.length];
 };
 
-// Sample posts data for demonstration
+// Static reaction counts for posts - total ~2000 distributed across emojis
+const STATIC_REACTIONS = {
+  pinned: { "❤️": 547, "🔥": 423, "👏": 356, "💯": 289, "🎉": 198, "💪": 134, "⭐": 87, "🙌": 56 }, // ~2090
+  featured: { "❤️": 412, "🔥": 334, "👏": 278, "💯": 234, "🎉": 167, "💪": 123, "⭐": 78, "🙌": 45 }, // ~1671
+  regular: { "❤️": 234, "🔥": 189, "👏": 156, "💯": 123, "🎉": 98, "💪": 67, "⭐": 45, "🙌": 28 }, // ~940
+  question: { "❤️": 145, "🔥": 112, "👏": 89, "💯": 67, "🎉": 45, "💪": 34, "⭐": 23, "🙌": 15 }, // ~530
+};
+
+// Sample posts data for demonstration - Based on buyer personas
 const SAMPLE_POSTS = [
   {
     id: "pinned-introductions",
@@ -164,209 +163,402 @@ Don't be shy - everyone here started exactly where you are. Our community is inc
 We can't wait to meet you and support you on your journey!`,
     category: "introductions",
     isPinned: true,
-    viewCount: 8934,
-    createdAt: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000),
+    viewCount: 12847,
+    createdAt: new Date(Date.now() - 1 * 60 * 60 * 1000), // 1 hour ago
     author: {
       id: "admin-1",
       firstName: "AccrediPro",
-      lastName: "Team",
-      avatar: null,
+      lastName: "Founder",
+      avatar: "/images/coaches/founder.jpg",
       role: "ADMIN",
       isCertified: true,
     },
-    _count: { comments: 847, likes: 1256 },
-    reactions: { like: 567, celebrate: 423, helpful: 89, inspiring: 234 },
+    _count: { comments: 1247, likes: 2156 },
+    reactions: STATIC_REACTIONS.pinned,
   },
   {
-    id: "pinned-share-win",
-    title: "Share Your Wins Here! Celebrate Every Step of Your Journey",
-    content: `Welcome to our wins celebration space!
+    id: "tips-daily-1",
+    title: "Today's Tip: The #1 Mistake New Practitioners Make (And How to Avoid It)",
+    content: `Good morning everyone!
 
-This is THE place to share your achievements, big or small. Every win counts!
+After coaching 500+ practitioners, I see this mistake constantly:
 
-**Share things like:**
-- Signed your first client
-- Completed a module or certification
-- Hit a revenue milestone
-- Got amazing client feedback
-- Launched your website or social media
-- Had a breakthrough moment
+**Waiting until you feel "ready" to start getting clients.**
 
-**Why share?**
-Your wins inspire others. When you share, you help fellow students see what's possible. Plus, our coaches love celebrating with you!
+Here's the truth: You'll never feel 100% ready. The confidence comes FROM doing the work, not before it.
 
-**How to share:**
-Simply reply to this post with your win. Add photos or details if you'd like!
+**My challenge for you today:**
+Reach out to 3 people in your network who might benefit from what you're learning. Not to sell - just to have a conversation.
 
-Let's celebrate together! What's your latest win?`,
-    category: "wins",
+You'd be amazed how many clients come from simply talking about what you do.
+
+Who's taking me up on this challenge? Drop a 🙋 below!`,
+    category: "tips",
+    isPinned: true,
+    viewCount: 3456,
+    createdAt: new Date(Date.now() - 3 * 60 * 60 * 1000), // 3 hours ago
+    author: {
+      id: "coach-sarah",
+      firstName: "Dr. Sarah",
+      lastName: "Mitchell",
+      avatar: "/images/coaches/sarah.jpg",
+      role: "MENTOR",
+      isCertified: true,
+    },
+    _count: { comments: 89, likes: 412 },
+    reactions: STATIC_REACTIONS.pinned,
+  },
+  {
+    id: "graduate-featured",
+    title: "I DID IT! From Burned-Out Nurse to Thriving FM Practitioner - My Journey",
+    content: `I can't believe I'm writing this. After 22 years as an ICU nurse, I finally made the leap.
+
+**Where I was 8 months ago:**
+- Working 12-hour shifts, exhausted and frustrated
+- Watching patients get sicker despite our interventions
+- Dreaming of helping people PREVENT disease, not just manage it
+- Terrified to leave my "secure" hospital job
+
+**Where I am today:**
+- Certified Functional Medicine Practitioner
+- 18 paying clients in my first 3 months
+- $6,200 revenue last month (working 25 hours/week!)
+- Actually EXCITED to go to work
+
+The transformation wasn't easy. There were nights I questioned everything. But this community kept me going.
+
+Special thanks to Dr. Sarah for the 1:1 coaching calls that helped me believe in myself.
+
+To everyone still in the studying phase - it's worth every minute. Your future clients are waiting for YOU specifically.
+
+If I can do this at 47, so can you. 💪`,
+    category: "graduates",
     isPinned: true,
     viewCount: 2847,
-    createdAt: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000),
+    createdAt: new Date(Date.now() - 6 * 60 * 60 * 1000),
     author: {
-      id: "admin-1",
-      firstName: "AccrediPro",
-      lastName: "Team",
-      avatar: null,
-      role: "ADMIN",
-      isCertified: true,
-    },
-    _count: { comments: 156, likes: 312 },
-    reactions: { like: 189, celebrate: 98, helpful: 15, inspiring: 67 },
-  },
-  {
-    id: "graduate-1",
-    title: "I DID IT! Just Received My Functional Medicine Practitioner Certificate!",
-    content: `After 6 months of intensive study, late nights, and countless practice sessions, I finally passed my final exam and received my certificate yesterday!
-
-This journey has been absolutely transformational. Not just for my career, but for my entire understanding of health and wellness.
-
-**What helped me succeed:**
-- The structured curriculum that built knowledge step by step
-- Amazing support from mentors (special thanks to Sarah!)
-- The community here - you all kept me motivated
-- The practice cases that prepared me for real clients
-
-I already have 3 discovery calls booked for next week! Can't wait to start helping people transform their health.
-
-Thank you to everyone who supported me on this journey! 🎉`,
-    category: "graduates",
-    isPinned: true,
-    viewCount: 1247,
-    createdAt: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000),
-    author: {
-      id: "user-1",
-      firstName: "Maria",
-      lastName: "Rodriguez",
+      id: "user-rachel",
+      firstName: "Rachel",
+      lastName: "Simmons",
       avatar: null,
       role: "STUDENT",
       isCertified: true,
     },
-    _count: { comments: 23, likes: 89 },
-    reactions: { like: 45, celebrate: 32, helpful: 8, inspiring: 24 },
+    _count: { comments: 67, likes: 289 },
+    reactions: STATIC_REACTIONS.featured,
   },
   {
-    id: "graduate-2",
-    title: "From Nurse to FM Practitioner - My Transformation Story",
-    content: `25 years as an ER nurse. Burned out. Feeling like I was just putting band-aids on problems.
+    id: "wins-featured",
+    title: "Just Closed My First $3,000 Package! Screaming Internally!",
+    content: `IT HAPPENED!!!
 
-Then I found Functional Medicine.
+After 2 months of putting myself out there, doing free discovery calls, and honestly... wanting to quit multiple times...
 
-Today marks my one-year anniversary of launching my practice. In that time:
-✅ Helped 47 clients transform their health
-✅ Quit my hospital job (finally!)
-✅ Earning more than I ever did as a nurse
-✅ Actually ENJOYING my work again
+A woman I met at a local networking event just paid IN FULL for my 12-week gut health transformation package. $3,000.
 
-The certification program gave me everything I needed. The business kits made launching SO much easier than I expected.
+She said: "I've been to 5 different doctors and no one has ever listened to me like you did on our call."
 
-To everyone still studying - keep going. It's worth every minute. 💪`,
-    category: "graduates",
+That's it. That's the secret. Just LISTEN.
+
+I'm literally crying as I type this. This is real. I'm actually doing this.
+
+To everyone who encouraged me when I got zero responses to my first posts - thank you. Your words kept me going.
+
+Now excuse me while I go process this massive win! 🎉`,
+    category: "wins",
     isPinned: false,
-    viewCount: 892,
-    createdAt: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000),
+    viewCount: 1567,
+    createdAt: new Date(Date.now() - 4 * 60 * 60 * 1000),
     author: {
-      id: "user-2",
-      firstName: "Jennifer",
-      lastName: "Thompson",
-      avatar: null,
-      role: "STUDENT",
-      isCertified: true,
-    },
-    _count: { comments: 31, likes: 124 },
-    reactions: { like: 67, celebrate: 41, helpful: 12, inspiring: 38 },
-  },
-  {
-    id: "momentum-1",
-    title: "Just Signed My FIRST Paying Client! $1,200 for 8-Week Program!",
-    content: `IT HAPPENED! 🎉
-
-After 3 weeks of networking and offering free discovery calls, someone said YES!
-
-She's starting my 8-week gut health transformation program next Monday. $1,200 paid in full!
-
-I'm literally shaking as I write this. This is real. I'm actually doing this.
-
-Thank you to everyone who encouraged me to keep going when I had no responses to my first posts. Your support means everything!`,
-    category: "momentum",
-    isPinned: false,
-    viewCount: 456,
-    createdAt: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000),
-    author: {
-      id: "user-3",
-      firstName: "David",
-      lastName: "Chen",
+      id: "user-michelle",
+      firstName: "Michelle",
+      lastName: "Torres",
       avatar: null,
       role: "STUDENT",
       isCertified: false,
     },
-    _count: { comments: 42, likes: 156 },
-    reactions: { like: 78, celebrate: 65, helpful: 5, inspiring: 42 },
+    _count: { comments: 94, likes: 378 },
+    reactions: STATIC_REACTIONS.featured,
   },
   {
-    id: "momentum-2",
-    title: "Hit $5K This Month - Here's Exactly What I Did",
-    content: `Month 4 of my practice and I just crossed $5,000 in revenue!
+    id: "question-1",
+    title: "How do you handle clients who want to quit after 2 weeks?",
+    content: `I have a client who started my 8-week program but is already saying she doesn't see results and wants to stop.
 
-**Here's my breakdown:**
-- 2 new 12-week clients ($997 each) = $1,994
-- 3 existing clients renewed ($499 each) = $1,497
-- 1 VIP intensive day ($1,500) = $1,500
-- Total: $4,991 (calling it $5K!)
+She's been doing everything right but it's only been 14 days!
 
-**What's working for me:**
-1. Posting valuable content on Instagram 3x/week
-2. Hosting a free monthly webinar
-3. Following up with EVERY lead within 24 hours
-4. Using the email templates from the business kit
+I know healing takes time but I don't want to come across as pushy or salesy.
 
-If you're struggling, DM me. Happy to share more details!`,
-    category: "momentum",
+How do you experienced practitioners handle this? Do you offer refunds? Extend the program?
+
+Any scripts or talking points would be super helpful. I really want to help her but I'm struggling with how to communicate this.`,
+    category: "questions",
     isPinned: false,
-    viewCount: 723,
-    createdAt: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000),
+    viewCount: 892,
+    createdAt: new Date(Date.now() - 5 * 60 * 60 * 1000),
     author: {
-      id: "user-4",
+      id: "user-emma",
+      firstName: "Emma",
+      lastName: "Richardson",
+      avatar: null,
+      role: "STUDENT",
+      isCertified: false,
+    },
+    _count: { comments: 34, likes: 56 },
+    reactions: STATIC_REACTIONS.question,
+  },
+  {
+    id: "graduate-2",
+    title: "Left My Corporate Job 6 Months Ago - Here's My Honest Income Report",
+    content: `I know a lot of people here are wondering if this is actually viable as a career change. So I'm sharing my real numbers.
+
+**Background:** 15 years in pharmaceutical sales. Made great money but felt empty selling drugs I didn't believe in.
+
+**My 6-Month Journey:**
+- Month 1: $0 (still studying)
+- Month 2: $800 (2 clients at $400 each)
+- Month 3: $2,100 (started raising prices)
+- Month 4: $3,400 (referrals started coming)
+- Month 5: $4,200 (added group program)
+- Month 6: $5,800 (best month yet!)
+
+**Total: $16,300 in 6 months**
+
+Not a millionaire yet 😄 but I work 30 hours/week, from home, helping people I actually care about.
+
+My corporate salary was higher but my LIFE is infinitely better.
+
+Happy to answer any questions about the transition!`,
+    category: "graduates",
+    isPinned: false,
+    viewCount: 2341,
+    createdAt: new Date(Date.now() - 8 * 60 * 60 * 1000),
+    author: {
+      id: "user-james",
+      firstName: "James",
+      lastName: "Patterson",
+      avatar: null,
+      role: "STUDENT",
+      isCertified: true,
+    },
+    _count: { comments: 78, likes: 234 },
+    reactions: STATIC_REACTIONS.regular,
+  },
+  {
+    id: "wins-2",
+    title: "Month 4 Update: Hit $8K and Quit My Day Job!",
+    content: `Quick update for anyone following my journey:
+
+**Revenue breakdown this month:**
+- 4 x 12-week clients ($1,497 each) = $5,988
+- 1 x VIP Day ($1,500) = $1,500
+- 2 x renewals ($297 each) = $594
+- **Total: $8,082**
+
+I officially submitted my resignation yesterday. My last day at the hospital is in 2 weeks.
+
+**What's working:**
+1. Instagram Reels (one went viral - 45K views!)
+2. Free monthly webinar on gut health
+3. Email sequence from the business kit
+4. Most importantly: showing up consistently even when I didn't feel like it
+
+To everyone still working their 9-5 while building this dream - keep going. The compound effect is REAL.`,
+    category: "wins",
+    isPinned: false,
+    viewCount: 1823,
+    createdAt: new Date(Date.now() - 12 * 60 * 60 * 1000),
+    author: {
+      id: "user-amanda",
       firstName: "Amanda",
       lastName: "Foster",
       avatar: null,
       role: "STUDENT",
       isCertified: true,
     },
-    _count: { comments: 56, likes: 203 },
-    reactions: { like: 89, celebrate: 54, helpful: 48, inspiring: 67 },
+    _count: { comments: 112, likes: 467 },
+    reactions: STATIC_REACTIONS.featured,
   },
   {
-    id: "tips-1",
-    title: "3 Questions That Transform Every Discovery Call",
-    content: `After conducting 200+ discovery calls, I've found these 3 questions convert better than anything else:
+    id: "tips-2",
+    title: "The Email Template That Gets Me 80% Response Rate",
+    content: `I've tested probably 30 different follow-up email templates. This one consistently gets 80%+ response rate.
 
-**1. "What would your life look like if this problem was completely solved?"**
-Gets them visualizing the transformation - emotional connection.
+**Subject:** Quick question about [specific symptom they mentioned]
 
-**2. "What have you already tried, and why do you think it didn't work?"**
-Shows you're different. Positions you as the solution to their failed attempts.
+**Body:**
+Hi [Name],
 
-**3. "On a scale of 1-10, how committed are you to solving this in the next 90 days?"**
-Qualifies their readiness. Anything below 7 = not ready to invest.
+I was thinking about our conversation and wanted to share something that might help with [specific symptom].
 
-Try these in your next call and let me know how it goes!`,
+[2-3 sentences of actual value - not a pitch]
+
+Would love to hear how you're doing. No pressure to book anything - just genuinely curious how you're feeling.
+
+[Your name]
+
+**Why it works:**
+- Personal subject line
+- Provides actual value upfront
+- No sales pressure
+- Shows you actually listened
+
+The key is the "no pressure" part. Counterintuitive, but removing pressure actually increases conversions.
+
+Try it this week and report back!`,
     category: "tips",
     isPinned: false,
-    viewCount: 1089,
-    createdAt: new Date(Date.now() - 4 * 24 * 60 * 60 * 1000),
+    viewCount: 2156,
+    createdAt: new Date(Date.now() - 18 * 60 * 60 * 1000),
     author: {
-      id: "coach-1",
+      id: "coach-sarah",
       firstName: "Dr. Sarah",
       lastName: "Mitchell",
-      avatar: null,
+      avatar: "/images/coaches/sarah.jpg",
       role: "MENTOR",
       isCertified: true,
     },
-    _count: { comments: 38, likes: 167 },
-    reactions: { like: 72, celebrate: 23, helpful: 89, inspiring: 45 },
+    _count: { comments: 67, likes: 298 },
+    reactions: STATIC_REACTIONS.regular,
+  },
+  {
+    id: "question-2",
+    title: "Imposter syndrome hitting hard - how do you all deal with it?",
+    content: `I'm halfway through the certification and I keep thinking "who am I to help people with their health?"
+
+I don't have a medical degree. I'm just a mom who got interested in this because of my own health struggles.
+
+Every time I think about actually charging money for my services, I freeze up.
+
+Did anyone else go through this? How did you get over it?
+
+I know logically that I'm learning valuable skills but emotionally I feel like a fraud.`,
+    category: "questions",
+    isPinned: false,
+    viewCount: 1456,
+    createdAt: new Date(Date.now() - 20 * 60 * 60 * 1000),
+    author: {
+      id: "user-lisa",
+      firstName: "Lisa",
+      lastName: "Chen",
+      avatar: null,
+      role: "STUDENT",
+      isCertified: false,
+    },
+    _count: { comments: 89, likes: 234 },
+    reactions: STATIC_REACTIONS.question,
+  },
+  {
+    id: "intro-new",
+    title: "Hello from Texas! Corporate Lawyer Ready for a Change",
+    content: `Hi everyone! I'm Katherine from Austin, Texas.
+
+**My background:** 18 years as a corporate lawyer. Great money, zero fulfillment. I've been running on coffee and stress for so long I forgot what energy feels like.
+
+**Why I'm here:** My own health crash 2 years ago led me to functional medicine. A practitioner helped me reverse issues my regular doctor said were "just part of aging." I was SOLD.
+
+**My goal:** Build a practice helping other burned-out professionals reclaim their health. Eventually transition out of law completely.
+
+**Fun fact:** I'm a competitive ballroom dancer! It's my stress relief.
+
+So excited to be here and learn from all of you. The success stories in this community are incredibly inspiring!`,
+    category: "introductions",
+    isPinned: false,
+    viewCount: 678,
+    createdAt: new Date(Date.now() - 22 * 60 * 60 * 1000),
+    author: {
+      id: "user-katherine",
+      firstName: "Katherine",
+      lastName: "Williams",
+      avatar: null,
+      role: "STUDENT",
+      isCertified: false,
+    },
+    _count: { comments: 34, likes: 89 },
+    reactions: STATIC_REACTIONS.regular,
   },
 ];
+
+// Preview comments for each post - serious buyer persona comments
+const POST_PREVIEW_COMMENTS: Record<string, Array<{
+  id: string;
+  author: { firstName: string; lastName: string; role: string; avatar?: string };
+  content: string;
+  timeAgo: string;
+}>> = {
+  "pinned-introductions": [
+    { id: "c1", author: { firstName: "Dr. Sarah", lastName: "Mitchell", role: "MENTOR", avatar: "/images/coaches/sarah.jpg" }, content: "Welcome to everyone new this week! Don't be shy - we all started somewhere. This community changed my life and I know it will change yours too. 💕", timeAgo: "2h ago" },
+    { id: "c2", author: { firstName: "Jennifer", lastName: "Martinez", role: "STUDENT" }, content: "Hi everyone! Former ER nurse from Colorado. 20 years of band-aid medicine made me realize I needed to help people PREVENT disease, not just treat it. So grateful to be here!", timeAgo: "3h ago" },
+    { id: "c3", author: { firstName: "Michael", lastName: "Thompson", role: "STUDENT" }, content: "Corporate burnout survivor checking in from NYC! After my own health crisis at 42, I discovered functional medicine and it literally saved my life. Now I want to help others. 🙏", timeAgo: "4h ago" },
+  ],
+  "tips-daily-1": [
+    { id: "c4", author: { firstName: "Rachel", lastName: "Simmons", role: "STUDENT" }, content: "🙋 Challenge accepted! I've been putting off reaching out because I didn't feel 'ready.' But you're right - I'll never feel 100% ready. Messaging 3 people today!", timeAgo: "1h ago" },
+    { id: "c5", author: { firstName: "Amanda", lastName: "Foster", role: "STUDENT" }, content: "THIS. My first client came from exactly this - just having a conversation with a friend about gut health. She asked for help and I almost said no because I wasn't 'certified yet.' Now she's my best testimonial!", timeAgo: "2h ago" },
+    { id: "c6", author: { firstName: "Dr. Sarah", lastName: "Mitchell", role: "MENTOR", avatar: "/images/coaches/sarah.jpg" }, content: "Love seeing everyone take action! Remember: imperfect action beats perfect inaction every single time. Keep me posted on how those conversations go! 🌟", timeAgo: "45m ago" },
+  ],
+  "graduate-featured": [
+    { id: "c7", author: { firstName: "Dr. Sarah", lastName: "Mitchell", role: "MENTOR", avatar: "/images/coaches/sarah.jpg" }, content: "Rachel, I'm SO proud of you! Watching your transformation from that first overwhelmed coaching call to now has been incredible. You're proof that it's never too late to reinvent yourself. 💪", timeAgo: "4h ago" },
+    { id: "c8", author: { firstName: "Lisa", lastName: "Chen", role: "STUDENT" }, content: "This gives me SO much hope. I'm a burned-out teacher with the same fears you had. If you can do it at 47, I can do it at 44. Thank you for sharing!", timeAgo: "5h ago" },
+    { id: "c9", author: { firstName: "James", lastName: "Patterson", role: "STUDENT" }, content: "The part about 'your future clients are waiting for YOU specifically' hit me hard. There are people out there who need exactly what we have to offer. No one else can help them the way we can.", timeAgo: "5h ago" },
+  ],
+  "wins-featured": [
+    { id: "c10", author: { firstName: "Dr. Sarah", lastName: "Mitchell", role: "MENTOR", avatar: "/images/coaches/sarah.jpg" }, content: "MICHELLE!!! 🎉🎉🎉 I am screaming with you! This is EXACTLY what happens when you show up authentically and truly listen. You earned every penny of that $3,000. So proud of you!", timeAgo: "2h ago" },
+    { id: "c11", author: { firstName: "Rachel", lastName: "Simmons", role: "STUDENT" }, content: "The 'just LISTEN' part is everything. Doctors spend 7 minutes with patients on average. We have the gift of TIME and ATTENTION. Congratulations Michelle - this is huge! 🙌", timeAgo: "3h ago" },
+    { id: "c12", author: { firstName: "Katherine", lastName: "Williams", role: "STUDENT" }, content: "I needed to see this today. I'm still in the studying phase but posts like this remind me WHY I'm doing this. Your client is lucky to have found you!", timeAgo: "3h ago" },
+  ],
+  "question-1": [
+    { id: "c13", author: { firstName: "Dr. Sarah", lastName: "Mitchell", role: "MENTOR", avatar: "/images/coaches/sarah.jpg" }, content: "Great question Emma! This is so common. I always set expectations upfront: 'You didn't get here overnight, and you won't heal overnight.' Schedule a check-in call to reconnect her to her WHY. Often clients just need reassurance, not a refund.", timeAgo: "3h ago" },
+    { id: "c14", author: { firstName: "James", lastName: "Patterson", role: "STUDENT" }, content: "I had this exact situation last month. I showed her a timeline of typical healing and asked what small improvements she'd noticed. Turns out she HAD improved - her sleep was better - she just hadn't noticed. She stayed!", timeAgo: "4h ago" },
+    { id: "c15", author: { firstName: "Amanda", lastName: "Foster", role: "STUDENT" }, content: "Celebrating small wins is key! I have clients track 3 things daily and review weekly. Even small improvements keep them motivated. Also - your contract should specify the no-refund policy. Learned that the hard way! 😅", timeAgo: "4h ago" },
+  ],
+  "graduate-2": [
+    { id: "c16", author: { firstName: "Dr. Sarah", lastName: "Mitchell", role: "MENTOR", avatar: "/images/coaches/sarah.jpg" }, content: "James, thank you for being so transparent with your numbers! This is EXACTLY the kind of realistic expectation-setting our community needs. $16K in 6 months while building from scratch is incredible. And you're right - the LIFE improvement is priceless.", timeAgo: "6h ago" },
+    { id: "c17", author: { firstName: "Michelle", lastName: "Torres", role: "STUDENT" }, content: "The honesty here is so refreshing. I appreciate you sharing the $0 month too. So many people only share the highlights. This is real. How did you handle the doubt during that first $0 month?", timeAgo: "7h ago" },
+    { id: "c18", author: { firstName: "Katherine", lastName: "Williams", role: "STUDENT" }, content: "As someone still in corporate hell (lawyer here), seeing your month-by-month progression gives me a realistic timeline. Did you have savings to cover that first month? Planning my exit strategy now.", timeAgo: "7h ago" },
+  ],
+  "wins-2": [
+    { id: "c19", author: { firstName: "Dr. Sarah", lastName: "Mitchell", role: "MENTOR", avatar: "/images/coaches/sarah.jpg" }, content: "Amanda!!! Quitting your day job is such a milestone! 🎉 You've been one of my most consistent implementers. The compound effect comment is SO TRUE - most people give up right before it starts working.", timeAgo: "10h ago" },
+    { id: "c20", author: { firstName: "Rachel", lastName: "Simmons", role: "STUDENT" }, content: "Can you share more about that viral Reel? What was it about? I've been trying to figure out what content resonates. Would love any tips!", timeAgo: "11h ago" },
+    { id: "c21", author: { firstName: "Lisa", lastName: "Chen", role: "STUDENT" }, content: "The 'showing up consistently even when I didn't feel like it' part really hits home. That's my biggest struggle. How did you push through on the hard days?", timeAgo: "11h ago" },
+  ],
+  "tips-2": [
+    { id: "c22", author: { firstName: "Amanda", lastName: "Foster", role: "STUDENT" }, content: "Dr. Sarah, this is gold! I've been struggling with follow-ups feeling 'salesy.' The 'no pressure' reframe changes everything. Trying this today with 3 leads who ghosted me!", timeAgo: "16h ago" },
+    { id: "c23", author: { firstName: "James", lastName: "Patterson", role: "STUDENT" }, content: "Used this exact template yesterday and got 2 responses within an hour. One booked a discovery call! The key really is removing the sales pressure. People can FEEL when you're trying to close them.", timeAgo: "17h ago" },
+    { id: "c24", author: { firstName: "Rachel", lastName: "Simmons", role: "STUDENT" }, content: "Screenshotting this immediately! I've lost so many potential clients because my follow-ups felt awkward. This feels genuinely helpful rather than pushy. Thank you! 🙏", timeAgo: "17h ago" },
+  ],
+  "question-2": [
+    { id: "c25", author: { firstName: "Dr. Sarah", lastName: "Mitchell", role: "MENTOR", avatar: "/images/coaches/sarah.jpg" }, content: "Lisa, imposter syndrome means you CARE about doing good work. It's actually a sign you'll be a great practitioner! Here's the truth: your clients don't need you to know everything. They need you to know MORE than them and genuinely care. You already have both. 💕", timeAgo: "18h ago" },
+    { id: "c26", author: { firstName: "Jennifer", lastName: "Martinez", role: "STUDENT" }, content: "I felt exactly this way 6 months ago. Now I have 12 clients and every single one of them thanked me for changing their life. Your personal health journey is your SUPERPOWER, not a weakness. You understand what they're going through!", timeAgo: "19h ago" },
+    { id: "c27", author: { firstName: "Michael", lastName: "Thompson", role: "STUDENT" }, content: "Read 'The Big Leap' by Gay Hendricks - it changed how I view imposter syndrome. Also remember: doctors spend years learning to prescribe pills. You're learning to address ROOT CAUSES. That's incredibly valuable.", timeAgo: "19h ago" },
+  ],
+  "intro-new": [
+    { id: "c28", author: { firstName: "Dr. Sarah", lastName: "Mitchell", role: "MENTOR", avatar: "/images/coaches/sarah.jpg" }, content: "Welcome Katherine! Your story is so relatable - many of our most successful practitioners are recovering corporate professionals. Your analytical skills and work ethic will serve you incredibly well here. Excited to see you grow! 🌟", timeAgo: "20h ago" },
+    { id: "c29", author: { firstName: "James", lastName: "Patterson", role: "STUDENT" }, content: "Hey fellow corporate escapee! 👋 I left pharma sales 6 months ago and it was the best decision ever. The transition is scary but worth it. Feel free to DM me if you want to chat about navigating the career change.", timeAgo: "21h ago" },
+    { id: "c30", author: { firstName: "Rachel", lastName: "Simmons", role: "STUDENT" }, content: "Welcome! Competitive ballroom dancing is amazing! I love that you have stress relief already built in - that's so important in this journey. Looking forward to celebrating your wins!", timeAgo: "21h ago" },
+  ],
+};
+
+// Helper to get preview comments by category for DB posts
+const getPreviewCommentsByCategory = (category: string | null): Array<{
+  id: string;
+  author: { firstName: string; lastName: string; role: string; avatar?: string };
+  content: string;
+  timeAgo: string;
+}> | null => {
+  if (!category) return null;
+
+  // Map categories to sample post IDs that have comments
+  const categoryToPostId: Record<string, string> = {
+    "introductions": "pinned-introductions",
+    "tips": "tips-daily-1",
+    "wins": "wins-featured",
+    "graduates": "graduate-featured",
+    "questions": "question-1",
+  };
+
+  const postId = categoryToPostId[category];
+  return postId ? POST_PREVIEW_COMMENTS[postId] || null : null;
+};
 
 interface Post {
   id: string;
@@ -393,12 +585,7 @@ interface Post {
     comments: number;
     likes: number;
   };
-  reactions?: {
-    like: number;
-    celebrate: number;
-    helpful: number;
-    inspiring: number;
-  };
+  reactions?: Record<string, number>;
 }
 
 interface Stats {
@@ -602,14 +789,14 @@ export function CommunityClient({ posts: dbPosts, stats, communities = [], isAdm
   // Calculate total reactions for a post
   const getTotalReactions = (post: Post) => {
     if (!post.reactions) return post._count.likes;
-    return post.reactions.like + post.reactions.celebrate + post.reactions.helpful + post.reactions.inspiring;
+    return Object.values(post.reactions).reduce((sum, count) => sum + count, 0);
   };
 
   // Get the daily featured graduate
   const featuredGraduate = getDailyFeaturedGraduate();
 
   return (
-    <div className="space-y-4 animate-fade-in">
+    <div className="space-y-6 animate-fade-in max-w-[1600px] mx-auto">
       {/* Compact Hero Banner */}
       <Card className="bg-gradient-to-r from-burgundy-700 via-burgundy-600 to-burgundy-700 border-0 overflow-hidden relative">
         <CardContent className="p-4 relative">
@@ -665,9 +852,9 @@ export function CommunityClient({ posts: dbPosts, stats, communities = [], isAdm
       {/* Community Selector - Hidden for now (FM-only launch) */}
       {/* Students see only their enrolled community based on their tag/optin */}
 
-      <div className="grid lg:grid-cols-4 gap-6">
+      <div className="grid lg:grid-cols-5 xl:grid-cols-6 gap-6">
         {/* Sidebar */}
-        <div className="lg:col-span-1 space-y-4">
+        <div className="lg:col-span-1 xl:col-span-1 space-y-4">
           {/* Featured Graduate Spotlight - Simplified */}
           <Card className="border border-gray-200">
             <div className="bg-burgundy-600 p-3">
@@ -723,7 +910,7 @@ export function CommunityClient({ posts: dbPosts, stats, communities = [], isAdm
                         <span className={isSelected ? "font-semibold text-burgundy-700" : "text-gray-700"}>
                           {cat.label}
                         </span>
-                        {"adminOnly" in cat && (
+                        {"commentOnly" in cat && cat.commentOnly && (
                           <p className="text-[10px] text-gray-400">Comments only</p>
                         )}
                       </div>
@@ -790,7 +977,7 @@ export function CommunityClient({ posts: dbPosts, stats, communities = [], isAdm
         </div>
 
         {/* Main Content */}
-        <div className="lg:col-span-3 space-y-4">
+        <div className="lg:col-span-4 xl:col-span-5 space-y-5">
           {/* Search & Sort Bar */}
           <div className="flex flex-col sm:flex-row gap-3">
             <div className="relative flex-1">
@@ -848,7 +1035,7 @@ export function CommunityClient({ posts: dbPosts, stats, communities = [], isAdm
           )}
 
           {/* Posts */}
-          <div className="space-y-4">
+          <div className="space-y-5">
             {filteredAndSortedPosts.map((post) => {
               const catStyle = getCategoryStyle(post.category);
               const CatIcon = catStyle.icon;
@@ -856,8 +1043,8 @@ export function CommunityClient({ posts: dbPosts, stats, communities = [], isAdm
 
               return (
                 <Link key={post.id} href={`/community/${post.id}`}>
-                  <Card className={`overflow-hidden hover:shadow-xl transition-all duration-300 border-0 ${
-                    post.isPinned ? 'ring-2 ring-amber-300' : ''
+                  <Card className={`overflow-hidden hover:shadow-2xl transition-all duration-300 border border-gray-100 shadow-lg hover:-translate-y-1 ${
+                    post.isPinned ? 'ring-2 ring-amber-300 shadow-amber-100' : ''
                   }`}>
                     {/* Category Banner */}
                     <div className={`bg-gradient-to-r ${catStyle.bgGradient} px-5 py-2 flex items-center justify-between`}>
@@ -934,31 +1121,75 @@ export function CommunityClient({ posts: dbPosts, stats, communities = [], isAdm
                         {post.content.replace(/\*\*/g, '').replace(/\n/g, ' ').substring(0, 200)}...
                       </p>
 
-                      {/* Emoji Reactions Bar */}
-                      <div className="flex items-center gap-2 mb-4">
-                        {REACTIONS.map((reaction) => {
-                          const count = post.reactions?.[reaction.id as keyof typeof post.reactions] || 0;
-                          if (count === 0) return null;
+                      {/* Emoji Reactions Bar - All 8 emojis with counts */}
+                      <div className="flex flex-wrap items-center gap-1.5 mb-4">
+                        {REACTION_EMOJIS.map((emoji, idx) => {
+                          const count = post.reactions?.[emoji] || 0;
+                          const isFirst = emoji === "❤️";
                           return (
                             <button
-                              key={reaction.id}
-                              className="flex items-center gap-1 px-2.5 py-1 bg-gray-50 hover:bg-gray-100 rounded-full text-sm transition-colors"
+                              key={emoji}
+                              className={`flex items-center gap-1 px-2.5 py-1.5 rounded-full text-sm font-medium transition-all hover:scale-105 ${
+                                isFirst
+                                  ? "bg-rose-100 border border-rose-200 text-rose-700"
+                                  : "bg-gray-50 border border-gray-200 hover:bg-gray-100 text-gray-600"
+                              }`}
                               onClick={(e) => e.preventDefault()}
                             >
-                              <span>{reaction.emoji}</span>
-                              <span className="text-gray-600 font-medium">{count}</span>
+                              <span className="text-base">{emoji}</span>
+                              <span>{count}</span>
                             </button>
                           );
                         })}
                       </div>
 
+                      {/* Preview Comments - Show for all posts based on category */}
+                      {(() => {
+                        // Get comments by post ID first, then fall back to category-based comments
+                        const comments = POST_PREVIEW_COMMENTS[post.id] || getPreviewCommentsByCategory(post.category);
+                        if (!comments || comments.length === 0) return null;
+                        return (
+                          <div className="mb-4 space-y-2 bg-gray-50 rounded-xl p-3">
+                            <div className="flex items-center gap-2 text-xs text-gray-500 mb-2">
+                              <MessageCircle className="w-3.5 h-3.5" />
+                              <span className="font-medium">Recent comments</span>
+                            </div>
+                            {comments.slice(0, 2).map((comment) => (
+                              <div key={comment.id} className="flex gap-2">
+                                <Avatar className="h-6 w-6 flex-shrink-0">
+                                  <AvatarImage src={comment.author.avatar} />
+                                  <AvatarFallback className={`text-[10px] font-bold text-white ${
+                                    comment.author.role === "MENTOR"
+                                      ? "bg-gradient-to-br from-amber-400 to-orange-500"
+                                      : "bg-gradient-to-br from-gray-400 to-gray-600"
+                                  }`}>
+                                    {comment.author.firstName.charAt(0)}{comment.author.lastName.charAt(0)}
+                                  </AvatarFallback>
+                                </Avatar>
+                                <div className="flex-1 min-w-0">
+                                  <div className="flex items-center gap-1.5 flex-wrap">
+                                    <span className="text-xs font-semibold text-gray-900">{comment.author.firstName}</span>
+                                    {comment.author.role === "MENTOR" && (
+                                      <Badge className="bg-amber-100 text-amber-700 border-0 text-[9px] px-1 py-0">Coach</Badge>
+                                    )}
+                                    <span className="text-[10px] text-gray-400">{comment.timeAgo}</span>
+                                  </div>
+                                  <p className="text-xs text-gray-600 line-clamp-2">{comment.content}</p>
+                                </div>
+                              </div>
+                            ))}
+                            {post._count.comments > 2 && (
+                              <p className="text-[11px] text-burgundy-600 font-medium mt-1">
+                                +{post._count.comments - 2} more comments...
+                              </p>
+                            )}
+                          </div>
+                        );
+                      })()}
+
                       {/* Engagement Bar */}
                       <div className="flex items-center justify-between pt-4 border-t border-gray-100">
                         <div className="flex items-center gap-4">
-                          <span className="flex items-center gap-1.5 text-rose-500">
-                            <Heart className="w-5 h-5 fill-rose-500" />
-                            <span className="font-semibold">{totalReactions}</span>
-                          </span>
                           <span className="flex items-center gap-1.5 text-gray-500">
                             <MessageCircle className="w-5 h-5" />
                             <span className="font-medium">{post._count.comments} comments</span>

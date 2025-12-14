@@ -120,6 +120,80 @@ const DEFAULT_COACH = {
     title: "Lead Instructor",
 };
 
+// Career Path & Earning Potential Data for each course type
+const COURSE_CAREER_DATA: Record<string, { careerPath: string; earningPotential: string; jobOutlook: string; demandLevel: "High" | "Very High" | "Growing" }> = {
+    // Functional Medicine courses
+    "functional-medicine": {
+        careerPath: "FM Health Coach → Specialist → Practice Owner",
+        earningPotential: "$5K-$15K/month",
+        jobOutlook: "89% of grads launch within 60 days",
+        demandLevel: "Very High",
+    },
+    "health-coach": {
+        careerPath: "Health Coach → Specialist → Practice Owner",
+        earningPotential: "$4K-$12K/month",
+        jobOutlook: "Growing 22% year over year",
+        demandLevel: "Very High",
+    },
+    "mini-diploma": {
+        careerPath: "Foundation → Certification → Full Practice",
+        earningPotential: "Start earning in 30 days",
+        jobOutlook: "Perfect entry point",
+        demandLevel: "Growing",
+    },
+    "womens-health": {
+        careerPath: "Specialist → Women's Health Expert → Clinic Owner",
+        earningPotential: "$6K-$18K/month",
+        jobOutlook: "Fastest growing niche",
+        demandLevel: "Very High",
+    },
+    "nutrition": {
+        careerPath: "Nutrition Coach → Specialist → Program Creator",
+        earningPotential: "$4K-$10K/month",
+        jobOutlook: "High client retention",
+        demandLevel: "High",
+    },
+    "business": {
+        careerPath: "Solo Coach → Team Leader → Agency Owner",
+        earningPotential: "$10K-$50K/month",
+        jobOutlook: "Unlimited scaling potential",
+        demandLevel: "Very High",
+    },
+    // Default fallback
+    "default": {
+        careerPath: "Certified Practitioner → Specialist → Business Owner",
+        earningPotential: "$5K-$15K/month",
+        jobOutlook: "High demand for certified pros",
+        demandLevel: "High",
+    },
+};
+
+// Get career data based on course title/category
+const getCourseCareerData = (course: Course) => {
+    const title = course.title.toLowerCase();
+    const category = course.category?.name?.toLowerCase() || "";
+
+    if (title.includes("mini") || title.includes("free") || title.includes("intro")) {
+        return COURSE_CAREER_DATA["mini-diploma"];
+    }
+    if (title.includes("women") || title.includes("hormone") || category.includes("women")) {
+        return COURSE_CAREER_DATA["womens-health"];
+    }
+    if (title.includes("business") || title.includes("marketing") || title.includes("client")) {
+        return COURSE_CAREER_DATA["business"];
+    }
+    if (title.includes("nutrition") || title.includes("diet") || category.includes("nutrition")) {
+        return COURSE_CAREER_DATA["nutrition"];
+    }
+    if (title.includes("functional") || title.includes("fm") || category.includes("functional")) {
+        return COURSE_CAREER_DATA["functional-medicine"];
+    }
+    if (title.includes("health coach") || title.includes("certification")) {
+        return COURSE_CAREER_DATA["health-coach"];
+    }
+    return COURSE_CAREER_DATA["default"];
+};
+
 // Career Tracks - Enhanced with income potential
 const CAREER_TRACKS = [
     {
@@ -546,7 +620,7 @@ export function CourseCatalogFilters({
                                         </div>
 
                                         {/* Course Info Row */}
-                                        <div className="flex items-center gap-3 mb-4 text-xs text-gray-500">
+                                        <div className="flex items-center gap-3 mb-3 text-xs text-gray-500">
                                             <div className="flex items-center gap-1">
                                                 <Clock className="w-3.5 h-3.5" />
                                                 <span>{formatDuration(course.duration)}</span>
@@ -560,6 +634,42 @@ export function CourseCatalogFilters({
                                                 <span>{course.difficulty}</span>
                                             </div>
                                         </div>
+
+                                        {/* Career Path & Earning Potential */}
+                                        {(() => {
+                                            const careerData = getCourseCareerData(course);
+                                            return (
+                                                <div className="mb-4 p-3 bg-gradient-to-r from-emerald-50 to-teal-50 rounded-xl border border-emerald-100">
+                                                    <div className="flex items-center gap-2 mb-2">
+                                                        <TrendingUp className="w-4 h-4 text-emerald-600" />
+                                                        <span className="text-xs font-semibold text-emerald-700 uppercase tracking-wide">Career Outlook</span>
+                                                        <Badge className={`ml-auto text-[10px] px-1.5 py-0 ${
+                                                            careerData.demandLevel === "Very High"
+                                                                ? "bg-red-100 text-red-700"
+                                                                : careerData.demandLevel === "High"
+                                                                    ? "bg-orange-100 text-orange-700"
+                                                                    : "bg-blue-100 text-blue-700"
+                                                        }`}>
+                                                            {careerData.demandLevel} Demand
+                                                        </Badge>
+                                                    </div>
+                                                    <div className="space-y-1.5">
+                                                        <div className="flex items-start gap-2">
+                                                            <Briefcase className="w-3.5 h-3.5 text-emerald-600 mt-0.5 flex-shrink-0" />
+                                                            <span className="text-xs text-gray-700">{careerData.careerPath}</span>
+                                                        </div>
+                                                        <div className="flex items-center gap-2">
+                                                            <DollarSign className="w-3.5 h-3.5 text-emerald-600 flex-shrink-0" />
+                                                            <span className="text-xs font-semibold text-emerald-700">{careerData.earningPotential}</span>
+                                                        </div>
+                                                        <div className="flex items-center gap-2">
+                                                            <ChevronRight className="w-3.5 h-3.5 text-emerald-600 flex-shrink-0" />
+                                                            <span className="text-xs text-gray-600">{careerData.jobOutlook}</span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            );
+                                        })()}
 
                                         {/* Coach */}
                                         <div className="flex items-center gap-3 mb-4 p-3 bg-gray-50 rounded-lg">

@@ -86,6 +86,8 @@ model User {
   streak            UserStreak?
   moduleProgress    ModuleProgress[]
   postLikes         PostLike[]
+  commentLikes      CommentLike[]
+  commentReactions  CommentReaction[]
   tags              UserTag[]
   loginHistory      LoginHistory[]
   marketingTags     UserMarketingTag[]
@@ -573,6 +575,7 @@ model PostLike {
 model PostComment {
   id        String   @id @default(cuid())
   content   String   @db.Text
+  likeCount Int      @default(0)
 
   postId    String
   authorId  String
@@ -585,9 +588,40 @@ model PostComment {
   author    User          @relation(fields: [authorId], references: [id], onDelete: Cascade)
   parent    PostComment?  @relation("CommentReplies", fields: [parentId], references: [id])
   replies   PostComment[] @relation("CommentReplies")
+  likes     CommentLike[]
+  reactions CommentReaction[]
 
   @@index([postId])
   @@index([authorId])
+}
+
+model CommentLike {
+  id        String      @id @default(cuid())
+  commentId String
+  userId    String
+  createdAt DateTime    @default(now())
+
+  comment   PostComment @relation(fields: [commentId], references: [id], onDelete: Cascade)
+  user      User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([commentId, userId])
+  @@index([commentId])
+  @@index([userId])
+}
+
+model CommentReaction {
+  id        String      @id @default(cuid())
+  commentId String
+  userId    String
+  emoji     String      // e.g., "❤️", "🔥", "👏", "💯", "🎉"
+  createdAt DateTime    @default(now())
+
+  comment   PostComment @relation(fields: [commentId], references: [id], onDelete: Cascade)
+  user      User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([commentId, userId, emoji])
+  @@index([commentId])
+  @@index([userId])
 }
 
 // ==================== MENTORSHIP ====================
