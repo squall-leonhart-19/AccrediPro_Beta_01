@@ -76,7 +76,10 @@ async function getPosts(communityIds: string[], isAdmin: boolean) {
         },
       },
       _count: {
-        select: { comments: true, likes: true },
+        select: {
+          comments: { where: { parentId: null } }, // Only count top-level comments
+          likes: true
+        },
       },
     },
     orderBy: [{ isPinned: "desc" }, { createdAt: "desc" }],

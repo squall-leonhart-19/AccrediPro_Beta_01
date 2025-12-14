@@ -31,11 +31,28 @@ import {
   BadgeCheck,
   Headphones,
   ChevronDown,
+  Trash2,
+  MoreVertical,
+  AlertTriangle,
 } from "lucide-react";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
+import { useRouter } from "next/navigation";
 import { CreatePostDialog } from "@/components/community/create-post-dialog";
-
-// Emoji reactions - same as post detail page
-const REACTION_EMOJIS = ["❤️", "🔥", "👏", "💯", "🎉", "💪", "⭐", "🙌"];
 
 // Sort options
 const SORT_OPTIONS = [
@@ -50,7 +67,7 @@ const SORT_OPTIONS = [
 // Comment-only: introductions, tips (users can only comment, not create new posts)
 const postCategories = [
   { id: "introductions", label: "Introduce Yourself", icon: Hand, color: "bg-pink-100 text-pink-700", bgGradient: "from-pink-50 to-rose-50", commentOnly: true },
-  { id: "tips", label: "Daily Coach Tips", icon: Lightbulb, color: "bg-green-100 text-green-700", bgGradient: "from-green-50 to-emerald-50", commentOnly: true },
+  { id: "tips", label: "Coaching Tips", icon: Lightbulb, color: "bg-green-100 text-green-700", bgGradient: "from-green-50 to-emerald-50", commentOnly: true },
   { id: "wins", label: "Share Your Wins", icon: Trophy, color: "bg-amber-100 text-amber-700", bgGradient: "from-amber-50 to-yellow-50" },
   { id: "graduates", label: "New Graduates", icon: GraduationCap, color: "bg-emerald-100 text-emerald-700", bgGradient: "from-emerald-50 to-teal-50" },
   { id: "questions", label: "Questions & Help", icon: HelpCircle, color: "bg-blue-100 text-blue-700", bgGradient: "from-blue-50 to-sky-50" },
@@ -132,433 +149,56 @@ const getDailyFeaturedGraduate = () => {
   return FEATURED_GRADUATES[dayOfYear % FEATURED_GRADUATES.length];
 };
 
-// Static reaction counts for posts - total ~2000 distributed across emojis
-const STATIC_REACTIONS = {
-  pinned: { "❤️": 547, "🔥": 423, "👏": 356, "💯": 289, "🎉": 198, "💪": 134, "⭐": 87, "🙌": 56 }, // ~2090
-  featured: { "❤️": 412, "🔥": 334, "👏": 278, "💯": 234, "🎉": 167, "💪": 123, "⭐": 78, "🙌": 45 }, // ~1671
-  regular: { "❤️": 234, "🔥": 189, "👏": 156, "💯": 123, "🎉": 98, "💪": 67, "⭐": 45, "🙌": 28 }, // ~940
-  question: { "❤️": 145, "🔥": 112, "👏": 89, "💯": 67, "🎉": 45, "💪": 34, "⭐": 23, "🙌": 15 }, // ~530
-};
+// Generate unique reactions for each post based on post ID (deterministic)
+function generatePostReactions(postId: string, category: string | null, isPinned: boolean): Record<string, number> {
+  // Simple hash function to get a consistent number from post ID
+  let hash = 0;
+  for (let i = 0; i < postId.length; i++) {
+    const char = postId.charCodeAt(i);
+    hash = ((hash << 5) - hash) + char;
+    hash = hash & hash; // Convert to 32bit integer
+  }
+  hash = Math.abs(hash);
 
-// Sample posts data for demonstration - Based on buyer personas
-const SAMPLE_POSTS = [
-  {
-    id: "pinned-introductions",
-    title: "Welcome! Introduce Yourself to the Community",
-    content: `Hello and welcome to the AccrediPro Functional Medicine community!
+  // Base multipliers based on post type
+  let baseMultiplier = 1;
+  if (isPinned) {
+    baseMultiplier = 3; // Pinned posts get more engagement
+  } else if (category === "wins") {
+    baseMultiplier = 2.5;
+  } else if (category === "tips") {
+    baseMultiplier = 2;
+  } else if (category === "introductions") {
+    baseMultiplier = 1.8;
+  } else if (category === "graduates") {
+    baseMultiplier = 2.2;
+  } else if (category === "questions") {
+    baseMultiplier = 1.2;
+  }
 
-We're so excited you're here. This is a supportive space where practitioners at every stage of their journey come together to learn, grow, and celebrate wins.
+  // Generate varied but consistent numbers for each emoji
+  const seed1 = (hash % 100) + 50;
+  const seed2 = ((hash >> 4) % 80) + 30;
+  const seed3 = ((hash >> 8) % 60) + 20;
+  const seed4 = ((hash >> 12) % 50) + 15;
+  const seed5 = ((hash >> 16) % 40) + 10;
+  const seed6 = ((hash >> 20) % 30) + 8;
+  const seed7 = ((hash >> 24) % 20) + 5;
+  const seed8 = ((hash >> 28) % 15) + 3;
 
-**Please introduce yourself by commenting below!**
-
-Share a bit about:
-- Your name and where you're from
-- Your background (healthcare, wellness, career changer?)
-- What drew you to Functional Medicine
-- What you hope to achieve
-- One fun fact about yourself!
-
-Don't be shy - everyone here started exactly where you are. Our community is incredibly supportive, and many lifelong friendships have started with a simple introduction.
-
-We can't wait to meet you and support you on your journey!`,
-    category: "introductions",
-    isPinned: true,
-    viewCount: 12847,
-    createdAt: new Date(Date.now() - 1 * 60 * 60 * 1000), // 1 hour ago
-    author: {
-      id: "admin-1",
-      firstName: "AccrediPro",
-      lastName: "Founder",
-      avatar: "/images/coaches/founder.jpg",
-      role: "ADMIN",
-      isCertified: true,
-    },
-    _count: { comments: 1247, likes: 2156 },
-    reactions: STATIC_REACTIONS.pinned,
-  },
-  {
-    id: "tips-daily-1",
-    title: "Today's Tip: The #1 Mistake New Practitioners Make (And How to Avoid It)",
-    content: `Good morning everyone!
-
-After coaching 500+ practitioners, I see this mistake constantly:
-
-**Waiting until you feel "ready" to start getting clients.**
-
-Here's the truth: You'll never feel 100% ready. The confidence comes FROM doing the work, not before it.
-
-**My challenge for you today:**
-Reach out to 3 people in your network who might benefit from what you're learning. Not to sell - just to have a conversation.
-
-You'd be amazed how many clients come from simply talking about what you do.
-
-Who's taking me up on this challenge? Drop a 🙋 below!`,
-    category: "tips",
-    isPinned: true,
-    viewCount: 3456,
-    createdAt: new Date(Date.now() - 3 * 60 * 60 * 1000), // 3 hours ago
-    author: {
-      id: "coach-sarah",
-      firstName: "Dr. Sarah",
-      lastName: "Mitchell",
-      avatar: "/images/coaches/sarah.jpg",
-      role: "MENTOR",
-      isCertified: true,
-    },
-    _count: { comments: 89, likes: 412 },
-    reactions: STATIC_REACTIONS.pinned,
-  },
-  {
-    id: "graduate-featured",
-    title: "I DID IT! From Burned-Out Nurse to Thriving FM Practitioner - My Journey",
-    content: `I can't believe I'm writing this. After 22 years as an ICU nurse, I finally made the leap.
-
-**Where I was 8 months ago:**
-- Working 12-hour shifts, exhausted and frustrated
-- Watching patients get sicker despite our interventions
-- Dreaming of helping people PREVENT disease, not just manage it
-- Terrified to leave my "secure" hospital job
-
-**Where I am today:**
-- Certified Functional Medicine Practitioner
-- 18 paying clients in my first 3 months
-- $6,200 revenue last month (working 25 hours/week!)
-- Actually EXCITED to go to work
-
-The transformation wasn't easy. There were nights I questioned everything. But this community kept me going.
-
-Special thanks to Dr. Sarah for the 1:1 coaching calls that helped me believe in myself.
-
-To everyone still in the studying phase - it's worth every minute. Your future clients are waiting for YOU specifically.
-
-If I can do this at 47, so can you. 💪`,
-    category: "graduates",
-    isPinned: true,
-    viewCount: 2847,
-    createdAt: new Date(Date.now() - 6 * 60 * 60 * 1000),
-    author: {
-      id: "user-rachel",
-      firstName: "Rachel",
-      lastName: "Simmons",
-      avatar: null,
-      role: "STUDENT",
-      isCertified: true,
-    },
-    _count: { comments: 67, likes: 289 },
-    reactions: STATIC_REACTIONS.featured,
-  },
-  {
-    id: "wins-featured",
-    title: "Just Closed My First $3,000 Package! Screaming Internally!",
-    content: `IT HAPPENED!!!
-
-After 2 months of putting myself out there, doing free discovery calls, and honestly... wanting to quit multiple times...
-
-A woman I met at a local networking event just paid IN FULL for my 12-week gut health transformation package. $3,000.
-
-She said: "I've been to 5 different doctors and no one has ever listened to me like you did on our call."
-
-That's it. That's the secret. Just LISTEN.
-
-I'm literally crying as I type this. This is real. I'm actually doing this.
-
-To everyone who encouraged me when I got zero responses to my first posts - thank you. Your words kept me going.
-
-Now excuse me while I go process this massive win! 🎉`,
-    category: "wins",
-    isPinned: false,
-    viewCount: 1567,
-    createdAt: new Date(Date.now() - 4 * 60 * 60 * 1000),
-    author: {
-      id: "user-michelle",
-      firstName: "Michelle",
-      lastName: "Torres",
-      avatar: null,
-      role: "STUDENT",
-      isCertified: false,
-    },
-    _count: { comments: 94, likes: 378 },
-    reactions: STATIC_REACTIONS.featured,
-  },
-  {
-    id: "question-1",
-    title: "How do you handle clients who want to quit after 2 weeks?",
-    content: `I have a client who started my 8-week program but is already saying she doesn't see results and wants to stop.
-
-She's been doing everything right but it's only been 14 days!
-
-I know healing takes time but I don't want to come across as pushy or salesy.
-
-How do you experienced practitioners handle this? Do you offer refunds? Extend the program?
-
-Any scripts or talking points would be super helpful. I really want to help her but I'm struggling with how to communicate this.`,
-    category: "questions",
-    isPinned: false,
-    viewCount: 892,
-    createdAt: new Date(Date.now() - 5 * 60 * 60 * 1000),
-    author: {
-      id: "user-emma",
-      firstName: "Emma",
-      lastName: "Richardson",
-      avatar: null,
-      role: "STUDENT",
-      isCertified: false,
-    },
-    _count: { comments: 34, likes: 56 },
-    reactions: STATIC_REACTIONS.question,
-  },
-  {
-    id: "graduate-2",
-    title: "Left My Corporate Job 6 Months Ago - Here's My Honest Income Report",
-    content: `I know a lot of people here are wondering if this is actually viable as a career change. So I'm sharing my real numbers.
-
-**Background:** 15 years in pharmaceutical sales. Made great money but felt empty selling drugs I didn't believe in.
-
-**My 6-Month Journey:**
-- Month 1: $0 (still studying)
-- Month 2: $800 (2 clients at $400 each)
-- Month 3: $2,100 (started raising prices)
-- Month 4: $3,400 (referrals started coming)
-- Month 5: $4,200 (added group program)
-- Month 6: $5,800 (best month yet!)
-
-**Total: $16,300 in 6 months**
-
-Not a millionaire yet 😄 but I work 30 hours/week, from home, helping people I actually care about.
-
-My corporate salary was higher but my LIFE is infinitely better.
-
-Happy to answer any questions about the transition!`,
-    category: "graduates",
-    isPinned: false,
-    viewCount: 2341,
-    createdAt: new Date(Date.now() - 8 * 60 * 60 * 1000),
-    author: {
-      id: "user-james",
-      firstName: "James",
-      lastName: "Patterson",
-      avatar: null,
-      role: "STUDENT",
-      isCertified: true,
-    },
-    _count: { comments: 78, likes: 234 },
-    reactions: STATIC_REACTIONS.regular,
-  },
-  {
-    id: "wins-2",
-    title: "Month 4 Update: Hit $8K and Quit My Day Job!",
-    content: `Quick update for anyone following my journey:
-
-**Revenue breakdown this month:**
-- 4 x 12-week clients ($1,497 each) = $5,988
-- 1 x VIP Day ($1,500) = $1,500
-- 2 x renewals ($297 each) = $594
-- **Total: $8,082**
-
-I officially submitted my resignation yesterday. My last day at the hospital is in 2 weeks.
-
-**What's working:**
-1. Instagram Reels (one went viral - 45K views!)
-2. Free monthly webinar on gut health
-3. Email sequence from the business kit
-4. Most importantly: showing up consistently even when I didn't feel like it
-
-To everyone still working their 9-5 while building this dream - keep going. The compound effect is REAL.`,
-    category: "wins",
-    isPinned: false,
-    viewCount: 1823,
-    createdAt: new Date(Date.now() - 12 * 60 * 60 * 1000),
-    author: {
-      id: "user-amanda",
-      firstName: "Amanda",
-      lastName: "Foster",
-      avatar: null,
-      role: "STUDENT",
-      isCertified: true,
-    },
-    _count: { comments: 112, likes: 467 },
-    reactions: STATIC_REACTIONS.featured,
-  },
-  {
-    id: "tips-2",
-    title: "The Email Template That Gets Me 80% Response Rate",
-    content: `I've tested probably 30 different follow-up email templates. This one consistently gets 80%+ response rate.
-
-**Subject:** Quick question about [specific symptom they mentioned]
-
-**Body:**
-Hi [Name],
-
-I was thinking about our conversation and wanted to share something that might help with [specific symptom].
-
-[2-3 sentences of actual value - not a pitch]
-
-Would love to hear how you're doing. No pressure to book anything - just genuinely curious how you're feeling.
-
-[Your name]
-
-**Why it works:**
-- Personal subject line
-- Provides actual value upfront
-- No sales pressure
-- Shows you actually listened
-
-The key is the "no pressure" part. Counterintuitive, but removing pressure actually increases conversions.
-
-Try it this week and report back!`,
-    category: "tips",
-    isPinned: false,
-    viewCount: 2156,
-    createdAt: new Date(Date.now() - 18 * 60 * 60 * 1000),
-    author: {
-      id: "coach-sarah",
-      firstName: "Dr. Sarah",
-      lastName: "Mitchell",
-      avatar: "/images/coaches/sarah.jpg",
-      role: "MENTOR",
-      isCertified: true,
-    },
-    _count: { comments: 67, likes: 298 },
-    reactions: STATIC_REACTIONS.regular,
-  },
-  {
-    id: "question-2",
-    title: "Imposter syndrome hitting hard - how do you all deal with it?",
-    content: `I'm halfway through the certification and I keep thinking "who am I to help people with their health?"
-
-I don't have a medical degree. I'm just a mom who got interested in this because of my own health struggles.
-
-Every time I think about actually charging money for my services, I freeze up.
-
-Did anyone else go through this? How did you get over it?
-
-I know logically that I'm learning valuable skills but emotionally I feel like a fraud.`,
-    category: "questions",
-    isPinned: false,
-    viewCount: 1456,
-    createdAt: new Date(Date.now() - 20 * 60 * 60 * 1000),
-    author: {
-      id: "user-lisa",
-      firstName: "Lisa",
-      lastName: "Chen",
-      avatar: null,
-      role: "STUDENT",
-      isCertified: false,
-    },
-    _count: { comments: 89, likes: 234 },
-    reactions: STATIC_REACTIONS.question,
-  },
-  {
-    id: "intro-new",
-    title: "Hello from Texas! Corporate Lawyer Ready for a Change",
-    content: `Hi everyone! I'm Katherine from Austin, Texas.
-
-**My background:** 18 years as a corporate lawyer. Great money, zero fulfillment. I've been running on coffee and stress for so long I forgot what energy feels like.
-
-**Why I'm here:** My own health crash 2 years ago led me to functional medicine. A practitioner helped me reverse issues my regular doctor said were "just part of aging." I was SOLD.
-
-**My goal:** Build a practice helping other burned-out professionals reclaim their health. Eventually transition out of law completely.
-
-**Fun fact:** I'm a competitive ballroom dancer! It's my stress relief.
-
-So excited to be here and learn from all of you. The success stories in this community are incredibly inspiring!`,
-    category: "introductions",
-    isPinned: false,
-    viewCount: 678,
-    createdAt: new Date(Date.now() - 22 * 60 * 60 * 1000),
-    author: {
-      id: "user-katherine",
-      firstName: "Katherine",
-      lastName: "Williams",
-      avatar: null,
-      role: "STUDENT",
-      isCertified: false,
-    },
-    _count: { comments: 34, likes: 89 },
-    reactions: STATIC_REACTIONS.regular,
-  },
-];
-
-// Preview comments for each post - serious buyer persona comments
-const POST_PREVIEW_COMMENTS: Record<string, Array<{
-  id: string;
-  author: { firstName: string; lastName: string; role: string; avatar?: string };
-  content: string;
-  timeAgo: string;
-}>> = {
-  "pinned-introductions": [
-    { id: "c1", author: { firstName: "Dr. Sarah", lastName: "Mitchell", role: "MENTOR", avatar: "/images/coaches/sarah.jpg" }, content: "Welcome to everyone new this week! Don't be shy - we all started somewhere. This community changed my life and I know it will change yours too. 💕", timeAgo: "2h ago" },
-    { id: "c2", author: { firstName: "Jennifer", lastName: "Martinez", role: "STUDENT" }, content: "Hi everyone! Former ER nurse from Colorado. 20 years of band-aid medicine made me realize I needed to help people PREVENT disease, not just treat it. So grateful to be here!", timeAgo: "3h ago" },
-    { id: "c3", author: { firstName: "Michael", lastName: "Thompson", role: "STUDENT" }, content: "Corporate burnout survivor checking in from NYC! After my own health crisis at 42, I discovered functional medicine and it literally saved my life. Now I want to help others. 🙏", timeAgo: "4h ago" },
-  ],
-  "tips-daily-1": [
-    { id: "c4", author: { firstName: "Rachel", lastName: "Simmons", role: "STUDENT" }, content: "🙋 Challenge accepted! I've been putting off reaching out because I didn't feel 'ready.' But you're right - I'll never feel 100% ready. Messaging 3 people today!", timeAgo: "1h ago" },
-    { id: "c5", author: { firstName: "Amanda", lastName: "Foster", role: "STUDENT" }, content: "THIS. My first client came from exactly this - just having a conversation with a friend about gut health. She asked for help and I almost said no because I wasn't 'certified yet.' Now she's my best testimonial!", timeAgo: "2h ago" },
-    { id: "c6", author: { firstName: "Dr. Sarah", lastName: "Mitchell", role: "MENTOR", avatar: "/images/coaches/sarah.jpg" }, content: "Love seeing everyone take action! Remember: imperfect action beats perfect inaction every single time. Keep me posted on how those conversations go! 🌟", timeAgo: "45m ago" },
-  ],
-  "graduate-featured": [
-    { id: "c7", author: { firstName: "Dr. Sarah", lastName: "Mitchell", role: "MENTOR", avatar: "/images/coaches/sarah.jpg" }, content: "Rachel, I'm SO proud of you! Watching your transformation from that first overwhelmed coaching call to now has been incredible. You're proof that it's never too late to reinvent yourself. 💪", timeAgo: "4h ago" },
-    { id: "c8", author: { firstName: "Lisa", lastName: "Chen", role: "STUDENT" }, content: "This gives me SO much hope. I'm a burned-out teacher with the same fears you had. If you can do it at 47, I can do it at 44. Thank you for sharing!", timeAgo: "5h ago" },
-    { id: "c9", author: { firstName: "James", lastName: "Patterson", role: "STUDENT" }, content: "The part about 'your future clients are waiting for YOU specifically' hit me hard. There are people out there who need exactly what we have to offer. No one else can help them the way we can.", timeAgo: "5h ago" },
-  ],
-  "wins-featured": [
-    { id: "c10", author: { firstName: "Dr. Sarah", lastName: "Mitchell", role: "MENTOR", avatar: "/images/coaches/sarah.jpg" }, content: "MICHELLE!!! 🎉🎉🎉 I am screaming with you! This is EXACTLY what happens when you show up authentically and truly listen. You earned every penny of that $3,000. So proud of you!", timeAgo: "2h ago" },
-    { id: "c11", author: { firstName: "Rachel", lastName: "Simmons", role: "STUDENT" }, content: "The 'just LISTEN' part is everything. Doctors spend 7 minutes with patients on average. We have the gift of TIME and ATTENTION. Congratulations Michelle - this is huge! 🙌", timeAgo: "3h ago" },
-    { id: "c12", author: { firstName: "Katherine", lastName: "Williams", role: "STUDENT" }, content: "I needed to see this today. I'm still in the studying phase but posts like this remind me WHY I'm doing this. Your client is lucky to have found you!", timeAgo: "3h ago" },
-  ],
-  "question-1": [
-    { id: "c13", author: { firstName: "Dr. Sarah", lastName: "Mitchell", role: "MENTOR", avatar: "/images/coaches/sarah.jpg" }, content: "Great question Emma! This is so common. I always set expectations upfront: 'You didn't get here overnight, and you won't heal overnight.' Schedule a check-in call to reconnect her to her WHY. Often clients just need reassurance, not a refund.", timeAgo: "3h ago" },
-    { id: "c14", author: { firstName: "James", lastName: "Patterson", role: "STUDENT" }, content: "I had this exact situation last month. I showed her a timeline of typical healing and asked what small improvements she'd noticed. Turns out she HAD improved - her sleep was better - she just hadn't noticed. She stayed!", timeAgo: "4h ago" },
-    { id: "c15", author: { firstName: "Amanda", lastName: "Foster", role: "STUDENT" }, content: "Celebrating small wins is key! I have clients track 3 things daily and review weekly. Even small improvements keep them motivated. Also - your contract should specify the no-refund policy. Learned that the hard way! 😅", timeAgo: "4h ago" },
-  ],
-  "graduate-2": [
-    { id: "c16", author: { firstName: "Dr. Sarah", lastName: "Mitchell", role: "MENTOR", avatar: "/images/coaches/sarah.jpg" }, content: "James, thank you for being so transparent with your numbers! This is EXACTLY the kind of realistic expectation-setting our community needs. $16K in 6 months while building from scratch is incredible. And you're right - the LIFE improvement is priceless.", timeAgo: "6h ago" },
-    { id: "c17", author: { firstName: "Michelle", lastName: "Torres", role: "STUDENT" }, content: "The honesty here is so refreshing. I appreciate you sharing the $0 month too. So many people only share the highlights. This is real. How did you handle the doubt during that first $0 month?", timeAgo: "7h ago" },
-    { id: "c18", author: { firstName: "Katherine", lastName: "Williams", role: "STUDENT" }, content: "As someone still in corporate hell (lawyer here), seeing your month-by-month progression gives me a realistic timeline. Did you have savings to cover that first month? Planning my exit strategy now.", timeAgo: "7h ago" },
-  ],
-  "wins-2": [
-    { id: "c19", author: { firstName: "Dr. Sarah", lastName: "Mitchell", role: "MENTOR", avatar: "/images/coaches/sarah.jpg" }, content: "Amanda!!! Quitting your day job is such a milestone! 🎉 You've been one of my most consistent implementers. The compound effect comment is SO TRUE - most people give up right before it starts working.", timeAgo: "10h ago" },
-    { id: "c20", author: { firstName: "Rachel", lastName: "Simmons", role: "STUDENT" }, content: "Can you share more about that viral Reel? What was it about? I've been trying to figure out what content resonates. Would love any tips!", timeAgo: "11h ago" },
-    { id: "c21", author: { firstName: "Lisa", lastName: "Chen", role: "STUDENT" }, content: "The 'showing up consistently even when I didn't feel like it' part really hits home. That's my biggest struggle. How did you push through on the hard days?", timeAgo: "11h ago" },
-  ],
-  "tips-2": [
-    { id: "c22", author: { firstName: "Amanda", lastName: "Foster", role: "STUDENT" }, content: "Dr. Sarah, this is gold! I've been struggling with follow-ups feeling 'salesy.' The 'no pressure' reframe changes everything. Trying this today with 3 leads who ghosted me!", timeAgo: "16h ago" },
-    { id: "c23", author: { firstName: "James", lastName: "Patterson", role: "STUDENT" }, content: "Used this exact template yesterday and got 2 responses within an hour. One booked a discovery call! The key really is removing the sales pressure. People can FEEL when you're trying to close them.", timeAgo: "17h ago" },
-    { id: "c24", author: { firstName: "Rachel", lastName: "Simmons", role: "STUDENT" }, content: "Screenshotting this immediately! I've lost so many potential clients because my follow-ups felt awkward. This feels genuinely helpful rather than pushy. Thank you! 🙏", timeAgo: "17h ago" },
-  ],
-  "question-2": [
-    { id: "c25", author: { firstName: "Dr. Sarah", lastName: "Mitchell", role: "MENTOR", avatar: "/images/coaches/sarah.jpg" }, content: "Lisa, imposter syndrome means you CARE about doing good work. It's actually a sign you'll be a great practitioner! Here's the truth: your clients don't need you to know everything. They need you to know MORE than them and genuinely care. You already have both. 💕", timeAgo: "18h ago" },
-    { id: "c26", author: { firstName: "Jennifer", lastName: "Martinez", role: "STUDENT" }, content: "I felt exactly this way 6 months ago. Now I have 12 clients and every single one of them thanked me for changing their life. Your personal health journey is your SUPERPOWER, not a weakness. You understand what they're going through!", timeAgo: "19h ago" },
-    { id: "c27", author: { firstName: "Michael", lastName: "Thompson", role: "STUDENT" }, content: "Read 'The Big Leap' by Gay Hendricks - it changed how I view imposter syndrome. Also remember: doctors spend years learning to prescribe pills. You're learning to address ROOT CAUSES. That's incredibly valuable.", timeAgo: "19h ago" },
-  ],
-  "intro-new": [
-    { id: "c28", author: { firstName: "Dr. Sarah", lastName: "Mitchell", role: "MENTOR", avatar: "/images/coaches/sarah.jpg" }, content: "Welcome Katherine! Your story is so relatable - many of our most successful practitioners are recovering corporate professionals. Your analytical skills and work ethic will serve you incredibly well here. Excited to see you grow! 🌟", timeAgo: "20h ago" },
-    { id: "c29", author: { firstName: "James", lastName: "Patterson", role: "STUDENT" }, content: "Hey fellow corporate escapee! 👋 I left pharma sales 6 months ago and it was the best decision ever. The transition is scary but worth it. Feel free to DM me if you want to chat about navigating the career change.", timeAgo: "21h ago" },
-    { id: "c30", author: { firstName: "Rachel", lastName: "Simmons", role: "STUDENT" }, content: "Welcome! Competitive ballroom dancing is amazing! I love that you have stress relief already built in - that's so important in this journey. Looking forward to celebrating your wins!", timeAgo: "21h ago" },
-  ],
-};
-
-// Helper to get preview comments by category for DB posts
-const getPreviewCommentsByCategory = (category: string | null): Array<{
-  id: string;
-  author: { firstName: string; lastName: string; role: string; avatar?: string };
-  content: string;
-  timeAgo: string;
-}> | null => {
-  if (!category) return null;
-
-  // Map categories to sample post IDs that have comments
-  const categoryToPostId: Record<string, string> = {
-    "introductions": "pinned-introductions",
-    "tips": "tips-daily-1",
-    "wins": "wins-featured",
-    "graduates": "graduate-featured",
-    "questions": "question-1",
+  return {
+    "❤️": Math.round(seed1 * baseMultiplier),
+    "🔥": Math.round(seed2 * baseMultiplier),
+    "👏": Math.round(seed3 * baseMultiplier),
+    "💯": Math.round(seed4 * baseMultiplier),
+    "🎉": Math.round(seed5 * baseMultiplier),
+    "💪": Math.round(seed6 * baseMultiplier),
+    "⭐": Math.round(seed7 * baseMultiplier),
+    "🙌": Math.round(seed8 * baseMultiplier),
   };
+}
 
-  const postId = categoryToPostId[category];
-  return postId ? POST_PREVIEW_COMMENTS[postId] || null : null;
-};
+// Note: All posts and comments now come from database
 
 interface Post {
   id: string;
@@ -612,12 +252,46 @@ interface CommunityClientProps {
 }
 
 export function CommunityClient({ posts: dbPosts, stats, communities = [], isAdmin = false }: CommunityClientProps) {
+  const router = useRouter();
   const [selectedCommunity, setSelectedCommunity] = useState<string>("all");
   // Default to "introductions" - most welcoming entry point for new members
   const [selectedCategory, setSelectedCategory] = useState<string | null>("introductions");
   const [searchQuery, setSearchQuery] = useState("");
   const [sortBy, setSortBy] = useState("newest");
   const [showSortDropdown, setShowSortDropdown] = useState(false);
+
+  // Delete post state
+  const [deletePostId, setDeletePostId] = useState<string | null>(null);
+  const [isDeleting, setIsDeleting] = useState(false);
+
+  // All posts are now stored in database, so none are "static"
+  // We can delete any post (admins only)
+  const handleDeletePost = async () => {
+    if (!deletePostId) return;
+
+    setIsDeleting(true);
+    try {
+      const response = await fetch("/api/community", {
+        method: "DELETE",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ postId: deletePostId }),
+      });
+
+      const data = await response.json();
+
+      if (data.success) {
+        router.refresh();
+      } else {
+        alert(data.error || "Failed to delete post");
+      }
+    } catch (error) {
+      console.error("Delete error:", error);
+      alert("Failed to delete post");
+    } finally {
+      setIsDeleting(false);
+      setDeletePostId(null);
+    }
+  };
 
   // Dynamic impressive stats - updates every 30 seconds for real-time feel
   const getDynamicStats = () => {
@@ -682,19 +356,18 @@ export function CommunityClient({ posts: dbPosts, stats, communities = [], isAdm
     return () => clearInterval(interval);
   }, []);
 
-  // Combine DB posts with sample posts for display
+  // All posts now come from the database - generate unique reactions for each post
   const allPosts = useMemo(() => {
-    // If no DB posts, show sample posts
-    if (dbPosts.length === 0) {
-      return SAMPLE_POSTS.map(p => ({
-        ...p,
-        communityId: null,
-        communityName: null,
-        categoryName: null,
-        categoryColor: null,
-      }));
-    }
-    return dbPosts;
+    return dbPosts.map(post => {
+      // Generate unique reactions for each post based on its ID
+      if (!post.reactions || Object.keys(post.reactions).length === 0) {
+        return {
+          ...post,
+          reactions: generatePostReactions(post.id, post.category, post.isPinned),
+        };
+      }
+      return post;
+    });
   }, [dbPosts]);
 
   const filteredAndSortedPosts = useMemo(() => {
@@ -897,11 +570,10 @@ export function CommunityClient({ posts: dbPosts, stats, communities = [], isAdm
                     <button
                       key={cat.id}
                       onClick={() => setSelectedCategory(isSelected ? null : cat.id)}
-                      className={`w-full flex items-center gap-3 p-3 rounded-xl text-left text-sm transition-all ${
-                        isSelected
-                          ? `bg-gradient-to-r ${cat.bgGradient} border-2 border-burgundy-200`
-                          : "hover:bg-gray-50"
-                      }`}
+                      className={`w-full flex items-center gap-3 p-3 rounded-xl text-left text-sm transition-all ${isSelected
+                        ? `bg-gradient-to-r ${cat.bgGradient} border-2 border-burgundy-200`
+                        : "hover:bg-gray-50"
+                        }`}
                     >
                       <div className={`p-2 rounded-lg ${cat.color}`}>
                         <Icon className="w-4 h-4" />
@@ -1009,9 +681,8 @@ export function CommunityClient({ posts: dbPosts, stats, communities = [], isAdm
                         setSortBy(option.id);
                         setShowSortDropdown(false);
                       }}
-                      className={`w-full flex items-center gap-3 px-4 py-3 text-sm hover:bg-gray-50 transition-colors ${
-                        sortBy === option.id ? 'bg-burgundy-50 text-burgundy-700' : 'text-gray-700'
-                      }`}
+                      className={`w-full flex items-center gap-3 px-4 py-3 text-sm hover:bg-gray-50 transition-colors ${sortBy === option.id ? 'bg-burgundy-50 text-burgundy-700' : 'text-gray-700'
+                        }`}
                     >
                       <option.icon className="w-4 h-4" />
                       {option.label}
@@ -1034,169 +705,130 @@ export function CommunityClient({ posts: dbPosts, stats, communities = [], isAdm
             </div>
           )}
 
-          {/* Posts */}
-          <div className="space-y-5">
+          {/* Posts - Compact UI for all */}
+          <div className="space-y-3">
             {filteredAndSortedPosts.map((post) => {
               const catStyle = getCategoryStyle(post.category);
               const CatIcon = catStyle.icon;
-              const totalReactions = getTotalReactions(post);
+
+              // Get actual reaction emojis that have counts > 0
+              const activeReactions = Object.entries(post.reactions || {})
+                .filter(([_, count]) => count > 0)
+                .sort((a, b) => (b[1] as number) - (a[1] as number))
+                .slice(0, 4);
 
               return (
                 <Link key={post.id} href={`/community/${post.id}`}>
-                  <Card className={`overflow-hidden hover:shadow-2xl transition-all duration-300 border border-gray-100 shadow-lg hover:-translate-y-1 ${
-                    post.isPinned ? 'ring-2 ring-amber-300 shadow-amber-100' : ''
-                  }`}>
-                    {/* Category Banner */}
-                    <div className={`bg-gradient-to-r ${catStyle.bgGradient} px-5 py-2 flex items-center justify-between`}>
-                      <div className="flex items-center gap-2">
-                        <div className={`p-1 rounded ${catStyle.color}`}>
-                          <CatIcon className="w-3 h-3" />
+                  <Card className={`overflow-hidden hover:shadow-lg transition-all duration-200 border border-gray-100 shadow-sm hover:-translate-y-0.5 ${post.isPinned ? 'ring-2 ring-amber-300' : ''}`}>
+                    {/* Category Banner - Hide when filtering by that category */}
+                    {selectedCategory !== post.category && (
+                      <div className={`bg-gradient-to-r ${catStyle.bgGradient} px-4 py-1.5 flex items-center justify-between`}>
+                        <div className="flex items-center gap-2">
+                          <div className={`p-1 rounded ${catStyle.color}`}>
+                            <CatIcon className="w-3 h-3" />
+                          </div>
+                          <span className={`text-xs font-medium ${catStyle.color.split(' ')[1]}`}>
+                            {catStyle.label}
+                          </span>
                         </div>
-                        <span className={`text-xs font-medium ${catStyle.color.split(' ')[1]}`}>
-                          {catStyle.label}
-                        </span>
+                        {post.isPinned && (
+                          <Badge className="bg-amber-400 text-amber-900 border-0 text-[10px]">
+                            <Pin className="w-2.5 h-2.5 mr-1" /> Pinned
+                          </Badge>
+                        )}
                       </div>
-                      {post.isPinned && (
-                        <Badge className="bg-amber-400 text-amber-900 border-0 text-[10px]">
-                          <Pin className="w-2.5 h-2.5 mr-1" /> Pinned
-                        </Badge>
-                      )}
-                    </div>
+                    )}
 
-                    <CardContent className="p-5">
-                      {/* Author Row */}
-                      <div className="flex items-center gap-3 mb-4">
-                        <div className="relative">
-                          <Avatar className="w-12 h-12 ring-2 ring-white shadow-md">
-                            <AvatarImage src={post.author.avatar || undefined} />
-                            <AvatarFallback className={`font-bold text-white ${
-                              post.author.role === "MENTOR"
-                                ? "bg-gradient-to-br from-amber-400 to-orange-500"
-                                : post.author.role === "ADMIN"
-                                ? "bg-gradient-to-br from-burgundy-500 to-burgundy-700"
-                                : "bg-gradient-to-br from-gray-400 to-gray-600"
+                    <CardContent className="p-4">
+                      {/* Author Row - Compact */}
+                      <div className="flex items-center gap-2 mb-2">
+                        <Avatar className="w-8 h-8 ring-1 ring-white shadow-sm">
+                          <AvatarImage src={post.author.avatar || undefined} />
+                          <AvatarFallback className={`text-xs font-bold text-white ${post.author.role === "MENTOR"
+                            ? "bg-gradient-to-br from-amber-400 to-orange-500"
+                            : post.author.role === "ADMIN"
+                              ? "bg-gradient-to-br from-burgundy-500 to-burgundy-700"
+                              : "bg-gradient-to-br from-gray-400 to-gray-600"
                             }`}>
-                              {getInitials(post.author.firstName, post.author.lastName)}
-                            </AvatarFallback>
-                          </Avatar>
-                          {/* Verified Badge for Certified Members */}
-                          {post.author.isCertified && (
-                            <div className="absolute -bottom-1 -right-1 w-5 h-5 bg-blue-500 rounded-full flex items-center justify-center border-2 border-white">
-                              <BadgeCheck className="w-3 h-3 text-white" />
-                            </div>
-                          )}
-                        </div>
-                        <div className="flex-1">
+                            {getInitials(post.author.firstName, post.author.lastName)}
+                          </AvatarFallback>
+                        </Avatar>
+                        <div className="flex-1 min-w-0">
                           <div className="flex items-center gap-2 flex-wrap">
-                            <span className="font-semibold text-gray-900">
+                            <span className="text-sm font-semibold text-gray-900">
                               {post.author.firstName} {post.author.lastName}
                             </span>
-                            {post.author.isCertified && post.author.role === "STUDENT" && (
-                              <Badge className="bg-blue-100 text-blue-700 border-0 text-[10px]">
-                                <BadgeCheck className="w-2.5 h-2.5 mr-0.5" /> Certified
-                              </Badge>
-                            )}
                             {getRoleBadge(post.author.role)}
                           </div>
-                          <div className="flex items-center gap-3 text-sm text-gray-500">
-                            <span className="flex items-center gap-1">
-                              <Clock className="w-3 h-3" />
-                              {formatDate(post.createdAt)}
-                            </span>
-                            <span className="flex items-center gap-1">
-                              <Eye className="w-3 h-3" />
-                              {post.viewCount.toLocaleString()}
-                            </span>
+                          <div className="flex items-center gap-2 text-xs text-gray-500">
+                            <span>{formatDate(post.createdAt)}</span>
+                            <span>•</span>
+                            <span>{post.viewCount.toLocaleString()} views</span>
                           </div>
                         </div>
+                        {/* Admin Delete Button - All posts can be deleted now */}
+                        {isAdmin && (
+                          <DropdownMenu>
+                            <DropdownMenuTrigger asChild onClick={(e) => e.preventDefault()}>
+                              <Button
+                                variant="ghost"
+                                size="icon"
+                                className="h-8 w-8 text-gray-400 hover:text-gray-600 hover:bg-gray-100"
+                                onClick={(e) => e.preventDefault()}
+                              >
+                                <MoreVertical className="w-4 h-4" />
+                              </Button>
+                            </DropdownMenuTrigger>
+                            <DropdownMenuContent align="end" className="w-40">
+                              <DropdownMenuItem
+                                onClick={(e) => {
+                                  e.preventDefault();
+                                  e.stopPropagation();
+                                  setDeletePostId(post.id);
+                                }}
+                                className="text-red-600 focus:text-red-600 focus:bg-red-50 cursor-pointer"
+                              >
+                                <Trash2 className="w-4 h-4 mr-2" />
+                                Delete Post
+                              </DropdownMenuItem>
+                            </DropdownMenuContent>
+                          </DropdownMenu>
+                        )}
                       </div>
 
                       {/* Title */}
-                      <h3 className="text-lg font-bold text-gray-900 mb-3 leading-tight hover:text-burgundy-600 transition-colors">
+                      <h3 className="text-base font-bold text-gray-900 leading-tight hover:text-burgundy-600 transition-colors mb-2">
                         {post.title}
                       </h3>
 
-                      {/* Content Preview */}
-                      <p className="text-gray-600 text-sm leading-relaxed line-clamp-3 mb-4">
-                        {post.content.replace(/\*\*/g, '').replace(/\n/g, ' ').substring(0, 200)}...
+                      {/* Content Preview - short */}
+                      <p className="text-xs text-gray-600 leading-relaxed line-clamp-2 mb-3">
+                        {post.content.replace(/\*\*/g, '').replace(/<[^>]*>/g, '').replace(/\n/g, ' ').substring(0, 140)}...
                       </p>
 
-                      {/* Emoji Reactions Bar - All 8 emojis with counts */}
-                      <div className="flex flex-wrap items-center gap-1.5 mb-4">
-                        {REACTION_EMOJIS.map((emoji, idx) => {
-                          const count = post.reactions?.[emoji] || 0;
-                          const isFirst = emoji === "❤️";
-                          return (
-                            <button
+                      {/* Reactions Bar - Show only reactions that exist */}
+                      {activeReactions.length > 0 && (
+                        <div className="flex flex-wrap items-center gap-1.5 mb-2">
+                          {activeReactions.map(([emoji, count]) => (
+                            <span
                               key={emoji}
-                              className={`flex items-center gap-1 px-2.5 py-1.5 rounded-full text-sm font-medium transition-all hover:scale-105 ${
-                                isFirst
-                                  ? "bg-rose-100 border border-rose-200 text-rose-700"
-                                  : "bg-gray-50 border border-gray-200 hover:bg-gray-100 text-gray-600"
-                              }`}
-                              onClick={(e) => e.preventDefault()}
+                              className="flex items-center gap-1 px-2 py-0.5 rounded-full text-xs bg-gray-50 border border-gray-200 text-gray-600"
                             >
-                              <span className="text-base">{emoji}</span>
+                              <span>{emoji}</span>
                               <span>{count}</span>
-                            </button>
-                          );
-                        })}
-                      </div>
-
-                      {/* Preview Comments - Show for all posts based on category */}
-                      {(() => {
-                        // Get comments by post ID first, then fall back to category-based comments
-                        const comments = POST_PREVIEW_COMMENTS[post.id] || getPreviewCommentsByCategory(post.category);
-                        if (!comments || comments.length === 0) return null;
-                        return (
-                          <div className="mb-4 space-y-2 bg-gray-50 rounded-xl p-3">
-                            <div className="flex items-center gap-2 text-xs text-gray-500 mb-2">
-                              <MessageCircle className="w-3.5 h-3.5" />
-                              <span className="font-medium">Recent comments</span>
-                            </div>
-                            {comments.slice(0, 2).map((comment) => (
-                              <div key={comment.id} className="flex gap-2">
-                                <Avatar className="h-6 w-6 flex-shrink-0">
-                                  <AvatarImage src={comment.author.avatar} />
-                                  <AvatarFallback className={`text-[10px] font-bold text-white ${
-                                    comment.author.role === "MENTOR"
-                                      ? "bg-gradient-to-br from-amber-400 to-orange-500"
-                                      : "bg-gradient-to-br from-gray-400 to-gray-600"
-                                  }`}>
-                                    {comment.author.firstName.charAt(0)}{comment.author.lastName.charAt(0)}
-                                  </AvatarFallback>
-                                </Avatar>
-                                <div className="flex-1 min-w-0">
-                                  <div className="flex items-center gap-1.5 flex-wrap">
-                                    <span className="text-xs font-semibold text-gray-900">{comment.author.firstName}</span>
-                                    {comment.author.role === "MENTOR" && (
-                                      <Badge className="bg-amber-100 text-amber-700 border-0 text-[9px] px-1 py-0">Coach</Badge>
-                                    )}
-                                    <span className="text-[10px] text-gray-400">{comment.timeAgo}</span>
-                                  </div>
-                                  <p className="text-xs text-gray-600 line-clamp-2">{comment.content}</p>
-                                </div>
-                              </div>
-                            ))}
-                            {post._count.comments > 2 && (
-                              <p className="text-[11px] text-burgundy-600 font-medium mt-1">
-                                +{post._count.comments - 2} more comments...
-                              </p>
-                            )}
-                          </div>
-                        );
-                      })()}
-
-                      {/* Engagement Bar */}
-                      <div className="flex items-center justify-between pt-4 border-t border-gray-100">
-                        <div className="flex items-center gap-4">
-                          <span className="flex items-center gap-1.5 text-gray-500">
-                            <MessageCircle className="w-5 h-5" />
-                            <span className="font-medium">{post._count.comments} comments</span>
-                          </span>
+                            </span>
+                          ))}
                         </div>
-                        <Button variant="ghost" size="sm" className="text-burgundy-600 hover:text-burgundy-700 hover:bg-burgundy-50">
-                          Read more <ArrowRight className="w-4 h-4 ml-1" />
+                      )}
+
+                      {/* Engagement Bar - Compact */}
+                      <div className="flex items-center justify-between pt-2 border-t border-gray-100">
+                        <span className="flex items-center gap-1 text-xs text-gray-500">
+                          <MessageCircle className="w-3.5 h-3.5" />
+                          <span>{post._count.comments} comments</span>
+                        </span>
+                        <Button variant="ghost" size="sm" className="text-burgundy-600 hover:text-burgundy-700 hover:bg-burgundy-50 text-xs h-7 px-2">
+                          Read <ArrowRight className="w-3 h-3 ml-1" />
                         </Button>
                       </div>
                     </CardContent>
@@ -1232,6 +864,32 @@ export function CommunityClient({ posts: dbPosts, stats, communities = [], isAdm
 
         </div>
       </div>
+
+      {/* Delete Confirmation Dialog */}
+      <AlertDialog open={!!deletePostId} onOpenChange={(open) => !open && setDeletePostId(null)}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle className="flex items-center gap-2 text-red-600">
+              <AlertTriangle className="w-5 h-5" />
+              Delete Post
+            </AlertDialogTitle>
+            <AlertDialogDescription>
+              Are you sure you want to delete this post? This action cannot be undone.
+              All comments and reactions will also be permanently deleted.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel disabled={isDeleting}>Cancel</AlertDialogCancel>
+            <AlertDialogAction
+              onClick={handleDeletePost}
+              disabled={isDeleting}
+              className="bg-red-600 hover:bg-red-700 text-white"
+            >
+              {isDeleting ? "Deleting..." : "Delete Post"}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 }

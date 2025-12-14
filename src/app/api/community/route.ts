@@ -3,6 +3,85 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import prisma from "@/lib/prisma";
 
+// DELETE a post (Admin/Mentor only)
+export async function DELETE(request: NextRequest) {
+  try {
+    const session = await getServerSession(authOptions);
+
+    if (!session?.user?.id) {
+      return NextResponse.json(
+        { success: false, error: "Unauthorized" },
+        { status: 401 }
+      );
+    }
+
+    // Only admins and mentors can delete posts
+    if (session.user.role !== "ADMIN" && session.user.role !== "MENTOR") {
+      return NextResponse.json(
+        { success: false, error: "Only admins and mentors can delete posts" },
+        { status: 403 }
+      );
+    }
+
+    const { postId } = await request.json();
+
+    if (!postId) {
+      return NextResponse.json(
+        { success: false, error: "Post ID is required" },
+        { status: 400 }
+      );
+    }
+
+    // Check if post exists
+    const post = await prisma.communityPost.findUnique({
+      where: { id: postId },
+    });
+
+    if (!post) {
+      return NextResponse.json(
+        { success: false, error: "Post not found" },
+        { status: 404 }
+      );
+    }
+
+    // Delete all related data first (comments, likes, reactions)
+    await prisma.$transaction([
+      // Delete comment reactions
+      prisma.commentReaction.deleteMany({
+        where: { comment: { postId } },
+      }),
+      // Delete comment likes
+      prisma.commentLike.deleteMany({
+        where: { comment: { postId } },
+      }),
+      // Delete replies (comments with parentId)
+      prisma.postComment.deleteMany({
+        where: { postId, parentId: { not: null } },
+      }),
+      // Delete top-level comments
+      prisma.postComment.deleteMany({
+        where: { postId },
+      }),
+      // Delete post likes
+      prisma.postLike.deleteMany({
+        where: { postId },
+      }),
+      // Delete the post
+      prisma.communityPost.delete({
+        where: { id: postId },
+      }),
+    ]);
+
+    return NextResponse.json({ success: true, message: "Post deleted successfully" });
+  } catch (error) {
+    console.error("Delete post error:", error);
+    return NextResponse.json(
+      { success: false, error: "Failed to delete post" },
+      { status: 500 }
+    );
+  }
+}
+
 // Banned keywords for auto-moderation (server-side check)
 const BANNED_KEYWORDS = [
   "refund",
@@ -93,14 +172,21 @@ export async function POST(request: NextRequest) {
       }
     }
 
+    // Sanitize content for students (only Allow HTML for Admins/Mentors)
+    const isAdminOrMentor = session.user.role === "ADMIN" || session.user.role === "MENTOR";
+    const sanitizedContent = isAdminOrMentor
+      ? content
+      : content.replace(/<[^>]*>/g, ""); // Strip all HTML tags for students
+
     const post = await prisma.communityPost.create({
       data: {
         title,
-        content,
+        content: sanitizedContent,
         authorId: session.user.id,
         communityId: communityId || null,
-        category: category || null,
+        categoryId: category || null,
       },
+      // ...
     });
 
     return NextResponse.json({ success: true, data: post });

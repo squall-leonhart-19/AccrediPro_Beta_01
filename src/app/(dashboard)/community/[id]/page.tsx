@@ -2,7 +2,7 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import prisma from "@/lib/prisma";
 import { notFound, redirect } from "next/navigation";
-import { PostDetailClient } from "@/components/community/post-detail-client";
+import PostDetailClient from "@/components/community/post-detail-client";
 
 async function getPost(postId: string, userId: string) {
   const post = await prisma.communityPost.findUnique({
@@ -114,6 +114,13 @@ export default async function CommunityPostPage({
     redirect("/login");
   }
 
+  // Fetch fresh user data to ensure avatar is up to date (session might be stale)
+  const currentUser = await prisma.user.findUnique({
+    where: { id: session.user.id },
+    select: { avatar: true, firstName: true, lastName: true, role: true }
+  });
+
+  // All posts now load from database (including pinned-introductions, tips-daily-*, graduation thread)
   const post = await getPost(id, session.user.id);
 
   if (!post) {
@@ -125,6 +132,7 @@ export default async function CommunityPostPage({
     id: post.id,
     title: post.title,
     content: post.content,
+    category: post.categoryId,
     isPinned: post.isPinned,
     viewCount: post.viewCount + 1, // Include the current view
     likeCount: post.likeCount,
@@ -161,6 +169,10 @@ export default async function CommunityPostPage({
     <PostDetailClient
       post={postData}
       currentUserId={session.user.id}
+      currentUserImage={currentUser?.avatar || session.user.image}
+      currentUserFirstName={currentUser?.firstName || session.user.firstName}
+      currentUserLastName={currentUser?.lastName || session.user.lastName}
+      currentUserRole={currentUser?.role || session.user.role}
     />
   );
 }

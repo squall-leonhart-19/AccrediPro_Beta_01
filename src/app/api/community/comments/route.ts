@@ -99,3 +99,82 @@ export async function POST(request: NextRequest) {
     );
   }
 }
+
+// DELETE a comment (Admin/Mentor only)
+export async function DELETE(request: NextRequest) {
+  try {
+    const session = await getServerSession(authOptions);
+
+    if (!session?.user?.id) {
+      return NextResponse.json(
+        { success: false, error: "Unauthorized" },
+        { status: 401 }
+      );
+    }
+
+    // Only admins and mentors can delete comments
+    if (session.user.role !== "ADMIN" && session.user.role !== "MENTOR") {
+      return NextResponse.json(
+        { success: false, error: "Only admins and mentors can delete comments" },
+        { status: 403 }
+      );
+    }
+
+    const { commentId } = await request.json();
+
+    if (!commentId) {
+      return NextResponse.json(
+        { success: false, error: "Comment ID is required" },
+        { status: 400 }
+      );
+    }
+
+    // Check if comment exists
+    const comment = await prisma.postComment.findUnique({
+      where: { id: commentId },
+    });
+
+    if (!comment) {
+      return NextResponse.json(
+        { success: false, error: "Comment not found" },
+        { status: 404 }
+      );
+    }
+
+    // Delete all related data first (replies, likes, reactions)
+    await prisma.$transaction([
+      // Delete reactions on replies
+      prisma.commentReaction.deleteMany({
+        where: { comment: { parentId: commentId } },
+      }),
+      // Delete likes on replies
+      prisma.commentLike.deleteMany({
+        where: { comment: { parentId: commentId } },
+      }),
+      // Delete replies
+      prisma.postComment.deleteMany({
+        where: { parentId: commentId },
+      }),
+      // Delete reactions on the comment
+      prisma.commentReaction.deleteMany({
+        where: { commentId },
+      }),
+      // Delete likes on the comment
+      prisma.commentLike.deleteMany({
+        where: { commentId },
+      }),
+      // Delete the comment
+      prisma.postComment.delete({
+        where: { id: commentId },
+      }),
+    ]);
+
+    return NextResponse.json({ success: true, message: "Comment deleted successfully" });
+  } catch (error) {
+    console.error("Delete comment error:", error);
+    return NextResponse.json(
+      { success: false, error: "Failed to delete comment" },
+      { status: 500 }
+    );
+  }
+}
