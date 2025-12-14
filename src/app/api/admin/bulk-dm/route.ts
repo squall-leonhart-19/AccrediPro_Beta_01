@@ -23,25 +23,26 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Get recipients based on type
+    // Get recipients based on type (exclude fake profiles)
     let recipientIds: string[] = [];
+    const baseFilter = { isFakeProfile: false };
 
     if (recipientType === "all") {
       const users = await prisma.user.findMany({
-        where: { isActive: true, role: "STUDENT" },
+        where: { ...baseFilter, isActive: true, role: "STUDENT" },
         select: { id: true },
       });
       recipientIds = users.map((u) => u.id);
     } else if (recipientType === "enrolled") {
       const enrollments = await prisma.enrollment.findMany({
-        where: { status: "ACTIVE" },
+        where: { status: "ACTIVE", user: baseFilter },
         select: { userId: true },
         distinct: ["userId"],
       });
       recipientIds = enrollments.map((e) => e.userId);
     } else if (recipientType === "completed") {
       const completions = await prisma.enrollment.findMany({
-        where: { status: "COMPLETED" },
+        where: { status: "COMPLETED", user: baseFilter },
         select: { userId: true },
         distinct: ["userId"],
       });

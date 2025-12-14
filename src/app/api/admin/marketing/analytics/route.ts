@@ -150,9 +150,10 @@ export async function GET(request: NextRequest) {
       },
     });
 
-    // Get subscriber growth (users with marketing tags)
+    // Get subscriber growth (users with marketing tags, excluding fake profiles)
     const subscriberCount = await prisma.user.count({
       where: {
+        isFakeProfile: false,
         marketingTags: {
           some: {},
         },

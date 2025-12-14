@@ -305,11 +305,18 @@ export async function triggerAutoMessage({
         firstName: true,
         lastName: true,
         assignedCoachId: true,
+        isFakeProfile: true,
       },
     });
 
     if (!user) {
       console.warn(`[AUTO-MESSAGE] User ${userId} not found`);
+      return;
+    }
+
+    // Skip fake profiles - they don't need auto-messages
+    if (user.isFakeProfile) {
+      console.log(`[AUTO-MESSAGE] Skipping fake profile ${userId}`);
       return;
     }
 

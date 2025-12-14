@@ -5,6 +5,7 @@ import { UsersClient } from "@/components/admin/users-client";
 
 async function getUsers() {
   return prisma.user.findMany({
+    where: { isFakeProfile: false }, // Exclude social proof profiles
     orderBy: { createdAt: "desc" },
     include: {
       enrollments: {

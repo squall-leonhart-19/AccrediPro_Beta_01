@@ -198,6 +198,12 @@ function htmlToPlainText(html: string): string {
 // Main send function for transactional emails (default)
 export async function sendEmail({ to, subject, html, text, replyTo, type = 'transactional' }: SendEmailOptions) {
   try {
+    // Skip if no email address provided (fake profiles have null email)
+    if (!to || (Array.isArray(to) && to.length === 0)) {
+      console.log(`📧 SKIPPING EMAIL - No recipient address provided`);
+      return { success: false, error: 'No recipient email' };
+    }
+
     const fromEmail = type === 'marketing' ? FROM_EMAIL_MARKETING : FROM_EMAIL_TRANSACTIONAL;
 
     // Debug log to verify subject being sent

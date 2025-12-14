@@ -27,14 +27,17 @@ export async function POST(request: NextRequest) {
     // Get recipients based on type
     let recipients: { id: string; email: string; firstName: string | null }[] = [];
 
+    // Base filter: exclude fake profiles and users without email
+    const baseFilter = { isFakeProfile: false, email: { not: null } };
+
     if (recipientType === "all") {
       recipients = await prisma.user.findMany({
-        where: { isActive: true, role: "STUDENT" },
+        where: { ...baseFilter, isActive: true, role: "STUDENT" },
         select: { id: true, email: true, firstName: true },
       });
     } else if (recipientType === "enrolled") {
       const enrollments = await prisma.enrollment.findMany({
-        where: { status: "ACTIVE" },
+        where: { status: "ACTIVE", user: baseFilter },
         select: {
           user: {
             select: { id: true, email: true, firstName: true },
@@ -45,7 +48,7 @@ export async function POST(request: NextRequest) {
       recipients = enrollments.map((e) => e.user);
     } else if (recipientType === "completed") {
       const completions = await prisma.enrollment.findMany({
-        where: { status: "COMPLETED" },
+        where: { status: "COMPLETED", user: baseFilter },
         select: {
           user: {
             select: { id: true, email: true, firstName: true },
