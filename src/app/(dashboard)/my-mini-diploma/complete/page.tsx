@@ -3,6 +3,16 @@ import { authOptions } from "@/lib/auth";
 import { redirect } from "next/navigation";
 import prisma from "@/lib/prisma";
 import { CompletionCelebrationClient } from "@/components/freebie/completion-celebration-client";
+import * as crypto from "crypto";
+
+// Generate a stable certificate ID based on user ID and completion date
+function generateStableCertificateId(userId: string, category: string, completedAt: Date): string {
+    const year = completedAt.getFullYear();
+    const categoryCode = category.toUpperCase().slice(0, 3);
+    // Create a stable hash from user ID
+    const hash = crypto.createHash('md5').update(userId).digest('hex').slice(0, 6).toUpperCase();
+    return `MD-${categoryCode}-${year}-${hash}`;
+}
 
 export default async function MiniDiplomaCompletePage() {
     const session = await getServerSession(authOptions);
@@ -59,6 +69,13 @@ export default async function MiniDiplomaCompletePage() {
         ? now > user.graduateOfferDeadline
         : true;
 
+    // Generate stable certificate ID on server side
+    const certificateId = generateStableCertificateId(
+        user.id,
+        user.miniDiplomaCategory,
+        user.miniDiplomaCompletedAt
+    );
+
     return (
         <CompletionCelebrationClient
             user={{
@@ -69,6 +86,7 @@ export default async function MiniDiplomaCompletePage() {
                 completedAt: user.miniDiplomaCompletedAt.toISOString(),
                 graduateOfferDeadline: user.graduateOfferDeadline?.toISOString() || null,
                 offerExpired,
+                certificateId,
             }}
             fullCertification={fullCertification ? {
                 ...fullCertification,

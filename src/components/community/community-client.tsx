@@ -668,49 +668,36 @@ export function CommunityClient({ posts: dbPosts, stats, communities = [], isAdm
       <div className="grid lg:grid-cols-4 gap-6">
         {/* Sidebar */}
         <div className="lg:col-span-1 space-y-4">
-          {/* Featured Graduate Spotlight - Rotates Daily */}
-          <Card className="overflow-hidden border-2 border-gold-200">
-            <div className="bg-gradient-to-r from-gold-400 to-amber-500 p-3">
-              <h3 className="font-bold text-white flex items-center gap-2 text-sm">
-                <Crown className="w-4 h-4" />
-                Featured Graduate
+          {/* Featured Graduate Spotlight - Simplified */}
+          <Card className="border border-gray-200">
+            <div className="bg-burgundy-600 p-3">
+              <h3 className="font-semibold text-white flex items-center gap-2 text-sm">
+                <GraduationCap className="w-4 h-4" />
+                Success Story
               </h3>
             </div>
             <CardContent className="p-4">
               <div className="flex items-center gap-3 mb-3">
-                <Avatar className="w-12 h-12 ring-2 ring-gold-200">
-                  <AvatarFallback className="bg-gradient-to-br from-gold-400 to-amber-500 text-white font-bold">
+                <Avatar className="w-10 h-10">
+                  <AvatarFallback className="bg-burgundy-100 text-burgundy-700 font-semibold text-sm">
                     {featuredGraduate.name.split(' ').map(n => n[0]).join('')}
                   </AvatarFallback>
                 </Avatar>
                 <div>
-                  <div className="flex items-center gap-1.5">
-                    <span className="font-semibold text-gray-900 text-sm">{featuredGraduate.name}</span>
-                    <BadgeCheck className="w-4 h-4 text-blue-500" />
-                  </div>
+                  <span className="font-medium text-gray-900 text-sm">{featuredGraduate.name}</span>
                   <p className="text-xs text-gray-500">{featuredGraduate.title}</p>
                 </div>
               </div>
-              <div className="bg-green-50 border border-green-200 rounded-lg p-2 mb-3">
-                <p className="text-sm font-semibold text-green-700 flex items-center gap-1">
-                  <DollarSign className="w-4 h-4" />
-                  {featuredGraduate.achievement}
-                </p>
-              </div>
-              <p className="text-xs text-gray-600 italic mb-3">&quot;{featuredGraduate.quote}&quot;</p>
-              <Link href="/courses">
-                <Button size="sm" className="w-full bg-gradient-to-r from-gold-500 to-amber-500 hover:from-gold-600 hover:to-amber-600 text-white">
-                  Start Your Journey <ArrowRight className="w-3 h-3 ml-1" />
-                </Button>
-              </Link>
+              <p className="text-sm text-green-700 font-medium mb-2">{featuredGraduate.achievement}</p>
+              <p className="text-xs text-gray-600 italic">&quot;{featuredGraduate.quote}&quot;</p>
             </CardContent>
           </Card>
 
           {/* Topics */}
-          <Card className="overflow-hidden">
-            <div className="bg-gradient-to-r from-burgundy-600 to-burgundy-700 p-4">
-              <h3 className="font-bold text-white flex items-center gap-2">
-                <Megaphone className="w-4 h-4" />
+          <Card className="border border-gray-200">
+            <div className="bg-gray-50 border-b border-gray-200 p-3">
+              <h3 className="font-semibold text-gray-900 flex items-center gap-2 text-sm">
+                <Megaphone className="w-4 h-4 text-burgundy-600" />
                 Topics
               </h3>
             </div>
@@ -753,90 +740,51 @@ export function CommunityClient({ posts: dbPosts, stats, communities = [], isAdm
             </CardContent>
           </Card>
 
-          {/* Ask a Coach CTA */}
-          <Card className="bg-gradient-to-br from-amber-500 to-orange-500 border-0 text-white overflow-hidden relative">
-            <div className="absolute top-0 right-0 w-24 h-24 bg-white/10 rounded-full blur-2xl -translate-y-1/2 translate-x-1/2" />
-            <CardContent className="p-5 relative">
-              <div className="flex items-center gap-2 mb-3">
-                <Headphones className="w-5 h-5" />
-                <h3 className="font-bold">Ask a Coach</h3>
-              </div>
-              <p className="text-sm text-amber-100 mb-4">Get personalized guidance from our certified coaches.</p>
-              <div className="flex items-center gap-2 mb-4 text-sm">
-                <span className="w-2 h-2 bg-green-400 rounded-full animate-pulse" />
-                <span className="text-amber-100">{dynamicStats.coachesOnline} coaches online now</span>
+          {/* Ask a Coach CTA - Simplified */}
+          <Card className="border border-gray-200 hover:border-burgundy-300 transition-colors">
+            <CardContent className="p-4">
+              <div className="flex items-center gap-3 mb-3">
+                <div className="w-10 h-10 bg-burgundy-100 rounded-full flex items-center justify-center">
+                  <Headphones className="w-5 h-5 text-burgundy-600" />
+                </div>
+                <div>
+                  <h3 className="font-semibold text-gray-900">Ask a Coach</h3>
+                  <div className="flex items-center gap-1.5 text-xs text-gray-500">
+                    <span className="w-1.5 h-1.5 bg-green-500 rounded-full animate-pulse" />
+                    {dynamicStats.coachesOnline} online
+                  </div>
+                </div>
               </div>
               <Link href="/messages">
-                <Button className="w-full bg-white text-amber-600 hover:bg-amber-50">
+                <Button size="sm" className="w-full bg-burgundy-600 hover:bg-burgundy-700 text-white">
                   <MessageSquare className="w-4 h-4 mr-2" />
-                  Chat with a Coach
+                  Message Coach
                 </Button>
               </Link>
             </CardContent>
           </Card>
 
-          {/* Practice Momentum CTA */}
-          <Card className="bg-gradient-to-br from-purple-500 to-violet-600 border-0 text-white overflow-hidden relative">
-            <div className="absolute top-0 right-0 w-24 h-24 bg-white/10 rounded-full blur-2xl -translate-y-1/2 translate-x-1/2" />
-            <CardContent className="p-5 relative">
-              <div className="flex items-center gap-2 mb-3">
-                <Rocket className="w-5 h-5" />
-                <h3 className="font-bold">Practice Momentum</h3>
-                <Badge className="bg-white/20 text-white border-0 text-[10px]">NEW</Badge>
-              </div>
-              <p className="text-sm text-purple-100 mb-4">Share your wins and inspire others!</p>
-              <div className="space-y-2 mb-4">
-                <div className="flex items-center gap-2 text-sm text-purple-100">
-                  <DollarSign className="w-4 h-4" /> &quot;Signed my first client!&quot;
-                </div>
-                <div className="flex items-center gap-2 text-sm text-purple-100">
-                  <Target className="w-4 h-4" /> &quot;Hit $5K this month!&quot;
-                </div>
-                <div className="flex items-center gap-2 text-sm text-purple-100">
-                  <Trophy className="w-4 h-4" /> &quot;Launched my website!&quot;
-                </div>
-              </div>
-              <Button
-                onClick={() => setSelectedCategory("momentum")}
-                className="w-full bg-white text-purple-600 hover:bg-purple-50"
-              >
-                <Zap className="w-4 h-4 mr-2" />
-                Share Your Win
-              </Button>
-            </CardContent>
-          </Card>
-
-          {/* Community Guidelines */}
-          <Card className="bg-gradient-to-br from-amber-50 to-orange-50 border-2 border-amber-200">
+          {/* Community Guidelines - Simplified */}
+          <Card className="border border-gray-200">
             <CardContent className="p-4">
               <div className="flex items-center gap-2 mb-3">
-                <Shield className="w-5 h-5 text-amber-600" />
-                <h3 className="font-semibold text-amber-800">Community Guidelines</h3>
+                <Shield className="w-4 h-4 text-gray-500" />
+                <h3 className="font-medium text-gray-700 text-sm">Guidelines</h3>
               </div>
-              <ul className="text-sm text-amber-700 space-y-2">
-                <li className="flex items-start gap-2">
-                  <CheckCircle className="w-4 h-4 mt-0.5 text-amber-500 flex-shrink-0" />
+              <ul className="text-xs text-gray-600 space-y-1.5">
+                <li className="flex items-center gap-2">
+                  <CheckCircle className="w-3 h-3 text-green-500 flex-shrink-0" />
                   Be respectful and supportive
                 </li>
-                <li className="flex items-start gap-2">
-                  <CheckCircle className="w-4 h-4 mt-0.5 text-amber-500 flex-shrink-0" />
+                <li className="flex items-center gap-2">
+                  <CheckCircle className="w-3 h-3 text-green-500 flex-shrink-0" />
                   Celebrate each other&apos;s wins
                 </li>
-                <li className="flex items-start gap-2">
-                  <CheckCircle className="w-4 h-4 mt-0.5 text-amber-500 flex-shrink-0" />
+                <li className="flex items-center gap-2">
+                  <CheckCircle className="w-3 h-3 text-green-500 flex-shrink-0" />
                   No spam or self-promotion
                 </li>
-                <li className="flex items-start gap-2">
-                  <CheckCircle className="w-4 h-4 mt-0.5 text-amber-500 flex-shrink-0" />
-                  Keep discussions on-topic
-                </li>
               </ul>
-              <div className="mt-4 pt-3 border-t border-amber-200">
-                <div className="flex items-center gap-2 text-xs text-amber-600">
-                  <BadgeCheck className="w-4 h-4" />
-                  <span>This community is actively moderated</span>
-                </div>
-              </div>
             </CardContent>
           </Card>
         </div>

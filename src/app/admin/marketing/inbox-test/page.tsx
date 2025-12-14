@@ -1,0 +1,321 @@
+"use client";
+
+import { useState, useEffect } from "react";
+
+interface Variant {
+  id: number;
+  name: string;
+  day: number;
+  originalSubject: string;
+  subject: string;
+  contentPreview: string;
+}
+
+interface TestResult {
+  variantId: number;
+  success: boolean;
+  timestamp: string;
+  landedIn?: "Primary" | "Promotions" | "Updates" | "Spam" | "Unknown";
+}
+
+export default function InboxTestPage() {
+  const [variants, setVariants] = useState<Variant[]>([]);
+  const [testEmail, setTestEmail] = useState("");
+  const [loading, setLoading] = useState(true);
+  const [sending, setSending] = useState<number | null>(null);
+  const [results, setResults] = useState<TestResult[]>([]);
+  const [message, setMessage] = useState<{ type: "success" | "error"; text: string } | null>(null);
+
+  useEffect(() => {
+    fetchVariants();
+  }, []);
+
+  const fetchVariants = async () => {
+    try {
+      const res = await fetch("/api/admin/marketing/inbox-test");
+      const data = await res.json();
+      setVariants(data.variants || []);
+    } catch (error) {
+      console.error("Error fetching variants:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const sendTest = async (variantId: number) => {
+    if (!testEmail) {
+      setMessage({ type: "error", text: "Please enter your test email address" });
+      return;
+    }
+
+    setSending(variantId);
+    setMessage(null);
+
+    try {
+      const res = await fetch("/api/admin/marketing/inbox-test", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ variantId, testEmail }),
+      });
+
+      const data = await res.json();
+
+      if (data.success) {
+        setMessage({
+          type: "success",
+          text: `Email ${variantId} (Day ${data.day}) sent! Check your inbox in 30-60 seconds.`,
+        });
+        setResults(prev => [
+          ...prev,
+          { variantId, success: true, timestamp: new Date().toLocaleTimeString() },
+        ]);
+      } else {
+        setMessage({ type: "error", text: data.error || "Failed to send" });
+      }
+    } catch (error) {
+      setMessage({ type: "error", text: "Failed to send test email" });
+    } finally {
+      setSending(null);
+    }
+  };
+
+  const markResult = (variantId: number, landedIn: TestResult["landedIn"]) => {
+    setResults(prev =>
+      prev.map(r =>
+        r.variantId === variantId ? { ...r, landedIn } : r
+      )
+    );
+  };
+
+  const getResultForVariant = (variantId: number) => {
+    return results.find(r => r.variantId === variantId);
+  };
+
+  if (loading) {
+    return (
+      <div className="p-8">
+        <div className="animate-pulse">Loading email variants...</div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="p-8 max-w-6xl mx-auto">
+      <div className="mb-8">
+        <h1 className="text-2xl font-bold text-gray-900 mb-2">
+          Nurture Sequence - Gmail Primary Test
+        </h1>
+        <p className="text-gray-600">
+          Test all 17 nurture sequence emails with optimized Re: subjects.
+          Send each one and verify it lands in Primary inbox before updating the live sequence.
+        </p>
+        <div className="mt-3 p-3 bg-amber-50 border border-amber-200 rounded-lg text-sm text-amber-800">
+          <strong>Goal:</strong> All 17 emails must land in Primary. Any that land in Promotions/Spam need subject tweaks.
+        </div>
+      </div>
+
+      {/* Test Email Input */}
+      <div className="bg-white rounded-lg shadow p-6 mb-8">
+        <label className="block text-sm font-medium text-gray-700 mb-2">
+          Your Gmail Test Address
+        </label>
+        <div className="flex gap-4">
+          <input
+            type="email"
+            value={testEmail}
+            onChange={e => setTestEmail(e.target.value)}
+            placeholder="your@gmail.com"
+            className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-burgundy-500 focus:border-burgundy-500"
+          />
+        </div>
+        <p className="mt-2 text-sm text-gray-500">
+          Use a Gmail address to test inbox placement. Wait 30-60 seconds between each test.
+        </p>
+      </div>
+
+      {/* Message */}
+      {message && (
+        <div
+          className={`mb-6 p-4 rounded-lg ${
+            message.type === "success"
+              ? "bg-green-50 text-green-800 border border-green-200"
+              : "bg-red-50 text-red-800 border border-red-200"
+          }`}
+        >
+          {message.text}
+        </div>
+      )}
+
+      {/* Results Summary */}
+      {results.length > 0 && (
+        <div className="bg-white rounded-lg shadow p-6 mb-8">
+          <h2 className="text-lg font-semibold mb-4">Test Results ({results.length}/{variants.length} tested)</h2>
+          <div className="grid grid-cols-5 gap-2">
+            <div className="text-center p-2 bg-green-100 rounded">
+              <div className="text-2xl font-bold text-green-700">
+                {results.filter(r => r.landedIn === "Primary").length}
+              </div>
+              <div className="text-xs text-green-600">Primary</div>
+            </div>
+            <div className="text-center p-2 bg-yellow-100 rounded">
+              <div className="text-2xl font-bold text-yellow-700">
+                {results.filter(r => r.landedIn === "Promotions").length}
+              </div>
+              <div className="text-xs text-yellow-600">Promotions</div>
+            </div>
+            <div className="text-center p-2 bg-blue-100 rounded">
+              <div className="text-2xl font-bold text-blue-700">
+                {results.filter(r => r.landedIn === "Updates").length}
+              </div>
+              <div className="text-xs text-blue-600">Updates</div>
+            </div>
+            <div className="text-center p-2 bg-red-100 rounded">
+              <div className="text-2xl font-bold text-red-700">
+                {results.filter(r => r.landedIn === "Spam").length}
+              </div>
+              <div className="text-xs text-red-600">Spam</div>
+            </div>
+            <div className="text-center p-2 bg-gray-100 rounded">
+              <div className="text-2xl font-bold text-gray-700">
+                {results.filter(r => !r.landedIn).length}
+              </div>
+              <div className="text-xs text-gray-600">Pending</div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Variants Grid */}
+      <div className="space-y-4">
+        {variants.map(variant => {
+          const result = getResultForVariant(variant.id);
+          return (
+            <div
+              key={variant.id}
+              className={`bg-white rounded-lg shadow p-6 border-l-4 ${
+                result?.landedIn === "Primary"
+                  ? "border-green-500"
+                  : result?.landedIn === "Promotions"
+                  ? "border-yellow-500"
+                  : result?.landedIn === "Updates"
+                  ? "border-blue-500"
+                  : result?.landedIn === "Spam"
+                  ? "border-red-500"
+                  : "border-gray-200"
+              }`}
+            >
+              <div className="flex items-start justify-between">
+                <div className="flex-1">
+                  <div className="flex items-center gap-3 mb-2">
+                    <span className="inline-flex items-center justify-center w-8 h-8 rounded-full bg-burgundy-100 text-burgundy-700 font-bold text-sm">
+                      {variant.id}
+                    </span>
+                    <span className="px-2 py-0.5 text-xs font-medium bg-gray-100 text-gray-600 rounded">
+                      Day {variant.day}
+                    </span>
+                    <h3 className="font-semibold text-gray-900">{variant.name}</h3>
+                    {result?.landedIn && (
+                      <span
+                        className={`px-2 py-1 text-xs font-medium rounded ${
+                          result.landedIn === "Primary"
+                            ? "bg-green-100 text-green-700"
+                            : result.landedIn === "Promotions"
+                            ? "bg-yellow-100 text-yellow-700"
+                            : result.landedIn === "Updates"
+                            ? "bg-blue-100 text-blue-700"
+                            : "bg-red-100 text-red-700"
+                        }`}
+                      >
+                        {result.landedIn}
+                      </span>
+                    )}
+                  </div>
+
+                  {/* Subject Comparison */}
+                  <div className="mb-3 space-y-1">
+                    <div className="text-sm">
+                      <span className="text-gray-500">Original:</span>{" "}
+                      <span className="text-gray-400 line-through">{variant.originalSubject}</span>
+                    </div>
+                    <div className="text-sm">
+                      <span className="text-gray-500">Optimized:</span>{" "}
+                      <span className="font-medium text-green-700">{variant.subject}</span>
+                    </div>
+                  </div>
+
+                  {/* Content Preview */}
+                  <p className="text-xs text-gray-500 bg-gray-50 p-2 rounded">
+                    {variant.contentPreview}
+                  </p>
+                </div>
+                <div className="ml-4 flex flex-col gap-2">
+                  <button
+                    onClick={() => sendTest(variant.id)}
+                    disabled={sending !== null || !testEmail}
+                    className={`px-4 py-2 rounded-lg font-medium text-sm ${
+                      sending === variant.id
+                        ? "bg-gray-100 text-gray-400 cursor-wait"
+                        : !testEmail
+                        ? "bg-gray-100 text-gray-400 cursor-not-allowed"
+                        : "bg-burgundy-600 text-white hover:bg-burgundy-700"
+                    }`}
+                  >
+                    {sending === variant.id ? "Sending..." : "Send Test"}
+                  </button>
+                </div>
+              </div>
+
+              {/* Result Buttons - Show after sending */}
+              {result && !result.landedIn && (
+                <div className="mt-4 pt-4 border-t border-gray-100">
+                  <p className="text-sm text-gray-600 mb-2">Where did it land?</p>
+                  <div className="flex gap-2">
+                    {(["Primary", "Promotions", "Updates", "Spam"] as const).map(tab => (
+                      <button
+                        key={tab}
+                        onClick={() => markResult(variant.id, tab)}
+                        className={`px-3 py-1 text-sm rounded ${
+                          tab === "Primary"
+                            ? "bg-green-100 text-green-700 hover:bg-green-200"
+                            : tab === "Promotions"
+                            ? "bg-yellow-100 text-yellow-700 hover:bg-yellow-200"
+                            : tab === "Updates"
+                            ? "bg-blue-100 text-blue-700 hover:bg-blue-200"
+                            : "bg-red-100 text-red-700 hover:bg-red-200"
+                        }`}
+                      >
+                        {tab}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </div>
+          );
+        })}
+      </div>
+
+      {/* Tips Section */}
+      <div className="mt-8 bg-amber-50 rounded-lg p-6 border border-amber-200">
+        <h3 className="font-semibold text-amber-800 mb-3">Testing Protocol</h3>
+        <ul className="text-sm text-amber-700 space-y-2">
+          <li>1. Send one email at a time. Wait 30-60 seconds before checking inbox.</li>
+          <li>2. Check all tabs: Primary, Promotions, Updates, Social, and Spam.</li>
+          <li>3. All emails use "Re:" subjects - proven to land in Primary for long-form content.</li>
+          <li>4. If any land in Promotions/Spam, note the email number and we will adjust the subject.</li>
+          <li>5. Goal: 17/17 in Primary before going live with the sequence.</li>
+          <li>6. Content is cleaned: no emojis, no markdown, simple signatures.</li>
+          <li>7. FROM: "Sarah" - personal name, not company branding.</li>
+        </ul>
+      </div>
+
+      {/* Progress Tracker */}
+      {results.length > 0 && results.every(r => r.landedIn === "Primary") && results.length === variants.length && (
+        <div className="mt-6 p-4 bg-green-100 border border-green-300 rounded-lg text-center">
+          <div className="text-2xl mb-2">{variants.length}/{variants.length} Primary!</div>
+          <p className="text-green-800">All emails passed! Ready to update the live nurture sequence.</p>
+        </div>
+      )}
+    </div>
+  );
+}

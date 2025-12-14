@@ -175,9 +175,9 @@ export default async function MyCoursesPage() {
   // Dynamic next steps based on user progress
   const nextSteps = [
     ...(inProgressCourses[0] ? [{ label: `Continue ${inProgressCourses[0].course.title.substring(0, 25)}...`, link: `/courses/${inProgressCourses[0].course.slug}`, icon: Play, priority: true }] : []),
-    { label: "Watch Income Training", link: "/trainings", icon: TrendingUp },
-    { label: "Join Live Challenge", link: "/challenges", icon: Flame },
-    { label: "Add your first client", link: "/coach/workspace", icon: Briefcase },
+    { label: "View Your Roadmap", link: "/roadmap", icon: MapPin },
+    { label: "Join the Community", link: "/community", icon: Users },
+    { label: "Chat with Your Mentor", link: "/messages", icon: MessageSquare },
   ];
 
   // Recent activity from actual lesson progress
@@ -199,13 +199,17 @@ export default async function MyCoursesPage() {
   }));
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-burgundy-50/30">
+    <div className="min-h-screen bg-gray-50">
       <div className="px-4 sm:px-6 lg:px-8 py-8">
-        {/* Compact Header */}
+        {/* Header with Branding */}
         <div className="mb-8">
-          <div className="flex items-center gap-3 mb-2">
-            <div className="p-2 bg-burgundy-100 rounded-xl">
-              <GraduationCap className="w-6 h-6 text-burgundy-600" />
+          <div className="flex items-center gap-4 mb-2">
+            <div className="p-2 bg-white rounded-xl shadow-sm border border-gray-100">
+              <img
+                src="https://coach.accredipro.academy/wp-content/uploads/2025/10/Senza-titolo-Logo-1.png"
+                alt="AccrediPro Academy"
+                className="w-10 h-10 object-contain"
+              />
             </div>
             <div>
               <h1 className="text-2xl font-bold text-gray-900">My Courses</h1>

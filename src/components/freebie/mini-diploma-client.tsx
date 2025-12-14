@@ -245,7 +245,7 @@ export function MiniDiplomaClient({
                                                 return (
                                                     <Link
                                                         key={lesson.id}
-                                                        href={`/courses/${course.slug}/lessons/${lesson.id}`}
+                                                        href={`/courses/${course.slug}/learn/${lesson.id}`}
                                                         className={`flex items-center gap-3 p-3 rounded-lg transition-all ${isCompleted
                                                             ? 'bg-green-50 hover:bg-green-100 border border-green-100'
                                                             : 'bg-gray-50 hover:bg-gray-100 hover:border-gray-200 border border-transparent'
@@ -296,7 +296,7 @@ export function MiniDiplomaClient({
                                                 return (
                                                     <>
                                                         <p className="text-burgundy-100 text-sm">Up next: {lesson.title}</p>
-                                                        <Link href={`/courses/${course.slug}/lessons/${lesson.id}`}>
+                                                        <Link href={`/courses/${course.slug}/learn/${lesson.id}`}>
                                                             <Button size="sm" className="mt-3 bg-white text-burgundy-700 hover:bg-gold-100">
                                                                 <Play className="w-4 h-4 mr-2" /> Start Lesson
                                                             </Button>

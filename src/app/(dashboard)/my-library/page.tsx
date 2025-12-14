@@ -3333,6 +3333,163 @@ Consistency beats intensity. Every single day.`
             }
         ]
     },
+    // FM Practitioner Decision Guide - unlocked from Challenge enrollment
+    {
+        id: "fm-practitioner-decision-guide",
+        title: "FM Practitioner Decision Guide",
+        subtitle: "Is Functional Medicine Coaching Right for You?",
+        description: "A comprehensive guide to help you decide if functional medicine coaching is the right career path. Includes self-assessment, realistic timelines, investment breakdown, and success stories.",
+        valueProp: "Make a confident decision about your FM career path.",
+        author: "AccrediPro Academy",
+        pages: 8,
+        icon: "📋",
+        category: "core",
+        topics: ["Self-Assessment", "Career Path", "Investment Planning", "Success Stories"],
+        readTime: "15 min",
+        unlockedDate: "",
+        isFree: true,
+        unlockCondition: "Challenge Enrollment",
+        isApiUnlocked: true, // This ebook requires API check for unlock status
+        chapters: [
+            {
+                title: "Is FM Coaching Right for Me?",
+                readTime: "5 min",
+                isHtml: true,
+                content: `<div class="ebook-content">
+  <div class="flex justify-center mb-8">
+    <div class="text-center">
+      <div class="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-br from-blue-600 to-cyan-700 rounded-2xl shadow-lg mb-4">
+        <svg xmlns="http://www.w3.org/2000/svg" class="w-10 h-10 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M9 11l3 3L22 4"/>
+          <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/>
+        </svg>
+      </div>
+      <p class="text-sm font-semibold text-blue-600 tracking-wider uppercase">Decision Guide</p>
+    </div>
+  </div>
+
+  <h2 class="text-2xl font-bold text-gray-900 mb-4">Self-Assessment Quiz</h2>
+  <p class="text-gray-700 mb-6">Answer these 5 questions honestly to see if FM coaching is right for you:</p>
+
+  <div class="space-y-4">
+    <div class="bg-blue-50 rounded-xl p-4 border border-blue-200">
+      <p class="font-semibold text-blue-800 mb-2">1. Are you passionate about health and helping others?</p>
+      <p class="text-sm text-blue-700">If you find yourself constantly researching health topics and sharing what you learn, this is a strong indicator.</p>
+    </div>
+    <div class="bg-blue-50 rounded-xl p-4 border border-blue-200">
+      <p class="font-semibold text-blue-800 mb-2">2. Are you willing to invest time in learning before earning?</p>
+      <p class="text-sm text-blue-700">The first 3-6 months require focused learning and practice before consistent income.</p>
+    </div>
+    <div class="bg-blue-50 rounded-xl p-4 border border-blue-200">
+      <p class="font-semibold text-blue-800 mb-2">3. Can you commit to ongoing education?</p>
+      <p class="text-sm text-blue-700">Functional medicine evolves. Successful practitioners never stop learning.</p>
+    </div>
+    <div class="bg-blue-50 rounded-xl p-4 border border-blue-200">
+      <p class="font-semibold text-blue-800 mb-2">4. Do you have basic business sense (or willingness to learn)?</p>
+      <p class="text-sm text-blue-700">Running a practice requires marketing, sales, and client management skills.</p>
+    </div>
+    <div class="bg-blue-50 rounded-xl p-4 border border-blue-200">
+      <p class="font-semibold text-blue-800 mb-2">5. Can you handle rejection and slow starts?</p>
+      <p class="text-sm text-blue-700">Not everyone says yes. Building a practice takes patience and persistence.</p>
+    </div>
+  </div>
+
+  <div class="mt-8 bg-green-50 border border-green-200 rounded-xl p-6">
+    <p class="font-bold text-green-800 mb-2">If you answered YES to 4+ questions:</p>
+    <p class="text-green-700">You have strong potential for success in FM coaching!</p>
+  </div>
+</div>`
+            },
+            {
+                title: "5 Signs You're Ready to Start",
+                readTime: "5 min",
+                content: `THE 5 SIGNS YOU'RE READY
+
+1. YOU'VE TRANSFORMED YOUR OWN HEALTH
+If you've experienced the power of functional medicine firsthand, you understand the transformation you can help others achieve.
+
+2. YOU'RE TIRED OF YOUR CURRENT PATH
+Whether it's a corporate job or an unfulfilling career, that restlessness is often a sign you're ready for change.
+
+3. YOU KEEP TALKING ABOUT HEALTH
+When friends and family already come to you for health advice, you're naturally drawn to this work.
+
+4. YOU'VE DONE YOUR RESEARCH
+You've looked into certifications, income potential, and what the work actually involves. You're not just chasing a dream—you're making an informed decision.
+
+5. YOU FEEL CALLED TO SERVE
+There's a deeper pull beyond money. You genuinely want to help people transform their health.
+
+---
+
+THE REALISTIC TIMELINE
+
+Month 1-3: Learning & Setup
+• Complete core training
+• Set up basic systems
+• Practice with friends/family
+
+Month 4-6: First Clients
+• Land 2-5 initial clients
+• Refine your process
+• Build confidence
+
+Month 7-12: Momentum
+• Referrals start coming
+• Develop your unique approach
+• Build sustainable income
+
+Year 2+: Scale
+• $60K-$120K+ annual income
+• Established client base
+• Consider specialization`
+            },
+            {
+                title: "Investment & Earning Potential",
+                readTime: "5 min",
+                content: `YOUR INVESTMENT BREAKDOWN
+
+CERTIFICATION INVESTMENT
+• Full FM Certification: $997-$1,997
+• Advanced specializations: $497-$997 each
+• Continuing education: $200-$500/year
+
+BUSINESS SETUP (OPTIONAL BUT RECOMMENDED)
+• Basic website: $0-$500
+• Scheduling software: $20-$50/month
+• Practice management: $0-$100/month
+• Marketing budget: $0-$200/month initially
+
+TOTAL FIRST-YEAR INVESTMENT: $1,500-$4,000
+
+---
+
+REALISTIC EARNING POTENTIAL
+
+PART-TIME (10-15 clients/month)
+• Months 4-6: $1,000-$3,000/month
+• Months 7-12: $3,000-$5,000/month
+• Year 2: $5,000-$7,000/month
+
+FULL-TIME (25-40 clients/month)
+• Month 4-6: $2,000-$5,000/month
+• Month 7-12: $5,000-$8,000/month
+• Year 2: $8,000-$15,000/month
+
+TOP PERFORMERS (High-ticket packages)
+• First year: $60,000-$120,000
+• Year 2-3: $120,000-$200,000+
+
+---
+
+ROI TIMELINE
+
+Most practitioners recoup their certification investment within 3-6 months of starting with clients. By month 12, most are profitable.
+
+Note: These are realistic figures from our graduate community. Individual results vary based on effort, market, and business acumen.`
+            }
+        ]
+    },
     // NOTE: Purchasable ebooks are in the Professional Library (/ebooks)
     // My Library only shows FREE ebooks (unlocked via progress) + purchased ebooks
 ];
@@ -3356,13 +3513,30 @@ export default function MyLibraryPage() {
     const [showTOC, setShowTOC] = useState(false);
     const [readingProgress, setReadingProgress] = useState<ReadingProgress>({});
     const [activeTab, setActiveTab] = useState<"all" | "inprogress" | "completed">("all");
+    const [unlockedResources, setUnlockedResources] = useState<string[]>([]);
 
-    // Load progress from localStorage
+    // Load progress from localStorage and fetch unlocked resources from API
     useEffect(() => {
         const saved = localStorage.getItem("library-saved");
         const progress = localStorage.getItem("library-progress");
         if (saved) setSavedEbooks(JSON.parse(saved));
         if (progress) setReadingProgress(JSON.parse(progress));
+
+        // Fetch unlocked resources from API
+        const fetchUnlockedResources = async () => {
+            try {
+                const response = await fetch("/api/user/library");
+                if (response.ok) {
+                    const data = await response.json();
+                    if (data.unlockedResources) {
+                        setUnlockedResources(data.unlockedResources);
+                    }
+                }
+            } catch (error) {
+                console.error("Error fetching unlocked resources:", error);
+            }
+        };
+        fetchUnlockedResources();
     }, []);
 
     // Save to localStorage
@@ -3441,7 +3615,17 @@ export default function MyLibraryPage() {
         return progress.completedChapters.length === totalChapters;
     };
 
-    const filteredEbooks = MY_EBOOKS.filter(ebook => {
+    // Filter ebooks - check if API-unlocked ebooks are actually unlocked
+    const availableEbooks = MY_EBOOKS.filter(ebook => {
+        // If ebook requires API unlock, check if it's in unlockedResources
+        if ((ebook as any).isApiUnlocked) {
+            return unlockedResources.includes(ebook.id);
+        }
+        // Otherwise, it's always available (free ebook unlocked by default)
+        return true;
+    });
+
+    const filteredEbooks = availableEbooks.filter(ebook => {
         const matchesSearch = ebook.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
             ebook.topics.some(t => t.toLowerCase().includes(searchQuery.toLowerCase()));
         const matchesCategory = selectedCategory === "all" || ebook.category === selectedCategory;
@@ -3456,9 +3640,9 @@ export default function MyLibraryPage() {
         return matchesSearch && matchesCategory;
     });
 
-    const inProgressCount = MY_EBOOKS.filter(e => readingProgress[e.id]?.started && !isEbookComplete(e.id, e.chapters.length)).length;
-    const completedCount = MY_EBOOKS.filter(e => isEbookComplete(e.id, e.chapters.length)).length;
-    const freeCount = MY_EBOOKS.filter(e => e.isFree).length;
+    const inProgressCount = availableEbooks.filter(e => readingProgress[e.id]?.started && !isEbookComplete(e.id, e.chapters.length)).length;
+    const completedCount = availableEbooks.filter(e => isEbookComplete(e.id, e.chapters.length)).length;
+    const totalCount = availableEbooks.length;
 
     // READING VIEW
     if (readingEbook) {
@@ -3654,7 +3838,7 @@ export default function MyLibraryPage() {
 
                         <div className="flex flex-wrap gap-4 text-sm">
                             <div className="flex items-center gap-2 bg-green-500/20 px-4 py-2 rounded-full border border-green-400/30">
-                                <Sparkles className="w-4 h-4 text-green-300" /> {freeCount} Free Resources
+                                <Sparkles className="w-4 h-4 text-green-300" /> {totalCount} Resources
                             </div>
                             <div className="flex items-center gap-2 bg-white/10 px-4 py-2 rounded-full">
                                 <PlayCircle className="w-4 h-4" /> {inProgressCount} Reading
@@ -3673,7 +3857,7 @@ export default function MyLibraryPage() {
                             <PlayCircle className="w-5 h-5 text-burgundy-600" /> Continue Reading
                         </h2>
                         <div className="grid md:grid-cols-3 gap-4">
-                            {MY_EBOOKS.filter(e => readingProgress[e.id]?.started && !isEbookComplete(e.id, e.chapters.length)).map((ebook) => {
+                            {availableEbooks.filter(e => readingProgress[e.id]?.started && !isEbookComplete(e.id, e.chapters.length)).map((ebook) => {
                                 const progress = getEbookProgress(ebook.id, ebook.chapters.length);
                                 const lastChapter = readingProgress[ebook.id]?.currentChapter || 0;
                                 return (

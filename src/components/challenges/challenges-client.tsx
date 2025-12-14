@@ -79,6 +79,9 @@ interface Challenge {
 interface ChallengesClientProps {
     challenges: Challenge[];
     userId: string;
+    isChallengeUnlocked?: boolean;
+    hasCompletedMiniDiploma?: boolean;
+    miniDiplomaCompletedAt?: string | null;
 }
 
 // Coach Sarah - The face of the challenge
@@ -262,7 +265,13 @@ const EARNING_BREAKDOWN = [
     { label: "Year 1", range: "$60K - $120K", timeline: "Sustainable full-time practice", icon: Crown },
 ];
 
-export function ChallengesClient({ challenges, userId }: ChallengesClientProps) {
+export function ChallengesClient({
+    challenges,
+    userId,
+    isChallengeUnlocked = true,
+    hasCompletedMiniDiploma = false,
+    miniDiplomaCompletedAt
+}: ChallengesClientProps) {
     const [enrolling, setEnrolling] = useState(false);
     const [currentDay, setCurrentDay] = useState(0);
     const [completedDays, setCompletedDays] = useState<number[]>([]);
@@ -274,6 +283,19 @@ export function ChallengesClient({ challenges, userId }: ChallengesClientProps) 
     const [unlockedDays, setUnlockedDays] = useState<number[]>([1]);
     const [guideAdded, setGuideAdded] = useState(false);
     const [addingGuide, setAddingGuide] = useState(false);
+
+    // Calculate unlock countdown if mini diploma is completed but 24h haven't passed
+    const getUnlockCountdown = () => {
+        if (!miniDiplomaCompletedAt || isChallengeUnlocked) return null;
+        const completedDate = new Date(miniDiplomaCompletedAt);
+        const unlockDate = new Date(completedDate.getTime() + 24 * 60 * 60 * 1000);
+        const now = new Date();
+        const remainingMs = unlockDate.getTime() - now.getTime();
+        if (remainingMs <= 0) return null;
+        const hours = Math.floor(remainingMs / (1000 * 60 * 60));
+        const minutes = Math.floor((remainingMs % (1000 * 60 * 60)) / (1000 * 60));
+        return { hours, minutes };
+    };
 
     // Check if user is enrolled in the challenge from DB data
     useEffect(() => {
@@ -392,6 +414,115 @@ export function ChallengesClient({ challenges, userId }: ChallengesClientProps) 
 
         checkGuideStatus();
     }, []);
+
+    const countdown = getUnlockCountdown();
+
+    // Show locked state if challenge is not unlocked
+    if (!isChallengeUnlocked) {
+        return (
+            <div className="px-4 sm:px-6 lg:px-8 py-8">
+                <Card className="max-w-2xl mx-auto border-2 border-gray-200 overflow-hidden">
+                    <div className="bg-gradient-to-r from-gray-100 to-gray-200 px-6 py-4">
+                        <div className="flex items-center gap-3">
+                            <div className="w-12 h-12 bg-gray-300 rounded-xl flex items-center justify-center">
+                                <Lock className="w-6 h-6 text-gray-500" />
+                            </div>
+                            <div>
+                                <h2 className="text-xl font-bold text-gray-700">7-Day Challenge Locked</h2>
+                                <p className="text-gray-500 text-sm">Complete prerequisites to unlock</p>
+                            </div>
+                        </div>
+                    </div>
+                    <CardContent className="p-6 space-y-6">
+                        {!hasCompletedMiniDiploma ? (
+                            <div className="bg-amber-50 border border-amber-200 rounded-xl p-5">
+                                <div className="flex items-center gap-3 mb-3">
+                                    <div className="w-10 h-10 bg-amber-100 rounded-full flex items-center justify-center">
+                                        <GraduationCap className="w-5 h-5 text-amber-600" />
+                                    </div>
+                                    <div>
+                                        <p className="font-semibold text-amber-800">Step 1: Complete Your Mini Diploma</p>
+                                        <p className="text-sm text-amber-700">Finish your free mini diploma to unlock the training</p>
+                                    </div>
+                                </div>
+                                <Link href="/my-mini-diploma">
+                                    <Button className="w-full bg-amber-500 hover:bg-amber-600 text-white">
+                                        <GraduationCap className="w-4 h-4 mr-2" /> Go to Mini Diploma
+                                    </Button>
+                                </Link>
+                            </div>
+                        ) : countdown ? (
+                            <div className="bg-blue-50 border border-blue-200 rounded-xl p-5">
+                                <div className="flex items-center gap-3 mb-3">
+                                    <div className="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center">
+                                        <Clock className="w-5 h-5 text-blue-600" />
+                                    </div>
+                                    <div>
+                                        <p className="font-semibold text-blue-800">Challenge Unlocks Soon!</p>
+                                        <p className="text-sm text-blue-700">
+                                            Watch the Training video OR wait for automatic unlock
+                                        </p>
+                                    </div>
+                                </div>
+                                <div className="bg-white rounded-lg p-4 mb-4 text-center">
+                                    <p className="text-3xl font-bold text-blue-700">
+                                        {countdown.hours}h {countdown.minutes}m
+                                    </p>
+                                    <p className="text-sm text-blue-500">until automatic unlock</p>
+                                </div>
+                                <Link href="/training">
+                                    <Button className="w-full bg-blue-600 hover:bg-blue-700 text-white">
+                                        <Play className="w-4 h-4 mr-2" /> Watch Training to Unlock Now
+                                    </Button>
+                                </Link>
+                            </div>
+                        ) : (
+                            <div className="bg-green-50 border border-green-200 rounded-xl p-5">
+                                <div className="flex items-center gap-3 mb-3">
+                                    <div className="w-10 h-10 bg-green-100 rounded-full flex items-center justify-center">
+                                        <CheckCircle className="w-5 h-5 text-green-600" />
+                                    </div>
+                                    <div>
+                                        <p className="font-semibold text-green-800">Almost There!</p>
+                                        <p className="text-sm text-green-700">Watch the Training video to unlock the challenge</p>
+                                    </div>
+                                </div>
+                                <Link href="/training">
+                                    <Button className="w-full bg-green-600 hover:bg-green-700 text-white">
+                                        <Play className="w-4 h-4 mr-2" /> Watch Training Now
+                                    </Button>
+                                </Link>
+                            </div>
+                        )}
+
+                        <div className="border-t pt-6">
+                            <h3 className="font-bold text-gray-900 mb-4">Your Path to the Challenge:</h3>
+                            <div className="space-y-3">
+                                <div className={`flex items-center gap-3 p-3 rounded-lg ${hasCompletedMiniDiploma ? 'bg-green-50 border border-green-200' : 'bg-gray-50'}`}>
+                                    {hasCompletedMiniDiploma ? (
+                                        <CheckCircle className="w-5 h-5 text-green-600" />
+                                    ) : (
+                                        <Circle className="w-5 h-5 text-gray-400" />
+                                    )}
+                                    <span className={hasCompletedMiniDiploma ? 'text-green-800' : 'text-gray-600'}>
+                                        Complete Mini Diploma
+                                    </span>
+                                </div>
+                                <div className="flex items-center gap-3 p-3 rounded-lg bg-gray-50">
+                                    <Circle className="w-5 h-5 text-gray-400" />
+                                    <span className="text-gray-600">Watch Graduate Training (or wait 24h)</span>
+                                </div>
+                                <div className="flex items-center gap-3 p-3 rounded-lg bg-gray-50">
+                                    <Lock className="w-5 h-5 text-gray-400" />
+                                    <span className="text-gray-600">Start 7-Day Challenge</span>
+                                </div>
+                            </div>
+                        </div>
+                    </CardContent>
+                </Card>
+            </div>
+        );
+    }
 
     return (
         <div className="px-4 sm:px-6 lg:px-8 py-8">

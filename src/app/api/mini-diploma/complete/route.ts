@@ -3,6 +3,7 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import prisma from "@/lib/prisma";
 import { sendEmail } from "@/lib/email";
+import { triggerAutoMessage } from "@/lib/auto-messages";
 
 const categoryLabels: Record<string, string> = {
     "functional-medicine": "Functional Medicine",
@@ -221,6 +222,12 @@ You've got this! 💛
         }
 
         console.log(`🎉 Mini diploma completed for ${user.email}`);
+
+        // Also trigger the auto-message system for backup DM with pre-recorded voice
+        triggerAutoMessage({
+            userId: user.id,
+            trigger: "mini_diploma_complete",
+        }).catch(console.error);
 
         return NextResponse.json({
             success: true,

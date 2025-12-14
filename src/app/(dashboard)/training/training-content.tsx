@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -17,14 +18,18 @@ import {
     Award,
     ArrowRight,
     Star,
+    TrendingUp,
+    Target,
+    Briefcase,
 } from "lucide-react";
 
 interface TrainingContentProps {
     userName: string;
     hasCompletedMiniDiploma: boolean;
+    miniDiplomaCategory?: string | null;
 }
 
-export function TrainingContent({ userName, hasCompletedMiniDiploma }: TrainingContentProps) {
+export function TrainingContent({ userName, hasCompletedMiniDiploma, miniDiplomaCategory }: TrainingContentProps) {
     const [isPlaying, setIsPlaying] = useState(false);
     const [hasWatched, setHasWatched] = useState(false);
 
@@ -36,14 +41,33 @@ export function TrainingContent({ userName, hasCompletedMiniDiploma }: TrainingC
 
     return (
         <div className="px-4 sm:px-6 lg:px-8 py-8 space-y-8 animate-fade-in">
-            {/* Page Header */}
+            {/* Page Header with Branding */}
             <div className="text-center mb-8">
-                <Badge className="bg-burgundy-100 text-burgundy-700 mb-4">
-                    <GraduationCap className="w-3 h-3 mr-1" />
-                    Official Training
+                <div className="flex justify-center mb-4">
+                    <div className="p-3 bg-white rounded-2xl shadow-lg border border-gray-100">
+                        <Image
+                            src="https://coach.accredipro.academy/wp-content/uploads/2025/10/Senza-titolo-Logo-1.png"
+                            alt="AccrediPro Academy"
+                            width={56}
+                            height={56}
+                            className="object-contain"
+                            unoptimized
+                        />
+                    </div>
+                </div>
+                <Badge className="bg-gradient-to-r from-burgundy-100 to-gold-100 text-burgundy-700 mb-4 px-4 py-1">
+                    <GraduationCap className="w-4 h-4 mr-2" />
+                    Graduate Orientation
                 </Badge>
-                <h1 className="text-3xl font-bold text-gray-900 mb-2">Training</h1>
-                <p className="text-gray-600">Your official graduate training and certification resources</p>
+                <h1 className="text-3xl md:text-4xl font-bold text-gray-900 mb-3">
+                    Becoming a Certified Functional Medicine Practitioner
+                </h1>
+                <p className="text-xl text-burgundy-600 font-semibold mb-2">
+                    Start Earning $5,000+ Monthly
+                </p>
+                <p className="text-gray-600 max-w-2xl mx-auto">
+                    Welcome, {userName}! This exclusive training reveals the path to building a thriving practice as a certified practitioner.
+                </p>
             </div>
 
             {/* Graduate Training Replay - Main Card */}
@@ -52,14 +76,14 @@ export function TrainingContent({ userName, hasCompletedMiniDiploma }: TrainingC
                 <div className="bg-gradient-to-r from-burgundy-700 via-burgundy-600 to-purple-700 px-6 py-5">
                     <div className="flex items-center gap-3">
                         <div className="w-12 h-12 bg-white/20 backdrop-blur rounded-xl flex items-center justify-center">
-                            <GraduationCap className="w-6 h-6 text-white" />
+                            <TrendingUp className="w-6 h-6 text-gold-400" />
                         </div>
                         <div>
                             <h2 className="text-xl font-bold text-white flex items-center gap-2">
-                                Official Graduate Training Replay
+                                Graduate Orientation Training
                             </h2>
                             <p className="text-burgundy-100 text-sm">
-                                What certification unlocks, how practitioners succeed, and your earning potential
+                                Your blueprint to a $5K+/month functional medicine practice
                             </p>
                         </div>
                     </div>
@@ -155,31 +179,53 @@ export function TrainingContent({ userName, hasCompletedMiniDiploma }: TrainingC
 
                     {/* What You'll Learn */}
                     <div className="grid md:grid-cols-3 gap-4 pt-4 border-t border-gray-200">
-                        <div className="flex items-start gap-3 p-4 bg-white rounded-xl border border-gray-100">
-                            <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center flex-shrink-0">
-                                <Sparkles className="w-5 h-5 text-blue-600" />
+                        <div className="flex items-start gap-3 p-4 bg-white rounded-xl border border-gray-100 hover:border-burgundy-200 transition-colors">
+                            <div className="w-10 h-10 bg-gradient-to-br from-burgundy-100 to-burgundy-200 rounded-lg flex items-center justify-center flex-shrink-0">
+                                <Target className="w-5 h-5 text-burgundy-600" />
                             </div>
                             <div>
-                                <p className="font-semibold text-gray-900">What's Possible</p>
-                                <p className="text-sm text-gray-600">See the full certification pathway</p>
+                                <p className="font-semibold text-gray-900">Your Certification Path</p>
+                                <p className="text-sm text-gray-600">Step-by-step roadmap to success</p>
                             </div>
                         </div>
-                        <div className="flex items-start gap-3 p-4 bg-white rounded-xl border border-gray-100">
-                            <div className="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center flex-shrink-0">
-                                <Users className="w-5 h-5 text-green-600" />
+                        <div className="flex items-start gap-3 p-4 bg-white rounded-xl border border-gray-100 hover:border-green-200 transition-colors">
+                            <div className="w-10 h-10 bg-gradient-to-br from-green-100 to-emerald-200 rounded-lg flex items-center justify-center flex-shrink-0">
+                                <Briefcase className="w-5 h-5 text-green-600" />
                             </div>
                             <div>
-                                <p className="font-semibold text-gray-900">How Practitioners Succeed</p>
-                                <p className="text-sm text-gray-600">Real stories and strategies</p>
+                                <p className="font-semibold text-gray-900">Build Your Practice</p>
+                                <p className="text-sm text-gray-600">Get clients from day one</p>
                             </div>
                         </div>
-                        <div className="flex items-start gap-3 p-4 bg-white rounded-xl border border-gray-100">
-                            <div className="w-10 h-10 bg-amber-100 rounded-lg flex items-center justify-center flex-shrink-0">
+                        <div className="flex items-start gap-3 p-4 bg-white rounded-xl border border-gray-100 hover:border-gold-200 transition-colors">
+                            <div className="w-10 h-10 bg-gradient-to-br from-gold-100 to-amber-200 rounded-lg flex items-center justify-center flex-shrink-0">
                                 <DollarSign className="w-5 h-5 text-amber-600" />
                             </div>
                             <div>
-                                <p className="font-semibold text-gray-900">Earning Potential</p>
-                                <p className="text-sm text-gray-600">$60K - $120K+ first year</p>
+                                <p className="font-semibold text-gray-900">$5K-$10K Monthly</p>
+                                <p className="text-sm text-gray-600">Real income potential revealed</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* Income Stats */}
+                    <div className="bg-gradient-to-r from-emerald-50 to-green-50 rounded-xl p-5 border border-emerald-200">
+                        <div className="flex items-center gap-3 mb-4">
+                            <TrendingUp className="w-6 h-6 text-emerald-600" />
+                            <h3 className="font-bold text-emerald-800">What Our Graduates Are Earning</h3>
+                        </div>
+                        <div className="grid grid-cols-3 gap-4 text-center">
+                            <div>
+                                <p className="text-2xl font-bold text-emerald-700">$5,000+</p>
+                                <p className="text-xs text-emerald-600">First 3 Months</p>
+                            </div>
+                            <div>
+                                <p className="text-2xl font-bold text-emerald-700">$8,000+</p>
+                                <p className="text-xs text-emerald-600">After 6 Months</p>
+                            </div>
+                            <div>
+                                <p className="text-2xl font-bold text-emerald-700">$120K+</p>
+                                <p className="text-xs text-emerald-600">First Year Potential</p>
                             </div>
                         </div>
                     </div>

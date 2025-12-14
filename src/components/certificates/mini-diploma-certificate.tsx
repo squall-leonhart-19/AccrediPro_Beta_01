@@ -263,29 +263,21 @@ export function MiniDiplomaCertificate({
         try {
             const htmlContent = generateCertificateHTML();
 
-            // Open HTML in new window for print-to-PDF
-            const printWindow = window.open("", "_blank", "width=1122,height=793");
+            // Create a downloadable HTML file
+            const blob = new Blob([htmlContent], { type: "text/html" });
+            const url = URL.createObjectURL(blob);
 
-            if (!printWindow) {
-                alert("Please allow pop-ups to download the certificate");
-                return;
-            }
+            // Create download link
+            const link = document.createElement("a");
+            link.href = url;
+            link.download = `${diplomaTitle.replace(/\s+/g, "-")}-Certificate-${studentName.replace(/\s+/g, "-")}.html`;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
 
-            printWindow.document.write(htmlContent);
-            printWindow.document.close();
-
-            // Wait for content to load then trigger print
-            printWindow.onload = () => {
-                setTimeout(() => {
-                    printWindow.print();
-                    setDownloading(false);
-                }, 300);
-            };
-
-            // Fallback if onload doesn't fire
-            setTimeout(() => {
-                setDownloading(false);
-            }, 2000);
+            // Clean up the URL
+            URL.revokeObjectURL(url);
+            setDownloading(false);
         } catch (error) {
             console.error("Download failed:", error);
             setDownloading(false);

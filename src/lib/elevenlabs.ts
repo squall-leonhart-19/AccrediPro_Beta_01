@@ -19,12 +19,29 @@ export interface VoiceGenerationResult {
     error?: string;
 }
 
+export interface VoiceSettings {
+    stability?: number;        // 0-1, higher = more stable/consistent
+    similarityBoost?: number;  // 0-1, higher = more similar to original voice
+    style?: number;            // 0-1, higher = more expressive
+    speed?: number;            // 0.5-2.0, lower = slower speech
+}
+
+// Default voice settings - "Warm Medium" winning parameters
+// Warm and friendly, medium pace - tested and approved
+const DEFAULT_VOICE_SETTINGS: VoiceSettings = {
+    stability: 0.60,       // Natural warmth
+    similarityBoost: 0.80, // Keep voice close to Sarah
+    style: 0.25,           // Slightly expressive
+    speed: 0.90,           // Medium pace - not too fast, not too slow
+};
+
 /**
  * Generate voice audio using ElevenLabs
  */
 export async function generateVoice(
     text: string,
-    voiceId?: string
+    voiceId?: string,
+    settings?: VoiceSettings
 ): Promise<VoiceGenerationResult> {
     const apiKey = process.env.ELEVENLABS_API_KEY;
 
@@ -35,19 +52,21 @@ export async function generateVoice(
 
     const client = new ElevenLabsClient({ apiKey });
     const finalVoiceId = voiceId || process.env.SARAH_VOICE_ID || DEFAULT_VOICE_ID;
+    const finalSettings = { ...DEFAULT_VOICE_SETTINGS, ...settings };
 
     try {
-        console.log(`🎙️ Generating voice with ElevenLabs (voice: ${finalVoiceId})...`);
+        console.log(`🎙️ Generating voice with ElevenLabs (voice: ${finalVoiceId}, speed: ${finalSettings.speed})...`);
 
         const audioStream = await client.textToSpeech.convert(finalVoiceId, {
             text,
             modelId: "eleven_multilingual_v2", // Best quality model
             outputFormat: "mp3_44100_128",
             voiceSettings: {
-                stability: 0.6,        // Higher = more stable, less glitches
-                similarityBoost: 0.8,  // Keep voice similar to Sarah
-                style: 0.25,           // Lower style = fewer artifacts
+                stability: finalSettings.stability!,
+                similarityBoost: finalSettings.similarityBoost!,
+                style: finalSettings.style!,
                 useSpeakerBoost: true,
+                speed: finalSettings.speed,
             },
         });
 
@@ -64,9 +83,11 @@ export async function generateVoice(
         const buffer = Buffer.concat(chunks);
         const audioBase64 = buffer.toString("base64");
 
-        // Estimate duration (ElevenLabs is ~150-180 words/minute)
+        // Estimate duration (ElevenLabs is ~150-180 words/minute, adjusted for speed)
         const wordCount = text.split(/\s+/).length;
-        const duration = Math.ceil((wordCount / 160) * 60);
+        const baseWPM = 160;
+        const adjustedWPM = baseWPM * (finalSettings.speed || 1);
+        const duration = Math.ceil((wordCount / adjustedWPM) * 60);
 
         console.log(`✅ Voice generated! Duration: ~${duration}s, Size: ${buffer.length} bytes`);
 
@@ -88,8 +109,19 @@ export async function generateVoice(
  * Generate Sarah's voice specifically
  * Uses the SARAH_VOICE_ID environment variable
  */
-export async function generateSarahVoice(text: string): Promise<VoiceGenerationResult> {
-    return generateVoice(text, process.env.SARAH_VOICE_ID);
+export async function generateSarahVoice(text: string, settings?: VoiceSettings): Promise<VoiceGenerationResult> {
+    return generateVoice(text, process.env.SARAH_VOICE_ID, settings);
+}
+
+/**
+ * Generate voice with custom settings - for A/B testing different voice styles
+ */
+export async function generateVoiceWithSettings(
+    text: string,
+    settings: VoiceSettings,
+    voiceId?: string
+): Promise<VoiceGenerationResult> {
+    return generateVoice(text, voiceId, settings);
 }
 
 /**

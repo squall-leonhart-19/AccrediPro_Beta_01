@@ -87,6 +87,9 @@ model User {
   postLikes         PostLike[]
   tags              UserTag[]
   loginHistory      LoginHistory[]
+  marketingTags     UserMarketingTag[]
+  sequenceEnrollments SequenceEnrollment[]
+  emailSends        EmailSend[]
   assignedCoach     User?             @relation("CoachAssignment", fields: [assignedCoachId], references: [id])
   assignedStudents  User[]            @relation("CoachAssignment")
   coachedCommunities CategoryCommunity[] @relation("CommunityCoach")
@@ -866,6 +869,7 @@ model UserTag {
   @@unique([userId, tag])
   @@index([userId])
   @@index([tag])
+  @@index([createdAt])
 }
 
 model LoginHistory {
@@ -1010,267 +1014,300 @@ model OfferRedemption {
   @@index([userId])
 }
 
-// ==================== WORKFLOW AUTOMATION ENGINE ====================
+// ==================== MARKETING AUTOMATION - TAGS ====================
 
-model Workflow {
+model MarketingTag {
+  id          String      @id @default(cuid())
+  name        String      @unique // Display name: "Mini Started"
+  slug        String      @unique // System name: "stage_mini_started"
+  category    TagCategory
+  color       String      @default("#6B7280") // Hex color for UI
+  description String?
+  isSystem    Boolean     @default(false) // System tags can't be deleted
+  isActive    Boolean     @default(true)
+  userCount   Int         @default(0) // Cached count of users with this tag
+
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+
+  // Relations
+  userTags    UserMarketingTag[]
+  sequenceTriggers Sequence[] @relation("SequenceTriggerTag")
+  sequenceExits    Sequence[] @relation("SequenceExitTag")
+
+  @@index([slug])
+  @@index([category])
+  @@index([isActive])
+}
+
+enum TagCategory {
+  STAGE       // Lifecycle stage: mini_started, mini_completed, training, challenge, decision, buyer
+  INTENT      // Engagement level: cold, warm, hot
+  BEHAVIOR    // Auto-assigned: email_opener, video_watcher, pricing_viewer
+  SOURCE      // Lead source: freebie_fm, webinar, organic, referral
+  SUPPRESS    // Suppression: purchased, unsubscribed
+  CUSTOM      // User-created tags
+}
+
+model UserMarketingTag {
+  id        String       @id @default(cuid())
+  userId    String
+  tagId     String
+  source    String?      // How tag was added: manual, sequence, automation, import
+  metadata  Json?        // Extra data (e.g., which email triggered it)
+
+  createdAt DateTime     @default(now())
+
+  user      User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  tag       MarketingTag @relation(fields: [tagId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, tagId])
+  @@index([userId])
+  @@index([tagId])
+  @@index([createdAt])
+}
+
+// ==================== MARKETING AUTOMATION - SEQUENCES ====================
+
+model Sequence {
   id              String         @id @default(cuid())
   name            String
   slug            String         @unique
   description     String?        @db.Text
-  category        WorkflowCategory
-  triggerType     TriggerType
-  triggerConfig   Json           // Configuration for the trigger (courseId, creditScore range, etc.)
+
+  // Trigger: When to start this sequence
+  triggerType     SequenceTrigger
+  triggerTagId    String?        // For TAG_ADDED trigger
+  triggerTag      MarketingTag?  @relation("SequenceTriggerTag", fields: [triggerTagId], references: [id])
+
+  // Exit conditions
+  exitTagId       String?        // Exit sequence when this tag is added (e.g., purchased)
+  exitTag         MarketingTag?  @relation("SequenceExitTag", fields: [exitTagId], references: [id])
+  exitOnReply     Boolean        @default(false) // Exit if user replies to any email
+  exitOnClick     Boolean        @default(false) // Exit if user clicks CTA
+
+  // Settings
   isActive        Boolean        @default(false)
-  isSystem        Boolean        @default(false) // System workflows can't be deleted
-  priority        Int            @default(0) // Higher = runs first
-  cooldownMinutes Int            @default(0) // Prevent re-triggering for X minutes
-  maxExecutions   Int?           // Max times this workflow can run per user
+  isSystem        Boolean        @default(false)
+  priority        Int            @default(0) // Higher = runs first if multiple match
+
+  // Stats (cached)
+  totalEnrolled   Int            @default(0)
+  totalCompleted  Int            @default(0)
+  totalExited     Int            @default(0)
 
   createdAt       DateTime       @default(now())
   updatedAt       DateTime       @updatedAt
 
-  actions         WorkflowAction[]
-  conditions      WorkflowCondition[]
-  executions      WorkflowExecution[]
+  // Relations
+  emails          SequenceEmail[]
+  enrollments     SequenceEnrollment[]
 
-  @@index([triggerType])
+  @@index([slug])
   @@index([isActive])
-  @@index([category])
+  @@index([triggerType])
 }
 
-enum WorkflowCategory {
-  ENROLLMENT         // Welcome, onboarding
-  PROGRESS           // Lesson/module/course completion
-  ENGAGEMENT         // Inactivity, streaks, community
-  UPSELL             // Credit-based offers, upgrades
-  MILESTONE          // Badges, certificates, achievements
-  BEHAVIOR           // Catalog views, page visits
-  SYSTEM             // Tech automations, tagging
-  ANNOUNCEMENT       // Bulk communications
-}
-
-enum TriggerType {
-  // Enrollment triggers
-  USER_REGISTERED
-  USER_FIRST_LOGIN
-  USER_ENROLLED
-  USER_ONBOARDING_COMPLETE
-
-  // Progress triggers
-  LESSON_COMPLETED
-  MODULE_COMPLETED
-  COURSE_COMPLETED
-  MINI_DIPLOMA_EARNED
-  CERTIFICATION_EARNED
-  CHALLENGE_HALFWAY
+enum SequenceTrigger {
+  TAG_ADDED           // When specific tag is added
+  USER_REGISTERED     // New user signup
+  MINI_DIPLOMA_STARTED
+  MINI_DIPLOMA_COMPLETED
+  TRAINING_STARTED
+  CHALLENGE_STARTED
   CHALLENGE_COMPLETED
-  PROGRESS_PERCENTAGE   // 25%, 50%, 75%, etc.
-
-  // Engagement triggers
-  INACTIVE_24H
-  INACTIVE_48H
-  INACTIVE_7D
-  STREAK_ACHIEVED       // X days in a row
-  FIRST_COMMUNITY_POST
-  FIRST_COMMUNITY_COMMENT
-
-  // Behavior triggers
-  CATALOG_VIEWED        // Viewed catalog X times
-  COURSE_PAGE_VIEWED    // Viewed specific course page
-  PRICING_PAGE_VIEWED
-  VIDEO_WATCHED_PERCENT // Watched X% of video
-
-  // Credit/Finance triggers
-  CREDIT_SCORE_UNDER_620
-  CREDIT_SCORE_620_679
-  CREDIT_SCORE_680_PLUS
-
-  // Time-based triggers
-  DAYS_SINCE_ENROLLMENT // X days after enrolling
-  DAYS_SINCE_LAST_LOGIN
-  SCHEDULED             // Cron-like scheduling
-
-  // Badge/Achievement triggers
-  BADGE_EARNED
-  CERTIFICATE_ISSUED
-
-  // Manual triggers
-  MANUAL               // Triggered manually by admin
+  COURSE_ENROLLED
+  MANUAL              // Manually enrolled by admin
 }
 
-model WorkflowAction {
-  id            String       @id @default(cuid())
-  workflowId    String
-  order         Int          @default(0)
-  actionType    ActionType
-  config        Json         // Action-specific configuration
-  delayMinutes  Int          @default(0) // Delay before executing this action
-  isActive      Boolean      @default(true)
+model SequenceEmail {
+  id              String        @id @default(cuid())
+  sequenceId      String
 
-  createdAt     DateTime     @default(now())
-  updatedAt     DateTime     @updatedAt
+  // Email content (can link to template or custom)
+  emailTemplateId String?       // Link to EmailTemplate
+  customSubject   String?       // Override subject
+  customContent   String?       @db.Text // Override content
 
-  workflow      Workflow     @relation(fields: [workflowId], references: [id], onDelete: Cascade)
-  executions    ActionExecution[]
+  // Timing
+  order           Int           @default(0)
+  delayDays       Int           @default(0) // Days after previous email
+  delayHours      Int           @default(0) // Hours after previous email
+  sendAtHour      Int?          // Specific hour to send (0-23), null = immediate
+  sendOnWeekends  Boolean       @default(false)
 
-  @@index([workflowId])
+  // Conditions (optional)
+  requiresTagId   String?       // Only send if user has this tag
+  skipIfTagId     String?       // Skip if user has this tag
+
+  // Settings
+  isActive        Boolean       @default(true)
+
+  // Stats
+  sentCount       Int           @default(0)
+  openCount       Int           @default(0)
+  clickCount      Int           @default(0)
+  replyCount      Int           @default(0)
+
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt
+
+  sequence        Sequence      @relation(fields: [sequenceId], references: [id], onDelete: Cascade)
+  emailTemplate   EmailTemplate? @relation(fields: [emailTemplateId], references: [id])
+  sends           EmailSend[]
+
+  @@index([sequenceId])
   @@index([order])
 }
 
-enum ActionType {
-  // Communication actions
-  SEND_DM
-  SEND_EMAIL
-  SEND_NOTIFICATION
+model SequenceEnrollment {
+  id              String                  @id @default(cuid())
+  userId          String
+  sequenceId      String
 
-  // User actions
-  ADD_TAG
-  REMOVE_TAG
-  ASSIGN_COACH
-  UPDATE_USER_FIELD
+  // Progress
+  status          SequenceEnrollmentStatus @default(ACTIVE)
+  currentEmailIndex Int                   @default(0)
+  nextSendAt      DateTime?               // When next email should be sent
 
-  // Content actions
-  UNLOCK_COURSE
-  UNLOCK_MODULE
-  UNLOCK_LESSON
-  GRANT_ACCESS
+  // Timestamps
+  enrolledAt      DateTime                @default(now())
+  completedAt     DateTime?
+  exitedAt        DateTime?
+  exitReason      String?                 // completed, tag_added, replied, clicked, manual
 
-  // Gamification actions
-  AWARD_BADGE
-  ADD_POINTS
-  UPDATE_STREAK
+  // Stats
+  emailsReceived  Int                     @default(0)
+  emailsOpened    Int                     @default(0)
+  emailsClicked   Int                     @default(0)
 
-  // UI actions
-  SHOW_POPUP
-  SHOW_OFFER
-  REDIRECT_TO_PAGE
-  SHOW_UPSELL_CTA
+  user            User                    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  sequence        Sequence                @relation(fields: [sequenceId], references: [id], onDelete: Cascade)
 
-  // Integration actions
-  WEBHOOK_CALL
-  ZAPIER_TRIGGER
-
-  // Workflow actions
-  WAIT
-  CONDITIONAL_BRANCH
-  TRIGGER_WORKFLOW
-}
-
-model WorkflowCondition {
-  id            String       @id @default(cuid())
-  workflowId    String
-  field         String       // User field to check (creditScore, role, tags, etc.)
-  operator      ConditionOperator
-  value         String       // Value to compare against
-  logicalOp     LogicalOperator @default(AND)
-  order         Int          @default(0)
-
-  createdAt     DateTime     @default(now())
-
-  workflow      Workflow     @relation(fields: [workflowId], references: [id], onDelete: Cascade)
-
-  @@index([workflowId])
-}
-
-enum ConditionOperator {
-  EQUALS
-  NOT_EQUALS
-  GREATER_THAN
-  LESS_THAN
-  GREATER_OR_EQUAL
-  LESS_OR_EQUAL
-  CONTAINS
-  NOT_CONTAINS
-  IN_LIST
-  NOT_IN_LIST
-  IS_EMPTY
-  IS_NOT_EMPTY
-  HAS_TAG
-  NOT_HAS_TAG
-}
-
-enum LogicalOperator {
-  AND
-  OR
-}
-
-model WorkflowExecution {
-  id            String            @id @default(cuid())
-  workflowId    String
-  userId        String
-  status        ExecutionStatus   @default(PENDING)
-  triggerData   Json?             // Data that triggered the workflow
-  startedAt     DateTime          @default(now())
-  completedAt   DateTime?
-  errorMessage  String?           @db.Text
-  metadata      Json?             // Additional execution data
-
-  workflow      Workflow          @relation(fields: [workflowId], references: [id], onDelete: Cascade)
-  actions       ActionExecution[]
-
-  @@index([workflowId])
+  @@unique([userId, sequenceId])
   @@index([userId])
+  @@index([sequenceId])
   @@index([status])
-  @@index([startedAt])
+  @@index([nextSendAt])
 }
 
-enum ExecutionStatus {
-  PENDING
-  RUNNING
+enum SequenceEnrollmentStatus {
+  ACTIVE
   COMPLETED
-  FAILED
-  CANCELLED
-  WAITING     // Waiting for delay/condition
+  EXITED
+  PAUSED
 }
 
-model ActionExecution {
-  id                String            @id @default(cuid())
-  executionId       String
-  actionId          String
-  status            ExecutionStatus   @default(PENDING)
-  result            Json?             // Result of the action
-  errorMessage      String?           @db.Text
-  scheduledFor      DateTime?         // When to execute (for delays)
-  executedAt        DateTime?
+// ==================== EMAIL TRACKING ====================
 
-  execution         WorkflowExecution @relation(fields: [executionId], references: [id], onDelete: Cascade)
-  action            WorkflowAction    @relation(fields: [actionId], references: [id], onDelete: Cascade)
+model EmailSend {
+  id              String        @id @default(cuid())
 
-  @@index([executionId])
-  @@index([actionId])
+  // Who and what
+  userId          String
+  emailTemplateId String?
+  sequenceEmailId String?
+
+  // Resend data
+  resendId        String?       @unique // Resend message ID for tracking
+
+  // Email details (snapshot at send time)
+  toEmail         String
+  subject         String
+  preheader       String?
+
+  // Status
+  status          EmailStatus   @default(QUEUED)
+  sentAt          DateTime?
+  deliveredAt     DateTime?
+  openedAt        DateTime?
+  clickedAt       DateTime?
+  bouncedAt       DateTime?
+  complainedAt    DateTime?
+  unsubscribedAt  DateTime?
+
+  // Engagement
+  openCount       Int           @default(0)
+  clickCount      Int           @default(0)
+  clickedLinks    String[]      // URLs that were clicked
+
+  // Error tracking
+  errorMessage    String?
+
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt
+
+  user            User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  emailTemplate   EmailTemplate? @relation(fields: [emailTemplateId], references: [id])
+  sequenceEmail   SequenceEmail? @relation(fields: [sequenceEmailId], references: [id])
+  events          EmailEvent[]
+
+  @@index([userId])
+  @@index([emailTemplateId])
+  @@index([sequenceEmailId])
+  @@index([resendId])
   @@index([status])
-  @@index([scheduledFor])
+  @@index([sentAt])
 }
 
-// ==================== MESSAGE TEMPLATES ====================
-
-model MessageTemplate {
-  id            String          @id @default(cuid())
-  name          String
-  slug          String          @unique
-  category      TemplateCategory
-  subject       String?         // For emails
-  content       String          @db.Text
-  variables     String[]        // Available placeholders: firstName, courseName, etc.
-  isActive      Boolean         @default(true)
-  isSystem      Boolean         @default(false)
-
-  createdAt     DateTime        @default(now())
-  updatedAt     DateTime        @updatedAt
-
-  @@index([category])
-  @@index([isActive])
+enum EmailStatus {
+  QUEUED
+  SENDING
+  SENT
+  DELIVERED
+  OPENED
+  CLICKED
+  BOUNCED
+  COMPLAINED
+  UNSUBSCRIBED
+  FAILED
 }
 
-enum TemplateCategory {
-  WELCOME
-  PROGRESS
-  ENCOURAGEMENT
-  UPSELL
-  REMINDER
-  MILESTONE
-  ANNOUNCEMENT
-  SUPPORT
+model EmailEvent {
+  id          String    @id @default(cuid())
+  emailSendId String
+
+  eventType   String    // delivered, opened, clicked, bounced, complained, unsubscribed
+  eventData   Json?     // Extra data from webhook (IP, user agent, link clicked, etc.)
+
+  createdAt   DateTime  @default(now())
+
+  emailSend   EmailSend @relation(fields: [emailSendId], references: [id], onDelete: Cascade)
+
+  @@index([emailSendId])
+  @@index([eventType])
+  @@index([createdAt])
+}
+
+// ==================== EMAIL ANALYTICS (Daily Aggregates) ====================
+
+model EmailAnalytics {
+  id          String    @id @default(cuid())
+  date        DateTime  @db.Date // Date for this aggregate
+
+  // Volume
+  sent        Int       @default(0)
+  delivered   Int       @default(0)
+  bounced     Int       @default(0)
+  complained  Int       @default(0)
+
+  // Engagement
+  opened      Int       @default(0)
+  uniqueOpens Int       @default(0)
+  clicked     Int       @default(0)
+  uniqueClicks Int      @default(0)
+  unsubscribed Int      @default(0)
+
+  // Rates (calculated)
+  deliveryRate Float    @default(0)
+  openRate    Float     @default(0)
+  clickRate   Float     @default(0)
+
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  @@unique([date])
+  @@index([date])
 }
 
 // ==================== USER CREDIT SCORE (SmartRoute) ====================
@@ -1774,11 +1811,64 @@ model CoachProgramTemplate {
   duration        Int       // Duration in weeks
   structure       Json      // Program structure: {weeks: [{title, sessions, tasks}]}
   isActive        Boolean   @default(true)
-  
+
   createdAt       DateTime  @default(now())
   updatedAt       DateTime  @updatedAt
-  
+
   @@index([coachId])
   @@index([dfyProductId])
+}
+
+// ==================== EMAIL TEMPLATES ====================
+
+model EmailTemplate {
+  id              String          @id @default(cuid())
+  slug            String          @unique // welcome, password-reset, module-unlocked, etc.
+  name            String          // Display name: "Welcome Email"
+  description     String?         // "Sent when a new user registers"
+  category        EmailCategory   @default(ACCOUNT)
+
+  // Email content
+  subject         String          // Email subject line
+  preheader       String?         // Preview text in inbox
+  htmlContent     String          @db.Text // Full HTML template
+  textContent     String?         @db.Text // Plain text fallback
+
+  // Tags for different courses/diplomas
+  courseTag       String?         // null = all courses, or specific: "functional-medicine"
+
+  // Available placeholders
+  placeholders    String[]        // ["firstName", "lastName", "courseName", "moduleTitle"]
+
+  // Settings
+  isActive        Boolean         @default(true)
+  isSystem        Boolean         @default(false) // System templates can't be deleted
+
+  // Analytics (updated by email send hooks)
+  sentCount       Int             @default(0)
+  openCount       Int             @default(0)
+  clickCount      Int             @default(0)
+
+  createdAt       DateTime        @default(now())
+  updatedAt       DateTime        @updatedAt
+
+  // Relations
+  sequenceEmails  SequenceEmail[]
+  emailSends      EmailSend[]
+
+  @@index([slug])
+  @@index([category])
+  @@index([courseTag])
+  @@index([isActive])
+}
+
+enum EmailCategory {
+  ACCOUNT         // Welcome, Password Reset
+  MINI_DIPLOMA    // Enrollment, Module Unlock, Module Complete, Diploma Complete
+  GRADUATE        // Training Unlocked, Challenge emails
+  CERTIFICATION   // Certificate Issued, Payment Receipt
+  ENGAGEMENT      // Inactive Reminder, Coach Reply
+  RESOURCES       // eBook Download, Badge Earned
+  MARKETING       // Course Update, Announcement
 }
 

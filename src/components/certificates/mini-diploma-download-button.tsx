@@ -1,8 +1,10 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { Download, Loader2 } from "lucide-react";
+import html2canvas from "html2canvas";
+import { jsPDF } from "jspdf";
 
 interface MiniDiplomaDownloadButtonProps {
     studentName: string;
@@ -257,36 +259,61 @@ export function MiniDiplomaDownloadButton({
 `;
     };
 
-    const handleDownload = () => {
+    const handleDownload = async () => {
         setDownloading(true);
         try {
             const htmlContent = generateCertificateHTML();
 
-            // Open HTML in new window for print-to-PDF
-            const printWindow = window.open("", "_blank", "width=1122,height=793");
+            // Create a hidden container to render the certificate
+            const container = document.createElement("div");
+            container.style.position = "absolute";
+            container.style.left = "-9999px";
+            container.style.top = "0";
+            container.innerHTML = htmlContent;
+            document.body.appendChild(container);
 
-            if (!printWindow) {
-                alert("Please allow pop-ups to download the certificate");
-                return;
+            // Find the certificate element
+            const certificateEl = container.querySelector(".certificate") as HTMLElement;
+            if (!certificateEl) {
+                throw new Error("Certificate element not found");
             }
 
-            printWindow.document.write(htmlContent);
-            printWindow.document.close();
+            // Wait for styles to apply
+            await new Promise(resolve => setTimeout(resolve, 100));
 
-            // Wait for content to load then trigger print
-            printWindow.onload = () => {
-                setTimeout(() => {
-                    printWindow.print();
-                    setDownloading(false);
-                }, 300);
-            };
+            // Generate canvas from the certificate
+            const canvas = await html2canvas(certificateEl, {
+                scale: 2,
+                useCORS: true,
+                allowTaint: true,
+                backgroundColor: "#ffffff",
+            });
 
-            // Fallback if onload doesn't fire
-            setTimeout(() => {
-                setDownloading(false);
-            }, 2000);
+            // Remove the container
+            document.body.removeChild(container);
+
+            // Generate PDF (A4 Landscape)
+            const pdf = new jsPDF({
+                orientation: "landscape",
+                unit: "mm",
+                format: "a4",
+            });
+
+            const imgData = canvas.toDataURL("image/png");
+            const pdfWidth = pdf.internal.pageSize.getWidth();
+            const pdfHeight = pdf.internal.pageSize.getHeight();
+
+            // Add the image to fill the PDF
+            pdf.addImage(imgData, "PNG", 0, 0, pdfWidth, pdfHeight);
+
+            // Download the PDF
+            const fileName = `${diplomaTitle.replace(/\s+/g, "_")}_Certificate_${formattedName.replace(/\s+/g, "_")}.pdf`;
+            pdf.save(fileName);
+
         } catch (error) {
             console.error("Download failed:", error);
+            alert("Failed to generate PDF. Please try again.");
+        } finally {
             setDownloading(false);
         }
     };

@@ -1,62 +1,39 @@
 import { NextRequest, NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
 import bcrypt from "bcryptjs";
+import { triggerAutoMessage } from "@/lib/auto-messages";
+import { sendFreebieWelcomeEmail } from "@/lib/email";
+import { verifyEmail, isValidEmailSyntax, isDisposableEmail } from "@/lib/neverbounce";
+
+// Standard password for all freebie users - simple and memorable
+const FREEBIE_PASSWORD = "Futurecoach2025";
 
 /**
- * PUBLIC API - Register user from external mini diploma freebie landing page
- * 
- * Called from external landing page with:
+ * PUBLIC API - Register user from free mini diploma optin page
+ *
+ * Called from /free-mini-diploma page with:
  * - email (required)
- * - name (optional)
- * - miniDiplomaCategory (required): functional-medicine, autism, gut-health, etc.
- * - password (optional, if not provided user gets magic link)
- * 
- * Creates user, sets freebie tracking, auto-enrolls in mini diploma course
+ * - firstName (required)
+ * - lastName (required)
+ * - miniDiplomaCategory (optional, defaults to functional-medicine)
+ *
+ * Creates user with standard password, auto-enrolls in mini diploma course,
+ * sends welcome email, and triggers nurture sequence
  */
 export async function POST(request: NextRequest) {
     try {
         const body = await request.json();
-        const { email, firstName, lastName, name, miniDiplomaCategory, password } = body;
+        const { email, firstName, lastName, name, miniDiplomaCategory = "functional-medicine" } = body;
 
         // Validation
-        if (!email || !miniDiplomaCategory) {
+        if (!email) {
             return NextResponse.json(
-                { error: "Email and miniDiplomaCategory are required" },
+                { success: false, error: "Email is required" },
                 { status: 400 }
             );
         }
 
-        const emailLower = email.toLowerCase().trim();
-
-        // Check if user already exists
-        const existingUser = await prisma.user.findUnique({
-            where: { email: emailLower },
-        });
-
-        if (existingUser) {
-            // User exists - update their mini diploma if not already set
-            if (!existingUser.miniDiplomaCategory) {
-                await prisma.user.update({
-                    where: { id: existingUser.id },
-                    data: {
-                        miniDiplomaCategory,
-                        miniDiplomaOptinAt: new Date(),
-                        miniDiplomaUpgradeDeadline: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000), // 7 days
-                        leadSource: "mini-diploma-freebie",
-                        leadSourceDetail: miniDiplomaCategory,
-                    },
-                });
-            }
-
-            return NextResponse.json({
-                success: true,
-                isExisting: true,
-                message: "Welcome back! Login to access your mini diploma.",
-                redirectUrl: `/login?email=${encodeURIComponent(emailLower)}&from=freebie`,
-            });
-        }
-
-        // Parse name
+        // Parse name if firstName not provided
         let fName = firstName;
         let lName = lastName;
         if (!fName && name) {
@@ -65,10 +42,98 @@ export async function POST(request: NextRequest) {
             lName = parts.slice(1).join(" ") || undefined;
         }
 
-        // Create new user
-        const passwordHash = password ? await bcrypt.hash(password, 12) : null;
+        if (!fName) {
+            return NextResponse.json(
+                { success: false, error: "First name is required" },
+                { status: 400 }
+            );
+        }
+
+        const emailLower = email.toLowerCase().trim();
+
+        // Quick syntax check
+        if (!isValidEmailSyntax(emailLower)) {
+            return NextResponse.json(
+                { success: false, error: "Please enter a valid email address." },
+                { status: 400 }
+            );
+        }
+
+        // Quick disposable check (local, no API call)
+        if (isDisposableEmail(emailLower)) {
+            return NextResponse.json(
+                { success: false, error: "Temporary emails are not allowed. Please use a permanent email address." },
+                { status: 400 }
+            );
+        }
+
+        // Full NeverBounce verification (API call)
+        const emailVerification = await verifyEmail(emailLower);
+        if (!emailVerification.isValid) {
+            return NextResponse.json(
+                {
+                    success: false,
+                    error: emailVerification.reason || "This email address could not be verified.",
+                    suggestedEmail: emailVerification.suggestedEmail,
+                },
+                { status: 400 }
+            );
+        }
+
+        // If NeverBounce suggested a correction, log it
+        if (emailVerification.suggestedEmail) {
+            console.log(`[NEVERBOUNCE] Suggested correction for ${emailLower}: ${emailVerification.suggestedEmail}`);
+        }
+
+        // Check if user already exists
+        const existingUser = await prisma.user.findUnique({
+            where: { email: emailLower },
+        });
+
+        if (existingUser) {
+            // User exists - check if already has mini diploma access
+            if (existingUser.miniDiplomaOptinAt) {
+                return NextResponse.json({
+                    success: true,
+                    isExisting: true,
+                    message: "You already have access! Login with your existing credentials.",
+                });
+            }
+
+            // Update existing user with mini diploma access
+            await prisma.user.update({
+                where: { id: existingUser.id },
+                data: {
+                    miniDiplomaCategory,
+                    miniDiplomaOptinAt: new Date(),
+                    leadSource: existingUser.leadSource || "mini-diploma-freebie",
+                    leadSourceDetail: existingUser.leadSourceDetail || miniDiplomaCategory,
+                },
+            });
+
+            // Add freebie tag
+            await addFreebieTag(existingUser.id);
+
+            // Enroll in nurture sequence
+            await enrollInNurtureSequence(existingUser.id);
+
+            // Send welcome email for existing user
+            await sendFreebieWelcomeEmail({
+                to: emailLower,
+                firstName: existingUser.firstName || fName,
+                isExistingUser: true,
+            });
+
+            return NextResponse.json({
+                success: true,
+                isExisting: true,
+                message: "Welcome back! Check your email for login details.",
+            });
+        }
+
+        // Create new user with standard password
+        const passwordHash = await bcrypt.hash(FREEBIE_PASSWORD, 12);
         const now = new Date();
-        const upgradeDeadline = new Date(now.getTime() + 7 * 24 * 60 * 60 * 1000); // 7 days from now
 
         const user = await prisma.user.create({
             data: {
@@ -82,12 +147,10 @@ export async function POST(request: NextRequest) {
                 leadSourceDetail: miniDiplomaCategory,
                 miniDiplomaCategory,
                 miniDiplomaOptinAt: now,
-                miniDiplomaUpgradeDeadline: upgradeDeadline,
             },
         });
 
         // Auto-enroll in mini diploma course if it exists
-        // Find course matching the category
         const miniDiplomaCourse = await prisma.course.findFirst({
             where: {
                 OR: [
@@ -99,44 +162,159 @@ export async function POST(request: NextRequest) {
         });
 
         if (miniDiplomaCourse) {
-            await prisma.enrollment.create({
-                data: {
+            await prisma.enrollment.upsert({
+                where: {
+                    userId_courseId: {
+                        userId: user.id,
+                        courseId: miniDiplomaCourse.id,
+                    },
+                },
+                create: {
                     userId: user.id,
                     courseId: miniDiplomaCourse.id,
                     status: "ACTIVE",
                 },
+                update: {},
             });
         }
 
-        // Trigger welcome automation (if workflow exists)
-        try {
-            await prisma.workflowExecution.create({
-                data: {
-                    workflowId: "freebie-welcome", // System workflow
-                    userId: user.id,
-                    status: "PENDING",
-                    triggerData: { miniDiplomaCategory },
-                },
-            });
-        } catch {
-            // Workflow might not exist yet, that's okay
-        }
+        // Add marketing tags
+        await addFreebieTag(user.id);
+
+        // Enroll in nurture sequence
+        await enrollInNurtureSequence(user.id);
+
+        // Send welcome DM with voice message for first login
+        console.log(`[FREEBIE] New user registered: ${user.id} (${emailLower})`);
+        triggerAutoMessage({
+            userId: user.id,
+            trigger: "first_login",
+        }).catch((err) => {
+            console.error(`[FREEBIE] Failed to queue welcome message:`, err);
+        });
+
+        // Send welcome email with credentials
+        await sendFreebieWelcomeEmail({
+            to: emailLower,
+            firstName: fName,
+            isExistingUser: false,
+        });
 
         return NextResponse.json({
             success: true,
             isExisting: false,
-            message: "Account created! Set your password to access your free mini diploma.",
+            message: "Account created! Check your email for login details.",
             userId: user.id,
-            redirectUrl: password
-                ? `/login?email=${encodeURIComponent(emailLower)}&from=freebie`
-                : `/set-password?email=${encodeURIComponent(emailLower)}&from=freebie`,
         });
 
     } catch (error) {
         console.error("Freebie registration error:", error);
         return NextResponse.json(
-            { error: "Failed to process registration" },
+            { success: false, error: "Failed to create account. Please try again." },
             { status: 500 }
         );
+    }
+}
+
+async function addFreebieTag(userId: string) {
+    try {
+        // Find or create the freebie source tag
+        let tag = await prisma.marketingTag.findUnique({
+            where: { slug: "source_mini_diploma_freebie" },
+        });
+
+        if (!tag) {
+            tag = await prisma.marketingTag.create({
+                data: {
+                    name: "Mini Diploma Freebie",
+                    slug: "source_mini_diploma_freebie",
+                    category: "SOURCE",
+                    color: "#10B981",
+                    description: "Opted in for free Mini Diploma",
+                    isSystem: true,
+                },
+            });
+        }
+
+        // Add tag to user
+        await prisma.userMarketingTag.upsert({
+            where: {
+                userId_tagId: {
+                    userId,
+                    tagId: tag.id,
+                },
+            },
+            create: {
+                userId,
+                tagId: tag.id,
+                source: "optin",
+            },
+            update: {},
+        });
+
+        // Also add stage tag
+        const stageTag = await prisma.marketingTag.findUnique({
+            where: { slug: "stage_mini_diploma" },
+        });
+        if (stageTag) {
+            await prisma.userMarketingTag.upsert({
+                where: { userId_tagId: { userId, tagId: stageTag.id } },
+                create: { userId, tagId: stageTag.id, source: "optin" },
+                update: {},
+            });
+        }
+    } catch (error) {
+        console.error("Error adding freebie tag:", error);
+    }
+}
+
+async function enrollInNurtureSequence(userId: string) {
+    try {
+        // Find the Mini Diploma nurture sequence
+        const sequence = await prisma.sequence.findFirst({
+            where: {
+                OR: [
+                    { slug: "mini-diploma-nurture" },
+                    { triggerType: "MINI_DIPLOMA_STARTED" },
+                ],
+                isActive: true,
+            },
+        });
+
+        if (sequence) {
+            // Check if already enrolled
+            const existingEnrollment = await prisma.sequenceEnrollment.findUnique({
+                where: {
+                    userId_sequenceId: {
+                        userId,
+                        sequenceId: sequence.id,
+                    },
+                },
+            });
+
+            if (!existingEnrollment) {
+                // Schedule first email
+                const nextSendAt = new Date();
+                nextSendAt.setHours(nextSendAt.getHours() + 1); // First email 1 hour after signup
+
+                await prisma.sequenceEnrollment.create({
+                    data: {
+                        userId,
+                        sequenceId: sequence.id,
+                        status: "ACTIVE",
+                        currentEmailIndex: 0,
+                        nextSendAt,
+                    },
+                });
+
+                // Update sequence stats
+                await prisma.sequence.update({
+                    where: { id: sequence.id },
+                    data: { totalEnrolled: { increment: 1 } },
+                });
+            }
+        }
+    } catch (error) {
+        console.error("Error enrolling in nurture sequence:", error);
     }
 }

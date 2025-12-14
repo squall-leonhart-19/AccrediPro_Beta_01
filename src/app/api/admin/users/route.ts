@@ -91,9 +91,11 @@ export async function DELETE(request: NextRequest) {
                 await safeDeleteMany(prisma.account, { userId });
                 await safeDeleteMany(prisma.session, { userId });
 
-                // Offers & Workflows
+                // Offers & Marketing
                 await safeDeleteMany(prisma.offerRedemption, { userId });
-                await safeDeleteMany(prisma.workflowExecution, { userId });
+                await safeDeleteMany(prisma.userMarketingTag, { userId });
+                await safeDeleteMany(prisma.sequenceEnrollment, { userId });
+                await safeDeleteMany(prisma.emailSend, { userId });
 
                 // Credits & Behavior
                 await safeDeleteMany(prisma.userCreditProfile, { userId });

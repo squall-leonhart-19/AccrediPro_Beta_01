@@ -20,6 +20,7 @@ interface CompletionCelebrationClientProps {
         completedAt: string;
         graduateOfferDeadline: string | null;
         offerExpired: boolean;
+        certificateId: string;
     };
     fullCertification: {
         id: string;
@@ -85,7 +86,9 @@ export function CompletionCelebrationClient({ user, fullCertification }: Complet
         return () => clearInterval(interval);
     }, [user.graduateOfferDeadline, user.offerExpired]);
 
-    const discountPrice = fullCertification?.price ? Math.round(fullCertification.price * 0.8) : null; // 20% off
+    // Graduate special: $997 (was $1997) - fixed pricing
+    const graduatePrice = 997;
+    const originalPrice = 1997;
     const categoryName = categoryLabels[user.miniDiplomaCategory] || user.miniDiplomaCategory;
 
     return (
@@ -179,7 +182,7 @@ export function CompletionCelebrationClient({ user, fullCertification }: Complet
                     studentName={`${user.firstName} ${user.lastName}`}
                     diplomaTitle={`${categoryName} Mini Diploma`}
                     completedDate={user.completedAt}
-                    certificateId={`MD-${user.miniDiplomaCategory.toUpperCase().slice(0, 3)}-${new Date(user.completedAt).getFullYear()}-${Math.random().toString(36).substring(2, 8).toUpperCase()}`}
+                    certificateId={user.certificateId}
                 />
             </section>
 
@@ -231,12 +234,12 @@ export function CompletionCelebrationClient({ user, fullCertification }: Complet
                                 <div className="bg-white/10 rounded-2xl p-6 text-center">
                                     <p className="text-gold-400 font-semibold mb-2 flex items-center justify-center gap-2">
                                         <Sparkles className="w-4 h-4" />
-                                        Graduate Discount: 20% OFF
+                                        Graduate Special: Save $1,000!
                                     </p>
 
                                     <div className="mb-4">
-                                        <span className="text-4xl font-bold">${discountPrice}</span>
-                                        <span className="text-burgundy-200 line-through ml-2">${fullCertification.price}</span>
+                                        <span className="text-4xl font-bold">${graduatePrice}</span>
+                                        <span className="text-burgundy-200 line-through ml-2">${originalPrice}</span>
                                     </div>
 
                                     {/* Countdown */}

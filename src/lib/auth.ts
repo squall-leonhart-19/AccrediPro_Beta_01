@@ -101,12 +101,15 @@ export const authOptions: NextAuthOptions = {
           },
         });
 
-        // Send welcome message on first login (fire and forget)
+        // Send welcome message on first login
         if (isFirstLogin) {
+          console.log(`[AUTH] First login detected for user ${user.id} (${user.email})`);
           triggerAutoMessage({
             userId: user.id,
             trigger: "first_login",
-          }).catch(console.error);
+          }).catch((err) => {
+            console.error(`[AUTH] Failed to send welcome message:`, err);
+          });
         }
 
         return {
