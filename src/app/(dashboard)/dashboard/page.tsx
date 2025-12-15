@@ -307,7 +307,7 @@ export default async function DashboardPage() {
                     <p className="text-burgundy-200 text-sm mb-4">
                       This moves you closer to {currentCareer.title} status.
                     </p>
-                    <Link href={`/courses/${nextLesson.courseSlug}/learn/${nextLesson.lessonId}`}>
+                    <Link href={`/learning/${nextLesson.courseSlug}/${nextLesson.lessonId}`}>
                       <Button size="sm" className="w-full bg-white text-burgundy-700 hover:bg-white/90 font-semibold">
                         Continue Lesson
                         <ArrowRight className="w-4 h-4 ml-2" />
@@ -621,7 +621,7 @@ export default async function DashboardPage() {
                             <span className="text-burgundy-600">Next milestone:</span> Complete the Mini Diploma to unlock your Certified Practitioner pathway.
                           </p>
                         </div>
-                        <Link href={`/courses/${nextLesson.courseSlug}/learn/${nextLesson.lessonId}`}>
+                        <Link href={`/learning/${nextLesson.courseSlug}/${nextLesson.lessonId}`}>
                           <Button size="sm" className="bg-burgundy-600 hover:bg-burgundy-700">
                             Continue Lesson
                             <ArrowRight className="w-4 h-4 ml-1" />

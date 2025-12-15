@@ -930,7 +930,7 @@ export function ChallengesClient({
                                                             Now it's time to commit fully and join our certified practitioners.
                                                         </p>
                                                         <div className="flex flex-col sm:flex-row gap-3">
-                                                            <Link href="/courses">
+                                                            <Link href="/catalog">
                                                                 <Button className="bg-gold-400 hover:bg-gold-500 text-burgundy-900 font-bold">
                                                                     <GraduationCap className="w-4 h-4 mr-2" />
                                                                     Enroll in Full Certification — $997

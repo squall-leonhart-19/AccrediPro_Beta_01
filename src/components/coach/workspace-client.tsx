@@ -2393,7 +2393,7 @@ So grateful to be part of your journey,
                                                     </div>
                                                 ))}
                                                 <div className="border-2 border-dashed border-gray-200 rounded-xl p-4 flex items-center justify-center">
-                                                    <a href="/courses" className="text-center">
+                                                    <a href="/catalog" className="text-center">
                                                         <Plus className="w-8 h-8 text-gray-300 mx-auto mb-2" />
                                                         <p className="text-sm text-gray-500">Get More Certifications</p>
                                                     </a>

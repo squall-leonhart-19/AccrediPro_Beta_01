@@ -522,13 +522,13 @@ export function CourseCatalogFilters({
                     </div>
                 </div>
 
-                <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-6">
                     {filteredCourses.map((course) => {
                         const enrollment = enrollmentMap.get(course.id);
                         const totalLessons = course.modules.reduce((acc, m) => acc + m.lessons.length, 0);
                         const courseAvgRating = course.analytics?.avgRating || 4.9;
                         const enrolledCount = (course.analytics?.totalEnrolled || course._count.enrollments) + 100;
-                        const reviewCount = course._count.reviews + 50;
+                        const reviewCount = course._count.reviews;
                         const coach = course.coach || DEFAULT_COACH;
                         const originalPrice = course.price ? Math.round(course.price * 1.5) : null;
                         const discountPercent = originalPrice && course.price ? getDiscountPercent(originalPrice, course.price) : 0;
@@ -538,13 +538,14 @@ export function CourseCatalogFilters({
                         return (
                             <Link key={course.id} href={`/courses/${course.slug}`}>
                                 <Card className="h-full overflow-hidden border-2 border-gray-100 hover:border-burgundy-200 hover:shadow-xl transition-all group">
-                                    {/* Thumbnail */}
-                                    <div className="h-44 relative overflow-hidden bg-gradient-to-br from-burgundy-500 to-burgundy-700">
+                                    {/* Thumbnail - 2:1 aspect ratio (slightly shorter than 16:9) */}
+                                    <div className="aspect-[2/1] relative overflow-hidden bg-gradient-to-br from-burgundy-500 to-burgundy-700">
                                         {course.thumbnail && (
                                             <Image
                                                 src={course.thumbnail}
                                                 alt={course.title}
                                                 fill
+                                                sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
                                                 className="object-cover group-hover:scale-105 transition-transform duration-500"
                                             />
                                         )}
@@ -600,27 +601,27 @@ export function CourseCatalogFilters({
                                         </div>
                                     </div>
 
-                                    <CardContent className="p-5">
+                                    <CardContent className="p-3 sm:p-5">
                                         {/* Title */}
-                                        <h3 className="font-bold text-lg text-gray-900 mb-2 line-clamp-2 group-hover:text-burgundy-600 transition-colors min-h-[56px]">
+                                        <h3 className="font-bold text-sm sm:text-lg text-gray-900 mb-1 sm:mb-2 line-clamp-2 group-hover:text-burgundy-600 transition-colors min-h-[40px] sm:min-h-[56px]">
                                             {course.title}
                                         </h3>
 
                                         {/* Rating & Stats Row */}
-                                        <div className="flex items-center gap-4 mb-3 text-sm">
+                                        <div className="flex flex-wrap items-center gap-2 sm:gap-4 mb-2 sm:mb-3 text-xs sm:text-sm">
                                             <div className="flex items-center gap-1">
-                                                <Star className="w-4 h-4 text-gold-400 fill-gold-400" />
+                                                <Star className="w-3 h-3 sm:w-4 sm:h-4 text-gold-400 fill-gold-400" />
                                                 <span className="font-semibold text-gray-900">{courseAvgRating.toFixed(1)}</span>
                                                 <span className="text-gray-500">({reviewCount})</span>
                                             </div>
-                                            <div className="flex items-center gap-1 text-gray-500">
+                                            <div className="hidden sm:flex items-center gap-1 text-gray-500">
                                                 <Users className="w-4 h-4" />
                                                 <span>{enrolledCount.toLocaleString()} enrolled</span>
                                             </div>
                                         </div>
 
-                                        {/* Course Info Row */}
-                                        <div className="flex items-center gap-3 mb-3 text-xs text-gray-500">
+                                        {/* Course Info Row - hidden on mobile */}
+                                        <div className="hidden sm:flex items-center gap-3 mb-3 text-xs text-gray-500">
                                             <div className="flex items-center gap-1">
                                                 <Clock className="w-3.5 h-3.5" />
                                                 <span>{formatDuration(course.duration)}</span>
@@ -635,11 +636,11 @@ export function CourseCatalogFilters({
                                             </div>
                                         </div>
 
-                                        {/* Career Path & Earning Potential */}
+                                        {/* Career Path & Earning Potential - hidden on mobile */}
                                         {(() => {
                                             const careerData = getCourseCareerData(course);
                                             return (
-                                                <div className="mb-4 p-3 bg-gradient-to-r from-emerald-50 to-teal-50 rounded-xl border border-emerald-100">
+                                                <div className="hidden sm:block mb-4 p-3 bg-gradient-to-r from-emerald-50 to-teal-50 rounded-xl border border-emerald-100">
                                                     <div className="flex items-center gap-2 mb-2">
                                                         <TrendingUp className="w-4 h-4 text-emerald-600" />
                                                         <span className="text-xs font-semibold text-emerald-700 uppercase tracking-wide">Career Outlook</span>
@@ -671,8 +672,8 @@ export function CourseCatalogFilters({
                                             );
                                         })()}
 
-                                        {/* Coach */}
-                                        <div className="flex items-center gap-3 mb-4 p-3 bg-gray-50 rounded-lg">
+                                        {/* Coach - hidden on mobile */}
+                                        <div className="hidden sm:flex items-center gap-3 mb-4 p-3 bg-gray-50 rounded-lg">
                                             <Avatar className="h-10 w-10 ring-2 ring-burgundy-100">
                                                 <AvatarImage src={coach.avatar || undefined} />
                                                 <AvatarFallback className="bg-gradient-to-br from-burgundy-400 to-burgundy-600 text-white text-sm font-bold">
@@ -687,54 +688,57 @@ export function CourseCatalogFilters({
                                         </div>
 
                                         {/* Price Section */}
-                                        <div className="flex items-center justify-between mb-4">
+                                        <div className="flex items-center justify-between mb-2 sm:mb-4">
                                             {course.isFree ? (
-                                                <div className="flex items-center gap-2">
-                                                    <span className="text-2xl font-bold text-green-600">Free</span>
-                                                    <Badge variant="outline" className="text-green-600 border-green-200 text-xs">No Credit Card</Badge>
+                                                <div className="flex items-center gap-1 sm:gap-2">
+                                                    <span className="text-lg sm:text-2xl font-bold text-green-600">Free</span>
+                                                    <Badge variant="outline" className="hidden sm:inline-flex text-green-600 border-green-200 text-xs">No Credit Card</Badge>
                                                 </div>
                                             ) : (
-                                                <div className="flex items-center gap-2">
+                                                <div className="flex items-center gap-1 sm:gap-2">
                                                     {originalPrice && (
-                                                        <span className="text-lg text-gray-400 line-through">${originalPrice}</span>
+                                                        <span className="text-sm sm:text-lg text-gray-400 line-through">${originalPrice}</span>
                                                     )}
-                                                    <span className="text-2xl font-bold text-burgundy-600">${course.price}</span>
+                                                    <span className="text-lg sm:text-2xl font-bold text-burgundy-600">${course.price}</span>
                                                 </div>
                                             )}
                                         </div>
 
                                         {/* CTA Button or Progress */}
                                         {enrollment ? (
-                                            <div className="space-y-2">
-                                                <div className="flex items-center justify-between text-sm">
-                                                    <span className="text-gray-500">Your Progress</span>
+                                            <div className="space-y-1 sm:space-y-2">
+                                                <div className="flex items-center justify-between text-xs sm:text-sm">
+                                                    <span className="text-gray-500">Progress</span>
                                                     <span className="font-bold text-burgundy-600">{Math.round(enrollment.progress)}%</span>
                                                 </div>
-                                                <Progress value={enrollment.progress} className="h-2" />
-                                                <Button className="w-full bg-burgundy-600 hover:bg-burgundy-700 font-semibold">
-                                                    <Play className="w-4 h-4 mr-2" />
-                                                    Continue Learning
+                                                <Progress value={enrollment.progress} className="h-1.5 sm:h-2" />
+                                                <Button size="sm" className="w-full bg-burgundy-600 hover:bg-burgundy-700 font-semibold text-xs sm:text-sm h-8 sm:h-10">
+                                                    <Play className="w-3 h-3 sm:w-4 sm:h-4 mr-1 sm:mr-2" />
+                                                    <span className="hidden sm:inline">Continue Learning</span>
+                                                    <span className="sm:hidden">Continue</span>
                                                 </Button>
                                             </div>
                                         ) : (
-                                            <Button className="w-full bg-burgundy-600 hover:bg-burgundy-700 font-semibold group-hover:bg-burgundy-700">
+                                            <Button size="sm" className="w-full bg-burgundy-600 hover:bg-burgundy-700 font-semibold group-hover:bg-burgundy-700 text-xs sm:text-sm h-8 sm:h-10">
                                                 {course.isFree ? (
                                                     <>
-                                                        <GraduationCap className="w-4 h-4 mr-2" />
-                                                        Start Learning
+                                                        <GraduationCap className="w-3 h-3 sm:w-4 sm:h-4 mr-1 sm:mr-2" />
+                                                        <span className="hidden sm:inline">Start Learning</span>
+                                                        <span className="sm:hidden">Start</span>
                                                     </>
                                                 ) : (
                                                     <>
-                                                        <GraduationCap className="w-4 h-4 mr-2" />
-                                                        Enroll Now
+                                                        <GraduationCap className="w-3 h-3 sm:w-4 sm:h-4 mr-1 sm:mr-2" />
+                                                        <span className="hidden sm:inline">Enroll Now</span>
+                                                        <span className="sm:hidden">Enroll</span>
                                                     </>
                                                 )}
                                             </Button>
                                         )}
 
-                                        {/* Money Back Guarantee - for paid courses */}
+                                        {/* Money Back Guarantee - hidden on mobile */}
                                         {!course.isFree && (
-                                            <p className="text-xs text-center text-gray-500 mt-3 flex items-center justify-center gap-1">
+                                            <p className="hidden sm:flex text-xs text-center text-gray-500 mt-3 items-center justify-center gap-1">
                                                 <Shield className="w-3 h-3" />
                                                 30-Day Money-Back Guarantee
                                             </p>

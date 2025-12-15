@@ -30,6 +30,7 @@ import {
 import { MiniDiplomaDownloadButton } from "@/components/certificates/mini-diploma-download-button";
 import { CertificateShareButtons } from "@/components/certificates/certificate-share-buttons";
 import { TranscriptDownloadButton } from "@/components/certificates/transcript-download-button";
+import { ModuleCertificateCard } from "@/components/certificates/module-certificate-card";
 
 // Certificate level definitions
 const CERTIFICATE_LEVELS = [
@@ -118,6 +119,13 @@ async function getCertificates(userId: string) {
               lastName: true,
             },
           },
+        },
+      },
+      module: {
+        select: {
+          id: true,
+          title: true,
+          order: true,
         },
       },
     },
@@ -212,14 +220,34 @@ export default async function CertificatesPage() {
     return SKILLS_BY_CERTIFICATE[category] || SKILLS_BY_CERTIFICATE.default;
   };
 
-  // Group certificates by track/category
-  const groupedCertificates: Record<string, typeof certificates> = {};
+  // Group ALL certificates by course (both module mini-diplomas and course certificates)
+  const certificatesByCourse: Record<string, {
+    courseTitle: string;
+    courseSlug: string;
+    moduleCerts: typeof certificates;
+    courseCert: typeof certificates[0] | null;
+  }> = {};
+
   certificates.forEach(cert => {
-    const category = cert.course.category?.slug || "general";
-    if (!groupedCertificates[category]) {
-      groupedCertificates[category] = [];
+    const courseId = cert.courseId;
+    if (!certificatesByCourse[courseId]) {
+      certificatesByCourse[courseId] = {
+        courseTitle: cert.course.title,
+        courseSlug: cert.course.slug,
+        moduleCerts: [],
+        courseCert: null,
+      };
     }
-    groupedCertificates[category].push(cert);
+    if (cert.moduleId) {
+      certificatesByCourse[courseId].moduleCerts.push(cert);
+    } else {
+      certificatesByCourse[courseId].courseCert = cert;
+    }
+  });
+
+  // Sort module certs by module order within each course
+  Object.values(certificatesByCourse).forEach(course => {
+    course.moduleCerts.sort((a, b) => (a.module?.order || 0) - (b.module?.order || 0));
   });
 
   // Calculate progress stats
@@ -312,7 +340,7 @@ export default async function CertificatesPage() {
       </Card>
 
       {/* Earned Certificates Section */}
-      {(user?.miniDiplomaCompletedAt || certificates.length > 0) ? (
+      {(user?.miniDiplomaCompletedAt || Object.keys(certificatesByCourse).length > 0) ? (
         <div className="space-y-6">
           {/* Mini Diploma */}
           {user?.miniDiplomaCompletedAt && user?.miniDiplomaCategory && (
@@ -432,126 +460,137 @@ export default async function CertificatesPage() {
             </div>
           )}
 
-          {/* Course Certificates by Category */}
-          {Object.entries(groupedCertificates).map(([category, certs]) => (
-            <div key={category} className="space-y-4">
-              <h2 className="text-lg font-semibold text-gray-900 flex items-center gap-2">
-                <Award className="w-5 h-5 text-burgundy-600" />
-                {categoryLabels[category] || category.charAt(0).toUpperCase() + category.slice(1)} Track
-              </h2>
-              <div className="grid md:grid-cols-2 gap-6">
-                {certs.map((certificate) => {
-                  const level = getCertificateLevel(certificate.type);
-                  const totalLessons = certificate.course.modules.reduce((acc, m) => acc + m.lessons.length, 0);
-                  const skills = getSkillsForCertificate(certificate.course.category?.slug || null);
-                  const instructor = certificate.course.coach
-                    ? `${certificate.course.coach.firstName} ${certificate.course.coach.lastName}`
-                    : "AccrediPro Team";
-
-                  return (
-                    <Card key={certificate.id} className="overflow-hidden border-2 border-gold-200">
-                      {/* Certificate Preview */}
-                      <div className="bg-gradient-to-br from-burgundy-600 via-burgundy-700 to-burgundy-800 p-6 text-white relative overflow-hidden">
-                        <div className="absolute inset-0 opacity-10">
-                          <div className="absolute top-4 right-4 w-32 h-32 border-4 border-gold-400 rounded-full" />
-                        </div>
-
-                        {/* Level Badge */}
-                        <div className="absolute top-4 right-4">
-                          <Badge className="bg-gold-400 text-burgundy-900 font-bold shadow-lg">
-                            Level {level}: {getCertificateLevelLabel(level)}
-                          </Badge>
-                        </div>
-
-                        <div className="relative text-center pt-4">
-                          <div className="w-16 h-16 mx-auto mb-3 bg-gold-400 rounded-full flex items-center justify-center">
-                            <Award className="w-8 h-8 text-burgundy-800" />
-                          </div>
-                          <h3 className="text-xl font-bold mb-1">{certificate.course.title}</h3>
-                          <p className="text-burgundy-200 text-sm">
-                            #{certificate.certificateNumber}
-                          </p>
-                        </div>
-                      </div>
-
-                      <CardContent className="p-5 space-y-4">
-                        {/* Skills Earned */}
-                        <div>
-                          <h4 className="text-sm font-semibold text-gray-900 mb-2 flex items-center gap-1">
-                            <Star className="w-3 h-3 text-gold-500" />
-                            Skills Earned
-                          </h4>
-                          <div className="flex flex-wrap gap-1">
-                            {skills.slice(0, 4).map((skill, i) => (
-                              <Badge key={i} variant="secondary" className="bg-gray-100 text-gray-700 border-0 text-xs">
-                                {skill}
-                              </Badge>
-                            ))}
-                            {skills.length > 4 && (
-                              <Badge variant="secondary" className="bg-gray-100 text-gray-500 border-0 text-xs">
-                                +{skills.length - 4} more
-                              </Badge>
-                            )}
-                          </div>
-                        </div>
-
-                        {/* Certificate Details */}
-                        <div className="grid grid-cols-2 gap-2 text-xs">
-                          <div className="flex items-center gap-1 text-gray-500">
-                            <Calendar className="w-3 h-3" />
-                            <span>{formatDate(certificate.issuedAt)}</span>
-                          </div>
-                          <div className="flex items-center gap-1 text-gray-500">
-                            <Clock className="w-3 h-3" />
-                            <span>{certificate.course.duration ? `${Math.round(certificate.course.duration / 60)}h` : "Self-paced"}</span>
-                          </div>
-                          <div className="flex items-center gap-1 text-gray-500">
-                            <BookOpen className="w-3 h-3" />
-                            <span>{totalLessons} lessons</span>
-                          </div>
-                          <div className="flex items-center gap-1 text-gray-500">
-                            <Users className="w-3 h-3" />
-                            <span>{instructor}</span>
-                          </div>
-                        </div>
-
-                        {/* Actions */}
-                        <div className="flex flex-wrap gap-2 pt-3 border-t">
-                          <Link href={`/certificates/${certificate.certificateNumber}`}>
-                            <Button variant="outline" size="sm">
-                              <ExternalLink className="w-3 h-3 mr-1" />
-                              View
-                            </Button>
-                          </Link>
-                          <Link href={`/certificates/${certificate.certificateNumber}`}>
-                            <Button size="sm" className="bg-burgundy-600 hover:bg-burgundy-700">
-                              <Download className="w-3 h-3 mr-1" />
-                              Download
-                            </Button>
-                          </Link>
-                          <TranscriptDownloadButton
-                            studentName={`${session.user.firstName || ''} ${session.user.lastName || ''}`.trim()}
-                            certificateTitle={certificate.course.title}
-                            certificateId={certificate.certificateNumber}
-                            issuedDate={certificate.issuedAt.toISOString()}
-                            totalHours={certificate.course.duration ? Math.round(certificate.course.duration / 60) : stats.totalHours}
-                            skills={skills}
-                            instructor={instructor}
-                          />
-                        </div>
-
-                        {/* Share */}
-                        <div className="pt-2">
-                          <CertificateShareButtons
-                            certificateTitle={certificate.course.title}
-                            certificateUrl={`${process.env.NEXT_PUBLIC_APP_URL || ''}/verify/${certificate.certificateNumber}`}
-                          />
-                        </div>
-                      </CardContent>
-                    </Card>
-                  );
-                })}
+          {/* Certificates grouped by Course */}
+          {Object.entries(certificatesByCourse).map(([courseId, courseData]) => (
+            <div key={courseId} className="space-y-4">
+              {/* Course Header */}
+              <div className="flex items-center justify-between">
+                <h2 className="text-lg font-semibold text-gray-900 flex items-center gap-2">
+                  <GraduationCap className="w-5 h-5 text-burgundy-600" />
+                  {courseData.courseTitle}
+                </h2>
+                <Badge className="bg-burgundy-100 text-burgundy-700">
+                  {courseData.moduleCerts.length} Module{courseData.moduleCerts.length !== 1 ? 's' : ''} Completed
+                  {courseData.courseCert && ' + Final Certificate'}
+                </Badge>
               </div>
+
+              {/* Module Certificates - Compact Cards */}
+              {courseData.moduleCerts.length > 0 && (
+                <div className="grid gap-3 sm:grid-cols-2">
+                  {courseData.moduleCerts
+                    .filter(cert => cert.module?.order !== 0) // Skip Module 0
+                    .map((cert) => (
+                    <ModuleCertificateCard
+                      key={cert.id}
+                      studentName={`${session.user.firstName || ''} ${session.user.lastName || ''}`.trim() || 'Student'}
+                      moduleTitle={cert.module?.title || 'Module'}
+                      courseName={cert.course.title}
+                      completedDate={cert.issuedAt.toISOString()}
+                      certificateId={cert.certificateNumber}
+                    />
+                  ))}
+                </div>
+              )}
+
+              {/* Final Course Certificate (if earned) */}
+              {courseData.courseCert && (
+                <Card className="overflow-hidden border-2 border-gold-200">
+                  {/* Certificate Preview */}
+                  <div className="bg-gradient-to-br from-burgundy-600 via-burgundy-700 to-burgundy-800 p-6 text-white relative overflow-hidden">
+                    <div className="absolute inset-0 opacity-10">
+                      <div className="absolute top-4 right-4 w-32 h-32 border-4 border-gold-400 rounded-full" />
+                    </div>
+
+                    {/* Level Badge */}
+                    <div className="absolute top-4 right-4">
+                      <Badge className="bg-gold-400 text-burgundy-900 font-bold shadow-lg">
+                        Master Certificate
+                      </Badge>
+                    </div>
+
+                    <div className="relative text-center pt-4">
+                      <div className="w-16 h-16 mx-auto mb-3 bg-gold-400 rounded-full flex items-center justify-center">
+                        <Trophy className="w-8 h-8 text-burgundy-800" />
+                      </div>
+                      <h3 className="text-xl font-bold mb-1">{courseData.courseCert.course.title}</h3>
+                      <p className="text-burgundy-200 text-sm">
+                        #{courseData.courseCert.certificateNumber}
+                      </p>
+                    </div>
+                  </div>
+
+                  <CardContent className="p-5 space-y-4">
+                    {/* Skills Earned */}
+                    <div>
+                      <h4 className="text-sm font-semibold text-gray-900 mb-2 flex items-center gap-1">
+                        <Star className="w-3 h-3 text-gold-500" />
+                        Skills Earned
+                      </h4>
+                      <div className="flex flex-wrap gap-1">
+                        {getSkillsForCertificate(courseData.courseCert.course.category?.slug || null).slice(0, 4).map((skill, i) => (
+                          <Badge key={i} variant="secondary" className="bg-gray-100 text-gray-700 border-0 text-xs">
+                            {skill}
+                          </Badge>
+                        ))}
+                      </div>
+                    </div>
+
+                    {/* Certificate Details */}
+                    <div className="grid grid-cols-2 gap-2 text-xs">
+                      <div className="flex items-center gap-1 text-gray-500">
+                        <Calendar className="w-3 h-3" />
+                        <span>{formatDate(courseData.courseCert.issuedAt)}</span>
+                      </div>
+                      <div className="flex items-center gap-1 text-gray-500">
+                        <Clock className="w-3 h-3" />
+                        <span>{courseData.courseCert.course.duration ? `${Math.round(courseData.courseCert.course.duration / 60)}h` : "Self-paced"}</span>
+                      </div>
+                      <div className="flex items-center gap-1 text-gray-500">
+                        <BookOpen className="w-3 h-3" />
+                        <span>{courseData.courseCert.course.modules.reduce((acc, m) => acc + m.lessons.length, 0)} lessons</span>
+                      </div>
+                      <div className="flex items-center gap-1 text-gray-500">
+                        <Users className="w-3 h-3" />
+                        <span>{courseData.courseCert.course.coach ? `${courseData.courseCert.course.coach.firstName} ${courseData.courseCert.course.coach.lastName}` : "AccrediPro Team"}</span>
+                      </div>
+                    </div>
+
+                    {/* Actions */}
+                    <div className="flex flex-wrap gap-2 pt-3 border-t">
+                      <Link href={`/certificates/${courseData.courseCert.certificateNumber}`}>
+                        <Button variant="outline" size="sm">
+                          <ExternalLink className="w-3 h-3 mr-1" />
+                          View
+                        </Button>
+                      </Link>
+                      <Link href={`/certificates/${courseData.courseCert.certificateNumber}`}>
+                        <Button size="sm" className="bg-burgundy-600 hover:bg-burgundy-700">
+                          <Download className="w-3 h-3 mr-1" />
+                          Download
+                        </Button>
+                      </Link>
+                      <TranscriptDownloadButton
+                        studentName={`${session.user.firstName || ''} ${session.user.lastName || ''}`.trim()}
+                        certificateTitle={courseData.courseCert.course.title}
+                        certificateId={courseData.courseCert.certificateNumber}
+                        issuedDate={courseData.courseCert.issuedAt.toISOString()}
+                        totalHours={courseData.courseCert.course.duration ? Math.round(courseData.courseCert.course.duration / 60) : stats.totalHours}
+                        skills={getSkillsForCertificate(courseData.courseCert.course.category?.slug || null)}
+                        instructor={courseData.courseCert.course.coach ? `${courseData.courseCert.course.coach.firstName} ${courseData.courseCert.course.coach.lastName}` : "AccrediPro Team"}
+                      />
+                    </div>
+
+                    {/* Share */}
+                    <div className="pt-2">
+                      <CertificateShareButtons
+                        certificateTitle={courseData.courseCert.course.title}
+                        certificateUrl={`${process.env.NEXT_PUBLIC_APP_URL || ''}/verify/${courseData.courseCert.certificateNumber}`}
+                      />
+                    </div>
+                  </CardContent>
+                </Card>
+              )}
             </div>
           ))}
         </div>
@@ -566,7 +605,7 @@ export default async function CertificatesPage() {
               Complete a course to earn your first certificate. Certificates are
               automatically issued when you finish all lessons.
             </p>
-            <Link href="/courses">
+            <Link href="/catalog">
               <Button>
                 <BookOpen className="w-4 h-4 mr-2" />
                 Browse Courses
@@ -620,7 +659,7 @@ export default async function CertificatesPage() {
                   View Career Path
                 </Button>
               </Link>
-              <Link href="/courses">
+              <Link href="/catalog">
                 <Button variant="outline" className="border-white/30 text-white hover:bg-white/10">
                   <Sparkles className="w-4 h-4 mr-2" />
                   Browse Certifications

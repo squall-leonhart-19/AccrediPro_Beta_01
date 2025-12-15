@@ -3,9 +3,10 @@
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
-import { ChevronLeft, ChevronRight, Award } from "lucide-react";
+import { ChevronLeft, ChevronRight, Award, ClipboardCheck } from "lucide-react";
 import { LessonNavigation } from "./lesson-navigation";
 import { MarkCompleteButton } from "./mark-complete-button";
+import { CompleteAndQuizButton } from "./complete-and-quiz-button";
 
 interface BottomLessonNavProps {
   courseSlug: string;
@@ -13,12 +14,14 @@ interface BottomLessonNavProps {
   moduleId: string;
   lessonId: string;
   courseName: string;
+  moduleName: string;
   prevLesson: { id: string; title: string } | null;
-  nextLesson: { id: string; title: string } | null;
+  nextLesson: { id: string; title: string; moduleId?: string } | null;
   isCompleted: boolean;
-  completedLessons: number;
-  totalLessons: number;
-  currentIndex: number;
+  moduleProgress: { total: number; completed: number };
+  lessonIndexInModule: number;
+  isLastLessonInModule?: boolean;
+  moduleHasQuiz?: boolean;
 }
 
 export function BottomLessonNav({
@@ -27,14 +30,28 @@ export function BottomLessonNav({
   moduleId,
   lessonId,
   courseName,
+  moduleName,
   prevLesson,
   nextLesson,
   isCompleted,
-  completedLessons,
-  totalLessons,
-  currentIndex,
+  moduleProgress,
+  lessonIndexInModule,
+  isLastLessonInModule = false,
+  moduleHasQuiz = false,
 }: BottomLessonNavProps) {
-  const progressPercentage = totalLessons > 0 ? (completedLessons / totalLessons) * 100 : 0;
+  const progressPercentage = moduleProgress.total > 0
+    ? (moduleProgress.completed / moduleProgress.total) * 100
+    : 0;
+
+  // Determine if we should show "Take Quiz" button instead of "Next Lesson"
+  // This happens when:
+  // 1. This is the last lesson in the module
+  // 2. The module has a published quiz
+  // 3. The next lesson is in a different module (or there's no next lesson)
+  const shouldShowQuizButton = isLastLessonInModule && moduleHasQuiz;
+
+  // Check if next lesson is in the same module or different
+  const nextLessonInDifferentModule = nextLesson && nextLesson.moduleId !== moduleId;
 
   return (
     <div className="sticky bottom-0 bg-white border-t border-gray-200 p-4 shadow-[0_-4px_20px_rgba(0,0,0,0.1)]">
@@ -42,7 +59,7 @@ export function BottomLessonNav({
         {/* Previous */}
         <div className="flex-shrink-0">
           {prevLesson ? (
-            <Link href={`/courses/${courseSlug}/learn/${prevLesson.id}`}>
+            <Link href={`/learning/${courseSlug}/${prevLesson.id}`}>
               <Button variant="outline" size="lg" className="border-gray-300">
                 <ChevronLeft className="w-5 h-5 mr-1 sm:mr-2" />
                 <span className="hidden sm:inline">Previous</span>
@@ -56,17 +73,26 @@ export function BottomLessonNav({
           )}
         </div>
 
-        {/* Center: Progress */}
+        {/* Center: Module Progress */}
         <div className="flex-1 max-w-xs text-center hidden sm:block">
           <p className="text-sm text-gray-600 mb-1">
-            Lesson {currentIndex + 1} of {totalLessons}
+            Lesson {lessonIndexInModule + 1} of {moduleProgress.total}
           </p>
           <Progress value={progressPercentage} className="h-2" />
         </div>
 
-        {/* Next/Complete */}
+        {/* Next/Complete/Quiz */}
         <div className="flex-shrink-0">
-          {nextLesson ? (
+          {shouldShowQuizButton ? (
+            // Show "Complete & Start Quiz" button for last lesson in module with quiz
+            <CompleteAndQuizButton
+              lessonId={lessonId}
+              courseId={courseId}
+              moduleId={moduleId}
+              isCompleted={isCompleted}
+              courseName={courseName}
+            />
+          ) : nextLesson ? (
             <LessonNavigation
               courseSlug={courseSlug}
               courseId={courseId}
@@ -76,8 +102,8 @@ export function BottomLessonNav({
               prevLesson={null}
               nextLesson={nextLesson}
               isCompleted={isCompleted}
-              completedLessons={completedLessons}
-              totalLessons={totalLessons}
+              completedLessons={moduleProgress.completed}
+              totalLessons={moduleProgress.total}
               canAccessNextLesson={isCompleted}
               bottomBar
             />
@@ -89,8 +115,8 @@ export function BottomLessonNav({
               isCompleted={isCompleted}
               courseName={courseName}
               courseSlug={courseSlug}
-              lessonNumber={currentIndex + 1}
-              totalLessons={totalLessons}
+              lessonNumber={lessonIndexInModule + 1}
+              totalLessons={moduleProgress.total}
             />
           )}
         </div>

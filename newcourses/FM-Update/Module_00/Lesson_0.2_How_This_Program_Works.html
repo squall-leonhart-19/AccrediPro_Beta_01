@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lesson 0.2: How This Program Works</title>
+    <style>
+    /* Base & Reset */
+    * { box-sizing: border-box; }
+    body { font-family: Georgia, 'Times New Roman', serif; line-height: 1.8; color: #2d2d2d; background: #f8f6f3; margin: 0; padding: 0; }
+
+    /* Main Container */
+    .lesson-container { max-width: 860px; margin: 0 auto; padding: 40px 30px; background: #ffffff; min-height: 100vh; box-shadow: 0 0 60px rgba(0,0,0,0.08); }
+
+    /* Brand Header */
+    .brand-header { text-align: center; padding-bottom: 30px; margin-bottom: 35px; border-bottom: 1px solid #eee; }
+    .brand-logo { max-width: 180px; height: auto; margin-bottom: 5px; }
+
+    /* Module Header */
+    .module-header { background: linear-gradient(135deg, #722F37 0%, #8B3A42 100%); padding: 35px 35px 30px; border-radius: 16px; margin-bottom: 30px; position: relative; overflow: hidden; }
+    .module-header::before { content: ''; position: absolute; top: 0; right: 0; width: 300px; height: 300px; background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%); transform: translate(100px, -100px); }
+    .module-header::after { content: ''; position: absolute; bottom: 0; left: 0; width: 100%; height: 4px; background: linear-gradient(90deg, #B8860B, #D4A84B, #B8860B); }
+    .module-label { margin: 0; font-size: 11px; color: rgba(255,255,255,0.75); text-transform: uppercase; letter-spacing: 2.5px; font-weight: 500; }
+    .lesson-title { margin: 10px 0 0 0; font-size: 28px; color: #ffffff; font-weight: 700; line-height: 1.3; position: relative; }
+    .lesson-meta { display: flex; gap: 12px; margin-top: 20px; padding-top: 18px; border-top: 1px solid rgba(255,255,255,0.15); flex-wrap: wrap; }
+    .meta-item { display: flex; align-items: center; gap: 6px; font-size: 12px; color: rgba(255,255,255,0.85); background: rgba(255,255,255,0.1); padding: 5px 12px; border-radius: 4px; }
+
+    /* Connection Box */
+    .connection-box { background: linear-gradient(135deg, #fdfbf7 0%, #faf6f0 100%); padding: 20px; border-radius: 10px; margin-bottom: 25px; border-left: 4px solid #B8860B; }
+    .connection-box p { margin: 0; font-size: 16px; color: #2d2d2d; }
+
+    /* Section Headings */
+    h2 { font-size: 24px; color: #722F37; margin: 50px 0 20px 0; font-weight: 600; position: relative; padding-bottom: 12px; }
+    h2::after { content: ''; position: absolute; bottom: 0; left: 0; width: 60px; height: 3px; background: #B8860B; }
+    h3 { color: #722F37; margin: 0 0 12px 0; font-size: 18px; }
+
+    /* Paragraphs */
+    p { font-size: 17px; margin-bottom: 20px; color: #333; }
+
+    /* Phase Boxes */
+    .phase-box { background: #f8f9fa; border: 1px solid #e9ecef; border-radius: 8px; padding: 20px; margin-bottom: 20px; }
+    .phase-box h3 { color: #722F37; margin: 0 0 12px 0; font-size: 18px; }
+    .phase-box p { margin: 0 0 15px 0; font-size: 15px; }
+    .phase-box ul { margin: 0; padding-left: 20px; font-size: 15px; }
+    .phase-box li { margin-bottom: 6px; }
+    .phase-box li:last-child { margin-bottom: 0; }
+
+    /* Alert Boxes */
+    .alert-box { padding: 26px 30px; margin: 35px 0; border-radius: 0 14px 14px 0; border-left: 5px solid; }
+    .alert-box .alert-label { font-weight: 600; margin: 0 0 12px 0; font-size: 12px; text-transform: uppercase; letter-spacing: 2px; }
+    .alert-box p:last-child { margin: 0; font-size: 16px; line-height: 1.7; }
+    .alert-box.success { background: #e8f5e9; border-left-color: #4caf50; }
+    .alert-box.success .alert-label { color: #2e7d32; }
+    .alert-box.warning { background: #fff3e0; border-left-color: #ff9800; }
+    .alert-box.warning .alert-label { color: #e65100; }
+    .alert-box.info { background: #f3e5f5; border-left-color: #9c27b0; }
+    .alert-box.info .alert-label { color: #7b1fa2; }
+
+    /* Content Lists */
+    .content-list { font-size: 17px; margin: 20px 0; padding-left: 24px; }
+    .content-list li { margin-bottom: 14px; line-height: 1.7; }
+
+    /* Key Takeaways */
+    .takeaways-box { background: linear-gradient(135deg, #f5f5f5 0%, #e8e8e8 100%); padding: 22px 25px; margin-top: 35px; border-radius: 8px; border: 1px solid #ddd; }
+    .takeaways-box .box-label { font-weight: 600; color: #722F37; margin: 0 0 15px 0; font-size: 16px; text-transform: uppercase; letter-spacing: 1px; }
+    .takeaways-box ul { margin: 0; padding-left: 18px; font-size: 15px; }
+    .takeaways-box li { margin-bottom: 10px; }
+    .takeaways-box li:last-child { margin-bottom: 0; }
+
+    /* Next Lesson */
+    .next-lesson { margin-top: 35px; padding: 20px; background: linear-gradient(135deg, #722F37 0%, #8B3A42 100%); border-radius: 8px; text-align: center; }
+    .next-lesson p { color: #ffffff; font-size: 15px; margin: 0; }
+
+    /* Footer */
+    .lesson-footer { margin-top: 50px; padding-top: 30px; border-top: 2px solid #722F37; text-align: center; }
+    .footer-logo { max-width: 140px; height: auto; margin-bottom: 15px; opacity: 0.9; }
+    .lesson-footer .brand { color: #722F37; font-weight: 600; margin: 0; font-size: 15px; }
+    .lesson-footer .copyright { color: #888; font-size: 13px; margin: 10px 0 0 0; }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+        .lesson-container { padding: 25px 20px; }
+        .module-header { padding: 30px 25px; }
+        .lesson-title { font-size: 26px; }
+        h2 { font-size: 21px; }
+    }
+    </style>
+</head>
+<body>
+    <div class="lesson-container">
+        <div class="brand-header">
+            <img src="https://i.imgur.com/YourLogoHere.png" alt="AccrediPro" class="brand-logo" onerror="this.style.display='none'">
+        </div>
+
+        <header class="module-header">
+            <p class="module-label">Module 0: Orientation</p>
+            <h1 class="lesson-title">Lesson 0.2: How This Program Works</h1>
+            <div class="lesson-meta">
+                <span class="meta-item">12 min read</span>
+                <span class="meta-item">Lesson 2 of 4</span>
+            </div>
+        </header>
+
+        <div class="connection-box">
+            <p>In our welcome lesson, you discovered what a Functional Medicine Health Coach does and why this work matters. Now let's explore exactly how this program will guide you from where you are today to a confident, certified coach ready to transform lives.</p>
+        </div>
+
+        <h2>Program Structure Overview</h2>
+
+        <p>This certification program consists of 21 modules organized into five progressive phases. Each module represents a specialization area, and completing each module earns you a specialization certificate. Upon completing all modules and passing the final comprehensive exam, you'll earn your Master Functional Medicine Health Coach Certification.</p>
+
+        <p>The program is designed for self-paced learning, allowing you to progress according to your schedule. However, we recommend maintaining momentum—students who complete the program within 6-12 months tend to achieve the best results and highest retention.</p>
+
+        <h2>The Five Phases Explained</h2>
+
+        <div class="phase-box">
+            <h3>Phase 1: Foundations (Modules 0-4)</h3>
+            <p>This phase establishes the knowledge base and skills essential for everything that follows. You cannot skip or rush through these modules—they are prerequisites for understanding the clinical content.</p>
+            <ul>
+                <li><strong>Module 0:</strong> Orientation & Success Path (4 lessons)</li>
+                <li><strong>Module 1:</strong> Functional Medicine Foundations (8 lessons)</li>
+                <li><strong>Module 2:</strong> Health Coaching Mastery (8 lessons)</li>
+                <li><strong>Module 3:</strong> Clinical Intake & Assessment (8 lessons)</li>
+                <li><strong>Module 4:</strong> Scope of Practice & Ethics (8 lessons)</li>
+            </ul>
+        </div>
+
+        <div class="phase-box">
+            <h3>Phase 2: Core Clinical Knowledge (Modules 5-8)</h3>
+            <p>These four modules cover the foundational pillars of functional health that affect virtually every client you'll work with. Master these, and you'll have tools to help the majority of people who seek your guidance.</p>
+            <ul>
+                <li><strong>Module 5:</strong> Functional Nutrition (8 lessons)</li>
+                <li><strong>Module 6:</strong> Gut Health & Microbiome (8 lessons)</li>
+                <li><strong>Module 7:</strong> Stress, Adrenals & Nervous System (8 lessons)</li>
+                <li><strong>Module 8:</strong> Sleep & Circadian Health (8 lessons)</li>
+            </ul>
+        </div>
+
+        <div class="phase-box">
+            <h3>Phase 3: Specialized Clinical Areas (Modules 9-17)</h3>
+            <p>Nine specialized modules allow you to develop expertise in specific health areas. These build upon the core clinical knowledge and prepare you to work with clients facing complex health challenges.</p>
+            <ul>
+                <li><strong>Module 9:</strong> Women's Hormone Health (8 lessons)</li>
+                <li><strong>Module 10:</strong> Perimenopause & Menopause (8 lessons)</li>
+                <li><strong>Module 11:</strong> Thyroid Health (8 lessons)</li>
+                <li><strong>Module 12:</strong> Metabolic Health & Weight Resistance (8 lessons)</li>
+                <li><strong>Module 13:</strong> Autoimmunity & Inflammation (8 lessons)</li>
+                <li><strong>Module 14:</strong> Mental Health & Brain Function (8 lessons)</li>
+                <li><strong>Module 15:</strong> Cardiometabolic Health (8 lessons)</li>
+                <li><strong>Module 16:</strong> Energy & Mitochondrial Health (8 lessons)</li>
+                <li><strong>Module 17:</strong> Detoxification & Environmental Health (8 lessons)</li>
+            </ul>
+        </div>
+
+        <div class="phase-box">
+            <h3>Phase 4: Functional Lab Literacy (Module 18)</h3>
+            <p>Understanding laboratory tests is essential for collaborating with healthcare providers and supporting clients' health journeys effectively.</p>
+            <ul>
+                <li><strong>Module 18:</strong> Functional Lab Interpretation (8 lessons)</li>
+            </ul>
+        </div>
+
+        <div class="phase-box">
+            <h3>Phase 5: Practice Building (Modules 19-20)</h3>
+            <p>Knowledge without application doesn't create impact. These final modules prepare you to actually launch and grow your coaching practice.</p>
+            <ul>
+                <li><strong>Module 19:</strong> Protocol Building & Program Design (8 lessons)</li>
+                <li><strong>Module 20:</strong> Building Your Coaching Practice (8 lessons)</li>
+            </ul>
+        </div>
+
+        <h2>How Each Module is Structured</h2>
+
+        <p>With the exception of this orientation module (which has 4 lessons), each module follows a consistent 8-lesson structure:</p>
+
+        <ul class="content-list">
+            <li><strong>Lesson 1: Introduction</strong> — Sets the context, explains why the topic matters, and previews what you'll learn</li>
+            <li><strong>Lessons 2-7: Core Content</strong> — Six lessons of deep, practical education on the topic</li>
+            <li><strong>Lesson 8: Case Studies</strong> — Real-world applications that integrate everything you've learned</li>
+            <li><strong>Module Quiz</strong> — Assessment to verify your understanding and earn your specialization certificate</li>
+            <li><strong>Resources</strong> — Downloadable PDFs including checklists, worksheets, guides, and client handouts</li>
+        </ul>
+
+        <h2>What Each Lesson Contains</h2>
+
+        <p>Every lesson is designed for a 10-12 minute read (approximately 1,800-2,200 words) and includes:</p>
+
+        <p><strong>Learning Objectives:</strong> Clear statements of what you'll be able to do after completing the lesson. These guide your focus and help you assess your own progress.</p>
+
+        <p><strong>Case Study:</strong> Most lessons open with a realistic client scenario. These scenarios help you see how the concepts apply to real people with real challenges—exactly what you'll encounter in practice.</p>
+
+        <p><strong>Core Content:</strong> The main educational material, presented in an accessible yet scientifically grounded manner. Complex concepts are explained clearly without oversimplification.</p>
+
+        <div class="alert-box success">
+            <p class="alert-label">Client-Friendly Language Boxes</p>
+            <p>Throughout your lessons, you'll find green boxes like this one. These provide scripts and language you can use when explaining concepts to clients. Health coaching requires translating complex information into terms clients can understand and act upon.</p>
+        </div>
+
+        <div class="alert-box warning">
+            <p class="alert-label">Clinical Application Boxes</p>
+            <p>Orange boxes like this highlight practical clinical applications—how to apply what you're learning with actual clients. These bridge the gap between theory and practice.</p>
+        </div>
+
+        <div class="alert-box info">
+            <p class="alert-label">Reflection Boxes</p>
+            <p>Purple boxes prompt you to pause and reflect—connecting the material to your own life, considering how you'd apply it, or examining your assumptions. These reflections deepen learning and prepare you for real-world coaching.</p>
+        </div>
+
+        <p><strong>Key Takeaways:</strong> Each lesson ends with a summary of the most important points. Use these for review and to verify you've grasped the essential concepts.</p>
+
+        <p><strong>References:</strong> Scientific citations support the information presented. While you don't need to read these sources, they're available if you want to explore topics more deeply.</p>
+
+        <h2>Assessments and Certification</h2>
+
+        <p><strong>Module Quizzes:</strong> Each module concludes with a quiz testing your understanding of the material. You must score 80% or higher to pass and receive your specialization certificate. You may retake quizzes if needed.</p>
+
+        <p><strong>Specialization Certificates:</strong> Completing each module quiz earns you a certificate in that specialization. These certificates recognize your expertise and can be displayed on your website, social media, and marketing materials.</p>
+
+        <p><strong>Final Comprehensive Exam:</strong> After completing all 21 modules, you'll take a comprehensive exam covering material from the entire program. This exam verifies your readiness to practice as a Functional Medicine Health Coach.</p>
+
+        <p><strong>Master Certification:</strong> Passing the final exam earns your Master Functional Medicine Health Coach Certification from AccrediPro—the credential that qualifies you to practice professionally.</p>
+
+        <h2>Resources and Materials</h2>
+
+        <p>Each module includes downloadable resources designed to support both your learning and your future practice:</p>
+
+        <ul class="content-list">
+            <li><strong>Checklists:</strong> Quick-reference guides for assessments, protocols, and procedures</li>
+            <li><strong>Worksheets:</strong> Templates for client exercises, goal-setting, and tracking</li>
+            <li><strong>Guides:</strong> Comprehensive handouts on specific topics (meal planning, sleep hygiene, etc.)</li>
+            <li><strong>Templates:</strong> Ready-to-use documents for your practice (intake forms, session notes, etc.)</li>
+            <li><strong>Client Handouts:</strong> Educational materials you can share with clients</li>
+        </ul>
+
+        <p>These resources are yours to use in your practice. You may customize them with your branding as you build your business.</p>
+
+        <h2>How Modules Connect</h2>
+
+        <p>While each module focuses on a specific topic, they're designed to interconnect. Concepts introduced in earlier modules appear throughout the program, reinforcing your learning and demonstrating how body systems interact.</p>
+
+        <p>For example, the stress response covered in Module 7 relates to thyroid function in Module 11, weight resistance in Module 12, and autoimmunity in Module 13. The gut health principles from Module 6 connect to mental health in Module 14 and autoimmunity in Module 13. These connections mirror real-world health—nothing in the body operates in isolation.</p>
+
+        <p>Each lesson also connects to the one before and after it. The end of one lesson previews what's coming; the beginning of the next references what you've learned. This continuity helps you build a coherent understanding rather than isolated facts.</p>
+
+        <h2>Recommended Study Approach</h2>
+
+        <p>To maximize your learning:</p>
+
+        <ul class="content-list">
+            <li><strong>Study actively:</strong> Take notes, highlight key concepts, and write summaries in your own words</li>
+            <li><strong>Apply immediately:</strong> Look for ways to apply what you learn in your own life</li>
+            <li><strong>Complete modules in order:</strong> The sequence is intentional—later modules build on earlier ones</li>
+            <li><strong>Don't skip case studies:</strong> These integration lessons cement your learning</li>
+            <li><strong>Download and review resources:</strong> These will become tools in your practice</li>
+            <li><strong>Maintain consistency:</strong> Regular study sessions are more effective than marathon cramming</li>
+        </ul>
+
+        <div class="takeaways-box">
+            <p class="box-label">Key Takeaways</p>
+            <ul>
+                <li>The program includes 21 modules across five phases, totaling 156 lessons</li>
+                <li>Each module follows a consistent structure: Introduction → Core Content → Case Studies → Quiz → Resources</li>
+                <li>Lessons include learning objectives, case studies, core content, special boxes, key takeaways, and references</li>
+                <li>Completing each module quiz earns a specialization certificate; completing all modules plus the final exam earns Master Certification</li>
+                <li>Modules interconnect—concepts build and reinforce throughout the program</li>
+            </ul>
+        </div>
+
+        <div class="next-lesson">
+            <p>Next Lesson: 0.3 – Setting Up for Success →</p>
+        </div>
+
+        <footer class="lesson-footer">
+            <p class="brand">AccrediPro Functional Medicine Health Coach Certification</p>
+            <p class="copyright">© 2024 AccrediPro. All rights reserved.</p>
+        </footer>
+    </div>
+</body>
+</html>

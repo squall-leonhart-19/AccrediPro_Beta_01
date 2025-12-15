@@ -58,6 +58,8 @@ model User {
   availabilityNote  String?   // e.g., "Replies within 24 hours"
   level             Int       @default(1)  // Gamification level
   xp                Int       @default(0)  // Experience points
+  knowledgeBase     String?   @db.Text     // AI Knowledge Base for this mentor
+
 
   createdAt         DateTime  @default(now())
   updatedAt         DateTime  @updatedAt
@@ -98,6 +100,9 @@ model User {
   coachedCommunities CategoryCommunity[] @relation("CommunityCoach")
   wishlist          Wishlist[]
   dfyPurchases      DFYPurchase[]
+  lessonNotes       LessonNote[]
+  quizAttempts      QuizAttempt[]
+  quizProgress      QuizProgress[]
 
   @@index([email])
   @@index([role])
@@ -276,6 +281,8 @@ model Module {
   course      Course   @relation(fields: [courseId], references: [id], onDelete: Cascade)
   lessons     Lesson[]
   progress    ModuleProgress[]
+  quiz        ModuleQuiz?
+  certificates Certificate[]
 
   @@index([courseId])
   @@index([order])
@@ -301,6 +308,7 @@ model Lesson {
   module          Module      @relation(fields: [moduleId], references: [id], onDelete: Cascade)
   progress        LessonProgress[]
   resources       LessonResource[]
+  notes           LessonNote[]
 
   @@index([moduleId])
   @@index([order])
@@ -375,8 +383,12 @@ model LessonProgress {
   userId        String
   lessonId      String
   isCompleted   Boolean  @default(false)
-  watchTime     Int      @default(0) // Seconds watched
+  watchTime     Int      @default(0) // Seconds watched (for videos)
   lastPosition  Int      @default(0) // Last video position in seconds
+  timeSpent     Int      @default(0) // Total time spent on lesson (seconds) - for analytics
+  visitCount    Int      @default(0) // How many times visited
+  scrollDepth   Int      @default(0) // Max scroll percentage reached (for text lessons)
+  lastVisitedAt DateTime? // Track last visit for "continue where you left off"
   completedAt   DateTime?
 
   createdAt     DateTime @default(now())
@@ -390,6 +402,149 @@ model LessonProgress {
   @@index([lessonId])
 }
 
+// ==================== LESSON NOTES & HIGHLIGHTS ====================
+
+model LessonNote {
+  id            String       @id @default(cuid())
+  userId        String
+  lessonId      String
+  type          NoteType     @default(NOTE)
+  content       String       @db.Text  // For notes: the note text. For highlights: the highlighted text
+  noteText      String?      @db.Text  // Additional note attached to a highlight
+  position      Int?         // Character position in the content (for highlights)
+  color         String?      // Highlight color (yellow, green, blue, pink)
+
+  createdAt     DateTime     @default(now())
+  updatedAt     DateTime     @updatedAt
+
+  user          User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  lesson        Lesson       @relation(fields: [lessonId], references: [id], onDelete: Cascade)
+
+  @@index([userId, lessonId])
+  @@index([lessonId])
+}
+
+enum NoteType {
+  NOTE       // General note about the lesson
+  HIGHLIGHT  // Text highlight with optional note
+}
+
+// ==================== MODULE QUIZZES ====================
+
+model ModuleQuiz {
+  id              String        @id @default(cuid())
+  moduleId        String        @unique // One quiz per module
+  title           String
+  description     String?       @db.Text
+  passingScore    Int           @default(70) // Percentage needed to pass
+  maxAttempts     Int?          // null = unlimited
+  timeLimit       Int?          // Time limit in minutes, null = no limit
+  isRequired      Boolean       @default(true) // Required to unlock next module
+  isPublished     Boolean       @default(false)
+  showCorrectAnswers Boolean    @default(true) // Show correct answers after submission
+
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt
+
+  module          Module        @relation(fields: [moduleId], references: [id], onDelete: Cascade)
+  questions       QuizQuestion[]
+  attempts        QuizAttempt[]
+  progress        QuizProgress[]
+
+  @@index([moduleId])
+}
+
+model QuizQuestion {
+  id              String        @id @default(cuid())
+  quizId          String
+  question        String        @db.Text
+  explanation     String?       @db.Text // Shown after answering
+  questionType    QuestionType  @default(MULTIPLE_CHOICE)
+  order           Int           @default(0)
+  points          Int           @default(1) // Points for this question
+
+  createdAt       DateTime      @default(now())
+
+  quiz            ModuleQuiz    @relation(fields: [quizId], references: [id], onDelete: Cascade)
+  answers         QuizAnswer[]
+  responses       QuizResponse[]
+
+  @@index([quizId])
+  @@index([order])
+}
+
+enum QuestionType {
+  MULTIPLE_CHOICE   // Single correct answer
+  MULTI_SELECT      // Multiple correct answers
+  TRUE_FALSE        // True/False
+}
+
+model QuizAnswer {
+  id              String        @id @default(cuid())
+  questionId      String
+  answer          String        @db.Text
+  isCorrect       Boolean       @default(false)
+  order           Int           @default(0)
+
+  question        QuizQuestion  @relation(fields: [questionId], references: [id], onDelete: Cascade)
+
+  @@index([questionId])
+}
+
+// Quiz progress - for saving partial quiz responses
+model QuizProgress {
+  id              String     @id @default(cuid())
+  userId          String
+  quizId          String
+  responses       Json       // { questionId: [answerIds] }
+  currentQuestion Int        @default(0)
+  createdAt       DateTime   @default(now())
+  updatedAt       DateTime   @updatedAt
+
+  user            User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  quiz            ModuleQuiz @relation(fields: [quizId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, quizId])
+  @@index([userId])
+  @@index([quizId])
+}
+
+model QuizAttempt {
+  id              String        @id @default(cuid())
+  userId          String
+  quizId          String
+  score           Int           // Percentage score
+  pointsEarned    Int           @default(0)
+  pointsPossible  Int           @default(0)
+  passed          Boolean       @default(false)
+  timeSpent       Int?          // Time spent in seconds
+  startedAt       DateTime      @default(now())
+  completedAt     DateTime?
+
+  user            User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  quiz            ModuleQuiz    @relation(fields: [quizId], references: [id], onDelete: Cascade)
+  responses       QuizResponse[]
+
+  @@index([userId])
+  @@index([quizId])
+  @@index([passed])
+}
+
+model QuizResponse {
+  id              String        @id @default(cuid())
+  attemptId       String
+  questionId      String
+  selectedAnswers String[]      // Array of answer IDs selected
+  isCorrect       Boolean       @default(false)
+  pointsEarned    Int           @default(0)
+
+  attempt         QuizAttempt   @relation(fields: [attemptId], references: [id], onDelete: Cascade)
+  question        QuizQuestion  @relation(fields: [questionId], references: [id], onDelete: Cascade)
+
+  @@unique([attemptId, questionId])
+  @@index([attemptId])
+}
+
 // ==================== CERTIFICATES ====================
 
 model Certificate {
@@ -397,7 +552,9 @@ model Certificate {
   certificateNumber String        @unique
   userId          String
   courseId        String
+  moduleId        String?         // For module mini-diplomas (null = course certificate)
   type            CertificateType
+  score           Int?            // Score achieved on quiz/exam
   issuedAt        DateTime        @default(now())
   expiresAt       DateTime?
   pdfUrl          String?
@@ -405,10 +562,12 @@ model Certificate {
 
   user            User            @relation(fields: [userId], references: [id], onDelete: Cascade)
   course          Course          @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  module          Module?         @relation(fields: [moduleId], references: [id], onDelete: Cascade)
 
-  @@unique([userId, courseId])
+  @@unique([userId, courseId, moduleId]) // Unique per user+course+module combo
   @@index([certificateNumber])
   @@index([userId])
+  @@index([moduleId])
 }
 
 // ==================== WISHLIST ====================

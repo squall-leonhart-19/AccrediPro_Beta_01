@@ -23,6 +23,8 @@ export default function InboxTestPage() {
   const [testEmail, setTestEmail] = useState("");
   const [loading, setLoading] = useState(true);
   const [sending, setSending] = useState<number | null>(null);
+  const [sendingAll, setSendingAll] = useState(false);
+  const [sendAllProgress, setSendAllProgress] = useState<{ current: number; total: number } | null>(null);
   const [results, setResults] = useState<TestResult[]>([]);
   const [message, setMessage] = useState<{ type: "success" | "error"; text: string } | null>(null);
 
@@ -87,6 +89,57 @@ export default function InboxTestPage() {
     );
   };
 
+  const delay = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
+
+  const sendAllEmails = async () => {
+    if (!testEmail) {
+      setMessage({ type: "error", text: "Please enter your test email address" });
+      return;
+    }
+
+    setSendingAll(true);
+    setMessage(null);
+    const total = variants.length;
+
+    for (let i = 0; i < variants.length; i++) {
+      const variant = variants[i];
+      setSendAllProgress({ current: i + 1, total });
+      setSending(variant.id);
+
+      try {
+        const res = await fetch("/api/admin/marketing/inbox-test", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ variantId: variant.id, testEmail }),
+        });
+
+        const data = await res.json();
+
+        if (data.success) {
+          setResults(prev => [
+            ...prev,
+            { variantId: variant.id, success: true, timestamp: new Date().toLocaleTimeString() },
+          ]);
+        }
+      } catch (error) {
+        console.error(`Failed to send email ${variant.id}:`, error);
+      }
+
+      // Wait 2 seconds before sending next email (except for the last one)
+      if (i < variants.length - 1) {
+        await delay(2000);
+      }
+    }
+
+    setSending(null);
+    setSendingAll(false);
+    setSendAllProgress(null);
+    setMessage({
+      type: "success",
+      text: `All ${total} emails sent! Check your inbox and mark where each one landed.`
+    });
+  };
+
   const getResultForVariant = (variantId: number) => {
     return results.find(r => r.variantId === variantId);
   };
@@ -127,10 +180,38 @@ export default function InboxTestPage() {
             placeholder="your@gmail.com"
             className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-burgundy-500 focus:border-burgundy-500"
           />
+          <button
+            onClick={sendAllEmails}
+            disabled={sendingAll || !testEmail || variants.length === 0}
+            className={`px-6 py-2 rounded-lg font-medium text-sm whitespace-nowrap ${
+              sendingAll
+                ? "bg-amber-100 text-amber-700 cursor-wait"
+                : !testEmail
+                ? "bg-gray-100 text-gray-400 cursor-not-allowed"
+                : "bg-green-600 text-white hover:bg-green-700"
+            }`}
+          >
+            {sendingAll
+              ? `Sending ${sendAllProgress?.current}/${sendAllProgress?.total}...`
+              : `Send All (${variants.length} emails)`}
+          </button>
         </div>
         <p className="mt-2 text-sm text-gray-500">
-          Use a Gmail address to test inbox placement. Wait 30-60 seconds between each test.
+          Use a Gmail address to test inbox placement. "Send All" sends each email with a 2-second delay.
         </p>
+        {sendingAll && (
+          <div className="mt-3">
+            <div className="w-full bg-gray-200 rounded-full h-2">
+              <div
+                className="bg-green-600 h-2 rounded-full transition-all duration-300"
+                style={{ width: `${((sendAllProgress?.current || 0) / (sendAllProgress?.total || 1)) * 100}%` }}
+              />
+            </div>
+            <p className="text-xs text-gray-500 mt-1 text-center">
+              Sending email {sendAllProgress?.current} of {sendAllProgress?.total}...
+            </p>
+          </div>
+        )}
       </div>
 
       {/* Message */}
@@ -251,11 +332,11 @@ export default function InboxTestPage() {
                 <div className="ml-4 flex flex-col gap-2">
                   <button
                     onClick={() => sendTest(variant.id)}
-                    disabled={sending !== null || !testEmail}
+                    disabled={sending !== null || sendingAll || !testEmail}
                     className={`px-4 py-2 rounded-lg font-medium text-sm ${
                       sending === variant.id
-                        ? "bg-gray-100 text-gray-400 cursor-wait"
-                        : !testEmail
+                        ? "bg-amber-100 text-amber-700 cursor-wait"
+                        : sendingAll || !testEmail
                         ? "bg-gray-100 text-gray-400 cursor-not-allowed"
                         : "bg-burgundy-600 text-white hover:bg-burgundy-700"
                     }`}

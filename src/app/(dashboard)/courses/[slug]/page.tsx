@@ -303,7 +303,7 @@ export default async function CourseDetailPage({
                 {enrollment ? (
                   <div className="space-y-3">
                     {nextLesson && enrollment.status !== "COMPLETED" && (
-                      <Link href={`/courses/${course.slug}/learn/${nextLesson.id}`}>
+                      <Link href={`/learning/${course.slug}/${nextLesson.id}`}>
                         <Button className="w-full bg-burgundy-600 hover:bg-burgundy-700 h-12 text-base" size="lg">
                           <Play className="w-5 h-5 mr-2" />
                           Continue Learning
@@ -341,7 +341,25 @@ export default async function CourseDetailPage({
                 {!enrollment && (
                   <>
                     {/* Download Syllabus Button */}
-                    <DownloadSyllabusButton />
+                    <DownloadSyllabusButton
+                      courseTitle={course.title}
+                      courseDescription={course.description}
+                      modules={course.modules.map(m => ({
+                        id: m.id,
+                        title: m.title,
+                        description: m.description,
+                        lessons: m.lessons.map(l => ({
+                          id: l.id,
+                          title: l.title,
+                          description: l.description,
+                          videoDuration: l.videoDuration,
+                          lessonType: l.lessonType,
+                        }))
+                      }))}
+                      totalLessons={totalLessons}
+                      totalDuration={course.duration}
+                      difficulty={course.difficulty}
+                    />
 
                     <div className="mt-4 pt-4 border-t border-gray-100">
                       <ul className="space-y-2 text-sm text-gray-600">
@@ -430,7 +448,7 @@ export default async function CourseDetailPage({
                           <div key={lesson.id}>
                             {isAccessible ? (
                               <Link
-                                href={`/courses/${course.slug}/learn/${lesson.id}`}
+                                href={`/learning/${course.slug}/${lesson.id}`}
                                 className="flex items-center gap-4 px-5 py-4 hover:bg-gray-50 transition-colors group"
                               >
                                 <div

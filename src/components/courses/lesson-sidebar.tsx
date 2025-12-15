@@ -276,7 +276,7 @@ export function LessonSidebar({
                       return (
                         <Link
                           key={lesson.id}
-                          href={`/courses/${slug}/learn/${lesson.id}`}
+                          href={`/learning/${slug}/${lesson.id}`}
                           onClick={() => setIsOpen(false)}
                           className={cn(
                             "flex items-center gap-3 px-4 py-3 ml-4 mr-2 rounded-xl transition-all",

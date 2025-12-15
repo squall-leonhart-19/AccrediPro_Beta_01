@@ -17,6 +17,7 @@ import {
   MoreVertical,
   UserPlus,
   Download,
+  Bot, // Import Bot icon
   GraduationCap,
   Flame,
   Star,
@@ -30,6 +31,7 @@ import {
   Trash2,
   AlertTriangle,
   Tag,
+  Lock,
 } from "lucide-react";
 import {
   DropdownMenu,
@@ -67,6 +69,7 @@ interface User {
   lastLoginAt: Date | null;
   leadSource: string | null;
   leadSourceDetail: string | null;
+  knowledgeBase?: string | null; // Add knowledgeBase type
   // Onboarding lead data
   hasCompletedOnboarding: boolean;
   learningGoal: string | null;
@@ -130,6 +133,15 @@ export function UsersClient({ users, courses }: UsersClientProps) {
   const [sendingMessage, setSendingMessage] = useState(false);
   const [deletingUsers, setDeletingUsers] = useState(false);
   const [usersToDelete, setUsersToDelete] = useState<string[]>([]);
+  const [passwordDialogOpen, setPasswordDialogOpen] = useState(false);
+  const [newPassword, setNewPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [changingPassword, setChangingPassword] = useState(false);
+
+  // Knowledge Base Dialog state
+  const [knowledgeDialogOpen, setKnowledgeDialogOpen] = useState(false);
+  const [knowledgeBaseContent, setKnowledgeBaseContent] = useState("");
+  const [savingKnowledge, setSavingKnowledge] = useState(false);
 
   // Activity tab states for dispute resolution
   const [detailTab, setDetailTab] = useState<"overview" | "activity">("overview");
@@ -369,6 +381,93 @@ export function UsersClient({ users, courses }: UsersClientProps) {
     setDetailDialogOpen(true);
   };
 
+  const openPasswordDialog = (user: User) => {
+    setSelectedUser(user);
+    setNewPassword("");
+    setConfirmPassword("");
+    setPasswordDialogOpen(true);
+  };
+
+  const openKnowledgeDialog = (user: User) => {
+    setSelectedUser(user);
+    setKnowledgeBaseContent(user.knowledgeBase || "");
+    setKnowledgeDialogOpen(true);
+  };
+
+  const handleSaveKnowledge = async () => {
+    if (!selectedUser) return;
+    setSavingKnowledge(true);
+    try {
+      // we reuse the profile API but we need to pass userId?
+      // No, the profile API uses session.user.id. 
+      // We need a NEW admin endpoint or modify the profile endpoint to accept userId if ADMIN.
+      // Or we create /api/admin/users/knowledge endpoint.
+      // Let's create a new endpoint /api/admin/users/knowledge for clarity.
+      const response = await fetch("/api/admin/users/knowledge", {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          userId: selectedUser.id,
+          knowledgeBase: knowledgeBaseContent,
+        }),
+      });
+
+      if (response.ok) {
+        alert("Knowledge base updated successfully");
+        setKnowledgeDialogOpen(false);
+        router.refresh(); // Refresh to update the user list data
+      } else {
+        alert("Failed to update knowledge base");
+      }
+    } catch (error) {
+      console.error("Failed to update knowledge base:", error);
+      alert("Error updating knowledge base");
+    } finally {
+      setSavingKnowledge(false);
+    }
+  };
+
+  const handlePasswordChange = async () => {
+    if (!selectedUser) return;
+    if (newPassword.length < 8) {
+      alert("Password must be at least 8 characters");
+      return;
+    }
+    if (newPassword !== confirmPassword) {
+      alert("Passwords do not match");
+      return;
+    }
+
+    setChangingPassword(true);
+    try {
+      const response = await fetch("/api/admin/users/password", {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          userId: selectedUser.id,
+          newPassword: newPassword,
+        }),
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        alert("Password updated successfully");
+        setPasswordDialogOpen(false);
+        setNewPassword("");
+        setConfirmPassword("");
+        setSelectedUser(null);
+      } else {
+        alert(data.error || "Failed to update password");
+      }
+    } catch (error) {
+      console.error("Failed to update password:", error);
+      alert("An error occurred while updating the password");
+    } finally {
+      setChangingPassword(false);
+    }
+  };
+
   const roleColors: Record<string, string> = {
     ADMIN: "bg-red-100 text-red-700 border-red-200",
     INSTRUCTOR: "bg-purple-100 text-purple-700 border-purple-200",
@@ -571,7 +670,7 @@ export function UsersClient({ users, courses }: UsersClientProps) {
       </div>
 
       {/* Users Table */}
-      <Card className="overflow-hidden">
+      <Card className="">
         <CardContent className="p-0">
           <div className="overflow-x-auto">
             <table className="w-full">
@@ -761,6 +860,22 @@ export function UsersClient({ users, courses }: UsersClientProps) {
                               </DropdownMenuItem>
                               <DropdownMenuSeparator />
                               <DropdownMenuItem
+                                onClick={() => openPasswordDialog(user)}
+                                className="cursor-pointer"
+                              >
+                                <Lock className="w-4 h-4 mr-2 text-burgundy-600" />
+                                Change Password
+                              </DropdownMenuItem>
+                              <DropdownMenuSeparator />
+                              <DropdownMenuItem
+                                onClick={() => openKnowledgeDialog(user)}
+                                className="cursor-pointer"
+                              >
+                                <Bot className="w-4 h-4 mr-2 text-indigo-600" />
+                                Manage AI Knowledge
+                              </DropdownMenuItem>
+                              <DropdownMenuSeparator />
+                              <DropdownMenuItem
                                 onClick={() => openDeleteDialog([user.id])}
                                 className="cursor-pointer text-red-600 focus:text-red-600 focus:bg-red-50"
                               >
@@ -779,6 +894,91 @@ export function UsersClient({ users, courses }: UsersClientProps) {
           </div>
         </CardContent>
       </Card>
+
+      <Dialog open={passwordDialogOpen} onOpenChange={setPasswordDialogOpen}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle>Change Password</DialogTitle>
+            <DialogDescription>
+              Set a new password for {selectedUser?.firstName} {selectedUser?.lastName}.
+              This will immediately update their login credentials.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="space-y-4 py-4">
+            <div className="space-y-2">
+              <label className="text-sm font-medium">New Password</label>
+              <Input
+                type="password"
+                value={newPassword}
+                onChange={(e) => setNewPassword(e.target.value)}
+                placeholder="Enter new password (min 8 chars)"
+              />
+            </div>
+            <div className="space-y-2">
+              <label className="text-sm font-medium">Confirm Password</label>
+              <Input
+                type="password"
+                value={confirmPassword}
+                onChange={(e) => setConfirmPassword(e.target.value)}
+                placeholder="Confirm new password"
+              />
+            </div>
+          </div>
+          <DialogFooter>
+            <Button
+              variant="outline"
+              onClick={() => setPasswordDialogOpen(false)}
+              disabled={changingPassword}
+            >
+              Cancel
+            </Button>
+            <Button
+              onClick={handlePasswordChange}
+              className="bg-burgundy-600 hover:bg-burgundy-700"
+              disabled={changingPassword || !newPassword || !confirmPassword}
+            >
+              {changingPassword ? "Updating..." : "Update Password"}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Knowledge Base Dialog */}
+      <Dialog open={knowledgeDialogOpen} onOpenChange={setKnowledgeDialogOpen}>
+        <DialogContent className="sm:max-w-2xl">
+          <DialogHeader>
+            <DialogTitle>Manage AI Knowledge Base</DialogTitle>
+            <DialogDescription>
+              Edit the custom knowledge base for {selectedUser?.firstName} {selectedUser?.lastName}.
+              The AI will use this information when generating replies for this user.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="py-4">
+            <Textarea
+              value={knowledgeBaseContent}
+              onChange={(e) => setKnowledgeBaseContent(e.target.value)}
+              placeholder="Enter protocols, FAQs, pricing, etc..."
+              className="min-h-[300px] font-mono text-sm"
+            />
+          </div>
+          <DialogFooter>
+            <Button
+              variant="outline"
+              onClick={() => setKnowledgeDialogOpen(false)}
+              disabled={savingKnowledge}
+            >
+              Cancel
+            </Button>
+            <Button
+              onClick={handleSaveKnowledge}
+              className="bg-indigo-600 hover:bg-indigo-700"
+              disabled={savingKnowledge}
+            >
+              {savingKnowledge ? "Saving..." : "Save Knowledge Base"}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
 
       {/* User Detail Dialog - Enhanced with Activity Tab for Disputes */}
       <Dialog open={detailDialogOpen} onOpenChange={setDetailDialogOpen}>
@@ -925,15 +1125,14 @@ export function UsersClient({ users, courses }: UsersClientProps) {
                         {selectedUser.tags.map((tag) => (
                           <Badge
                             key={tag.id}
-                            className={`text-xs ${
-                              tag.tag.startsWith("lead:")
-                                ? "bg-blue-100 text-blue-700 border-blue-200"
-                                : tag.tag.startsWith("interest:")
+                            className={`text-xs ${tag.tag.startsWith("lead:")
+                              ? "bg-blue-100 text-blue-700 border-blue-200"
+                              : tag.tag.startsWith("interest:")
                                 ? "bg-green-100 text-green-700 border-green-200"
                                 : tag.tag.startsWith("completed:")
-                                ? "bg-gold-100 text-gold-700 border-gold-200"
-                                : "bg-gray-100 text-gray-700 border-gray-200"
-                            }`}
+                                  ? "bg-gold-100 text-gold-700 border-gold-200"
+                                  : "bg-gray-100 text-gray-700 border-gray-200"
+                              }`}
                           >
                             {tag.tag}
                             {tag.value && ` (${tag.value})`}

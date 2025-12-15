@@ -4,6 +4,8 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Download, Share2, Award, Loader2, CheckCircle } from "lucide-react";
+import html2canvas from "html2canvas";
+import jsPDF from "jspdf";
 
 interface MiniDiplomaCertificateProps {
     studentName: string;
@@ -258,28 +260,50 @@ export function MiniDiplomaCertificate({
 `;
     };
 
-    const handleDownload = () => {
+    const handleDownload = async () => {
         setDownloading(true);
         try {
             const htmlContent = generateCertificateHTML();
 
-            // Create a downloadable HTML file
-            const blob = new Blob([htmlContent], { type: "text/html" });
-            const url = URL.createObjectURL(blob);
+            // Create a temporary container for the certificate
+            const container = document.createElement("div");
+            container.style.position = "absolute";
+            container.style.left = "-9999px";
+            container.style.top = "0";
+            container.innerHTML = htmlContent;
+            document.body.appendChild(container);
 
-            // Create download link
-            const link = document.createElement("a");
-            link.href = url;
-            link.download = `${diplomaTitle.replace(/\s+/g, "-")}-Certificate-${studentName.replace(/\s+/g, "-")}.html`;
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
+            const certificateElement = container.querySelector(".certificate") as HTMLElement;
+            if (!certificateElement) {
+                throw new Error("Certificate element not found");
+            }
 
-            // Clean up the URL
-            URL.revokeObjectURL(url);
+            // Use html2canvas to capture the certificate
+            const canvas = await html2canvas(certificateElement, {
+                scale: 2,
+                useCORS: true,
+                backgroundColor: "#fdfbf7",
+            });
+
+            // Create PDF (A4 landscape)
+            const pdf = new jsPDF({
+                orientation: "landscape",
+                unit: "mm",
+                format: "a4",
+            });
+
+            const imgData = canvas.toDataURL("image/png");
+            const pdfWidth = pdf.internal.pageSize.getWidth();
+            const pdfHeight = pdf.internal.pageSize.getHeight();
+
+            pdf.addImage(imgData, "PNG", 0, 0, pdfWidth, pdfHeight);
+            pdf.save(`${diplomaTitle.replace(/\s+/g, "-")}-Certificate.pdf`);
+
+            // Cleanup
+            document.body.removeChild(container);
             setDownloading(false);
         } catch (error) {
-            console.error("Download failed:", error);
+            console.error("PDF download failed:", error);
             setDownloading(false);
         }
     };

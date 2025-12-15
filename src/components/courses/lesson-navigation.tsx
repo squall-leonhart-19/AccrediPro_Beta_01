@@ -4,7 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import { ChevronLeft, ChevronRight, Award, Loader2, Lock } from "lucide-react";
+import { ChevronLeft, ChevronRight, Award, Loader2, Lock, ClipboardCheck } from "lucide-react";
 import { Progress } from "@/components/ui/progress";
 import { CompletionCelebration } from "./completion-celebration";
 import { useAchievement } from "@/components/gamification/achievement-toast";
@@ -22,6 +22,7 @@ interface LessonNavigationProps {
   totalLessons: number;
   canAccessNextLesson: boolean; // false if lesson is not complete and user hasn't completed current one
   bottomBar?: boolean; // If true, render only the next button for bottom bar
+  showQuizButton?: boolean; // If true, show "Take Quiz" instead of "Next Lesson"
 }
 
 export function LessonNavigation({
@@ -37,6 +38,7 @@ export function LessonNavigation({
   totalLessons,
   canAccessNextLesson,
   bottomBar = false,
+  showQuizButton = false,
 }: LessonNavigationProps) {
   const router = useRouter();
   const { showAchievement } = useAchievement();
@@ -110,8 +112,13 @@ export function LessonNavigation({
 
   const handleNextClick = async () => {
     // If already completed, just navigate
-    if (isCompleted && nextLesson) {
-      router.push(`/courses/${courseSlug}/learn/${nextLesson.id}`);
+    if (isCompleted) {
+      // If showing quiz button, go to quiz instead of next lesson
+      if (showQuizButton) {
+        router.push(`/courses/${courseSlug}/quiz/${moduleId}`);
+      } else if (nextLesson) {
+        router.push(`/learning/${courseSlug}/${nextLesson.id}`);
+      }
       return;
     }
 
@@ -137,9 +144,12 @@ export function LessonNavigation({
           return; // Don't navigate, show celebration
         }
 
-        // Navigate to next lesson
-        if (nextLesson) {
-          router.push(`/courses/${courseSlug}/learn/${nextLesson.id}`);
+        // If showing quiz button, go to quiz instead of next lesson
+        if (showQuizButton) {
+          router.push(`/courses/${courseSlug}/quiz/${moduleId}`);
+        } else if (nextLesson) {
+          // Navigate to next lesson
+          router.push(`/learning/${courseSlug}/${nextLesson.id}`);
         } else {
           // No next lesson - go back to course page
           router.push(`/courses/${courseSlug}`);
@@ -193,12 +203,20 @@ export function LessonNavigation({
           onClick={handleNextClick}
           disabled={loading}
           size="lg"
-          className="bg-burgundy-600 hover:bg-burgundy-700 text-white shadow-lg transition-all"
+          className={showQuizButton
+            ? "bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white shadow-lg transition-all"
+            : "bg-burgundy-600 hover:bg-burgundy-700 text-white shadow-lg transition-all"
+          }
         >
           {loading ? (
             <>
               <Loader2 className="w-5 h-5 mr-2 animate-spin" />
               Saving...
+            </>
+          ) : showQuizButton ? (
+            <>
+              <ClipboardCheck className="w-5 h-5 mr-2" />
+              {isCompleted ? "Take Quiz" : "Complete & Take Quiz"}
             </>
           ) : (
             <>
@@ -227,7 +245,7 @@ export function LessonNavigation({
       <div className="flex items-center justify-between pt-6 border-t border-gray-200">
         {/* Previous Button */}
         {prevLesson ? (
-          <Link href={`/courses/${courseSlug}/learn/${prevLesson.id}`}>
+          <Link href={`/learning/${courseSlug}/${prevLesson.id}`}>
             <Button
               variant="outline"
               className="border-gray-300 text-gray-700 hover:bg-gray-100 hover:text-gray-900 transition-all"
@@ -252,12 +270,12 @@ export function LessonNavigation({
           />
         </div>
 
-        {/* Next/Complete Button */}
-        {nextLesson ? (
+        {/* Next/Complete/Quiz Button */}
+        {showQuizButton ? (
           <Button
             onClick={handleNextClick}
             disabled={loading || (!canAccessNextLesson && !isCompleted)}
-            className="bg-burgundy-600 hover:bg-burgundy-700 text-white shadow-lg transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+            className="bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white shadow-lg transition-all disabled:opacity-50 disabled:cursor-not-allowed"
           >
             {loading ? (
               <>
@@ -267,16 +285,39 @@ export function LessonNavigation({
             ) : !canAccessNextLesson && !isCompleted ? (
               <>
                 <Lock className="w-4 h-4 mr-2" />
-                <span className="hidden sm:inline">Complete to Continue</span>
+                <span className="hidden sm:inline">Complete to Take Quiz</span>
                 <span className="sm:hidden">Locked</span>
               </>
             ) : (
               <>
+                <ClipboardCheck className="w-4 h-4 mr-2" />
                 <span className="hidden sm:inline">
-                  {isCompleted ? "Next Lesson" : "Complete & Continue"}
+                  {isCompleted ? "Take Module Quiz" : "Complete & Take Quiz"}
                 </span>
                 <span className="sm:hidden">
-                  {isCompleted ? "Next" : "Continue"}
+                  {isCompleted ? "Quiz" : "Quiz"}
+                </span>
+              </>
+            )}
+          </Button>
+        ) : nextLesson ? (
+          <Button
+            onClick={handleNextClick}
+            disabled={loading}
+            className="bg-burgundy-600 hover:bg-burgundy-700 text-white shadow-lg transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            {loading ? (
+              <>
+                <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                Saving...
+              </>
+            ) : (
+              <>
+                <span className="hidden sm:inline">
+                  {isCompleted ? "Next Lesson" : "Complete & Next"}
+                </span>
+                <span className="sm:hidden">
+                  {isCompleted ? "Next" : "Next"}
                 </span>
                 <ChevronRight className="w-4 h-4 ml-2" />
               </>

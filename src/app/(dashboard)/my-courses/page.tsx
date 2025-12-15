@@ -3,6 +3,7 @@ import { authOptions } from "@/lib/auth";
 import prisma from "@/lib/prisma";
 import { redirect } from "next/navigation";
 import Link from "next/link";
+import Image from "next/image";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -38,7 +39,11 @@ async function getEnrolledCourses(userId: string) {
     where: { userId },
     include: {
       course: {
-        include: {
+        select: {
+          id: true,
+          slug: true,
+          title: true,
+          thumbnail: true,
           category: true,
           modules: {
             where: { isPublished: true },
@@ -201,19 +206,52 @@ export default async function MyCoursesPage() {
   return (
     <div className="min-h-screen bg-gray-50">
       <div className="px-4 sm:px-6 lg:px-8 py-8">
-        {/* Header with Branding */}
-        <div className="mb-8">
-          <div className="flex items-center gap-4 mb-2">
-            <div className="p-2 bg-white rounded-xl shadow-sm border border-gray-100">
-              <img
-                src="https://coach.accredipro.academy/wp-content/uploads/2025/10/Senza-titolo-Logo-1.png"
-                alt="AccrediPro Academy"
-                className="w-10 h-10 object-contain"
-              />
+        {/* Branded Hero Header */}
+        <div className="mb-8 rounded-2xl overflow-hidden bg-gradient-to-r from-burgundy-700 via-burgundy-800 to-burgundy-900 relative">
+          {/* Decorative Elements */}
+          <div className="absolute inset-0 overflow-hidden">
+            <div className="absolute top-0 right-0 w-64 h-64 bg-gold-400/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/4" />
+            <div className="absolute bottom-0 left-1/4 w-48 h-48 bg-burgundy-400/20 rounded-full blur-3xl translate-y-1/2" />
+          </div>
+
+          <div className="relative px-6 py-8 sm:px-8 sm:py-10">
+            {/* Badge */}
+            <div className="inline-flex items-center gap-2 px-3 py-1.5 bg-gold-400/20 border border-gold-400/30 rounded-full mb-4">
+              <GraduationCap className="w-4 h-4 text-gold-400" />
+              <span className="text-sm font-medium text-gold-300">Learning Hub</span>
             </div>
-            <div>
-              <h1 className="text-2xl font-bold text-gray-900">My Courses</h1>
-              <p className="text-gray-500 text-sm">Track your progress and continue learning</p>
+
+            {/* Title */}
+            <h1 className="text-2xl sm:text-3xl font-bold text-white mb-2">
+              Continue Your Learning Journey
+            </h1>
+
+            {/* Subtitle */}
+            <p className="text-burgundy-100/80 text-sm sm:text-base max-w-2xl mb-6">
+              Track your progress, complete certifications, and unlock your <span className="text-white font-medium">professional credentials</span> with AccrediPro Academy.
+            </p>
+
+            {/* CTA Buttons */}
+            <div className="flex flex-wrap gap-3">
+              {inProgressCourses[0] && (
+                <Link href={`/courses/${inProgressCourses[0].course.slug}`}>
+                  <Button className="bg-gold-400 hover:bg-gold-500 text-gold-900 font-semibold">
+                    <Play className="w-4 h-4 mr-2" />
+                    Resume Course
+                  </Button>
+                </Link>
+              )}
+              <Link href="/roadmap">
+                <Button className="bg-white/10 border border-white/30 text-white hover:bg-white/20">
+                  <MapPin className="w-4 h-4 mr-2" />
+                  View My Roadmap
+                </Button>
+              </Link>
+              <Link href="/catalog">
+                <Button className="bg-white/10 border border-white/30 text-white hover:bg-white/20">
+                  Explore Certifications
+                </Button>
+              </Link>
             </div>
           </div>
         </div>
@@ -389,13 +427,24 @@ export default async function MyCoursesPage() {
                         className="overflow-hidden border-0 shadow-lg hover:shadow-xl transition-all group"
                       >
                         {/* Course Image */}
-                        <div className="h-40 bg-gradient-to-br from-burgundy-600 via-burgundy-700 to-purple-800 relative overflow-hidden">
-                          <div className="absolute inset-0 opacity-20">
-                            <div className="absolute top-0 right-0 w-48 h-48 bg-gold-400 rounded-full blur-3xl -translate-y-1/2 translate-x-1/4" />
-                          </div>
+                        <div className="aspect-[2/1] bg-gradient-to-br from-burgundy-600 via-burgundy-700 to-purple-800 relative overflow-hidden">
+                          {enrollment.course.thumbnail ? (
+                            <Image
+                              src={enrollment.course.thumbnail}
+                              alt={enrollment.course.title}
+                              fill
+                              sizes="(max-width: 768px) 100vw, 50vw"
+                              className="object-cover"
+                            />
+                          ) : (
+                            <div className="absolute inset-0 opacity-20">
+                              <div className="absolute top-0 right-0 w-48 h-48 bg-gold-400 rounded-full blur-3xl -translate-y-1/2 translate-x-1/4" />
+                            </div>
+                          )}
+                          <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
 
                           {/* Badges */}
-                          <div className="absolute top-3 left-3 flex gap-2">
+                          <div className="absolute top-3 left-3 flex gap-2 z-10">
                             {enrollment.course.category && (
                               <Badge className="bg-blue-500 text-white border-0 text-xs">
                                 {enrollment.course.category.name}
@@ -407,7 +456,7 @@ export default async function MyCoursesPage() {
                           </div>
 
                           {/* Progress overlay */}
-                          <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/60 to-transparent p-4">
+                          <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/60 to-transparent p-4 z-10">
                             <div className="flex items-center justify-between text-white text-sm mb-1">
                               <span>Progress</span>
                               <span className="font-bold">{Math.round(enrollment.progress)}%</span>
@@ -514,7 +563,7 @@ export default async function MyCoursesPage() {
                         Personalized for you
                       </Badge>
                     </div>
-                    <Link href="/courses">
+                    <Link href="/catalog">
                       <Button variant="ghost" size="sm">View All Courses →</Button>
                     </Link>
                   </div>
@@ -637,7 +686,7 @@ export default async function MyCoursesPage() {
                           <MessageSquare className="w-4 h-4 mr-2" /> Connect with Mentor
                         </Button>
                       </Link>
-                      <Link href="/courses">
+                      <Link href="/catalog">
                         <Button className="bg-burgundy-600 hover:bg-burgundy-700">
                           <BookOpen className="w-4 h-4 mr-2" /> Browse Quick Certifications
                         </Button>

@@ -91,6 +91,46 @@ function generatePostReactions(postId: string, category: string | null, isPinned
   };
 }
 
+// Generate random reactions for comments (deterministic based on comment ID)
+function generateCommentReactions(commentId: string): Record<string, number> {
+  let hash = 0;
+  for (let i = 0; i < commentId.length; i++) {
+    const char = commentId.charCodeAt(i);
+    hash = ((hash << 5) - hash) + char;
+    hash = hash & hash;
+  }
+  hash = Math.abs(hash);
+
+  // Random selection of 2-4 emojis with counts between 10-100
+  const emojis = ["❤️", "🔥", "👏", "💯"];
+  const numEmojis = 2 + (hash % 3); // 2-4 emojis
+  const reactions: Record<string, number> = {};
+
+  for (let i = 0; i < numEmojis; i++) {
+    const emojiIndex = (hash + i * 7) % emojis.length;
+    const count = 10 + ((hash >> (i * 4)) % 91); // 10-100
+    reactions[emojis[emojiIndex]] = count;
+  }
+
+  return reactions;
+}
+
+// Initialize comments with reactions if they don't have any
+function initializeCommentsWithReactions(comments: any[]): any[] {
+  return comments.map(comment => ({
+    ...comment,
+    reactions: comment.reactions && Object.keys(comment.reactions).length > 0
+      ? comment.reactions
+      : generateCommentReactions(comment.id),
+    replies: comment.replies ? comment.replies.map((reply: any) => ({
+      ...reply,
+      reactions: reply.reactions && Object.keys(reply.reactions).length > 0
+        ? reply.reactions
+        : generateCommentReactions(reply.id),
+    })) : [],
+  }));
+}
+
 export default function PostDetailClient({
   post,
   currentUserImage,
@@ -128,9 +168,16 @@ export default function PostDetailClient({
   const [userPostReaction, setUserPostReaction] = useState<string | null>(post.isLiked ? "❤️" : null);
   const [showPostReactionPicker, setShowPostReactionPicker] = useState(false);
 
-  // Comments State
-  const [comments, setComments] = useState(post.comments || []);
+  // Comments State - initialize with reactions
+  const [comments, setComments] = useState(() =>
+    initializeCommentsWithReactions(post.comments || [])
+  );
   const [newComment, setNewComment] = useState("");
+
+  // Reply state
+  const [replyingTo, setReplyingTo] = useState<{ id: string; authorName: string } | null>(null);
+  const [replyContent, setReplyContent] = useState("");
+  const [isPostingReply, setIsPostingReply] = useState(false);
 
   const handlePostReaction = (emoji: string) => {
     setPostReactions(prev => {
@@ -217,6 +264,47 @@ export default function PostDetailClient({
       alert("Failed to post comment");
     } finally {
       setIsPostingComment(false);
+    }
+  };
+
+  const handlePostReply = async () => {
+    if (!replyContent.trim() || isPostingReply || !replyingTo) return;
+
+    setIsPostingReply(true);
+    try {
+      const response = await fetch("/api/community/comments", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          postId: post.id,
+          content: replyContent,
+          parentId: replyingTo.id,
+        }),
+      });
+
+      const data = await response.json();
+
+      if (data.success) {
+        // Add the reply to the parent comment's replies array
+        setComments((prevComments: any[]) => prevComments.map((c: any) => {
+          if (c.id === replyingTo.id) {
+            return {
+              ...c,
+              replies: [...(c.replies || []), { ...data.data, reactions: {} }]
+            };
+          }
+          return c;
+        }));
+        setReplyContent("");
+        setReplyingTo(null);
+      } else {
+        alert(data.error || "Failed to post reply");
+      }
+    } catch (error) {
+      console.error("Post reply error:", error);
+      alert("Failed to post reply");
+    } finally {
+      setIsPostingReply(false);
     }
   };
 
@@ -530,53 +618,97 @@ export default function PostDetailClient({
                       {comment.content}
                     </p>
 
-                    <div className="flex items-center justify-between pt-2">
-                      <div className="flex items-center gap-2">
-                        {/* Directly clickable reaction emojis */}
-                        {REACTIONS.slice(0, 4).map((r) => (
-                          <button
-                            key={r.emoji}
-                            onClick={() => handleCommentReaction(comment.id, r.emoji)}
-                            className={cn(
-                              "p-1.5 rounded-full transition-all hover:scale-125 text-base",
-                              comment.userReaction === r.emoji
-                                ? "bg-burgundy-100 ring-2 ring-burgundy-300"
-                                : "hover:bg-gray-100"
-                            )}
-                            title={r.label}
-                          >
-                            {r.emoji}
-                          </button>
-                        ))}
-                        <span className="w-px h-4 bg-gray-200 mx-1"></span>
-                        <button className="text-xs font-bold text-gray-400 hover:text-gray-900 transition-colors px-2 py-1 rounded-full hover:bg-gray-50">
-                          Reply
+                    {/* Reaction Pills - Combined display with counts and add button */}
+                    <div className="flex items-center gap-2 pt-3 flex-wrap">
+                      {/* Display existing reactions with counts */}
+                      {comment.reactions && Object.entries(comment.reactions).map(([emoji, count]: [string, any]) => count > 0 && (
+                        <button
+                          key={emoji}
+                          onClick={() => handleCommentReaction(comment.id, emoji)}
+                          className={cn(
+                            "inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-sm font-semibold border transition-all hover:scale-105 shadow-sm",
+                            comment.userReaction === emoji
+                              ? "bg-burgundy-100 text-burgundy-700 border-burgundy-300 ring-2 ring-burgundy-200"
+                              : "bg-gray-50 text-gray-700 border-gray-200 hover:bg-gray-100 hover:border-gray-300"
+                          )}
+                        >
+                          <span className="text-base">{emoji}</span>
+                          <span>{count}</span>
                         </button>
-                      </div>
+                      ))}
 
-                      {/* Display current reactions count */}
-                      {comment.reactions && Object.keys(comment.reactions).length > 0 && (
-                        <div className="flex gap-1">
-                          {Object.entries(comment.reactions).slice(0, 3).map(([emoji, count]: any) => count > 0 && (
+                      {/* Add Reaction Button - Dropdown style */}
+                      <div className="relative group">
+                        <button
+                          className="inline-flex items-center gap-1 px-3 py-1.5 rounded-full text-sm font-semibold bg-white border-2 border-dashed border-gray-200 text-gray-400 hover:border-burgundy-300 hover:text-burgundy-600 transition-all"
+                        >
+                          <span className="text-base">+</span>
+                        </button>
+                        {/* Reaction picker on hover */}
+                        <div className="absolute left-0 bottom-full mb-2 bg-white rounded-full shadow-xl border border-gray-200 p-1.5 hidden group-hover:flex gap-1 z-50">
+                          {["❤️", "🔥", "👏", "💯"].map((emoji) => (
                             <button
                               key={emoji}
                               onClick={() => handleCommentReaction(comment.id, emoji)}
-                              className={cn(
-                                "inline-flex items-center gap-1 px-1.5 py-0.5 rounded-full text-[10px] font-bold border transition-all hover:scale-105",
-                                comment.userReaction === emoji
-                                  ? "bg-burgundy-50 text-burgundy-600 border-burgundy-200"
-                                  : "bg-gray-50 text-gray-600 border-gray-100 hover:bg-gray-100"
-                              )}
+                              className="p-2 hover:bg-gray-100 rounded-full transition-transform hover:scale-125 text-lg"
                             >
-                              <span>{emoji}</span> {count}
+                              {emoji}
                             </button>
                           ))}
-                          {Object.keys(comment.reactions).filter(k => (comment.reactions[k] || 0) > 0).length > 3 && (
-                            <span className="text-[10px] text-gray-400 flex items-center">...</span>
-                          )}
                         </div>
-                      )}
+                      </div>
+
+                      <span className="w-px h-5 bg-gray-200 mx-1"></span>
+                      <button
+                        onClick={() => setReplyingTo({
+                          id: comment.id,
+                          authorName: comment.author.firstName ? `${comment.author.firstName} ${comment.author.lastName || ''}` : comment.author.name
+                        })}
+                        className="text-xs font-bold text-gray-400 hover:text-burgundy-600 transition-colors px-3 py-1.5 rounded-full hover:bg-gray-50"
+                      >
+                        Reply
+                      </button>
                     </div>
+
+                    {/* Reply Input */}
+                    {replyingTo?.id === comment.id && (
+                      <div className="mt-3 p-3 bg-gray-50 rounded-xl border border-gray-100">
+                        <div className="flex items-center gap-2 mb-2">
+                          <span className="text-xs text-gray-500">Replying to</span>
+                          <span className="text-xs font-semibold text-burgundy-600">{replyingTo.authorName}</span>
+                          <button
+                            onClick={() => { setReplyingTo(null); setReplyContent(""); }}
+                            className="ml-auto text-xs text-gray-400 hover:text-gray-600"
+                          >
+                            Cancel
+                          </button>
+                        </div>
+                        <div className="flex gap-2">
+                          <input
+                            type="text"
+                            value={replyContent}
+                            onChange={(e) => setReplyContent(e.target.value)}
+                            onKeyDown={(e) => {
+                              if (e.key === 'Enter' && !e.shiftKey) {
+                                e.preventDefault();
+                                handlePostReply();
+                              }
+                            }}
+                            placeholder="Write your reply..."
+                            className="flex-1 px-3 py-2 text-sm bg-white rounded-lg border border-gray-200 focus:ring-2 focus:ring-burgundy-100 focus:border-burgundy-300 outline-none"
+                            autoFocus
+                          />
+                          <Button
+                            size="sm"
+                            onClick={handlePostReply}
+                            disabled={!replyContent.trim() || isPostingReply}
+                            className="bg-burgundy-600 hover:bg-burgundy-700 text-white font-semibold px-4 rounded-lg"
+                          >
+                            {isPostingReply ? "..." : "Reply"}
+                          </Button>
+                        </div>
+                      </div>
+                    )}
 
                     {/* Nested Replies */}
                     {comment.replies && comment.replies.length > 0 && (

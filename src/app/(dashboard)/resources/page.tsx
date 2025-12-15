@@ -113,7 +113,7 @@ export default async function ResourcesPage() {
             <p className="text-gray-500 mb-4">
               Enroll in a course to access downloadable resources.
             </p>
-            <Link href="/courses">
+            <Link href="/catalog">
               <Button className="bg-burgundy-600 hover:bg-burgundy-700">
                 Browse Courses
                 <ChevronRight className="w-4 h-4 ml-2" />

@@ -82,6 +82,22 @@ export async function POST(req: NextRequest) {
 
     // Load knowledge base
     let knowledgeContext = "";
+
+    // 1. Try to load MENTOR-SPECIFIC knowledge first
+    const currentUser = await prisma.user.findUnique({
+      where: { id: session.user.id },
+      select: { knowledgeBase: true }
+    });
+
+    if (currentUser?.knowledgeBase) {
+      console.log("Using MENTOR knowledge base for", session.user.id);
+      knowledgeContext = `\n\nMentor's Specific Knowledge Base:\n${currentUser.knowledgeBase}\n\nINSTRUCTION: Use the above specific knowledge to answer the student's question. If the answer is in this knowledge base, prioritize it over general knowledge.`;
+    }
+
+    // 2. Fallback to generic JSON file if no mentor knowledge or as supplement (optional)
+    // For now, we'll only look at the JSON if the mentor hasn't set anything, OR we could append it.
+    // Let's Append but prioritize Mentor knowledge.
+
     try {
       const fs = await import("fs/promises");
       const path = await import("path");
@@ -109,10 +125,10 @@ export async function POST(req: NextRequest) {
       }
 
       if (relevantEntries.length > 0) {
-        knowledgeContext = `\n\nRelevant Knowledge Base Information:\n${relevantEntries.slice(0, 3).join("\n\n")}`;
+        knowledgeContext += `\n\nGeneral System Knowledge Base:\n${relevantEntries.slice(0, 3).join("\n\n")}`;
       }
     } catch (error) {
-      console.log("Knowledge base not found or error reading:", error);
+      console.log("General knowledge base not found or error reading:", error);
     }
 
     // Generate AI response

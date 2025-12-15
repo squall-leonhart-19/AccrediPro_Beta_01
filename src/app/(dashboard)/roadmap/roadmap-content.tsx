@@ -636,7 +636,7 @@ export function RoadmapContent({ data, steps, userName, specialization }: Roadma
                                             {isCertificationStep && !completed && !enrolled && step.step === 1 && (
                                                 <div className="flex items-center gap-3 mt-3">
                                                     <span className="text-lg font-bold text-gray-700">$997</span>
-                                                    <Link href="/courses">
+                                                    <Link href="/catalog">
                                                         <Button size="sm" variant="outline" className="border-gray-300 text-gray-600 hover:bg-gray-50">
                                                             <Eye className="w-4 h-4 mr-1" /> View Program Details
                                                         </Button>

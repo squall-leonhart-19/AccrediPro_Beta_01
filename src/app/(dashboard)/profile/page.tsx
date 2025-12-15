@@ -8,6 +8,7 @@ async function getUserProfile(userId: string) {
   return prisma.user.findUnique({
     where: { id: userId },
     include: {
+      tags: true, // Useful for general profile checking
       enrollments: {
         include: {
           course: {

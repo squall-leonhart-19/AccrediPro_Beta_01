@@ -37,7 +37,7 @@ const navItems = [
   { href: "/dashboard", label: "Dashboard", icon: LayoutDashboard, tourId: "dashboard" },
   { href: "/start-here", label: "Start Here", icon: GraduationCap, tourId: "start-here" },
   { href: "/my-courses", label: "My Courses", icon: BookOpen, tourId: "my-courses" },
-  { href: "/courses", label: "Catalog", icon: Library, tourId: "catalog" },
+  { href: "/catalog", label: "Catalog", icon: Library, tourId: "catalog" },
   { href: "/roadmap", label: "Your Roadmap", icon: Map, tourId: "roadmap" },
   { href: "/career-center", label: "Career Center", icon: Briefcase, tourId: "career-center" },
   { href: "/programs", label: "Client Program Library", icon: Package, tourId: "programs" },
@@ -96,12 +96,12 @@ export function DashboardNav() {
           </div>
           <div>
             <span className="text-xl font-bold text-white">AccrediPro</span>
-            <p className="text-xs text-burgundy-200">Academy</p>
+            <p className="text-xs text-white/70">Academy</p>
           </div>
         </div>
 
         {/* Navigation */}
-        <nav className="flex-1 px-4 py-6 space-y-1.5 overflow-y-auto">
+        <nav className="flex-1 px-3 py-4 space-y-0.5 overflow-y-auto">
           {navItems.map((item) => {
             const isActive = pathname === item.href || pathname.startsWith(item.href + "/");
             const notificationCount = getNotificationCount(item.notificationKey);
@@ -113,14 +113,14 @@ export function DashboardNav() {
                 prefetch={true}
                 data-tour={item.tourId}
                 className={cn(
-                  "w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-all duration-150 relative",
+                  "w-full flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition-all duration-150 relative",
                   isActive
                     ? "bg-gradient-to-r from-gold-400/20 to-gold-500/10 text-gold-300 shadow-lg shadow-gold-500/10 border border-gold-400/20"
-                    : "text-burgundy-100 hover:bg-burgundy-600/50 hover:text-white"
+                    : "text-white/90 hover:bg-burgundy-600/50 hover:text-white"
                 )}
               >
                 <div className="relative">
-                  <item.icon className={cn("w-5 h-5", isActive ? "text-gold-400" : "text-burgundy-300")} />
+                  <item.icon className={cn("w-5 h-5", isActive ? "text-gold-400" : "text-white/60")} />
                   {notificationCount > 0 && (
                     <span className="absolute -top-2 -right-2 min-w-[18px] h-[18px] bg-red-500 text-white text-[10px] font-bold rounded-full flex items-center justify-center px-1 animate-pulse">
                       {notificationCount > 99 ? "99+" : notificationCount}
@@ -156,8 +156,8 @@ export function DashboardNav() {
           {/* Coach Section - visible to ALL users including students */}
           {user && (
             <>
-              <div className="pt-4 mt-4 border-t border-burgundy-600/30">
-                <p className="px-4 py-2 text-xs font-semibold text-emerald-400 uppercase tracking-wider">
+              <div className="pt-3 mt-3 border-t border-burgundy-600/30">
+                <p className="px-3 py-1 text-xs font-semibold text-emerald-400 uppercase tracking-wider">
                   🩺 Coach Practice
                 </p>
               </div>
@@ -169,17 +169,14 @@ export function DashboardNav() {
                     href={item.href}
                     prefetch={true}
                     className={cn(
-                      "w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-all duration-150",
+                      "w-full flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition-all duration-150",
                       isActive
                         ? "bg-gradient-to-r from-emerald-400/20 to-emerald-500/10 text-emerald-300 shadow-lg shadow-emerald-500/10 border border-emerald-400/20"
-                        : "text-burgundy-100 hover:bg-burgundy-600/50 hover:text-white"
+                        : "text-white/90 hover:bg-burgundy-600/50 hover:text-white"
                     )}
                   >
-                    <item.icon className={cn("w-5 h-5", isActive ? "text-emerald-400" : "text-burgundy-300")} />
+                    <item.icon className={cn("w-5 h-5", isActive ? "text-emerald-400" : "text-white/60")} />
                     {item.label}
-                    {isActive && (
-                      <div className="ml-auto w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
-                    )}
                   </Link>
                 );
               })}
@@ -189,8 +186,8 @@ export function DashboardNav() {
           {/* Admin Section */}
           {isAdmin && (
             <>
-              <div className="pt-4 mt-4 border-t border-burgundy-600/30">
-                <p className="px-4 py-2 text-xs font-semibold text-gold-400 uppercase tracking-wider">
+              <div className="pt-3 mt-3 border-t border-burgundy-600/30">
+                <p className="px-3 py-1 text-xs font-semibold text-gold-400 uppercase tracking-wider">
                   Admin Panel
                 </p>
               </div>
@@ -202,17 +199,14 @@ export function DashboardNav() {
                     href={item.href}
                     prefetch={true}
                     className={cn(
-                      "w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-all duration-150",
+                      "w-full flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition-all duration-150",
                       isActive
                         ? "bg-gradient-to-r from-gold-400/20 to-gold-500/10 text-gold-300 shadow-lg shadow-gold-500/10 border border-gold-400/20"
-                        : "text-burgundy-100 hover:bg-burgundy-600/50 hover:text-white"
+                        : "text-white/90 hover:bg-burgundy-600/50 hover:text-white"
                     )}
                   >
-                    <item.icon className={cn("w-5 h-5", isActive ? "text-gold-400" : "text-burgundy-300")} />
+                    <item.icon className={cn("w-5 h-5", isActive ? "text-gold-400" : "text-white/60")} />
                     {item.label}
-                    {isActive && (
-                      <div className="ml-auto w-2 h-2 rounded-full bg-gold-400 animate-pulse" />
-                    )}
                   </Link>
                 );
               })}
@@ -221,11 +215,11 @@ export function DashboardNav() {
         </nav>
 
         {/* User section */}
-        <div className="p-4 border-t border-burgundy-600/30 bg-burgundy-900/50">
-          <div className="flex items-center gap-3 mb-4 p-3 rounded-xl bg-burgundy-800/50 border border-burgundy-600/20">
-            <Avatar className="h-11 w-11 ring-2 ring-gold-400/30">
+        <div className="flex-shrink-0 p-4 border-t border-burgundy-600/30 bg-burgundy-900/50">
+          <div className="flex items-center gap-3 mb-3">
+            <Avatar className="h-10 w-10 ring-2 ring-gold-400/50">
               <AvatarImage src={user?.image || undefined} />
-              <AvatarFallback className="bg-gradient-to-br from-gold-400 to-gold-600 text-burgundy-900 font-semibold">
+              <AvatarFallback className="bg-gradient-to-br from-gold-400 to-gold-600 text-burgundy-900 font-bold">
                 {initials}
               </AvatarFallback>
             </Avatar>
@@ -233,13 +227,13 @@ export function DashboardNav() {
               <p className="text-sm font-semibold text-white truncate">
                 {user?.firstName} {user?.lastName}
               </p>
-              <p className="text-xs text-burgundy-300 truncate">{user?.email}</p>
+              <p className="text-xs text-white/70 truncate">{user?.email}</p>
             </div>
           </div>
           <Button
             variant="ghost"
             size="sm"
-            className="w-full justify-start text-burgundy-200 hover:text-white hover:bg-burgundy-700/50"
+            className="w-full justify-start text-white/90 hover:text-white hover:bg-burgundy-700/50"
             onClick={() => signOut({ callbackUrl: "/login" })}
           >
             <LogOut className="w-4 h-4 mr-2" />
@@ -270,7 +264,7 @@ export function DashboardNav() {
             <Button
               variant="ghost"
               size="icon"
-              className="text-burgundy-200 hover:text-white hover:bg-burgundy-700"
+              className="text-white/80 hover:text-white hover:bg-burgundy-700"
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
             >
               {mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
@@ -298,11 +292,11 @@ export function DashboardNav() {
                     "w-full flex items-center gap-3 px-4 py-3.5 rounded-xl text-base font-medium transition-all",
                     isActive
                       ? "bg-gradient-to-r from-gold-400/20 to-gold-500/10 text-gold-300 border border-gold-400/20"
-                      : "text-burgundy-100 hover:bg-burgundy-800"
+                      : "text-white/90 hover:bg-burgundy-800"
                   )}
                 >
                   <div className="relative">
-                    <item.icon className={cn("w-5 h-5", isActive ? "text-gold-400" : "text-burgundy-300")} />
+                    <item.icon className={cn("w-5 h-5", isActive ? "text-gold-400" : "text-white/60")} />
                     {notificationCount > 0 && (
                       <span className="absolute -top-2 -right-2 min-w-[18px] h-[18px] bg-red-500 text-white text-[10px] font-bold rounded-full flex items-center justify-center px-1">
                         {notificationCount > 99 ? "99+" : notificationCount}
@@ -334,10 +328,10 @@ export function DashboardNav() {
                         "w-full flex items-center gap-3 px-4 py-3.5 rounded-xl text-base font-medium transition-all",
                         isActive
                           ? "bg-gradient-to-r from-gold-400/20 to-gold-500/10 text-gold-300 border border-gold-400/20"
-                          : "text-burgundy-100 hover:bg-burgundy-800"
+                          : "text-white/90 hover:bg-burgundy-800"
                       )}
                     >
-                      <item.icon className={cn("w-5 h-5", isActive ? "text-gold-400" : "text-burgundy-300")} />
+                      <item.icon className={cn("w-5 h-5", isActive ? "text-gold-400" : "text-white/60")} />
                       {item.label}
                     </Link>
                   );
@@ -357,13 +351,13 @@ export function DashboardNav() {
                   <p className="font-semibold text-white">
                     {user?.firstName} {user?.lastName}
                   </p>
-                  <p className="text-sm text-burgundy-300">{user?.email}</p>
+                  <p className="text-sm text-white/60">{user?.email}</p>
                 </div>
               </div>
 
               <Button
                 variant="ghost"
-                className="w-full justify-start text-burgundy-200 hover:text-white px-4 mt-2"
+                className="w-full justify-start text-white/80 hover:text-white px-4 mt-2"
                 onClick={() => signOut({ callbackUrl: "/login" })}
               >
                 <LogOut className="w-5 h-5 mr-3" />

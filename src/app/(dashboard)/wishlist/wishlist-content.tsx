@@ -206,7 +206,7 @@ export function WishlistContent({ wishlist: initialWishlist, enrollments }: Wish
                                 Save courses you're interested in by clicking the heart icon. Build your learning path one course at a time.
                             </p>
                             <div className="flex flex-wrap justify-center gap-3">
-                                <Link href="/courses">
+                                <Link href="/catalog">
                                     <Button className="bg-burgundy-600 hover:bg-burgundy-700">
                                         <BookOpen className="w-4 h-4 mr-2" />
                                         Browse All Courses
@@ -452,7 +452,7 @@ export function WishlistContent({ wishlist: initialWishlist, enrollments }: Wish
                                             My Roadmap
                                         </Button>
                                     </Link>
-                                    <Link href="/courses">
+                                    <Link href="/catalog">
                                         <Button variant="outline" className="border-burgundy-200 text-burgundy-600">
                                             Browse More
                                             <ArrowRight className="w-4 h-4 ml-2" />

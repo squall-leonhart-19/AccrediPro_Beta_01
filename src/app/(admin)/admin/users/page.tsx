@@ -5,9 +5,21 @@ import { UsersClient } from "@/components/admin/users-client";
 
 async function getUsers() {
   return prisma.user.findMany({
-    where: { isFakeProfile: false }, // Exclude social proof profiles
+    where: {
+      isFakeProfile: false,
+      email: { not: null }
+    },
     orderBy: { createdAt: "desc" },
     include: {
+      tags: {
+        select: {
+          id: true,
+          tag: true,
+          value: true,
+          createdAt: true,
+        },
+        orderBy: { createdAt: "desc" },
+      },
       enrollments: {
         include: {
           course: {
@@ -18,15 +30,6 @@ async function getUsers() {
             },
           },
         },
-      },
-      tags: {
-        select: {
-          id: true,
-          tag: true,
-          value: true,
-          createdAt: true,
-        },
-        orderBy: { createdAt: "desc" },
       },
       streak: true,
       _count: {
@@ -59,5 +62,6 @@ export default async function AdminUsersPage() {
 
   const [users, courses] = await Promise.all([getUsers(), getCourses()]);
 
-  return <UsersClient users={users} courses={courses} />;
+  // @ts-ignore - Prisma types are strict about nulls but we filtered them
+  return <UsersClient users={users as any} courses={courses} />;
 }

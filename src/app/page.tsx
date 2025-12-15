@@ -111,7 +111,7 @@ export default function HomePage() {
                   <ArrowRight className="w-5 h-5 ml-2" />
                 </Button>
               </Link>
-              <Link href="/courses">
+              <Link href="/catalog">
                 <Button variant="outline" size="xl" className="w-full sm:w-auto">
                   Browse Courses
                 </Button>
@@ -270,9 +270,9 @@ export default function HomePage() {
             <div>
               <h4 className="font-semibold mb-4">Programs</h4>
               <ul className="space-y-2 text-gray-400 text-sm">
-                <li><a href="/courses" className="hover:text-white">All Courses</a></li>
-                <li><a href="/courses" className="hover:text-white">Certifications</a></li>
-                <li><a href="/courses" className="hover:text-white">Mini Diplomas</a></li>
+                <li><a href="/catalog" className="hover:text-white">All Courses</a></li>
+                <li><a href="/catalog" className="hover:text-white">Certifications</a></li>
+                <li><a href="/catalog" className="hover:text-white">Mini Diplomas</a></li>
                 <li><a href="/mentorship" className="hover:text-white">Mentorship</a></li>
               </ul>
             </div>

@@ -209,7 +209,7 @@ export default async function ToolsPage() {
                             Start your coaching journey by completing certifications or exploring DFY resources to unlock your first tools.
                         </p>
                         <div className="flex gap-3 justify-center">
-                            <Link href="/courses">
+                            <Link href="/catalog">
                                 <Button variant="outline">Browse Certifications</Button>
                             </Link>
                             <Link href="/dfy-resources">

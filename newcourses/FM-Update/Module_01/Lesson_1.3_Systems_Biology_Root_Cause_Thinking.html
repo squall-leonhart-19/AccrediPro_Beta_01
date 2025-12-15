@@ -1,0 +1,1471 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lesson 1.3: Systems Biology & Root Cause Thinking</title>
+    <style>
+        /* Base & Reset */
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Georgia, 'Times New Roman', serif;
+            line-height: 1.8;
+            color: #2d2d2d;
+            background: #f8f6f3;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Main Container */
+        .lesson-container {
+            max-width: 860px;
+            margin: 0 auto;
+            padding: 40px 30px;
+            background: #ffffff;
+            min-height: 100vh;
+            box-shadow: 0 0 60px rgba(0,0,0,0.08);
+        }
+
+        /* Brand Header */
+        .brand-header {
+            text-align: center;
+            padding-bottom: 30px;
+            margin-bottom: 35px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .brand-logo {
+            max-width: 180px;
+            height: auto;
+            margin-bottom: 5px;
+        }
+
+        /* Module Header */
+        .module-header {
+            background: linear-gradient(135deg, #722F37 0%, #8B3A42 100%);
+            padding: 35px 35px 30px;
+            border-radius: 16px;
+            margin-bottom: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .module-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+            transform: translate(100px, -100px);
+        }
+
+        .module-header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, #B8860B, #D4A84B, #B8860B);
+        }
+
+        .module-label {
+            margin: 0;
+            font-size: 11px;
+            color: rgba(255,255,255,0.75);
+            text-transform: uppercase;
+            letter-spacing: 2.5px;
+            font-weight: 500;
+        }
+
+        .lesson-title {
+            margin: 10px 0 0 0;
+            font-size: 28px;
+            color: #ffffff;
+            font-weight: 700;
+            line-height: 1.3;
+            position: relative;
+        }
+
+        .lesson-meta {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+            padding-top: 18px;
+            border-top: 1px solid rgba(255,255,255,0.15);
+            flex-wrap: wrap;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            color: rgba(255,255,255,0.85);
+            background: rgba(255,255,255,0.1);
+            padding: 5px 12px;
+            border-radius: 4px;
+        }
+
+        .meta-item svg {
+            width: 13px;
+            height: 13px;
+            fill: currentColor;
+            opacity: 0.8;
+        }
+
+        /* Table of Contents */
+        .toc-box {
+            background: linear-gradient(135deg, #fafafa 0%, #f5f5f5 100%);
+            border-radius: 14px;
+            padding: 24px 28px;
+            margin-bottom: 35px;
+            border: 1px solid #e8e8e8;
+        }
+
+        .toc-box .box-label {
+            font-weight: 600;
+            color: #722F37;
+            margin: 0 0 18px 0;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .toc-list {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px 24px;
+        }
+
+        .toc-list li {
+            margin: 0;
+        }
+
+        .toc-list a {
+            display: flex;
+            align-items: center;
+            padding: 8px 12px;
+            color: #555;
+            text-decoration: none;
+            font-size: 14px;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+        }
+
+        .toc-list a:hover {
+            background: white;
+            color: #722F37;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+        }
+
+        .toc-list .section-num {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 26px;
+            height: 26px;
+            background: #722F37;
+            color: white;
+            font-weight: 600;
+            font-size: 11px;
+            border-radius: 6px;
+            margin-right: 12px;
+            flex-shrink: 0;
+        }
+
+        @media (max-width: 600px) {
+            .toc-list {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Key Terms Box */
+        .key-terms-box {
+            background: linear-gradient(135deg, #f0f4f8 0%, #e8ecf1 100%);
+            border-radius: 14px;
+            padding: 28px 30px;
+            margin: 40px 0;
+            border: 1px solid #d8dce0;
+        }
+
+        .key-terms-box .box-label {
+            font-weight: 600;
+            color: #722F37;
+            margin: 0 0 18px 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .terms-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 16px;
+        }
+
+        .term-item {
+            background: white;
+            padding: 16px 18px;
+            border-radius: 10px;
+            border-left: 4px solid #B8860B;
+        }
+
+        .term-item .term {
+            font-weight: 700;
+            color: #722F37;
+            font-size: 15px;
+            margin: 0 0 6px 0;
+        }
+
+        .term-item .definition {
+            font-size: 14px;
+            color: #555;
+            margin: 0;
+            line-height: 1.6;
+        }
+
+        /* Check Understanding Box */
+        .check-understanding {
+            background: linear-gradient(135deg, #fdfbf7 0%, #f9f5ed 100%);
+            border: 2px solid #B8860B;
+            border-radius: 16px;
+            padding: 32px;
+            margin: 45px 0;
+        }
+
+        .check-understanding .box-label {
+            font-weight: 600;
+            color: #8B6914;
+            margin: 0 0 8px 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .check-understanding .box-subtitle {
+            font-size: 15px;
+            color: #666;
+            margin: 0 0 24px 0;
+        }
+
+        .question-item {
+            background: white;
+            border-radius: 12px;
+            padding: 22px 24px;
+            margin-bottom: 16px;
+            border: 1px solid #e8e4dc;
+            position: relative;
+        }
+
+        .question-item:last-child {
+            margin-bottom: 0;
+        }
+
+        .question-number {
+            position: absolute;
+            top: -12px;
+            left: 20px;
+            background: #722F37;
+            color: white;
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            font-size: 13px;
+        }
+
+        .question-text {
+            font-size: 16px;
+            color: #333;
+            margin: 0 0 16px 0;
+            line-height: 1.6;
+            padding-top: 4px;
+        }
+
+        .question-hint {
+            font-size: 14px;
+            color: #888;
+            margin: 0;
+            padding-top: 14px;
+            border-top: 1px dashed #ddd;
+            font-style: italic;
+        }
+
+        .reveal-btn {
+            background: #722F37;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-size: 14px;
+            cursor: pointer;
+            font-family: inherit;
+            transition: background 0.2s ease;
+        }
+
+        .reveal-btn:hover {
+            background: #5a252c;
+        }
+
+        .answer-text {
+            display: none;
+            font-size: 14px;
+            color: #2e7d32;
+            margin: 14px 0 0 0;
+            padding: 14px;
+            background: #f0f8f0;
+            border-radius: 8px;
+            line-height: 1.6;
+        }
+
+        .answer-text.show {
+            display: block;
+        }
+
+        /* Section Headings */
+        h2 {
+            font-size: 24px;
+            color: #722F37;
+            margin: 50px 0 20px 0;
+            font-weight: 600;
+            position: relative;
+            padding-bottom: 12px;
+        }
+
+        h2::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 60px;
+            height: 3px;
+            background: #B8860B;
+        }
+
+        /* Paragraphs */
+        p {
+            font-size: 17px;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        /* Highlights */
+        .highlight {
+            background: linear-gradient(180deg, transparent 60%, #FFF59D 60%);
+            padding: 0 4px;
+            font-weight: 500;
+        }
+
+        /* Welcome/Intro Box */
+        .welcome-box {
+            background: linear-gradient(135deg, #fdfcfa 0%, #f9f6f1 100%);
+            padding: 30px 35px;
+            border-radius: 14px;
+            margin-bottom: 40px;
+            border: 1px solid #e8e4dc;
+        }
+
+        .welcome-box h3 {
+            margin: 0 0 15px 0;
+            font-size: 20px;
+            color: #722F37;
+            font-weight: 600;
+        }
+
+        .welcome-box p {
+            margin: 0;
+            font-size: 17px;
+            line-height: 1.8;
+            color: #444;
+        }
+
+        /* Learning Objectives */
+        .objectives-box {
+            background: #fffef5;
+            border: 2px solid #B8860B;
+            border-radius: 14px;
+            padding: 30px 35px;
+            margin-bottom: 40px;
+        }
+
+        .objectives-box .box-label {
+            font-weight: 600;
+            color: #8B6914;
+            margin: 0 0 18px 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .objectives-box .box-label::before {
+            content: '🎯';
+            font-size: 18px;
+        }
+
+        .objectives-box ul {
+            margin: 0;
+            padding-left: 22px;
+        }
+
+        .objectives-box li {
+            margin-bottom: 14px;
+            font-size: 16px;
+            line-height: 1.7;
+        }
+
+        .objectives-box li:last-child {
+            margin-bottom: 0;
+        }
+
+        /* Case Study Box */
+        .case-study {
+            background: linear-gradient(135deg, #f8f9fb 0%, #f0f2f5 100%);
+            border-radius: 16px;
+            padding: 0;
+            margin-bottom: 40px;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.06);
+        }
+
+        .case-study-header {
+            background: linear-gradient(135deg, #722F37 0%, #8B3A42 100%);
+            padding: 20px 30px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .case-study-icon {
+            width: 45px;
+            height: 45px;
+            background: rgba(255,255,255,0.15);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+        }
+
+        .case-study-header .box-label {
+            font-weight: 600;
+            color: #ffffff;
+            margin: 0;
+            font-size: 16px;
+            letter-spacing: 0.5px;
+        }
+
+        .case-study-header .subtitle {
+            color: rgba(255,255,255,0.8);
+            font-size: 13px;
+            margin: 4px 0 0 0;
+        }
+
+        .case-study-content {
+            padding: 28px 30px;
+        }
+
+        .case-study-content p {
+            font-size: 16px;
+            margin-bottom: 18px;
+        }
+
+        .case-study-content ul {
+            margin: 18px 0;
+            padding-left: 22px;
+        }
+
+        .case-study-content li {
+            margin-bottom: 10px;
+            font-size: 15px;
+        }
+
+        .patient-profile {
+            display: flex;
+            align-items: center;
+            gap: 18px;
+            padding: 18px 22px;
+            background: white;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            border: 1px solid #e5e5e5;
+        }
+
+        .patient-avatar {
+            width: 55px;
+            height: 55px;
+            background: linear-gradient(135deg, #B8860B, #D4A84B);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            flex-shrink: 0;
+        }
+
+        .patient-info h4 {
+            margin: 0 0 5px 0;
+            font-size: 17px;
+            color: #1a1a1a;
+        }
+
+        .patient-info p {
+            margin: 0;
+            font-size: 14px;
+            color: #666;
+        }
+
+        /* Comparison Cards */
+        .comparison-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+            margin: 30px 0;
+        }
+
+        .comparison-card {
+            border-radius: 14px;
+            padding: 26px;
+            border-top: 5px solid;
+            transition: transform 0.2s ease;
+        }
+
+        .comparison-card:hover {
+            transform: translateY(-3px);
+        }
+
+        .comparison-card.conventional {
+            background: #fff5f5;
+            border-top-color: #c62828;
+        }
+
+        .comparison-card.functional {
+            background: #f1f8f1;
+            border-top-color: #2e7d32;
+        }
+
+        .comparison-card .card-label {
+            font-weight: 600;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            margin: 0 0 14px 0;
+        }
+
+        .comparison-card.conventional .card-label {
+            color: #c62828;
+        }
+
+        .comparison-card.functional .card-label {
+            color: #2e7d32;
+        }
+
+        .comparison-card .card-text {
+            margin: 0;
+            font-size: 16px;
+            font-style: italic;
+            line-height: 1.6;
+        }
+
+        /* Content Lists */
+        .content-list {
+            font-size: 17px;
+            margin: 20px 0;
+            padding-left: 24px;
+        }
+
+        .content-list li {
+            margin-bottom: 14px;
+            line-height: 1.7;
+        }
+
+        .content-list li:last-child {
+            margin-bottom: 0;
+        }
+
+        /* Timeline Visual */
+        .timeline-visual {
+            background: #f5f5f5;
+            border-radius: 14px;
+            padding: 30px;
+            margin: 30px 0;
+        }
+
+        .timeline-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+            gap: 18px;
+        }
+
+        .timeline-item:last-child {
+            margin-bottom: 0;
+        }
+
+        .timeline-badge {
+            color: white;
+            padding: 12px 22px;
+            border-radius: 25px;
+            font-weight: 600;
+            font-size: 13px;
+            letter-spacing: 1px;
+            flex-shrink: 0;
+        }
+
+        .timeline-badge.then {
+            background: #722F37;
+        }
+
+        .timeline-badge.now {
+            background: #B8860B;
+        }
+
+        .timeline-text {
+            margin: 0;
+            font-size: 16px;
+        }
+
+        /* Alert Boxes */
+        .alert-box {
+            padding: 26px 30px;
+            margin: 35px 0;
+            border-radius: 0 14px 14px 0;
+            border-left: 5px solid;
+        }
+
+        .alert-box .alert-label {
+            font-weight: 600;
+            margin: 0 0 12px 0;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .alert-box p:last-child {
+            margin: 0;
+            font-size: 16px;
+            line-height: 1.7;
+        }
+
+        .alert-box.warning {
+            background: #fff8e6;
+            border-left-color: #ff9800;
+        }
+
+        .alert-box.warning .alert-label {
+            color: #e65100;
+        }
+
+        .alert-box.success {
+            background: #f0f8f0;
+            border-left-color: #4caf50;
+        }
+
+        .alert-box.success .alert-label {
+            color: #2e7d32;
+        }
+
+        .alert-box.reflect {
+            background: #f8f0fa;
+            border-left-color: #9c27b0;
+        }
+
+        .alert-box.reflect .alert-label {
+            color: #7b1fa2;
+        }
+
+        /* Principle Cards */
+        .principle-card {
+            background: linear-gradient(to right, #fafafa, #ffffff);
+            border-left: 5px solid #722F37;
+            padding: 24px 28px;
+            margin-bottom: 18px;
+            border-radius: 0 14px 14px 0;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.04);
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .principle-card:hover {
+            transform: translateX(5px);
+            box-shadow: 0 4px 18px rgba(0,0,0,0.08);
+        }
+
+        .principle-card .principle-title {
+            font-weight: 700;
+            color: #722F37;
+            margin: 0 0 10px 0;
+            font-size: 17px;
+        }
+
+        .principle-card .principle-text {
+            margin: 0;
+            font-size: 15px;
+            line-height: 1.7;
+        }
+
+        .principle-card ul {
+            margin: 12px 0 0 0;
+            padding-left: 20px;
+            font-size: 14px;
+        }
+
+        .principle-card li {
+            margin-bottom: 5px;
+        }
+
+        /* Toolkit Section */
+        .toolkit-container {
+            background: #f8f9fa;
+            border-radius: 16px;
+            padding: 32px;
+            margin: 30px 0;
+        }
+
+        .toolkit-item {
+            display: flex;
+            align-items: flex-start;
+            margin-bottom: 26px;
+            gap: 20px;
+        }
+
+        .toolkit-item:last-child {
+            margin-bottom: 0;
+        }
+
+        .toolkit-number {
+            background: #722F37;
+            color: white;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 18px;
+            flex-shrink: 0;
+        }
+
+        .toolkit-content h4 {
+            font-weight: 700;
+            color: #1a1a1a;
+            margin: 0 0 8px 0;
+            font-size: 17px;
+        }
+
+        .toolkit-content p {
+            margin: 0;
+            font-size: 15px;
+            color: #555;
+        }
+
+        /* Statistics Box */
+        .stats-box {
+            background: linear-gradient(135deg, #722F37 0%, #8B3A42 100%);
+            padding: 40px;
+            border-radius: 16px;
+            margin: 35px 0;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stats-box::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -20%;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(255,255,255,0.08) 0%, transparent 70%);
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 30px;
+            text-align: center;
+            position: relative;
+        }
+
+        .stat-item .stat-number {
+            font-size: 46px;
+            font-weight: 700;
+            margin: 0;
+            color: #FFF59D;
+            line-height: 1;
+        }
+
+        .stat-item .stat-label {
+            font-size: 14px;
+            margin: 12px 0 0 0;
+            color: #ffffff;
+        }
+
+        /* Tags Container */
+        .tags-container {
+            background: #f8f9fa;
+            border-radius: 14px;
+            padding: 26px;
+            margin: 25px 0;
+        }
+
+        .tags-wrapper {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+
+        .tag {
+            background: white;
+            padding: 12px 20px;
+            border-radius: 25px;
+            font-size: 14px;
+            border: 1px solid #e0e0e0;
+            transition: all 0.2s ease;
+        }
+
+        .tag:hover {
+            background: #722F37;
+            color: white;
+            border-color: #722F37;
+        }
+
+        /* Connection Diagram */
+        .diagram-box {
+            background: linear-gradient(135deg, #f5f7fa 0%, #e8ecf1 100%);
+            border-radius: 16px;
+            padding: 35px;
+            margin: 30px 0;
+            text-align: center;
+        }
+
+        .diagram-title {
+            font-weight: 600;
+            color: #722F37;
+            margin: 0 0 25px 0;
+            font-size: 19px;
+        }
+
+        .diagram-content {
+            font-size: 15px;
+            color: #444;
+        }
+
+        .diagram-content p {
+            margin: 0 0 12px 0;
+        }
+
+        .diagram-arrow {
+            font-size: 22px;
+            color: #722F37;
+            margin: 10px 0;
+        }
+
+        .diagram-emphasis {
+            background: #FFF59D;
+            padding: 6px 14px;
+            border-radius: 6px;
+            display: inline-block;
+            font-weight: 500;
+        }
+
+        .diagram-final {
+            font-weight: 600;
+            margin-top: 18px !important;
+            font-size: 16px;
+        }
+
+        /* Key Takeaways */
+        .takeaways-box {
+            background: linear-gradient(135deg, #722F37 0%, #8B3A42 100%);
+            padding: 35px;
+            margin-top: 50px;
+            border-radius: 16px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .takeaways-box::before {
+            content: '';
+            position: absolute;
+            bottom: -30%;
+            left: -10%;
+            width: 250px;
+            height: 250px;
+            background: radial-gradient(circle, rgba(255,255,255,0.05) 0%, transparent 70%);
+        }
+
+        .takeaways-box .box-label {
+            font-weight: 600;
+            color: #FFF59D;
+            margin: 0 0 22px 0;
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .takeaways-box .box-label::before {
+            content: '✨';
+            font-size: 18px;
+        }
+
+        .takeaways-box ul {
+            margin: 0;
+            padding-left: 22px;
+            position: relative;
+        }
+
+        .takeaways-box li {
+            margin-bottom: 16px;
+            font-size: 16px;
+            line-height: 1.7;
+            color: #ffffff;
+        }
+
+        .takeaways-box li:last-child {
+            margin-bottom: 0;
+        }
+
+        .takeaways-box .highlight {
+            background: linear-gradient(180deg, transparent 60%, rgba(255,245,157,0.4) 60%);
+        }
+
+        /* References */
+        .references-box {
+            background: #f8f9fa;
+            border-radius: 14px;
+            padding: 30px;
+            margin-top: 40px;
+        }
+
+        .references-box .box-label {
+            font-weight: 600;
+            color: #722F37;
+            margin: 0 0 20px 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .references-box ol {
+            margin: 0;
+            padding-left: 22px;
+            font-size: 13px;
+            color: #666;
+        }
+
+        .references-box li {
+            margin-bottom: 10px;
+            line-height: 1.5;
+        }
+
+        .references-box li:last-child {
+            margin-bottom: 0;
+        }
+
+        /* Footer */
+        .lesson-footer {
+            margin-top: 50px;
+            padding-top: 30px;
+            border-top: 2px solid #722F37;
+            text-align: center;
+        }
+
+        .footer-logo {
+            max-width: 140px;
+            height: auto;
+            margin-bottom: 15px;
+            opacity: 0.9;
+        }
+
+        .lesson-footer .brand {
+            color: #722F37;
+            font-weight: 600;
+            margin: 0;
+            font-size: 15px;
+        }
+
+        .lesson-footer .copyright {
+            color: #888;
+            font-size: 13px;
+            margin: 10px 0 0 0;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .lesson-container {
+                padding: 25px 20px;
+            }
+
+            .module-header {
+                padding: 30px 25px;
+            }
+
+            .lesson-title {
+                font-size: 26px;
+            }
+
+            h2 {
+                font-size: 21px;
+            }
+
+            .welcome-box {
+                padding: 28px 25px;
+            }
+
+            .comparison-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .stat-item .stat-number {
+                font-size: 36px;
+            }
+
+            .timeline-item {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 10px;
+            }
+
+            .toolkit-item {
+                flex-direction: column;
+                gap: 12px;
+            }
+
+            .case-study-header {
+                padding: 18px 22px;
+            }
+
+            .patient-profile {
+                flex-direction: column;
+                text-align: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="lesson-container">
+
+        <!-- Brand Header -->
+        <div class="brand-header">
+            <img src="https://i.imgur.com/YourLogoHere.png" alt="AccrediPro - Educational Excellence" class="brand-logo" onerror="this.style.display='none'">
+        </div>
+
+        <!-- Module Header -->
+        <header class="module-header">
+            <p class="module-label">Module 1: Functional Medicine Foundations</p>
+            <h1 class="lesson-title">Lesson 1.3: Systems Biology & Root Cause Thinking</h1>
+            <div class="lesson-meta">
+                <span class="meta-item">
+                    <svg viewBox="0 0 24 24"><path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10 10-4.5 10-10S17.5 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm.5-13H11v6l5.2 3.2.8-1.3-4.5-2.7V7z"/></svg>
+                    15 min read
+                </span>
+                <span class="meta-item">
+                    <svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V5h14v14zM7 10h2v7H7zm4-3h2v10h-2zm4 6h2v4h-2z"/></svg>
+                    Lesson 3 of 8
+                </span>
+            </div>
+        </header>
+
+        <!-- Table of Contents -->
+        <nav class="toc-box">
+            <p class="box-label">In This Lesson</p>
+            <ul class="toc-list">
+                <li><a href="#body-web"><span class="section-num">01</span>The Body as a Web</a></li>
+                <li><a href="#seven-systems"><span class="section-num">02</span>Seven Core Systems</a></li>
+                <li><a href="#upstream-downstream"><span class="section-num">03</span>Upstream vs Downstream</a></li>
+                <li><a href="#five-whys"><span class="section-num">04</span>The 5 Whys Technique</a></li>
+                <li><a href="#systems-practice"><span class="section-num">05</span>Systems Thinking in Practice</a></li>
+            </ul>
+        </nav>
+
+        <!-- Welcome Box -->
+        <div class="welcome-box">
+            <h3>From Linear to Systems Thinking</h3>
+            <p>You've learned that functional medicine looks for root causes rather than just suppressing symptoms. But <em>how</em> do we find those root causes? This lesson introduces <span class="highlight">systems biology</span>—the framework that reveals how everything in the body is interconnected—and teaches you the investigative mindset that drives functional medicine practice.</p>
+        </div>
+
+        <!-- Learning Objectives -->
+        <div class="objectives-box">
+            <p class="box-label">What You'll Learn</p>
+            <ul>
+                <li>Why the body functions as an <span class="highlight">interconnected web</span> rather than isolated systems</li>
+                <li>The seven core physiological systems in functional medicine</li>
+                <li>The difference between <span class="highlight">upstream</span> and <span class="highlight">downstream</span> thinking</li>
+                <li>How to use the "5 Whys" technique to identify root causes</li>
+                <li>Practical application of systems thinking in real cases</li>
+            </ul>
+        </div>
+
+        <!-- Case Study Introduction -->
+        <div class="case-study">
+            <div class="case-study-header">
+                <div class="case-study-icon">📋</div>
+                <div>
+                    <p class="box-label">Case Study</p>
+                    <p class="subtitle">When Three Problems Share One Root</p>
+                </div>
+            </div>
+            <div class="case-study-content">
+                <div class="patient-profile">
+                    <div class="patient-avatar">👨</div>
+                    <div class="patient-info">
+                        <h4>James, 55 years old</h4>
+                        <p>Multiple "separate" metabolic conditions</p>
+                    </div>
+                </div>
+                <p>James came to his doctor with what appeared to be <strong>three distinct problems</strong>:</p>
+                <ul>
+                    <li>High blood pressure (on two medications)</li>
+                    <li>Elevated cholesterol (on a statin)</li>
+                    <li>Prediabetes (fasting glucose 110-120 mg/dL)</li>
+                </ul>
+                <p>His conventional care involved three specialists, three prescriptions, and quarterly monitoring. Each condition was managed <em>separately</em>.</p>
+                <p>A functional medicine practitioner saw something different: <strong>these weren't three problems—they were three symptoms of one underlying dysfunction: insulin resistance.</strong></p>
+                <p>By addressing the root cause through dietary changes, exercise, stress management, and targeted supplementation, James saw improvements in <em>all three conditions simultaneously</em>—and was able to reduce his medications significantly.</p>
+            </div>
+        </case-study>
+
+        <!-- Main Content -->
+        <h2 id="body-web">The Body as a Web</h2>
+
+        <p>Conventional medicine tends to organize around <span class="highlight">organ-based specialties</span>:</p>
+
+        <div class="tags-container">
+            <div class="tags-wrapper">
+                <span class="tag">Cardiology (heart)</span>
+                <span class="tag">Gastroenterology (gut)</span>
+                <span class="tag">Endocrinology (hormones)</span>
+                <span class="tag">Neurology (brain)</span>
+                <span class="tag">Rheumatology (joints)</span>
+                <span class="tag">Dermatology (skin)</span>
+            </div>
+        </div>
+
+        <p>This makes sense for acute, organ-specific problems—a heart attack, a gastric ulcer, a stroke. But for chronic, multi-system conditions, this approach creates a problem: <strong>it fragments what is fundamentally interconnected.</strong></p>
+
+        <p>In reality, the body doesn't operate as isolated systems. It functions as a <span class="highlight">web of relationships</span> where everything influences everything else:</p>
+
+        <ul class="content-list">
+            <li>Your gut affects your brain (gut-brain axis)</li>
+            <li>Your hormones affect your immune system</li>
+            <li>Your stress response affects your digestion</li>
+            <li>Your sleep affects your metabolism</li>
+            <li>Your inflammation affects your mood</li>
+        </ul>
+
+        <p>Functional medicine uses <strong>systems biology</strong> to understand these connections. Rather than asking "Which organ is broken?" it asks "Which <em>systems</em> are out of balance, and how are they affecting each other?"</p>
+
+        <div class="diagram-box">
+            <p class="diagram-title">The Web of Interconnection</p>
+            <div class="diagram-content">
+                <p><strong>Linear Thinking:</strong><br>Symptom → Organ → Diagnosis → Medication</p>
+                <p class="diagram-arrow">vs.</p>
+                <p><strong>Systems Thinking:</strong><br>Multiple symptoms ← Interconnected systems ← Shared root dysfunction</p>
+            </div>
+        </div>
+
+        <h2 id="seven-systems">Seven Core Systems</h2>
+
+        <p>Functional medicine organizes the body into <span class="highlight">seven core physiological systems</span>. Every symptom, every condition, arises from imbalance in one or more of these systems—and they all interact.</p>
+
+        <div class="principle-card">
+            <p class="principle-title">1. Assimilation (Digestion & Absorption)</p>
+            <p class="principle-text">How well you break down food, absorb nutrients, and maintain gut barrier integrity. Dysfunction here affects <em>everything</em>—nutrient deficiencies, inflammation, immune dysregulation, mood disorders.</p>
+        </div>
+
+        <div class="principle-card">
+            <p class="principle-title">2. Defense & Repair (Immune Function)</p>
+            <p class="principle-text">How your body distinguishes self from non-self, fights infections, repairs damage, and manages inflammation. Imbalances create autoimmunity, chronic infections, or excessive inflammation.</p>
+        </div>
+
+        <div class="principle-card">
+            <p class="principle-title">3. Energy (Mitochondrial Function)</p>
+            <p class="principle-text">How efficiently your cells produce energy (ATP). Mitochondrial dysfunction shows up as fatigue, brain fog, poor recovery, and accelerated aging.</p>
+        </div>
+
+        <div class="principle-card">
+            <p class="principle-title">4. Biotransformation & Elimination (Detoxification)</p>
+            <p class="principle-text">How your body processes and eliminates toxins, hormones, and metabolic waste. When overwhelmed, toxins accumulate and create systemic dysfunction.</p>
+        </div>
+
+        <div class="principle-card">
+            <p class="principle-title">5. Communication (Hormones & Neurotransmitters)</p>
+            <p class="principle-text">How cells send and receive signals—thyroid hormones, sex hormones, insulin, cortisol, neurotransmitters. Imbalances ripple throughout the entire system.</p>
+        </div>
+
+        <div class="principle-card">
+            <p class="principle-title">6. Transport (Cardiovascular & Lymphatic)</p>
+            <p class="principle-text">How nutrients, oxygen, immune cells, and waste products move through the body. Poor circulation or lymphatic congestion affects every tissue.</p>
+        </div>
+
+        <div class="principle-card">
+            <p class="principle-title">7. Structural Integrity (Musculoskeletal & Cellular Membranes)</p>
+            <p class="principle-text">From cell membranes to bones and joints—the physical structures that hold everything together. Dysfunction affects movement, pain, cellular function, and systemic health.</p>
+        </div>
+
+        <div class="alert-box success">
+            <p class="alert-label">Why This Matters for Coaching</p>
+            <p>Understanding these systems helps you appreciate <em>why</em> practitioners ask such detailed questions. A client's joint pain might not be a "joint problem"—it could stem from gut inflammation, poor detoxification, or hormonal imbalance. Systems thinking reveals the hidden connections.</p>
+        </div>
+
+        <h2 id="upstream-downstream">Upstream vs. Downstream Thinking</h2>
+
+        <p>One of the most powerful shifts in functional medicine is learning to think <span class="highlight">upstream</span>.</p>
+
+        <div class="comparison-grid">
+            <div class="comparison-card conventional">
+                <p class="card-label">Downstream Thinking</p>
+                <p class="card-text">Focus on the symptom or diagnosis. Intervene at the point of manifestation. "What medication treats this symptom?"</p>
+            </div>
+            <div class="comparison-card functional">
+                <p class="card-label">Upstream Thinking</p>
+                <p class="card-text">Trace back to the origin. Ask what created the conditions for this symptom to arise. "What dysfunction is driving this?"</p>
+            </div>
+        </div>
+
+        <p>Think of a river. If you see pollution downstream, you have two options:</p>
+
+        <ul class="content-list">
+            <li><strong>Downstream intervention:</strong> Filter the water where you see the pollution</li>
+            <li><strong>Upstream intervention:</strong> Find the source of pollution and stop it</li>
+        </ul>
+
+        <p>Both have their place—but if you only filter downstream, the pollution keeps coming. <span class="highlight">True resolution requires going upstream.</span></p>
+
+        <div class="diagram-box">
+            <p class="diagram-title">Example: Type 2 Diabetes</p>
+            <div class="diagram-content">
+                <p><strong>Downstream:</strong> High blood sugar → Prescribe insulin or metformin</p>
+                <p class="diagram-arrow">vs.</p>
+                <p><strong>Upstream:</strong> Insulin resistance ← Chronic high carb/sugar intake + sedentary lifestyle + chronic stress + poor sleep + visceral fat accumulation</p>
+                <p class="diagram-arrow">↓</p>
+                <p class="diagram-final">Address the <span class="diagram-emphasis">causes</span> of insulin resistance, not just the resulting high blood sugar</p>
+            </div>
+        </div>
+
+        <p>Medication may still be necessary—but <em>without</em> addressing the upstream causes, the disease progresses despite treatment.</p>
+
+        <h2 id="five-whys">The 5 Whys Technique</h2>
+
+        <p>One practical tool for upstream thinking is the <span class="highlight">"5 Whys"</span> technique, adapted from quality improvement processes. The idea is simple: <strong>keep asking "why" until you reach the root cause.</strong></p>
+
+        <p>Here's how it works with a common symptom:</p>
+
+        <div class="toolkit-container">
+            <div class="toolkit-item">
+                <div class="toolkit-number">1</div>
+                <div class="toolkit-content">
+                    <h4>Why do I have chronic fatigue?</h4>
+                    <p>Because my mitochondria aren't producing energy efficiently.</p>
+                </div>
+            </div>
+            <div class="toolkit-item">
+                <div class="toolkit-number">2</div>
+                <div class="toolkit-content">
+                    <h4>Why aren't my mitochondria working well?</h4>
+                    <p>Because I'm deficient in key nutrients (B vitamins, CoQ10, magnesium) and my cells are under oxidative stress.</p>
+                </div>
+            </div>
+            <div class="toolkit-item">
+                <div class="toolkit-number">3</div>
+                <div class="toolkit-content">
+                    <h4>Why am I nutrient deficient and oxidatively stressed?</h4>
+                    <p>Because I have poor gut absorption (leaky gut) and chronic inflammation.</p>
+                </div>
+            </div>
+            <div class="toolkit-item">
+                <div class="toolkit-number">4</div>
+                <div class="toolkit-content">
+                    <h4>Why do I have leaky gut and inflammation?</h4>
+                    <p>Because I have gut dysbiosis—an imbalanced microbiome from years of antibiotic use, poor diet, and chronic stress.</p>
+                </div>
+            </div>
+            <div class="toolkit-item">
+                <div class="toolkit-number">5</div>
+                <div class="toolkit-content">
+                    <h4>Why do I have gut dysbiosis?</h4>
+                    <p>Because I've consumed a high-sugar, low-fiber diet, took multiple courses of antibiotics, and have chronic unmanaged stress affecting my gut-brain axis.</p>
+                </div>
+            </div>
+        </div>
+
+        <p>Now you've moved from the symptom (fatigue) to <strong>actionable root causes</strong>: diet, gut health, stress management, microbiome restoration. <em>This</em> is where effective intervention happens.</p>
+
+        <div class="alert-box warning">
+            <p class="alert-label">Important Note</p>
+            <p>The "5 Whys" is illustrative—not a rigid process. Sometimes you need 3 whys, sometimes 7. The point is to develop an <strong>investigative mindset</strong> that doesn't stop at the first answer. Keep asking "What's driving this?" until you reach something you can change.</p>
+        </div>
+
+        <h2 id="systems-practice">Systems Thinking in Practice</h2>
+
+        <p>Let's return to James and his "three separate conditions." A systems biology lens reveals they're interconnected manifestations of <span class="highlight">insulin resistance</span>:</p>
+
+        <div class="diagram-box">
+            <p class="diagram-title">James's Root Cause Web</p>
+            <div class="diagram-content">
+                <p><span class="diagram-emphasis">Chronic Insulin Resistance</span></p>
+                <p class="diagram-arrow">↓</p>
+                <p><strong>High insulin levels</strong> → Promotes sodium retention + increases sympathetic nervous system activity → <strong>High blood pressure</strong></p>
+                <p class="diagram-arrow">+</p>
+                <p><strong>High insulin levels</strong> → Increases VLDL production in liver → <strong>Elevated cholesterol & triglycerides</strong></p>
+                <p class="diagram-arrow">+</p>
+                <p><strong>Cells resist insulin signaling</strong> → Glucose can't enter cells efficiently → <strong>Elevated blood sugar (prediabetes)</strong></p>
+            </div>
+        </div>
+
+        <p>From a conventional perspective, these are three diseases requiring three medications. From a systems biology perspective, they're <strong>three branches of the same root dysfunction</strong>.</p>
+
+        <p>James's intervention targeted the root:</p>
+
+        <ul class="content-list">
+            <li><strong>Dietary changes:</strong> Low glycemic diet, eliminate refined carbs and sugar, increase fiber and healthy fats</li>
+            <li><strong>Movement:</strong> Resistance training and walking to improve insulin sensitivity</li>
+            <li><strong>Stress management:</strong> Cortisol dysregulation worsens insulin resistance</li>
+            <li><strong>Sleep optimization:</strong> Poor sleep drives insulin resistance</li>
+            <li><strong>Targeted supplements:</strong> Berberine, chromium, magnesium to support glucose metabolism</li>
+        </ul>
+
+        <p>Result? Within 6 months:</p>
+
+        <ul class="content-list">
+            <li>Blood pressure normalized (reduced to one medication)</li>
+            <li>Cholesterol improved (statin discontinued)</li>
+            <li>Fasting glucose dropped to normal range (prediabetes reversed)</li>
+        </ul>
+
+        <p>One root cause, one intervention strategy—<em>multiple symptoms resolved</em>.</p>
+
+        <div class="alert-box reflect">
+            <p class="alert-label">Coaching Application</p>
+            <p>When working with clients, you'll often see this pattern: multiple symptoms that seem unrelated but share a common root. Your role isn't to diagnose or treat—but understanding systems biology helps you appreciate <em>why</em> comprehensive lifestyle changes can create improvements across many areas simultaneously.</p>
+        </div>
+
+        <p>Systems thinking also explains why <strong>quick fixes rarely work</strong> in chronic disease. If you only address one branch of the tree without touching the root, the other branches keep growing—and new ones appear.</p>
+
+        <div class="alert-box success">
+            <p class="alert-label">The Power of Systems Thinking</p>
+            <p>When you understand interconnection, you stop chasing individual symptoms and start creating conditions for <span class="highlight">whole-system healing</span>. A client improving their gut health may see benefits in mood, energy, skin, immune function, and weight—all from addressing one core system.</p>
+        </div>
+
+        <p>This is why functional medicine can feel miraculous to patients who've spent years seeing specialists. It's not magic—it's <strong>systems biology in action</strong>.</p>
+
+        <!-- Key Terms -->
+        <div class="key-terms-box">
+            <p class="box-label">Key Terms to Remember</p>
+            <div class="terms-grid">
+                <div class="term-item">
+                    <p class="term">Systems Biology</p>
+                    <p class="definition">The understanding that the body functions as an interconnected web where all physiological systems influence each other, rather than as isolated organs.</p>
+                </div>
+                <div class="term-item">
+                    <p class="term">Upstream Thinking</p>
+                    <p class="definition">Tracing symptoms back to their root causes—identifying and addressing the dysfunctions that create conditions for disease, rather than just managing symptoms.</p>
+                </div>
+                <div class="term-item">
+                    <p class="term">Downstream Thinking</p>
+                    <p class="definition">Intervening at the point of symptom manifestation without addressing underlying causes—like treating high blood sugar without addressing insulin resistance.</p>
+                </div>
+                <div class="term-item">
+                    <p class="term">The 5 Whys</p>
+                    <p class="definition">An investigative technique that involves repeatedly asking "why" to drill down from symptoms to actionable root causes.</p>
+                </div>
+                <div class="term-item">
+                    <p class="term">Insulin Resistance</p>
+                    <p class="definition">A metabolic dysfunction where cells become less responsive to insulin, driving multiple conditions including high blood pressure, elevated cholesterol, and diabetes.</p>
+                </div>
+                <div class="term-item">
+                    <p class="term">Seven Core Systems</p>
+                    <p class="definition">Functional medicine's organizational framework: Assimilation, Defense & Repair, Energy, Biotransformation, Communication, Transport, and Structural Integrity.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Check Your Understanding -->
+        <div class="check-understanding">
+            <p class="box-label">Check Your Understanding</p>
+            <p class="box-subtitle">Reflect on these questions before moving to the next lesson:</p>
+
+            <div class="question-item">
+                <div class="question-number">1</div>
+                <p class="question-text">Explain the difference between upstream and downstream thinking using a specific health example.</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show'); this.textContent = this.textContent === 'Reveal Answer' ? 'Hide Answer' : 'Reveal Answer';">Reveal Answer</button>
+                <p class="answer-text">Downstream thinking treats symptoms at the point of manifestation (e.g., prescribing medication for high blood pressure). Upstream thinking traces back to root causes (e.g., discovering the high blood pressure is driven by insulin resistance from poor diet, sedentary lifestyle, and chronic stress—then addressing those factors). Downstream provides symptom relief; upstream addresses the source.</p>
+            </div>
+
+            <div class="question-item">
+                <div class="question-number">2</div>
+                <p class="question-text">How can insulin resistance create multiple seemingly unrelated conditions?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show'); this.textContent = this.textContent === 'Reveal Answer' ? 'Hide Answer' : 'Reveal Answer';">Reveal Answer</button>
+                <p class="answer-text">Insulin resistance is a systemic dysfunction that affects multiple pathways: (1) High insulin promotes sodium retention and sympathetic activation → high blood pressure; (2) High insulin increases liver VLDL production → elevated cholesterol; (3) Cells resist insulin → glucose can't enter cells → high blood sugar. This demonstrates how one root cause creates multiple "diseases" that conventional medicine treats separately.</p>
+            </div>
+
+            <div class="question-item">
+                <div class="question-number">3</div>
+                <p class="question-text">Name at least 4 of the 7 core physiological systems in functional medicine and give one example of what happens when each is imbalanced.</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show'); this.textContent = this.textContent === 'Reveal Answer' ? 'Hide Answer' : 'Reveal Answer';">Reveal Answer</button>
+                <p class="answer-text">Examples: (1) Assimilation - leaky gut leads to nutrient deficiencies and systemic inflammation; (2) Defense & Repair - immune dysregulation creates autoimmunity or chronic infections; (3) Energy - mitochondrial dysfunction causes fatigue and brain fog; (4) Communication - hormone imbalances affect metabolism, mood, and reproduction; (5) Biotransformation - poor detoxification leads to toxin accumulation; (6) Transport - poor circulation affects oxygen/nutrient delivery; (7) Structural Integrity - membrane dysfunction affects cellular communication.</p>
+            </div>
+        </div>
+
+        <!-- Key Takeaways -->
+        <div class="takeaways-box">
+            <p class="box-label">Key Takeaways</p>
+            <ul>
+                <li>The body functions as an <span class="highlight">interconnected web</span>—all systems influence each other, creating cascading effects</li>
+                <li>Functional medicine organizes around <span class="highlight">seven core systems</span>: Assimilation, Defense, Energy, Biotransformation, Communication, Transport, and Structural Integrity</li>
+                <li><strong>Upstream thinking</strong> traces symptoms back to root causes; <strong>downstream thinking</strong> only addresses manifestations</li>
+                <li>The <span class="highlight">5 Whys technique</span> develops investigative thinking—keep asking "why" until you reach actionable root causes</li>
+                <li>Multiple conditions can share <strong>one root dysfunction</strong> (like insulin resistance driving hypertension, high cholesterol, and diabetes)</li>
+                <li>Systems thinking explains why comprehensive lifestyle changes create improvements across many symptoms simultaneously</li>
+            </ul>
+        </div>
+
+        <!-- References -->
+        <div class="references-box">
+            <p class="box-label">References</p>
+            <ol>
+                <li>Institute for Functional Medicine. (2023). <em>The Functional Medicine Matrix</em>. IFM Publications.</li>
+                <li>Reaven, G. M. (1988). Role of insulin resistance in human disease. <em>Diabetes</em>, 37(12), 1595-1607.</li>
+                <li>Kitano, H. (2002). Systems biology: a brief overview. <em>Science</em>, 295(5560), 1662-1664.</li>
+                <li>Bland, J. S., et al. (2004). A systems approach to chronic disease. <em>Alternative Therapies in Health and Medicine</em>, 10(4), 36-41.</li>
+                <li>Hotamisligil, G. S. (2017). Inflammation, metaflammation and immunometabolic disorders. <em>Nature</em>, 542(7640), 177-185.</li>
+                <li>Jones, D. S. (2010). <em>Textbook of Functional Medicine</em>. Institute for Functional Medicine.</li>
+                <li>Gallagher, E. J., & LeRoith, D. (2015). Obesity and diabetes: the increased risk of cancer and cancer-related mortality. <em>Physiological Reviews</em>, 95(3), 727-748.</li>
+                <li>Picard, M., et al. (2016). Mitochondrial functions modulate neuroendocrine, metabolic, inflammatory, and transcriptional responses to acute psychological stress. <em>PNAS</em>, 113(48), E7978-E7986.</li>
+            </ol>
+        </div>
+
+        <!-- Footer -->
+        <footer class="lesson-footer">
+            <img src="https://i.imgur.com/YourLogoHere.png" alt="AccrediPro" class="footer-logo" onerror="this.style.display='none'">
+            <p class="brand">AccrediPro Functional Medicine Health Coach Certification</p>
+            <p class="copyright">© 2024 AccrediPro. All rights reserved.</p>
+        </footer>
+
+    </div>
+</body>
+</html>

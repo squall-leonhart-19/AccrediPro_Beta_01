@@ -17,6 +17,7 @@ import {
     DialogTrigger,
 } from "@/components/ui/dialog";
 import { ProfileEditor } from "./profile-editor";
+import { KnowledgeBaseTab } from "./knowledge-base-tab";
 import {
     User,
     Calendar,
@@ -41,6 +42,7 @@ import {
     Eye,
     EyeOff,
     Loader2,
+    Bot,
 } from "lucide-react";
 
 // Level definitions
@@ -89,6 +91,7 @@ interface ProfileTabsProps {
         firstName: string | null;
         lastName: string | null;
         email: string;
+        knowledgeBase?: string | null; // Added field
         avatar: string | null;
         bio: string | null;
         role: string;
@@ -142,7 +145,7 @@ interface ProfileTabsProps {
     }>;
 }
 
-type TabType = "overview" | "progress" | "settings";
+type TabType = "overview" | "progress" | "settings" | "knowledge";
 
 export function ProfileTabs({ user, allBadges }: ProfileTabsProps) {
     const [activeTab, setActiveTab] = useState<TabType>("overview");
@@ -326,6 +329,16 @@ export function ProfileTabs({ user, allBadges }: ProfileTabsProps) {
                 >
                     <Settings className="w-4 h-4 inline mr-2" />
                     Settings
+                </button>
+                <button
+                    onClick={() => setActiveTab("knowledge")}
+                    className={`px-6 py-3 rounded-t-xl font-medium text-sm transition-all ${activeTab === "knowledge"
+                        ? "bg-burgundy-600 text-white"
+                        : "bg-white text-gray-600 hover:bg-gray-50 border border-gray-200"
+                        }`}
+                >
+                    <Bot className="w-4 h-4 inline mr-2" />
+                    AI Knowledge
                 </button>
             </div>
 
@@ -682,6 +695,10 @@ export function ProfileTabs({ user, allBadges }: ProfileTabsProps) {
                         </div>
                     </div>
                 </div>
+            )}
+
+            {activeTab === "knowledge" && (
+                <KnowledgeBaseTab initialContent={user.knowledgeBase || null} />
             )}
 
             {activeTab === "settings" && (

@@ -855,7 +855,7 @@ export default function EbooksStorePage() {
                                     <p className="text-gray-600">Complete your certification to save $10-20 on every e-book purchase</p>
                                 </div>
                             </div>
-                            <a href="/courses">
+                            <a href="/catalog">
                                 <Button className="bg-gold-500 hover:bg-gold-600 text-white font-semibold px-6 py-6 text-lg">
                                     View Certifications <ArrowRight className="w-5 h-5 ml-2" />
                                 </Button>
