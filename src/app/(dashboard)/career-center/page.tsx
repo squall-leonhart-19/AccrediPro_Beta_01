@@ -25,7 +25,13 @@ import {
     Rocket,
     Play,
     Map,
+    Apple,
+    Brain,
+    Shield,
+    Moon,
+    Droplets,
 } from "lucide-react";
+import { FM_SPECIALIZATIONS } from "@/lib/specializations-data";
 
 // The 5-Step Career Ladder (Step 0 = Free Mini Diploma Entry)
 const careerSteps = [
@@ -71,50 +77,56 @@ const careerSteps = [
 const careerOutcomes = [
     {
         id: "health-coach",
-        title: "Health Coach",
-        subtitle: "Help clients achieve optimal health through root-cause coaching",
+        title: "Functional Medicine Health Coach",
+        subtitle: "Transform lives through root-cause health coaching",
+        description: "Help clients identify and address the underlying causes of their health issues using functional medicine principles. Work with clients on nutrition, lifestyle, and behavior change.",
         icon: Heart,
         color: "burgundy",
         gradient: "from-burgundy-500 to-burgundy-600",
         income: "$50K – $120K",
         timeline: "6–12 months",
+        clientTypes: "Chronic fatigue, digestive issues, weight management",
         deliveredThrough: [
-            "Functional Medicine Specialization Track",
-            "Health Coaching Core Certification",
+            "14-Module FM Certification (Step 1)",
+            "Health Coaching Core Specialization",
         ],
-        ctaText: "See the Functional Medicine Track",
+        ctaText: "Start FM Track",
         ctaLink: "/tracks/functional-medicine",
     },
     {
         id: "nutrition-specialist",
-        title: "Nutrition Specialist",
-        subtitle: "Specialize in dietary planning and nutrition-based protocols",
+        title: "Functional Nutrition Specialist",
+        subtitle: "Master dietary protocols and therapeutic nutrition",
+        description: "Specialize in creating personalized nutrition plans, elimination diets, and food-as-medicine protocols. High demand in gut health and metabolic conditions.",
         icon: Zap,
         color: "emerald",
         gradient: "from-emerald-500 to-emerald-600",
         income: "$60K – $150K",
         timeline: "8–14 months",
+        clientTypes: "Gut issues, autoimmune, blood sugar, weight loss",
         deliveredThrough: [
-            "Functional Medicine Track",
-            "Nutrition / Gut Health Specializations",
+            "FM Certification + Nutrition Modules",
+            "Gut Health or Metabolic Specialization",
         ],
-        ctaText: "Explore Nutrition Specializations",
+        ctaText: "Explore Nutrition Path",
         ctaLink: "/tracks/functional-medicine",
     },
     {
         id: "wellness-entrepreneur",
-        title: "Wellness Entrepreneur",
-        subtitle: "Build and scale your own coaching business or team",
+        title: "Wellness Practice Owner",
+        subtitle: "Build a thriving coaching business with multiple revenue streams",
+        description: "Go beyond 1:1 coaching to build courses, group programs, and eventually a team of coaches. Create passive income and impact thousands.",
         icon: Briefcase,
         color: "purple",
         gradient: "from-purple-500 to-purple-600",
         income: "$80K – $250K+",
         timeline: "12–18 months",
+        clientTypes: "Corporate wellness, online audiences, group coaching",
         deliveredThrough: [
-            "Any Specialization Track (Steps 1–3)",
-            "Business Scaler (Step 4)",
+            "Complete any FM Specialization (Steps 1–3)",
+            "Business Scaler Program (Step 4)",
         ],
-        ctaText: "View the Business Scaler Path",
+        ctaText: "View Business Scaler",
         ctaLink: "/tracks/functional-medicine#step-4",
     },
 ];
@@ -355,44 +367,55 @@ export default async function CareerCenterPage() {
                 <div className="flex items-center gap-2 mb-6">
                     <Target className="w-6 h-6 text-burgundy-600" />
                     <div>
-                        <h2 className="text-2xl font-bold text-gray-900">Career Outcomes</h2>
-                        <p className="text-sm text-gray-500">These are destinations, not courses. Each is delivered through a specialization track.</p>
+                        <h2 className="text-2xl font-bold text-gray-900">Career Destinations</h2>
+                        <p className="text-sm text-gray-500">These are outcomes, not courses. Each destination is reached through our specialization tracks.</p>
                     </div>
                 </div>
                 <div className="grid md:grid-cols-3 gap-6">
                     {careerOutcomes.map((outcome) => (
-                        <Card key={outcome.id} className="overflow-hidden hover:shadow-lg transition-shadow border-2 border-gray-100">
+                        <Card key={outcome.id} className="overflow-hidden hover:shadow-xl transition-all border-2 border-gray-100 group">
                             {/* Colored header */}
-                            <div className={`bg-gradient-to-r ${outcome.gradient} p-4 text-white`}>
-                                <div className="flex items-center gap-3">
+                            <div className={`bg-gradient-to-r ${outcome.gradient} p-5 text-white`}>
+                                <div className="flex items-center gap-3 mb-3">
                                     <div className="w-12 h-12 rounded-xl bg-white/20 flex items-center justify-center">
                                         <outcome.icon className="w-6 h-6" />
                                     </div>
                                     <div>
                                         <h3 className="text-lg font-bold">{outcome.title}</h3>
-                                        <p className="text-sm text-white/80">{outcome.subtitle}</p>
                                     </div>
                                 </div>
+                                <p className="text-sm text-white/90">{outcome.subtitle}</p>
                             </div>
 
                             <CardContent className="p-5">
-                                <div className="space-y-3 mb-4">
-                                    <div className="flex items-center justify-between text-sm">
-                                        <span className="text-gray-500">Income Potential</span>
-                                        <span className="font-bold text-green-600">{outcome.income}</span>
+                                {/* Description */}
+                                <p className="text-sm text-gray-600 mb-4 leading-relaxed">{outcome.description}</p>
+
+                                {/* Stats */}
+                                <div className="grid grid-cols-2 gap-3 mb-4">
+                                    <div className="p-3 bg-green-50 rounded-lg">
+                                        <p className="text-xs text-gray-500">Income Potential</p>
+                                        <p className="font-bold text-green-600">{outcome.income}</p>
                                     </div>
-                                    <div className="flex items-center justify-between text-sm">
-                                        <span className="text-gray-500">Typical Timeline</span>
-                                        <span className="font-medium text-gray-900">{outcome.timeline}</span>
+                                    <div className="p-3 bg-blue-50 rounded-lg">
+                                        <p className="text-xs text-gray-500">Timeline</p>
+                                        <p className="font-bold text-blue-600">{outcome.timeline}</p>
                                     </div>
                                 </div>
 
+                                {/* Client Types */}
+                                <div className="mb-4 p-3 bg-amber-50 rounded-lg border border-amber-100">
+                                    <p className="text-xs font-medium text-amber-700 mb-1">Typical Clients:</p>
+                                    <p className="text-sm text-gray-700">{outcome.clientTypes}</p>
+                                </div>
+
+                                {/* Delivered Through */}
                                 <div className="mb-4 p-3 bg-gray-50 rounded-lg">
-                                    <p className="text-xs font-medium text-gray-500 mb-2">Delivered Through:</p>
-                                    <ul className="space-y-1">
+                                    <p className="text-xs font-medium text-gray-500 mb-2">How to Get There:</p>
+                                    <ul className="space-y-1.5">
                                         {outcome.deliveredThrough.map((item, i) => (
                                             <li key={i} className="flex items-start gap-2 text-sm text-gray-700">
-                                                <CheckCircle className="w-3.5 h-3.5 text-green-500 mt-0.5 flex-shrink-0" />
+                                                <CheckCircle className="w-4 h-4 text-green-500 mt-0.5 flex-shrink-0" />
                                                 {item}
                                             </li>
                                         ))}
@@ -400,7 +423,7 @@ export default async function CareerCenterPage() {
                                 </div>
 
                                 <Link href={outcome.ctaLink}>
-                                    <Button className={`w-full bg-gradient-to-r ${outcome.gradient} hover:opacity-90`}>
+                                    <Button className={`w-full bg-gradient-to-r ${outcome.gradient} hover:opacity-90 group-hover:shadow-md transition-all`}>
                                         {outcome.ctaText}
                                         <ArrowRight className="w-4 h-4 ml-2" />
                                     </Button>
@@ -411,7 +434,65 @@ export default async function CareerCenterPage() {
                 </div>
             </div>
 
-            {/* SECTION 3 - INCOME PATHS (Tied to Steps) */}
+            {/* SECTION 3 - FM SPECIALIZATIONS */}
+            <div>
+                <div className="flex items-center gap-2 mb-6">
+                    <Sparkles className="w-6 h-6 text-gold-600" />
+                    <div>
+                        <h2 className="text-2xl font-bold text-gray-900">FM Specializations</h2>
+                        <p className="text-sm text-gray-500">Choose your niche based on market demand and passion</p>
+                    </div>
+                </div>
+                <div className="grid md:grid-cols-2 lg:grid-cols-5 gap-4">
+                    {FM_SPECIALIZATIONS.slice(0, 10).map((spec) => {
+                        const IconComponent = spec.icon === "Apple" ? Apple :
+                            spec.icon === "Leaf" ? Leaf :
+                            spec.icon === "Heart" ? Heart :
+                            spec.icon === "Brain" ? Brain :
+                            spec.icon === "Zap" ? Zap :
+                            spec.icon === "TrendingUp" ? TrendingUp :
+                            spec.icon === "Shield" ? Shield :
+                            spec.icon === "Moon" ? Moon :
+                            spec.icon === "Droplets" ? Droplets : Target;
+
+                        return (
+                            <Card key={spec.id} className={`overflow-hidden hover:shadow-md transition-shadow ${spec.borderColor} border-2`}>
+                                <div className={`bg-gradient-to-r ${spec.gradient} p-3 text-white`}>
+                                    <div className="flex items-center justify-between">
+                                        <div className="flex items-center gap-2">
+                                            <div className="w-8 h-8 rounded-lg bg-white/20 flex items-center justify-center">
+                                                <IconComponent className="w-4 h-4" />
+                                            </div>
+                                            <span className="font-bold text-xs">#{spec.rank}</span>
+                                        </div>
+                                        <Badge className="bg-white/20 text-white text-[10px] border-0">
+                                            {spec.badge}
+                                        </Badge>
+                                    </div>
+                                </div>
+                                <CardContent className="p-3">
+                                    <h4 className="font-bold text-sm text-gray-900 mb-1 line-clamp-1">{spec.shortTitle}</h4>
+                                    <p className="text-xs text-gray-500 mb-2 line-clamp-2">{spec.description}</p>
+                                    <div className="flex items-center justify-between text-xs">
+                                        <span className={`font-medium ${spec.textColor}`}>{spec.marketDemand}</span>
+                                        <span className="text-green-600 font-semibold">{spec.incomeRange.split(" - ")[0]}</span>
+                                    </div>
+                                </CardContent>
+                            </Card>
+                        );
+                    })}
+                </div>
+                <div className="text-center mt-6">
+                    <Link href="/tracks/functional-medicine">
+                        <Button variant="outline" className="border-burgundy-200 text-burgundy-700 hover:bg-burgundy-50">
+                            Explore All Specialization Tracks
+                            <ArrowRight className="w-4 h-4 ml-2" />
+                        </Button>
+                    </Link>
+                </div>
+            </div>
+
+            {/* SECTION 4 - INCOME PATHS (Tied to Steps) */}
             <Card className="border-2 border-gray-100">
                 <CardContent className="p-6">
                     <div className="flex items-center gap-2 mb-6">
@@ -448,7 +529,7 @@ export default async function CareerCenterPage() {
                 </CardContent>
             </Card>
 
-            {/* SECTION 4 - SUCCESS STORIES (Mapped to Steps) */}
+            {/* SECTION 5 - SUCCESS STORIES (Mapped to Steps) */}
             <div>
                 <div className="flex items-center gap-2 mb-6">
                     <Star className="w-6 h-6 text-gold-500 fill-gold-500" />
@@ -497,7 +578,7 @@ export default async function CareerCenterPage() {
                 </div>
             </div>
 
-            {/* SECTION 5 - YOUR NEXT STEP (Personalized) */}
+            {/* SECTION 6 - YOUR NEXT STEP (Personalized) */}
             <Card className="bg-gradient-to-r from-burgundy-700 via-burgundy-600 to-burgundy-800 border-0 text-white overflow-hidden">
                 <CardContent className="p-8 relative">
                     <div className="absolute inset-0 opacity-10">

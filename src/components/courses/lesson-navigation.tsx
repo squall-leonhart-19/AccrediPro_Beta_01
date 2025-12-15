@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useTransition, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
@@ -8,6 +8,7 @@ import { ChevronLeft, ChevronRight, Award, Loader2, Lock, ClipboardCheck } from 
 import { Progress } from "@/components/ui/progress";
 import { CompletionCelebration } from "./completion-celebration";
 import { useAchievement } from "@/components/gamification/achievement-toast";
+import { prefetchNextLesson } from "@/hooks/use-course-data";
 
 interface LessonNavigationProps {
   courseSlug: string;
@@ -20,9 +21,9 @@ interface LessonNavigationProps {
   isCompleted: boolean;
   completedLessons: number;
   totalLessons: number;
-  canAccessNextLesson: boolean; // false if lesson is not complete and user hasn't completed current one
-  bottomBar?: boolean; // If true, render only the next button for bottom bar
-  showQuizButton?: boolean; // If true, show "Take Quiz" instead of "Next Lesson"
+  canAccessNextLesson: boolean;
+  bottomBar?: boolean;
+  showQuizButton?: boolean;
 }
 
 export function LessonNavigation({
@@ -42,12 +43,22 @@ export function LessonNavigation({
 }: LessonNavigationProps) {
   const router = useRouter();
   const { showAchievement } = useAchievement();
-  const [loading, setLoading] = useState(false);
+  const [isPending, startTransition] = useTransition();
   const [showCelebration, setShowCelebration] = useState(false);
+  // OPTIMISTIC STATE: Track completion locally for instant UI
+  const [optimisticCompleted, setOptimisticCompleted] = useState(isCompleted);
+  const [optimisticCount, setOptimisticCount] = useState(completedLessons);
 
-  const progressPercentage = totalLessons > 0 ? (completedLessons / totalLessons) * 100 : 0;
+  // PREFETCH: Preload next lesson data when component mounts
+  useEffect(() => {
+    if (nextLesson?.id) {
+      prefetchNextLesson(courseSlug, nextLesson.id);
+    }
+  }, [courseSlug, nextLesson?.id]);
 
-  const showGamificationAchievements = (data: { data?: { completedLessons?: number; courseCompleted?: boolean } }) => {
+  const progressPercentage = totalLessons > 0 ? (optimisticCount / totalLessons) * 100 : 0;
+
+  const showGamificationAchievements = (newCompletedCount: number, courseCompleted?: boolean) => {
     // Show XP for lesson completion
     showAchievement({
       id: `xp-${lessonId}`,
@@ -56,7 +67,6 @@ export function LessonNavigation({
       value: 25,
     });
 
-    const newCompletedCount = data.data?.completedLessons || completedLessons + 1;
     const progress = Math.round((newCompletedCount / totalLessons) * 100);
 
     // First lesson badge
@@ -98,7 +108,7 @@ export function LessonNavigation({
     }
 
     // Course completion
-    if (data.data?.courseCompleted) {
+    if (courseCompleted) {
       setTimeout(() => {
         showAchievement({
           id: `course-complete-${courseId}`,
@@ -110,117 +120,137 @@ export function LessonNavigation({
     }
   };
 
+  const scrollToQuiz = () => {
+    // Find and scroll to the quiz section on the same page
+    const quizSection = document.querySelector('[class*="scroll-mt-24"]');
+    if (quizSection) {
+      quizSection.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+  };
+
   const handleNextClick = async () => {
-    // If already completed, just navigate
-    if (isCompleted) {
-      // If showing quiz button, go to quiz instead of next lesson
-      if (showQuizButton) {
-        router.push(`/courses/${courseSlug}/quiz/${moduleId}`);
-      } else if (nextLesson) {
+    // If showing quiz button, scroll to quiz section instead of navigating
+    if (showQuizButton) {
+      // Mark lesson as complete if not already
+      if (!optimisticCompleted) {
+        const newCount = optimisticCount + 1;
+        setOptimisticCompleted(true);
+        setOptimisticCount(newCount);
+        showGamificationAchievements(newCount);
+
+        // Sync to database in background
+        fetch("/api/progress/complete", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ lessonId, courseId, moduleId }),
+        }).catch((error) => {
+          console.error("Background sync failed:", error);
+        });
+      }
+
+      // Scroll to quiz section
+      scrollToQuiz();
+      return;
+    }
+
+    // If already completed, just navigate instantly
+    if (optimisticCompleted) {
+      if (nextLesson) {
         router.push(`/learning/${courseSlug}/${nextLesson.id}`);
       }
       return;
     }
 
-    // Otherwise, mark as complete first then navigate
-    setLoading(true);
+    // OPTIMISTIC UI: Update state immediately, navigate instantly
+    const newCount = optimisticCount + 1;
+    setOptimisticCompleted(true);
+    setOptimisticCount(newCount);
 
-    try {
-      const response = await fetch("/api/progress/complete", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ lessonId, courseId, moduleId }),
+    // Show achievements immediately
+    showGamificationAchievements(newCount);
+
+    // Navigate immediately (don't wait for API)
+    if (nextLesson) {
+      startTransition(() => {
+        router.push(`/learning/${courseSlug}/${nextLesson.id}`);
       });
+    } else {
+      startTransition(() => {
+        router.push(`/courses/${courseSlug}`);
+      });
+    }
 
+    // Sync to database in background (fire and forget)
+    fetch("/api/progress/complete", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ lessonId, courseId, moduleId }),
+    }).then(async (response) => {
       if (response.ok) {
         const data = await response.json();
-
-        // Show gamification achievements
-        showGamificationAchievements(data);
-
-        // Check if course was just completed
         if (data.data?.courseCompleted) {
           setShowCelebration(true);
-          return; // Don't navigate, show celebration
-        }
-
-        // If showing quiz button, go to quiz instead of next lesson
-        if (showQuizButton) {
-          router.push(`/courses/${courseSlug}/quiz/${moduleId}`);
-        } else if (nextLesson) {
-          // Navigate to next lesson
-          router.push(`/learning/${courseSlug}/${nextLesson.id}`);
-        } else {
-          // No next lesson - go back to course page
-          router.push(`/courses/${courseSlug}`);
         }
       }
-    } catch (error) {
-      console.error("Failed to mark lesson complete:", error);
-    } finally {
-      setLoading(false);
-    }
+    }).catch((error) => {
+      console.error("Background sync failed:", error);
+    });
   };
 
   const handleCompleteCourse = async () => {
-    // Mark current lesson complete if not already
-    if (!isCompleted) {
-      setLoading(true);
-      try {
-        const response = await fetch("/api/progress/complete", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ lessonId, courseId, moduleId }),
-        });
+    if (!optimisticCompleted) {
+      // Optimistic update
+      const newCount = optimisticCount + 1;
+      setOptimisticCompleted(true);
+      setOptimisticCount(newCount);
+      showGamificationAchievements(newCount, true);
 
+      // Background sync
+      fetch("/api/progress/complete", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ lessonId, courseId, moduleId }),
+      }).then(async (response) => {
         if (response.ok) {
           const data = await response.json();
-
-          // Show gamification achievements
-          showGamificationAchievements(data);
-
           if (data.data?.courseCompleted) {
             setShowCelebration(true);
             return;
           }
         }
-      } catch (error) {
-        console.error("Failed to complete course:", error);
-      } finally {
-        setLoading(false);
-      }
+        router.push(`/courses/${courseSlug}`);
+      }).catch(() => {
+        router.push(`/courses/${courseSlug}`);
+      });
+    } else {
+      router.push(`/courses/${courseSlug}`);
     }
-
-    // If course was already complete, just go to course page
-    router.push(`/courses/${courseSlug}`);
   };
 
   // Bottom bar variant - only renders the next button
+  // Don't show button if there's a quiz - user will use the Continue button in quiz results
   if (bottomBar) {
+    if (showQuizButton) {
+      // Return empty for quiz pages - the quiz component has its own continue button
+      return null;
+    }
+
     return (
       <>
         <Button
           onClick={handleNextClick}
-          disabled={loading}
+          disabled={isPending}
           size="lg"
-          className={showQuizButton
-            ? "bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white shadow-lg transition-all"
-            : "bg-burgundy-600 hover:bg-burgundy-700 text-white shadow-lg transition-all"
-          }
+          className="bg-burgundy-600 hover:bg-burgundy-700 text-white shadow-lg transition-all"
         >
-          {loading ? (
+          {isPending ? (
             <>
               <Loader2 className="w-5 h-5 mr-2 animate-spin" />
-              Saving...
-            </>
-          ) : showQuizButton ? (
-            <>
-              <ClipboardCheck className="w-5 h-5 mr-2" />
-              {isCompleted ? "Take Quiz" : "Complete & Take Quiz"}
+              Loading...
             </>
           ) : (
             <>
-              {isCompleted ? "Next Lesson" : "Complete & Next"}
+              {optimisticCompleted ? "Next Lesson" : "Complete & Next"}
               <ChevronRight className="w-5 h-5 ml-2" />
             </>
           )}
@@ -243,9 +273,9 @@ export function LessonNavigation({
   return (
     <>
       <div className="flex items-center justify-between pt-6 border-t border-gray-200">
-        {/* Previous Button */}
+        {/* Previous Button - with prefetch for instant navigation */}
         {prevLesson ? (
-          <Link href={`/learning/${courseSlug}/${prevLesson.id}`}>
+          <Link href={`/learning/${courseSlug}/${prevLesson.id}`} prefetch={true}>
             <Button
               variant="outline"
               className="border-gray-300 text-gray-700 hover:bg-gray-100 hover:text-gray-900 transition-all"
@@ -259,10 +289,10 @@ export function LessonNavigation({
           <div />
         )}
 
-        {/* Mobile Progress */}
+        {/* Mobile Progress - uses optimistic count */}
         <div className="lg:hidden flex items-center gap-2 bg-gray-100 rounded-full px-4 py-2">
           <span className="text-xs text-gray-600">
-            {completedLessons}/{totalLessons}
+            {optimisticCount}/{totalLessons}
           </span>
           <Progress
             value={progressPercentage}
@@ -274,15 +304,15 @@ export function LessonNavigation({
         {showQuizButton ? (
           <Button
             onClick={handleNextClick}
-            disabled={loading || (!canAccessNextLesson && !isCompleted)}
+            disabled={isPending || (!canAccessNextLesson && !optimisticCompleted)}
             className="bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white shadow-lg transition-all disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            {loading ? (
+            {isPending ? (
               <>
                 <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                Saving...
+                Loading...
               </>
-            ) : !canAccessNextLesson && !isCompleted ? (
+            ) : !canAccessNextLesson && !optimisticCompleted ? (
               <>
                 <Lock className="w-4 h-4 mr-2" />
                 <span className="hidden sm:inline">Complete to Take Quiz</span>
@@ -292,33 +322,29 @@ export function LessonNavigation({
               <>
                 <ClipboardCheck className="w-4 h-4 mr-2" />
                 <span className="hidden sm:inline">
-                  {isCompleted ? "Take Module Quiz" : "Complete & Take Quiz"}
+                  {optimisticCompleted ? "Take Module Quiz" : "Complete & Take Quiz"}
                 </span>
-                <span className="sm:hidden">
-                  {isCompleted ? "Quiz" : "Quiz"}
-                </span>
+                <span className="sm:hidden">Quiz</span>
               </>
             )}
           </Button>
         ) : nextLesson ? (
           <Button
             onClick={handleNextClick}
-            disabled={loading}
+            disabled={isPending}
             className="bg-burgundy-600 hover:bg-burgundy-700 text-white shadow-lg transition-all disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            {loading ? (
+            {isPending ? (
               <>
                 <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                Saving...
+                Loading...
               </>
             ) : (
               <>
                 <span className="hidden sm:inline">
-                  {isCompleted ? "Next Lesson" : "Complete & Next"}
+                  {optimisticCompleted ? "Next Lesson" : "Complete & Next"}
                 </span>
-                <span className="sm:hidden">
-                  {isCompleted ? "Next" : "Next"}
-                </span>
+                <span className="sm:hidden">Next</span>
                 <ChevronRight className="w-4 h-4 ml-2" />
               </>
             )}
@@ -326,18 +352,18 @@ export function LessonNavigation({
         ) : (
           <Button
             onClick={handleCompleteCourse}
-            disabled={loading}
+            disabled={isPending}
             className="bg-gradient-to-r from-gold-500 to-gold-600 hover:from-gold-600 hover:to-gold-700 text-white font-semibold shadow-lg transition-all"
           >
-            {loading ? (
+            {isPending ? (
               <>
                 <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                Completing...
+                Loading...
               </>
             ) : (
               <>
                 <Award className="w-4 h-4 mr-2" />
-                {isCompleted ? "View Certificate" : "Complete Course"}
+                {optimisticCompleted ? "View Certificate" : "Complete Course"}
               </>
             )}
           </Button>

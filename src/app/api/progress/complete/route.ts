@@ -4,6 +4,7 @@ import { authOptions } from "@/lib/auth";
 import prisma from "@/lib/prisma";
 import { onLessonCompleted, onCourseCompleted } from "@/lib/webhooks";
 import { createCertificateOnCompletion } from "@/lib/certificate-service";
+import { triggerAutoMessage } from "@/lib/auto-messages";
 
 export async function POST(request: NextRequest) {
   try {
@@ -17,25 +18,26 @@ export async function POST(request: NextRequest) {
     }
 
     const { lessonId, courseId, moduleId } = await request.json();
+    const userId = session.user.id;
 
-    // Get lesson details
-    const lesson = await prisma.lesson.findUnique({
-      where: { id: lessonId },
-      include: {
-        module: {
-          include: {
-            course: {
-              include: {
-                coach: {
-                  select: { id: true, firstName: true, lastName: true },
-                },
-              },
+    // OPTIMIZED: Parallel queries to get all needed data at once
+    const [lesson, existingProgress, streak] = await Promise.all([
+      prisma.lesson.findUnique({
+        where: { id: lessonId },
+        include: {
+          module: {
+            include: {
+              course: true,
+              lessons: { where: { isPublished: true }, select: { id: true } },
             },
-            lessons: { where: { isPublished: true } },
           },
         },
-      },
-    });
+      }),
+      prisma.lessonProgress.findUnique({
+        where: { userId_lessonId: { userId, lessonId } },
+      }),
+      prisma.userStreak.findUnique({ where: { userId } }),
+    ]);
 
     if (!lesson) {
       return NextResponse.json(
@@ -44,222 +46,186 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    // If already completed, return early (fast path)
+    if (existingProgress?.isCompleted) {
+      return NextResponse.json({
+        success: true,
+        data: { progress: 0, moduleCompleted: false, courseCompleted: false, alreadyCompleted: true },
+      });
+    }
+
     const actualCourseId = courseId || lesson.module.course.id;
     const actualModuleId = moduleId || lesson.module.id;
 
-    // Check if this is the user's first lesson ever
-    const existingCompletedLessons = await prisma.lessonProgress.count({
-      where: {
-        userId: session.user.id,
-        isCompleted: true,
-      },
-    });
+    // BATCHED TRANSACTION: All critical writes in a single transaction
+    const result = await prisma.$transaction(async (tx) => {
+      const now = new Date();
+      const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
 
-    const isFirstLessonEver = existingCompletedLessons === 0;
-
-    // Mark lesson as complete
-    await prisma.lessonProgress.upsert({
-      where: {
-        userId_lessonId: {
-          userId: session.user.id,
-          lessonId,
-        },
-      },
-      update: {
-        isCompleted: true,
-        completedAt: new Date(),
-      },
-      create: {
-        userId: session.user.id,
-        lessonId,
-        isCompleted: true,
-        completedAt: new Date(),
-      },
-    });
-
-    // Update streak and points
-    await updateStreak(session.user.id);
-    await awardPoints(session.user.id, 10, "lesson_complete");
-
-    // Award first step badge if this is the user's first lesson
-    if (isFirstLessonEver) {
-      await checkAndAwardBadge(session.user.id, "first_step");
-    }
-
-    // Check module completion
-    const moduleLessonIds = lesson.module.lessons.map((l) => l.id);
-    const completedModuleLessons = await prisma.lessonProgress.count({
-      where: {
-        userId: session.user.id,
-        lessonId: { in: moduleLessonIds },
-        isCompleted: true,
-      },
-    });
-
-    const isModuleComplete = completedModuleLessons >= moduleLessonIds.length;
-    let moduleJustCompleted = false;
-
-    if (isModuleComplete) {
-      // Check if module was just completed
-      const existingModuleProgress = await prisma.moduleProgress.findUnique({
-        where: {
-          userId_moduleId: {
-            userId: session.user.id,
-            moduleId: actualModuleId,
-          },
-        },
+      // 1. Mark lesson complete
+      await tx.lessonProgress.upsert({
+        where: { userId_lessonId: { userId, lessonId } },
+        update: { isCompleted: true, completedAt: now },
+        create: { userId, lessonId, isCompleted: true, completedAt: now },
       });
 
-      if (!existingModuleProgress?.isCompleted) {
-        moduleJustCompleted = true;
-
-        // Mark module as complete
-        await prisma.moduleProgress.upsert({
-          where: {
-            userId_moduleId: {
-              userId: session.user.id,
-              moduleId: actualModuleId,
-            },
-          },
-          update: {
-            isCompleted: true,
-            completedAt: new Date(),
-          },
-          create: {
-            userId: session.user.id,
-            moduleId: actualModuleId,
-            isCompleted: true,
-            completedAt: new Date(),
-          },
+      // 2. Update streak + award points in one operation
+      if (!streak) {
+        await tx.userStreak.create({
+          data: { userId, currentStreak: 1, longestStreak: 1, lastActiveAt: today, totalPoints: 10 },
         });
-
-        // Award module completion badge/points
-        await awardPoints(session.user.id, 50, "module_complete");
-        await checkAndAwardBadge(session.user.id, "module_master");
-      }
-    }
-
-    // Calculate and update course progress
-    const course = await prisma.course.findUnique({
-      where: { id: actualCourseId },
-      include: {
-        modules: {
-          where: { isPublished: true },
-          include: {
-            lessons: { where: { isPublished: true } },
-          },
-        },
-      },
-    });
-
-    let courseJustCompleted = false;
-    let newProgress = 0;
-
-    if (course) {
-      const totalLessons = course.modules.reduce(
-        (acc, m) => acc + m.lessons.length,
-        0
-      );
-      const lessonIds = course.modules.flatMap((m) => m.lessons.map((l) => l.id));
-
-      const completedLessons = await prisma.lessonProgress.count({
-        where: {
-          userId: session.user.id,
-          lessonId: { in: lessonIds },
-          isCompleted: true,
-        },
-      });
-
-      newProgress = totalLessons > 0 ? (completedLessons / totalLessons) * 100 : 0;
-
-      // Get current enrollment status
-      const enrollment = await prisma.enrollment.findUnique({
-        where: {
-          userId_courseId: {
-            userId: session.user.id,
-            courseId: course.id,
-          },
-        },
-      });
-
-      // Check if course just completed
-      if (newProgress >= 100 && enrollment?.status !== "COMPLETED") {
-        courseJustCompleted = true;
-
-        await prisma.enrollment.update({
-          where: {
-            userId_courseId: {
-              userId: session.user.id,
-              courseId: course.id,
-            },
-          },
-          data: {
-            progress: 100,
-            status: "COMPLETED",
-            completedAt: new Date(),
-            lastAccessedAt: new Date(),
-          },
-        });
-
-        // Award course completion points and badge
-        await awardPoints(session.user.id, 200, "course_complete");
-        await checkAndAwardBadge(session.user.id, "course_graduate");
-
-        // Update analytics
-        await prisma.courseAnalytics.upsert({
-          where: { courseId: course.id },
-          update: { totalCompleted: { increment: 1 } },
-          create: {
-            courseId: course.id,
-            totalCompleted: 1,
-          },
-        });
-
-        // Trigger course completion webhook
-        await onCourseCompleted(session.user.id, course.id);
-
-        // Create notification
-        await prisma.notification.create({
-          data: {
-            userId: session.user.id,
-            type: "COURSE_COMPLETE",
-            title: "Course Completed!",
-            message: `Congratulations! You've completed ${course.title}. Your certificate is being prepared.`,
-          },
-        });
-
-        // Create certificate and send email
-        await createCertificateOnCompletion(session.user.id, course.id);
       } else {
-        await prisma.enrollment.update({
-          where: {
-            userId_courseId: {
-              userId: session.user.id,
-              courseId: course.id,
+        const lastActive = new Date(streak.lastActiveAt);
+        const lastActiveDay = new Date(lastActive.getFullYear(), lastActive.getMonth(), lastActive.getDate());
+        const diffDays = Math.floor((today.getTime() - lastActiveDay.getTime()) / (1000 * 60 * 60 * 24));
+
+        if (diffDays === 1) {
+          const newStreak = streak.currentStreak + 1;
+          await tx.userStreak.update({
+            where: { userId },
+            data: {
+              currentStreak: newStreak,
+              longestStreak: Math.max(newStreak, streak.longestStreak),
+              lastActiveAt: today,
+              totalPoints: { increment: 10 },
             },
-          },
-          data: {
-            progress: newProgress,
-            lastAccessedAt: new Date(),
-          },
-        });
+          });
+        } else if (diffDays > 1) {
+          await tx.userStreak.update({
+            where: { userId },
+            data: { currentStreak: 1, lastActiveAt: today, totalPoints: { increment: 10 } },
+          });
+        } else {
+          await tx.userStreak.update({
+            where: { userId },
+            data: { totalPoints: { increment: 10 } },
+          });
+        }
       }
 
-      // Trigger lesson completion webhook
-      await onLessonCompleted(
-        session.user.id,
-        lessonId,
-        course.id,
-        actualModuleId
-      );
-    }
+      // 3. Log activity
+      await tx.userActivity.create({
+        data: { userId, action: "points_earned", metadata: { points: 10, reason: "lesson_complete" } },
+      });
+
+      // 4. Check module completion
+      const moduleLessonIds = lesson.module.lessons.map((l) => l.id);
+      const completedModuleLessons = await tx.lessonProgress.count({
+        where: { userId, lessonId: { in: moduleLessonIds }, isCompleted: true },
+      });
+
+      const isModuleComplete = completedModuleLessons >= moduleLessonIds.length;
+      let moduleJustCompleted = false;
+
+      if (isModuleComplete) {
+        const existingModuleProgress = await tx.moduleProgress.findUnique({
+          where: { userId_moduleId: { userId, moduleId: actualModuleId } },
+        });
+
+        if (!existingModuleProgress?.isCompleted) {
+          moduleJustCompleted = true;
+          await tx.moduleProgress.upsert({
+            where: { userId_moduleId: { userId, moduleId: actualModuleId } },
+            update: { isCompleted: true, completedAt: now },
+            create: { userId, moduleId: actualModuleId, isCompleted: true, completedAt: now },
+          });
+          await tx.userStreak.update({
+            where: { userId },
+            data: { totalPoints: { increment: 50 } },
+          });
+        }
+      }
+
+      // 5. Calculate course progress
+      const course = await tx.course.findUnique({
+        where: { id: actualCourseId },
+        include: {
+          modules: {
+            where: { isPublished: true },
+            include: { lessons: { where: { isPublished: true }, select: { id: true } } },
+          },
+        },
+      });
+
+      let courseJustCompleted = false;
+      let newProgress = 0;
+
+      if (course) {
+        const totalLessons = course.modules.reduce((acc, m) => acc + m.lessons.length, 0);
+        const lessonIds = course.modules.flatMap((m) => m.lessons.map((l) => l.id));
+        const completedLessons = await tx.lessonProgress.count({
+          where: { userId, lessonId: { in: lessonIds }, isCompleted: true },
+        });
+        newProgress = totalLessons > 0 ? (completedLessons / totalLessons) * 100 : 0;
+
+        const enrollment = await tx.enrollment.findUnique({
+          where: { userId_courseId: { userId, courseId: course.id } },
+        });
+
+        if (newProgress >= 100 && enrollment?.status !== "COMPLETED") {
+          courseJustCompleted = true;
+          await tx.enrollment.update({
+            where: { userId_courseId: { userId, courseId: course.id } },
+            data: { progress: 100, status: "COMPLETED", completedAt: now, lastAccessedAt: now },
+          });
+          await tx.userStreak.update({
+            where: { userId },
+            data: { totalPoints: { increment: 200 } },
+          });
+          await tx.courseAnalytics.upsert({
+            where: { courseId: course.id },
+            update: { totalCompleted: { increment: 1 } },
+            create: { courseId: course.id, totalCompleted: 1 },
+          });
+          await tx.notification.create({
+            data: {
+              userId,
+              type: "COURSE_COMPLETE",
+              title: "Course Completed!",
+              message: `Congratulations! You've completed ${course.title}. Your certificate is being prepared.`,
+            },
+          });
+        } else if (enrollment) {
+          await tx.enrollment.update({
+            where: { userId_courseId: { userId, courseId: course.id } },
+            data: { progress: newProgress, lastAccessedAt: now },
+          });
+        }
+      }
+
+      // Get module order for auto-message
+      const moduleOrder = lesson.module.order;
+
+      return { newProgress, moduleJustCompleted, courseJustCompleted, actualCourseId, moduleOrder };
+    });
+
+    // ASYNC: Fire-and-forget webhooks/certificates/auto-messages (don't block response)
+    setImmediate(async () => {
+      try {
+        await onLessonCompleted(userId, lessonId, result.actualCourseId, actualModuleId);
+        if (result.courseJustCompleted) {
+          await onCourseCompleted(userId, result.actualCourseId);
+          await createCertificateOnCompletion(userId, result.actualCourseId);
+        }
+        // Send private DM from Coach when module is completed
+        if (result.moduleJustCompleted) {
+          await triggerAutoMessage({
+            userId,
+            trigger: "module_complete",
+            triggerValue: String(result.moduleOrder),
+          });
+        }
+      } catch (error) {
+        console.error("Background webhook error:", error);
+      }
+    });
 
     return NextResponse.json({
       success: true,
       data: {
-        progress: newProgress,
-        moduleCompleted: moduleJustCompleted,
-        courseCompleted: courseJustCompleted,
+        progress: result.newProgress,
+        moduleCompleted: result.moduleJustCompleted,
+        courseCompleted: result.courseJustCompleted,
       },
     });
   } catch (error) {
@@ -268,139 +234,5 @@ export async function POST(request: NextRequest) {
       { success: false, error: "Failed to mark lesson complete" },
       { status: 500 }
     );
-  }
-}
-
-// Helper: Update user's streak
-async function updateStreak(userId: string) {
-  const now = new Date();
-  const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
-
-  const streak = await prisma.userStreak.findUnique({
-    where: { userId },
-  });
-
-  if (!streak) {
-    await prisma.userStreak.create({
-      data: {
-        userId,
-        currentStreak: 1,
-        longestStreak: 1,
-        lastActiveAt: today,
-      },
-    });
-    return;
-  }
-
-  const lastActive = new Date(streak.lastActiveAt);
-  const lastActiveDay = new Date(
-    lastActive.getFullYear(),
-    lastActive.getMonth(),
-    lastActive.getDate()
-  );
-
-  const diffDays = Math.floor(
-    (today.getTime() - lastActiveDay.getTime()) / (1000 * 60 * 60 * 24)
-  );
-
-  if (diffDays === 0) {
-    // Same day, no streak update needed
-    return;
-  } else if (diffDays === 1) {
-    // Consecutive day, increment streak
-    const newStreak = streak.currentStreak + 1;
-    await prisma.userStreak.update({
-      where: { userId },
-      data: {
-        currentStreak: newStreak,
-        longestStreak: Math.max(newStreak, streak.longestStreak),
-        lastActiveAt: today,
-      },
-    });
-
-    // Check streak badges
-    if (newStreak === 7) {
-      await checkAndAwardBadge(userId, "week_warrior");
-    } else if (newStreak === 30) {
-      await checkAndAwardBadge(userId, "monthly_master");
-    }
-  } else {
-    // Streak broken, reset
-    await prisma.userStreak.update({
-      where: { userId },
-      data: {
-        currentStreak: 1,
-        lastActiveAt: today,
-      },
-    });
-  }
-}
-
-// Helper: Award points
-async function awardPoints(userId: string, points: number, reason: string) {
-  await prisma.userStreak.upsert({
-    where: { userId },
-    update: {
-      totalPoints: { increment: points },
-    },
-    create: {
-      userId,
-      currentStreak: 0,
-      longestStreak: 0,
-      totalPoints: points,
-    },
-  });
-
-  // Log activity
-  await prisma.userActivity.create({
-    data: {
-      userId,
-      action: "points_earned",
-      metadata: { points, reason },
-    },
-  });
-}
-
-// Helper: Check and award badge
-async function checkAndAwardBadge(userId: string, badgeSlug: string) {
-  const badge = await prisma.badge.findUnique({
-    where: { slug: badgeSlug },
-  });
-
-  if (!badge) return;
-
-  // Check if already has badge
-  const existing = await prisma.userBadge.findUnique({
-    where: {
-      userId_badgeId: {
-        userId,
-        badgeId: badge.id,
-      },
-    },
-  });
-
-  if (existing) return;
-
-  // Award badge
-  await prisma.userBadge.create({
-    data: {
-      userId,
-      badgeId: badge.id,
-    },
-  });
-
-  // Create notification
-  await prisma.notification.create({
-    data: {
-      userId,
-      type: "SYSTEM",
-      title: "New Badge Earned!",
-      message: `You've earned the "${badge.name}" badge! ${badge.description}`,
-    },
-  });
-
-  // Award badge points
-  if (badge.points > 0) {
-    await awardPoints(userId, badge.points, `badge_${badgeSlug}`);
   }
 }

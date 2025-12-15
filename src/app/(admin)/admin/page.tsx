@@ -57,16 +57,18 @@ async function getAdminStats() {
     publishedCourses,
     avgCourseProgress,
   ] = await Promise.all([
-    prisma.user.count(),
+    // Only count users with email (registered users who can log in)
+    // Excludes imported leads without email addresses
+    prisma.user.count({ where: { email: { not: null } } }),
     prisma.course.count(),
     prisma.enrollment.count(),
     prisma.certificate.count(),
-    prisma.user.count({ where: { createdAt: { gte: lastWeek } } }),
-    prisma.user.count({ where: { createdAt: { gte: twoWeeksAgo, lt: lastWeek } } }),
+    prisma.user.count({ where: { email: { not: null }, createdAt: { gte: lastWeek } } }),
+    prisma.user.count({ where: { email: { not: null }, createdAt: { gte: twoWeeksAgo, lt: lastWeek } } }),
     prisma.enrollment.count({
       where: { status: "COMPLETED", completedAt: { gte: lastMonth } },
     }),
-    prisma.user.count({ where: { lastLoginAt: { gte: lastWeek } } }),
+    prisma.user.count({ where: { email: { not: null }, lastLoginAt: { gte: lastWeek } } }),
     prisma.enrollment.findMany({
       take: 5,
       orderBy: { enrolledAt: "desc" },
@@ -80,6 +82,7 @@ async function getAdminStats() {
       },
     }),
     prisma.user.findMany({
+      where: { email: { not: null } },
       take: 5,
       orderBy: { createdAt: "desc" },
       select: {
@@ -194,12 +197,12 @@ export default async function AdminDashboard() {
 
       {/* Key Metrics Grid - 4 columns */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-        {/* Total Users */}
+        {/* Registered Users */}
         <Card className="relative overflow-hidden">
           <CardContent className="p-5">
             <div className="flex items-start justify-between">
               <div className="flex-1">
-                <p className="text-sm font-medium text-gray-500">Total Users</p>
+                <p className="text-sm font-medium text-gray-500">Registered Users</p>
                 <p className="text-3xl font-bold text-gray-900 mt-1">
                   {stats.totalUsers.toLocaleString()}
                 </p>

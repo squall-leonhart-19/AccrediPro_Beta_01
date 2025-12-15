@@ -209,6 +209,25 @@ export default function MarketingPage() {
   const [showHolidayPreview, setShowHolidayPreview] = useState(false);
   const [holidayPreviewCampaign, setHolidayPreviewCampaign] = useState<string | null>(null);
 
+  // Static nurture sequence states
+  const [showNurtureEnroll, setShowNurtureEnroll] = useState(false);
+  const [nurtureEnrollEmail, setNurtureEnrollEmail] = useState("");
+  const [nurtureEnrolling, setNurtureEnrolling] = useState(false);
+  const [showNurtureEmailPreview, setShowNurtureEmailPreview] = useState(false);
+  const [selectedNurtureEmail, setSelectedNurtureEmail] = useState<{ day: number; name: string; subject: string } | null>(null);
+  const [showNurtureEmailEdit, setShowNurtureEmailEdit] = useState(false);
+  const [nurtureEmailHtml, setNurtureEmailHtml] = useState("");
+  const [loadingNurtureHtml, setLoadingNurtureHtml] = useState(false);
+  const [nurtureEnrollCount, setNurtureEnrollCount] = useState(0);
+
+  // Full sequence test states
+  const [showFullSequenceTest, setShowFullSequenceTest] = useState(false);
+  const [fullSequenceTestEmail, setFullSequenceTestEmail] = useState("");
+  const [fullSequenceTestRunning, setFullSequenceTestRunning] = useState(false);
+  const [fullSequenceTestProgress, setFullSequenceTestProgress] = useState(0);
+  const [fullSequenceTestTotal, setFullSequenceTestTotal] = useState(0);
+  const [fullSequenceTestLog, setFullSequenceTestLog] = useState<string[]>([]);
+
   // Form state
   const [newTag, setNewTag] = useState({
     name: "",
@@ -261,6 +280,14 @@ export default function MarketingPage() {
       const res = await fetch("/api/admin/marketing/tags");
       const data = await res.json();
       setTags(data.tags || []);
+
+      // Update nurture sequence enrollment count from tag
+      const nurtureTag = (data.tags || []).find((t: MarketingTag) =>
+        t.name === "nurture-30-day" || t.slug === "nurture-30-day"
+      );
+      if (nurtureTag) {
+        setNurtureEnrollCount(nurtureTag.userCount || 0);
+      }
     } catch (error) {
       console.error("Error fetching tags:", error);
     } finally {
@@ -907,6 +934,326 @@ export default function MarketingPage() {
             </Button>
           </div>
 
+          {/* Mini Diploma → Certification (30-Day Nurture) - Static Display */}
+          <Card className="border-l-4 border-l-burgundy-600">
+            <CardHeader className="pb-3">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                  <div className="p-2 rounded-lg bg-burgundy-100">
+                    <Play className="h-5 w-5 text-burgundy-600" />
+                  </div>
+                  <div>
+                    <CardTitle className="text-lg">Mini Diploma → Certification (30-Day Nurture)</CardTitle>
+                    <CardDescription>High-CRO 30-day nurture sequence (Day 0-29). Welcome email sent separately via transactional template on enrollment.</CardDescription>
+                  </div>
+                </div>
+                <div className="flex items-center gap-2">
+                  <Badge variant="default" className="bg-burgundy-600 text-white">Active</Badge>
+                  <Button variant="outline" size="sm" onClick={() => setShowNurtureEnroll(true)}>
+                    <UserPlus className="h-4 w-4 mr-1" />Enroll
+                  </Button>
+                  <Button variant="outline" size="sm" onClick={() => setShowFullSequenceTest(true)}>
+                    <TestTube className="h-4 w-4 mr-1" />Test Full Sequence
+                  </Button>
+                  <a href="/admin/marketing/inbox-test">
+                    <Button variant="outline" size="sm"><Mail className="h-4 w-4 mr-1" />Preview Emails</Button>
+                  </a>
+                </div>
+              </div>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              {/* Trigger & Stats Info */}
+              <div className="flex flex-wrap items-center gap-4 text-sm">
+                <div className="flex items-center gap-2">
+                  <Zap className="h-4 w-4 text-amber-500" />
+                  <span className="text-gray-600">Trigger:</span>
+                  <Badge variant="outline">Mini diploma started</Badge>
+                </div>
+                <div className="flex items-center gap-4 text-gray-500">
+                  <span><strong className="text-gray-900">{nurtureEnrollCount}</strong> enrolled</span>
+                  <span><strong className="text-gray-900">0</strong> completed</span>
+                  <span><strong className="text-gray-900">0</strong> exited</span>
+                </div>
+                <Badge variant="secondary">29 emails</Badge>
+              </div>
+
+              {/* Strategy Note */}
+              <div className="p-3 bg-burgundy-50 rounded-lg border border-burgundy-100">
+                <p className="text-xs text-burgundy-700"><strong>Strategy:</strong> Deep storytelling for women 40+. All subjects use Re: prefix for Gmail Primary inbox placement. FROM: "Sarah" - personal name.</p>
+              </div>
+
+              {/* Email Steps Header */}
+              <div className="flex items-center justify-between">
+                <p className="text-sm font-medium text-gray-700">Email Steps (17 emails)</p>
+                <Button variant="outline" size="sm" disabled>
+                  <Plus className="h-4 w-4 mr-1" />Add Email
+                </Button>
+              </div>
+
+              {/* 17 Nurture Emails */}
+              <div className="space-y-2">
+                {[
+                  { day: 0, name: "Welcome + Mini Diploma", subject: "Re: your free Mini Diploma access" },
+                  { day: 1, name: "Sarah's Story", subject: "Re: my story (thought you'd relate)" },
+                  { day: 3, name: "Why Generic Advice Fails", subject: "Re: why the usual advice doesn't work" },
+                  { day: 5, name: "The Discovery", subject: "Re: the training I mentioned" },
+                  { day: 7, name: "Diane's Story (Burned-out Nurse)", subject: "Re: Diane's story (burned-out nurse)" },
+                  { day: 9, name: "The Roadmap", subject: "Re: your complete roadmap" },
+                  { day: 11, name: "Kelly's Story", subject: "Re: Kelly's story (no clients → waitlist)" },
+                  { day: 13, name: "Inside the Training", subject: "Re: what you'll learn inside" },
+                  { day: 15, name: "Vicki's Story", subject: "Re: Vicki's story (yoga teacher)" },
+                  { day: 17, name: "The Investment", subject: "Re: the investment (let's talk numbers)" },
+                  { day: 19, name: "Objections", subject: "Re: what's holding you back" },
+                  { day: 21, name: "Two Futures", subject: "Re: two futures" },
+                  { day: 23, name: "Maria's Full Story", subject: "Re: Maria's full story (you need to hear this)" },
+                  { day: 25, name: "FAQ", subject: "Re: your questions (answered)" },
+                  { day: 27, name: "Closing Friday", subject: "Re: enrollment closing Friday" },
+                  { day: 28, name: "48 Hours", subject: "Re: 48 hours left" },
+                  { day: 29, name: "Final Call", subject: "Re: final call" },
+                ].map((email, index) => (
+                  <div key={index} className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg border">
+                    <div className="w-7 h-7 rounded-full bg-burgundy-600 text-white flex items-center justify-center text-xs font-bold">{index + 1}</div>
+                    <div className="flex items-center gap-1 text-xs text-gray-500 min-w-[45px]">
+                      <Clock className="h-3 w-3" />
+                      {email.day}d
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <p className="font-medium text-sm truncate">{email.subject}</p>
+                    </div>
+                    <div className="flex items-center gap-3 text-xs text-gray-400">
+                      <span>0 sent</span>
+                      <span>0% open</span>
+                      <span>0% click</span>
+                    </div>
+                    <div className="flex items-center gap-1">
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        className="h-7 w-7"
+                        title="Preview"
+                        onClick={() => {
+                          setSelectedNurtureEmail(email);
+                          setShowNurtureEmailPreview(true);
+                        }}
+                      >
+                        <Eye className="h-3 w-3 text-gray-400 hover:text-blue-500" />
+                      </Button>
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        className="h-7 w-7"
+                        title="Edit"
+                        onClick={async () => {
+                          setSelectedNurtureEmail(email);
+                          setShowNurtureEmailEdit(true);
+                          setLoadingNurtureHtml(true);
+                          try {
+                            // Fetch the HTML template for this email
+                            const res = await fetch(`/api/admin/marketing/inbox-test?variantId=${index + 1}`);
+                            const data = await res.json();
+                            if (data.html) {
+                              setNurtureEmailHtml(data.html);
+                            } else {
+                              setNurtureEmailHtml(`<p>Email template for Day ${email.day}: ${email.name}</p>\n<p>Subject: ${email.subject}</p>\n\n<!-- Email content is stored in email templates -->`);
+                            }
+                          } catch {
+                            setNurtureEmailHtml(`<p>Email template for Day ${email.day}: ${email.name}</p>\n<p>Subject: ${email.subject}</p>\n\n<!-- Unable to load email content -->`);
+                          } finally {
+                            setLoadingNurtureHtml(false);
+                          }
+                        }}
+                      >
+                        <Edit className="h-3 w-3 text-gray-400 hover:text-gray-600" />
+                      </Button>
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        className="h-7 w-7"
+                        title="Delete"
+                        onClick={() => toast.info("Core sequence emails cannot be deleted")}
+                      >
+                        <Trash2 className="h-3 w-3 text-gray-400 hover:text-gray-600" />
+                      </Button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+
+              {/* Downsell Section */}
+              <div className="border-t pt-4 mt-4">
+                <div className="flex items-center justify-between mb-3">
+                  <p className="text-sm font-medium text-gray-700">Scholarship Downsell (Days 35-37)</p>
+                  <Badge className="bg-amber-500">Automated</Badge>
+                </div>
+                <div className="p-2 bg-amber-50 rounded-lg border border-amber-200 mb-3">
+                  <p className="text-xs text-amber-700">Sent to non-buyers 5 days after Day 29. 48-hour scholarship at $497 (50% off).</p>
+                </div>
+                <div className="space-y-2">
+                  {[
+                    { day: 35, name: "Scholarship Offer", subject: "Re: a special opportunity" },
+                    { day: 36, name: "Why Scholarships Exist", subject: "Re: why I created scholarships" },
+                    { day: 37, name: "Final Scholarship Call", subject: "Re: scholarship expires midnight" },
+                  ].map((email, index) => (
+                    <div key={index} className="flex items-center gap-3 p-3 bg-amber-50/50 rounded-lg border border-amber-200">
+                      <div className="w-7 h-7 rounded-full bg-amber-500 text-white flex items-center justify-center text-xs font-bold">{index + 1}</div>
+                      <div className="flex items-center gap-1 text-xs text-amber-600 min-w-[45px]">
+                        <Clock className="h-3 w-3" />
+                        {email.day}d
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <p className="font-medium text-sm truncate">{email.subject}</p>
+                      </div>
+                      <div className="flex items-center gap-3 text-xs text-gray-400">
+                        <span>0 sent</span>
+                        <span>0% open</span>
+                        <span>0% click</span>
+                      </div>
+                      <div className="flex items-center gap-1">
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          className="h-7 w-7"
+                          title="Preview"
+                          onClick={() => {
+                            setSelectedNurtureEmail({ day: 30 + index, name: downsell.name, subject: downsell.subject });
+                            setShowNurtureEmailPreview(true);
+                          }}
+                        >
+                          <Eye className="h-3 w-3 text-gray-400 hover:text-blue-500" />
+                        </Button>
+                        <Button variant="ghost" size="icon" className="h-7 w-7" onClick={() => sendHolidayTestEmail("downsell", index)} disabled={sendingHolidayTest === `downsell-${index}`} title="Send Test">
+                          {sendingHolidayTest === `downsell-${index}` ? <Loader2 className="h-3 w-3 animate-spin" /> : <Send className="h-3 w-3 text-gray-400 hover:text-green-500" />}
+                        </Button>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* Recovery Emails Section */}
+              <div className="border-t pt-4 mt-4">
+                <div className="flex items-center justify-between mb-3">
+                  <p className="text-sm font-medium text-gray-700">Recovery Emails (9 emails)</p>
+                  <Badge className="bg-rose-500">Re-engagement</Badge>
+                </div>
+                <div className="p-2 bg-rose-50 rounded-lg border border-rose-200 mb-3">
+                  <p className="text-xs text-rose-700">Win-back sequences for users who dropped off at different stages. Sent based on user behavior triggers.</p>
+                </div>
+
+                {/* Never Logged In - Recovery 1A, 1B, 1C */}
+                <div className="mb-4">
+                  <p className="text-xs font-medium text-gray-500 mb-2 flex items-center gap-2">
+                    <AlertCircle className="h-3 w-3" /> Never Logged In (after signup)
+                  </p>
+                  <div className="space-y-2">
+                    {[
+                      { day: 1, name: "Recovery 1A: Never logged in", subject: "Re: did you see this? (your access)" },
+                      { day: 3, name: "Recovery 1B: Never logged in", subject: "Re: quick question about your Mini Diploma" },
+                      { day: 7, name: "Recovery 1C: Never logged in", subject: "Re: last chance to activate your access" },
+                    ].map((email, index) => (
+                      <div key={`recovery1-${index}`} className="flex items-center gap-3 p-3 bg-rose-50/50 rounded-lg border border-rose-200">
+                        <div className="w-7 h-7 rounded-full bg-rose-500 text-white flex items-center justify-center text-xs font-bold">1{String.fromCharCode(65 + index)}</div>
+                        <div className="flex items-center gap-1 text-xs text-rose-600 min-w-[45px]">
+                          <Clock className="h-3 w-3" />
+                          {email.day}d
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <p className="font-medium text-sm truncate">{email.subject}</p>
+                        </div>
+                        <div className="flex items-center gap-3 text-xs text-gray-400">
+                          <span>0 sent</span>
+                          <span>0% open</span>
+                        </div>
+                        <div className="flex items-center gap-1">
+                          <Button variant="ghost" size="icon" className="h-7 w-7" title="Preview" onClick={() => { setSelectedNurtureEmail(email); setShowNurtureEmailPreview(true); }}>
+                            <Eye className="h-3 w-3 text-gray-400 hover:text-blue-500" />
+                          </Button>
+                          <Button variant="ghost" size="icon" className="h-7 w-7" title="Send Test" onClick={() => sendHolidayTestEmail("recovery1", index)} disabled={sendingHolidayTest === `recovery1-${index}`}>
+                            {sendingHolidayTest === `recovery1-${index}` ? <Loader2 className="h-3 w-3 animate-spin" /> : <Send className="h-3 w-3 text-gray-400 hover:text-green-500" />}
+                          </Button>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Never Started - Recovery 2A, 2B, 2C */}
+                <div className="mb-4">
+                  <p className="text-xs font-medium text-gray-500 mb-2 flex items-center gap-2">
+                    <AlertCircle className="h-3 w-3" /> Never Started Learning (logged in but 0% progress)
+                  </p>
+                  <div className="space-y-2">
+                    {[
+                      { day: 2, name: "Recovery 2A: Never started", subject: "Re: the first lesson takes 5 minutes" },
+                      { day: 5, name: "Recovery 2B: Never started", subject: "Re: most people start here..." },
+                      { day: 10, name: "Recovery 2C: Never started", subject: "Re: still interested in functional medicine?" },
+                    ].map((email, index) => (
+                      <div key={`recovery2-${index}`} className="flex items-center gap-3 p-3 bg-orange-50/50 rounded-lg border border-orange-200">
+                        <div className="w-7 h-7 rounded-full bg-orange-500 text-white flex items-center justify-center text-xs font-bold">2{String.fromCharCode(65 + index)}</div>
+                        <div className="flex items-center gap-1 text-xs text-orange-600 min-w-[45px]">
+                          <Clock className="h-3 w-3" />
+                          {email.day}d
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <p className="font-medium text-sm truncate">{email.subject}</p>
+                        </div>
+                        <div className="flex items-center gap-3 text-xs text-gray-400">
+                          <span>0 sent</span>
+                          <span>0% open</span>
+                        </div>
+                        <div className="flex items-center gap-1">
+                          <Button variant="ghost" size="icon" className="h-7 w-7" title="Preview" onClick={() => { setSelectedNurtureEmail(email); setShowNurtureEmailPreview(true); }}>
+                            <Eye className="h-3 w-3 text-gray-400 hover:text-blue-500" />
+                          </Button>
+                          <Button variant="ghost" size="icon" className="h-7 w-7" title="Send Test" onClick={() => sendHolidayTestEmail("recovery2", index)} disabled={sendingHolidayTest === `recovery2-${index}`}>
+                            {sendingHolidayTest === `recovery2-${index}` ? <Loader2 className="h-3 w-3 animate-spin" /> : <Send className="h-3 w-3 text-gray-400 hover:text-green-500" />}
+                          </Button>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Abandoned - Recovery 3A, 3B, 3C */}
+                <div>
+                  <p className="text-xs font-medium text-gray-500 mb-2 flex items-center gap-2">
+                    <AlertCircle className="h-3 w-3" /> Abandoned Learning (started but stopped)
+                  </p>
+                  <div className="space-y-2">
+                    {[
+                      { day: 7, name: "Recovery 3A: Abandoned", subject: "Re: noticed you haven't been back" },
+                      { day: 14, name: "Recovery 3B: Abandoned", subject: "Re: where did you leave off?" },
+                      { day: 21, name: "Recovery 3C: Abandoned", subject: "Re: your Mini Diploma is waiting" },
+                    ].map((email, index) => (
+                      <div key={`recovery3-${index}`} className="flex items-center gap-3 p-3 bg-purple-50/50 rounded-lg border border-purple-200">
+                        <div className="w-7 h-7 rounded-full bg-purple-500 text-white flex items-center justify-center text-xs font-bold">3{String.fromCharCode(65 + index)}</div>
+                        <div className="flex items-center gap-1 text-xs text-purple-600 min-w-[45px]">
+                          <Clock className="h-3 w-3" />
+                          {email.day}d
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <p className="font-medium text-sm truncate">{email.subject}</p>
+                        </div>
+                        <div className="flex items-center gap-3 text-xs text-gray-400">
+                          <span>0 sent</span>
+                          <span>0% open</span>
+                        </div>
+                        <div className="flex items-center gap-1">
+                          <Button variant="ghost" size="icon" className="h-7 w-7" title="Preview" onClick={() => { setSelectedNurtureEmail(email); setShowNurtureEmailPreview(true); }}>
+                            <Eye className="h-3 w-3 text-gray-400 hover:text-blue-500" />
+                          </Button>
+                          <Button variant="ghost" size="icon" className="h-7 w-7" title="Send Test" onClick={() => sendHolidayTestEmail("recovery3", index)} disabled={sendingHolidayTest === `recovery3-${index}`}>
+                            {sendingHolidayTest === `recovery3-${index}` ? <Loader2 className="h-3 w-3 animate-spin" /> : <Send className="h-3 w-3 text-gray-400 hover:text-green-500" />}
+                          </Button>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
           {sequencesLoading ? (
             <div className="flex items-center justify-center py-12">
               <Loader2 className="h-8 w-8 animate-spin text-gray-400" />
@@ -929,8 +1276,8 @@ export default function MarketingPage() {
                   <CardHeader className="pb-3">
                     <div className="flex items-center justify-between">
                       <div className="flex items-center gap-3">
-                        <div className={`p-2 rounded-lg ${seq.isActive ? "bg-green-100" : "bg-gray-100"}`}>
-                          {seq.isActive ? <Play className="h-5 w-5 text-green-600" /> : <Pause className="h-5 w-5 text-gray-400" />}
+                        <div className={`p-2 rounded-lg ${seq.isActive ? "bg-burgundy-100" : "bg-gray-100"}`}>
+                          {seq.isActive ? <Play className="h-5 w-5 text-burgundy-600" /> : <Pause className="h-5 w-5 text-gray-400" />}
                         </div>
                         <div>
                           <CardTitle className="text-lg">{seq.name}</CardTitle>
@@ -938,7 +1285,7 @@ export default function MarketingPage() {
                         </div>
                       </div>
                       <div className="flex items-center gap-2">
-                        <Badge variant={seq.isActive ? "default" : "secondary"}>{seq.isActive ? "Active" : "Paused"}</Badge>
+                        <Badge variant={seq.isActive ? "default" : "secondary"} className={seq.isActive ? "bg-burgundy-600 text-white" : ""}>{seq.isActive ? "Active" : "Paused"}</Badge>
                         <Button variant="outline" size="sm" onClick={() => { setSelectedSequence(seq); setSequencePreview(null); setShowTestSequence(true); }} title="Test Sequence">
                           <TestTube className="h-4 w-4 mr-1" />Test
                         </Button>
@@ -1275,84 +1622,6 @@ export default function MarketingPage() {
             </CardContent>
           </Card>
 
-          {/* Scholarship Downsell Sequence - $497 for non-buyers */}
-          <Card className="border-l-4 border-l-amber-500">
-            <CardHeader>
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-3">
-                  <div className="p-3 bg-amber-100 rounded-lg">
-                    <TrendingUp className="h-6 w-6 text-amber-600" />
-                  </div>
-                  <div>
-                    <CardTitle className="text-xl flex items-center gap-2">
-                      Scholarship Downsell Sequence
-                      <Badge className="bg-amber-500">Automated</Badge>
-                    </CardTitle>
-                    <CardDescription>$497 scholarship for non-buyers after Day 35</CardDescription>
-                  </div>
-                </div>
-                <Badge variant="outline" className="text-green-600 border-green-600">Active</Badge>
-              </div>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <div className="p-4 bg-amber-50 rounded-lg border border-amber-100">
-                <p className="text-sm text-amber-800 mb-2"><strong>Trigger:</strong></p>
-                <p className="text-sm text-amber-700">Automatically sent to Mini Diploma graduates who complete Day 29 (final call) but don't purchase within 5 days. 48-hour scholarship window at $497 (50% off).</p>
-              </div>
-
-              <div className="space-y-3">
-                <p className="text-sm font-medium text-gray-700">3-Email Sequence (Days 35-37):</p>
-                <div className="space-y-2">
-                  <div className="flex items-center gap-3 p-3 bg-white rounded-lg border">
-                    <div className="w-8 h-8 rounded-full bg-amber-100 flex items-center justify-center text-amber-700 font-bold text-sm">1</div>
-                    <div className="flex-1">
-                      <p className="font-medium text-sm">Day 35 - "I noticed you didn't join (scholarship offer)"</p>
-                      <p className="text-xs text-gray-500">Personal reach-out, $497 scholarship intro</p>
-                    </div>
-                    <Button size="sm" variant="outline" onClick={() => sendHolidayTestEmail("downsell", 0)} disabled={sendingHolidayTest === "downsell-0"}>
-                      {sendingHolidayTest === "downsell-0" ? <Loader2 className="h-3 w-3 animate-spin" /> : <Send className="h-3 w-3" />}
-                    </Button>
-                  </div>
-                  <div className="flex items-center gap-3 p-3 bg-white rounded-lg border">
-                    <div className="w-8 h-8 rounded-full bg-amber-100 flex items-center justify-center text-amber-700 font-bold text-sm">2</div>
-                    <div className="flex-1">
-                      <p className="font-medium text-sm">Day 36 - "Why I created the scholarship"</p>
-                      <p className="text-xs text-gray-500">Story-driven, limited spots framing</p>
-                    </div>
-                    <Button size="sm" variant="outline" onClick={() => sendHolidayTestEmail("downsell", 1)} disabled={sendingHolidayTest === "downsell-1"}>
-                      {sendingHolidayTest === "downsell-1" ? <Loader2 className="h-3 w-3 animate-spin" /> : <Send className="h-3 w-3" />}
-                    </Button>
-                  </div>
-                  <div className="flex items-center gap-3 p-3 bg-white rounded-lg border">
-                    <div className="w-8 h-8 rounded-full bg-amber-100 flex items-center justify-center text-amber-700 font-bold text-sm">3</div>
-                    <div className="flex-1">
-                      <p className="font-medium text-sm">Day 37 - "Last chance for scholarship"</p>
-                      <p className="text-xs text-gray-500">Final deadline, scholarship expires midnight</p>
-                    </div>
-                    <Button size="sm" variant="outline" onClick={() => sendHolidayTestEmail("downsell", 2)} disabled={sendingHolidayTest === "downsell-2"}>
-                      {sendingHolidayTest === "downsell-2" ? <Loader2 className="h-3 w-3 animate-spin" /> : <Send className="h-3 w-3" />}
-                    </Button>
-                  </div>
-                </div>
-              </div>
-
-              <div className="grid grid-cols-3 gap-4 pt-2">
-                <div className="text-center p-3 bg-gray-50 rounded-lg">
-                  <p className="text-2xl font-bold text-gray-900">0</p>
-                  <p className="text-xs text-gray-500">Sent this month</p>
-                </div>
-                <div className="text-center p-3 bg-gray-50 rounded-lg">
-                  <p className="text-2xl font-bold text-green-600">0%</p>
-                  <p className="text-xs text-gray-500">Conversion rate</p>
-                </div>
-                <div className="text-center p-3 bg-gray-50 rounded-lg">
-                  <p className="text-2xl font-bold text-amber-600">$0</p>
-                  <p className="text-xs text-gray-500">Revenue</p>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-
           {/* Quick Actions */}
           <Card>
             <CardHeader>
@@ -1647,7 +1916,7 @@ export default function MarketingPage() {
         <DialogContent className="max-w-4xl max-h-[80vh] overflow-hidden flex flex-col">
           <DialogHeader><DialogTitle className="flex items-center gap-2"><Users className="h-5 w-5" />Enrollments{selectedSequence && `: ${selectedSequence.name}`}</DialogTitle><DialogDescription>Users enrolled in this sequence and their tags</DialogDescription></DialogHeader>
           <div className="flex gap-2 mb-4">
-            <Badge variant="outline" className="bg-green-50"><span className="text-green-600">{enrollmentCounts.ACTIVE} Active</span></Badge>
+            <Badge variant="outline" className="bg-burgundy-50"><span className="text-burgundy-600">{enrollmentCounts.ACTIVE} Active</span></Badge>
             <Badge variant="outline" className="bg-blue-50"><span className="text-blue-600">{enrollmentCounts.COMPLETED} Completed</span></Badge>
             <Badge variant="outline" className="bg-red-50"><span className="text-red-600">{enrollmentCounts.EXITED} Exited</span></Badge>
           </div>
@@ -1671,7 +1940,7 @@ export default function MarketingPage() {
                         </div>
                       </div>
                       <div className="flex items-center gap-2">
-                        <Badge variant={enrollment.status === "ACTIVE" ? "default" : enrollment.status === "COMPLETED" ? "secondary" : "outline"} className={enrollment.status === "ACTIVE" ? "bg-green-500" : enrollment.status === "COMPLETED" ? "bg-blue-500" : ""}>{enrollment.status}</Badge>
+                        <Badge variant={enrollment.status === "ACTIVE" ? "default" : enrollment.status === "COMPLETED" ? "secondary" : "outline"} className={enrollment.status === "ACTIVE" ? "bg-burgundy-600 text-white" : enrollment.status === "COMPLETED" ? "bg-blue-500" : ""}>{enrollment.status}</Badge>
                         {enrollment.status === "ACTIVE" ? (
                           <Button variant="ghost" size="sm" onClick={() => removeEnrollment(enrollment.user.id, false)} className="text-red-500 hover:text-red-600 hover:bg-red-50 h-7 px-2">
                             <Trash2 className="h-3 w-3 mr-1" />Remove
@@ -1705,6 +1974,376 @@ export default function MarketingPage() {
             )}
           </div>
           <DialogFooter><Button variant="outline" onClick={() => setShowEnrollments(false)}>Close</Button></DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Nurture Sequence Enroll Dialog */}
+      <Dialog open={showNurtureEnroll} onOpenChange={setShowNurtureEnroll}>
+        <DialogContent className="max-w-md">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              <UserPlus className="h-5 w-5 text-burgundy-600" />
+              Enroll User in Nurture Sequence
+            </DialogTitle>
+            <DialogDescription>
+              Add a user to the 30-day Mini Diploma → Certification nurture sequence
+            </DialogDescription>
+          </DialogHeader>
+          <div className="space-y-4 py-4">
+            <div>
+              <Label htmlFor="enroll-email">Email Address</Label>
+              <Input
+                id="enroll-email"
+                type="email"
+                placeholder="user@example.com"
+                value={nurtureEnrollEmail}
+                onChange={(e) => setNurtureEnrollEmail(e.target.value)}
+                className="mt-1.5"
+              />
+              <p className="text-xs text-gray-500 mt-1.5">
+                If the user doesn&apos;t exist, a new account will be created
+              </p>
+            </div>
+            <div className="bg-burgundy-50 border border-burgundy-100 rounded-lg p-3">
+              <p className="text-sm text-burgundy-700">
+                <strong>Sequence:</strong> Mini Diploma → Certification
+              </p>
+              <p className="text-xs text-burgundy-600 mt-1">
+                29 emails: 17 nurture + 3 downsell + 9 recovery
+              </p>
+            </div>
+            <div className="bg-amber-50 border border-amber-200 rounded-lg p-3">
+              <p className="text-xs text-amber-700">
+                <strong>Note:</strong> This adds a marketing tag to track enrollment.
+                Actual emails are sent via scheduled jobs or manual triggers from Inbox Test.
+              </p>
+            </div>
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => { setShowNurtureEnroll(false); setNurtureEnrollEmail(""); }}>
+              Cancel
+            </Button>
+            <Button
+              onClick={async () => {
+                if (!nurtureEnrollEmail) {
+                  toast.error("Please enter an email address");
+                  return;
+                }
+                setNurtureEnrolling(true);
+                try {
+                  const res = await fetch("/api/admin/marketing/enroll", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ email: nurtureEnrollEmail, sequenceId: "nurture-30-day" })
+                  });
+                  const data = await res.json();
+                  if (data.success) {
+                    toast.success(
+                      <div>
+                        <p className="font-medium">Enrolled successfully!</p>
+                        <p className="text-sm text-gray-600">User ID: {data.userId}</p>
+                        <p className="text-sm text-gray-600">Tagged with: nurture-30-day</p>
+                        {data.firstEmailSent && (
+                          <p className="text-sm text-green-600 font-medium">✓ First email sent!</p>
+                        )}
+                        {data.firstEmailError && (
+                          <p className="text-sm text-red-600">⚠ Email error: {data.firstEmailError}</p>
+                        )}
+                      </div>,
+                      { duration: 5000 }
+                    );
+                    setShowNurtureEnroll(false);
+                    setNurtureEnrollEmail("");
+                    // Refresh tags to show updated count
+                    fetchTags();
+                  } else {
+                    toast.error(data.error || "Failed to enroll user");
+                    // Still close dialog and refresh
+                    setShowNurtureEnroll(false);
+                    setNurtureEnrollEmail("");
+                    fetchTags();
+                  }
+                } catch (err) {
+                  console.error("Enroll error:", err);
+                  toast.error("Failed to enroll user");
+                } finally {
+                  setNurtureEnrolling(false);
+                }
+              }}
+              disabled={nurtureEnrolling || !nurtureEnrollEmail}
+            >
+              {nurtureEnrolling ? (
+                <><Loader2 className="h-4 w-4 animate-spin mr-2" />Enrolling...</>
+              ) : (
+                <><UserPlus className="h-4 w-4 mr-2" />Enroll User</>
+              )}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Nurture Email Preview Dialog */}
+      <Dialog open={showNurtureEmailPreview} onOpenChange={setShowNurtureEmailPreview}>
+        <DialogContent className="max-w-2xl">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              <Mail className="h-5 w-5 text-burgundy-600" />
+              Email Preview
+            </DialogTitle>
+            {selectedNurtureEmail && (
+              <DialogDescription>
+                Day {selectedNurtureEmail.day}: {selectedNurtureEmail.name}
+              </DialogDescription>
+            )}
+          </DialogHeader>
+          {selectedNurtureEmail && (
+            <div className="space-y-4 py-4">
+              <div className="bg-gray-50 rounded-lg border p-4">
+                <div className="flex items-center justify-between mb-3">
+                  <div>
+                    <p className="text-xs text-gray-500">From</p>
+                    <p className="font-medium">Sarah &lt;sarah@accredipro.academy&gt;</p>
+                  </div>
+                  <Badge variant="outline">Day {selectedNurtureEmail.day}</Badge>
+                </div>
+                <div className="border-t pt-3">
+                  <p className="text-xs text-gray-500">Subject</p>
+                  <p className="font-medium text-lg">{selectedNurtureEmail.subject}</p>
+                </div>
+              </div>
+              <div className="bg-white border rounded-lg p-6 min-h-[200px]">
+                <p className="text-gray-500 text-center">
+                  Email content is managed in the code.<br />
+                  <a href="/admin/marketing/inbox-test" className="text-burgundy-600 hover:underline mt-2 inline-block">
+                    View full email preview in Inbox Test →
+                  </a>
+                </p>
+              </div>
+            </div>
+          )}
+          <DialogFooter>
+            <a href="/admin/marketing/inbox-test">
+              <Button variant="outline">
+                <TestTube className="h-4 w-4 mr-2" />
+                Open in Inbox Test
+              </Button>
+            </a>
+            <Button onClick={() => setShowNurtureEmailPreview(false)}>Close</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Nurture Email Edit/View HTML Dialog */}
+      <Dialog open={showNurtureEmailEdit} onOpenChange={setShowNurtureEmailEdit}>
+        <DialogContent className="max-w-4xl max-h-[90vh] overflow-hidden flex flex-col">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              <Edit className="h-5 w-5 text-burgundy-600" />
+              Email HTML Content
+            </DialogTitle>
+            {selectedNurtureEmail && (
+              <DialogDescription>
+                Day {selectedNurtureEmail.day}: {selectedNurtureEmail.name} - {selectedNurtureEmail.subject}
+              </DialogDescription>
+            )}
+          </DialogHeader>
+          <div className="flex-1 overflow-hidden flex flex-col gap-4 py-4">
+            <div className="bg-gray-50 rounded-lg border p-3">
+              <p className="text-xs text-gray-600">
+                <strong>Note:</strong> These templates are stored in the codebase. Changes made here are for preview only.
+                To permanently edit, update the email templates in <code className="bg-gray-200 px-1 rounded">src/lib/email-templates/</code>
+              </p>
+            </div>
+            {loadingNurtureHtml ? (
+              <div className="flex-1 flex items-center justify-center">
+                <Loader2 className="h-8 w-8 animate-spin text-burgundy-600" />
+              </div>
+            ) : (
+              <div className="flex-1 grid grid-cols-2 gap-4 min-h-0">
+                {/* HTML Editor */}
+                <div className="flex flex-col min-h-0">
+                  <Label className="mb-2 text-sm font-medium">HTML Source</Label>
+                  <Textarea
+                    value={nurtureEmailHtml}
+                    onChange={(e) => setNurtureEmailHtml(e.target.value)}
+                    className="flex-1 font-mono text-xs resize-none min-h-[400px]"
+                    placeholder="Loading email HTML..."
+                  />
+                </div>
+                {/* Preview */}
+                <div className="flex flex-col min-h-0">
+                  <Label className="mb-2 text-sm font-medium">Preview</Label>
+                  <div className="flex-1 border rounded-lg overflow-auto bg-white p-4 min-h-[400px]">
+                    <div dangerouslySetInnerHTML={{ __html: nurtureEmailHtml }} />
+                  </div>
+                </div>
+              </div>
+            )}
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => navigator.clipboard.writeText(nurtureEmailHtml).then(() => toast.success("HTML copied to clipboard"))}>
+              Copy HTML
+            </Button>
+            <a href="/admin/marketing/inbox-test">
+              <Button variant="outline">
+                <TestTube className="h-4 w-4 mr-2" />
+                Open in Inbox Test
+              </Button>
+            </a>
+            <Button onClick={() => setShowNurtureEmailEdit(false)}>Close</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Full Sequence Test Dialog - Send all 17 emails with 1 second delay */}
+      <Dialog open={showFullSequenceTest} onOpenChange={(open) => {
+        if (!fullSequenceTestRunning) {
+          setShowFullSequenceTest(open);
+          if (!open) {
+            setFullSequenceTestEmail("");
+            setFullSequenceTestLog([]);
+            setFullSequenceTestProgress(0);
+          }
+        }
+      }}>
+        <DialogContent className="max-w-lg">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              <TestTube className="h-5 w-5 text-burgundy-600" />
+              Test Full Nurture Sequence
+            </DialogTitle>
+            <DialogDescription>
+              Send all 17 nurture emails with 1 second delay between each
+            </DialogDescription>
+          </DialogHeader>
+          <div className="space-y-4 py-4">
+            <div>
+              <Label htmlFor="full-test-email">Test Email Address</Label>
+              <Input
+                id="full-test-email"
+                type="email"
+                placeholder="your-email@example.com"
+                value={fullSequenceTestEmail}
+                onChange={(e) => setFullSequenceTestEmail(e.target.value)}
+                disabled={fullSequenceTestRunning}
+                className="mt-1.5"
+              />
+            </div>
+
+            {fullSequenceTestRunning && (
+              <div className="space-y-2">
+                <div className="flex items-center justify-between text-sm">
+                  <span>Sending emails...</span>
+                  <span className="font-medium">{fullSequenceTestProgress}/{fullSequenceTestTotal}</span>
+                </div>
+                <div className="w-full bg-gray-200 rounded-full h-2.5">
+                  <div
+                    className="bg-burgundy-600 h-2.5 rounded-full transition-all duration-300"
+                    style={{ width: `${(fullSequenceTestProgress / fullSequenceTestTotal) * 100}%` }}
+                  />
+                </div>
+              </div>
+            )}
+
+            {fullSequenceTestLog.length > 0 && (
+              <div className="bg-gray-50 border rounded-lg p-3 max-h-48 overflow-y-auto">
+                <div className="space-y-1 text-xs font-mono">
+                  {fullSequenceTestLog.map((log, i) => (
+                    <div key={i} className={log.includes("✓") ? "text-green-600" : log.includes("✗") ? "text-red-600" : "text-gray-600"}>
+                      {log}
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            <div className="bg-amber-50 border border-amber-200 rounded-lg p-3">
+              <p className="text-xs text-amber-700">
+                <strong>Warning:</strong> This will send 17 real emails to the specified address.
+                Make sure to use a test email address you have access to.
+              </p>
+            </div>
+          </div>
+          <DialogFooter>
+            <Button
+              variant="outline"
+              onClick={() => {
+                setShowFullSequenceTest(false);
+                setFullSequenceTestEmail("");
+                setFullSequenceTestLog([]);
+                setFullSequenceTestProgress(0);
+              }}
+              disabled={fullSequenceTestRunning}
+            >
+              {fullSequenceTestRunning ? "Running..." : "Cancel"}
+            </Button>
+            <Button
+              onClick={async () => {
+                if (!fullSequenceTestEmail) {
+                  toast.error("Please enter an email address");
+                  return;
+                }
+
+                setFullSequenceTestRunning(true);
+                setFullSequenceTestTotal(17);
+                setFullSequenceTestProgress(0);
+                setFullSequenceTestLog([`Starting full sequence test to ${fullSequenceTestEmail}...`]);
+
+                let successCount = 0;
+                let failCount = 0;
+
+                for (let variantId = 1; variantId <= 17; variantId++) {
+                  try {
+                    setFullSequenceTestLog(prev => [...prev, `Sending email ${variantId}/17...`]);
+
+                    const res = await fetch("/api/admin/marketing/inbox-test", {
+                      method: "POST",
+                      headers: { "Content-Type": "application/json" },
+                      body: JSON.stringify({ variantId, testEmail: fullSequenceTestEmail })
+                    });
+
+                    const data = await res.json();
+
+                    if (res.ok && data.success) {
+                      successCount++;
+                      setFullSequenceTestLog(prev => [...prev, `✓ Email ${variantId} sent (Day ${data.day})`]);
+                    } else {
+                      failCount++;
+                      setFullSequenceTestLog(prev => [...prev, `✗ Email ${variantId} failed: ${data.error || "Unknown error"}`]);
+                    }
+                  } catch (err) {
+                    failCount++;
+                    setFullSequenceTestLog(prev => [...prev, `✗ Email ${variantId} error: ${err instanceof Error ? err.message : "Network error"}`]);
+                  }
+
+                  setFullSequenceTestProgress(variantId);
+
+                  // Wait 1 second before sending next email (except for the last one)
+                  if (variantId < 17) {
+                    await new Promise(resolve => setTimeout(resolve, 1000));
+                  }
+                }
+
+                setFullSequenceTestLog(prev => [...prev, ``, `Completed: ${successCount} sent, ${failCount} failed`]);
+                setFullSequenceTestRunning(false);
+
+                if (failCount === 0) {
+                  toast.success(`All 17 emails sent successfully to ${fullSequenceTestEmail}!`);
+                } else if (successCount > 0) {
+                  toast.warning(`${successCount}/17 emails sent. ${failCount} failed.`);
+                } else {
+                  toast.error("All emails failed to send");
+                }
+              }}
+              disabled={fullSequenceTestRunning || !fullSequenceTestEmail}
+            >
+              {fullSequenceTestRunning ? (
+                <><Loader2 className="h-4 w-4 animate-spin mr-2" />Sending {fullSequenceTestProgress}/17...</>
+              ) : (
+                <><Send className="h-4 w-4 mr-2" />Send All 17 Emails</>
+              )}
+            </Button>
+          </DialogFooter>
         </DialogContent>
       </Dialog>
     </div>

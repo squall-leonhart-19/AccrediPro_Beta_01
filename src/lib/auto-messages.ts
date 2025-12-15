@@ -8,6 +8,7 @@ interface TriggerAutoMessageOptions {
     | "first_login"
     | "enrollment"
     | "course_complete"
+    | "module_complete"
     | "inactive_7d"
     | "mini_diploma_complete"
     | "graduate_training_watched"
@@ -17,7 +18,7 @@ interface TriggerAutoMessageOptions {
     | "sequence_day_20"
     | "sequence_day_27"
     | "sequence_day_30";
-  triggerValue?: string; // e.g., course ID
+  triggerValue?: string; // e.g., course ID or module number
 }
 
 /**
@@ -223,6 +224,284 @@ No pressure at all. Just here to help!
   },
 };
 
+// Module completion messages - personalized DM from Coach Sarah for each module
+const MODULE_COMPLETION_MESSAGES: Record<number, { text: string; voiceScript: string | null; hasVoice: boolean }> = {
+  0: {
+    text: `{{firstName}}!!
+
+You just completed Module 0 - Welcome & Orientation!
+
+I'm SO proud of you for taking this first step. You've officially started your functional medicine journey, and that's huge.
+
+I left you a quick voice message to celebrate. Can't wait to see you crush the next module!
+
+- Sarah 💪`,
+    voiceScript: `{{firstName}}! You just completed Module 0, Welcome and Orientation! I'm SO proud of you for taking this first step. You've officially started your functional medicine journey, and that's huge. Keep that momentum going, I know you've got this!`,
+    hasVoice: true,
+  },
+  1: {
+    text: `{{firstName}}!
+
+Module 1 DONE! Functional Medicine Foundations - you now understand the core principles that set this approach apart.
+
+You're building such a strong foundation. This knowledge is going to serve your future clients SO well.
+
+I left you a voice note!
+
+- Sarah ✨`,
+    voiceScript: `Wow {{firstName}}! You just crushed Module 1, Functional Medicine Foundations! You now understand the core principles that make functional medicine so powerful. This foundation is everything. You're on fire!`,
+    hasVoice: true,
+  },
+  2: {
+    text: `{{firstName}}!!!
+
+You finished Module 2 - Health Coaching Mastery!
+
+This is such an important one. The way you communicate with clients can make or break their transformation. And now you have those skills!
+
+Keep going, you're doing amazing!
+
+- Sarah 🌟`,
+    voiceScript: `{{firstName}}! Module 2 complete! Health Coaching Mastery. This is such a game-changer. The way you communicate with clients will determine their success, and now you have those skills. You're becoming a real pro!`,
+    hasVoice: true,
+  },
+  3: {
+    text: `{{firstName}}, Module 3 is DONE!
+
+Clinical Assessment - you now know how to properly evaluate clients and understand what's really going on in their bodies.
+
+This is where you start seeing people differently. You're not just looking at symptoms anymore... you're seeing the whole picture.
+
+So proud of you!
+
+- Sarah 💜`,
+    voiceScript: `{{firstName}}! Module 3, Clinical Assessment, complete! You now know how to properly evaluate clients and see the whole picture. This is where real transformation begins. You're doing incredible!`,
+    hasVoice: true,
+  },
+  4: {
+    text: `Amazing work, {{firstName}}!
+
+You've completed Module 4 - Ethics & Scope!
+
+I know ethics might not be the most exciting topic... but it's SO important. Understanding your scope of practice protects you AND your clients.
+
+You're becoming a true professional!
+
+- Sarah 📚`,
+    voiceScript: `{{firstName}}, Module 4 done! Ethics and Scope. I know it might not be the most exciting topic, but understanding your scope of practice is crucial. It protects you and your clients. You're becoming a true professional!`,
+    hasVoice: true,
+  },
+  5: {
+    text: `YES {{firstName}}!!
+
+Module 5 - Functional Nutrition is COMPLETE!
+
+This is one of my favorite modules. Food is such powerful medicine, and now you understand how to use it to transform lives.
+
+You're halfway through the certification! Keep going!
+
+- Sarah 🥗`,
+    voiceScript: `YES {{firstName}}! Module 5, Functional Nutrition, complete! Food is such powerful medicine, and now you understand how to use it. You're halfway through! I'm so proud of how far you've come!`,
+    hasVoice: true,
+  },
+  6: {
+    text: `{{firstName}}!!
+
+Gut Health & Microbiome - DONE!
+
+This is where so many health issues begin AND where healing happens. You now understand one of the most foundational aspects of functional medicine.
+
+You're going to help so many people with this knowledge!
+
+- Sarah 🦠`,
+    voiceScript: `{{firstName}}! Module 6 complete! Gut Health and Microbiome. This is where so many health issues start and where real healing happens. You're going to help so many people with this knowledge!`,
+    hasVoice: true,
+  },
+  7: {
+    text: `Module 7 CRUSHED, {{firstName}}!
+
+Stress, Adrenals & Nervous System - you now understand the stress connection that most practitioners miss.
+
+In today's world, this knowledge is pure gold. Your clients will thank you!
+
+- Sarah 🧘`,
+    voiceScript: `Module 7 crushed {{firstName}}! Stress, Adrenals and Nervous System. You now understand the stress connection that most practitioners miss. In today's world, this knowledge is pure gold!`,
+    hasVoice: true,
+  },
+  8: {
+    text: `{{firstName}}, you're on FIRE!
+
+Module 8 - Blood Sugar & Insulin complete!
+
+Understanding metabolic health is so crucial. You're equipped to help people break free from the blood sugar rollercoaster.
+
+Keep that momentum going!
+
+- Sarah 🎢`,
+    voiceScript: `{{firstName}}, you're on fire! Module 8, Blood Sugar and Insulin, complete! You're now equipped to help people break free from the blood sugar rollercoaster. Amazing progress!`,
+    hasVoice: true,
+  },
+  9: {
+    text: `WOW {{firstName}}!!
+
+Module 9 - Women's Hormone Health is DONE!
+
+This module is so close to my heart. Women deserve practitioners who understand their unique hormonal journeys. And now you're one of them!
+
+- Sarah 💗`,
+    voiceScript: `Wow {{firstName}}! Module 9, Women's Hormone Health, complete! This is so close to my heart. Women deserve practitioners who truly understand them. And now you're one of them!`,
+    hasVoice: true,
+  },
+  10: {
+    text: `{{firstName}}!! Double digits!
+
+Module 10 - Perimenopause & Menopause complete!
+
+You can now help women navigate one of the most challenging transitions of their lives. This is life-changing work.
+
+You're in the home stretch now!
+
+- Sarah 🦋`,
+    voiceScript: `{{firstName}}! Double digits! Module 10 complete, Perimenopause and Menopause! You can now help women through one of the most challenging transitions of their lives. You're in the home stretch!`,
+    hasVoice: true,
+  },
+  11: {
+    text: `THYROID MASTER, {{firstName}}!
+
+Module 11 - Thyroid Health is complete!
+
+So many people struggle with thyroid issues and don't get proper support. You're now equipped to change that.
+
+Almost there!
+
+- Sarah 🦋`,
+    voiceScript: `Thyroid master {{firstName}}! Module 11 complete! So many people struggle with thyroid issues and don't get help. You're now equipped to change that. Almost there!`,
+    hasVoice: true,
+  },
+  12: {
+    text: `{{firstName}}!!
+
+Module 12 - Metabolic Health & Weight is DONE!
+
+You now understand why traditional weight loss approaches fail and what actually works. This knowledge is in such high demand!
+
+- Sarah ⚡`,
+    voiceScript: `{{firstName}}! Module 12 complete, Metabolic Health and Weight! You now understand why traditional approaches fail and what actually works. This knowledge is in such high demand!`,
+    hasVoice: true,
+  },
+  13: {
+    text: `Amazing {{firstName}}!
+
+Module 13 - Autoimmunity & Inflammation complete!
+
+This is cutting-edge functional medicine. You're learning things that most healthcare providers don't even know!
+
+Just a few more to go!
+
+- Sarah 🔥`,
+    voiceScript: `Amazing {{firstName}}! Module 13 complete, Autoimmunity and Inflammation! You're learning cutting-edge functional medicine that most healthcare providers don't even know. Just a few more to go!`,
+    hasVoice: true,
+  },
+  14: {
+    text: `{{firstName}}, BRAIN HEALTH EXPERT!
+
+Module 14 - Mental Health & Brain Function is DONE!
+
+The gut-brain connection, neurotransmitters, mental wellness... you're equipped to support the whole person now.
+
+So close to the finish line!
+
+- Sarah 🧠`,
+    voiceScript: `{{firstName}}, brain health expert! Module 14 complete! The gut-brain connection, mental wellness... you're now equipped to support the whole person. So close to the finish line!`,
+    hasVoice: true,
+  },
+  15: {
+    text: `HEART HEALTH HERO {{firstName}}!
+
+Module 15 - Cardiometabolic Health complete!
+
+You can now help people protect and heal their hearts. This is literally life-saving knowledge.
+
+The finish line is in sight!
+
+- Sarah ❤️`,
+    voiceScript: `Heart health hero {{firstName}}! Module 15 complete! You can now help people protect and heal their hearts. This is literally life-saving knowledge. The finish line is in sight!`,
+    hasVoice: true,
+  },
+  16: {
+    text: `{{firstName}}!!
+
+Module 16 - Energy & Mitochondrial Health is DONE!
+
+Fatigue is one of the biggest complaints people have. You now understand the root causes and how to address them!
+
+Almost certified!
+
+- Sarah ⚡`,
+    voiceScript: `{{firstName}}! Module 16 complete, Energy and Mitochondrial Health! Fatigue is such a common complaint and now you understand the root causes. Almost certified!`,
+    hasVoice: true,
+  },
+  17: {
+    text: `DETOX SPECIALIST {{firstName}}!
+
+Module 17 - Detox & Environmental Health is complete!
+
+In today's toxic world, this knowledge is essential. You can help people reduce their toxic burden and feel better than ever.
+
+Just 3 more modules!
+
+- Sarah 🌿`,
+    voiceScript: `Detox specialist {{firstName}}! Module 17 complete! In today's toxic world, this knowledge is essential. You can help people feel better than ever. Just 3 more modules!`,
+    hasVoice: true,
+  },
+  18: {
+    text: `{{firstName}}!!!
+
+Module 18 - Immune Health is DONE!
+
+After everything we've all been through, immune health has never been more important. You're equipped to help people build resilient immune systems.
+
+So close now!
+
+- Sarah 🛡️`,
+    voiceScript: `{{firstName}}! Module 18 complete, Immune Health! After everything we've been through, immune health has never been more important. You're equipped to help people build resilience. So close now!`,
+    hasVoice: true,
+  },
+  19: {
+    text: `PROTOCOL BUILDER {{firstName}}!!
+
+Module 19 - Protocol Building & Program Design is COMPLETE!
+
+You now know how to put it ALL together into custom protocols for your clients. This is where the magic happens!
+
+ONE MORE MODULE!
+
+- Sarah 🎯`,
+    voiceScript: `Protocol builder {{firstName}}! Module 19 complete! You now know how to put it ALL together into custom protocols. This is where the magic happens! ONE more module to go!`,
+    hasVoice: true,
+  },
+  20: {
+    text: `{{firstName}}!!!
+
+OH MY GOSH!!! Module 20 - Building Your Coaching Practice is COMPLETE!!!
+
+You did it. You actually DID it. You've completed the ENTIRE certification!
+
+I am SO incredibly proud of you. This journey wasn't easy, but you showed up, you did the work, and you finished.
+
+Your certificate is being prepared. But more importantly... you're now ready to change lives.
+
+I left you a special voice message. Listen when you can.
+
+Welcome to the family, certified coach!
+
+With so much pride,
+Sarah 🎓✨🎉`,
+    voiceScript: `Oh my gosh {{firstName}}! You did it! You actually DID it! You've completed the entire certification program! I am SO incredibly proud of you right now. This journey wasn't easy, but you showed up every single day. You did the work. And you finished. Your certificate is being prepared, but more importantly, you're now ready to change lives. Welcome to the family, certified coach. I can't wait to see what you accomplish!`,
+    hasVoice: true,
+  },
+};
+
 /**
  * Creates the initial admin welcome message (sent immediately on signup)
  * Now from "AccrediPro Founder"
@@ -355,6 +634,16 @@ export async function triggerAutoMessage({
     if (trigger === "first_login") {
       await sendFirstLoginWelcome(userId, user.firstName || "there", coachId);
       return; // Don't process other auto-messages for first login
+    }
+
+    // SPECIAL HANDLING: Module completion DM with voice
+    if (trigger === "module_complete" && triggerValue) {
+      const moduleNumber = parseInt(triggerValue, 10);
+      const moduleContent = MODULE_COMPLETION_MESSAGES[moduleNumber];
+      if (moduleContent) {
+        await sendAutoDM(userId, user.firstName || "there", coachId, `module_${moduleNumber}_complete`, moduleContent);
+        return;
+      }
     }
 
     // Handle DM triggers with voice messages

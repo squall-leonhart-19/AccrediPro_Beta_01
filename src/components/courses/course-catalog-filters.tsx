@@ -194,6 +194,120 @@ const getCourseCareerData = (course: Course) => {
     return COURSE_CAREER_DATA["default"];
 };
 
+// FM Specializations - Coming Soon with Unsplash images
+const FM_SPECIALIZATIONS_CATALOG = [
+    {
+        id: "functional-nutrition",
+        title: "Functional Nutrition",
+        shortTitle: "Nutrition",
+        badge: "CORE",
+        description: "The foundation of all functional medicine. Every practitioner needs nutrition expertise.",
+        marketDemand: "Very High",
+        income: "$60K - $150K",
+        image: "https://images.unsplash.com/photo-1490645935967-10de6ba17061?w=600&h=400&fit=crop",
+        color: "emerald",
+    },
+    {
+        id: "gut-health",
+        title: "Gut Health & Microbiome",
+        shortTitle: "Gut Health",
+        badge: "HIGH DEMAND",
+        description: "The root of 80% of chronic conditions. Massive client demand.",
+        marketDemand: "Very High",
+        income: "$70K - $180K",
+        image: "https://images.unsplash.com/photo-1505576399279-565b52d4ac71?w=600&h=400&fit=crop",
+        color: "green",
+    },
+    {
+        id: "womens-hormones",
+        title: "Women's Hormones",
+        shortTitle: "Hormones",
+        badge: "TRENDING",
+        description: "Massive market with underserved women. PMS, PCOS, fertility, perimenopause.",
+        marketDemand: "Very High",
+        income: "$80K - $200K",
+        image: "https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=600&h=400&fit=crop",
+        color: "pink",
+    },
+    {
+        id: "stress-nervous-system",
+        title: "Stress & Nervous System",
+        shortTitle: "Stress/HPA",
+        badge: "GROWING",
+        description: "Burnout epidemic driving massive demand. HPA axis, cortisol, adrenal support.",
+        marketDemand: "High",
+        income: "$60K - $140K",
+        image: "https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?w=600&h=400&fit=crop",
+        color: "purple",
+    },
+    {
+        id: "thyroid-metabolism",
+        title: "Thyroid & Metabolism",
+        shortTitle: "Thyroid",
+        badge: "EVERGREEN",
+        description: "Millions with undiagnosed thyroid issues. Hashimoto's, weight resistance.",
+        marketDemand: "High",
+        income: "$65K - $160K",
+        image: "https://images.unsplash.com/photo-1559757148-5c350d0d3c56?w=600&h=400&fit=crop",
+        color: "amber",
+    },
+    {
+        id: "blood-sugar-weight",
+        title: "Blood Sugar & Weight",
+        shortTitle: "Metabolic",
+        badge: "HIGH VOLUME",
+        description: "Obesity epidemic = endless clients. Insulin resistance, metabolic syndrome.",
+        marketDemand: "Very High",
+        income: "$55K - $130K",
+        image: "https://images.unsplash.com/photo-1498837167922-ddd27525d352?w=600&h=400&fit=crop",
+        color: "orange",
+    },
+    {
+        id: "autoimmune",
+        title: "Autoimmune & Inflammation",
+        shortTitle: "Autoimmune",
+        badge: "SPECIALIST",
+        description: "Complex cases, premium rates. Growing autoimmune epidemic needs specialists.",
+        marketDemand: "Medium-High",
+        income: "$80K - $200K",
+        image: "https://images.unsplash.com/photo-1576091160550-2173dba999ef?w=600&h=400&fit=crop",
+        color: "red",
+    },
+    {
+        id: "mental-health-brain",
+        title: "Mental Health & Brain",
+        shortTitle: "Brain Health",
+        badge: "EMERGING",
+        description: "Gut-brain axis, depression, anxiety, cognitive decline. Underserved market.",
+        marketDemand: "Growing",
+        income: "$70K - $170K",
+        image: "https://images.unsplash.com/photo-1559757175-5700dde675bc?w=600&h=400&fit=crop",
+        color: "indigo",
+    },
+    {
+        id: "sleep-circadian",
+        title: "Sleep & Circadian Health",
+        shortTitle: "Sleep",
+        badge: "NICHE",
+        description: "Sleep epidemic affecting millions. Circadian rhythm, insomnia, energy.",
+        marketDemand: "Medium",
+        income: "$50K - $120K",
+        image: "https://images.unsplash.com/photo-1541781774459-bb2af2f05b55?w=600&h=400&fit=crop",
+        color: "blue",
+    },
+    {
+        id: "detox-environmental",
+        title: "Detoxification & Environmental",
+        shortTitle: "Detox",
+        badge: "ADVANCED",
+        description: "Toxin exposure increasing. Mold, heavy metals, environmental toxins.",
+        marketDemand: "Growing",
+        income: "$75K - $180K",
+        image: "https://images.unsplash.com/photo-1506126613408-eca07ce68773?w=600&h=400&fit=crop",
+        color: "teal",
+    },
+];
+
 // Career Tracks - Enhanced with income potential
 const CAREER_TRACKS = [
     {
@@ -487,29 +601,14 @@ export function CourseCatalogFilters({
                 </Select>
             </div>
 
-            {/* Category Pills */}
+            {/* Category Pills - Only show All for now */}
             <div className="flex gap-2 overflow-x-auto pb-2 -mx-1 px-1">
                 <button
                     onClick={() => setSelectedCategory(null)}
-                    className={`flex-shrink-0 px-4 py-2 rounded-full text-sm font-medium transition-all whitespace-nowrap ${selectedCategory === null
-                        ? "bg-burgundy-600 text-white shadow-md"
-                        : "bg-gray-100 text-gray-600 hover:bg-gray-200"
-                        }`}
+                    className="flex-shrink-0 px-4 py-2 rounded-full text-sm font-medium transition-all whitespace-nowrap bg-burgundy-600 text-white shadow-md"
                 >
                     All Courses
                 </button>
-                {categories.map((cat) => (
-                    <button
-                        key={cat.id}
-                        onClick={() => setSelectedCategory(cat.id)}
-                        className={`flex-shrink-0 px-4 py-2 rounded-full text-sm font-medium transition-all whitespace-nowrap ${selectedCategory === cat.id
-                            ? "bg-burgundy-600 text-white shadow-md"
-                            : "bg-gray-100 text-gray-600 hover:bg-gray-200"
-                            }`}
-                    >
-                        {cat.name}
-                    </button>
-                ))}
             </div>
 
             {/* Course Grid - Enhanced Cards */}
@@ -612,7 +711,6 @@ export function CourseCatalogFilters({
                                             <div className="flex items-center gap-1">
                                                 <Star className="w-3 h-3 sm:w-4 sm:h-4 text-gold-400 fill-gold-400" />
                                                 <span className="font-semibold text-gray-900">{courseAvgRating.toFixed(1)}</span>
-                                                <span className="text-gray-500">({reviewCount})</span>
                                             </div>
                                             <div className="hidden sm:flex items-center gap-1 text-gray-500">
                                                 <Users className="w-4 h-4" />
@@ -751,6 +849,87 @@ export function CourseCatalogFilters({
                 </div>
             </section>
 
+            {/* FM Specializations - Coming Soon */}
+            {!searchQuery && !selectedCategory && (
+                <section className="pt-6">
+                    <div className="text-center mb-8">
+                        <Badge className="bg-gold-100 text-gold-700 mb-3">
+                            <Sparkles className="w-3 h-3 mr-1" />
+                            Specialization Tracks
+                        </Badge>
+                        <h2 className="text-2xl md:text-3xl font-bold text-gray-900 mb-2">FM Specializations</h2>
+                        <p className="text-gray-600 max-w-2xl mx-auto">
+                            Master a specific niche within functional medicine. Each specialization unlocks premium client opportunities.
+                        </p>
+                    </div>
+
+                    <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
+                        {FM_SPECIALIZATIONS_CATALOG.map((spec, index) => (
+                            <Card key={spec.id} className="overflow-hidden hover:shadow-xl transition-all cursor-pointer group relative">
+                                {/* Coming Soon Overlay */}
+                                <div className="absolute inset-0 bg-black/40 z-10 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                                    <Badge className="bg-white text-gray-900 shadow-lg">Coming Soon</Badge>
+                                </div>
+
+                                {/* Image */}
+                                <div className="aspect-[3/2] relative overflow-hidden">
+                                    <img
+                                        src={spec.image}
+                                        alt={spec.title}
+                                        className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                                    />
+                                    <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
+
+                                    {/* Rank Badge */}
+                                    <div className="absolute top-2 left-2 w-6 h-6 bg-burgundy-600 rounded-full flex items-center justify-center text-white font-bold text-xs shadow-lg">
+                                        {index + 1}
+                                    </div>
+
+                                    {/* Status Badge */}
+                                    <Badge className={`absolute top-2 right-2 text-[10px] shadow-lg ${
+                                        spec.badge === "CORE" ? "bg-emerald-500 text-white" :
+                                        spec.badge === "HIGH DEMAND" ? "bg-green-500 text-white" :
+                                        spec.badge === "TRENDING" ? "bg-pink-500 text-white" :
+                                        spec.badge === "GROWING" ? "bg-purple-500 text-white" :
+                                        spec.badge === "EVERGREEN" ? "bg-amber-500 text-white" :
+                                        spec.badge === "HIGH VOLUME" ? "bg-orange-500 text-white" :
+                                        spec.badge === "SPECIALIST" ? "bg-red-500 text-white" :
+                                        spec.badge === "EMERGING" ? "bg-indigo-500 text-white" :
+                                        spec.badge === "NICHE" ? "bg-blue-500 text-white" :
+                                        "bg-teal-500 text-white"
+                                    }`}>
+                                        {spec.badge}
+                                    </Badge>
+
+                                    {/* Title on image */}
+                                    <div className="absolute bottom-2 left-2 right-2">
+                                        <h3 className="font-bold text-white text-sm line-clamp-1">{spec.shortTitle}</h3>
+                                    </div>
+                                </div>
+
+                                <CardContent className="p-3">
+                                    <p className="text-xs text-gray-500 line-clamp-2 mb-2">{spec.description}</p>
+                                    <div className="flex items-center justify-between">
+                                        <span className="text-xs text-gray-400">{spec.marketDemand}</span>
+                                        <span className="text-xs font-bold text-green-600">{spec.income.split(" - ")[0]}</span>
+                                    </div>
+                                </CardContent>
+                            </Card>
+                        ))}
+                    </div>
+
+                    <div className="text-center mt-6">
+                        <p className="text-sm text-gray-500 mb-3">All specializations are included in the full certification. Choose your focus area.</p>
+                        <Link href="/tracks/functional-medicine">
+                            <Button variant="outline" className="border-burgundy-200 text-burgundy-700 hover:bg-burgundy-50">
+                                Explore Specialization Tracks
+                                <ArrowRight className="w-4 h-4 ml-2" />
+                            </Button>
+                        </Link>
+                    </div>
+                </section>
+            )}
+
             {/* Career Tracks - Completely Redesigned */}
             {!searchQuery && !selectedCategory && (
                 <section className="pt-6">
@@ -761,7 +940,7 @@ export function CourseCatalogFilters({
                         </Badge>
                         <h2 className="text-2xl md:text-3xl font-bold text-gray-900 mb-2">Career Tracks</h2>
                         <p className="text-gray-600 max-w-2xl mx-auto">
-                            Each track is a complete career pathway. Start with exploration, get certified, then scale your practice.
+                            Complete career pathways from exploration to scaling. Each track builds on the previous step.
                         </p>
                     </div>
 

@@ -264,29 +264,45 @@ export function MiniDiplomaDownloadButton({
         try {
             const htmlContent = generateCertificateHTML();
 
-            // Create a hidden container to render the certificate
+            // Create a hidden container to render the certificate - use absolute positioning off-screen
             const container = document.createElement("div");
-            container.style.position = "absolute";
-            container.style.left = "-9999px";
-            container.style.top = "0";
+            container.id = "mini-diploma-pdf-container";
+            container.style.cssText = `
+                position: absolute;
+                left: -10000px;
+                top: 0;
+                width: 1122px;
+                height: 793px;
+                background-color: #ffffff;
+                overflow: hidden;
+                visibility: visible;
+            `;
             container.innerHTML = htmlContent;
             document.body.appendChild(container);
 
             // Find the certificate element
             const certificateEl = container.querySelector(".certificate") as HTMLElement;
             if (!certificateEl) {
+                document.body.removeChild(container);
                 throw new Error("Certificate element not found");
             }
 
-            // Wait for styles to apply
-            await new Promise(resolve => setTimeout(resolve, 100));
+            // Wait for DOM to be ready and fonts to load
+            await new Promise(resolve => setTimeout(resolve, 300));
 
-            // Generate canvas from the certificate
+            // Generate canvas from the certificate with better mobile options
             const canvas = await html2canvas(certificateEl, {
                 scale: 2,
                 useCORS: true,
                 allowTaint: true,
                 backgroundColor: "#ffffff",
+                logging: false,
+                windowWidth: 1122,
+                windowHeight: 793,
+                x: 0,
+                y: 0,
+                scrollX: 0,
+                scrollY: 0,
             });
 
             // Remove the container
@@ -299,21 +315,34 @@ export function MiniDiplomaDownloadButton({
                 format: "a4",
             });
 
-            const imgData = canvas.toDataURL("image/png");
+            const imgData = canvas.toDataURL("image/png", 1.0);
             const pdfWidth = pdf.internal.pageSize.getWidth();
             const pdfHeight = pdf.internal.pageSize.getHeight();
 
             // Add the image to fill the PDF
             pdf.addImage(imgData, "PNG", 0, 0, pdfWidth, pdfHeight);
 
-            // Download the PDF
-            const fileName = `${diplomaTitle.replace(/\s+/g, "_")}_Certificate_${formattedName.replace(/\s+/g, "_")}.pdf`;
-            pdf.save(fileName);
+            // Use blob for better mobile compatibility
+            const pdfBlob = pdf.output("blob");
+            const url = URL.createObjectURL(pdfBlob);
+            const link = document.createElement("a");
+            link.href = url;
+            link.download = `${diplomaTitle.replace(/\s+/g, "_")}_Certificate_${formattedName.replace(/\s+/g, "_")}.pdf`;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            URL.revokeObjectURL(url);
 
         } catch (error) {
             console.error("Download failed:", error);
-            alert("Failed to generate PDF. Please try again.");
+            const errorMessage = error instanceof Error ? error.message : "Unknown error";
+            alert(`Failed to generate PDF: ${errorMessage}. Please try on desktop or contact support.`);
         } finally {
+            // Cleanup any leftover container
+            const leftover = document.getElementById("mini-diploma-pdf-container");
+            if (leftover) {
+                document.body.removeChild(leftover);
+            }
             setDownloading(false);
         }
     };

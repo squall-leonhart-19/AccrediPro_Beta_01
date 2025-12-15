@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
@@ -159,9 +159,18 @@ export function LearningClient({
   nextModule,
 }: LearningClientProps) {
   const router = useRouter();
-  const [sidebarOpen, setSidebarOpen] = useState(true);
+  // Initialize sidebar closed on mobile, open on desktop (lg breakpoint = 1024px)
+  const [sidebarOpen, setSidebarOpen] = useState(false);
   const [expandedModules, setExpandedModules] = useState<string[]>([module.id]);
   const [localCompleted, setLocalCompleted] = useState(progress.isCompleted);
+
+  // Set sidebar open on desktop after mount (avoids SSR hydration mismatch)
+  useEffect(() => {
+    const isDesktop = window.innerWidth >= 1024;
+    if (isDesktop) {
+      setSidebarOpen(true);
+    }
+  }, []);
 
   const moduleProgressPercent = progress.moduleProgress.total > 0
     ? (progress.moduleProgress.completed / progress.moduleProgress.total) * 100

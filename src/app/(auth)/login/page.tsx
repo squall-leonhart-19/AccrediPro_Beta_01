@@ -59,15 +59,6 @@ function LoginForm() {
   return (
     <Card className="border-0 shadow-2xl bg-white/95 backdrop-blur-sm">
       <CardContent className="p-8">
-        {/* Logo for mobile */}
-        <div className="lg:hidden text-center mb-8">
-          <div className="w-20 h-20 mx-auto mb-4 bg-gradient-to-br from-burgundy-600 to-burgundy-700 rounded-2xl flex items-center justify-center shadow-lg transform rotate-3 hover:rotate-0 transition-transform">
-            <span className="text-white font-bold text-2xl">AP</span>
-          </div>
-          <h1 className="text-2xl font-bold text-gray-900">AccrediPro</h1>
-          <p className="text-sm text-gray-500">Educational Excellence</p>
-        </div>
-
         {/* Header */}
         <div className="text-center mb-8">
           <div className="inline-flex items-center gap-2 px-4 py-2 bg-burgundy-50 rounded-full text-burgundy-600 text-sm font-medium mb-4">
@@ -256,11 +247,6 @@ export default function LoginPage() {
       <Card className="border-0 shadow-2xl bg-white/95 backdrop-blur-sm">
         <CardContent className="p-8">
           <div className="animate-pulse space-y-6">
-            <div className="lg:hidden text-center mb-8">
-              <div className="w-20 h-20 mx-auto mb-4 bg-gray-200 rounded-2xl" />
-              <div className="h-6 bg-gray-200 rounded w-32 mx-auto mb-2" />
-              <div className="h-4 bg-gray-100 rounded w-24 mx-auto" />
-            </div>
             <div className="text-center">
               <div className="h-8 bg-gray-200 rounded w-48 mx-auto mb-2" />
               <div className="h-4 bg-gray-100 rounded w-64 mx-auto" />

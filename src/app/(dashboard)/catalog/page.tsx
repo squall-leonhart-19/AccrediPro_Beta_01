@@ -28,7 +28,7 @@ async function getCourses() {
       },
       analytics: true,
     },
-    orderBy: [{ isFeatured: "desc" }, { createdAt: "desc" }],
+    orderBy: [{ isFeatured: "desc" }, { price: "desc" }, { createdAt: "desc" }],
   });
 }
 

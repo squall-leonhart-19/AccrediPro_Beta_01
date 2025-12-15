@@ -3,6 +3,9 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import prisma from "@/lib/prisma";
 
+// Cache course resources for 5 minutes (resources rarely change)
+export const revalidate = 300;
+
 export async function GET(
   request: NextRequest,
   context: { params: Promise<{ courseId: string }> }
@@ -71,7 +74,9 @@ export async function GET(
       )
     );
 
-    return NextResponse.json({ resources });
+    const response = NextResponse.json({ resources });
+    response.headers.set("Cache-Control", "public, s-maxage=300, stale-while-revalidate=600");
+    return response;
   } catch (error) {
     console.error("Get course resources error:", error);
     return NextResponse.json(

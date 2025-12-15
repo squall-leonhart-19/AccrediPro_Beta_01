@@ -28,7 +28,13 @@ import {
     CircleDot,
     HelpCircle,
     Sparkles,
+    Apple,
+    Brain,
+    Zap,
+    Moon,
+    Droplets,
 } from "lucide-react";
+import { FM_SPECIALIZATIONS } from "@/lib/specializations-data";
 
 const ICONS = {
     Leaf,
@@ -233,6 +239,60 @@ export function TrackContent({ track, isLoggedIn }: TrackContentProps) {
                             );
                         })}
                     </div>
+                </CardContent>
+            </Card>
+
+            {/* FM SPECIALIZATIONS - Choose Your Niche */}
+            <Card className="border-2 border-gold-200 shadow-sm overflow-hidden">
+                <div className="bg-gradient-to-r from-gold-500 to-gold-600 p-4">
+                    <h2 className="text-lg font-bold text-white flex items-center gap-2">
+                        <Target className="w-5 h-5" />
+                        Choose Your Specialization Niche
+                    </h2>
+                    <p className="text-gold-100 text-sm">All 10 FM specializations are covered in Step 1. Choose what to focus on.</p>
+                </div>
+                <CardContent className="p-6">
+                    <div className="grid grid-cols-2 md:grid-cols-5 gap-3">
+                        {FM_SPECIALIZATIONS.slice(0, 10).map((spec) => {
+                            const SpecIcon = spec.icon === "Apple" ? Apple :
+                                spec.icon === "Leaf" ? Leaf :
+                                spec.icon === "Heart" ? Heart :
+                                spec.icon === "Brain" ? Brain :
+                                spec.icon === "Zap" ? Zap :
+                                spec.icon === "TrendingUp" ? TrendingUp :
+                                spec.icon === "Shield" ? Shield :
+                                spec.icon === "Moon" ? Moon :
+                                spec.icon === "Droplets" ? Droplets : Target;
+
+                            return (
+                                <div
+                                    key={spec.id}
+                                    className={`relative p-3 rounded-xl border-2 ${spec.borderColor} ${spec.bgColor} hover:shadow-md transition-all cursor-pointer group`}
+                                >
+                                    <div className="absolute -top-2 -left-2 w-5 h-5 bg-burgundy-600 rounded-full flex items-center justify-center text-white font-bold text-[10px] shadow">
+                                        {spec.rank}
+                                    </div>
+                                    <div className="flex items-center gap-2 mb-2">
+                                        <div className={`w-8 h-8 rounded-lg bg-gradient-to-br ${spec.gradient} flex items-center justify-center`}>
+                                            <SpecIcon className="w-4 h-4 text-white" />
+                                        </div>
+                                        <Badge className={`text-[9px] ${spec.bgColor} ${spec.textColor} border-0`}>
+                                            {spec.badge}
+                                        </Badge>
+                                    </div>
+                                    <h4 className="font-bold text-xs text-gray-900 mb-1 line-clamp-1">{spec.shortTitle}</h4>
+                                    <p className="text-[10px] text-gray-500 line-clamp-2">{spec.description}</p>
+                                    <div className="mt-2 pt-2 border-t border-gray-200 flex items-center justify-between">
+                                        <span className={`text-[10px] font-medium ${spec.textColor}`}>{spec.marketDemand}</span>
+                                        <span className="text-[10px] text-green-600 font-semibold">{spec.incomeRange.split(" - ")[0]}</span>
+                                    </div>
+                                </div>
+                            );
+                        })}
+                    </div>
+                    <p className="text-center text-sm text-gray-500 mt-4">
+                        Step 1 covers all these specializations. Master the core, then go deep in your chosen niche.
+                    </p>
                 </CardContent>
             </Card>
 

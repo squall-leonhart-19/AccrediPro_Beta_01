@@ -34,6 +34,8 @@ import {
   Trash2,
   MoreVertical,
   AlertTriangle,
+  Target,
+  X,
 } from "lucide-react";
 import {
   DropdownMenu,
@@ -63,80 +65,106 @@ const SORT_OPTIONS = [
 ];
 
 // Post categories for filtering within communities
-// Order: Introduce Yourself, Daily Coach Tips, Share Your Wins (merged), New Graduates, Questions & Help (last)
+// Order: Introduce Yourself, Daily Coach Tips, Share Your Wins, New Graduates
 // Comment-only: introductions, tips (users can only comment, not create new posts)
 const postCategories = [
   { id: "introductions", label: "Introduce Yourself", icon: Hand, color: "bg-pink-100 text-pink-700", bgGradient: "from-pink-50 to-rose-50", commentOnly: true },
   { id: "tips", label: "Coaching Tips", icon: Lightbulb, color: "bg-green-100 text-green-700", bgGradient: "from-green-50 to-emerald-50", commentOnly: true },
   { id: "wins", label: "Share Your Wins", icon: Trophy, color: "bg-amber-100 text-amber-700", bgGradient: "from-amber-50 to-yellow-50" },
   { id: "graduates", label: "New Graduates", icon: GraduationCap, color: "bg-emerald-100 text-emerald-700", bgGradient: "from-emerald-50 to-teal-50" },
-  { id: "questions", label: "Questions & Help", icon: HelpCircle, color: "bg-blue-100 text-blue-700", bgGradient: "from-blue-50 to-sky-50" },
 ];
 
-// Featured graduates pool - rotates daily
+// Featured graduates pool - rotates daily with realistic zombie profiles
 const FEATURED_GRADUATES = [
-  {
-    name: "Maria Rodriguez",
-    title: "FM Practitioner",
-    avatar: null,
-    achievement: "Earned $8,500 in her first 60 days!",
-    quote: "The community support made all the difference. I couldn't have done it without the coaches and fellow students cheering me on!",
-    certified: true,
-    monthsActive: 4,
-  },
   {
     name: "Jennifer Thompson",
     title: "FM Practitioner",
-    avatar: null,
-    achievement: "Quit her nursing job & now earns more!",
-    quote: "25 years as an ER nurse. Now I help 47+ clients and actually enjoy my work again!",
+    avatar: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=150&h=150&fit=crop&crop=face",
+    achievement: "Quit nursing job & now earns more!",
+    quote: "25 years as an ER nurse. Now I help 47+ clients and actually enjoy my work again! The community support made all the difference.",
     certified: true,
     monthsActive: 12,
   },
   {
-    name: "David Chen",
+    name: "Kelly McMahon",
     title: "FM Practitioner",
-    avatar: null,
-    achievement: "Signed first $1,200 client in week 3!",
-    quote: "After 3 weeks of networking, someone said YES! I'm literally shaking - this is real!",
-    certified: true,
-    monthsActive: 2,
-  },
-  {
-    name: "Amanda Foster",
-    title: "FM Practitioner",
-    avatar: null,
-    achievement: "Hit $5K monthly revenue in month 4!",
-    quote: "Posting valuable content and following up with every lead. The business kits made launching so easy!",
-    certified: true,
-    monthsActive: 4,
-  },
-  {
-    name: "Sarah Williams",
-    title: "FM Practitioner",
-    avatar: null,
-    achievement: "Booked 12 clients in first month!",
-    quote: "The structured curriculum and mentor support gave me everything I needed to succeed!",
-    certified: true,
-    monthsActive: 3,
-  },
-  {
-    name: "Michael Roberts",
-    title: "FM Practitioner",
-    avatar: null,
-    achievement: "Left corporate & earning $8K/month!",
-    quote: "Best decision I ever made. The community keeps me motivated every single day!",
+    avatar: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=150&h=150&fit=crop&crop=face",
+    achievement: "Built $8K/month practice in 6 months!",
+    quote: "As an ARNP of 25 years, I was burned out on traditional healthcare. Now I'm paid what my knowledge is worth and I set my own hours!",
     certified: true,
     monthsActive: 6,
   },
   {
-    name: "Lisa Martinez",
+    name: "Suzette Burke",
     title: "FM Practitioner",
-    avatar: null,
-    achievement: "Launched online practice, 20+ clients!",
-    quote: "From zero to 20 clients in 2 months. The training is worth every minute!",
+    avatar: "https://images.unsplash.com/photo-1489424731084-a5d8b219a5bb?w=150&h=150&fit=crop&crop=face",
+    achievement: "Helping others after own cancer journey!",
+    quote: "I was diagnosed with breast cancer and knew there had to be a better way. Now I help others take control of their health like I did!",
     certified: true,
-    monthsActive: 2,
+    monthsActive: 8,
+  },
+  {
+    name: "Victoria Hayes",
+    title: "FM Practitioner",
+    avatar: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&h=150&fit=crop&crop=face",
+    achievement: "First $5K month after 90 days!",
+    quote: "I have Hashimoto's and wanted to understand my own health. Now I help other women with thyroid issues and I've never felt more fulfilled!",
+    certified: true,
+    monthsActive: 4,
+  },
+  {
+    name: "Julie Frady",
+    title: "FM Practitioner",
+    avatar: "https://images.unsplash.com/photo-1531746020798-e6953c6e8e04?w=150&h=150&fit=crop&crop=face",
+    achievement: "16-year RN now thriving independently!",
+    quote: "I was disgusted with our sick model healthcare system. After healing my own autoimmune issues, I now help others do the same!",
+    certified: true,
+    monthsActive: 10,
+  },
+  {
+    name: "Amanda Harris",
+    title: "FM Practitioner",
+    avatar: "https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=150&h=150&fit=crop&crop=face",
+    achievement: "Booked 15 clients in first 2 months!",
+    quote: "As a nurse with lupus, I know what it's like to struggle. Now I help people with autoimmune diseases find real solutions!",
+    certified: true,
+    monthsActive: 5,
+  },
+  {
+    name: "Lisa Gagliano",
+    title: "FM Practitioner",
+    avatar: "https://images.unsplash.com/photo-1508214751196-bcfd4ca60f91?w=150&h=150&fit=crop&crop=face",
+    achievement: "Left hospital, now earning $6K/month!",
+    quote: "I was tired of doctors just putting Band-Aids on everything. Now I help people find real solutions and get out of hospitals for good!",
+    certified: true,
+    monthsActive: 7,
+  },
+  {
+    name: "Diane Bartiromo",
+    title: "FM Practitioner",
+    avatar: "https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?w=150&h=150&fit=crop&crop=face",
+    achievement: "Retired nurse, thriving second career!",
+    quote: "40 years of nursing taught me a lot. Now retired, I found my calling in functional medicine. No 5 AM alarm, no commute, pure passion!",
+    certified: true,
+    monthsActive: 9,
+  },
+  {
+    name: "Joanne Bertrand",
+    title: "FM Practitioner",
+    avatar: "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=150&h=150&fit=crop&crop=face",
+    achievement: "Helping patients doctors couldn't!",
+    quote: "My patients told me they needed more help than doctors gave them. Now I give them the one-on-one care they deserve!",
+    certified: true,
+    monthsActive: 6,
+  },
+  {
+    name: "Kira Reoch",
+    title: "FM Practitioner",
+    avatar: "https://images.unsplash.com/photo-1580489944761-15a19d654956?w=150&h=150&fit=crop&crop=face",
+    achievement: "ICU nurse to wellness entrepreneur!",
+    quote: "20 years in ICU and flight nursing. I couldn't participate in corporate healthcare anymore. Now I help people truly heal - mind, body, and spirit!",
+    certified: true,
+    monthsActive: 11,
   },
 ];
 
@@ -254,11 +282,25 @@ interface CommunityClientProps {
 export function CommunityClient({ posts: dbPosts, stats, communities = [], isAdmin = false }: CommunityClientProps) {
   const router = useRouter();
   const [selectedCommunity, setSelectedCommunity] = useState<string>("all");
-  // Default to "introductions" - most welcoming entry point for new members
-  const [selectedCategory, setSelectedCategory] = useState<string | null>("introductions");
+  // Default to null (All) to show all posts across all categories
+  const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState("");
   const [sortBy, setSortBy] = useState("newest");
   const [showSortDropdown, setShowSortDropdown] = useState(false);
+
+  // Calculate post counts per category
+  const categoryPostCounts = useMemo(() => {
+    const counts: Record<string, number> = {};
+    dbPosts.forEach(post => {
+      const cat = post.category || "general";
+      counts[cat] = (counts[cat] || 0) + 1;
+    });
+    return counts;
+  }, [dbPosts]);
+
+  // Pagination
+  const POSTS_PER_PAGE = 20;
+  const [visiblePosts, setVisiblePosts] = useState(POSTS_PER_PAGE);
 
   // Delete post state
   const [deletePostId, setDeletePostId] = useState<string | null>(null);
@@ -302,15 +344,24 @@ export function CommunityClient({ posts: dbPosts, stats, communities = [], isAdm
 
     // Base numbers - starting high, growing day by day
     const baseMembers = 5235;
-    const basePractitioners = 1403;
+    const basePractitioners = 1721; // Target: ~1721/2000 (86%)
     const baseTransformations = 20134;
     const baseEarnings = 8400000;
 
+    // Dynamic daily practitioner growth (small daily variation for realism)
+    // Use a seeded random-like function for today's increment
+    const getTodayPractitionerGrowth = () => {
+      // Simple hash to get consistent "random" value per day
+      const seed = Math.sin(dayOfYear * 12.9898) * 43758.5453;
+      const random = seed - Math.floor(seed); // 0-1 range
+      return Math.floor(random * 3); // 0-2 daily variation (tiny, just for realism)
+    };
+
     // Add realistic growth day by day (small increments)
-    const memberGrowth = dayOfYear * 2; // ~2 new members per day
-    const practitionerGrowth = Math.floor(dayOfYear * 0.5); // ~1 every 2 days
-    const transformationGrowth = dayOfYear * 5; // ~5 per day
-    const earningsGrowth = dayOfYear * 8000; // grows with practitioners
+    const memberGrowth = dayOfYear * 3; // ~3 new members per day
+    const practitionerGrowth = getTodayPractitionerGrowth(); // 0-2 daily variation
+    const transformationGrowth = dayOfYear * 8; // ~8 per day
+    const earningsGrowth = (basePractitioners + practitionerGrowth) * 5000; // grows with practitioners
 
     // Online count: dynamic range 53-197
     // Use sine wave for smooth variation throughout the day
@@ -408,6 +459,25 @@ export function CommunityClient({ posts: dbPosts, stats, communities = [], isAdm
     return [...pinned, ...notPinned];
   }, [allPosts, selectedCommunity, selectedCategory, searchQuery, sortBy]);
 
+  // Reset pagination when filters change
+  useEffect(() => {
+    setVisiblePosts(POSTS_PER_PAGE);
+  }, [selectedCommunity, selectedCategory, searchQuery, sortBy]);
+
+  // Paginated posts to display
+  const paginatedPosts = useMemo(() => {
+    return filteredAndSortedPosts.slice(0, visiblePosts);
+  }, [filteredAndSortedPosts, visiblePosts]);
+
+  const hasMorePosts = visiblePosts < filteredAndSortedPosts.length;
+  const totalFilteredPosts = filteredAndSortedPosts.length;
+  const currentPage = Math.ceil(visiblePosts / POSTS_PER_PAGE);
+  const totalPages = Math.ceil(totalFilteredPosts / POSTS_PER_PAGE);
+
+  const loadMorePosts = () => {
+    setVisiblePosts(prev => Math.min(prev + POSTS_PER_PAGE, filteredAndSortedPosts.length));
+  };
+
   const formatDate = (date: Date) => {
     const d = new Date(date);
     const now = new Date();
@@ -470,45 +540,53 @@ export function CommunityClient({ posts: dbPosts, stats, communities = [], isAdm
 
   return (
     <div className="space-y-6 animate-fade-in max-w-[1600px] mx-auto">
-      {/* Compact Hero Banner */}
-      <Card className="bg-gradient-to-r from-burgundy-700 via-burgundy-600 to-burgundy-700 border-0 overflow-hidden relative">
-        <CardContent className="p-4 relative">
-          <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
+      {/* Improved Hero Banner with Community Goal */}
+      <Card className="bg-gradient-to-br from-burgundy-800 via-burgundy-700 to-burgundy-800 border-0 overflow-hidden relative">
+        {/* Decorative elements */}
+        <div className="absolute top-0 right-0 w-64 h-64 bg-gold-400/10 rounded-full blur-3xl"></div>
+        <div className="absolute bottom-0 left-0 w-48 h-48 bg-green-400/10 rounded-full blur-3xl"></div>
+
+        <CardContent className="p-6 relative">
+          {/* Top Row: Title + Stats + CTA */}
+          <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6 mb-6">
             {/* Left: Title + Live Indicator */}
             <div className="flex items-center gap-4">
-              <div className="w-12 h-12 rounded-xl bg-white/10 flex items-center justify-center">
-                <Heart className="w-6 h-6 text-gold-400" />
+              <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-gold-400/20 to-gold-500/10 flex items-center justify-center border border-gold-400/20">
+                <Heart className="w-7 h-7 text-gold-400" />
               </div>
               <div>
-                <h1 className="text-2xl font-bold text-white">Community</h1>
-                <div className="flex items-center gap-3 text-sm">
-                  <span className="flex items-center gap-1.5 text-green-400">
-                    <span className="w-2 h-2 bg-green-400 rounded-full animate-pulse" />
+                <h1 className="text-3xl font-bold text-white tracking-tight">Community</h1>
+                <div className="flex items-center gap-3 text-sm mt-1">
+                  <span className="flex items-center gap-1.5 text-green-400 font-medium">
+                    <span className="w-2.5 h-2.5 bg-green-400 rounded-full animate-pulse shadow-lg shadow-green-400/50" />
                     {dynamicStats.onlineNow} online
                   </span>
-                  <span className="text-burgundy-200">•</span>
+                  <span className="text-burgundy-300">•</span>
                   <span className="text-burgundy-200">{dynamicStats.coachesOnline} coaches available</span>
                 </div>
               </div>
             </div>
 
-            {/* Center: Big Impact Numbers */}
-            <div className="flex items-center gap-6 lg:gap-8">
+            {/* Center: Impact Numbers - More compact */}
+            <div className="flex items-center gap-4 lg:gap-6 bg-white/5 rounded-2xl px-6 py-3 border border-white/10">
               <div className="text-center">
-                <p className="text-3xl lg:text-4xl font-bold text-white">{dynamicStats.totalMembers.toLocaleString()}</p>
-                <p className="text-xs text-burgundy-200">Members</p>
+                <p className="text-2xl lg:text-3xl font-bold text-white">{dynamicStats.totalMembers.toLocaleString()}</p>
+                <p className="text-[10px] text-burgundy-200 uppercase tracking-wider">Members</p>
               </div>
+              <div className="w-px h-10 bg-white/20"></div>
               <div className="text-center">
-                <p className="text-3xl lg:text-4xl font-bold text-gold-400">{dynamicStats.certifiedPractitioners.toLocaleString()}+</p>
-                <p className="text-xs text-burgundy-200">Practitioners</p>
+                <p className="text-2xl lg:text-3xl font-bold text-gold-400">{dynamicStats.certifiedPractitioners.toLocaleString()}+</p>
+                <p className="text-[10px] text-burgundy-200 uppercase tracking-wider">Certified</p>
               </div>
+              <div className="w-px h-10 bg-white/20"></div>
               <div className="text-center">
-                <p className="text-3xl lg:text-4xl font-bold text-green-400">${(dynamicStats.totalEarnings / 1000000).toFixed(1)}M+</p>
-                <p className="text-xs text-burgundy-200">Earned by Grads</p>
+                <p className="text-2xl lg:text-3xl font-bold text-green-400">${(dynamicStats.totalEarnings / 1000000).toFixed(1)}M+</p>
+                <p className="text-[10px] text-burgundy-200 uppercase tracking-wider">Earned</p>
               </div>
+              <div className="w-px h-10 bg-white/20 hidden md:block"></div>
               <div className="text-center hidden md:block">
-                <p className="text-3xl lg:text-4xl font-bold text-white">{dynamicStats.clientTransformations.toLocaleString()}+</p>
-                <p className="text-xs text-burgundy-200">Lives Changed</p>
+                <p className="text-2xl lg:text-3xl font-bold text-white">{dynamicStats.clientTransformations.toLocaleString()}+</p>
+                <p className="text-[10px] text-burgundy-200 uppercase tracking-wider">Lives Changed</p>
               </div>
             </div>
 
@@ -518,6 +596,40 @@ export function CommunityClient({ posts: dbPosts, stats, communities = [], isAdm
               communityName={selectedCommunityData?.name}
               defaultCategory={selectedCategory || undefined}
             />
+          </div>
+
+          {/* Community Goal Banner */}
+          <div className="bg-gradient-to-r from-gold-500/20 via-gold-400/15 to-gold-500/20 rounded-xl p-4 border border-gold-400/20">
+            <div className="flex flex-col gap-3">
+              {/* Top row: Icon + Goal text + Progress */}
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 rounded-xl bg-gold-400/20 flex items-center justify-center shrink-0">
+                    <Target className="w-5 h-5 text-gold-400" />
+                  </div>
+                  <div>
+                    <p className="text-gold-300 text-sm font-semibold">Community Goal: 2,000 Certified Practitioners by 2025</p>
+                    <p className="text-burgundy-200 text-xs">We&apos;re {Math.round((dynamicStats.certifiedPractitioners / 2000) * 100)}% there! Every story inspires another practitioner to join.</p>
+                  </div>
+                </div>
+                <div className="flex items-center gap-2 sm:ml-auto">
+                  <div className="flex-1 sm:w-48 h-2.5 bg-burgundy-900/50 rounded-full overflow-hidden">
+                    <div
+                      className="h-full bg-gradient-to-r from-gold-400 to-gold-500 rounded-full transition-all duration-1000"
+                      style={{ width: `${Math.min((dynamicStats.certifiedPractitioners / 2000) * 100, 100)}%` }}
+                    ></div>
+                  </div>
+                  <span className="text-gold-400 text-sm font-bold whitespace-nowrap">{dynamicStats.certifiedPractitioners.toLocaleString()}/2,000</span>
+                </div>
+              </div>
+              {/* Bottom row: CTA explanation */}
+              <div className="flex items-center justify-between bg-burgundy-900/30 rounded-lg px-3 py-2">
+                <p className="text-burgundy-100 text-xs">
+                  <span className="text-gold-400 font-medium">Click &quot;New Discussion&quot;</span> above to share your wins, celebrate graduation, or inspire others with your journey!
+                </p>
+                <span className="text-burgundy-300 text-[10px] hidden sm:inline">+{7 + Math.floor(Math.sin(new Date().getDate() * 12.9898) * 43758.5453 % 1 * 20)} joined today</span>
+              </div>
+            </div>
           </div>
         </CardContent>
       </Card>
@@ -538,13 +650,17 @@ export function CommunityClient({ posts: dbPosts, stats, communities = [], isAdm
             </div>
             <CardContent className="p-4">
               <div className="flex items-center gap-3 mb-3">
-                <Avatar className="w-10 h-10">
+                <Avatar className="w-10 h-10 ring-2 ring-gold-400">
+                  <AvatarImage src={featuredGraduate.avatar || undefined} alt={featuredGraduate.name} />
                   <AvatarFallback className="bg-burgundy-100 text-burgundy-700 font-semibold text-sm">
                     {featuredGraduate.name.split(' ').map(n => n[0]).join('')}
                   </AvatarFallback>
                 </Avatar>
                 <div>
-                  <span className="font-medium text-gray-900 text-sm">{featuredGraduate.name}</span>
+                  <div className="flex items-center gap-1.5">
+                    <span className="font-medium text-gray-900 text-sm">{featuredGraduate.name}</span>
+                    <BadgeCheck className="w-3.5 h-3.5 text-green-600" />
+                  </div>
                   <p className="text-xs text-gray-500">{featuredGraduate.title}</p>
                 </div>
               </div>
@@ -553,71 +669,105 @@ export function CommunityClient({ posts: dbPosts, stats, communities = [], isAdm
             </CardContent>
           </Card>
 
-          {/* Topics */}
-          <Card className="border border-gray-200">
-            <div className="bg-gray-50 border-b border-gray-200 p-3">
-              <h3 className="font-semibold text-gray-900 flex items-center gap-2 text-sm">
-                <Megaphone className="w-4 h-4 text-burgundy-600" />
-                Topics
+          {/* Topics - Enhanced UI */}
+          <Card className="border-0 shadow-lg overflow-hidden">
+            <div className="bg-gradient-to-r from-burgundy-700 to-burgundy-600 p-4">
+              <h3 className="font-bold text-white flex items-center gap-2 text-base">
+                <div className="p-1.5 bg-white/20 rounded-lg">
+                  <Megaphone className="w-4 h-4 text-white" />
+                </div>
+                Browse Topics
               </h3>
+              <p className="text-burgundy-200 text-xs mt-1">Explore {Object.values(categoryPostCounts).reduce((a, b) => a + b, 0).toLocaleString()}+ posts</p>
             </div>
-            <CardContent className="p-3">
+            <CardContent className="p-2">
               <div className="space-y-1">
                 {postCategories.map((cat) => {
                   const Icon = cat.icon;
                   const isSelected = selectedCategory === cat.id;
+                  const postCount = categoryPostCounts[cat.id] || 0;
+
+                  // Color mapping for each category
+                  const colorMap: Record<string, { bg: string; text: string; border: string; icon: string; badge: string }> = {
+                    introductions: { bg: "bg-pink-50", text: "text-pink-700", border: "border-pink-300", icon: "bg-pink-500", badge: "bg-pink-500" },
+                    tips: { bg: "bg-green-50", text: "text-green-700", border: "border-green-300", icon: "bg-green-500", badge: "bg-green-500" },
+                    wins: { bg: "bg-amber-50", text: "text-amber-700", border: "border-amber-300", icon: "bg-amber-500", badge: "bg-amber-500" },
+                    graduates: { bg: "bg-emerald-50", text: "text-emerald-700", border: "border-emerald-300", icon: "bg-emerald-500", badge: "bg-emerald-500" },
+                  };
+                  const colors = colorMap[cat.id] || { bg: "bg-gray-50", text: "text-gray-700", border: "border-gray-300", icon: "bg-gray-500", badge: "bg-gray-500" };
+
                   return (
                     <button
                       key={cat.id}
                       onClick={() => setSelectedCategory(isSelected ? null : cat.id)}
-                      className={`w-full flex items-center gap-3 p-3 rounded-xl text-left text-sm transition-all ${isSelected
-                        ? `bg-gradient-to-r ${cat.bgGradient} border-2 border-burgundy-200`
-                        : "hover:bg-gray-50"
-                        }`}
+                      className={`w-full flex items-center gap-3 p-3 rounded-xl text-left transition-all duration-200 group ${
+                        isSelected
+                          ? `${colors.bg} border-2 ${colors.border} shadow-sm`
+                          : "hover:bg-gray-50 border-2 border-transparent"
+                      }`}
                     >
-                      <div className={`p-2 rounded-lg ${cat.color}`}>
-                        <Icon className="w-4 h-4" />
+                      {/* Icon */}
+                      <div className={`p-2.5 rounded-xl ${isSelected ? colors.icon : "bg-gray-100 group-hover:" + colors.icon} transition-colors`}>
+                        <Icon className={`w-4 h-4 ${isSelected ? "text-white" : "text-gray-500 group-hover:text-white"}`} />
                       </div>
-                      <div className="flex-1">
-                        <span className={isSelected ? "font-semibold text-burgundy-700" : "text-gray-700"}>
+
+                      {/* Label */}
+                      <div className="flex-1 min-w-0">
+                        <span className={`font-semibold text-sm block ${isSelected ? colors.text : "text-gray-700"}`}>
                           {cat.label}
                         </span>
                         {"commentOnly" in cat && cat.commentOnly && (
-                          <p className="text-[10px] text-gray-400">Comments only</p>
+                          <span className="text-[10px] text-gray-400 flex items-center gap-1">
+                            <MessageCircle className="w-2.5 h-2.5" /> Join the discussion
+                          </span>
                         )}
                       </div>
-                      {"isNew" in cat && cat.isNew && (
-                        <Badge className="bg-purple-500 text-white border-0 text-[10px]">NEW</Badge>
-                      )}
-                      {isSelected && !("isNew" in cat && cat.isNew) && (
-                        <div className="w-2 h-2 rounded-full bg-burgundy-500" />
-                      )}
+
+                      {/* Post count */}
+                      <div className={`flex flex-col items-end`}>
+                        <span className={`text-sm font-bold ${isSelected ? colors.text : "text-gray-900"}`}>
+                          {postCount.toLocaleString()}
+                        </span>
+                        <span className="text-[10px] text-gray-400">posts</span>
+                      </div>
                     </button>
                   );
                 })}
               </div>
+
+              {/* Clear filter button */}
+              {selectedCategory && (
+                <button
+                  onClick={() => setSelectedCategory(null)}
+                  className="w-full mt-2 p-2 text-xs text-burgundy-600 hover:text-burgundy-700 hover:bg-burgundy-50 rounded-lg transition-colors flex items-center justify-center gap-1"
+                >
+                  <X className="w-3 h-3" /> Clear filter
+                </button>
+              )}
             </CardContent>
           </Card>
 
-          {/* Ask a Coach CTA - Simplified */}
+          {/* Ask Your Coach CTA - With Sarah's profile */}
           <Card className="border border-gray-200 hover:border-burgundy-300 transition-colors">
             <CardContent className="p-4">
               <div className="flex items-center gap-3 mb-3">
-                <div className="w-10 h-10 bg-burgundy-100 rounded-full flex items-center justify-center">
-                  <Headphones className="w-5 h-5 text-burgundy-600" />
-                </div>
+                <Avatar className="w-10 h-10 ring-2 ring-amber-400">
+                  <AvatarImage src="/coaches/sarah-coach.webp" alt="Coach Sarah" />
+                  <AvatarFallback className="bg-amber-100 text-amber-700 font-semibold">SM</AvatarFallback>
+                </Avatar>
                 <div>
-                  <h3 className="font-semibold text-gray-900">Ask a Coach</h3>
+                  <h3 className="font-semibold text-gray-900">Ask Your Coach</h3>
                   <div className="flex items-center gap-1.5 text-xs text-gray-500">
                     <span className="w-1.5 h-1.5 bg-green-500 rounded-full animate-pulse" />
-                    {dynamicStats.coachesOnline} online
+                    Sarah is online
                   </div>
                 </div>
               </div>
+              <p className="text-xs text-gray-600 mb-3">Your dedicated FM Coach is here to help you succeed!</p>
               <Link href="/messages">
                 <Button size="sm" className="w-full bg-burgundy-600 hover:bg-burgundy-700 text-white">
                   <MessageSquare className="w-4 h-4 mr-2" />
-                  Message Coach
+                  Message Sarah
                 </Button>
               </Link>
             </CardContent>
@@ -707,7 +857,7 @@ export function CommunityClient({ posts: dbPosts, stats, communities = [], isAdm
 
           {/* Posts - Compact UI for all */}
           <div className="space-y-3">
-            {filteredAndSortedPosts.map((post) => {
+            {paginatedPosts.map((post) => {
               const catStyle = getCategoryStyle(post.category);
               const CatIcon = catStyle.icon;
 
@@ -719,9 +869,30 @@ export function CommunityClient({ posts: dbPosts, stats, communities = [], isAdm
 
               return (
                 <Link key={post.id} href={`/community/${post.id}`}>
-                  <Card className={`overflow-hidden hover:shadow-lg transition-all duration-200 border border-gray-100 shadow-sm hover:-translate-y-0.5 ${post.isPinned ? 'ring-2 ring-amber-300' : ''}`}>
-                    {/* Category Banner - Hide when filtering by that category */}
-                    {selectedCategory !== post.category && (
+                  <Card className={`overflow-hidden hover:shadow-lg transition-all duration-200 shadow-sm hover:-translate-y-0.5 ${
+                    post.isPinned
+                      ? 'border-2 border-red-500 ring-2 ring-red-200 bg-red-50/30'
+                      : 'border border-gray-100'
+                  }`}>
+                    {/* Pinned Post Banner - Prominent red banner */}
+                    {post.isPinned && (
+                      <div className="bg-gradient-to-r from-red-600 to-red-500 px-4 py-2 flex items-center justify-between">
+                        <div className="flex items-center gap-2">
+                          <div className="p-1.5 rounded-lg bg-white/20">
+                            <Pin className="w-4 h-4 text-white" />
+                          </div>
+                          <div>
+                            <span className="text-white font-bold text-sm">Pinned Post</span>
+                            <span className="text-red-100 text-xs ml-2">Important announcement from the team</span>
+                          </div>
+                        </div>
+                        <Badge className="bg-white text-red-600 border-0 text-[10px] font-bold">
+                          MUST READ
+                        </Badge>
+                      </div>
+                    )}
+                    {/* Category Banner - Hide when filtering by that category (and not pinned, since pinned has its own banner) */}
+                    {!post.isPinned && selectedCategory !== post.category && (
                       <div className={`bg-gradient-to-r ${catStyle.bgGradient} px-4 py-1.5 flex items-center justify-between`}>
                         <div className="flex items-center gap-2">
                           <div className={`p-1 rounded ${catStyle.color}`}>
@@ -731,11 +902,6 @@ export function CommunityClient({ posts: dbPosts, stats, communities = [], isAdm
                             {catStyle.label}
                           </span>
                         </div>
-                        {post.isPinned && (
-                          <Badge className="bg-amber-400 text-amber-900 border-0 text-[10px]">
-                            <Pin className="w-2.5 h-2.5 mr-1" /> Pinned
-                          </Badge>
-                        )}
                       </div>
                     )}
 
@@ -837,7 +1003,7 @@ export function CommunityClient({ posts: dbPosts, stats, communities = [], isAdm
               );
             })}
 
-            {filteredAndSortedPosts.length === 0 && (
+            {paginatedPosts.length === 0 && (
               <Card className="border-dashed border-2">
                 <CardContent className="p-12 text-center">
                   <div className="w-20 h-20 bg-burgundy-100 rounded-full flex items-center justify-center mx-auto mb-4">
@@ -859,6 +1025,45 @@ export function CommunityClient({ posts: dbPosts, stats, communities = [], isAdm
                   />
                 </CardContent>
               </Card>
+            )}
+
+            {/* Load More / Pagination */}
+            {paginatedPosts.length > 0 && (
+              <div className="pt-6 pb-4">
+                {/* Pagination Info */}
+                <div className="text-center mb-4">
+                  <p className="text-sm text-gray-500">
+                    Showing <span className="font-semibold text-gray-700">{paginatedPosts.length}</span> of{" "}
+                    <span className="font-semibold text-gray-700">{totalFilteredPosts}</span> posts
+                    {totalPages > 1 && (
+                      <span className="ml-2 text-gray-400">
+                        (Page {currentPage} of {totalPages})
+                      </span>
+                    )}
+                  </p>
+                </div>
+
+                {/* Load More Button */}
+                {hasMorePosts && (
+                  <div className="flex justify-center">
+                    <Button
+                      onClick={loadMorePosts}
+                      variant="outline"
+                      className="px-8 py-2 border-burgundy-200 text-burgundy-700 hover:bg-burgundy-50 hover:border-burgundy-300"
+                    >
+                      <ChevronDown className="w-4 h-4 mr-2" />
+                      Load More Posts ({Math.min(POSTS_PER_PAGE, totalFilteredPosts - visiblePosts)} more)
+                    </Button>
+                  </div>
+                )}
+
+                {/* All Posts Loaded Message */}
+                {!hasMorePosts && totalFilteredPosts > POSTS_PER_PAGE && (
+                  <p className="text-center text-sm text-gray-400">
+                    You&apos;ve reached the end of the posts
+                  </p>
+                )}
+              </div>
             )}
           </div>
 

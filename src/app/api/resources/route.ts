@@ -3,6 +3,9 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import prisma from "@/lib/prisma";
 
+// Cache resources list for 5 minutes (resources rarely change)
+export const revalidate = 300;
+
 // GET: List all resources
 export async function GET(req: NextRequest) {
     try {
@@ -25,10 +28,12 @@ export async function GET(req: NextRequest) {
             orderBy: { createdAt: "desc" },
         });
 
-        return NextResponse.json({
+        const response = NextResponse.json({
             success: true,
             data: resources,
         });
+        response.headers.set("Cache-Control", "public, s-maxage=300, stale-while-revalidate=600");
+        return response;
     } catch (error) {
         console.error("Get resources error:", error);
         return NextResponse.json({ error: "Failed to get resources" }, { status: 500 });

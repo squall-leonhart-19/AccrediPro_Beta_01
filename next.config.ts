@@ -22,6 +22,10 @@ const nextConfig: NextConfig = {
       },
     ],
   },
+  // Fix Turbopack workspace root detection
+  turbopack: {
+    root: process.cwd(),
+  },
 };
 
 export default nextConfig;

@@ -1,0 +1,821 @@
+"use client";
+
+import { useState } from "react";
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogFooter,
+} from "@/components/ui/dialog";
+import { Textarea } from "@/components/ui/textarea";
+import { Label } from "@/components/ui/label";
+import { Switch } from "@/components/ui/switch";
+import {
+  Zap,
+  MessageSquare,
+  Clock,
+  CheckCircle,
+  AlertCircle,
+  Play,
+  GraduationCap,
+  Mic,
+  Calendar,
+  Users,
+  BookOpen,
+  Edit,
+  Eye,
+  Tag,
+  Activity,
+  RefreshCw,
+  AlertTriangle,
+  Mail,
+  Send,
+  Volume2,
+  ChevronRight,
+  Settings,
+  User,
+} from "lucide-react";
+
+// Module names
+const MODULE_NAMES: Record<number, string> = {
+  0: "Welcome & Orientation",
+  1: "Functional Medicine Foundations",
+  2: "Health Coaching Mastery",
+  3: "Clinical Assessment",
+  4: "Ethics & Scope",
+  5: "Functional Nutrition",
+  6: "Gut Health & Microbiome",
+  7: "Stress, Adrenals & Nervous System",
+  8: "Blood Sugar & Insulin",
+  9: "Women's Hormone Health",
+  10: "Perimenopause & Menopause",
+  11: "Thyroid Health",
+  12: "Metabolic Health & Weight",
+  13: "Autoimmunity & Inflammation",
+  14: "Mental Health & Brain Function",
+  15: "Cardiometabolic Health",
+  16: "Energy & Mitochondrial Health",
+  17: "Detox & Environmental Health",
+  18: "Immune Health",
+  19: "Protocol Building & Program Design",
+  20: "Building Your Coaching Practice",
+};
+
+// Module completion messages
+const MODULE_COMPLETION_MESSAGES: Record<number, { text: string; voiceScript: string | null; hasVoice: boolean; tag: string }> = {
+  0: {
+    text: `{{firstName}}!!\n\nYou just completed Module 0 - Welcome & Orientation!\n\nI'm SO proud of you for taking this first step. You've officially started your functional medicine journey, and that's huge.\n\nI left you a quick voice message to celebrate. Can't wait to see you crush the next module!\n\n- Sarah`,
+    voiceScript: `{{firstName}}! You just completed Module 0, Welcome and Orientation! I'm SO proud of you for taking this first step. You've officially started your functional medicine journey, and that's huge. Keep that momentum going, I know you've got this!`,
+    hasVoice: true,
+    tag: "module_0_complete",
+  },
+  1: {
+    text: `{{firstName}}!\n\nModule 1 DONE! Functional Medicine Foundations - you now understand the core principles that set this approach apart.\n\nYou're building such a strong foundation. This knowledge is going to serve your future clients SO well.\n\nI left you a voice note!\n\n- Sarah`,
+    voiceScript: `Wow {{firstName}}! You just crushed Module 1, Functional Medicine Foundations! You now understand the core principles that make functional medicine so powerful. This foundation is everything. You're on fire!`,
+    hasVoice: true,
+    tag: "module_1_complete",
+  },
+  2: { text: `{{firstName}}!!!\n\nYou finished Module 2 - Health Coaching Mastery!\n\nThis is such an important one. The way you communicate with clients can make or break their transformation. And now you have those skills!\n\nKeep going, you're doing amazing!\n\n- Sarah`, voiceScript: `{{firstName}}! Module 2 complete! Health Coaching Mastery. This is such a game-changer...`, hasVoice: true, tag: "module_2_complete" },
+  3: { text: `{{firstName}}, Module 3 is DONE!\n\nClinical Assessment - you now know how to properly evaluate clients and understand what's really going on in their bodies.\n\n- Sarah`, voiceScript: `{{firstName}}! Module 3, Clinical Assessment, complete!`, hasVoice: true, tag: "module_3_complete" },
+  4: { text: `Amazing work, {{firstName}}!\n\nYou've completed Module 4 - Ethics & Scope!\n\nI know ethics might not be the most exciting topic... but it's SO important.\n\n- Sarah`, voiceScript: `{{firstName}}, Module 4 done! Ethics and Scope.`, hasVoice: true, tag: "module_4_complete" },
+  5: { text: `YES {{firstName}}!!\n\nModule 5 - Functional Nutrition is COMPLETE!\n\nThis is one of my favorite modules. You're halfway through!\n\n- Sarah`, voiceScript: `YES {{firstName}}! Module 5 complete!`, hasVoice: true, tag: "module_5_complete" },
+  6: { text: `{{firstName}}!!\n\nGut Health & Microbiome - DONE!\n\nThis is where so many health issues begin AND where healing happens.\n\n- Sarah`, voiceScript: `{{firstName}}! Module 6 complete!`, hasVoice: true, tag: "module_6_complete" },
+  7: { text: `Module 7 CRUSHED, {{firstName}}!\n\nStress, Adrenals & Nervous System - you now understand the stress connection.\n\n- Sarah`, voiceScript: `Module 7 crushed {{firstName}}!`, hasVoice: true, tag: "module_7_complete" },
+  8: { text: `{{firstName}}, you're on FIRE!\n\nModule 8 - Blood Sugar & Insulin complete!\n\n- Sarah`, voiceScript: `{{firstName}}, you're on fire!`, hasVoice: true, tag: "module_8_complete" },
+  9: { text: `WOW {{firstName}}!!\n\nModule 9 - Women's Hormone Health is DONE!\n\n- Sarah`, voiceScript: `Wow {{firstName}}! Module 9 complete!`, hasVoice: true, tag: "module_9_complete" },
+  10: { text: `{{firstName}}!! Double digits!\n\nModule 10 - Perimenopause & Menopause complete!\n\n- Sarah`, voiceScript: `{{firstName}}! Double digits!`, hasVoice: true, tag: "module_10_complete" },
+  11: { text: `THYROID MASTER, {{firstName}}!\n\nModule 11 - Thyroid Health is complete!\n\n- Sarah`, voiceScript: `Thyroid master {{firstName}}!`, hasVoice: true, tag: "module_11_complete" },
+  12: { text: `{{firstName}}!!\n\nModule 12 - Metabolic Health & Weight is DONE!\n\n- Sarah`, voiceScript: `{{firstName}}! Module 12 complete!`, hasVoice: true, tag: "module_12_complete" },
+  13: { text: `Amazing {{firstName}}!\n\nModule 13 - Autoimmunity & Inflammation complete!\n\n- Sarah`, voiceScript: `Amazing {{firstName}}!`, hasVoice: true, tag: "module_13_complete" },
+  14: { text: `{{firstName}}, BRAIN HEALTH EXPERT!\n\nModule 14 - Mental Health & Brain Function is DONE!\n\n- Sarah`, voiceScript: `{{firstName}}, brain health expert!`, hasVoice: true, tag: "module_14_complete" },
+  15: { text: `HEART HEALTH HERO {{firstName}}!\n\nModule 15 - Cardiometabolic Health complete!\n\n- Sarah`, voiceScript: `Heart health hero {{firstName}}!`, hasVoice: true, tag: "module_15_complete" },
+  16: { text: `{{firstName}}!!\n\nModule 16 - Energy & Mitochondrial Health is DONE!\n\n- Sarah`, voiceScript: `{{firstName}}! Module 16 complete!`, hasVoice: true, tag: "module_16_complete" },
+  17: { text: `DETOX SPECIALIST {{firstName}}!\n\nModule 17 - Detox & Environmental Health is complete!\n\n- Sarah`, voiceScript: `Detox specialist {{firstName}}!`, hasVoice: true, tag: "module_17_complete" },
+  18: { text: `{{firstName}}!!!\n\nModule 18 - Immune Health is DONE!\n\n- Sarah`, voiceScript: `{{firstName}}! Module 18 complete!`, hasVoice: true, tag: "module_18_complete" },
+  19: { text: `PROTOCOL BUILDER {{firstName}}!!\n\nModule 19 - Protocol Building & Program Design is COMPLETE!\n\nONE MORE MODULE!\n\n- Sarah`, voiceScript: `Protocol builder {{firstName}}!`, hasVoice: true, tag: "module_19_complete" },
+  20: { text: `{{firstName}}!!!\n\nOH MY GOSH!!! Module 20 - Building Your Coaching Practice is COMPLETE!!!\n\nYou did it. You actually DID it. You've completed the ENTIRE certification!\n\nWelcome to the family, certified coach!\n\n- Sarah`, voiceScript: `Oh my gosh {{firstName}}! You did it!`, hasVoice: true, tag: "certification_complete" },
+};
+
+// Sequence DM content
+const SEQUENCE_DM_CONTENT = {
+  first_login: {
+    label: "First Login Welcome",
+    trigger: "User logs in for the first time",
+    day: 0,
+    hasVoice: true,
+    tag: "welcome_sent",
+  },
+  sequence_day_5: {
+    label: "Day 5 - Check-in",
+    trigger: "5 days after signup",
+    day: 5,
+    hasVoice: true,
+    tag: "nurture_day_5",
+  },
+  sequence_day_10: {
+    label: "Day 10 - Progress",
+    trigger: "10 days after signup",
+    day: 10,
+    hasVoice: false,
+    tag: "nurture_day_10",
+  },
+  sequence_day_20: {
+    label: "Day 20 - Real Talk",
+    trigger: "20 days after signup",
+    day: 20,
+    hasVoice: true,
+    tag: "nurture_day_20",
+  },
+  sequence_day_27: {
+    label: "Day 27 - Urgency",
+    trigger: "27 days after signup",
+    day: 27,
+    hasVoice: true,
+    tag: "nurture_day_27",
+  },
+  sequence_day_30: {
+    label: "Day 30 - Final",
+    trigger: "30 days after signup",
+    day: 30,
+    hasVoice: true,
+    tag: "nurture_day_30",
+  },
+  mini_diploma_complete: {
+    label: "Mini Diploma Complete",
+    trigger: "User completes mini diploma",
+    day: null,
+    hasVoice: true,
+    tag: "mini_diploma_complete",
+  },
+  pricing_page_visit: {
+    label: "Pricing Page Visit",
+    trigger: "User visits pricing page",
+    day: null,
+    hasVoice: false,
+    tag: "pricing_interest",
+  },
+};
+
+interface AutoDMsClientProps {
+  stats: {
+    scheduledMessages: number;
+    sentVoiceDMs: number;
+    totalSentDMs: number;
+    recentActivity: Array<{
+      id: string;
+      content: string;
+      createdAt: string;
+      hasVoice: boolean;
+      sender: { id: string; firstName: string | null; lastName: string | null; email: string; avatar: string | null } | null;
+      receiver: { id: string; firstName: string | null; lastName: string | null; email: string } | null;
+    }>;
+    moduleCompletions: Array<{ moduleId: string; _count: { userId: number } }>;
+    scheduledDetails: Array<{
+      id: string;
+      scheduledFor: string;
+      status: string;
+      receiver: { firstName: string | null; lastName: string | null; email: string } | null;
+      textPreview: string;
+    }>;
+    failedMessages: Array<{
+      id: string;
+      scheduledFor: string;
+      status: string;
+      attempts: number;
+      lastError: string | null;
+      receiver: { firstName: string | null; lastName: string | null; email: string } | null;
+    }>;
+  };
+  sarahCoach: { id: string; email: string; firstName: string | null; lastName: string | null } | null;
+}
+
+export function AutoDMsClient({ stats, sarahCoach }: AutoDMsClientProps) {
+  const [editDialogOpen, setEditDialogOpen] = useState(false);
+  const [selectedModule, setSelectedModule] = useState<number | null>(null);
+  const [previewDialogOpen, setPreviewDialogOpen] = useState(false);
+  const [previewContent, setPreviewContent] = useState<{ text: string; voiceScript: string | null; title: string } | null>(null);
+
+  const openEditDialog = (moduleNum: number) => {
+    setSelectedModule(moduleNum);
+    setEditDialogOpen(true);
+  };
+
+  const openPreview = (title: string, text: string, voiceScript: string | null) => {
+    setPreviewContent({ title, text, voiceScript });
+    setPreviewDialogOpen(true);
+  };
+
+  return (
+    <div className="space-y-6 animate-fade-in">
+      {/* Header */}
+      <div className="flex items-center justify-between">
+        <div>
+          <h1 className="text-2xl lg:text-3xl font-bold text-gray-900 flex items-center gap-3">
+            <Zap className="w-8 h-8 text-gold-500" />
+            Auto DMs
+          </h1>
+          <p className="text-gray-500 mt-1">
+            Automated private messages from Coach Sarah when students complete modules
+          </p>
+        </div>
+        <div className="flex items-center gap-2">
+          {sarahCoach ? (
+            <Badge className="bg-green-100 text-green-700 border-green-200">
+              <Mail className="w-3 h-3 mr-1" />
+              Sending from: {sarahCoach.email}
+            </Badge>
+          ) : (
+            <Badge className="bg-red-100 text-red-700 border-red-200">
+              <AlertTriangle className="w-3 h-3 mr-1" />
+              Sarah account not found!
+            </Badge>
+          )}
+        </div>
+      </div>
+
+      {/* Stats Cards */}
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+        <Card className="bg-gradient-to-br from-amber-50 to-white border-amber-200">
+          <CardContent className="p-5">
+            <div className="flex items-center gap-3">
+              <div className="w-12 h-12 bg-amber-100 rounded-xl flex items-center justify-center">
+                <Clock className="w-6 h-6 text-amber-600" />
+              </div>
+              <div>
+                <p className="text-2xl font-bold text-gray-900">{stats.scheduledMessages}</p>
+                <p className="text-sm text-gray-500">Pending Messages</p>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+
+        <Card className="bg-gradient-to-br from-burgundy-50 to-white border-burgundy-200">
+          <CardContent className="p-5">
+            <div className="flex items-center gap-3">
+              <div className="w-12 h-12 bg-burgundy-100 rounded-xl flex items-center justify-center">
+                <Mic className="w-6 h-6 text-burgundy-600" />
+              </div>
+              <div>
+                <p className="text-2xl font-bold text-gray-900">{stats.sentVoiceDMs}</p>
+                <p className="text-sm text-gray-500">Voice DMs Sent</p>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+
+        <Card className="bg-gradient-to-br from-green-50 to-white border-green-200">
+          <CardContent className="p-5">
+            <div className="flex items-center gap-3">
+              <div className="w-12 h-12 bg-green-100 rounded-xl flex items-center justify-center">
+                <CheckCircle className="w-6 h-6 text-green-600" />
+              </div>
+              <div>
+                <p className="text-2xl font-bold text-gray-900">{stats.totalSentDMs}</p>
+                <p className="text-sm text-gray-500">Total Auto DMs</p>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+
+        <Card className="bg-gradient-to-br from-red-50 to-white border-red-200">
+          <CardContent className="p-5">
+            <div className="flex items-center gap-3">
+              <div className="w-12 h-12 bg-red-100 rounded-xl flex items-center justify-center">
+                <AlertTriangle className="w-6 h-6 text-red-600" />
+              </div>
+              <div>
+                <p className="text-2xl font-bold text-gray-900">{stats.failedMessages.length}</p>
+                <p className="text-sm text-gray-500">Failed Messages</p>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+
+      {/* Main Tabs */}
+      <Tabs defaultValue="modules" className="space-y-4">
+        <TabsList className="grid w-full grid-cols-4">
+          <TabsTrigger value="modules" className="gap-2">
+            <GraduationCap className="w-4 h-4" />
+            Module DMs
+          </TabsTrigger>
+          <TabsTrigger value="sequence" className="gap-2">
+            <Calendar className="w-4 h-4" />
+            Nurture Sequence
+          </TabsTrigger>
+          <TabsTrigger value="activity" className="gap-2">
+            <Activity className="w-4 h-4" />
+            Activity Log
+          </TabsTrigger>
+          <TabsTrigger value="settings" className="gap-2">
+            <Settings className="w-4 h-4" />
+            Settings
+          </TabsTrigger>
+        </TabsList>
+
+        {/* Module Completion Messages */}
+        <TabsContent value="modules">
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <BookOpen className="w-5 h-5 text-burgundy-600" />
+                Module Completion DMs (21 Modules)
+              </CardTitle>
+              <CardDescription>
+                Sarah sends a personalized DM with voice message when students complete each module.
+                Voice is generated using ElevenLabs with Sarah's cloned voice.
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <ScrollArea className="h-[600px] pr-4">
+                <div className="space-y-3">
+                  {Object.entries(MODULE_COMPLETION_MESSAGES).map(([moduleNum, content]) => (
+                    <div
+                      key={moduleNum}
+                      className="p-4 rounded-xl border border-gray-200 hover:border-burgundy-300 hover:shadow-sm transition-all bg-white"
+                    >
+                      <div className="flex items-start justify-between">
+                        <div className="flex items-center gap-3 flex-1">
+                          <div className="w-12 h-12 bg-gradient-to-br from-burgundy-500 to-burgundy-700 rounded-xl flex items-center justify-center shadow-sm">
+                            <span className="font-bold text-white text-lg">{moduleNum}</span>
+                          </div>
+                          <div className="flex-1 min-w-0">
+                            <h4 className="font-semibold text-gray-900">
+                              Module {moduleNum}: {MODULE_NAMES[Number(moduleNum)] || "Unknown"}
+                            </h4>
+                            <div className="flex flex-wrap items-center gap-2 mt-1.5">
+                              {content.hasVoice && (
+                                <Badge className="bg-burgundy-100 text-burgundy-700 border-0 text-xs">
+                                  <Volume2 className="w-3 h-3 mr-1" />
+                                  Voice + Text
+                                </Badge>
+                              )}
+                              <Badge variant="outline" className="text-xs bg-blue-50 text-blue-700 border-blue-200">
+                                <Tag className="w-3 h-3 mr-1" />
+                                {content.tag}
+                              </Badge>
+                              <span className="text-xs text-gray-400">
+                                Trigger: Module completion
+                              </span>
+                            </div>
+                            <p className="text-sm text-gray-600 mt-2 line-clamp-2">
+                              {content.text.substring(0, 120).replace(/\{\{firstName\}\}/g, "[Name]")}...
+                            </p>
+                          </div>
+                        </div>
+                        <div className="flex items-center gap-2 ml-4">
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() => openPreview(
+                              `Module ${moduleNum}: ${MODULE_NAMES[Number(moduleNum)]}`,
+                              content.text,
+                              content.voiceScript
+                            )}
+                          >
+                            <Eye className="w-4 h-4 mr-1" />
+                            Preview
+                          </Button>
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() => openEditDialog(Number(moduleNum))}
+                          >
+                            <Edit className="w-4 h-4 mr-1" />
+                            Edit
+                          </Button>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </ScrollArea>
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        {/* Nurture Sequence */}
+        <TabsContent value="sequence">
+          <div className="grid lg:grid-cols-2 gap-6">
+            {/* Sequence DMs */}
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Calendar className="w-5 h-5 text-gold-500" />
+                  30-Day Nurture Sequence
+                </CardTitle>
+                <CardDescription>
+                  Personalized check-in messages at key points during the nurture flow
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-3">
+                  {Object.entries(SEQUENCE_DM_CONTENT).map(([key, content]) => (
+                    <div
+                      key={key}
+                      className="p-4 rounded-xl border border-gray-200 hover:border-gold-300 transition-colors bg-white"
+                    >
+                      <div className="flex items-start justify-between">
+                        <div className="flex items-center gap-3">
+                          <div className={`w-10 h-10 rounded-lg flex items-center justify-center ${
+                            content.day !== null ? "bg-gold-100" : "bg-purple-100"
+                          }`}>
+                            {content.day !== null ? (
+                              <span className="font-bold text-gold-700">{content.day}</span>
+                            ) : (
+                              <Zap className="w-5 h-5 text-purple-600" />
+                            )}
+                          </div>
+                          <div>
+                            <h4 className="font-semibold text-gray-900">{content.label}</h4>
+                            <div className="flex items-center gap-2 mt-1">
+                              {content.hasVoice && (
+                                <Badge className="bg-gold-100 text-gold-700 border-0 text-xs">
+                                  <Volume2 className="w-3 h-3 mr-1" />
+                                  Voice
+                                </Badge>
+                              )}
+                              <Badge variant="outline" className="text-xs bg-blue-50 text-blue-700 border-blue-200">
+                                <Tag className="w-3 h-3 mr-1" />
+                                {content.tag}
+                              </Badge>
+                            </div>
+                            <p className="text-xs text-gray-500 mt-1">{content.trigger}</p>
+                          </div>
+                        </div>
+                        <div className="flex gap-2">
+                          <Button variant="outline" size="sm">
+                            <Eye className="w-4 h-4" />
+                          </Button>
+                          <Button variant="outline" size="sm">
+                            <Edit className="w-4 h-4" />
+                          </Button>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Scheduled Messages */}
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Clock className="w-5 h-5 text-amber-500" />
+                  Scheduled Messages
+                </CardTitle>
+                <CardDescription>
+                  Messages waiting to be sent
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                {stats.scheduledDetails.length > 0 ? (
+                  <div className="space-y-3">
+                    {stats.scheduledDetails.map((msg) => (
+                      <div key={msg.id} className="p-3 rounded-lg border border-amber-200 bg-amber-50">
+                        <div className="flex items-start justify-between">
+                          <div className="flex items-center gap-3">
+                            <Avatar className="h-8 w-8">
+                              <AvatarFallback className="bg-amber-200 text-amber-700 text-xs">
+                                {msg.receiver?.firstName?.[0] || "U"}
+                              </AvatarFallback>
+                            </Avatar>
+                            <div>
+                              <p className="font-medium text-gray-900 text-sm">
+                                {msg.receiver?.firstName} {msg.receiver?.lastName}
+                              </p>
+                              <p className="text-xs text-gray-500">{msg.receiver?.email}</p>
+                            </div>
+                          </div>
+                          <Badge className="bg-amber-100 text-amber-700 border-0">
+                            {msg.status}
+                          </Badge>
+                        </div>
+                        <p className="text-xs text-gray-600 mt-2 line-clamp-2">{msg.textPreview}...</p>
+                        <p className="text-xs text-amber-600 mt-1">
+                          Scheduled: {new Date(msg.scheduledFor).toLocaleString()}
+                        </p>
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <div className="text-center py-8 text-gray-500">
+                    <Clock className="w-12 h-12 mx-auto mb-3 text-gray-300" />
+                    <p>No pending scheduled messages</p>
+                  </div>
+                )}
+
+                {/* Failed Messages */}
+                {stats.failedMessages.length > 0 && (
+                  <div className="mt-6">
+                    <h4 className="font-semibold text-red-700 mb-3 flex items-center gap-2">
+                      <AlertTriangle className="w-4 h-4" />
+                      Failed Messages ({stats.failedMessages.length})
+                    </h4>
+                    <div className="space-y-2">
+                      {stats.failedMessages.map((msg) => (
+                        <div key={msg.id} className="p-3 rounded-lg border border-red-200 bg-red-50">
+                          <div className="flex items-start justify-between">
+                            <div>
+                              <p className="font-medium text-gray-900 text-sm">
+                                {msg.receiver?.firstName} {msg.receiver?.lastName}
+                              </p>
+                              <p className="text-xs text-red-600 mt-1">
+                                Error: {msg.lastError || "Unknown"}
+                              </p>
+                              <p className="text-xs text-gray-500">
+                                Attempts: {msg.attempts}
+                              </p>
+                            </div>
+                            <Button variant="outline" size="sm" className="text-red-600 border-red-200 hover:bg-red-100">
+                              <RefreshCw className="w-4 h-4 mr-1" />
+                              Retry
+                            </Button>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+              </CardContent>
+            </Card>
+          </div>
+        </TabsContent>
+
+        {/* Activity Log */}
+        <TabsContent value="activity">
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Activity className="w-5 h-5 text-green-500" />
+                Recent Auto DM Activity
+              </CardTitle>
+              <CardDescription>
+                Track all automated messages sent to students
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <ScrollArea className="h-[500px]">
+                {stats.recentActivity.length > 0 ? (
+                  <div className="space-y-3">
+                    {stats.recentActivity.map((activity) => (
+                      <div
+                        key={activity.id}
+                        className="p-4 rounded-lg border border-gray-200 hover:bg-gray-50 transition-colors"
+                      >
+                        <div className="flex items-start gap-4">
+                          <Avatar className="h-10 w-10">
+                            <AvatarImage src={activity.sender?.avatar || undefined} />
+                            <AvatarFallback className="bg-burgundy-100 text-burgundy-700">
+                              {activity.sender?.firstName?.[0] || "S"}
+                            </AvatarFallback>
+                          </Avatar>
+                          <div className="flex-1 min-w-0">
+                            <div className="flex items-center gap-2 flex-wrap">
+                              <span className="font-medium text-gray-900">
+                                {activity.sender?.firstName || "Sarah"}
+                              </span>
+                              <ChevronRight className="w-4 h-4 text-gray-400" />
+                              <span className="text-gray-600">
+                                {activity.receiver?.firstName} {activity.receiver?.lastName}
+                              </span>
+                              {activity.hasVoice && (
+                                <Badge className="bg-burgundy-100 text-burgundy-700 border-0 text-xs">
+                                  <Mic className="w-3 h-3 mr-1" />
+                                  Voice
+                                </Badge>
+                              )}
+                            </div>
+                            <p className="text-sm text-gray-600 mt-1 line-clamp-2">
+                              {activity.content}
+                            </p>
+                            <p className="text-xs text-gray-400 mt-1">
+                              {new Date(activity.createdAt).toLocaleString()}
+                            </p>
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <div className="text-center py-12 text-gray-500">
+                    <MessageSquare className="w-12 h-12 mx-auto mb-3 text-gray-300" />
+                    <p>No auto DMs sent yet</p>
+                  </div>
+                )}
+              </ScrollArea>
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        {/* Settings */}
+        <TabsContent value="settings">
+          <div className="grid lg:grid-cols-2 gap-6">
+            {/* Voice Settings */}
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Volume2 className="w-5 h-5 text-burgundy-600" />
+                  Voice Settings
+                </CardTitle>
+                <CardDescription>
+                  Configure ElevenLabs voice generation for Sarah
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div className="flex items-center justify-between p-4 rounded-lg bg-gray-50">
+                  <div>
+                    <p className="font-medium text-gray-900">Enable Voice Messages</p>
+                    <p className="text-sm text-gray-500">Generate voice using Sarah's cloned voice</p>
+                  </div>
+                  <Switch defaultChecked />
+                </div>
+                <div className="p-4 rounded-lg bg-burgundy-50 border border-burgundy-200">
+                  <div className="flex items-center gap-3">
+                    <Mic className="w-8 h-8 text-burgundy-600" />
+                    <div>
+                      <p className="font-medium text-burgundy-900">Sarah's Voice (ElevenLabs)</p>
+                      <p className="text-sm text-burgundy-700">Voice ID: uXRbZctVA9lTJBqMtWeE</p>
+                    </div>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Sender Settings */}
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <User className="w-5 h-5 text-gold-500" />
+                  Sender Settings
+                </CardTitle>
+                <CardDescription>
+                  Configure who sends the auto DMs
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                {sarahCoach ? (
+                  <div className="p-4 rounded-lg bg-green-50 border border-green-200">
+                    <div className="flex items-center gap-3">
+                      <Avatar className="h-12 w-12">
+                        <AvatarFallback className="bg-green-200 text-green-700">S</AvatarFallback>
+                      </Avatar>
+                      <div>
+                        <p className="font-medium text-green-900">
+                          {sarahCoach.firstName} {sarahCoach.lastName}
+                        </p>
+                        <p className="text-sm text-green-700">{sarahCoach.email}</p>
+                        <Badge className="bg-green-100 text-green-700 border-0 mt-1">
+                          <CheckCircle className="w-3 h-3 mr-1" />
+                          Active Sender
+                        </Badge>
+                      </div>
+                    </div>
+                  </div>
+                ) : (
+                  <div className="p-4 rounded-lg bg-red-50 border border-red-200">
+                    <div className="flex items-center gap-3">
+                      <AlertTriangle className="w-8 h-8 text-red-600" />
+                      <div>
+                        <p className="font-medium text-red-900">No Sarah Account Found</p>
+                        <p className="text-sm text-red-700">
+                          Create a user with email: sarah@accredipro-certificate.com
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                )}
+              </CardContent>
+            </Card>
+
+            {/* How It Works */}
+            <Card className="lg:col-span-2 bg-gradient-to-r from-burgundy-50 to-gold-50 border-burgundy-200">
+              <CardContent className="p-6">
+                <div className="flex items-start gap-4">
+                  <div className="w-12 h-12 bg-burgundy-100 rounded-xl flex items-center justify-center flex-shrink-0">
+                    <Zap className="w-6 h-6 text-burgundy-600" />
+                  </div>
+                  <div>
+                    <h3 className="font-semibold text-burgundy-900 mb-3">How Auto DMs Work</h3>
+                    <div className="grid md:grid-cols-2 gap-4 text-sm text-burgundy-800">
+                      <div>
+                        <p className="font-medium mb-2">Module Completion Flow:</p>
+                        <ol className="list-decimal list-inside space-y-1 text-burgundy-700">
+                          <li>Student completes all lessons in a module</li>
+                          <li>System triggers <code className="bg-burgundy-100 px-1 rounded">module_complete</code></li>
+                          <li>Text DM is created from Sarah's account</li>
+                          <li>Voice is generated via ElevenLabs API</li>
+                          <li>Voice message uploaded to Supabase storage</li>
+                          <li>Student receives notification</li>
+                        </ol>
+                      </div>
+                      <div>
+                        <p className="font-medium mb-2">Tags Applied:</p>
+                        <ul className="space-y-1 text-burgundy-700">
+                          <li>• <code className="bg-blue-100 text-blue-700 px-1 rounded">module_X_complete</code> - Per module</li>
+                          <li>• <code className="bg-blue-100 text-blue-700 px-1 rounded">certification_complete</code> - Final module</li>
+                          <li>• <code className="bg-blue-100 text-blue-700 px-1 rounded">welcome_sent</code> - First login</li>
+                          <li>• <code className="bg-blue-100 text-blue-700 px-1 rounded">nurture_day_X</code> - Sequence DMs</li>
+                          <li>• <code className="bg-blue-100 text-blue-700 px-1 rounded">mini_diploma_complete</code> - Freebie done</li>
+                        </ul>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+        </TabsContent>
+      </Tabs>
+
+      {/* Preview Dialog */}
+      <Dialog open={previewDialogOpen} onOpenChange={setPreviewDialogOpen}>
+        <DialogContent className="max-w-2xl">
+          <DialogHeader>
+            <DialogTitle>{previewContent?.title}</DialogTitle>
+            <DialogDescription>Preview of the auto DM message</DialogDescription>
+          </DialogHeader>
+          <div className="space-y-4">
+            <div>
+              <Label className="text-sm font-medium">Text Message</Label>
+              <div className="mt-2 p-4 rounded-lg bg-gray-50 border whitespace-pre-line text-sm">
+                {previewContent?.text.replace(/\{\{firstName\}\}/g, "[Student Name]")}
+              </div>
+            </div>
+            {previewContent?.voiceScript && (
+              <div>
+                <Label className="text-sm font-medium flex items-center gap-2">
+                  <Mic className="w-4 h-4 text-burgundy-600" />
+                  Voice Script (ElevenLabs)
+                </Label>
+                <div className="mt-2 p-4 rounded-lg bg-burgundy-50 border border-burgundy-200 whitespace-pre-line text-sm italic text-burgundy-800">
+                  "{previewContent.voiceScript.replace(/\{\{firstName\}\}/g, "[Student Name]")}"
+                </div>
+              </div>
+            )}
+          </div>
+        </DialogContent>
+      </Dialog>
+
+      {/* Edit Dialog */}
+      <Dialog open={editDialogOpen} onOpenChange={setEditDialogOpen}>
+        <DialogContent className="max-w-2xl">
+          <DialogHeader>
+            <DialogTitle>
+              Edit Module {selectedModule}: {selectedModule !== null && MODULE_NAMES[selectedModule]}
+            </DialogTitle>
+            <DialogDescription>
+              Update the auto DM message for this module completion
+            </DialogDescription>
+          </DialogHeader>
+          {selectedModule !== null && MODULE_COMPLETION_MESSAGES[selectedModule] && (
+            <div className="space-y-4">
+              <div>
+                <Label>Text Message</Label>
+                <Textarea
+                  className="mt-2 min-h-[150px]"
+                  defaultValue={MODULE_COMPLETION_MESSAGES[selectedModule].text}
+                />
+                <p className="text-xs text-gray-500 mt-1">Use {"{{firstName}}"} for student's name</p>
+              </div>
+              <div>
+                <Label>Voice Script (for ElevenLabs)</Label>
+                <Textarea
+                  className="mt-2 min-h-[100px]"
+                  defaultValue={MODULE_COMPLETION_MESSAGES[selectedModule].voiceScript || ""}
+                />
+              </div>
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <Switch defaultChecked={MODULE_COMPLETION_MESSAGES[selectedModule].hasVoice} />
+                  <Label>Enable Voice Message</Label>
+                </div>
+                <Badge variant="outline">
+                  <Tag className="w-3 h-3 mr-1" />
+                  {MODULE_COMPLETION_MESSAGES[selectedModule].tag}
+                </Badge>
+              </div>
+            </div>
+          )}
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setEditDialogOpen(false)}>
+              Cancel
+            </Button>
+            <Button className="bg-burgundy-600 hover:bg-burgundy-700">
+              Save Changes
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+    </div>
+  );
+}

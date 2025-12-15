@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
+import { generateSarahVoice, generateVoice } from "@/lib/elevenlabs";
 import OpenAI from "openai";
 
 export async function POST(req: NextRequest) {
@@ -15,28 +16,54 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "Forbidden" }, { status: 403 });
     }
 
-    const apiKey = process.env.OPENAI_API_KEY;
-    if (!apiKey) {
-      return NextResponse.json({ error: "TTS service not configured" }, { status: 500 });
-    }
-
-    const openai = new OpenAI({ apiKey });
-
-    const { text, voice = "nova" } = await req.json();
+    const { text, voice = "sarah", useSarah = true } = await req.json();
 
     if (!text || text.trim().length === 0) {
       return NextResponse.json({ error: "Text is required" }, { status: 400 });
     }
 
     // Limit text length for cost control
-    if (text.length > 1000) {
-      return NextResponse.json({ error: "Text too long (max 1000 characters)" }, { status: 400 });
+    if (text.length > 2000) {
+      return NextResponse.json({ error: "Text too long (max 2000 characters)" }, { status: 400 });
     }
+
+    // Try ElevenLabs first (Sarah's cloned voice)
+    if (process.env.ELEVENLABS_API_KEY) {
+      console.log(`🎙️ Using ElevenLabs for TTS (voice: ${useSarah ? 'Sarah' : voice})...`);
+
+      const voiceResult = useSarah
+        ? await generateSarahVoice(text)
+        : await generateVoice(text, voice);
+
+      if (voiceResult.success && voiceResult.audioBase64) {
+        return NextResponse.json({
+          success: true,
+          audio: `data:audio/mp3;base64,${voiceResult.audioBase64}`,
+          duration: voiceResult.duration || 30,
+          voice: useSarah ? "sarah" : voice,
+          provider: "elevenlabs",
+        });
+      }
+
+      console.warn("ElevenLabs failed, falling back to OpenAI:", voiceResult.error);
+    }
+
+    // Fallback to OpenAI TTS
+    const apiKey = process.env.OPENAI_API_KEY;
+    if (!apiKey) {
+      return NextResponse.json({ error: "TTS service not configured" }, { status: 500 });
+    }
+
+    console.log("📢 Using OpenAI TTS as fallback...");
+    const openai = new OpenAI({ apiKey });
+
+    // Map voice names for OpenAI
+    const openaiVoice = voice === "sarah" ? "nova" : (voice as "alloy" | "echo" | "fable" | "onyx" | "nova" | "shimmer");
 
     // Generate speech using OpenAI TTS
     const mp3Response = await openai.audio.speech.create({
       model: "tts-1",
-      voice: voice as "alloy" | "echo" | "fable" | "onyx" | "nova" | "shimmer",
+      voice: openaiVoice,
       input: text,
       response_format: "mp3",
     });
@@ -53,7 +80,8 @@ export async function POST(req: NextRequest) {
       success: true,
       audio: `data:audio/mp3;base64,${base64Audio}`,
       duration: estimatedDuration,
-      voice,
+      voice: openaiVoice,
+      provider: "openai",
     });
   } catch (error) {
     console.error("TTS error:", error);

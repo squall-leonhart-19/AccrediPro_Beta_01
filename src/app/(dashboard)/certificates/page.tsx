@@ -79,13 +79,43 @@ const SKILLS_BY_CERTIFICATE: Record<string, string[]> = {
   ],
 };
 
-// Locked certificates for FOMO
-const LOCKED_CERTIFICATES = [
-  { title: "Gut Health Specialist", category: "gut-health", level: 3 },
-  { title: "Hormone Specialist Certification", category: "hormones", level: 2 },
-  { title: "Trauma-Informed Practitioner", category: "trauma", level: 2 },
-  { title: "Functional Medicine Master Track", category: "functional-medicine", level: 4 },
-  { title: "Neurodiversity Advanced Coach", category: "autism", level: 3 },
+// FM Specializations - Coming Soon
+const FM_SPECIALIZATIONS_PREVIEW = [
+  {
+    title: "Functional Nutrition Specialist",
+    category: "nutrition",
+    badge: "CORE",
+    income: "$60K - $150K",
+    image: "https://images.unsplash.com/photo-1490645935967-10de6ba17061?w=400&h=200&fit=crop",
+  },
+  {
+    title: "Gut Health & Microbiome",
+    category: "gut-health",
+    badge: "HIGH DEMAND",
+    income: "$70K - $180K",
+    image: "https://images.unsplash.com/photo-1505576399279-565b52d4ac71?w=400&h=200&fit=crop",
+  },
+  {
+    title: "Women's Hormones Expert",
+    category: "hormones",
+    badge: "TRENDING",
+    income: "$80K - $200K",
+    image: "https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=400&h=200&fit=crop",
+  },
+  {
+    title: "Stress & Nervous System",
+    category: "stress",
+    badge: "GROWING",
+    income: "$60K - $140K",
+    image: "https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?w=400&h=200&fit=crop",
+  },
+  {
+    title: "Thyroid & Metabolism",
+    category: "thyroid",
+    badge: "EVERGREEN",
+    income: "$65K - $160K",
+    image: "https://images.unsplash.com/photo-1559757148-5c350d0d3c56?w=400&h=200&fit=crop",
+  },
 ];
 
 async function getCertificates(userId: string) {
@@ -267,9 +297,9 @@ export default async function CertificatesPage() {
             <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-white/10 backdrop-blur-sm mb-4">
               <Award className="w-8 h-8 text-gold-400" />
             </div>
-            <h1 className="text-3xl lg:text-4xl font-bold text-white mb-3">My Certificates & Credentials</h1>
+            <h1 className="text-3xl lg:text-4xl font-bold text-white mb-3">My Certificates</h1>
             <p className="text-burgundy-100 text-lg">
-              Your professional credentials hub - view, download, and share your achievements
+              Your professional credential hub — track progress, download certificates, and showcase your expertise to clients
             </p>
           </div>
         </CardContent>
@@ -328,7 +358,7 @@ export default async function CertificatesPage() {
               <p className="text-xs text-gray-500">Practitioner Tracks</p>
             </div>
             <div className="text-center">
-              <p className="text-2xl font-bold text-blue-600">0/{LOCKED_CERTIFICATES.length}</p>
+              <p className="text-2xl font-bold text-blue-600">0/{FM_SPECIALIZATIONS_PREVIEW.length}</p>
               <p className="text-xs text-gray-500">Specializations</p>
             </div>
             <div className="text-center">
@@ -615,30 +645,44 @@ export default async function CertificatesPage() {
         </Card>
       )}
 
-      {/* Locked Certificates - FOMO Section */}
+      {/* FM Specializations - Coming Soon */}
       <div className="space-y-4">
-        <h2 className="text-lg font-semibold text-gray-900 flex items-center gap-2">
-          <Lock className="w-5 h-5 text-gray-400" />
-          Unlock More Credentials
-        </h2>
+        <div className="flex items-center justify-between">
+          <h2 className="text-lg font-semibold text-gray-900 flex items-center gap-2">
+            <Sparkles className="w-5 h-5 text-gold-500" />
+            FM Specializations
+            <Badge className="bg-amber-100 text-amber-700 text-xs">Coming Soon</Badge>
+          </h2>
+          <Link href="/catalog">
+            <Button variant="ghost" size="sm" className="text-burgundy-600">
+              View All <ChevronRight className="w-4 h-4 ml-1" />
+            </Button>
+          </Link>
+        </div>
         <div className="grid md:grid-cols-3 lg:grid-cols-5 gap-4">
-          {LOCKED_CERTIFICATES.map((cert, index) => (
-            <Card key={index} className="overflow-hidden opacity-70 hover:opacity-100 transition-opacity cursor-pointer group">
-              <div className="bg-gradient-to-br from-gray-400 to-gray-500 p-4 text-white text-center relative">
-                <div className="absolute inset-0 bg-black/20" />
-                <Lock className="w-8 h-8 mx-auto mb-2 relative z-10" />
-                <p className="text-xs font-medium relative z-10">Level {cert.level}</p>
-              </div>
-              <CardContent className="p-3">
-                <h4 className="text-sm font-semibold text-gray-700 mb-1 line-clamp-2">{cert.title}</h4>
-                <Link href="/roadmap">
-                  <Button variant="ghost" size="sm" className="w-full text-xs text-burgundy-600 group-hover:bg-burgundy-50">
-                    Unlock
-                    <ChevronRight className="w-3 h-3 ml-1" />
-                  </Button>
-                </Link>
-              </CardContent>
-            </Card>
+          {FM_SPECIALIZATIONS_PREVIEW.map((spec, index) => (
+            <Link key={index} href="/catalog">
+              <Card className="overflow-hidden hover:shadow-lg transition-all cursor-pointer group h-full">
+                <div className="aspect-[2/1] relative overflow-hidden">
+                  <img
+                    src={spec.image}
+                    alt={spec.title}
+                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent" />
+                  <Badge className="absolute top-2 left-2 bg-gold-400 text-burgundy-900 text-[10px]">
+                    {spec.badge}
+                  </Badge>
+                  <Badge className="absolute bottom-2 right-2 bg-white/90 text-gray-900 text-[10px]">
+                    Coming Soon
+                  </Badge>
+                </div>
+                <CardContent className="p-3">
+                  <h4 className="text-sm font-semibold text-gray-900 mb-1 line-clamp-1">{spec.title}</h4>
+                  <p className="text-xs text-green-600 font-medium">{spec.income}</p>
+                </CardContent>
+              </Card>
+            </Link>
           ))}
         </div>
       </div>
@@ -660,7 +704,7 @@ export default async function CertificatesPage() {
                 </Button>
               </Link>
               <Link href="/catalog">
-                <Button variant="outline" className="border-white/30 text-white hover:bg-white/10">
+                <Button variant="outline" className="bg-white text-gray-900 border-white hover:bg-gray-100">
                   <Sparkles className="w-4 h-4 mr-2" />
                   Browse Certifications
                 </Button>

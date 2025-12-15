@@ -16,11 +16,10 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "Forbidden" }, { status: 403 });
     }
 
-    // Initialize Anthropic client inside the handler to ensure env var is available
     const apiKey = process.env.ANTHROPIC_API_KEY;
-    console.log("ANTHROPIC_API_KEY exists:", !!apiKey, "length:", apiKey?.length);
-    if (!apiKey) {
-      console.error("ANTHROPIC_API_KEY is not set in environment variables");
+
+    if (!apiKey || apiKey.length < 10) {
+      console.error("ANTHROPIC_API_KEY is not set or invalid");
       return NextResponse.json({ error: "AI service not configured" }, { status: 500 });
     }
     const anthropic = new Anthropic({ apiKey });

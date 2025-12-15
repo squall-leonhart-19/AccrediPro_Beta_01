@@ -31,7 +31,6 @@ import {
 import { EnrollButton } from "@/components/courses/enroll-button";
 import { CourseReviews } from "@/components/courses/course-reviews";
 import { CourseResourcesDialog } from "@/components/courses/course-resources-dialog";
-import { DownloadSyllabusButton } from "@/components/courses/download-syllabus-button";
 
 async function getCourse(slug: string) {
   return prisma.course.findUnique({
@@ -340,27 +339,6 @@ export default async function CourseDetailPage({
 
                 {!enrollment && (
                   <>
-                    {/* Download Syllabus Button */}
-                    <DownloadSyllabusButton
-                      courseTitle={course.title}
-                      courseDescription={course.description}
-                      modules={course.modules.map(m => ({
-                        id: m.id,
-                        title: m.title,
-                        description: m.description,
-                        lessons: m.lessons.map(l => ({
-                          id: l.id,
-                          title: l.title,
-                          description: l.description,
-                          videoDuration: l.videoDuration,
-                          lessonType: l.lessonType,
-                        }))
-                      }))}
-                      totalLessons={totalLessons}
-                      totalDuration={course.duration}
-                      difficulty={course.difficulty}
-                    />
-
                     <div className="mt-4 pt-4 border-t border-gray-100">
                       <ul className="space-y-2 text-sm text-gray-600">
                         <li className="flex items-center gap-2">

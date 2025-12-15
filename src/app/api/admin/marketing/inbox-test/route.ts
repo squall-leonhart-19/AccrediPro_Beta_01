@@ -2799,13 +2799,91 @@ P.S. A lot of people who complete the Mini Diploma tell me it was a turning poin
 ];
 
 // GET - Return all variants info
-export async function GET() {
+export async function GET(request: NextRequest) {
   try {
     const session = await getServerSession(authOptions);
     if (!session?.user || session.user.role !== "ADMIN") {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
+    // Check if requesting a specific variant
+    const { searchParams } = new URL(request.url);
+    const variantId = searchParams.get('variantId');
+
+    if (variantId) {
+      const variant = EMAIL_VARIANTS.find(v => v.id === parseInt(variantId));
+      if (!variant) {
+        return NextResponse.json({ error: "Variant not found" }, { status: 404 });
+      }
+
+      // Generate full HTML for preview
+      let personalizedContent = variant.content.replace(/\{\{firstName\}\}/g, "{{firstName}}");
+
+      // Replace CTA button placeholder if present
+      if ((variant as any).useCtaButton) {
+        personalizedContent = personalizedContent.replace(
+          '{{CTA_BUTTON}}',
+          '<a href="https://accredipro.academy" style="display:inline-block;background:#722F37;color:#fff;padding:12px 24px;text-decoration:none;border-radius:6px;font-weight:bold;">Watch the Free Training</a>'
+        );
+      }
+
+      let htmlContent: string;
+
+      if ((variant as any).useHtmlBranding) {
+        const formattedContent = personalizedContent
+          .split('\n\n')
+          .map(p => `<p style="color: #555; font-size: 16px; margin: 0 0 16px 0;">${p.replace(/\n/g, '<br>')}</p>`)
+          .join('');
+
+        htmlContent = `<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  </head>
+  <body style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif; line-height: 1.6; color: #333; margin: 0; padding: 0; background-color: #f5f5f5;">
+    <div style="max-width: 600px; margin: 0 auto; padding: 20px;">
+      <div style="background: white; border-radius: 16px; overflow: hidden; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
+        <!-- Header -->
+        <div style="background: linear-gradient(135deg, #722F37 0%, #8B3A42 100%); padding: 40px 30px; text-align: center;">
+          <h1 style="color: #D4AF37; margin: 0; font-size: 28px; font-family: Georgia, serif;">AccrediPro Academy</h1>
+          <p style="color: rgba(255,255,255,0.8); margin: 5px 0 0 0; font-size: 14px;">Functional Medicine Excellence</p>
+        </div>
+        <!-- Content -->
+        <div style="padding: 40px 30px;">
+          ${formattedContent}
+        </div>
+        <!-- Footer -->
+        <div style="background: #f8f9fa; padding: 30px; text-align: center; border-top: 1px solid #eee;">
+          <p style="margin: 0 0 5px 0; color: #722F37; font-size: 13px; font-weight: bold;">AccrediPro LLC</p>
+          <p style="margin: 0; color: #999; font-size: 11px;">1270 Ave of the Americas, 7th Fl -1182, New York, NY 10020</p>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>`;
+      } else {
+        htmlContent = `<!DOCTYPE html>
+<html>
+<head><meta charset="utf-8"></head>
+<body style="font-family:Arial,sans-serif;font-size:14px;line-height:1.5;color:#222;">
+${personalizedContent.replace(/\n\n/g, '<br><br>').replace(/\n/g, '<br>')}
+</body>
+</html>`;
+      }
+
+      return NextResponse.json({
+        id: variant.id,
+        name: variant.name,
+        day: variant.day,
+        subject: variant.subject,
+        originalSubject: variant.originalSubject,
+        content: variant.content,
+        html: htmlContent,
+      });
+    }
+
+    // Return list of all variants
     return NextResponse.json({
       variants: EMAIL_VARIANTS.map(v => ({
         id: v.id,

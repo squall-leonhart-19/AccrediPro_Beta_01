@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { GraduationCap, Award, Users, Sparkles } from "lucide-react";
+import { GraduationCap, Award, Users, Sparkles, Menu } from "lucide-react";
 
 export default function AuthLayout({
   children,
@@ -27,21 +27,22 @@ export default function AuthLayout({
 
         <div className="relative z-10 flex flex-col justify-center items-center w-full px-12">
           <div className="text-center max-w-lg">
-            {/* Animated Logo */}
+            {/* Logo */}
             <div className="relative mb-8">
-              <div className="w-32 h-32 mx-auto relative">
+              <div className="w-44 h-44 mx-auto relative">
                 {/* Outer ring */}
                 <div className="absolute inset-0 rounded-full bg-gradient-to-br from-gold-300 to-gold-500 animate-pulse opacity-50" />
                 {/* Main logo container */}
-                <div className="absolute inset-2 bg-white rounded-full flex items-center justify-center shadow-2xl">
-                  <div className="text-center">
-                    <span className="text-burgundy-700 font-bold text-3xl block">AP</span>
-                    <div className="w-8 h-0.5 bg-gold-500 mx-auto mt-1" />
-                  </div>
+                <div className="absolute inset-2 bg-white rounded-full flex items-center justify-center shadow-2xl p-5">
+                  <img
+                    src="https://coach.accredipro.academy/wp-content/uploads/2025/10/Senza-titolo-Logo-1.png"
+                    alt="AccrediPro Logo"
+                    className="h-28 w-auto object-contain"
+                  />
                 </div>
                 {/* Decorative dots */}
-                <div className="absolute -top-2 -right-2 w-4 h-4 bg-gold-400 rounded-full animate-bounce" style={{ animationDelay: '0.2s' }} />
-                <div className="absolute -bottom-1 -left-1 w-3 h-3 bg-gold-300 rounded-full animate-bounce" style={{ animationDelay: '0.5s' }} />
+                <div className="absolute -top-2 -right-2 w-5 h-5 bg-gold-400 rounded-full animate-bounce" style={{ animationDelay: '0.2s' }} />
+                <div className="absolute -bottom-1 -left-1 w-4 h-4 bg-gold-300 rounded-full animate-bounce" style={{ animationDelay: '0.5s' }} />
               </div>
             </div>
 
@@ -100,15 +101,20 @@ export default function AuthLayout({
 
       {/* Right side - Auth form */}
       <div className="w-full lg:w-1/2 flex flex-col bg-gradient-to-b from-gray-50 to-white">
-        <div className="p-6 lg:hidden">
-          <Link href="/" className="flex items-center gap-3 group">
-            <div className="w-12 h-12 bg-gradient-to-br from-burgundy-600 to-burgundy-700 rounded-xl flex items-center justify-center shadow-lg group-hover:shadow-xl transition-shadow">
-              <span className="text-white font-bold text-lg">AP</span>
+        {/* Mobile Header */}
+        <div className="lg:hidden bg-gradient-to-r from-burgundy-600 to-burgundy-700 px-4 py-3 flex items-center justify-between shadow-md">
+          <Link href="/" className="flex items-center gap-2">
+            <div className="w-10 h-10 bg-white rounded-full flex items-center justify-center p-1">
+              <img
+                src="https://coach.accredipro.academy/wp-content/uploads/2025/10/Senza-titolo-Logo-1.png"
+                alt="AccrediPro Logo"
+                className="h-7 w-auto object-contain"
+              />
             </div>
-            <div>
-              <span className="text-xl font-bold text-burgundy-700 block">AccrediPro</span>
-              <span className="text-xs text-gray-500">Academy</span>
-            </div>
+            <span className="text-white font-bold text-lg">AccrediPro</span>
+          </Link>
+          <Link href="/" className="text-white p-2 hover:bg-white/10 rounded-lg transition-colors">
+            <Menu className="w-6 h-6" />
           </Link>
         </div>
 

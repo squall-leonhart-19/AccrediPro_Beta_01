@@ -256,8 +256,9 @@ export async function POST(request: NextRequest) {
       passed,
       pointsEarned: earnedPoints,
       pointsPossible: totalPoints,
-      correctAnswers: quiz.showCorrectAnswers ? correctAnswers : undefined,
-      explanations: quiz.showCorrectAnswers ? explanations : undefined,
+      // Always return correct answers after submission so users can review
+      correctAnswers,
+      explanations,
     });
   } catch (error) {
     console.error("Quiz submit error:", error);

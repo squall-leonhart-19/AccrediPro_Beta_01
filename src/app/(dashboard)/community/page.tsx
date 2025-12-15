@@ -50,16 +50,10 @@ async function getUserCommunities(userId: string) {
   return communities;
 }
 
-// Get posts for specified communities (or all if admin)
-async function getPosts(communityIds: string[], isAdmin: boolean) {
-  const where = isAdmin
-    ? {}
-    : communityIds.length > 0
-    ? { communityId: { in: communityIds } }
-    : { communityId: null }; // Show general posts if no communities
-
+// Get all posts - community is open to everyone
+async function getPosts() {
   return prisma.communityPost.findMany({
-    where,
+    where: {},
     include: {
       author: {
         select: {
@@ -83,28 +77,15 @@ async function getPosts(communityIds: string[], isAdmin: boolean) {
       },
     },
     orderBy: [{ isPinned: "desc" }, { createdAt: "desc" }],
-    take: 100,
   });
 }
 
-async function getStats(communityIds: string[], isAdmin: boolean) {
-  // Get stats for user's communities
+async function getStats() {
+  // Get community stats - everyone sees the same stats
   const [totalMembers, totalPosts, totalComments, activeToday] = await Promise.all([
     prisma.user.count({ where: { isActive: true } }),
-    isAdmin
-      ? prisma.communityPost.count()
-      : prisma.communityPost.count({
-          where: communityIds.length > 0
-            ? { communityId: { in: communityIds } }
-            : { communityId: null },
-        }),
-    isAdmin
-      ? prisma.postComment.count()
-      : prisma.postComment.count({
-          where: communityIds.length > 0
-            ? { post: { communityId: { in: communityIds } } }
-            : { post: { communityId: null } },
-        }),
+    prisma.communityPost.count(),
+    prisma.postComment.count(),
     prisma.user.count({
       where: {
         lastLoginAt: {
@@ -150,10 +131,9 @@ export default async function CommunityPage() {
     }));
   }
 
-  const communityIds = communities.map(c => c.id);
   const [posts, stats] = await Promise.all([
-    getPosts(communityIds, isAdmin),
-    getStats(communityIds, isAdmin),
+    getPosts(),
+    getStats(),
   ]);
 
   // Transform posts for client component

@@ -1,8 +1,10 @@
 "use client";
 
-import { useState } from "react";
-import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
+import { ExternalLink } from "lucide-react";
+
+// Fanbasis checkout URL for $997 enrollment
+const FANBASIS_CHECKOUT_URL = "https://www.fanbasis.com/agency-checkout/AccrediPro/XDNQW";
 
 interface EnrollButtonProps {
   courseId: string;
@@ -10,49 +12,24 @@ interface EnrollButtonProps {
 }
 
 export function EnrollButton({ courseId, courseName }: EnrollButtonProps) {
-  const router = useRouter();
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState("");
-
-  const handleEnroll = async () => {
-    setLoading(true);
-    setError("");
-
-    try {
-      const response = await fetch("/api/courses/enroll", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ courseId }),
-      });
-
-      const data = await response.json();
-
-      if (!response.ok) {
-        setError(data.error || "Failed to enroll");
-        return;
-      }
-
-      router.refresh();
-    } catch {
-      setError("An error occurred. Please try again.");
-    } finally {
-      setLoading(false);
-    }
+  const handleEnroll = () => {
+    // Redirect to Fanbasis checkout for payment
+    window.open(FANBASIS_CHECKOUT_URL, "_blank", "noopener,noreferrer");
   };
 
   return (
     <div>
       <Button
-        className="w-full"
+        className="w-full bg-gradient-to-r from-burgundy-600 to-burgundy-700 hover:from-burgundy-700 hover:to-burgundy-800"
         size="lg"
         onClick={handleEnroll}
-        loading={loading}
       >
-        Enroll Now
+        Enroll Now - $997
+        <ExternalLink className="w-4 h-4 ml-2" />
       </Button>
-      {error && (
-        <p className="text-sm text-red-500 mt-2 text-center">{error}</p>
-      )}
+      <p className="text-xs text-gray-500 mt-2 text-center">
+        Secure checkout powered by Fanbasis
+      </p>
     </div>
   );
 }

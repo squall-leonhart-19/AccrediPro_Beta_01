@@ -55,62 +55,117 @@ export function ModuleCertificateCard({
   const handleDownloadPDF = async () => {
     setDownloading(true);
     try {
-      // Dynamically import libraries
-      const html2canvas = (await import("html2canvas")).default;
-      const { jsPDF } = await import("jspdf");
+      // Try server-side PDF generation first (uses Sejda API)
+      const response = await fetch("/api/certificates/pdf", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          studentName,
+          moduleTitle,
+          courseName,
+          completedDate,
+          certificateId,
+          type: "module",
+        }),
+      });
 
-      // Create a temporary container for the certificate
-      const container = document.createElement("div");
-      container.style.position = "fixed";
-      container.style.left = "0";
-      container.style.top = "0";
-      container.style.width = "1122px"; // A4 landscape width at 96dpi
-      container.style.height = "793px"; // A4 landscape height at 96dpi
-      container.style.zIndex = "-9999";
-      container.style.backgroundColor = "#fdfbf7";
-      container.innerHTML = generateCertificateHTML();
-      document.body.appendChild(container);
+      if (response.ok) {
+        const contentType = response.headers.get("content-type");
 
-      // Wait for styles to apply
-      await new Promise(resolve => setTimeout(resolve, 100));
+        if (contentType?.includes("application/pdf")) {
+          // Server returned PDF directly
+          const blob = await response.blob();
+          const url = URL.createObjectURL(blob);
+          const link = document.createElement("a");
+          link.href = url;
+          link.download = `${cleanModuleTitle.replace(/\s+/g, "-")}-Certificate.pdf`;
+          document.body.appendChild(link);
+          link.click();
+          document.body.removeChild(link);
+          URL.revokeObjectURL(url);
+          return;
+        }
 
-      const certificateElement = container.querySelector(".certificate") as HTMLElement;
-      if (!certificateElement) {
-        throw new Error("Certificate element not found");
+        // Fallback: server returned HTML for client-side rendering
+        const data = await response.json();
+        if (data.fallback && data.html) {
+          await generatePDFClientSide(data.html);
+          return;
+        }
       }
 
-      // Use html2canvas to capture the certificate
-      const canvas = await html2canvas(certificateElement, {
-        scale: 2,
-        useCORS: true,
-        backgroundColor: "#fdfbf7",
-        width: 1122,
-        height: 793,
-        logging: false,
-      });
+      // If server failed, use client-side generation
+      await generatePDFClientSide(generateCertificateHTML());
 
-      // Create PDF (A4 landscape)
-      const pdf = new jsPDF({
-        orientation: "landscape",
-        unit: "mm",
-        format: "a4",
-      });
-
-      const imgData = canvas.toDataURL("image/png");
-      const pdfWidth = pdf.internal.pageSize.getWidth();
-      const pdfHeight = pdf.internal.pageSize.getHeight();
-
-      pdf.addImage(imgData, "PNG", 0, 0, pdfWidth, pdfHeight);
-      pdf.save(`${cleanModuleTitle.replace(/\s+/g, "-")}-Certificate.pdf`);
-
-      // Cleanup
-      document.body.removeChild(container);
     } catch (error) {
       console.error("PDF download failed:", error);
-      alert("Failed to generate PDF. Please try again.");
+      const errorMessage = error instanceof Error ? error.message : "Unknown error";
+      alert(`Failed to generate PDF: ${errorMessage}. Please try again.`);
     } finally {
+      const leftover = document.getElementById("pdf-certificate-container");
+      if (leftover) {
+        document.body.removeChild(leftover);
+      }
       setDownloading(false);
     }
+  };
+
+  const generatePDFClientSide = async (htmlContent: string) => {
+    const html2canvas = (await import("html2canvas")).default;
+    const { jsPDF } = await import("jspdf");
+
+    const container = document.createElement("div");
+    container.id = "pdf-certificate-container";
+    container.style.cssText = `
+      position: absolute;
+      left: -10000px;
+      top: 0;
+      width: 1122px;
+      height: 793px;
+      background-color: #fdfbf7;
+      overflow: hidden;
+    `;
+    container.innerHTML = htmlContent;
+    document.body.appendChild(container);
+
+    await new Promise(resolve => setTimeout(resolve, 300));
+
+    const certificateElement = container.querySelector(".certificate") as HTMLElement;
+    if (!certificateElement) {
+      document.body.removeChild(container);
+      throw new Error("Certificate element not found");
+    }
+
+    const canvas = await html2canvas(certificateElement, {
+      scale: 2,
+      useCORS: true,
+      allowTaint: true,
+      backgroundColor: "#fdfbf7",
+      width: 1122,
+      height: 793,
+      logging: false,
+    });
+
+    document.body.removeChild(container);
+
+    const pdf = new jsPDF({
+      orientation: "landscape",
+      unit: "mm",
+      format: "a4",
+    });
+
+    const imgData = canvas.toDataURL("image/png", 1.0);
+    pdf.addImage(imgData, "PNG", 0, 0, pdf.internal.pageSize.getWidth(), pdf.internal.pageSize.getHeight());
+
+    const pdfBlob = pdf.output("blob");
+    const url = URL.createObjectURL(pdfBlob);
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = `${cleanModuleTitle.replace(/\s+/g, "-")}-Certificate.pdf`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
   };
 
   const generateCertificateHTML = () => {

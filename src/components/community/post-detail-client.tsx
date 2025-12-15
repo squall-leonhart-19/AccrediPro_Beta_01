@@ -482,7 +482,7 @@ export default function PostDetailClient({
               <div className="bg-[#FCFBF8] rounded-xl p-6 border border-stone-100 shadow-sm relative overflow-hidden">
                 <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-burgundy-500/20 to-transparent"></div>
                 <div
-                  className="prose prose-lg max-w-none text-gray-800 prose-headings:font-bold prose-headings:text-gray-900 prose-a:text-burgundy-600 prose-strong:text-burgundy-900 prose-p:leading-relaxed"
+                  className="prose prose-lg max-w-none text-gray-800 prose-headings:font-bold prose-headings:text-gray-900 prose-a:text-burgundy-600 prose-strong:text-burgundy-900 prose-p:leading-relaxed prose-p:mb-4 prose-ul:mb-4 prose-ol:mb-4 prose-li:mb-1 [&>p:first-child]:mt-0 [&>p:last-child]:mb-0"
                   dangerouslySetInnerHTML={{ __html: post.content }}
                 />
               </div>

@@ -21,7 +21,9 @@ import {
     TrendingUp,
     Target,
     Briefcase,
+    MessageCircle,
 } from "lucide-react";
+import { LiveQAChat } from "@/components/training/live-qa-chat";
 
 interface TrainingContentProps {
     userName: string;
@@ -231,6 +233,20 @@ export function TrainingContent({ userName, hasCompletedMiniDiploma, miniDiploma
                     </div>
                 </CardContent>
             </Card>
+
+            {/* Live Q&A Section */}
+            <div className="space-y-4">
+                <div className="flex items-center gap-3">
+                    <div className="p-2 bg-burgundy-100 rounded-lg">
+                        <MessageCircle className="w-5 h-5 text-burgundy-600" />
+                    </div>
+                    <div>
+                        <h2 className="font-bold text-gray-900">Live Q&A Session</h2>
+                        <p className="text-sm text-gray-600">Get your questions answered about the Full Certification</p>
+                    </div>
+                </div>
+                <LiveQAChat />
+            </div>
 
             {/* Progress Indicator (if watched) */}
             {hasWatched && (
