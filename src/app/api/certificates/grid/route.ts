@@ -4,8 +4,8 @@ import { join } from "path";
 
 export async function GET(request: NextRequest) {
     try {
-        // Load the blank template
-        const templatePath = join(process.cwd(), "public/images/certificate-template-blank.png");
+        // Load the new master template
+        const templatePath = join(process.cwd(), "public/images/certificate-template-master.png");
         const templateImage = await loadImage(templatePath);
 
         // Create canvas with template dimensions
