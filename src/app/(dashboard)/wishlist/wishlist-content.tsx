@@ -93,7 +93,7 @@ interface WishlistContentProps {
 
 const DEFAULT_COACH = {
     name: "Sarah Mitchell",
-    avatar: "/images/coaches/sarah.jpg",
+    avatar: "/coaches/sarah-coach.webp",
     title: "Lead Instructor",
 };
 

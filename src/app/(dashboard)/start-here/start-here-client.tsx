@@ -448,24 +448,7 @@ export function StartHereClient({ user, userId, enrollments, tourComplete: initi
                             </CardContent>
                         </Card>
 
-                        {/* Video Introduction */}
-                        <Card className="card-premium mt-6">
-                            <CardContent className="p-6">
-                                <h2 className="text-xl font-semibold text-gray-900 mb-4 flex items-center gap-2">
-                                    <Play className="w-5 h-5 text-burgundy-600" />
-                                    Welcome Video
-                                </h2>
-                                <div className="aspect-video bg-gradient-to-br from-burgundy-100 to-burgundy-50 rounded-xl flex items-center justify-center">
-                                    <div className="text-center">
-                                        <div className="w-20 h-20 bg-burgundy-600 rounded-full flex items-center justify-center mx-auto mb-4 cursor-pointer hover:bg-burgundy-700 transition-colors">
-                                            <Play className="w-8 h-8 text-white ml-1" />
-                                        </div>
-                                        <p className="text-burgundy-600 font-medium">Watch our welcome video</p>
-                                        <p className="text-sm text-gray-500">Learn what to expect from AccrediPro Academy</p>
-                                    </div>
-                                </div>
-                            </CardContent>
-                        </Card>
+                        {/* Video Introduction - temporarily hidden */}
                     </div>
 
                     {/* Sidebar */}

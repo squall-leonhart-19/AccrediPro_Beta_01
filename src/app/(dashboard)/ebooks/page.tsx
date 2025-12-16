@@ -483,12 +483,12 @@ export default function EbooksStorePage() {
                                 </div>
 
                                 <h1 className="text-3xl md:text-4xl font-bold mb-4">
-                                    Professional E-Book Library
+                                    Professional AccrediPro E-Book & Resources Library
                                 </h1>
 
                                 <p className="text-lg text-burgundy-100 max-w-2xl mb-6">
-                                    Expert guides and protocols designed for practitioners.
-                                    <span className="text-gold-300 font-medium"> Build your practice with confidence.</span>
+                                    Find everything here: expert guides, protocols, and resources designed for practitioners.
+                                    <span className="text-gold-300 font-medium"> Continue from where you left off!</span>
                                 </p>
 
                                 {isGraduate && (

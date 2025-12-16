@@ -1,0 +1,469 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FM Income Calculator | Functional Medicine Practitioner</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Georgia, 'Times New Roman', serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            min-height: 100vh;
+            padding: 40px 20px;
+            color: #333;
+        }
+
+        .calculator-container {
+            max-width: 700px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+        }
+
+        .calculator-header {
+            background: linear-gradient(135deg, #722F37 0%, #8B3A42 100%);
+            padding: 30px;
+            text-align: center;
+            color: white;
+        }
+
+        .calculator-header h1 {
+            font-size: 1.8em;
+            margin-bottom: 10px;
+            font-weight: normal;
+        }
+
+        .calculator-header p {
+            opacity: 0.9;
+            font-size: 1em;
+        }
+
+        .calculator-body {
+            padding: 30px;
+        }
+
+        .input-group {
+            margin-bottom: 30px;
+        }
+
+        .input-group label {
+            display: block;
+            font-weight: bold;
+            color: #722F37;
+            margin-bottom: 10px;
+            font-size: 1.1em;
+        }
+
+        .input-group .hint {
+            font-size: 0.85em;
+            color: #666;
+            margin-bottom: 12px;
+        }
+
+        .slider-container {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .slider-container input[type="range"] {
+            flex: 1;
+            height: 8px;
+            -webkit-appearance: none;
+            background: #e0e0e0;
+            border-radius: 4px;
+            outline: none;
+        }
+
+        .slider-container input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 24px;
+            height: 24px;
+            background: linear-gradient(135deg, #722F37, #8B3A42);
+            border-radius: 50%;
+            cursor: pointer;
+            box-shadow: 0 2px 6px rgba(114, 47, 55, 0.4);
+        }
+
+        .slider-value {
+            min-width: 80px;
+            text-align: center;
+            font-weight: bold;
+            color: #722F37;
+            font-size: 1.2em;
+            background: #FFF59D;
+            padding: 8px 12px;
+            border-radius: 6px;
+        }
+
+        .radio-group {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .radio-option {
+            flex: 1;
+            min-width: 120px;
+        }
+
+        .radio-option input {
+            display: none;
+        }
+
+        .radio-option label {
+            display: block;
+            padding: 15px;
+            text-align: center;
+            background: #f5f5f5;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: normal;
+            font-size: 0.95em;
+        }
+
+        .radio-option input:checked+label {
+            background: #FFF59D;
+            border-color: #B8860B;
+            color: #722F37;
+            font-weight: bold;
+        }
+
+        .radio-option label:hover {
+            border-color: #B8860B;
+        }
+
+        .divider {
+            height: 1px;
+            background: #e0e0e0;
+            margin: 30px 0;
+        }
+
+        .results {
+            background: linear-gradient(135deg, #f8f9fa 0%, #e8f5e9 100%);
+            border-radius: 12px;
+            padding: 25px;
+            text-align: center;
+        }
+
+        .results h3 {
+            color: #666;
+            font-size: 1em;
+            font-weight: normal;
+            margin-bottom: 15px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .income-display {
+            display: flex;
+            justify-content: center;
+            gap: 40px;
+            flex-wrap: wrap;
+            margin-bottom: 20px;
+        }
+
+        .income-box {
+            text-align: center;
+        }
+
+        .income-box .amount {
+            font-size: 2.5em;
+            font-weight: bold;
+            color: #2e7d32;
+        }
+
+        .income-box .period {
+            font-size: 0.9em;
+            color: #666;
+        }
+
+        .comparison {
+            background: #FFF59D;
+            padding: 15px 20px;
+            border-radius: 8px;
+            margin-top: 20px;
+        }
+
+        .comparison p {
+            font-size: 1em;
+            color: #333;
+            margin: 0;
+        }
+
+        .comparison strong {
+            color: #722F37;
+        }
+
+        .progress-bar {
+            margin-top: 25px;
+        }
+
+        .progress-bar .label {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.8em;
+            color: #666;
+            margin-bottom: 8px;
+        }
+
+        .progress-bar .bar {
+            height: 12px;
+            background: #e0e0e0;
+            border-radius: 6px;
+            overflow: hidden;
+        }
+
+        .progress-bar .fill {
+            height: 100%;
+            background: linear-gradient(90deg, #4caf50, #8bc34a);
+            border-radius: 6px;
+            transition: width 0.5s ease;
+        }
+
+        .breakdown {
+            margin-top: 25px;
+            text-align: left;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+        }
+
+        .breakdown h4 {
+            color: #722F37;
+            margin-bottom: 15px;
+            font-size: 1em;
+        }
+
+        .breakdown-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 0;
+            border-bottom: 1px solid #eee;
+        }
+
+        .breakdown-row:last-child {
+            border-bottom: none;
+            font-weight: bold;
+            color: #2e7d32;
+        }
+
+        .footer-note {
+            text-align: center;
+            padding: 20px 30px 30px;
+            color: #666;
+            font-size: 0.85em;
+            font-style: italic;
+        }
+
+        @media (max-width: 600px) {
+            .income-display {
+                gap: 20px;
+            }
+
+            .income-box .amount {
+                font-size: 2em;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="calculator-container">
+        <div class="calculator-header">
+            <h1>💰 FM Income Calculator</h1>
+            <p>See what you could earn as a Functional Medicine Practitioner</p>
+        </div>
+
+        <div class="calculator-body">
+            <!-- Days per Week -->
+            <div class="input-group">
+                <label>Days Per Week You Want to Work</label>
+                <p class="hint">Most practitioners start with 2-3 days while transitioning</p>
+                <div class="slider-container">
+                    <input type="range" id="daysPerWeek" min="1" max="5" value="3" oninput="calculate()">
+                    <span class="slider-value" id="daysDisplay">3 days</span>
+                </div>
+            </div>
+
+            <!-- Clients per Day -->
+            <div class="input-group">
+                <label>Clients Per Day</label>
+                <p class="hint">With 60-90 min sessions, 4-5 clients is sustainable</p>
+                <div class="slider-container">
+                    <input type="range" id="clientsPerDay" min="2" max="8" value="4" oninput="calculate()">
+                    <span class="slider-value" id="clientsDisplay">4 clients</span>
+                </div>
+            </div>
+
+            <!-- Pricing Tier -->
+            <div class="input-group">
+                <label>Your Pricing Tier</label>
+                <p class="hint">Beginners start low, established practitioners charge premium</p>
+                <div class="radio-group">
+                    <div class="radio-option">
+                        <input type="radio" name="pricing" id="beginner" value="75" onchange="calculate()">
+                        <label for="beginner">Beginner<br><strong>$75/hr</strong></label>
+                    </div>
+                    <div class="radio-option">
+                        <input type="radio" name="pricing" id="established" value="150" checked onchange="calculate()">
+                        <label for="established">Established<br><strong>$150/hr</strong></label>
+                    </div>
+                    <div class="radio-option">
+                        <input type="radio" name="pricing" id="premium" value="250" onchange="calculate()">
+                        <label for="premium">Premium<br><strong>$250/hr</strong></label>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Program Model -->
+            <div class="input-group">
+                <label>Program Model</label>
+                <p class="hint">Packages increase commitment and results</p>
+                <div class="radio-group">
+                    <div class="radio-option">
+                        <input type="radio" name="model" id="hourly" value="1" onchange="calculate()">
+                        <label for="hourly">Hourly<br><small>Pay per session</small></label>
+                    </div>
+                    <div class="radio-option">
+                        <input type="radio" name="model" id="package3" value="1.5" checked onchange="calculate()">
+                        <label for="package3">3-Month Package<br><small>+50% value</small></label>
+                    </div>
+                    <div class="radio-option">
+                        <input type="radio" name="model" id="package6" value="2" onchange="calculate()">
+                        <label for="package6">6-Month Package<br><small>+100% value</small></label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="divider"></div>
+
+            <!-- Results -->
+            <div class="results">
+                <h3>Your Potential Income</h3>
+
+                <div class="income-display">
+                    <div class="income-box">
+                        <div class="amount" id="monthlyIncome">$7,200</div>
+                        <div class="period">per month</div>
+                    </div>
+                    <div class="income-box">
+                        <div class="amount" id="annualIncome">$86,400</div>
+                        <div class="period">per year</div>
+                    </div>
+                </div>
+
+                <div class="comparison">
+                    <p id="comparisonText">That's <strong>20% more</strong> than the average RN salary ($72,000) —
+                        working <strong>fewer hours</strong> with <strong>more freedom</strong>.</p>
+                </div>
+
+                <div class="progress-bar">
+                    <div class="label">
+                        <span>Part-Time</span>
+                        <span>Full-Time</span>
+                        <span>Premium</span>
+                    </div>
+                    <div class="bar">
+                        <div class="fill" id="progressFill" style="width: 50%"></div>
+                    </div>
+                </div>
+
+                <div class="breakdown">
+                    <h4>📊 Breakdown</h4>
+                    <div class="breakdown-row">
+                        <span>Sessions per week</span>
+                        <span id="sessionsWeek">12</span>
+                    </div>
+                    <div class="breakdown-row">
+                        <span>Sessions per month</span>
+                        <span id="sessionsMonth">48</span>
+                    </div>
+                    <div class="breakdown-row">
+                        <span>Rate per session</span>
+                        <span id="rateSession">$150</span>
+                    </div>
+                    <div class="breakdown-row">
+                        <span>Package multiplier</span>
+                        <span id="multiplier">1.5x</span>
+                    </div>
+                    <div class="breakdown-row">
+                        <span><strong>Annual Total</strong></span>
+                        <span id="totalAnnual"><strong>$86,400</strong></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="footer-note">
+            * Results are estimates based on industry averages. Actual income depends on location, niche, marketing, and
+            client retention.
+        </div>
+    </div>
+
+    <script>
+        const RN_SALARY = 72000;
+
+        function calculate() {
+            // Get values
+            const daysPerWeek = parseInt(document.getElementById('daysPerWeek').value);
+            const clientsPerDay = parseInt(document.getElementById('clientsPerDay').value);
+            const pricing = parseInt(document.querySelector('input[name="pricing"]:checked').value);
+            const modelMultiplier = parseFloat(document.querySelector('input[name="model"]:checked').value);
+
+            // Update displays
+            document.getElementById('daysDisplay').textContent = daysPerWeek + (daysPerWeek === 1 ? ' day' : ' days');
+            document.getElementById('clientsDisplay').textContent = clientsPerDay + (clientsPerDay === 1 ? ' client' : ' clients');
+
+            // Calculate
+            const sessionsPerWeek = daysPerWeek * clientsPerDay;
+            const sessionsPerMonth = sessionsPerWeek * 4;
+            const monthlyBase = sessionsPerMonth * pricing;
+            const monthlyTotal = monthlyBase * modelMultiplier;
+            const annualTotal = monthlyTotal * 12;
+
+            // Update results
+            document.getElementById('monthlyIncome').textContent = '$' + monthlyTotal.toLocaleString();
+            document.getElementById('annualIncome').textContent = '$' + annualTotal.toLocaleString();
+
+            // Comparison
+            const percentDiff = ((annualTotal - RN_SALARY) / RN_SALARY * 100).toFixed(0);
+            let comparisonText;
+            if (annualTotal > RN_SALARY) {
+                comparisonText = `That's <strong>${percentDiff}% more</strong> than the average RN salary ($72,000) — working <strong>fewer hours</strong> with <strong>more freedom</strong>.`;
+            } else if (annualTotal < RN_SALARY) {
+                comparisonText = `That's a great <strong>part-time income</strong> while you build your practice. Increase days or pricing to match your RN salary.`;
+            } else {
+                comparisonText = `That <strong>matches</strong> the average RN salary ($72,000) — but with <strong>half the stress</strong> and <strong>total autonomy</strong>.`;
+            }
+            document.getElementById('comparisonText').innerHTML = comparisonText;
+
+            // Progress bar (based on annual income, max at $200k)
+            const progress = Math.min((annualTotal / 200000) * 100, 100);
+            document.getElementById('progressFill').style.width = progress + '%';
+
+            // Breakdown
+            document.getElementById('sessionsWeek').textContent = sessionsPerWeek;
+            document.getElementById('sessionsMonth').textContent = sessionsPerMonth;
+            document.getElementById('rateSession').textContent = '$' + pricing;
+            document.getElementById('multiplier').textContent = modelMultiplier + 'x';
+            document.getElementById('totalAnnual').innerHTML = '<strong>$' + annualTotal.toLocaleString() + '</strong>';
+        }
+
+        // Initial calculation
+        calculate();
+    </script>
+</body>
+
+</html>

@@ -80,17 +80,19 @@ const TOUR_STEPS: TourStep[] = [
         action: "click",
         actionText: "Click Roadmap",
     },
-    {
-        id: "challenges",
-        title: "7-Day Challenge",
-        description: "Start your journey with our FREE 7-day activation challenge! It's the perfect way to experience the platform and kickstart your learning.",
-        icon: <Flame className="w-6 h-6 text-orange-500" />,
-        emoji: "🔥",
-        targetSelector: "[data-tour='challenges']",
-        position: "bottom-right",
-        action: "click",
-        actionText: "Click Challenges",
-    },
+    // TEMPORARILY HIDDEN - Re-enable when videos arrive (5-7 days from Dec 16, 2024)
+    // See: /docs/CHALLENGES_REACTIVATION.md
+    // {
+    //     id: "challenges",
+    //     title: "7-Day Challenge",
+    //     description: "Start your journey with our FREE 7-day activation challenge! It's the perfect way to experience the platform and kickstart your learning.",
+    //     icon: <Flame className="w-6 h-6 text-orange-500" />,
+    //     emoji: "🔥",
+    //     targetSelector: "[data-tour='challenges']",
+    //     position: "bottom-right",
+    //     action: "click",
+    //     actionText: "Click Challenges",
+    // },
     {
         id: "library",
         title: "My Library",

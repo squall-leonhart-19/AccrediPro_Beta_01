@@ -144,7 +144,7 @@ export function UsersClient({ users, courses }: UsersClientProps) {
   const [savingKnowledge, setSavingKnowledge] = useState(false);
 
   // Activity tab states for dispute resolution
-  const [detailTab, setDetailTab] = useState<"overview" | "activity">("overview");
+  const [detailTab, setDetailTab] = useState<"overview" | "tags" | "activity">("overview");
   const [activityData, setActivityData] = useState<any>(null);
   const [loadingActivity, setLoadingActivity] = useState(false);
 
@@ -1012,6 +1012,15 @@ export function UsersClient({ users, courses }: UsersClientProps) {
                   Overview
                 </button>
                 <button
+                  onClick={() => setDetailTab("tags")}
+                  className={`px-4 py-2 text-sm font-medium border-b-2 -mb-px transition-colors flex items-center gap-2 ${detailTab === "tags" ? "border-burgundy-600 text-burgundy-600" : "border-transparent text-gray-500 hover:text-gray-700"}`}
+                >
+                  🏷️ Tags
+                  {selectedUser.tags && selectedUser.tags.length > 0 && (
+                    <span className="px-1.5 py-0.5 bg-purple-100 text-purple-700 rounded text-xs">{selectedUser.tags.length}</span>
+                  )}
+                </button>
+                <button
                   onClick={() => {
                     setDetailTab("activity");
                     if (!activityData && !loadingActivity) {
@@ -1169,6 +1178,151 @@ export function UsersClient({ users, courses }: UsersClientProps) {
                           </div>
                         ))}
                       </div>
+                    </div>
+                  )}
+                </div>
+              )}
+
+              {detailTab === "tags" && (
+                <div className="space-y-6 mt-4">
+                  {/* Tag Statistics */}
+                  <div className="grid grid-cols-4 gap-4">
+                    <div className="text-center p-3 bg-purple-50 rounded-lg">
+                      <p className="text-2xl font-bold text-purple-600">{selectedUser.tags?.length || 0}</p>
+                      <p className="text-xs text-gray-500">Total Tags</p>
+                    </div>
+                    <div className="text-center p-3 bg-blue-50 rounded-lg">
+                      <p className="text-2xl font-bold text-blue-600">{selectedUser.tags?.filter(t => t.tag.startsWith("enrolled_")).length || 0}</p>
+                      <p className="text-xs text-gray-500">Enrollments</p>
+                    </div>
+                    <div className="text-center p-3 bg-green-50 rounded-lg">
+                      <p className="text-2xl font-bold text-green-600">{selectedUser.tags?.filter(t => t.tag.includes("completed")).length || 0}</p>
+                      <p className="text-xs text-gray-500">Completions</p>
+                    </div>
+                    <div className="text-center p-3 bg-amber-50 rounded-lg">
+                      <p className="text-2xl font-bold text-amber-600">{selectedUser.tags?.filter(t => t.tag.startsWith("training_video_")).length || 0}</p>
+                      <p className="text-xs text-gray-500">Video Progress</p>
+                    </div>
+                  </div>
+
+                  {/* All Tags Grouped */}
+                  {selectedUser.tags && selectedUser.tags.length > 0 ? (
+                    <div className="space-y-4">
+                      {/* Enrollment Tags */}
+                      {selectedUser.tags.filter(t => t.tag.startsWith("enrolled_")).length > 0 && (
+                        <div className="p-4 bg-blue-50 rounded-lg border border-blue-200">
+                          <p className="text-sm font-semibold text-blue-800 mb-3">📚 Enrollment Tags</p>
+                          <div className="flex flex-wrap gap-2">
+                            {selectedUser.tags.filter(t => t.tag.startsWith("enrolled_")).map(tag => (
+                              <Badge key={tag.id} className="bg-blue-100 text-blue-700 border-blue-200">
+                                {tag.tag.replace("enrolled_", "")}
+                              </Badge>
+                            ))}
+                          </div>
+                        </div>
+                      )}
+
+                      {/* Mini Diploma Tags */}
+                      {selectedUser.tags.filter(t => t.tag.includes("mini_diploma") || t.tag.startsWith("graduate_")).length > 0 && (
+                        <div className="p-4 bg-gold-50 rounded-lg border border-gold-200">
+                          <p className="text-sm font-semibold text-gold-800 mb-3">🎓 Mini Diploma Tags</p>
+                          <div className="flex flex-wrap gap-2">
+                            {selectedUser.tags.filter(t => t.tag.includes("mini_diploma") || t.tag.startsWith("graduate_")).map(tag => (
+                              <Badge key={tag.id} className="bg-gold-100 text-gold-700 border-gold-200">
+                                {tag.tag}
+                              </Badge>
+                            ))}
+                          </div>
+                        </div>
+                      )}
+
+                      {/* Module Completion Tags */}
+                      {selectedUser.tags.filter(t => t.tag.startsWith("module_")).length > 0 && (
+                        <div className="p-4 bg-green-50 rounded-lg border border-green-200">
+                          <p className="text-sm font-semibold text-green-800 mb-3">✅ Module Completion Tags</p>
+                          <div className="flex flex-wrap gap-2">
+                            {selectedUser.tags.filter(t => t.tag.startsWith("module_")).map(tag => (
+                              <Badge key={tag.id} className="bg-green-100 text-green-700 border-green-200">
+                                {tag.tag}
+                              </Badge>
+                            ))}
+                          </div>
+                        </div>
+                      )}
+
+                      {/* Video Progress Tags */}
+                      {selectedUser.tags.filter(t => t.tag.startsWith("training_video_")).length > 0 && (
+                        <div className="p-4 bg-purple-50 rounded-lg border border-purple-200">
+                          <p className="text-sm font-semibold text-purple-800 mb-3">📹 Video Progress Tags</p>
+                          <div className="flex flex-wrap gap-2">
+                            {selectedUser.tags.filter(t => t.tag.startsWith("training_video_")).sort((a, b) => {
+                              const numA = parseInt(a.tag.split("_").pop() || "0");
+                              const numB = parseInt(b.tag.split("_").pop() || "0");
+                              return numA - numB;
+                            }).map(tag => (
+                              <Badge key={tag.id} className="bg-purple-100 text-purple-700 border-purple-200">
+                                {tag.tag.replace("training_video_", "")}%
+                              </Badge>
+                            ))}
+                          </div>
+                        </div>
+                      )}
+
+                      {/* Other Tags */}
+                      {selectedUser.tags.filter(t =>
+                        !t.tag.startsWith("enrolled_") &&
+                        !t.tag.includes("mini_diploma") &&
+                        !t.tag.startsWith("graduate_") &&
+                        !t.tag.startsWith("module_") &&
+                        !t.tag.startsWith("training_video_")
+                      ).length > 0 && (
+                        <div className="p-4 bg-gray-50 rounded-lg border border-gray-200">
+                          <p className="text-sm font-semibold text-gray-800 mb-3">🏷️ Other Tags</p>
+                          <div className="flex flex-wrap gap-2">
+                            {selectedUser.tags.filter(t =>
+                              !t.tag.startsWith("enrolled_") &&
+                              !t.tag.includes("mini_diploma") &&
+                              !t.tag.startsWith("graduate_") &&
+                              !t.tag.startsWith("module_") &&
+                              !t.tag.startsWith("training_video_")
+                            ).map(tag => (
+                              <Badge key={tag.id} className="bg-gray-100 text-gray-700 border-gray-200">
+                                {tag.tag}
+                                {tag.value && ` (${tag.value})`}
+                              </Badge>
+                            ))}
+                          </div>
+                        </div>
+                      )}
+
+                      {/* Tag Timeline */}
+                      <div className="p-4 bg-white rounded-lg border">
+                        <p className="text-sm font-semibold text-gray-900 mb-3">📅 Tag Timeline</p>
+                        <div className="max-h-48 overflow-y-auto">
+                          <table className="w-full text-xs">
+                            <thead className="bg-gray-50 sticky top-0">
+                              <tr>
+                                <th className="text-left p-2">Tag</th>
+                                <th className="text-left p-2">Applied At</th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                              {[...selectedUser.tags].sort((a, b) =>
+                                new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+                              ).map(tag => (
+                                <tr key={tag.id} className="border-t hover:bg-gray-50">
+                                  <td className="p-2 font-medium">{tag.tag}</td>
+                                  <td className="p-2 font-mono text-gray-500">{new Date(tag.createdAt).toLocaleString()}</td>
+                                </tr>
+                              ))}
+                            </tbody>
+                          </table>
+                        </div>
+                      </div>
+                    </div>
+                  ) : (
+                    <div className="text-center py-12 text-gray-500">
+                      <p>No tags applied to this user yet</p>
                     </div>
                   )}
                 </div>

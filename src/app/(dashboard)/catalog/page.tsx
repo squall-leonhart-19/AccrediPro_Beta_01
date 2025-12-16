@@ -5,7 +5,11 @@ import { CourseCatalogFilters } from "@/components/courses/course-catalog-filter
 
 async function getCourses() {
   return prisma.course.findMany({
-    where: { isPublished: true },
+    where: {
+      isPublished: true,
+      // Hide free mini diploma courses from catalog (they have their own page)
+      NOT: { certificateType: "MINI_DIPLOMA" },
+    },
     include: {
       category: true,
       coach: {
@@ -28,7 +32,7 @@ async function getCourses() {
       },
       analytics: true,
     },
-    orderBy: [{ isFeatured: "desc" }, { price: "desc" }, { createdAt: "desc" }],
+    orderBy: [{ isFeatured: "desc" }, { createdAt: "asc" }],
   });
 }
 
@@ -74,14 +78,23 @@ async function getUserWishlist(userId: string) {
   });
 }
 
+async function getUserMiniDiplomaCompletion(userId: string) {
+  const user = await prisma.user.findUnique({
+    where: { id: userId },
+    select: { miniDiplomaCompletedAt: true },
+  });
+  return user?.miniDiplomaCompletedAt || null;
+}
+
 export default async function CoursesPage() {
   const session = await getServerSession(authOptions);
-  const [courses, categories, enrollments, specialOffers, wishlist] = await Promise.all([
+  const [courses, categories, enrollments, specialOffers, wishlist, miniDiplomaCompletedAt] = await Promise.all([
     getCourses(),
     getCategories(),
     session?.user?.id ? getUserEnrollments(session.user.id) : [],
     getActiveSpecialOffers(),
     session?.user?.id ? getUserWishlist(session.user.id) : [],
+    session?.user?.id ? getUserMiniDiplomaCompletion(session.user.id) : null,
   ]);
 
   // Transform the data for the client component
@@ -151,6 +164,7 @@ export default async function CoursesPage() {
         specialOffers={specialOffersData}
         wishlistIds={wishlistIds}
         isLoggedIn={!!session?.user?.id}
+        miniDiplomaCompletedAt={miniDiplomaCompletedAt?.toISOString() || null}
       />
     </div>
   );

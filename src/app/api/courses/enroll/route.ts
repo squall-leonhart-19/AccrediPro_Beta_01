@@ -73,6 +73,24 @@ export async function POST(request: NextRequest) {
       enrolledAt: new Date().toISOString(),
     });
 
+    // === TAG TRACKING FOR ENROLLMENT ===
+    const enrollmentTag = `enrolled_${course.slug || course.id}`;
+    await prisma.userTag.upsert({
+      where: { userId_tag: { userId: session.user.id, tag: enrollmentTag } },
+      update: {},
+      create: { userId: session.user.id, tag: enrollmentTag },
+    });
+
+    // Special tag for mini diploma start
+    if (course.certificateType === "MINI_DIPLOMA") {
+      await prisma.userTag.upsert({
+        where: { userId_tag: { userId: session.user.id, tag: "mini_diploma_started" } },
+        update: {},
+        create: { userId: session.user.id, tag: "mini_diploma_started" },
+      });
+    }
+    console.log(`🏷️ Created enrollment tag: ${enrollmentTag} for user ${session.user.id}`);
+
     // Create notification
     await prisma.notification.create({
       data: {

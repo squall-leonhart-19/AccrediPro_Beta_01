@@ -26,13 +26,13 @@ export interface VoiceSettings {
     speed?: number;            // 0.5-2.0, lower = slower speech
 }
 
-// Default voice settings - "Warm Medium" winning parameters
-// Warm and friendly, medium pace - tested and approved
+// Default voice settings - tested and approved parameters
+// Balanced warmth with slight expressiveness
 const DEFAULT_VOICE_SETTINGS: VoiceSettings = {
-    stability: 0.60,       // Natural warmth
-    similarityBoost: 0.80, // Keep voice close to Sarah
-    style: 0.25,           // Slightly expressive
-    speed: 0.90,           // Medium pace - not too fast, not too slow
+    stability: 0.50,       // Balanced stability/expressiveness
+    similarityBoost: 0.75, // Good voice similarity
+    style: 0.15,           // Slight expressiveness
+    speed: 0.85,           // Slightly slower for warmth
 };
 
 /**

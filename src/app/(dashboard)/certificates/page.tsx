@@ -1,6 +1,16 @@
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import prisma from "@/lib/prisma";
+import * as crypto from "crypto";
+
+// Generate a stable certificate ID based on user ID and completion date
+function generateStableCertificateId(userId: string, category: string, completedAt: Date): string {
+  const year = completedAt.getFullYear();
+  const categoryCode = category.toUpperCase().slice(0, 3);
+  // Create a stable hash from user ID
+  const hash = crypto.createHash('md5').update(userId).digest('hex').slice(0, 6).toUpperCase();
+  return `MD-${categoryCode}-${year}-${hash}`;
+}
 import Link from "next/link";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -31,6 +41,7 @@ import { MiniDiplomaDownloadButton } from "@/components/certificates/mini-diplom
 import { CertificateShareButtons } from "@/components/certificates/certificate-share-buttons";
 import { TranscriptDownloadButton } from "@/components/certificates/transcript-download-button";
 import { ModuleCertificateCard } from "@/components/certificates/module-certificate-card";
+import { MarkCertificatesRead } from "@/components/certificates/mark-certificates-read";
 
 // Certificate level definitions
 const CERTIFICATE_LEVELS = [
@@ -286,6 +297,9 @@ export default async function CertificatesPage() {
 
   return (
     <div className="space-y-6 animate-fade-in">
+      {/* Mark certificate notifications as read when visiting this page */}
+      <MarkCertificatesRead />
+
       {/* Hero Header */}
       <Card className="bg-gradient-to-br from-burgundy-600 via-burgundy-700 to-burgundy-800 border-0 overflow-hidden relative">
         <div className="absolute inset-0 opacity-10">
@@ -307,12 +321,27 @@ export default async function CertificatesPage() {
 
       {/* Student Credential ID Card - TOP */}
       {user && (
-        <Card className="bg-gradient-to-r from-burgundy-50 via-white to-gold-50 border-burgundy-200">
+        <Card className="bg-gradient-to-r from-burgundy-50 via-white to-gold-50 border-burgundy-200 overflow-hidden">
           <CardContent className="p-6">
             <div className="flex flex-col md:flex-row items-center gap-6">
-              <div className="flex-shrink-0">
-                <div className="w-24 h-24 bg-gradient-to-br from-burgundy-600 to-burgundy-800 rounded-xl flex items-center justify-center shadow-lg">
-                  <Shield className="w-12 h-12 text-gold-400" />
+              <div className="flex-shrink-0 relative">
+                {session.user.image ? (
+                  <div className="w-24 h-24 rounded-xl overflow-hidden shadow-lg border-4 border-gold-400/50">
+                    <img
+                      src={session.user.image}
+                      alt={`${user.firstName} ${user.lastName}`}
+                      className="w-full h-full object-cover"
+                    />
+                  </div>
+                ) : (
+                  <div className="w-24 h-24 bg-gradient-to-br from-burgundy-600 to-burgundy-800 rounded-xl flex items-center justify-center shadow-lg border-4 border-gold-400/50">
+                    <span className="text-3xl font-bold text-gold-400">
+                      {user.firstName?.charAt(0) || ''}{user.lastName?.charAt(0) || ''}
+                    </span>
+                  </div>
+                )}
+                <div className="absolute -bottom-1 -right-1 w-8 h-8 bg-gradient-to-br from-gold-400 to-gold-500 rounded-full flex items-center justify-center shadow-md border-2 border-white">
+                  <Shield className="w-4 h-4 text-burgundy-800" />
                 </div>
               </div>
               <div className="flex-1 text-center md:text-left">
@@ -378,29 +407,53 @@ export default async function CertificatesPage() {
               <h2 className="text-lg font-semibold text-gray-900 flex items-center gap-2">
                 <GraduationCap className="w-5 h-5 text-burgundy-600" />
                 Exploration Track
+                <Badge className="bg-green-100 text-green-700 text-xs">Completed</Badge>
               </h2>
-              <Card className="overflow-hidden border-2 border-gold-200">
+              <Card className="overflow-hidden border-2 border-gold-200 shadow-lg">
                 <div className="grid md:grid-cols-2">
-                  {/* Certificate Preview */}
-                  <div className="bg-gradient-to-br from-burgundy-600 via-burgundy-700 to-burgundy-800 p-8 text-white relative overflow-hidden">
-                    <div className="absolute inset-0 opacity-10">
-                      <div className="absolute top-4 right-4 w-32 h-32 border-4 border-gold-400 rounded-full" />
-                      <div className="absolute bottom-4 left-4 w-24 h-24 border-4 border-gold-400 rounded-full" />
+                  {/* Certificate Preview - Premium Look */}
+                  <div className="bg-gradient-to-br from-burgundy-700 via-burgundy-800 to-burgundy-900 p-8 text-white relative overflow-hidden min-h-[320px] flex items-center justify-center">
+                    {/* Decorative Background Elements */}
+                    <div className="absolute inset-0">
+                      {/* Corner Ornaments */}
+                      <div className="absolute top-4 left-4 w-16 h-16 border-l-2 border-t-2 border-gold-400/40" />
+                      <div className="absolute top-4 right-4 w-16 h-16 border-r-2 border-t-2 border-gold-400/40" />
+                      <div className="absolute bottom-4 left-4 w-16 h-16 border-l-2 border-b-2 border-gold-400/40" />
+                      <div className="absolute bottom-4 right-4 w-16 h-16 border-r-2 border-b-2 border-gold-400/40" />
+                      {/* Center Glow */}
+                      <div className="absolute inset-0 flex items-center justify-center">
+                        <div className="w-48 h-48 bg-gold-400/10 rounded-full blur-3xl" />
+                      </div>
                     </div>
 
-                    <div className="relative text-center">
-                      <div className="w-20 h-20 mx-auto mb-4 bg-gold-400 rounded-full flex items-center justify-center">
-                        <GraduationCap className="w-10 h-10 text-burgundy-800" />
+                    <div className="relative text-center z-10">
+                      {/* AccrediPro Logo/Badge */}
+                      <div className="mb-4 flex justify-center">
+                        <div className="w-16 h-16 bg-gradient-to-br from-gold-300 to-gold-500 rounded-full flex items-center justify-center shadow-xl border-2 border-gold-200/50">
+                          <GraduationCap className="w-8 h-8 text-burgundy-900" />
+                        </div>
                       </div>
-                      <Badge className="bg-purple-500 text-white border-0 mb-3">
-                        Pre-Step: Exploration
-                      </Badge>
-                      <h3 className="text-2xl font-bold mb-2">
-                        {categoryLabels[user.miniDiplomaCategory] || user.miniDiplomaCategory}
+
+                      {/* Certificate Text */}
+                      <p className="text-gold-400/80 text-xs uppercase tracking-[0.3em] mb-1">AccrediPro Certifies</p>
+                      <h3 className="text-xl font-bold text-white mb-3">
+                        {user.firstName} {user.lastName}
                       </h3>
-                      <p className="text-gold-300 font-medium">Mini Diploma</p>
-                      <p className="text-burgundy-200 text-sm mt-3">
-                        Certificate #MD-{user.miniDiplomaCategory.toUpperCase().slice(0, 3)}-{new Date(user.miniDiplomaCompletedAt).getFullYear()}
+
+                      <p className="text-burgundy-200 text-sm mb-3">has successfully completed the</p>
+
+                      <div className="bg-white/10 backdrop-blur-sm rounded-lg px-4 py-3 mb-3">
+                        <h4 className="text-lg font-bold text-gold-300">
+                          {categoryLabels[user.miniDiplomaCategory] || user.miniDiplomaCategory}
+                        </h4>
+                        <p className="text-gold-400 text-sm font-medium">Mini Diploma</p>
+                      </div>
+
+                      <p className="text-burgundy-300 text-xs mt-2">
+                        Certificate #{generateStableCertificateId(user.id, user.miniDiplomaCategory, user.miniDiplomaCompletedAt)}
+                      </p>
+                      <p className="text-burgundy-300 text-xs">
+                        Issued: {formatDate(user.miniDiplomaCompletedAt)}
                       </p>
                     </div>
                   </div>
@@ -446,12 +499,12 @@ export default async function CertificatesPage() {
                         studentName={`${user.firstName || ''} ${user.lastName || ''}`.trim() || 'Graduate'}
                         diplomaTitle={`${categoryLabels[user.miniDiplomaCategory] || user.miniDiplomaCategory} Mini Diploma`}
                         completedDate={user.miniDiplomaCompletedAt.toISOString()}
-                        certificateId={`MD-${user.miniDiplomaCategory.toUpperCase().slice(0, 3)}-${new Date(user.miniDiplomaCompletedAt).getFullYear()}`}
+                        certificateId={generateStableCertificateId(user.id, user.miniDiplomaCategory, user.miniDiplomaCompletedAt)}
                       />
                       <TranscriptDownloadButton
                         studentName={`${user.firstName || ''} ${user.lastName || ''}`.trim()}
                         certificateTitle={`${categoryLabels[user.miniDiplomaCategory]} Mini Diploma`}
-                        certificateId={`MD-${user.miniDiplomaCategory.toUpperCase().slice(0, 3)}-${new Date(user.miniDiplomaCompletedAt).getFullYear()}`}
+                        certificateId={generateStableCertificateId(user.id, user.miniDiplomaCategory, user.miniDiplomaCompletedAt)}
                         issuedDate={user.miniDiplomaCompletedAt.toISOString()}
                         totalHours={stats.totalHours}
                         skills={getSkillsForCertificate(user.miniDiplomaCategory)}
@@ -644,6 +697,122 @@ export default async function CertificatesPage() {
           </CardContent>
         </Card>
       )}
+
+      {/* Locked Certificates - Unlock to Earn */}
+      <div className="space-y-4">
+        <div className="flex items-center justify-between">
+          <h2 className="text-lg font-semibold text-gray-900 flex items-center gap-2">
+            <Lock className="w-5 h-5 text-gray-400" />
+            Certificates to Unlock
+            <Badge className="bg-purple-100 text-purple-700 text-xs">Grow Your Credentials</Badge>
+          </h2>
+          <Link href="/catalog">
+            <Button variant="ghost" size="sm" className="text-burgundy-600">
+              Browse All <ChevronRight className="w-4 h-4 ml-1" />
+            </Button>
+          </Link>
+        </div>
+        <div className="grid md:grid-cols-3 gap-4">
+          {[
+            {
+              title: "Functional Medicine Certification",
+              level: "Practitioner",
+              hours: "40+ Hours",
+              image: "/certificates_img/FUNCTIONAL_MEDICINE_CERTIFICATE.webp",
+              badge: "Most Popular",
+              price: "$1,997",
+              slug: "functional-medicine-complete-certification"
+            },
+            {
+              title: "Gut Health Specialist",
+              level: "Specialist",
+              hours: "30+ Hours",
+              image: "/certificates_img/GUT_HEALTH_CERTIFICATE.webp",
+              badge: "High Demand",
+              price: "$1,497",
+              slug: "gut-health-certification"
+            },
+            {
+              title: "Women's Hormone Health",
+              level: "Specialist",
+              hours: "35+ Hours",
+              image: "/certificates_img/WOMENS_HEALTH_CERTIFICATE.webp",
+              badge: "Trending",
+              price: "$1,697",
+              slug: "womens-hormone-health-certification"
+            },
+          ].map((cert, index) => (
+            <Link key={index} href={`/courses/${cert.slug}`}>
+              <Card className="overflow-hidden hover:shadow-xl transition-all cursor-pointer group h-full border-2 border-gray-100 hover:border-burgundy-200 relative">
+                {/* Locked Overlay */}
+                <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent z-10" />
+                <div className="absolute top-3 right-3 z-20">
+                  <div className="w-10 h-10 bg-white/90 backdrop-blur-sm rounded-full flex items-center justify-center shadow-lg">
+                    <Lock className="w-5 h-5 text-gray-500" />
+                  </div>
+                </div>
+
+                <div className="aspect-[16/9] relative overflow-hidden">
+                  <img
+                    src={cert.image}
+                    alt={cert.title}
+                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 filter grayscale-[30%] group-hover:grayscale-0"
+                  />
+                  <Badge className="absolute top-3 left-3 bg-gold-400 text-burgundy-900 text-[10px] font-bold z-20">
+                    {cert.badge}
+                  </Badge>
+                </div>
+
+                <CardContent className="p-4 relative z-20 bg-white">
+                  <div className="flex items-start justify-between gap-2 mb-2">
+                    <h4 className="text-sm font-bold text-gray-900 line-clamp-2 group-hover:text-burgundy-700 transition-colors">
+                      {cert.title}
+                    </h4>
+                  </div>
+                  <div className="flex items-center gap-2 text-xs text-gray-500 mb-3">
+                    <Badge variant="secondary" className="bg-burgundy-50 text-burgundy-700 text-[10px]">
+                      {cert.level}
+                    </Badge>
+                    <span className="flex items-center gap-1">
+                      <Clock className="w-3 h-3" />
+                      {cert.hours}
+                    </span>
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <span className="text-lg font-bold text-burgundy-600">{cert.price}</span>
+                    <Button size="sm" className="bg-burgundy-600 hover:bg-burgundy-700 text-white text-xs h-8 px-3 group-hover:bg-gold-500 group-hover:text-burgundy-900 transition-colors">
+                      Unlock <ArrowRight className="w-3 h-3 ml-1" />
+                    </Button>
+                  </div>
+                </CardContent>
+              </Card>
+            </Link>
+          ))}
+        </div>
+
+        {/* CTA Banner */}
+        <Card className="bg-gradient-to-r from-purple-600 to-burgundy-600 border-0 text-white overflow-hidden">
+          <CardContent className="p-5 relative">
+            <div className="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full blur-2xl -translate-y-1/2 translate-x-1/2" />
+            <div className="flex flex-col sm:flex-row items-center justify-between gap-4 relative z-10">
+              <div className="flex items-center gap-3">
+                <div className="w-12 h-12 bg-white/20 rounded-xl flex items-center justify-center">
+                  <Trophy className="w-6 h-6 text-gold-400" />
+                </div>
+                <div>
+                  <h3 className="font-bold text-lg">Unlock All Certifications</h3>
+                  <p className="text-purple-200 text-sm">Save up to 40% with our certification bundles</p>
+                </div>
+              </div>
+              <Link href="/catalog">
+                <Button className="bg-white text-burgundy-700 hover:bg-gold-100 font-bold whitespace-nowrap">
+                  View Bundles <Sparkles className="w-4 h-4 ml-2" />
+                </Button>
+              </Link>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
 
       {/* FM Specializations - Coming Soon */}
       <div className="space-y-4">

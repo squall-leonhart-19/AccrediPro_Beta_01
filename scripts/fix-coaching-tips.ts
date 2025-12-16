@@ -1,412 +1,142 @@
-/**
- * Fix Coaching Tips Posts
- * - Remove "Day X:" from titles
- * - Set dates from Aug 15 to Dec 14
- * - Add 30 more coaching posts
- * Run with: npx tsx scripts/fix-coaching-tips.ts
- */
-
 import { PrismaClient } from "@prisma/client";
 import { PrismaPg } from "@prisma/adapter-pg";
-import "dotenv/config";
+import dotenv from "dotenv";
+import { fileURLToPath } from "url";
+import path from "path";
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+dotenv.config({ path: path.resolve(__dirname, "../.env") });
 
 const adapter = new PrismaPg({ connectionString: process.env.DATABASE_URL });
 const prisma = new PrismaClient({ adapter });
 
-// New coaching tips titles (no day numbers)
-const COACHING_TIPS_TITLES = [
-  "The Power of Morning Routines for Your Clients",
-  "Understanding Blood Sugar Balance",
-  "Why Sleep is Non-Negotiable for Healing",
-  "The Gut-Brain Connection Explained Simply",
-  "How to Handle Client Resistance",
-  "Building Sustainable Habits with Clients",
-  "The Art of Active Listening in Consultations",
-  "Inflammation: The Root of Most Issues",
-  "Creating Effective Meal Plans",
-  "Stress Management Techniques That Actually Work",
-  "The Importance of Hydration (Beyond Just Water)",
-  "How to Set Boundaries with Difficult Clients",
-  "Interpreting Lab Work for Beginners",
-  "The Thyroid-Adrenal Connection",
-  "Building Client Accountability Systems",
-  "Detox Pathways Made Simple",
-  "When to Refer Out: Knowing Your Limits",
-  "The Power of Food as Medicine",
-  "Creating Lasting Behavior Change",
-  "Understanding Hormone Imbalances",
-  "The Microbiome: Your Client's Second Brain",
-  "Pricing Your Services with Confidence",
-  "How to Run Effective Discovery Calls",
-  "The Connection Between Trauma and Health",
-  "Building Your Supplement Protocol",
-  "Client Communication Best Practices",
-  "The Role of Movement in Healing",
-  "Managing Client Expectations",
-  "The Importance of Community in Health",
-  "Self-Care for Practitioners",
-  // 30 more new tips
-  "Mastering the Art of Follow-Up",
-  "Why Functional Testing Matters",
-  "Creating Your Signature Protocol",
-  "The Power of Group Programs",
-  "Building Trust in the First Session",
-  "Understanding Autoimmune Conditions",
-  "How to Handle Clients Who Don't Comply",
-  "The Business Side of Functional Medicine",
-  "Creating Compelling Case Studies",
-  "When Healing Isn't Linear: Supporting Clients",
-  "The Role of Mindset in Recovery",
-  "Building Referral Networks",
-  "Understanding Food Sensitivities",
-  "The Power of Progress Tracking",
-  "Creating Content That Converts",
-  "Managing Your Energy as a Practitioner",
-  "The Science of Nervous System Regulation",
-  "Building Long-Term Client Relationships",
-  "Understanding Mitochondrial Health",
-  "How to Niche Down Successfully",
-  "The Art of Asking Better Questions",
-  "Supporting Clients Through Plateaus",
-  "Building Your Online Presence",
-  "The Connection Between Oral Health and Systemic Disease",
-  "Creating Effective Onboarding Processes",
-  "Understanding Mold and Mycotoxins",
-  "Building Multiple Revenue Streams",
-  "The Power of Testimonials",
-  "Supporting Clients with Chronic Fatigue",
-  "Creating Your Unique Framework",
-];
-
-// Coaching tips content templates
-const COACHING_CONTENT_TEMPLATES = [
-  `One of the most powerful tools we have as practitioners is {topic}.
-
-**Why it matters:**
-When we understand {concept}, we can better serve our clients and see faster, more sustainable results.
-
-**Key takeaways:**
-• Start with the basics and build from there
-• Every client is unique - adapt your approach
-• Document what works for future reference
-
-**Action step:** Try implementing this with your next client and notice the difference.
-
-What's been your experience with this? Drop a comment below! 👇`,
-
-  `Let's talk about something that comes up ALL the time in sessions: {topic}.
-
-Here's what I've learned after working with hundreds of clients...
-
-**The truth is:** Most practitioners overcomplicate this. The key is to {concept}.
-
-**My top 3 tips:**
-1. Listen more than you talk
-2. Meet clients where they are
-3. Celebrate small wins
-
-Remember: Progress over perfection! 💪
-
-What strategies have worked for you?`,
-
-  `🌟 **Quick Tip Alert** 🌟
-
-{topic} - a game-changer for your practice!
-
-I used to struggle with this until I realized: {concept}
-
-**The simple framework:**
-✅ Assess the situation
-✅ Create a personalized plan
-✅ Follow up consistently
-✅ Adjust as needed
-
-Your clients will thank you for this approach!
-
-Have questions? Ask away! 👇`,
-
-  `Something I wish I knew when I first started: {topic}
-
-It took me years to figure this out, but now I want to share it with you so you don't have to learn the hard way.
-
-**Here's the deal:**
-{concept}
-
-**What this looks like in practice:**
-• Start every session with clear intentions
-• Document your findings meticulously
-• Build systems that scale with you
-
-This is the kind of knowledge that transforms practices.
-
-Who else has experienced this? Let me know! 💕`,
-
-  `📚 **Education Corner** 📚
-
-Today we're diving into {topic}!
-
-This is FOUNDATIONAL to everything we do as practitioners. Understanding {concept} will change how you approach cases.
-
-**Breaking it down:**
-
-**Phase 1:** Assessment
-**Phase 2:** Protocol Design
-**Phase 3:** Implementation
-**Phase 4:** Optimization
-
-**Pro tip:** Keep it simple. Complexity is the enemy of compliance.
-
-Save this post for reference! 📌`,
-
-  `Real talk: {topic} is something we ALL need to master.
-
-I've seen so many practitioners struggle with this, and I get it - it's not easy!
-
-But here's the thing: {concept}
-
-**My approach:**
-1️⃣ Build the foundation first
-2️⃣ Layer in complexity slowly
-3️⃣ Always track results
-4️⃣ Be willing to pivot
-
-The best practitioners are the ones who never stop learning.
-
-What's YOUR biggest challenge with this? Let's discuss! 💬`,
-
-  `✨ **Practitioner Wisdom** ✨
-
-Can we talk about {topic}?
-
-This came up in a client session yesterday and I realized how important it is to share: {concept}
-
-**Things to remember:**
-• You're not just treating symptoms
-• The body is interconnected
-• Root cause is everything
-• Patience is part of the protocol
-
-Your expertise matters. Trust your training! 🙌
-
-Thoughts? Questions? Share below!`,
-
-  `Something that completely changed my practice: understanding {topic}.
-
-Before I grasped {concept}, I was spinning my wheels with clients. Now? Game-changer.
-
-**The breakthrough moment:**
-When you realize that everything connects, your entire approach shifts.
-
-**What I do now:**
-• Always look upstream
-• Consider lifestyle factors
-• Address the terrain
-• Support the whole person
-
-This is the difference between good and GREAT practitioners.
-
-Who's had a similar "aha" moment? 🎉`,
-];
-
-// Helper functions
-function getRandomElement<T>(array: T[]): T {
-  return array[Math.floor(Math.random() * array.length)];
-}
-
-function getRandomInt(min: number, max: number): number {
-  return Math.floor(Math.random() * (max - min + 1)) + min;
-}
-
-function getRandomDateInRange(startDate: Date, endDate: Date): Date {
-  const start = startDate.getTime();
-  const end = endDate.getTime();
-  return new Date(start + Math.random() * (end - start));
-}
-
-// Generate content for a tip
-function generateTipContent(title: string): string {
-  const template = getRandomElement(COACHING_CONTENT_TEMPLATES);
-  const topic = title.toLowerCase();
-  const concepts = [
-    "simplicity is key",
-    "consistency beats intensity",
-    "small changes lead to big results",
-    "personalization is everything",
-    "the body wants to heal",
-    "foundations first",
-    "education empowers clients",
-    "systems create freedom",
-  ];
-
-  return template
-    .replace(/{topic}/g, topic)
-    .replace(/{concept}/g, getRandomElement(concepts));
-}
-
-// Comment templates for coaching posts
-const COACHING_COMMENTS = [
-  "This is so helpful! Thank you for sharing! 🙏",
-  "Needed this reminder today! 💕",
-  "Saving this for reference!",
-  "Such great insights!",
-  "This changed how I approach my sessions!",
-  "Love the framework you shared!",
-  "So true! This is foundational!",
-  "Thank you Sarah! Always learning from you! 🌟",
-  "This is gold! ✨",
-  "Implementing this tomorrow!",
-  "YES! Finally someone explained this clearly!",
-  "Screenshot taken! 📸",
-  "This is exactly what I needed to hear!",
-  "Game changer! Thank you!",
-  "Can you do more posts like this?",
-  "So valuable! Thank you for your generosity!",
-  "Bookmarking this one! 📚",
-  "Love how you broke this down!",
-  "This community is amazing! 💪",
-  "Learning so much from these tips!",
-  "You always deliver the best content!",
-  "Wow, never thought about it this way!",
-  "This is why I love being part of this community!",
-  "More of this please! 🙌",
-  "Taking notes! ✍️",
-];
-
 async function main() {
-  console.log("🚀 Starting to fix coaching tips posts...\n");
+  console.log("Fixing Coaching Tips posts...\n");
 
-  // Get Sarah's ID (she posts coaching tips)
+  // Get Sarah M.'s user ID
   const sarah = await prisma.user.findFirst({
     where: { email: "sarah@accredipro-certificate.com" },
-    select: { id: true, firstName: true },
   });
 
   if (!sarah) {
-    console.error("❌ Sarah profile not found!");
-    process.exit(1);
+    console.error("Sarah M. user not found!");
+    return;
   }
-  console.log(`✅ Found Sarah: ${sarah.firstName}`);
 
-  // Get fake profiles for comments
-  const fakeProfiles = await prisma.user.findMany({
-    where: { isFakeProfile: true },
-    select: { id: true },
-    take: 100,
+  console.log(`Found Sarah M.: ${sarah.firstName} ${sarah.lastName} (${sarah.id})`);
+
+  // Get all coaching tips posts
+  const coachingTips = await prisma.communityPost.findMany({
+    where: { categoryId: "coaching-tips" },
+    select: { id: true, title: true },
   });
-  console.log(`✅ Found ${fakeProfiles.length} fake profiles for comments\n`);
 
-  // Date range: Aug 15, 2024 to Dec 14, 2024
-  const startDate = new Date("2024-08-15T08:00:00Z");
-  const endDate = new Date("2024-12-14T20:00:00Z");
+  console.log(`Found ${coachingTips.length} coaching tips posts`);
 
-  // Step 1: Delete existing coaching tips posts
-  console.log("🗑️ Deleting existing coaching tips posts...");
-  const deletedComments = await prisma.postComment.deleteMany({
-    where: { post: { categoryId: "tips" } },
-  });
-  console.log(`  Deleted ${deletedComments.count} comments from tips posts`);
-
-  const deletedPosts = await prisma.communityPost.deleteMany({
-    where: { categoryId: "tips" },
-  });
-  console.log(`  Deleted ${deletedPosts.count} coaching tips posts\n`);
-
-  // Step 2: Create new coaching tips posts (use all 60 titles)
-  console.log("📝 Creating new coaching tips posts...");
-
-  const postsToCreate = COACHING_TIPS_TITLES.slice(0, 60); // 60 posts total
-  let postsCreated = 0;
-  let commentsCreated = 0;
-
-  for (const title of postsToCreate) {
-    // Generate random date within range
-    const postDate = getRandomDateInRange(startDate, endDate);
-
-    // Generate content
-    const content = generateTipContent(title);
-
-    // Create the post
-    const post = await prisma.communityPost.create({
-      data: {
-        title,
-        content,
-        categoryId: "tips",
-        authorId: sarah.id,
-        viewCount: getRandomInt(150, 800),
-        likeCount: getRandomInt(40, 200),
-        createdAt: postDate,
-        isPinned: false,
-      },
+  // Delete all comments from coaching tips
+  let totalDeleted = 0;
+  for (const tip of coachingTips) {
+    const deleted = await prisma.postComment.deleteMany({
+      where: { postId: tip.id },
     });
-
-    // Add comments (7-20 per post)
-    const numComments = getRandomInt(7, 20);
-    const shuffledProfiles = [...fakeProfiles].sort(() => Math.random() - 0.5);
-    const selectedCommenters = shuffledProfiles.slice(0, numComments);
-
-    const commentsToAdd: Array<{
-      content: string;
-      postId: string;
-      authorId: string;
-      createdAt: Date;
-    }> = [];
-
-    const usedComments = new Set<string>();
-
-    for (const commenter of selectedCommenters) {
-      // Get unique comment
-      let comment = getRandomElement(COACHING_COMMENTS);
-      let attempts = 0;
-      while (usedComments.has(comment) && attempts < 10) {
-        comment = getRandomElement(COACHING_COMMENTS);
-        attempts++;
-      }
-      usedComments.add(comment);
-
-      // Comment date: 30min to 5 days after post
-      const commentDate = new Date(postDate.getTime() + getRandomInt(30, 7200) * 60 * 1000);
-
-      commentsToAdd.push({
-        content: comment,
-        postId: post.id,
-        authorId: commenter.id,
-        createdAt: commentDate,
-      });
-    }
-
-    if (commentsToAdd.length > 0) {
-      await prisma.postComment.createMany({ data: commentsToAdd });
-      commentsCreated += commentsToAdd.length;
-    }
-
-    postsCreated++;
-    if (postsCreated % 10 === 0) {
-      console.log(`  Created ${postsCreated}/${postsToCreate.length} posts...`);
-    }
+    totalDeleted += deleted.count;
   }
+  console.log(`Deleted ${totalDeleted} comments from coaching tips`);
 
-  console.log(`\n✅ Created ${postsCreated} coaching tips posts`);
-  console.log(`✅ Added ${commentsCreated} comments\n`);
+  // Update all coaching tips to use Sarah M. as author
+  const updated = await prisma.communityPost.updateMany({
+    where: { categoryId: "coaching-tips" },
+    data: { authorId: sarah.id },
+  });
+  console.log(`Updated ${updated.count} posts to Sarah M. as author`);
 
-  // Final stats
-  const tipsPosts = await prisma.communityPost.count({ where: { categoryId: "tips" } });
-  const tipsComments = await prisma.postComment.count({
-    where: { post: { categoryId: "tips" } },
+  // Now fix Coaching Tip #3 with improved HTML formatting
+  const tip3Content = `<p>Hi there! 💕</p>
+
+<p>Let me introduce you to Diane.</p>
+
+<p>Diane spent 15 years struggling with her weight. Every diet, every program, every "guaranteed" solution. She lost 40 pounds three separate times — and gained it all back plus some.</p>
+
+<p>Then she discovered functional medicine. Learned about insulin resistance. Discovered her thyroid was sluggish. Understood why stress was sabotaging her metabolism. Fixed her gut. Balanced her hormones.</p>
+
+<p>And finally — FINALLY — found food freedom.</p>
+
+<br/>
+
+<p>When Diane came to me about becoming a practitioner, she said: <em>"But Sarah, I only really know about weight loss and metabolism. I can't help anyone with autoimmune issues or anxiety or hormonal problems..."</em></p>
+
+<p>I stopped her right there.</p>
+
+<p><em>"Diane,"</em> I said, <em>"you don't NEED to help everyone with everything. You need to help YOUR person with THEIR problem."</em></p>
+
+<br/>
+
+<p><strong style="font-size: 1.1em;">Here's the secret nobody tells you:</strong></p>
+
+<p>You don't need to be an expert in everything. You need to be an expert in ONE thing — and that one thing is usually connected to YOUR story.</p>
+
+<p>✨ Struggled with weight? Help women struggling with weight.</p>
+<p>✨ Overcame gut issues? Help people heal their guts.</p>
+<p>✨ Battled anxiety naturally? Guide others through the same.</p>
+<p>✨ Navigated perimenopause? Become THE go-to for perimenopausal women.</p>
+
+<br/>
+
+<p><strong style="font-size: 1.1em;">The riches are in the niches. 💎</strong></p>
+
+<p>When you try to help everyone, you help no one. But when you become THE expert for a specific group of people with a specific problem? Magic happens.</p>
+
+<p>🎯 Your messaging gets clearer</p>
+<p>🎯 Your marketing gets easier</p>
+<p>🎯 Your clients find YOU</p>
+<p>🎯 Your confidence skyrockets</p>
+<p>🎯 Your results improve</p>
+
+<br/>
+
+<p>Diane now runs a thriving practice helping women over 40 lose weight without dieting. She charges $3,000 for her programs. She has a 6-month waiting list. And she only helps people with the EXACT problem she personally overcame.</p>
+
+<br/>
+
+<p><strong style="font-size: 1.1em;">📝 Your action step:</strong></p>
+
+<p>Complete this sentence:</p>
+
+<p style="background: #f0f7ff; padding: 15px; border-radius: 8px; margin: 10px 0;"><em>"I help _______ overcome _______ so they can _______."</em></p>
+
+<p><em>(Example: "I help stressed-out corporate women overcome exhaustion and brain fog so they can feel energized and sharp again.")</em></p>
+
+<br/>
+
+<p>💬 <strong>YOUR TURN:</strong> Share your "I help" statement below! Let's refine it together as a community.</p>
+
+<br/>
+
+<p>You're more of an expert than you realize,</p>
+<p><strong>Sarah M.</strong> 💕</p>`;
+
+  await prisma.communityPost.updateMany({
+    where: {
+      categoryId: "coaching-tips",
+      title: { contains: "#3" }
+    },
+    data: { content: tip3Content },
   });
 
-  console.log("========================================");
-  console.log("🎉 COACHING TIPS FIXED SUCCESSFULLY!");
-  console.log("========================================");
-  console.log(`Total coaching tips posts: ${tipsPosts}`);
-  console.log(`Total comments on tips: ${tipsComments}`);
-  console.log("Date range: Aug 15 - Dec 14, 2024");
-  console.log("========================================");
-
-  await prisma.$disconnect();
+  console.log("\n✅ Fixed Coaching Tip #3 with improved HTML formatting");
+  console.log("\n✅ All coaching tips now have:");
+  console.log("   - Sarah M. as author");
+  console.log("   - No comments");
+  console.log("   - Tip #3 has improved HTML formatting");
 }
 
-main().catch((e) => {
-  console.error("Error:", e);
-  prisma.$disconnect();
-  process.exit(1);
-});
+main()
+  .catch((e) => {
+    console.error(e);
+    process.exit(1);
+  })
+  .finally(async () => {
+    await prisma.$disconnect();
+  });

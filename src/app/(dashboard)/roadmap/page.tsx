@@ -79,6 +79,13 @@ interface RoadmapData {
 }
 
 async function getRoadmapData(userId: string): Promise<RoadmapData> {
+    // Get user with mini diploma status
+    const user = await prisma.user.findUnique({
+        where: { id: userId },
+        select: { miniDiplomaCompletedAt: true },
+    });
+    const miniDiplomaCompleted = !!user?.miniDiplomaCompletedAt;
+
     // Get user tags to determine specialization
     const userTags = await prisma.userTag.findMany({
         where: { userId },
@@ -200,8 +207,13 @@ async function getRoadmapData(userId: string): Promise<RoadmapData> {
     } else if (enrolledSteps.includes(1)) {
         state = "step1_in_progress";
         currentStep = 1;
+    } else if (miniDiplomaCompleted) {
+        // Mini diploma completed - ready for Step 1
+        state = "step1_completed"; // This will show Step 1 as the next step
+        currentStep = 0; // Mini diploma is step 0, but completed
+        completedSteps.push(0); // Add mini diploma to completed steps
     } else if (enrollments.length > 0) {
-        // Has some enrollment but not in main steps (mini diploma / freebie)
+        // Has some enrollment but not in main steps (mini diploma / freebie in progress)
         state = "exploration";
         currentStep = 0;
     }

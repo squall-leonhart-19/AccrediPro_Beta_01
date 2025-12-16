@@ -55,6 +55,8 @@ interface RecentPost {
   title: string;
   categoryId: string | null;
   createdAt: Date;
+  likeCount: number;
+  reactions: Record<string, number> | null; // Stored reactions JSON from DB
   author: {
     firstName: string | null;
     lastName: string | null;
@@ -75,6 +77,10 @@ interface CommunityAdminClientProps {
     totalFakeProfiles: number;
     winsPosts: number;
     graduatesPosts: number;
+    coachingTipsPosts: number;
+    questionsPosts: number;
+    careerPosts: number;
+    totalLikes: number;
   };
 }
 
@@ -131,17 +137,56 @@ export default function CommunityAdminClient({
   // Add to existing post state
   const [selectedPostId, setSelectedPostId] = useState<string>("");
   const [postSearchQuery, setPostSearchQuery] = useState("");
+  const [filterCategory, setFilterCategory] = useState<string>("all");
   const [addCommentType, setAddCommentType] = useState<"sarah" | "member">("sarah");
   const [existingPostComment, setExistingPostComment] = useState("");
-  const [existingPostLikes, setExistingPostLikes] = useState("10");
+  const [setExactLikes, setSetExactLikes] = useState(""); // Empty = don't change, number = set to exact value
   const [isAddingToPost, setIsAddingToPost] = useState(false);
   const [addSuccess, setAddSuccess] = useState(false);
 
-  const filteredPosts = recentPosts.filter(
-    (post) =>
+  // Individual reaction editing state
+  const [editReactions, setEditReactions] = useState<Record<string, number>>({});
+
+  // Bulk add reactions state
+  const [isBulkAdding, setIsBulkAdding] = useState(false);
+  const [bulkAddSuccess, setBulkAddSuccess] = useState(false);
+
+  const handleBulkAddReactions = async () => {
+    if (!confirm("This will add 4-19 random reactions to ALL posts. Continue?")) {
+      return;
+    }
+
+    setIsBulkAdding(true);
+    try {
+      const response = await fetch("/api/admin/community/bulk-add-reactions", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ minAdd: 4, maxAdd: 19 }),
+      });
+
+      if (!response.ok) throw new Error("Failed to bulk add reactions");
+
+      const data = await response.json();
+      setBulkAddSuccess(true);
+      setTimeout(() => {
+        setBulkAddSuccess(false);
+        window.location.reload();
+      }, 1500);
+    } catch (error) {
+      console.error("Error bulk adding reactions:", error);
+      alert("Failed to bulk add reactions");
+    } finally {
+      setIsBulkAdding(false);
+    }
+  };
+
+  const filteredPosts = recentPosts.filter((post) => {
+    const matchesSearch =
       post.title.toLowerCase().includes(postSearchQuery.toLowerCase()) ||
-      `${post.author.firstName} ${post.author.lastName}`.toLowerCase().includes(postSearchQuery.toLowerCase())
-  );
+      `${post.author.firstName} ${post.author.lastName}`.toLowerCase().includes(postSearchQuery.toLowerCase());
+    const matchesCategory = filterCategory === "all" || post.categoryId === filterCategory;
+    return matchesSearch && matchesCategory;
+  });
 
   const selectedPost = recentPosts.find((p) => p.id === selectedPostId);
 
@@ -194,6 +239,9 @@ export default function CommunityAdminClient({
 
     setIsAddingToPost(true);
     try {
+      // Build reactions object if any are being edited
+      const hasReactionEdits = Object.keys(editReactions).length > 0;
+
       const response = await fetch("/api/admin/community/add-interactions", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -202,7 +250,8 @@ export default function CommunityAdminClient({
           addComment: existingPostComment ? true : false,
           commentType: addCommentType,
           commentContent: existingPostComment || undefined,
-          likesToAdd: parseInt(existingPostLikes),
+          // Pass the edited reactions directly
+          setReactions: hasReactionEdits ? editReactions : undefined,
         }),
       });
 
@@ -210,7 +259,12 @@ export default function CommunityAdminClient({
 
       setAddSuccess(true);
       setExistingPostComment("");
-      setTimeout(() => setAddSuccess(false), 3000);
+      setEditReactions({});
+      setTimeout(() => {
+        setAddSuccess(false);
+        // Refresh page to show updated counts
+        window.location.reload();
+      }, 1500);
     } catch (error) {
       console.error("Error adding interactions:", error);
       alert("Failed to add interactions");
@@ -227,8 +281,12 @@ export default function CommunityAdminClient({
         return <Badge className="bg-emerald-100 text-emerald-700">Graduate</Badge>;
       case "introductions":
         return <Badge className="bg-pink-100 text-pink-700">Intro</Badge>;
-      case "tips":
+      case "coaching-tips":
         return <Badge className="bg-green-100 text-green-700">Tips</Badge>;
+      case "questions-everyone-has":
+        return <Badge className="bg-blue-100 text-blue-700">Questions</Badge>;
+      case "career-pathway":
+        return <Badge className="bg-purple-100 text-purple-700">Career</Badge>;
       default:
         return <Badge variant="secondary">{categoryId}</Badge>;
     }
@@ -246,71 +304,145 @@ export default function CommunityAdminClient({
             Create posts, add comments, and manage community interactions
           </p>
         </div>
+        <Button
+          onClick={handleBulkAddReactions}
+          disabled={isBulkAdding}
+          className="bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white"
+        >
+          {isBulkAdding ? (
+            <>
+              <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+              Adding to all posts...
+            </>
+          ) : bulkAddSuccess ? (
+            <>
+              <Check className="w-4 h-4 mr-2" />
+              Added!
+            </>
+          ) : (
+            <>
+              <Sparkles className="w-4 h-4 mr-2" />
+              +4-19 Reactions to ALL Posts
+            </>
+          )}
+        </Button>
       </div>
 
       {/* Stats Overview */}
-      <div className="grid grid-cols-2 lg:grid-cols-5 gap-4">
+      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3">
         <Card>
-          <CardContent className="p-4">
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 bg-burgundy-100 rounded-lg flex items-center justify-center">
-                <FileText className="w-5 h-5 text-burgundy-600" />
+          <CardContent className="p-3">
+            <div className="flex items-center gap-2">
+              <div className="w-8 h-8 bg-burgundy-100 rounded-lg flex items-center justify-center">
+                <FileText className="w-4 h-4 text-burgundy-600" />
               </div>
               <div>
-                <p className="text-2xl font-bold text-gray-900">{stats.totalPosts}</p>
-                <p className="text-xs text-gray-500">Total Posts</p>
+                <p className="text-lg font-bold text-gray-900">{stats.totalPosts.toLocaleString()}</p>
+                <p className="text-[10px] text-gray-500">Total Posts</p>
               </div>
             </div>
           </CardContent>
         </Card>
         <Card>
-          <CardContent className="p-4">
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
-                <MessageSquare className="w-5 h-5 text-blue-600" />
+          <CardContent className="p-3">
+            <div className="flex items-center gap-2">
+              <div className="w-8 h-8 bg-blue-100 rounded-lg flex items-center justify-center">
+                <MessageSquare className="w-4 h-4 text-blue-600" />
               </div>
               <div>
-                <p className="text-2xl font-bold text-gray-900">{stats.totalComments}</p>
-                <p className="text-xs text-gray-500">Comments</p>
+                <p className="text-lg font-bold text-gray-900">{stats.totalComments.toLocaleString()}</p>
+                <p className="text-[10px] text-gray-500">Comments</p>
               </div>
             </div>
           </CardContent>
         </Card>
         <Card>
-          <CardContent className="p-4">
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 bg-amber-100 rounded-lg flex items-center justify-center">
-                <Trophy className="w-5 h-5 text-amber-600" />
+          <CardContent className="p-3">
+            <div className="flex items-center gap-2">
+              <div className="w-8 h-8 bg-red-100 rounded-lg flex items-center justify-center">
+                <Heart className="w-4 h-4 text-red-600" />
               </div>
               <div>
-                <p className="text-2xl font-bold text-gray-900">{stats.winsPosts}</p>
-                <p className="text-xs text-gray-500">Wins Posts</p>
+                <p className="text-lg font-bold text-gray-900">{stats.totalLikes.toLocaleString()}</p>
+                <p className="text-[10px] text-gray-500">Total Likes</p>
               </div>
             </div>
           </CardContent>
         </Card>
         <Card>
-          <CardContent className="p-4">
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 bg-emerald-100 rounded-lg flex items-center justify-center">
-                <GraduationCap className="w-5 h-5 text-emerald-600" />
+          <CardContent className="p-3">
+            <div className="flex items-center gap-2">
+              <div className="w-8 h-8 bg-amber-100 rounded-lg flex items-center justify-center">
+                <Trophy className="w-4 h-4 text-amber-600" />
               </div>
               <div>
-                <p className="text-2xl font-bold text-gray-900">{stats.graduatesPosts}</p>
-                <p className="text-xs text-gray-500">Graduate Posts</p>
+                <p className="text-lg font-bold text-gray-900">{stats.winsPosts}</p>
+                <p className="text-[10px] text-gray-500">Wins</p>
               </div>
             </div>
           </CardContent>
         </Card>
         <Card>
-          <CardContent className="p-4">
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 bg-purple-100 rounded-lg flex items-center justify-center">
-                <Users className="w-5 h-5 text-purple-600" />
+          <CardContent className="p-3">
+            <div className="flex items-center gap-2">
+              <div className="w-8 h-8 bg-emerald-100 rounded-lg flex items-center justify-center">
+                <GraduationCap className="w-4 h-4 text-emerald-600" />
               </div>
               <div>
-                <p className="text-2xl font-bold text-gray-900">{stats.totalFakeProfiles}</p>
-                <p className="text-xs text-gray-500">Fake Profiles</p>
+                <p className="text-lg font-bold text-gray-900">{stats.graduatesPosts}</p>
+                <p className="text-[10px] text-gray-500">Graduates</p>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardContent className="p-3">
+            <div className="flex items-center gap-2">
+              <div className="w-8 h-8 bg-green-100 rounded-lg flex items-center justify-center">
+                <Sparkles className="w-4 h-4 text-green-600" />
+              </div>
+              <div>
+                <p className="text-lg font-bold text-gray-900">{stats.coachingTipsPosts}</p>
+                <p className="text-[10px] text-gray-500">Tips</p>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardContent className="p-3">
+            <div className="flex items-center gap-2">
+              <div className="w-8 h-8 bg-blue-100 rounded-lg flex items-center justify-center">
+                <MessageSquare className="w-4 h-4 text-blue-600" />
+              </div>
+              <div>
+                <p className="text-lg font-bold text-gray-900">{stats.questionsPosts}</p>
+                <p className="text-[10px] text-gray-500">Questions</p>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardContent className="p-3">
+            <div className="flex items-center gap-2">
+              <div className="w-8 h-8 bg-purple-100 rounded-lg flex items-center justify-center">
+                <ChevronRight className="w-4 h-4 text-purple-600" />
+              </div>
+              <div>
+                <p className="text-lg font-bold text-gray-900">{stats.careerPosts}</p>
+                <p className="text-[10px] text-gray-500">Career</p>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardContent className="p-3">
+            <div className="flex items-center gap-2">
+              <div className="w-8 h-8 bg-gray-100 rounded-lg flex items-center justify-center">
+                <Users className="w-4 h-4 text-gray-600" />
+              </div>
+              <div>
+                <p className="text-lg font-bold text-gray-900">{stats.totalFakeProfiles}</p>
+                <p className="text-[10px] text-gray-500">Profiles</p>
               </div>
             </div>
           </CardContent>
@@ -672,9 +804,77 @@ export default function CommunityAdminClient({
                 </CardTitle>
               </CardHeader>
               <CardContent className="space-y-6">
+                {/* Filter by Topic */}
+                <div className="space-y-2">
+                  <Label className="font-semibold">1. Select Topic</Label>
+                  <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
+                    <Button
+                      variant={filterCategory === "all" ? "default" : "outline"}
+                      size="sm"
+                      onClick={() => setFilterCategory("all")}
+                      className={filterCategory === "all" ? "bg-gray-800" : ""}
+                    >
+                      All ({recentPosts.length})
+                    </Button>
+                    <Button
+                      variant={filterCategory === "coaching-tips" ? "default" : "outline"}
+                      size="sm"
+                      onClick={() => setFilterCategory("coaching-tips")}
+                      className={filterCategory === "coaching-tips" ? "bg-green-600 hover:bg-green-700" : ""}
+                    >
+                      <Sparkles className="w-3 h-3 mr-1" />
+                      Tips ({recentPosts.filter(p => p.categoryId === "coaching-tips").length})
+                    </Button>
+                    <Button
+                      variant={filterCategory === "questions-everyone-has" ? "default" : "outline"}
+                      size="sm"
+                      onClick={() => setFilterCategory("questions-everyone-has")}
+                      className={filterCategory === "questions-everyone-has" ? "bg-blue-600 hover:bg-blue-700" : ""}
+                    >
+                      <MessageSquare className="w-3 h-3 mr-1" />
+                      Questions ({recentPosts.filter(p => p.categoryId === "questions-everyone-has").length})
+                    </Button>
+                    <Button
+                      variant={filterCategory === "career-pathway" ? "default" : "outline"}
+                      size="sm"
+                      onClick={() => setFilterCategory("career-pathway")}
+                      className={filterCategory === "career-pathway" ? "bg-purple-600 hover:bg-purple-700" : ""}
+                    >
+                      <ChevronRight className="w-3 h-3 mr-1" />
+                      Career ({recentPosts.filter(p => p.categoryId === "career-pathway").length})
+                    </Button>
+                    <Button
+                      variant={filterCategory === "wins" ? "default" : "outline"}
+                      size="sm"
+                      onClick={() => setFilterCategory("wins")}
+                      className={filterCategory === "wins" ? "bg-amber-600 hover:bg-amber-700" : ""}
+                    >
+                      <Trophy className="w-3 h-3 mr-1" />
+                      Wins ({recentPosts.filter(p => p.categoryId === "wins").length})
+                    </Button>
+                    <Button
+                      variant={filterCategory === "graduates" ? "default" : "outline"}
+                      size="sm"
+                      onClick={() => setFilterCategory("graduates")}
+                      className={filterCategory === "graduates" ? "bg-emerald-600 hover:bg-emerald-700" : ""}
+                    >
+                      <GraduationCap className="w-3 h-3 mr-1" />
+                      Grads ({recentPosts.filter(p => p.categoryId === "graduates").length})
+                    </Button>
+                    <Button
+                      variant={filterCategory === "introductions" ? "default" : "outline"}
+                      size="sm"
+                      onClick={() => setFilterCategory("introductions")}
+                      className={filterCategory === "introductions" ? "bg-pink-600 hover:bg-pink-700" : ""}
+                    >
+                      Intros ({recentPosts.filter(p => p.categoryId === "introductions").length})
+                    </Button>
+                  </div>
+                </div>
+
                 {/* Search Posts */}
                 <div className="space-y-2">
-                  <Label>Search Posts</Label>
+                  <Label>2. Search Posts (optional)</Label>
                   <div className="relative">
                     <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
                     <Input
@@ -687,46 +887,65 @@ export default function CommunityAdminClient({
                 </div>
 
                 {/* Posts List */}
-                <div className="space-y-2 max-h-[300px] overflow-y-auto">
-                  {filteredPosts.map((post) => (
-                    <div
-                      key={post.id}
-                      onClick={() => setSelectedPostId(post.id)}
-                      className={`p-3 rounded-lg border cursor-pointer transition-all ${
-                        selectedPostId === post.id
-                          ? "border-burgundy-500 bg-burgundy-50"
-                          : "border-gray-200 hover:border-gray-300"
-                      }`}
-                    >
-                      <div className="flex items-start justify-between gap-2">
-                        <div className="flex-1 min-w-0">
-                          <p className="font-medium text-sm truncate">{post.title}</p>
-                          <p className="text-xs text-gray-500">
-                            by {post.author.firstName} {post.author.lastName}
-                          </p>
+                <div className="space-y-2">
+                  <Label>3. Select Post ({filteredPosts.length} found)</Label>
+                  <div className="space-y-2 max-h-[300px] overflow-y-auto border rounded-lg p-2 bg-white">
+                    {filteredPosts.length === 0 ? (
+                      <p className="text-center text-gray-500 py-4">No posts found in this category</p>
+                    ) : (
+                      filteredPosts.map((post) => (
+                        <div
+                          key={post.id}
+                          onClick={() => {
+                            setSelectedPostId(post.id);
+                            setSetExactLikes(""); // Reset exact likes when selecting new post
+                            // Initialize edit reactions with current post's reactions
+                            setEditReactions((post.reactions as Record<string, number>) || {});
+                          }}
+                          className={`p-3 rounded-lg border cursor-pointer transition-all ${
+                            selectedPostId === post.id
+                              ? "border-burgundy-500 bg-burgundy-50"
+                              : "border-gray-200 hover:border-gray-300"
+                          }`}
+                        >
+                          <div className="flex items-start justify-between gap-2">
+                            <div className="flex-1 min-w-0">
+                              <p className="font-medium text-sm truncate">{post.title}</p>
+                              <p className="text-xs text-gray-500">
+                                by {post.author.firstName} {post.author.lastName}
+                              </p>
+                            </div>
+                            <div className="flex items-center gap-2">
+                              {getCategoryBadge(post.categoryId)}
+                              {selectedPostId === post.id && (
+                                <Check className="w-4 h-4 text-burgundy-600" />
+                              )}
+                            </div>
+                          </div>
+                          <div className="flex items-center gap-3 mt-2 text-xs text-gray-400 flex-wrap">
+                            <span className="flex items-center gap-1">
+                              <MessageSquare className="w-3 h-3" />
+                              {post._count.comments}
+                            </span>
+                            {/* Show reactions breakdown */}
+                            {post.reactions && (
+                              <span className="flex items-center gap-1 flex-wrap">
+                                {Object.entries(post.reactions as Record<string, number>).slice(0, 4).map(([emoji, count]) => (
+                                  <span key={emoji} className="inline-flex items-center gap-0.5 text-[10px]">
+                                    {emoji}{count}
+                                  </span>
+                                ))}
+                              </span>
+                            )}
+                            <span className="text-gray-300">|</span>
+                            <span className="flex items-center gap-1 text-red-500 font-medium">
+                              Total: <strong>{post.likeCount}</strong>
+                            </span>
+                          </div>
                         </div>
-                        <div className="flex items-center gap-2">
-                          {getCategoryBadge(post.categoryId)}
-                          {selectedPostId === post.id && (
-                            <Check className="w-4 h-4 text-burgundy-600" />
-                          )}
-                        </div>
-                      </div>
-                      <div className="flex items-center gap-4 mt-2 text-xs text-gray-400">
-                        <span className="flex items-center gap-1">
-                          <MessageSquare className="w-3 h-3" />
-                          {post._count.comments}
-                        </span>
-                        <span className="flex items-center gap-1">
-                          <Heart className="w-3 h-3" />
-                          {post._count.likes}
-                        </span>
-                        <span>
-                          {new Date(post.createdAt).toLocaleDateString()}
-                        </span>
-                      </div>
-                    </div>
-                  ))}
+                      ))
+                    )}
+                  </div>
                 </div>
 
                 {/* Add Interactions Form */}
@@ -794,19 +1013,104 @@ export default function CommunityAdminClient({
                       />
                     </div>
 
-                    {/* Likes to Add */}
-                    <div className="space-y-2">
-                      <Label className="flex items-center gap-2">
-                        <ThumbsUp className="w-4 h-4" />
-                        Likes to Add
+                    {/* Edit Individual Reactions */}
+                    <div className="space-y-3 p-3 bg-gradient-to-br from-amber-50 to-orange-50 rounded-lg border border-amber-200">
+                      <Label className="flex items-center gap-2 font-semibold text-amber-800">
+                        <Sparkles className="w-4 h-4 text-amber-500" />
+                        Edit Reactions (Synced Everywhere)
                       </Label>
-                      <Input
-                        type="number"
-                        value={existingPostLikes}
-                        onChange={(e) => setExistingPostLikes(e.target.value)}
-                        min="0"
-                        className="w-32"
-                      />
+
+                      {/* Reaction editors grid */}
+                      <div className="grid grid-cols-4 gap-2">
+                        {REACTION_EMOJIS.map((emoji) => (
+                          <div key={emoji} className="flex flex-col items-center gap-1 p-2 bg-white rounded-lg border border-gray-200">
+                            <span className="text-xl">{emoji}</span>
+                            <Input
+                              type="number"
+                              value={editReactions[emoji] || 0}
+                              onChange={(e) => setEditReactions(prev => ({
+                                ...prev,
+                                [emoji]: parseInt(e.target.value) || 0
+                              }))}
+                              min="0"
+                              className="w-16 h-7 text-center text-sm font-medium"
+                            />
+                          </div>
+                        ))}
+                        {/* Additional emojis */}
+                        {["💯", "🙌"].map((emoji) => (
+                          <div key={emoji} className="flex flex-col items-center gap-1 p-2 bg-white rounded-lg border border-gray-200">
+                            <span className="text-xl">{emoji}</span>
+                            <Input
+                              type="number"
+                              value={editReactions[emoji] || 0}
+                              onChange={(e) => setEditReactions(prev => ({
+                                ...prev,
+                                [emoji]: parseInt(e.target.value) || 0
+                              }))}
+                              min="0"
+                              className="w-16 h-7 text-center text-sm font-medium"
+                            />
+                          </div>
+                        ))}
+                      </div>
+
+                      {/* Quick add +10 to all */}
+                      <div className="flex gap-2 flex-wrap">
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          className="text-xs bg-white"
+                          onClick={() => {
+                            const updated: Record<string, number> = { ...editReactions };
+                            [...REACTION_EMOJIS, "💯", "🙌"].forEach(emoji => {
+                              updated[emoji] = (updated[emoji] || 0) + 10;
+                            });
+                            setEditReactions(updated);
+                          }}
+                        >
+                          +10 All
+                        </Button>
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          className="text-xs bg-white"
+                          onClick={() => {
+                            const updated: Record<string, number> = { ...editReactions };
+                            [...REACTION_EMOJIS, "💯", "🙌"].forEach(emoji => {
+                              updated[emoji] = (updated[emoji] || 0) + 25;
+                            });
+                            setEditReactions(updated);
+                          }}
+                        >
+                          +25 All
+                        </Button>
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          className="text-xs bg-white"
+                          onClick={() => {
+                            const updated: Record<string, number> = { ...editReactions };
+                            [...REACTION_EMOJIS, "💯", "🙌"].forEach(emoji => {
+                              updated[emoji] = (updated[emoji] || 0) + 50;
+                            });
+                            setEditReactions(updated);
+                          }}
+                        >
+                          +50 All
+                        </Button>
+                      </div>
+
+                      {/* Total display */}
+                      <div className="flex items-center justify-between pt-2 border-t border-amber-200">
+                        <span className="text-xs text-gray-600">
+                          Current Total: <strong className="text-red-600">{selectedPost?.likeCount || 0}</strong>
+                        </span>
+                        <span className="text-xs text-green-600 font-medium">
+                          New Total: <strong>{Object.values(editReactions).reduce((sum, val) => sum + (val || 0), 0)}</strong>
+                        </span>
+                      </div>
+                      <p className="text-[10px] text-amber-700">These values sync to Post Card + Post Detail + Admin Panel</p>
                     </div>
 
                     {/* Submit */}
@@ -860,9 +1164,9 @@ export default function CommunityAdminClient({
                         <MessageSquare className="w-4 h-4 text-gray-400" />
                         {selectedPost._count.comments} comments
                       </span>
-                      <span className="flex items-center gap-1 text-sm">
-                        <Heart className="w-4 h-4 text-gray-400" />
-                        {selectedPost._count.likes} likes
+                      <span className="flex items-center gap-1 text-sm text-red-600">
+                        <Heart className="w-4 h-4" />
+                        <strong>{selectedPost.likeCount}</strong> likes
                       </span>
                     </div>
                     <Button
@@ -878,24 +1182,31 @@ export default function CommunityAdminClient({
                 </Card>
               )}
 
-              {/* Reaction Emoji Reference */}
-              <Card>
-                <CardHeader className="pb-2">
-                  <CardTitle className="text-sm">Available Reactions</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="flex gap-2 flex-wrap">
-                    {REACTION_EMOJIS.map((emoji) => (
-                      <span
-                        key={emoji}
-                        className="text-2xl p-2 bg-gray-100 rounded-lg hover:bg-gray-200 cursor-pointer"
-                      >
-                        {emoji}
-                      </span>
-                    ))}
-                  </div>
-                </CardContent>
-              </Card>
+              {/* Current Reactions Preview */}
+              {selectedPost && (
+                <Card>
+                  <CardHeader className="pb-2">
+                    <CardTitle className="text-sm">Current Reactions</CardTitle>
+                  </CardHeader>
+                  <CardContent className="space-y-3">
+                    {selectedPost.reactions ? (
+                      <div className="grid grid-cols-2 gap-2">
+                        {Object.entries(selectedPost.reactions as Record<string, number>).map(([emoji, count]) => (
+                          <div key={emoji} className="flex items-center justify-between p-2 bg-gray-50 rounded-lg">
+                            <span className="text-lg">{emoji}</span>
+                            <span className="font-bold text-sm">{count}</span>
+                          </div>
+                        ))}
+                      </div>
+                    ) : (
+                      <p className="text-center text-gray-500 text-sm">No reactions yet</p>
+                    )}
+                    <div className="text-center text-xs text-gray-500 pt-2 border-t">
+                      Total: <strong className="text-red-600">{selectedPost.likeCount}</strong>
+                    </div>
+                  </CardContent>
+                </Card>
+              )}
             </div>
           </div>
         </TabsContent>

@@ -1,8 +1,8 @@
 "use client";
 
 import { useState } from "react";
-import { Star, Quote, ChevronLeft, ChevronRight, CheckCircle2, ThumbsUp, Award, TrendingUp } from "lucide-react";
-import { formatDistanceToNow } from "date-fns";
+import { Star, Quote, ChevronRight, CheckCircle2, ThumbsUp, Award, TrendingUp } from "lucide-react";
+import { format, formatDistanceToNow, differenceInDays } from "date-fns";
 
 interface Review {
   id: string;
@@ -82,14 +82,14 @@ export function CourseReviews({
   totalReviews,
   totalEnrolled,
 }: CourseReviewsProps) {
-  const [currentPage, setCurrentPage] = useState(0);
+  const [visibleCount, setVisibleCount] = useState(8);
   const [expandedReviews, setExpandedReviews] = useState<Set<string>>(new Set());
-  const reviewsPerPage = 4;
-  const totalPages = Math.ceil(reviews.length / reviewsPerPage);
-  const displayedReviews = reviews.slice(
-    currentPage * reviewsPerPage,
-    (currentPage + 1) * reviewsPerPage
-  );
+  const displayedReviews = reviews.slice(0, visibleCount);
+  const hasMore = visibleCount < reviews.length;
+
+  const loadMore = () => {
+    setVisibleCount((prev) => Math.min(prev + 8, reviews.length));
+  };
 
   const toggleExpanded = (id: string) => {
     setExpandedReviews(prev => {
@@ -211,7 +211,9 @@ export function CourseReviews({
                   </div>
                 </div>
                 <span className="text-xs text-gray-400">
-                  {formatDistanceToNow(new Date(review.createdAt), { addSuffix: true })}
+                  {differenceInDays(new Date(), new Date(review.createdAt)) <= 7
+                    ? formatDistanceToNow(new Date(review.createdAt), { addSuffix: true })
+                    : format(new Date(review.createdAt), "MMM d, yyyy")}
                 </span>
               </div>
 
@@ -249,40 +251,17 @@ export function CourseReviews({
         })}
       </div>
 
-      {/* Pagination */}
-      {totalPages > 1 && (
-        <div className="flex items-center justify-center gap-3 mt-10">
+      {/* Load More */}
+      {hasMore && (
+        <div className="flex flex-col items-center gap-3 mt-10">
+          <p className="text-sm text-gray-500">
+            Showing {visibleCount} of {reviews.length} reviews
+          </p>
           <button
-            onClick={() => setCurrentPage((p) => Math.max(0, p - 1))}
-            disabled={currentPage === 0}
-            className="flex items-center gap-2 px-4 py-2 rounded-xl border border-gray-200 hover:bg-gray-50 hover:border-gray-300 disabled:opacity-40 disabled:cursor-not-allowed transition-all text-sm font-medium"
+            onClick={loadMore}
+            className="flex items-center gap-2 px-6 py-3 rounded-xl bg-burgundy-600 text-white hover:bg-burgundy-700 transition-all text-sm font-medium shadow-sm"
           >
-            <ChevronLeft className="w-4 h-4" />
-            Previous
-          </button>
-
-          <div className="flex items-center gap-1">
-            {Array.from({ length: totalPages }, (_, i) => (
-              <button
-                key={i}
-                onClick={() => setCurrentPage(i)}
-                className={`w-8 h-8 rounded-lg text-sm font-medium transition-all ${
-                  currentPage === i
-                    ? "bg-burgundy-600 text-white shadow-sm"
-                    : "text-gray-600 hover:bg-gray-100"
-                }`}
-              >
-                {i + 1}
-              </button>
-            ))}
-          </div>
-
-          <button
-            onClick={() => setCurrentPage((p) => Math.min(totalPages - 1, p + 1))}
-            disabled={currentPage === totalPages - 1}
-            className="flex items-center gap-2 px-4 py-2 rounded-xl border border-gray-200 hover:bg-gray-50 hover:border-gray-300 disabled:opacity-40 disabled:cursor-not-allowed transition-all text-sm font-medium"
-          >
-            Next
+            Load More Reviews
             <ChevronRight className="w-4 h-4" />
           </button>
         </div>

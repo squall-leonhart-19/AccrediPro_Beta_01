@@ -48,6 +48,9 @@ import {
   HandHeart,
   Info,
   Volume2,
+  Sparkles,
+  Pin,
+  Shield,
 } from "lucide-react";
 
 interface Enrollment {
@@ -187,6 +190,42 @@ const MESSAGE_TEMPLATES = [
     ]
   },
 ];
+
+// Sarah's credentials for display
+const SARAH_CREDENTIALS = {
+  title: "Certified Functional Medicine Practitioner",
+  accreditations: ["CPD", "IPHM", "CMA"],
+};
+
+// Quick reply buttons for students
+const STUDENT_QUICK_REPLIES = [
+  { emoji: "👋", text: "Thanks Sarah!" },
+  { emoji: "❓", text: "I have a question" },
+  { emoji: "🚀", text: "Ready to start!" },
+  { emoji: "💬", text: "Tell me more" },
+];
+
+// Helper function for relative time formatting
+const formatRelativeTime = (date: Date): string => {
+  const now = new Date();
+  const diff = now.getTime() - new Date(date).getTime();
+  const minutes = Math.floor(diff / 60000);
+  const hours = Math.floor(diff / 3600000);
+  const days = Math.floor(diff / 86400000);
+
+  if (minutes < 1) return "Just now";
+  if (minutes === 1) return "1 min ago";
+  if (minutes < 60) return `${minutes} min ago`;
+  if (hours === 1) return "1 hour ago";
+  if (hours < 24) return `${hours} hours ago`;
+  if (days === 1) return "Yesterday";
+  if (days < 7) return `${days} days ago`;
+
+  return new Date(date).toLocaleDateString("en-US", {
+    month: "short",
+    day: "numeric",
+  });
+};
 
 export function MessagesClient({
   conversations: initialConversations,
@@ -1005,32 +1044,47 @@ export function MessagesClient({
     // Voice message
     if (message.attachmentType === "voice" && message.attachmentUrl) {
       return (
-        <div className="min-w-[200px]">
+        <div className="min-w-[220px]">
+          {/* Voice Message Header */}
+          <div className="flex items-center gap-2 mb-2">
+            <Mic className={cn("w-3.5 h-3.5", isOwn ? "text-white/70" : "text-burgundy-500")} />
+            <span className={cn("text-[10px] font-medium uppercase tracking-wide", isOwn ? "text-white/70" : "text-burgundy-500")}>
+              Voice Message
+            </span>
+            {message.isAiVoice && (
+              <span className={cn("text-[9px] px-1.5 py-0.5 rounded-full", isOwn ? "bg-white/20 text-white" : "bg-purple-100 text-purple-600")}>
+                AI Voice
+              </span>
+            )}
+          </div>
           <div className="flex items-center gap-3">
             <button
               onClick={() => toggleAudio(message.id, message.attachmentUrl!)}
               className={cn(
-                "w-10 h-10 rounded-full flex items-center justify-center transition-all",
-                isOwn ? "bg-white/20 hover:bg-white/30" : "bg-burgundy-100 hover:bg-burgundy-200"
+                "w-12 h-12 rounded-full flex items-center justify-center transition-all shadow-md",
+                isOwn
+                  ? "bg-white/20 hover:bg-white/30 hover:scale-105"
+                  : "bg-gradient-to-br from-burgundy-500 to-burgundy-600 hover:from-burgundy-600 hover:to-burgundy-700 hover:scale-105"
               )}
             >
               {playingAudio === message.id ? (
-                <Pause className={cn("w-5 h-5", isOwn ? "text-white" : "text-burgundy-600")} />
+                <Pause className={cn("w-5 h-5", isOwn ? "text-white" : "text-white")} />
               ) : (
-                <Play className={cn("w-5 h-5", isOwn ? "text-white" : "text-burgundy-600")} />
+                <Play className={cn("w-5 h-5 ml-0.5", isOwn ? "text-white" : "text-white")} />
               )}
             </button>
             <div className="flex-1">
-              <div className={cn("h-2 rounded-full", isOwn ? "bg-white/30" : "bg-burgundy-200")}>
+              {/* Duration Display - More Prominent */}
+              <div className={cn("text-lg font-bold mb-1", isOwn ? "text-white" : "text-gray-900")}>
+                {formatDuration(message.voiceDuration || 0)}
+              </div>
+              <div className={cn("h-1.5 rounded-full", isOwn ? "bg-white/30" : "bg-burgundy-200")}>
                 <div className={cn("h-full rounded-full w-0 transition-all", isOwn ? "bg-white" : "bg-burgundy-500")} />
               </div>
-              <p className={cn("text-xs mt-1", isOwn ? "text-white/70" : "text-gray-500")}>
-                {formatDuration(message.voiceDuration || 0)}
-              </p>
             </div>
           </div>
           {message.content && (
-            <p className={cn("text-sm mt-2 italic", isOwn ? "text-white/80" : "text-gray-600")}>
+            <p className={cn("text-sm mt-3 italic border-l-2 pl-2", isOwn ? "text-white/80 border-white/40" : "text-gray-600 border-burgundy-300")}>
               &quot;{message.content}&quot;
             </p>
           )}
@@ -1283,10 +1337,31 @@ export function MessagesClient({
                         {roleConfig[selectedUser.role]?.label}
                       </Badge>
                     </div>
-                    <p className="text-xs text-green-600 flex items-center gap-1">
-                      <Circle className="w-1.5 h-1.5 fill-current" />
-                      Active now
-                    </p>
+                    {/* Sarah's Credentials - show for ADMIN, COACH, or MENTOR */}
+                    {(selectedUser.role === "ADMIN" || selectedUser.role === "COACH" || selectedUser.role === "MENTOR") ? (
+                      <div className="flex flex-col">
+                        <p className="text-[10px] text-burgundy-600 font-medium flex items-center gap-1">
+                          <Shield className="w-3 h-3" />
+                          {SARAH_CREDENTIALS.title}
+                        </p>
+                        <div className="flex items-center gap-1 mt-0.5">
+                          {SARAH_CREDENTIALS.accreditations.map((acc) => (
+                            <span key={acc} className="text-[9px] px-1.5 py-0.5 bg-gold-100 text-gold-700 rounded font-medium">
+                              {acc}
+                            </span>
+                          ))}
+                          <span className="text-[9px] text-green-600 flex items-center gap-0.5 ml-1">
+                            <Circle className="w-1.5 h-1.5 fill-current" />
+                            Active now
+                          </span>
+                        </div>
+                      </div>
+                    ) : (
+                      <p className="text-xs text-green-600 flex items-center gap-1">
+                        <Circle className="w-1.5 h-1.5 fill-current" />
+                        Active now
+                      </p>
+                    )}
                   </div>
                 </div>
 
@@ -1404,6 +1479,65 @@ export function MessagesClient({
             <div className="flex-1 flex overflow-hidden">
               {/* Messages Container */}
               <div className="flex-1 overflow-y-auto px-4 py-4">
+                {/* Pinned Founder Message - show for ADMIN only (AccrediPro Founder) */}
+                {!isCoach && selectedUser?.role === "ADMIN" && messages.length > 0 && (
+                  <div className="mb-4 p-3 bg-gradient-to-r from-gold-50 to-amber-50 rounded-xl border border-gold-200 relative">
+                    <div className="absolute -top-2 left-3">
+                      <span className="flex items-center gap-1 text-[10px] font-bold text-gold-700 bg-gold-100 px-2 py-0.5 rounded-full border border-gold-200">
+                        <Pin className="w-3 h-3" />
+                        PINNED
+                      </span>
+                    </div>
+                    <div className="mt-2 flex items-start gap-2">
+                      <div className="text-gold-500 text-lg">🎯</div>
+                      <div>
+                        <p className="text-xs text-gold-800 font-medium">From AccrediPro Founder</p>
+                        <p className="text-xs text-gold-700 mt-1">
+                          &quot;Your success is our mission. Every message, every lesson brings you closer to your certification goals!&quot;
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                {/* Welcome Banner for Students - show for COACH (Sarah) */}
+                {!isCoach && (selectedUser?.role === "COACH" || selectedUser?.role === "MENTOR") && messages.length <= 3 && (
+                  <div className="mb-4 p-4 bg-gradient-to-r from-burgundy-50 via-gold-50 to-burgundy-50 rounded-2xl border border-burgundy-100">
+                    <div className="flex items-start gap-3">
+                      <div className="w-10 h-10 bg-gradient-to-br from-burgundy-500 to-burgundy-700 rounded-xl flex items-center justify-center flex-shrink-0">
+                        <Sparkles className="w-5 h-5 text-white" />
+                      </div>
+                      <div className="flex-1">
+                        <h4 className="font-bold text-burgundy-900 text-sm mb-1">Welcome to Your Personal Coaching Space!</h4>
+                        <p className="text-xs text-burgundy-700 leading-relaxed">
+                          I&apos;m Sarah, your dedicated mentor. Feel free to ask questions, share your progress, or just say hi! I&apos;m here to support you every step of the way.
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                {/* Progress Reminder for Students - show for COACH (Sarah) */}
+                {!isCoach && (selectedUser?.role === "COACH" || selectedUser?.role === "MENTOR") && messages.length > 0 && (
+                  <div className="mb-4 p-3 bg-emerald-50 rounded-xl border border-emerald-100 flex items-center gap-3">
+                    <div className="w-8 h-8 bg-emerald-100 rounded-lg flex items-center justify-center">
+                      <TrendingUp className="w-4 h-4 text-emerald-600" />
+                    </div>
+                    <div className="flex-1">
+                      <p className="text-xs font-medium text-emerald-800">Keep up the great work!</p>
+                      <p className="text-[10px] text-emerald-600">Continue your learning journey in the courses section</p>
+                    </div>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      className="text-emerald-700 hover:bg-emerald-100 h-7 text-xs"
+                      onClick={() => window.location.href = "/courses"}
+                    >
+                      View Courses
+                    </Button>
+                  </div>
+                )}
+
                 {messages.length === 0 ? (
                   <div className="flex flex-col items-center justify-center h-full">
                     <div className="w-20 h-20 bg-burgundy-100 rounded-3xl flex items-center justify-center mb-4">
@@ -1551,7 +1685,9 @@ export function MessagesClient({
                               )}
 
                               <div className={cn("flex items-center gap-1 mt-0.5 px-1", isOwn ? "flex-row-reverse" : "flex-row")}>
-                                <span className="text-[10px] text-gray-400">{formatTime(message.createdAt)}</span>
+                                <span className="text-[10px] text-gray-400" title={formatTime(message.createdAt)}>
+                                  {formatRelativeTime(message.createdAt)}
+                                </span>
                                 {isOwn && <CheckCheck className={cn("w-3 h-3", message.isRead ? "text-blue-500" : "text-gray-400")} />}
                               </div>
                             </div>
@@ -1863,6 +1999,25 @@ export function MessagesClient({
                 <Button variant="ghost" size="icon" onClick={() => setReplyingTo(null)} className="h-6 w-6">
                   <X className="w-3 h-3" />
                 </Button>
+              </div>
+            )}
+
+            {/* Quick Reply Buttons for Students - show for COACH/MENTOR (Sarah) */}
+            {!isCoach && (selectedUser?.role === "COACH" || selectedUser?.role === "MENTOR") && messages.length <= 5 && !newMessage.trim() && (
+              <div className="px-4 py-2 bg-gray-50 border-t border-gray-100">
+                <p className="text-[10px] font-medium text-gray-500 mb-2">Quick Replies</p>
+                <div className="flex flex-wrap gap-2">
+                  {STUDENT_QUICK_REPLIES.map((reply) => (
+                    <button
+                      key={reply.text}
+                      onClick={() => setNewMessage(reply.text)}
+                      className="flex items-center gap-1.5 px-3 py-1.5 bg-white rounded-full border border-gray-200 text-xs font-medium text-gray-700 hover:bg-burgundy-50 hover:border-burgundy-200 hover:text-burgundy-700 transition-all"
+                    >
+                      <span>{reply.emoji}</span>
+                      <span>{reply.text}</span>
+                    </button>
+                  ))}
+                </div>
               </div>
             )}
 

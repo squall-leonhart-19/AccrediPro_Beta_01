@@ -15,7 +15,11 @@ async function getLessonData(userId: string, courseSlug: string, lessonId: strin
   // Get course with all modules and lessons
   const course = await prisma.course.findFirst({
     where: { slug: courseSlug },
-    include: {
+    select: {
+      id: true,
+      title: true,
+      slug: true,
+      certificateType: true,
       modules: {
         orderBy: { order: "asc" },
         include: {
@@ -57,17 +61,18 @@ async function getLessonData(userId: string, courseSlug: string, lessonId: strin
 
   if (!course) return null;
 
-  // Check enrollment
-  const enrollment = await prisma.enrollment.findFirst({
-    where: { userId, courseId: course.id },
-  });
-
-  if (!enrollment) return null;
-
   // Get the current lesson with full content
   const lesson = await prisma.lesson.findFirst({
     where: { id: lessonId },
-    include: {
+    select: {
+      id: true,
+      title: true,
+      description: true,
+      content: true,
+      lessonType: true,
+      videoId: true,
+      videoDuration: true,
+      isFreePreview: true,
       resources: true,
       module: {
         select: {
@@ -84,6 +89,14 @@ async function getLessonData(userId: string, courseSlug: string, lessonId: strin
   // Verify lesson belongs to the course
   const moduleIds = course.modules.map((m) => m.id);
   if (!moduleIds.includes(lesson.module.id)) return null;
+
+  // Check enrollment
+  const enrollment = await prisma.enrollment.findFirst({
+    where: { userId, courseId: course.id },
+  });
+
+  // If not enrolled and not a free preview lesson, deny access
+  if (!enrollment && !lesson.isFreePreview) return null;
 
   // Get all lesson IDs for this course
   const allLessonIds = course.modules.flatMap((m) => m.lessons.map((l) => l.id));
@@ -184,6 +197,7 @@ async function getLessonData(userId: string, courseSlug: string, lessonId: strin
       id: course.id,
       title: course.title,
       slug: course.slug,
+      certificateType: course.certificateType,
       modules: course.modules,
       coach: course.coach ? {
         id: course.coach.id,

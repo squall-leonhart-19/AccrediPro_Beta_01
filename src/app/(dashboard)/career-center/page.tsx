@@ -139,6 +139,7 @@ const incomePaths = [
         description: "5–10 clients, flexible hours",
         step: "Step 1–2",
         stepColor: "emerald",
+        perfectFor: "Stay-at-home moms, nurses looking for side income, corporate professionals testing the waters",
     },
     {
         level: "Full-Time Coach",
@@ -146,6 +147,7 @@ const incomePaths = [
         description: "15–25 clients, full practice",
         step: "Step 2",
         stepColor: "amber",
+        perfectFor: "Career changers, burned-out healthcare workers, retired professionals seeking purpose",
     },
     {
         level: "Group Programs",
@@ -153,6 +155,7 @@ const incomePaths = [
         description: "Courses + group coaching",
         step: "Step 3",
         stepColor: "blue",
+        perfectFor: "Established coaches ready to scale, educators, wellness entrepreneurs seeking leverage",
     },
     {
         level: "Agency Owner",
@@ -160,36 +163,130 @@ const incomePaths = [
         description: "Team of coaches, multiple programs",
         step: "Step 4",
         stepColor: "burgundy",
+        perfectFor: "Ambitious entrepreneurs, former business owners, leaders ready to build a wellness empire",
     },
 ];
 
-// Success Stories mapped to Steps
+// Success Stories using zombie profiles with real AccrediPro avatars
 const successStories = [
     {
-        name: "Sarah M.",
-        role: "Certified FM Health Coach",
-        step: 2,
-        stepLabel: "Step 2: Working Practitioner",
-        quote: "I went from $0 to $8K/month in just 6 months following the AccrediPro system.",
+        name: "Tiffany R.",
+        role: "FM Health Coach",
+        avatar: "https://accredipro.academy/wp-content/uploads/2025/12/1000009537.jpg",
+        quote: "I went from corporate burnout to $8K/month in just 6 months. Best decision ever!",
         income: "$96K/year",
         rating: 5,
     },
     {
-        name: "Michael T.",
-        role: "Advanced Practitioner",
-        step: 3,
-        stepLabel: "Step 3: Advanced",
-        quote: "The certifications gave me credibility. Now I have a waitlist of clients!",
-        income: "$150K/year",
+        name: "Addison T.",
+        role: "Gut Health Specialist",
+        avatar: "https://accredipro.academy/wp-content/uploads/2025/12/linkedin-2024.jpg",
+        quote: "The certification gave me the credibility I needed. Now I have a waitlist!",
+        income: "$120K/year",
         rating: 5,
     },
     {
-        name: "Lisa R.",
-        role: "Business Owner",
-        step: 4,
-        stepLabel: "Step 4: Business Scaler",
-        quote: "Built a team of 5 coaches. AccrediPro changed my life completely.",
-        income: "$300K+/year",
+        name: "Martha W.",
+        role: "Hormone Health Coach",
+        avatar: "https://accredipro.academy/wp-content/uploads/2025/12/IMG_3542-Profile-Picture-Updated.jpg",
+        quote: "Finally helping women with PCOS and perimenopause. My clients love me!",
+        income: "$84K/year",
+        rating: 5,
+    },
+    {
+        name: "Teresa L.",
+        role: "Nutrition Specialist",
+        avatar: "https://accredipro.academy/wp-content/uploads/2025/12/IMG_1335.jpeg",
+        quote: "Left my corporate job at 45. Now earning more helping people heal.",
+        income: "$108K/year",
+        rating: 5,
+    },
+    {
+        name: "Emilia F.",
+        role: "Wellness Practitioner",
+        avatar: "https://accredipro.academy/wp-content/uploads/2025/12/IMG_1235.jpeg",
+        quote: "Started with zero experience. Now running my own virtual practice!",
+        income: "$72K/year",
+        rating: 5,
+    },
+    {
+        name: "Janet H.",
+        role: "FM Business Owner",
+        avatar: "https://accredipro.academy/wp-content/uploads/2025/12/89C2493E-DCEC-43FB-9A61-1FB969E45B6F_1_105_c.jpeg",
+        quote: "Built a team of 3 coaches. AccrediPro gave me the blueprint!",
+        income: "$180K/year",
+        rating: 5,
+    },
+    {
+        name: "Ashley E.",
+        role: "Stress & HPA Coach",
+        avatar: "https://accredipro.academy/wp-content/uploads/2025/12/Cover-photo-for-Functional-Wellness.jpg",
+        quote: "Helping burned-out executives reclaim their health. So fulfilling!",
+        income: "$96K/year",
+        rating: 5,
+    },
+    {
+        name: "Luna C.",
+        role: "Autoimmune Specialist",
+        avatar: "https://accredipro.academy/wp-content/uploads/2025/12/mini-diploma-functional-medicine.jpeg",
+        quote: "Complex cases, premium rates. The advanced training was worth it!",
+        income: "$144K/year",
+        rating: 5,
+    },
+    {
+        name: "Jade P.",
+        role: "Thyroid Health Coach",
+        avatar: "https://accredipro.academy/wp-content/uploads/2025/12/Integrative-Health.jpeg",
+        quote: "Specialized in Hashimoto's. Clients fly in from other states!",
+        income: "$132K/year",
+        rating: 5,
+    },
+    {
+        name: "Caroline J.",
+        role: "Sleep Wellness Coach",
+        avatar: "https://accredipro.academy/wp-content/uploads/2025/12/AI_Headshot_Generator-13.jpg",
+        quote: "Found my niche in circadian health. 20 clients and growing!",
+        income: "$78K/year",
+        rating: 5,
+    },
+    {
+        name: "Samantha K.",
+        role: "Metabolic Health Coach",
+        avatar: "https://accredipro.academy/wp-content/uploads/2025/12/Head-shot-dark-background-1.jpg",
+        quote: "Helping clients with insulin resistance. Results speak for themselves!",
+        income: "$90K/year",
+        rating: 5,
+    },
+    {
+        name: "Sandra M.",
+        role: "Brain Health Specialist",
+        avatar: "https://accredipro.academy/wp-content/uploads/2025/12/Head-shot-dark-background.jpg",
+        quote: "Gut-brain axis is my specialty. Changed my life and my clients' lives!",
+        income: "$102K/year",
+        rating: 5,
+    },
+    {
+        name: "Katherine C.",
+        role: "Women's Health Coach",
+        avatar: "https://accredipro.academy/wp-content/uploads/2025/12/IMG_1695.jpeg",
+        quote: "From stay-at-home mom to 6-figure practitioner. Dreams do come true!",
+        income: "$114K/year",
+        rating: 5,
+    },
+    {
+        name: "Grace W.",
+        role: "Detox Specialist",
+        avatar: "https://accredipro.academy/wp-content/uploads/2025/12/IMG_9036-1.jpeg",
+        quote: "Mold and heavy metals are my focus. Premium clients only!",
+        income: "$156K/year",
+        rating: 5,
+    },
+    {
+        name: "Abigail D.",
+        role: "Integrative Wellness Coach",
+        avatar: "https://accredipro.academy/wp-content/uploads/2025/12/IMG_1120.jpeg",
+        quote: "Left nursing after 15 years. Now I actually help people heal!",
+        income: "$88K/year",
         rating: 5,
     },
 ];
@@ -256,106 +353,177 @@ export default async function CareerCenterPage() {
 
     return (
         <div className="space-y-8 animate-fade-in">
-            {/* Hero */}
+            {/* Hero - Enhanced */}
             <Card className="bg-gradient-to-br from-burgundy-600 via-burgundy-700 to-burgundy-800 border-0 overflow-hidden relative">
                 <div className="absolute inset-0 opacity-10">
-                    <div className="absolute top-0 right-0 w-64 h-64 bg-gold-400 rounded-full blur-3xl -translate-y-1/2 translate-x-1/4" />
+                    <div className="absolute top-0 right-0 w-96 h-96 bg-gold-400 rounded-full blur-3xl -translate-y-1/2 translate-x-1/4" />
+                    <div className="absolute bottom-0 left-0 w-64 h-64 bg-gold-400 rounded-full blur-3xl translate-y-1/2 -translate-x-1/4" />
                 </div>
-                <CardContent className="p-8 lg:p-10 relative">
-                    <div className="max-w-2xl">
-                        <Badge className="bg-gold-400/20 text-gold-200 mb-4">
-                            <Briefcase className="w-3 h-3 mr-1" />
-                            Career Center
-                        </Badge>
-                        <h1 className="text-3xl lg:text-4xl font-bold text-white mb-4">
-                            Build Your Career with AccrediPro
-                        </h1>
-                        <p className="text-burgundy-100 text-lg mb-6">
-                            Discover real career outcomes, income paths, and the exact <strong>professional tracks</strong> that lead there.
-                        </p>
-                        <div className="flex flex-wrap gap-3">
-                            <Link href="/roadmap">
-                                <Button className="bg-gold-400 text-burgundy-900 hover:bg-gold-500">
-                                    <Map className="w-4 h-4 mr-2" />
-                                    View My Roadmap
-                                </Button>
-                            </Link>
-                            <Link href="/tracks/functional-medicine">
-                                <Button className="bg-white/20 border border-white/30 text-white hover:bg-white/30">
-                                    Explore Specialization Tracks
-                                </Button>
-                            </Link>
+                <CardContent className="p-8 lg:p-12 relative">
+                    <div className="flex flex-col lg:flex-row items-start lg:items-center gap-8">
+                        <div className="flex-1">
+                            <Badge className="bg-gold-400/20 text-gold-200 mb-4 px-3 py-1">
+                                <Briefcase className="w-3 h-3 mr-1" />
+                                AccrediPro Career Center
+                            </Badge>
+                            <h1 className="text-3xl lg:text-4xl font-bold text-white mb-4">
+                                Transform Your Passion Into a <span className="text-gold-400">Thriving Career</span> with AccrediPro!
+                            </h1>
+                            <p className="text-burgundy-100 text-lg mb-6 max-w-xl">
+                                Join <strong className="text-white">1,400+ practitioners</strong> who&apos;ve built successful wellness careers. Discover your income potential and the exact steps to get there.
+                            </p>
+                            <div className="flex flex-wrap gap-3 mb-6">
+                                <Link href="/roadmap">
+                                    <Button size="lg" className="bg-gold-400 text-burgundy-900 hover:bg-gold-500 shadow-lg font-semibold">
+                                        <Map className="w-4 h-4 mr-2" />
+                                        View My Personalized Roadmap
+                                    </Button>
+                                </Link>
+                                <Link href="/tracks/functional-medicine">
+                                    <Button size="lg" className="bg-white/20 border border-white/30 text-white hover:bg-white/30">
+                                        Explore Specialization Tracks
+                                    </Button>
+                                </Link>
+                            </div>
+                        </div>
+
+                        {/* Stats Cards */}
+                        <div className="grid grid-cols-2 gap-3 lg:w-72">
+                            <div className="bg-white/10 backdrop-blur-sm rounded-xl p-4 border border-white/20">
+                                <div className="flex items-center gap-2 mb-1">
+                                    <Users className="w-5 h-5 text-gold-400" />
+                                    <span className="text-2xl font-bold text-white">1,447</span>
+                                </div>
+                                <p className="text-xs text-burgundy-200">Certified Practitioners</p>
+                            </div>
+                            <div className="bg-white/10 backdrop-blur-sm rounded-xl p-4 border border-white/20">
+                                <div className="flex items-center gap-2 mb-1">
+                                    <Star className="w-5 h-5 text-gold-400 fill-gold-400" />
+                                    <span className="text-2xl font-bold text-white">4.9</span>
+                                </div>
+                                <p className="text-xs text-burgundy-200">Average Rating</p>
+                            </div>
+                            <div className="bg-white/10 backdrop-blur-sm rounded-xl p-4 border border-white/20">
+                                <div className="flex items-center gap-2 mb-1">
+                                    <DollarSign className="w-5 h-5 text-green-400" />
+                                    <span className="text-2xl font-bold text-white">$8K</span>
+                                </div>
+                                <p className="text-xs text-burgundy-200">Avg. Monthly Income</p>
+                            </div>
+                            <div className="bg-white/10 backdrop-blur-sm rounded-xl p-4 border border-white/20">
+                                <div className="flex items-center gap-2 mb-1">
+                                    <Award className="w-5 h-5 text-gold-400" />
+                                    <span className="text-2xl font-bold text-white">9x</span>
+                                </div>
+                                <p className="text-xs text-burgundy-200">Accreditations</p>
+                            </div>
                         </div>
                     </div>
                 </CardContent>
             </Card>
 
-            {/* SECTION 1 - HOW ACCREDIPRO WORKS (NEW) */}
-            <Card className="border-2 border-burgundy-100 shadow-sm overflow-hidden">
-                <div className="bg-gradient-to-r from-burgundy-600 to-burgundy-700 p-4">
-                    <h2 className="text-lg font-bold text-white flex items-center gap-2">
-                        <Sparkles className="w-5 h-5 text-gold-400" />
-                        How AccrediPro Works
-                    </h2>
-                    <p className="text-burgundy-100 text-sm mt-1">Your career, step by step</p>
+            {/* SECTION 1 - HOW ACCREDIPRO WORKS (IMPROVED) */}
+            <Card className="border-2 border-burgundy-100 shadow-lg overflow-hidden">
+                <div className="bg-gradient-to-r from-burgundy-600 via-burgundy-700 to-burgundy-800 p-6">
+                    <div className="flex items-center gap-3 mb-2">
+                        <div className="w-10 h-10 rounded-xl bg-gold-400/20 flex items-center justify-center">
+                            <Sparkles className="w-5 h-5 text-gold-400" />
+                        </div>
+                        <div>
+                            <h2 className="text-xl font-bold text-white">How AccrediPro Works</h2>
+                            <p className="text-burgundy-100 text-sm">The proven 5-step career ladder to wellness success</p>
+                        </div>
+                    </div>
                 </div>
                 <CardContent className="p-6">
-                    <p className="text-gray-600 mb-6 text-center max-w-2xl mx-auto">
-                        Every AccrediPro career follows the same professional ladder. <strong className="text-burgundy-700">Start with a free mini diploma</strong> to explore, then progress from certification to scalable income.
-                    </p>
-
-                    <div className="grid grid-cols-1 md:grid-cols-5 gap-3">
-                        {careerSteps.map((step, index) => (
-                            <div key={step.step} className="relative">
-                                {/* Connector Arrow */}
-                                {index < careerSteps.length - 1 && (
-                                    <div className="hidden md:block absolute top-1/2 -right-1.5 transform -translate-y-1/2 z-10">
-                                        <ChevronRight className="w-3 h-3 text-gray-300" />
-                                    </div>
-                                )}
-
-                                <div className={`p-3 rounded-xl border-2 h-full transition-all ${
-                                    step.color === "gold" ? "border-gold-300 bg-gradient-to-br from-gold-50 to-amber-50 ring-2 ring-gold-200" :
-                                    step.color === "emerald" ? "border-emerald-200 bg-emerald-50" :
-                                    step.color === "amber" ? "border-amber-200 bg-amber-50" :
-                                    step.color === "blue" ? "border-blue-200 bg-blue-50" :
-                                    "border-burgundy-200 bg-burgundy-50"
-                                }`}>
-                                    <div className="flex items-center gap-1.5 mb-2">
-                                        <div className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-bold ${
-                                            step.color === "gold" ? "bg-gradient-to-r from-gold-400 to-amber-500 text-white" :
-                                            step.color === "emerald" ? "bg-emerald-500 text-white" :
-                                            step.color === "amber" ? "bg-amber-500 text-white" :
-                                            step.color === "blue" ? "bg-blue-500 text-white" :
-                                            "bg-burgundy-600 text-white"
-                                        }`}>
-                                            {step.step === 0 ? "Start" : `Step ${step.step}`}
-                                        </div>
-                                        {step.color === "gold" && (
-                                            <Badge className="bg-green-100 text-green-700 text-[10px] px-1.5 py-0">FREE</Badge>
-                                        )}
-                                    </div>
-
-                                    <h3 className="font-bold text-sm mb-1 text-gray-900">{step.title}</h3>
-                                    <p className={`text-xs font-medium mb-1.5 ${
-                                        step.color === "gold" ? "text-gold-700" :
-                                        step.color === "emerald" ? "text-emerald-700" :
-                                        step.color === "amber" ? "text-amber-700" :
-                                        step.color === "blue" ? "text-blue-700" :
-                                        "text-burgundy-700"
-                                    }`}>{step.subtitle}</p>
-                                    <p className="text-xs text-gray-600 leading-relaxed">{step.description}</p>
-                                </div>
-                            </div>
-                        ))}
+                    <div className="bg-gradient-to-r from-gold-50 to-amber-50 rounded-xl p-4 mb-6 border border-gold-200">
+                        <p className="text-gray-700 text-center">
+                            <span className="font-bold text-burgundy-700">Every successful AccrediPro practitioner</span> follows the same professional ladder.
+                            Start with a <span className="font-bold text-green-600">free mini diploma</span> to explore, then progress from certification to scalable income.
+                        </p>
                     </div>
 
-                    <div className="text-center mt-6">
+                    {/* Improved Step Cards */}
+                    <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
+                        {careerSteps.map((step, index) => {
+                            const incomeLabels = ["Free", "$3K-5K/mo", "$5K-10K/mo", "$10K-30K/mo", "$30K-50K+/mo"];
+                            return (
+                                <div key={step.step} className="relative">
+                                    {/* Connector Arrow */}
+                                    {index < careerSteps.length - 1 && (
+                                        <div className="hidden md:block absolute top-1/2 -right-2 transform -translate-y-1/2 z-10">
+                                            <ArrowRight className="w-4 h-4 text-gray-300" />
+                                        </div>
+                                    )}
+
+                                    <div className={`p-4 rounded-xl border-2 h-full transition-all hover:shadow-md ${
+                                        step.color === "gold" ? "border-gold-300 bg-gradient-to-br from-gold-50 to-amber-50 ring-2 ring-gold-200 shadow-md" :
+                                        step.color === "emerald" ? "border-emerald-200 bg-gradient-to-br from-emerald-50 to-green-50" :
+                                        step.color === "amber" ? "border-amber-200 bg-gradient-to-br from-amber-50 to-orange-50" :
+                                        step.color === "blue" ? "border-blue-200 bg-gradient-to-br from-blue-50 to-indigo-50" :
+                                        "border-burgundy-200 bg-gradient-to-br from-burgundy-50 to-rose-50"
+                                    }`}>
+                                        {/* Step Badge */}
+                                        <div className="flex items-center justify-between mb-3">
+                                            <div className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-bold ${
+                                                step.color === "gold" ? "bg-gradient-to-r from-gold-400 to-amber-500 text-white shadow-sm" :
+                                                step.color === "emerald" ? "bg-emerald-500 text-white" :
+                                                step.color === "amber" ? "bg-amber-500 text-white" :
+                                                step.color === "blue" ? "bg-blue-500 text-white" :
+                                                "bg-burgundy-600 text-white"
+                                            }`}>
+                                                {step.step === 0 ? "START" : `STEP ${step.step}`}
+                                            </div>
+                                            {step.color === "gold" && (
+                                                <Badge className="bg-green-500 text-white text-[10px] px-2 py-0.5 font-bold">FREE</Badge>
+                                            )}
+                                        </div>
+
+                                        {/* Title & Subtitle */}
+                                        <h3 className="font-bold text-sm mb-1 text-gray-900">{step.title}</h3>
+                                        <p className={`text-xs font-semibold mb-2 ${
+                                            step.color === "gold" ? "text-gold-700" :
+                                            step.color === "emerald" ? "text-emerald-700" :
+                                            step.color === "amber" ? "text-amber-700" :
+                                            step.color === "blue" ? "text-blue-700" :
+                                            "text-burgundy-700"
+                                        }`}>{step.subtitle}</p>
+
+                                        {/* Description */}
+                                        <p className="text-xs text-gray-600 leading-relaxed mb-3">{step.description}</p>
+
+                                        {/* Income Potential */}
+                                        <div className={`mt-auto pt-2 border-t ${
+                                            step.color === "gold" ? "border-gold-200" :
+                                            step.color === "emerald" ? "border-emerald-200" :
+                                            step.color === "amber" ? "border-amber-200" :
+                                            step.color === "blue" ? "border-blue-200" :
+                                            "border-burgundy-200"
+                                        }`}>
+                                            <p className="text-[10px] text-gray-500 uppercase tracking-wide mb-0.5">Earning Potential</p>
+                                            <p className={`text-sm font-bold ${step.color === "gold" ? "text-green-600" : "text-green-600"}`}>
+                                                {incomeLabels[step.step]}
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+                            );
+                        })}
+                    </div>
+
+                    {/* CTA Section */}
+                    <div className="mt-8 flex flex-col sm:flex-row items-center justify-center gap-4">
                         <Link href="/roadmap">
-                            <Button variant="outline" className="border-burgundy-200 text-burgundy-700 hover:bg-burgundy-50">
+                            <Button className="bg-burgundy-600 hover:bg-burgundy-700 shadow-md">
                                 <Map className="w-4 h-4 mr-2" />
                                 View Your Personalized Roadmap
                                 <ArrowRight className="w-4 h-4 ml-2" />
+                            </Button>
+                        </Link>
+                        <Link href="/courses/functional-medicine-mini-diploma">
+                            <Button variant="outline" className="border-gold-300 text-gold-700 hover:bg-gold-50">
+                                <Play className="w-4 h-4 mr-2" />
+                                Start Free Mini Diploma
                             </Button>
                         </Link>
                     </div>
@@ -434,63 +602,83 @@ export default async function CareerCenterPage() {
                 </div>
             </div>
 
-            {/* SECTION 3 - FM SPECIALIZATIONS */}
-            <div>
-                <div className="flex items-center gap-2 mb-6">
-                    <Sparkles className="w-6 h-6 text-gold-600" />
-                    <div>
-                        <h2 className="text-2xl font-bold text-gray-900">FM Specializations</h2>
-                        <p className="text-sm text-gray-500">Choose your niche based on market demand and passion</p>
+            {/* SECTION 3 - FM SPECIALIZATIONS - IMPROVED */}
+            <Card className="border-2 border-gold-200 shadow-lg overflow-hidden">
+                <div className="bg-gradient-to-r from-gold-400 via-amber-400 to-gold-500 p-6">
+                    <div className="flex items-center gap-3 mb-2">
+                        <div className="w-12 h-12 rounded-xl bg-white/20 flex items-center justify-center">
+                            <Sparkles className="w-6 h-6 text-white" />
+                        </div>
+                        <div>
+                            <h2 className="text-xl font-bold text-burgundy-900">AccrediPro FM Specializations</h2>
+                            <p className="text-burgundy-800 text-sm">Master Your Niche, Transform Your Career, Build Authority</p>
+                        </div>
                     </div>
                 </div>
-                <div className="grid md:grid-cols-2 lg:grid-cols-5 gap-4">
-                    {FM_SPECIALIZATIONS.slice(0, 10).map((spec) => {
-                        const IconComponent = spec.icon === "Apple" ? Apple :
-                            spec.icon === "Leaf" ? Leaf :
-                            spec.icon === "Heart" ? Heart :
-                            spec.icon === "Brain" ? Brain :
-                            spec.icon === "Zap" ? Zap :
-                            spec.icon === "TrendingUp" ? TrendingUp :
-                            spec.icon === "Shield" ? Shield :
-                            spec.icon === "Moon" ? Moon :
-                            spec.icon === "Droplets" ? Droplets : Target;
+                <CardContent className="p-6">
+                    <div className="bg-gradient-to-r from-burgundy-50 to-rose-50 rounded-xl p-4 mb-6 border border-burgundy-200">
+                        <p className="text-gray-700 text-center">
+                            <span className="font-bold text-burgundy-700">AccrediPro offers 10 specialized FM tracks</span> to help you build authority,
+                            <span className="font-bold text-green-600"> earn premium income</span>, and create a
+                            <span className="font-bold text-burgundy-700"> completely new life</span> doing what you love.
+                        </p>
+                    </div>
 
-                        return (
-                            <Card key={spec.id} className={`overflow-hidden hover:shadow-md transition-shadow ${spec.borderColor} border-2`}>
-                                <div className={`bg-gradient-to-r ${spec.gradient} p-3 text-white`}>
-                                    <div className="flex items-center justify-between">
-                                        <div className="flex items-center gap-2">
-                                            <div className="w-8 h-8 rounded-lg bg-white/20 flex items-center justify-center">
-                                                <IconComponent className="w-4 h-4" />
+                    <div className="grid md:grid-cols-2 lg:grid-cols-5 gap-4">
+                        {FM_SPECIALIZATIONS.slice(0, 10).map((spec) => {
+                            const IconComponent = spec.icon === "Apple" ? Apple :
+                                spec.icon === "Leaf" ? Leaf :
+                                spec.icon === "Heart" ? Heart :
+                                spec.icon === "Brain" ? Brain :
+                                spec.icon === "Zap" ? Zap :
+                                spec.icon === "TrendingUp" ? TrendingUp :
+                                spec.icon === "Shield" ? Shield :
+                                spec.icon === "Moon" ? Moon :
+                                spec.icon === "Droplets" ? Droplets : Target;
+
+                            return (
+                                <Card key={spec.id} className={`overflow-hidden hover:shadow-lg transition-all hover:-translate-y-1 ${spec.borderColor} border-2`}>
+                                    <div className={`bg-gradient-to-r ${spec.gradient} p-3 text-white`}>
+                                        <div className="flex items-center justify-between">
+                                            <div className="flex items-center gap-2">
+                                                <div className="w-8 h-8 rounded-lg bg-white/20 flex items-center justify-center">
+                                                    <IconComponent className="w-4 h-4" />
+                                                </div>
+                                                <span className="font-bold text-xs">#{spec.rank}</span>
                                             </div>
-                                            <span className="font-bold text-xs">#{spec.rank}</span>
+                                            <Badge className="bg-white/20 text-white text-[10px] border-0">
+                                                {spec.badge}
+                                            </Badge>
                                         </div>
-                                        <Badge className="bg-white/20 text-white text-[10px] border-0">
-                                            {spec.badge}
-                                        </Badge>
                                     </div>
-                                </div>
-                                <CardContent className="p-3">
-                                    <h4 className="font-bold text-sm text-gray-900 mb-1 line-clamp-1">{spec.shortTitle}</h4>
-                                    <p className="text-xs text-gray-500 mb-2 line-clamp-2">{spec.description}</p>
-                                    <div className="flex items-center justify-between text-xs">
-                                        <span className={`font-medium ${spec.textColor}`}>{spec.marketDemand}</span>
-                                        <span className="text-green-600 font-semibold">{spec.incomeRange.split(" - ")[0]}</span>
-                                    </div>
-                                </CardContent>
-                            </Card>
-                        );
-                    })}
-                </div>
-                <div className="text-center mt-6">
-                    <Link href="/tracks/functional-medicine">
-                        <Button variant="outline" className="border-burgundy-200 text-burgundy-700 hover:bg-burgundy-50">
-                            Explore All Specialization Tracks
-                            <ArrowRight className="w-4 h-4 ml-2" />
-                        </Button>
-                    </Link>
-                </div>
-            </div>
+                                    <CardContent className="p-3">
+                                        <h4 className="font-bold text-sm text-gray-900 mb-1 line-clamp-1">{spec.shortTitle}</h4>
+                                        <p className="text-xs text-gray-500 mb-2 line-clamp-2">{spec.description}</p>
+                                        <div className="space-y-1.5">
+                                            <div className="flex items-center justify-between text-xs">
+                                                <span className="text-gray-400">Market Demand</span>
+                                                <span className={`font-semibold ${spec.textColor}`}>{spec.marketDemand}</span>
+                                            </div>
+                                            <div className="flex items-center justify-between bg-green-50 rounded px-2 py-1">
+                                                <span className="text-[10px] text-green-600">Earning Potential</span>
+                                                <span className="text-xs font-bold text-green-700">{spec.incomeRange}</span>
+                                            </div>
+                                        </div>
+                                    </CardContent>
+                                </Card>
+                            );
+                        })}
+                    </div>
+                    <div className="text-center mt-6">
+                        <Link href="/tracks/functional-medicine">
+                            <Button className="bg-burgundy-600 hover:bg-burgundy-700 shadow-md">
+                                Explore All Specialization Tracks
+                                <ArrowRight className="w-4 h-4 ml-2" />
+                            </Button>
+                        </Link>
+                    </div>
+                </CardContent>
+            </Card>
 
             {/* SECTION 4 - INCOME PATHS (Tied to Steps) */}
             <Card className="border-2 border-gray-100">
@@ -498,8 +686,8 @@ export default async function CareerCenterPage() {
                     <div className="flex items-center gap-2 mb-6">
                         <DollarSign className="w-6 h-6 text-green-600" />
                         <div>
-                            <h2 className="text-xl font-bold text-gray-900">Income Paths</h2>
-                            <p className="text-sm text-gray-500">Each income level maps to a step in your journey</p>
+                            <h2 className="text-xl font-bold text-gray-900">AccrediPro Income Paths</h2>
+                            <p className="text-sm text-gray-500">Each income level maps to a step in your AccrediPro journey</p>
                         </div>
                     </div>
                     <div className="grid md:grid-cols-4 gap-4">
@@ -510,8 +698,8 @@ export default async function CareerCenterPage() {
                                         <ArrowRight className="w-5 h-5 text-gray-300" />
                                     </div>
                                 )}
-                                <div className="p-4 rounded-xl bg-gradient-to-br from-gray-50 to-white border-2 border-gray-100 h-full">
-                                    <Badge className={`mb-2 ${
+                                <div className="p-4 rounded-xl bg-gradient-to-br from-gray-50 to-white border-2 border-gray-100 h-full flex flex-col">
+                                    <Badge className={`mb-2 w-fit ${
                                         path.stepColor === "emerald" ? "bg-emerald-100 text-emerald-700" :
                                         path.stepColor === "amber" ? "bg-amber-100 text-amber-700" :
                                         path.stepColor === "blue" ? "bg-blue-100 text-blue-700" :
@@ -519,9 +707,13 @@ export default async function CareerCenterPage() {
                                     }`}>
                                         {path.step}
                                     </Badge>
-                                    <Badge className="mb-2 ml-2 bg-green-100 text-green-700">{path.range}</Badge>
+                                    <Badge className="mb-2 bg-green-100 text-green-700 w-fit">{path.range}</Badge>
                                     <h4 className="font-semibold text-gray-900">{path.level}</h4>
                                     <p className="text-sm text-gray-500 mt-1">{path.description}</p>
+                                    <div className="mt-3 pt-3 border-t border-gray-100 flex-1">
+                                        <p className="text-[10px] uppercase tracking-wide text-gray-400 font-medium mb-1">Perfect for:</p>
+                                        <p className="text-xs text-gray-600 leading-relaxed">{path.perfectFor}</p>
+                                    </div>
                                 </div>
                             </div>
                         ))}
@@ -529,54 +721,54 @@ export default async function CareerCenterPage() {
                 </CardContent>
             </Card>
 
-            {/* SECTION 5 - SUCCESS STORIES (Mapped to Steps) */}
-            <div>
-                <div className="flex items-center gap-2 mb-6">
-                    <Star className="w-6 h-6 text-gold-500 fill-gold-500" />
-                    <h2 className="text-2xl font-bold text-gray-900">Success Stories</h2>
+            {/* SECTION 5 - SUCCESS STORIES - IMPROVED with zombie profiles */}
+            <Card className="border-2 border-green-200 shadow-lg overflow-hidden">
+                <div className="bg-gradient-to-r from-green-500 via-emerald-500 to-green-600 p-6">
+                    <div className="flex items-center gap-3 mb-2">
+                        <div className="w-12 h-12 rounded-xl bg-white/20 flex items-center justify-center">
+                            <Star className="w-6 h-6 text-white fill-white" />
+                        </div>
+                        <div>
+                            <h2 className="text-xl font-bold text-white">AccrediPro Graduate Success Stories</h2>
+                            <p className="text-green-100 text-sm">Real transformations from our certified practitioners</p>
+                        </div>
+                    </div>
                 </div>
-                <div className="grid md:grid-cols-3 gap-6">
-                    {successStories.map((story) => (
-                        <Card key={story.name} className="border hover:shadow-md transition-shadow">
-                            <CardContent className="p-5">
-                                {/* Step Label */}
-                                <Badge variant="outline" className={`mb-3 text-xs ${
-                                    story.step === 2 ? "border-amber-200 text-amber-700 bg-amber-50" :
-                                    story.step === 3 ? "border-blue-200 text-blue-700 bg-blue-50" :
-                                    "border-burgundy-200 text-burgundy-700 bg-burgundy-50"
-                                }`}>
-                                    {story.stepLabel}
-                                </Badge>
+                <CardContent className="p-6">
+                    <div className="grid md:grid-cols-3 lg:grid-cols-5 gap-4">
+                        {successStories.map((story, index) => (
+                            <Card key={story.name} className="border hover:shadow-lg transition-all hover:-translate-y-1 overflow-hidden">
+                                <CardContent className="p-4">
+                                    {/* Star Rating */}
+                                    <div className="flex mb-2">
+                                        {[...Array(5)].map((_, idx) => (
+                                            <Star key={idx} className={`w-3 h-3 ${idx < story.rating ? "text-gold-400 fill-gold-400" : "text-gray-200"}`} />
+                                        ))}
+                                    </div>
 
-                                {/* Star Rating */}
-                                <div className="flex mb-3">
-                                    {[...Array(5)].map((_, idx) => (
-                                        <Star key={idx} className={`w-4 h-4 ${idx < story.rating ? "text-gold-400 fill-gold-400" : "text-gray-200"}`} />
-                                    ))}
-                                </div>
+                                    <p className="text-gray-600 italic text-xs mb-3 line-clamp-3">&ldquo;{story.quote}&rdquo;</p>
 
-                                <p className="text-gray-600 italic mb-4">"{story.quote}"</p>
-
-                                <div className="flex items-center justify-between">
-                                    <div className="flex items-center gap-3">
-                                        <div className="w-10 h-10 rounded-full bg-gradient-to-br from-burgundy-500 to-burgundy-700 flex items-center justify-center text-white font-bold text-sm flex-shrink-0">
-                                            {story.name.charAt(0)}
-                                        </div>
-                                        <div>
-                                            <p className="font-semibold text-gray-900 text-sm">{story.name}</p>
-                                            <p className="text-xs text-gray-500">{story.role}</p>
+                                    <div className="flex items-center gap-2">
+                                        <img
+                                            src={story.avatar}
+                                            alt={story.name}
+                                            className="w-10 h-10 rounded-full object-cover border-2 border-white shadow-sm"
+                                        />
+                                        <div className="flex-1 min-w-0">
+                                            <p className="font-semibold text-gray-900 text-xs truncate">{story.name}</p>
+                                            <p className="text-[10px] text-gray-500 truncate">{story.role}</p>
                                         </div>
                                     </div>
-                                    <Badge className="bg-green-100 text-green-700 text-xs font-semibold">
+                                    <Badge className="mt-2 bg-green-100 text-green-700 text-[10px] font-bold w-full justify-center">
                                         <TrendingUp className="w-3 h-3 mr-1" />
                                         {story.income}
                                     </Badge>
-                                </div>
-                            </CardContent>
-                        </Card>
-                    ))}
-                </div>
-            </div>
+                                </CardContent>
+                            </Card>
+                        ))}
+                    </div>
+                </CardContent>
+            </Card>
 
             {/* SECTION 6 - YOUR NEXT STEP (Personalized) */}
             <Card className="bg-gradient-to-r from-burgundy-700 via-burgundy-600 to-burgundy-800 border-0 text-white overflow-hidden">
@@ -632,6 +824,42 @@ export default async function CareerCenterPage() {
                                 Learn about Business Scaler <ChevronRight className="w-4 h-4" />
                             </Link>
                         </div>
+                    </div>
+                </CardContent>
+            </Card>
+
+            {/* COACH CHAT CTA - Bottom of Page */}
+            <Card className="bg-gradient-to-r from-emerald-500 via-green-500 to-teal-500 border-0 shadow-xl overflow-hidden">
+                <CardContent className="p-8 relative">
+                    <div className="absolute inset-0 opacity-10">
+                        <div className="absolute top-0 left-0 w-48 h-48 bg-white rounded-full blur-3xl" />
+                        <div className="absolute bottom-0 right-0 w-64 h-64 bg-white rounded-full blur-3xl" />
+                    </div>
+                    <div className="relative z-10 flex flex-col md:flex-row items-center justify-between gap-6">
+                        <div className="flex items-center gap-5">
+                            <div className="w-16 h-16 rounded-2xl bg-white/20 flex items-center justify-center shadow-lg backdrop-blur-sm">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-8 h-8 text-white">
+                                    <path fillRule="evenodd" d="M4.804 21.644A6.707 6.707 0 006 21.75a6.721 6.721 0 003.583-1.029c.774.182 1.584.279 2.417.279 5.322 0 9.75-3.97 9.75-9 0-5.03-4.428-9-9.75-9s-9.75 3.97-9.75 9c0 2.409 1.025 4.587 2.674 6.192.232.226.277.428.254.543a3.73 3.73 0 01-.814 1.686.75.75 0 00.44 1.223zM8.25 10.875a1.125 1.125 0 100 2.25 1.125 1.125 0 000-2.25zM10.875 12a1.125 1.125 0 112.25 0 1.125 1.125 0 01-2.25 0zm4.875-1.125a1.125 1.125 0 100 2.25 1.125 1.125 0 000-2.25z" clipRule="evenodd" />
+                                </svg>
+                            </div>
+                            <div className="text-white">
+                                <h3 className="text-2xl md:text-3xl font-bold mb-1">
+                                    Any Questions or Doubts?
+                                </h3>
+                                <p className="text-white/90 text-lg">
+                                    Chat with your coach now to find your best career track!
+                                </p>
+                            </div>
+                        </div>
+                        <Link href="/messages">
+                            <Button size="lg" className="bg-white text-emerald-600 hover:bg-gray-100 shadow-lg font-bold text-lg px-8 h-14">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-5 h-5 mr-2">
+                                    <path fillRule="evenodd" d="M4.804 21.644A6.707 6.707 0 006 21.75a6.721 6.721 0 003.583-1.029c.774.182 1.584.279 2.417.279 5.322 0 9.75-3.97 9.75-9 0-5.03-4.428-9-9.75-9s-9.75 3.97-9.75 9c0 2.409 1.025 4.587 2.674 6.192.232.226.277.428.254.543a3.73 3.73 0 01-.814 1.686.75.75 0 00.44 1.223zM8.25 10.875a1.125 1.125 0 100 2.25 1.125 1.125 0 000-2.25zM10.875 12a1.125 1.125 0 112.25 0 1.125 1.125 0 01-2.25 0zm4.875-1.125a1.125 1.125 0 100 2.25 1.125 1.125 0 000-2.25z" clipRule="evenodd" />
+                                </svg>
+                                Chat Your Coach Now
+                                <ArrowRight className="w-5 h-5 ml-2" />
+                            </Button>
+                        </Link>
                     </div>
                 </CardContent>
             </Card>

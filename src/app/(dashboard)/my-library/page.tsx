@@ -31,6 +31,7 @@ import {
 // Categories for filtering
 const CATEGORIES = [
   { id: "all", label: "All", icon: "📚" },
+  { id: "fm-free", label: "FM Free Resources", icon: "🎁" },
   { id: "core", label: "Core Guides", icon: "📘" },
   { id: "gut", label: "Gut Health", icon: "🍃" },
   { id: "hormones", label: "Hormones", icon: "🌸" },
@@ -4476,6 +4477,73 @@ const MY_EBOOKS = [
 
   <div class="mt-8 pt-6 border-t border-gray-100 flex items-center justify-center gap-2 text-xs text-gray-400">
     <span>AccrediPro Academy • Decision Guide</span>
+  </div>
+</div>`
+      },
+    ]
+  },
+  // FM Income Calculator - Interactive Tool
+  {
+    id: "fm-income-calculator",
+    title: "FM Income Calculator",
+    subtitle: "Calculate Your Earning Potential",
+    description: "See what you could earn as a Functional Medicine Practitioner. Customize your work schedule, pricing tier, and program model to calculate your monthly and annual income potential.",
+    valueProp: "Discover your earning potential in minutes.",
+    author: "AccrediPro Academy",
+    pages: 1,
+    icon: "💰",
+    category: "fm-free",
+    topics: ["Income Planning", "Business Model", "Pricing Strategy"],
+    readTime: "5 min",
+    unlockedDate: "2024-12-01",
+    isFree: true,
+    unlockCondition: "Mini Diploma Graduate",
+    chapters: [
+      {
+        title: "FM Income Calculator",
+        readTime: "Interactive",
+        isHtml: true,
+        content: `<div class="ebook-content">
+  <div class="flex justify-center mb-8">
+    <div class="text-center">
+      <div class="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-br from-green-500 to-emerald-600 rounded-2xl shadow-lg mb-4">
+        <svg xmlns="http://www.w3.org/2000/svg" class="w-10 h-10 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>
+        </svg>
+      </div>
+      <p class="text-sm font-semibold text-green-600 tracking-wider uppercase">AccrediPro Tool</p>
+      <p class="text-xs text-gray-500">Interactive Income Calculator</p>
+    </div>
+  </div>
+
+  <div class="bg-gradient-to-r from-green-50 to-emerald-50 border-l-4 border-green-500 p-6 rounded-r-xl mb-8">
+    <p class="text-xl font-semibold text-green-800 italic">
+      "See your potential income as a Functional Medicine Practitioner"
+    </p>
+  </div>
+
+  <p class="text-lg text-gray-700 leading-relaxed mb-6">
+    Use this interactive calculator to see what you could earn based on your preferred work schedule and pricing model.
+  </p>
+
+  <div class="my-8">
+    <iframe
+      src="/resources/FM_Income_Calculator.html"
+      width="100%"
+      height="900px"
+      style="border: none; border-radius: 16px; box-shadow: 0 10px 40px rgba(0,0,0,0.1);"
+      title="FM Income Calculator"
+    ></iframe>
+  </div>
+
+  <div class="bg-gold-50 border border-gold-200 rounded-xl p-6 mt-8">
+    <h3 class="text-lg font-bold text-burgundy-800 mb-3">💡 Ready to Make This Your Reality?</h3>
+    <p class="text-gray-700 mb-4">
+      The numbers you just calculated are based on real practitioner data. To start building toward this income, explore our full Functional Medicine Certification program.
+    </p>
+    <a href="/courses/functional-medicine-complete-certification" class="inline-flex items-center gap-2 bg-burgundy-600 text-white px-5 py-3 rounded-lg font-semibold hover:bg-burgundy-700 transition-colors">
+      Explore Full Certification →
+    </a>
   </div>
 </div>`
       },

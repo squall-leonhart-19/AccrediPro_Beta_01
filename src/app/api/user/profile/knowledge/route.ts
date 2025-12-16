@@ -20,6 +20,14 @@ export async function PATCH(request: NextRequest) {
             );
         }
 
+        // Only MENTOR and ADMIN can update knowledge base
+        if (session.user.role !== "MENTOR" && session.user.role !== "ADMIN") {
+            return NextResponse.json(
+                { error: "Only mentors and admins can update knowledge base" },
+                { status: 403 }
+            );
+        }
+
         const body = await request.json();
         const validatedData = knowledgeUpdateSchema.parse(body);
 

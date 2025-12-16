@@ -92,24 +92,26 @@ const GRADUATE_TRAINING = {
     description: "Understand what's possible, how practitioners succeed, and what certification unlocks.",
     incomeVision: "Clarity",
     color: "burgundy",
-    slug: "/courses/graduate-training",
+    slug: "/training",
     isRecommended: true,
     mindset: "People like me are doing this. This could work.",
 };
 
+// TEMPORARILY HIDDEN - Re-enable when videos arrive (5-7 days from Dec 16, 2024)
+// See: /docs/CHALLENGES_REACTIVATION.md
 // Practitioner Activation Challenge - building confidence
-const ACTIVATION_CHALLENGE = {
-    step: 0.75,
-    id: "activation-challenge",
-    title: "Practitioner Activation Challenge",
-    subtitle: "7 Days • Graduate Gift",
-    description: "Experience what this path actually feels like — short daily videos, reflections, and guidance.",
-    incomeVision: "Confidence",
-    color: "amber",
-    slug: "/challenges",
-    isGift: true,
-    mindset: "I can see myself doing this.",
-};
+// const ACTIVATION_CHALLENGE = {
+//     step: 0.75,
+//     id: "activation-challenge",
+//     title: "Practitioner Activation Challenge",
+//     subtitle: "7 Days • Graduate Gift",
+//     description: "Experience what this path actually feels like — short daily videos, reflections, and guidance.",
+//     incomeVision: "Confidence",
+//     color: "amber",
+//     slug: "/challenges",
+//     isGift: true,
+//     mindset: "I can see myself doing this.",
+// };
 
 // State-based messaging configuration - First person, warm tone for 35-40+ women
 const STATE_CONFIG: Record<string, {
@@ -386,9 +388,11 @@ export function RoadmapContent({ data, steps, userName, specialization }: Roadma
     const isStepCurrent = (step: number) => data.currentStep === step && !isStepCompleted(step);
     const isStepLocked = (step: number) => !isStepCompleted(step) && !isStepEnrolled(step) && step > Math.max(data.currentStep, 1);
 
-    // All steps including Mini Diploma, Graduate Training, and Activation Challenge
+    // All steps including Mini Diploma, Graduate Training
     // Steps 1-4 from props are the main certification steps
-    const allSteps = [MINI_DIPLOMA, GRADUATE_TRAINING, ACTIVATION_CHALLENGE, ...steps];
+    // NOTE: ACTIVATION_CHALLENGE temporarily hidden - re-add when videos arrive
+    // See: /docs/CHALLENGES_REACTIVATION.md
+    const allSteps = [MINI_DIPLOMA, GRADUATE_TRAINING, ...steps];
 
     return (
         <div className="space-y-6 animate-fade-in">
@@ -415,7 +419,7 @@ export function RoadmapContent({ data, steps, userName, specialization }: Roadma
                                     </Badge>
                                 </div>
                                 <h1 className="text-2xl md:text-3xl font-bold text-white">
-                                    Your {specialization.name} Roadmap
+                                    Your AccrediPro {specialization.name} Career Roadmap
                                 </h1>
                             </div>
                         </div>
@@ -768,12 +772,12 @@ export function RoadmapContent({ data, steps, userName, specialization }: Roadma
                     <Card className="border border-gray-200 hover:border-burgundy-200 hover:shadow-md transition-all cursor-pointer h-full">
                         <CardContent className="p-4">
                             <div className="flex items-center gap-3">
-                                <div className="w-10 h-10 rounded-lg bg-gold-100 flex items-center justify-center flex-shrink-0">
-                                    <MessageCircle className="w-5 h-5 text-gold-600" />
+                                <div className="w-10 h-10 rounded-full overflow-hidden border-2 border-gold-200 flex-shrink-0">
+                                    <img src="/coaches/sarah-coach.webp" alt="Coach Sarah" className="w-full h-full object-cover" />
                                 </div>
                                 <div className="flex-1 min-w-0">
-                                    <p className="font-semibold text-gray-900 text-sm">Chat with Your Mentor</p>
-                                    <p className="text-xs text-gray-500">Get personalized support & guidance</p>
+                                    <p className="font-semibold text-gray-900 text-sm">Ask Sarah Anything</p>
+                                    <p className="text-xs text-gray-500">Your coach is here to help!</p>
                                 </div>
                                 <ChevronRight className="w-4 h-4 text-gray-400 flex-shrink-0" />
                             </div>
@@ -782,14 +786,56 @@ export function RoadmapContent({ data, steps, userName, specialization }: Roadma
                 </Link>
             </div>
 
-            {/* Support Note */}
-            <Card className="border border-burgundy-100 bg-burgundy-50/50">
-                <CardContent className="p-4">
-                    <div className="flex items-center gap-3 justify-center">
-                        <Heart className="w-5 h-5 text-burgundy-500" />
-                        <p className="text-sm text-burgundy-700">
-                            Questions? Your mentor is just a message away. <Link href="/messages" className="font-semibold underline">Start a conversation</Link>
-                        </p>
+            {/* Your Dedicated Coach - Personal Connection */}
+            <Card className="bg-gradient-to-r from-burgundy-600 via-burgundy-700 to-burgundy-800 border-0 overflow-hidden">
+                <CardContent className="p-6 relative">
+                    <div className="absolute inset-0 opacity-10">
+                        <div className="absolute top-0 right-0 w-48 h-48 bg-gold-400 rounded-full blur-3xl" />
+                    </div>
+                    <div className="relative z-10 flex flex-col md:flex-row items-center gap-6">
+                        {/* Coach Photo & Badge */}
+                        <div className="relative flex-shrink-0">
+                            <div className="w-24 h-24 rounded-2xl overflow-hidden border-4 border-gold-400/30 shadow-xl">
+                                <img
+                                    src="/coaches/sarah-coach.webp"
+                                    alt="Your Coach Sarah"
+                                    className="w-full h-full object-cover"
+                                />
+                            </div>
+                            <div className="absolute -bottom-2 -right-2 w-8 h-8 bg-green-500 rounded-full border-4 border-burgundy-700 flex items-center justify-center">
+                                <span className="w-3 h-3 bg-white rounded-full animate-pulse" />
+                            </div>
+                        </div>
+
+                        {/* Coach Message */}
+                        <div className="flex-1 text-center md:text-left">
+                            <div className="flex items-center gap-2 justify-center md:justify-start mb-2">
+                                <h3 className="text-xl font-bold text-white">Hi {firstName}, I&apos;m Sarah!</h3>
+                                <Badge className="bg-gold-400/20 text-gold-300 border-gold-400/30 text-xs">Your Coach</Badge>
+                            </div>
+                            <p className="text-burgundy-100 mb-4 max-w-lg">
+                                I created your personalized roadmap based on your goals. I&apos;m here to guide you every step of the way — from your first lesson to your first client. <span className="text-gold-300 font-medium">Any questions? I&apos;m just a message away!</span>
+                            </p>
+                            <Link href="/messages">
+                                <Button className="bg-white text-burgundy-700 hover:bg-gold-50 shadow-lg font-semibold">
+                                    <MessageCircle className="w-4 h-4 mr-2" />
+                                    Chat with Sarah Now
+                                    <ArrowRight className="w-4 h-4 ml-2" />
+                                </Button>
+                            </Link>
+                        </div>
+
+                        {/* Stats */}
+                        <div className="hidden lg:flex flex-col gap-2 text-right">
+                            <div className="bg-white/10 backdrop-blur-sm rounded-lg px-4 py-2 border border-white/20">
+                                <p className="text-2xl font-bold text-white">1,400+</p>
+                                <p className="text-xs text-burgundy-200">Students Guided</p>
+                            </div>
+                            <div className="bg-white/10 backdrop-blur-sm rounded-lg px-4 py-2 border border-white/20">
+                                <p className="text-2xl font-bold text-gold-300">&lt; 24h</p>
+                                <p className="text-xs text-burgundy-200">Response Time</p>
+                            </div>
+                        </div>
                     </div>
                 </CardContent>
             </Card>

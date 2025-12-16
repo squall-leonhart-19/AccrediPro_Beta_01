@@ -24,19 +24,43 @@ export function MiniDiploma({
   const diplomaRef = useRef<HTMLDivElement>(null);
 
   const handleDownload = async () => {
-    if (!diplomaRef.current) return;
+    try {
+      // Call the API to generate PDF using PDFBolt
+      const response = await fetch("/api/certificates/pdf", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          studentName,
+          moduleTitle,
+          courseName,
+          completedDate: completionDate,
+          certificateId: certificateNumber,
+          type: "module",
+        }),
+      });
 
-    // Use html2canvas to convert to image
-    const html2canvas = (await import("html2canvas")).default;
-    const canvas = await html2canvas(diplomaRef.current, {
-      scale: 2,
-      backgroundColor: "#ffffff",
-    });
+      if (!response.ok) {
+        throw new Error("Failed to generate PDF");
+      }
 
-    const link = document.createElement("a");
-    link.download = `${moduleTitle.replace(/\s+/g, "-")}-certificate.png`;
-    link.href = canvas.toDataURL("image/png");
-    link.click();
+      const contentType = response.headers.get("content-type");
+      if (contentType?.includes("application/pdf")) {
+        const blob = await response.blob();
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = `${moduleTitle.replace(/\s+/g, "-")}-Certificate.pdf`;
+        document.body.appendChild(a);
+        a.click();
+        window.URL.revokeObjectURL(url);
+        document.body.removeChild(a);
+      }
+    } catch (error) {
+      console.error("Download failed:", error);
+      alert("Failed to generate PDF. Please try again.");
+    }
   };
 
   return (

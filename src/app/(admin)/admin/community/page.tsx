@@ -30,15 +30,16 @@ async function getCommunityData() {
     },
   });
 
-  // Get recent posts for the "add to existing" feature
+  // Get ALL posts for the "add to existing" feature
   const recentPosts = await prisma.communityPost.findMany({
     orderBy: { createdAt: "desc" },
-    take: 50,
     select: {
       id: true,
       title: true,
       categoryId: true,
       createdAt: true,
+      likeCount: true,
+      reactions: true, // Get stored reactions JSON
       author: {
         select: {
           firstName: true,
@@ -58,18 +59,32 @@ async function getCommunityData() {
     prisma.user.count({ where: { isFakeProfile: true } }),
     prisma.communityPost.count({ where: { categoryId: "wins" } }),
     prisma.communityPost.count({ where: { categoryId: "graduates" } }),
+    prisma.communityPost.count({ where: { categoryId: "coaching-tips" } }),
+    prisma.communityPost.count({ where: { categoryId: "questions-everyone-has" } }),
+    prisma.communityPost.count({ where: { categoryId: "career-pathway" } }),
+    prisma.postLike.count(),
   ]);
+
+  // Transform recentPosts to ensure reactions type is correct
+  const transformedPosts = recentPosts.map(post => ({
+    ...post,
+    reactions: post.reactions as Record<string, number> | null,
+  }));
 
   return {
     fakeProfiles,
     sarahProfile,
-    recentPosts,
+    recentPosts: transformedPosts,
     stats: {
       totalPosts: stats[0],
       totalComments: stats[1],
       totalFakeProfiles: stats[2],
       winsPosts: stats[3],
       graduatesPosts: stats[4],
+      coachingTipsPosts: stats[5],
+      questionsPosts: stats[6],
+      careerPosts: stats[7],
+      totalLikes: stats[8],
     },
   };
 }

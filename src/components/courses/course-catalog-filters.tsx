@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { Card, CardContent } from "@/components/ui/card";
@@ -111,13 +111,50 @@ interface CourseCatalogFiltersProps {
     }[];
     wishlistIds?: string[];
     isLoggedIn?: boolean;
+    miniDiplomaCompletedAt?: string | null;
 }
 
 // Default coach when none assigned
 const DEFAULT_COACH = {
-    name: "Sarah Mitchell",
-    avatar: "/images/coaches/sarah.jpg",
-    title: "Lead Instructor",
+    name: "Sarah M.",
+    avatar: "/coaches/sarah-coach.webp",
+    title: "Certified Functional Medicine Practitioner",
+};
+
+// All 9 accreditations
+const ACCREDITATIONS = [
+    { code: "CPD", name: "Continuing Professional Development" },
+    { code: "CMA", name: "Complementary Medical Association" },
+    { code: "IPHM", name: "International Practitioners of Holistic Medicine" },
+    { code: "ICAHP", name: "International Community of Accredited Health Professionals" },
+    { code: "IAOTH", name: "International Association of Therapists" },
+    { code: "IGCT", name: "International Guild of Complementary Therapists" },
+    { code: "CTAA", name: "Complementary Therapists Accredited Association" },
+    { code: "IHTCP", name: "International Holistic Therapists & Course Providers" },
+    { code: "IHTC", name: "International Holistic Therapists Council" },
+];
+
+// Graduate pricing constants
+const FULL_PRICE = 1997;
+const GRADUATE_PRICE = 997;
+const GRADUATE_DISCOUNT_HOURS = 72; // 72 hours flash sale
+
+// Helper to calculate time remaining
+const getTimeRemaining = (completedAt: string | null): { expired: boolean; hours: number; minutes: number; seconds: number } | null => {
+    if (!completedAt) return null;
+
+    const completedDate = new Date(completedAt);
+    const expiryDate = new Date(completedDate.getTime() + GRADUATE_DISCOUNT_HOURS * 60 * 60 * 1000);
+    const now = new Date();
+    const diff = expiryDate.getTime() - now.getTime();
+
+    if (diff <= 0) return { expired: true, hours: 0, minutes: 0, seconds: 0 };
+
+    const hours = Math.floor(diff / (1000 * 60 * 60));
+    const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+    const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+
+    return { expired: false, hours, minutes, seconds };
 };
 
 // Career Path & Earning Potential Data for each course type
@@ -367,37 +404,37 @@ const CAREER_TRACKS = [
     },
 ];
 
-// Social proof testimonials - Enhanced
+// Social proof testimonials - Using real AccrediPro fake profile avatars
 const TESTIMONIALS = [
     {
-        name: "Sarah M.",
+        name: "Tiffany R.",
         role: "Functional Medicine Coach",
         quote: "Went from corporate burnout to $8K/month in 6 months. The certification gave me instant credibility.",
-        avatar: null,
+        avatar: "https://accredipro.academy/wp-content/uploads/2025/12/1000009537.jpg",
         income: "$8K/mo",
         rating: 5,
     },
     {
-        name: "Michael T.",
+        name: "Addison T.",
         role: "Health Practitioner",
         quote: "The step-by-step approach made everything clear. Now I have 12 regular clients and growing.",
-        avatar: null,
+        avatar: "https://accredipro.academy/wp-content/uploads/2025/12/linkedin-2024.jpg",
         income: "$6K/mo",
         rating: 5,
     },
     {
-        name: "Lisa R.",
+        name: "Martha W.",
         role: "Wellness Business Owner",
         quote: "Started solo, now running a team of 5 coaches. AccrediPro gave me the foundation to scale.",
-        avatar: null,
+        avatar: "https://accredipro.academy/wp-content/uploads/2025/12/IMG_3542-Profile-Picture-Updated.jpg",
         income: "$25K/mo",
         rating: 5,
     },
     {
-        name: "Jennifer K.",
+        name: "Teresa L.",
         role: "Women's Health Specialist",
         quote: "My clients trust me because I'm certified. That credibility changed everything for my practice.",
-        avatar: null,
+        avatar: "https://accredipro.academy/wp-content/uploads/2025/12/IMG_1335.jpeg",
         income: "$10K/mo",
         rating: 5,
     },
@@ -410,6 +447,7 @@ export function CourseCatalogFilters({
     specialOffers = [],
     wishlistIds = [],
     isLoggedIn = false,
+    miniDiplomaCompletedAt = null,
 }: CourseCatalogFiltersProps) {
     const router = useRouter();
     const [searchQuery, setSearchQuery] = useState("");
@@ -417,6 +455,21 @@ export function CourseCatalogFilters({
     const [sortBy, setSortBy] = useState<string>("featured");
     const [localWishlist, setLocalWishlist] = useState<Set<string>>(new Set(wishlistIds));
     const [wishlistLoading, setWishlistLoading] = useState<string | null>(null);
+    const [countdown, setCountdown] = useState(getTimeRemaining(miniDiplomaCompletedAt));
+
+    // Update countdown every second
+    useEffect(() => {
+        if (!miniDiplomaCompletedAt) return;
+
+        const timer = setInterval(() => {
+            setCountdown(getTimeRemaining(miniDiplomaCompletedAt));
+        }, 1000);
+
+        return () => clearInterval(timer);
+    }, [miniDiplomaCompletedAt]);
+
+    // Check if user qualifies for graduate discount
+    const hasGraduateDiscount = countdown && !countdown.expired;
 
     const enrollmentMap = new Map(enrollments.map((e) => [e.courseId, e]));
 
@@ -533,7 +586,7 @@ export function CourseCatalogFilters({
                         </div>
 
                         <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-4 text-white">
-                            Build Your Career in <span className="text-gold-400">Health & Wellness</span>
+                            Build Your Career in <span className="text-gold-400">Health & Wellness</span> with AccrediPro
                         </h1>
 
                         <p className="text-lg text-burgundy-100 mb-8 max-w-2xl mx-auto">
@@ -626,8 +679,12 @@ export function CourseCatalogFilters({
                         const enrollment = enrollmentMap.get(course.id);
                         const totalLessons = course.modules.reduce((acc, m) => acc + m.lessons.length, 0);
                         const courseAvgRating = course.analytics?.avgRating || 4.9;
-                        const enrolledCount = (course.analytics?.totalEnrolled || course._count.enrollments) + 100;
-                        const reviewCount = course._count.reviews;
+                        // Custom enrolled/review counts based on course for social proof
+                        const isFMPractitioner = course.slug === "functional-medicine-complete-certification";
+                        const isWomensHormone = course.slug === "womens-hormone-health-coach";
+                        const isGutHealth = course.slug === "gut-health-digestive-wellness-coach";
+                        const enrolledCount = isFMPractitioner ? 1447 : isWomensHormone ? 892 : isGutHealth ? 756 : (course.analytics?.totalEnrolled || course._count.enrollments) + 100;
+                        const reviewCount = isFMPractitioner ? 823 : isWomensHormone ? 412 : isGutHealth ? 347 : course._count.reviews;
                         const coach = course.coach || DEFAULT_COACH;
                         const originalPrice = course.price ? Math.round(course.price * 1.5) : null;
                         const discountPercent = originalPrice && course.price ? getDiscountPercent(originalPrice, course.price) : 0;
@@ -711,6 +768,7 @@ export function CourseCatalogFilters({
                                             <div className="flex items-center gap-1">
                                                 <Star className="w-3 h-3 sm:w-4 sm:h-4 text-gold-400 fill-gold-400" />
                                                 <span className="font-semibold text-gray-900">{courseAvgRating.toFixed(1)}</span>
+                                                <span className="text-gray-400">({reviewCount.toLocaleString()})</span>
                                             </div>
                                             <div className="hidden sm:flex items-center gap-1 text-gray-500">
                                                 <Users className="w-4 h-4" />
@@ -770,34 +828,71 @@ export function CourseCatalogFilters({
                                             );
                                         })()}
 
-                                        {/* Coach - hidden on mobile */}
-                                        <div className="hidden sm:flex items-center gap-3 mb-4 p-3 bg-gray-50 rounded-lg">
-                                            <Avatar className="h-10 w-10 ring-2 ring-burgundy-100">
-                                                <AvatarImage src={coach.avatar || undefined} />
-                                                <AvatarFallback className="bg-gradient-to-br from-burgundy-400 to-burgundy-600 text-white text-sm font-bold">
-                                                    {getCoachInitials(coach.name)}
-                                                </AvatarFallback>
-                                            </Avatar>
-                                            <div className="flex-1 min-w-0">
-                                                <p className="font-medium text-gray-900 text-sm truncate">{coach.name}</p>
-                                                <p className="text-xs text-gray-500 truncate">{coach.title || "Lead Instructor"}</p>
+                                        {/* Coach/Instructor Section - Enhanced */}
+                                        <div className="hidden sm:block mb-4 p-3 bg-gradient-to-r from-gray-50 to-burgundy-50/30 rounded-xl border border-gray-100">
+                                            <div className="flex items-start gap-3">
+                                                <Avatar className="h-12 w-12 ring-2 ring-burgundy-200 shadow-md">
+                                                    <AvatarImage src={coach.avatar || undefined} />
+                                                    <AvatarFallback className="bg-gradient-to-br from-burgundy-400 to-burgundy-600 text-white text-sm font-bold">
+                                                        {getCoachInitials(coach.name)}
+                                                    </AvatarFallback>
+                                                </Avatar>
+                                                <div className="flex-1 min-w-0">
+                                                    <div className="flex items-center gap-2">
+                                                        <p className="font-bold text-gray-900 text-sm">{coach.name}</p>
+                                                        <Badge className="bg-emerald-100 text-emerald-700 text-[9px] px-1.5 py-0">Verified</Badge>
+                                                    </div>
+                                                    <p className="text-[10px] text-burgundy-600 font-medium">{coach.title || "Certified Functional Medicine Practitioner"}</p>
+                                                    <div className="flex items-center gap-1 mt-1.5">
+                                                        <Badge variant="outline" className="text-[8px] px-1 py-0 h-4 bg-gold-50 border-gold-200 text-gold-700">80+ CEU</Badge>
+                                                        {ACCREDITATIONS.slice(0, 3).map((acc) => (
+                                                            <Badge key={acc.code} variant="outline" className="text-[8px] px-1 py-0 h-4 bg-white border-gray-200 text-gray-600" title={acc.name}>
+                                                                {acc.code}
+                                                            </Badge>
+                                                        ))}
+                                                        <span className="text-[8px] text-gray-400">+6 more</span>
+                                                    </div>
+                                                </div>
                                             </div>
-                                            <MessageSquare className="w-4 h-4 text-gray-400" />
                                         </div>
 
-                                        {/* Price Section */}
-                                        <div className="flex items-center justify-between mb-2 sm:mb-4">
+                                        {/* Price Section - With Graduate Flash Sale */}
+                                        <div className="mb-2 sm:mb-4">
                                             {course.isFree ? (
                                                 <div className="flex items-center gap-1 sm:gap-2">
                                                     <span className="text-lg sm:text-2xl font-bold text-green-600">Free</span>
                                                     <Badge variant="outline" className="hidden sm:inline-flex text-green-600 border-green-200 text-xs">No Credit Card</Badge>
                                                 </div>
+                                            ) : hasGraduateDiscount ? (
+                                                <div className="space-y-2">
+                                                    {/* Graduate Flash Sale Banner */}
+                                                    <div className="bg-gradient-to-r from-amber-500 via-orange-500 to-red-500 text-white rounded-lg p-2 text-center animate-pulse">
+                                                        <div className="flex items-center justify-center gap-2 text-xs font-bold">
+                                                            <Flame className="w-4 h-4" />
+                                                            <span>GRADUATE FLASH SALE</span>
+                                                            <Flame className="w-4 h-4" />
+                                                        </div>
+                                                        <div className="text-[10px] opacity-90 mt-0.5">
+                                                            Before we close the spot!
+                                                        </div>
+                                                    </div>
+                                                    {/* Countdown Timer */}
+                                                    <div className="flex items-center justify-center gap-1 text-xs">
+                                                        <span className="text-gray-500">Ends in:</span>
+                                                        <span className="font-mono font-bold text-red-600 bg-red-50 px-2 py-0.5 rounded">
+                                                            {String(countdown?.hours || 0).padStart(2, '0')}:{String(countdown?.minutes || 0).padStart(2, '0')}:{String(countdown?.seconds || 0).padStart(2, '0')}
+                                                        </span>
+                                                    </div>
+                                                    {/* Price Display */}
+                                                    <div className="flex items-center justify-center gap-2">
+                                                        <span className="text-lg text-gray-400 line-through">${FULL_PRICE}</span>
+                                                        <span className="text-2xl font-bold text-green-600">${GRADUATE_PRICE}</span>
+                                                        <Badge className="bg-green-100 text-green-700 text-xs">Save $1,000!</Badge>
+                                                    </div>
+                                                </div>
                                             ) : (
                                                 <div className="flex items-center gap-1 sm:gap-2">
-                                                    {originalPrice && (
-                                                        <span className="text-sm sm:text-lg text-gray-400 line-through">${originalPrice}</span>
-                                                    )}
-                                                    <span className="text-lg sm:text-2xl font-bold text-burgundy-600">${course.price}</span>
+                                                    <span className="text-lg sm:text-2xl font-bold text-burgundy-600">${FULL_PRICE}</span>
                                                 </div>
                                             )}
                                         </div>
@@ -909,9 +1004,22 @@ export function CourseCatalogFilters({
 
                                 <CardContent className="p-3">
                                     <p className="text-xs text-gray-500 line-clamp-2 mb-2">{spec.description}</p>
-                                    <div className="flex items-center justify-between">
-                                        <span className="text-xs text-gray-400">{spec.marketDemand}</span>
-                                        <span className="text-xs font-bold text-green-600">{spec.income.split(" - ")[0]}</span>
+                                    <div className="space-y-1.5">
+                                        <div className="flex items-center justify-between">
+                                            <span className="text-[10px] text-gray-400 uppercase tracking-wide">Market Demand</span>
+                                            <Badge className={`text-[9px] px-1.5 py-0 ${
+                                                spec.marketDemand === "Very High" ? "bg-red-100 text-red-700" :
+                                                spec.marketDemand === "High" ? "bg-orange-100 text-orange-700" :
+                                                spec.marketDemand === "Growing" ? "bg-blue-100 text-blue-700" :
+                                                "bg-gray-100 text-gray-700"
+                                            }`}>
+                                                {spec.marketDemand}
+                                            </Badge>
+                                        </div>
+                                        <div className="flex items-center justify-between bg-green-50 rounded-md px-2 py-1">
+                                            <span className="text-[10px] text-green-600 font-medium">Earning Potential</span>
+                                            <span className="text-xs font-bold text-green-700">{spec.income}</span>
+                                        </div>
                                     </div>
                                 </CardContent>
                             </Card>
@@ -1048,7 +1156,8 @@ export function CourseCatalogFilters({
 
                                     {/* Author */}
                                     <div className="flex items-center gap-3">
-                                        <Avatar className="h-10 w-10">
+                                        <Avatar className="h-10 w-10 ring-2 ring-burgundy-100">
+                                            <AvatarImage src={t.avatar} alt={t.name} />
                                             <AvatarFallback className="bg-gradient-to-br from-burgundy-400 to-burgundy-600 text-white text-sm font-bold">
                                                 {t.name.split(' ').map(n => n[0]).join('')}
                                             </AvatarFallback>

@@ -330,16 +330,19 @@ export function ProfileTabs({ user, allBadges }: ProfileTabsProps) {
                     <Settings className="w-4 h-4 inline mr-2" />
                     Settings
                 </button>
-                <button
-                    onClick={() => setActiveTab("knowledge")}
-                    className={`px-6 py-3 rounded-t-xl font-medium text-sm transition-all ${activeTab === "knowledge"
-                        ? "bg-burgundy-600 text-white"
-                        : "bg-white text-gray-600 hover:bg-gray-50 border border-gray-200"
-                        }`}
-                >
-                    <Bot className="w-4 h-4 inline mr-2" />
-                    AI Knowledge
-                </button>
+                {/* AI Knowledge tab - only for MENTOR/ADMIN users */}
+                {(user.role === "MENTOR" || user.role === "ADMIN") && (
+                    <button
+                        onClick={() => setActiveTab("knowledge")}
+                        className={`px-6 py-3 rounded-t-xl font-medium text-sm transition-all ${activeTab === "knowledge"
+                            ? "bg-burgundy-600 text-white"
+                            : "bg-white text-gray-600 hover:bg-gray-50 border border-gray-200"
+                            }`}
+                    >
+                        <Bot className="w-4 h-4 inline mr-2" />
+                        AI Knowledge
+                    </button>
+                )}
             </div>
 
             {/* Tab Content */}
@@ -697,7 +700,8 @@ export function ProfileTabs({ user, allBadges }: ProfileTabsProps) {
                 </div>
             )}
 
-            {activeTab === "knowledge" && (
+            {/* AI Knowledge content - only for MENTOR/ADMIN users */}
+            {activeTab === "knowledge" && (user.role === "MENTOR" || user.role === "ADMIN") && (
                 <KnowledgeBaseTab initialContent={user.knowledgeBase || null} />
             )}
 

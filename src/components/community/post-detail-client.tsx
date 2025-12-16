@@ -45,51 +45,8 @@ const REACTIONS = [
   { emoji: "💪", label: "Strong", color: "bg-slate-100 text-slate-600 border-slate-200" },
 ];
 
-// Generate unique reactions for each post based on post ID (deterministic) - must match community-client.tsx
-function generatePostReactions(postId: string, category: string | null, isPinned: boolean): Record<string, number> {
-  let hash = 0;
-  for (let i = 0; i < postId.length; i++) {
-    const char = postId.charCodeAt(i);
-    hash = ((hash << 5) - hash) + char;
-    hash = hash & hash;
-  }
-  hash = Math.abs(hash);
-
-  let baseMultiplier = 1;
-  if (isPinned) {
-    baseMultiplier = 3;
-  } else if (category === "wins") {
-    baseMultiplier = 2.5;
-  } else if (category === "tips") {
-    baseMultiplier = 2;
-  } else if (category === "introductions") {
-    baseMultiplier = 1.8;
-  } else if (category === "graduates") {
-    baseMultiplier = 2.2;
-  } else if (category === "questions") {
-    baseMultiplier = 1.2;
-  }
-
-  const seed1 = (hash % 100) + 50;
-  const seed2 = ((hash >> 4) % 80) + 30;
-  const seed3 = ((hash >> 8) % 60) + 20;
-  const seed4 = ((hash >> 12) % 50) + 15;
-  const seed5 = ((hash >> 16) % 40) + 10;
-  const seed6 = ((hash >> 20) % 30) + 8;
-  const seed7 = ((hash >> 24) % 20) + 5;
-  const seed8 = ((hash >> 28) % 15) + 3;
-
-  return {
-    "❤️": Math.round(seed1 * baseMultiplier),
-    "🔥": Math.round(seed2 * baseMultiplier),
-    "👏": Math.round(seed3 * baseMultiplier),
-    "💯": Math.round(seed4 * baseMultiplier),
-    "🎉": Math.round(seed5 * baseMultiplier),
-    "💪": Math.round(seed6 * baseMultiplier),
-    "⭐": Math.round(seed7 * baseMultiplier),
-    "🙌": Math.round(seed8 * baseMultiplier),
-  };
-}
+// Note: Post reactions are now stored in the database and passed from the server
+// The generatePostReactions function is no longer needed - reactions come from DB
 
 // Generate random reactions for comments (deterministic based on comment ID)
 function generateCommentReactions(commentId: string): Record<string, number> {
@@ -161,9 +118,9 @@ export default function PostDetailClient({
     return () => clearInterval(interval);
   }, []);
 
-  // Post State - use generatePostReactions for consistent values between card and post detail
+  // Post State - use stored reactions from database
   const [postReactions, setPostReactions] = useState<Record<string, number>>(
-    post.reactions || generatePostReactions(post.id, post.category, post.isPinned)
+    (post.reactions as Record<string, number>) || {}
   );
   const [userPostReaction, setUserPostReaction] = useState<string | null>(post.isLiked ? "❤️" : null);
   const [showPostReactionPicker, setShowPostReactionPicker] = useState(false);
@@ -387,7 +344,7 @@ export default function PostDetailClient({
         </div>
       </div>
 
-      <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-6 p-4 md:p-6 lg:p-8">
+      <div className="max-w-[1600px] mx-auto grid grid-cols-1 lg:grid-cols-12 gap-6 p-4 md:p-6 lg:p-8">
 
         {/* Left Sidebar (Desktop Only) */}
         <aside className="hidden lg:block lg:col-span-3 space-y-6">
@@ -488,11 +445,23 @@ export default function PostDetailClient({
               </div>
             </div>
 
-            {/* Reaction Counts Display */}
+            {/* Reaction Counts Display - Heart first, slightly larger */}
             <div className="px-6 py-2 flex items-center gap-2 overflow-x-auto no-scrollbar">
-              {Object.entries(postReactions).map(([emoji, count]) => count > 0 && (
-                <span key={emoji} className="inline-flex items-center gap-1.5 bg-gray-50 px-3 py-1.5 rounded-full text-sm font-bold text-gray-700 border border-gray-100 shadow-sm">
-                  <span>{emoji}</span> {count}
+              {/* Sort reactions with heart first */}
+              {Object.entries(postReactions)
+                .sort(([a], [b]) => {
+                  if (a === "❤️") return -1;
+                  if (b === "❤️") return 1;
+                  return 0;
+                })
+                .map(([emoji, count]) => count > 0 && (
+                <span
+                  key={emoji}
+                  className={`inline-flex items-center gap-1.5 bg-gray-50 px-3 py-1.5 rounded-full font-bold text-gray-700 border border-gray-100 shadow-sm ${
+                    emoji === "❤️" ? "text-base" : "text-sm"
+                  }`}
+                >
+                  <span className={emoji === "❤️" ? "text-lg" : ""}>{emoji}</span> {count}
                 </span>
               ))}
             </div>

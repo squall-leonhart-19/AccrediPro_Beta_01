@@ -4,7 +4,7 @@ import { useState, useTransition, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import { ChevronLeft, ChevronRight, Award, Loader2, Lock, ClipboardCheck } from "lucide-react";
+import { ChevronLeft, ChevronRight, Award, Loader2, Lock, ClipboardCheck, CheckCircle } from "lucide-react";
 import { Progress } from "@/components/ui/progress";
 import { CompletionCelebration } from "./completion-celebration";
 import { useAchievement } from "@/components/gamification/achievement-toast";
@@ -24,6 +24,7 @@ interface LessonNavigationProps {
   canAccessNextLesson: boolean;
   bottomBar?: boolean;
   showQuizButton?: boolean;
+  onMarkComplete?: () => void;
 }
 
 export function LessonNavigation({
@@ -40,6 +41,7 @@ export function LessonNavigation({
   canAccessNextLesson,
   bottomBar = false,
   showQuizButton = false,
+  onMarkComplete,
 }: LessonNavigationProps) {
   const router = useRouter();
   const { showAchievement } = useAchievement();
@@ -48,6 +50,8 @@ export function LessonNavigation({
   // OPTIMISTIC STATE: Track completion locally for instant UI
   const [optimisticCompleted, setOptimisticCompleted] = useState(isCompleted);
   const [optimisticCount, setOptimisticCount] = useState(completedLessons);
+  // Show "Completed!" state briefly before navigating
+  const [showCompleted, setShowCompleted] = useState(false);
 
   // PREFETCH: Preload next lesson data when component mounts
   useEffect(() => {
@@ -138,14 +142,16 @@ export function LessonNavigation({
         setOptimisticCount(newCount);
         showGamificationAchievements(newCount);
 
-        // Sync to database in background
-        fetch("/api/progress/complete", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ lessonId, courseId, moduleId }),
-        }).catch((error) => {
+        // Sync to database and wait for it
+        try {
+          await fetch("/api/progress/complete", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ lessonId, courseId, moduleId }),
+          });
+        } catch (error) {
           console.error("Background sync failed:", error);
-        });
+        }
       }
 
       // Scroll to quiz section
@@ -153,48 +159,56 @@ export function LessonNavigation({
       return;
     }
 
-    // If already completed, just navigate instantly
+    // If already completed, show loading and navigate
     if (optimisticCompleted) {
+      setShowCompleted(true); // Show loading state
       if (nextLesson) {
         router.push(`/learning/${courseSlug}/${nextLesson.id}`);
       }
       return;
     }
 
-    // OPTIMISTIC UI: Update state immediately, navigate instantly
+    // STEP 1: Show "Completed!" state immediately for visual feedback
+    setShowCompleted(true);
     const newCount = optimisticCount + 1;
     setOptimisticCompleted(true);
     setOptimisticCount(newCount);
 
-    // Show achievements immediately
+    // Show achievements immediately (don't wait)
     showGamificationAchievements(newCount);
 
-    // Navigate immediately (don't wait for API)
-    if (nextLesson) {
-      startTransition(() => {
-        router.push(`/learning/${courseSlug}/${nextLesson.id}`);
+    // STEP 2: Wait for API to FULLY complete before navigating
+    try {
+      const response = await fetch("/api/progress/complete", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ lessonId, courseId, moduleId }),
       });
-    } else {
-      startTransition(() => {
-        router.push(`/courses/${courseSlug}`);
-      });
-    }
 
-    // Sync to database in background (fire and forget)
-    fetch("/api/progress/complete", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ lessonId, courseId, moduleId }),
-    }).then(async (response) => {
       if (response.ok) {
         const data = await response.json();
         if (data.data?.courseCompleted) {
           setShowCelebration(true);
+          setShowCompleted(false);
+          return; // Don't navigate, show celebration instead
         }
       }
-    }).catch((error) => {
-      console.error("Background sync failed:", error);
-    });
+    } catch (error) {
+      console.error("Failed to complete lesson:", error);
+    }
+
+    // STEP 3: Keep loading state and navigate
+    // Don't reset showCompleted - keep button disabled until navigation completes
+    if (nextLesson) {
+      // Use router.refresh() to invalidate Next.js cache before navigation
+      router.refresh();
+      // Small delay to allow refresh to propagate
+      await new Promise(resolve => setTimeout(resolve, 100));
+      router.push(`/learning/${courseSlug}/${nextLesson.id}`);
+    } else {
+      router.push(`/courses/${courseSlug}`);
+    }
+    // Note: showCompleted stays true until component unmounts on navigation
   };
 
   const handleCompleteCourse = async () => {
@@ -239,11 +253,20 @@ export function LessonNavigation({
       <>
         <Button
           onClick={handleNextClick}
-          disabled={isPending}
+          disabled={isPending || showCompleted}
           size="lg"
-          className="bg-burgundy-600 hover:bg-burgundy-700 text-white shadow-lg transition-all"
+          className={`shadow-lg transition-all ${
+            showCompleted
+              ? "bg-green-500 hover:bg-green-600"
+              : "bg-burgundy-600 hover:bg-burgundy-700"
+          } text-white`}
         >
-          {isPending ? (
+          {showCompleted ? (
+            <>
+              <Loader2 className="w-5 h-5 mr-2 animate-spin" />
+              Saving...
+            </>
+          ) : isPending ? (
             <>
               <Loader2 className="w-5 h-5 mr-2 animate-spin" />
               Loading...
@@ -331,10 +354,20 @@ export function LessonNavigation({
         ) : nextLesson ? (
           <Button
             onClick={handleNextClick}
-            disabled={isPending}
-            className="bg-burgundy-600 hover:bg-burgundy-700 text-white shadow-lg transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+            disabled={isPending || showCompleted}
+            className={`shadow-lg transition-all disabled:opacity-50 disabled:cursor-not-allowed ${
+              showCompleted
+                ? "bg-green-500 hover:bg-green-600"
+                : "bg-burgundy-600 hover:bg-burgundy-700"
+            } text-white`}
           >
-            {isPending ? (
+            {showCompleted ? (
+              <>
+                <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                <span className="hidden sm:inline">Saving...</span>
+                <span className="sm:hidden">Saving...</span>
+              </>
+            ) : isPending ? (
               <>
                 <Loader2 className="w-4 h-4 mr-2 animate-spin" />
                 Loading...

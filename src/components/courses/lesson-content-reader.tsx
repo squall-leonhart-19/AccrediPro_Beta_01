@@ -11,6 +11,7 @@ interface LessonContentReaderProps {
   isCompleted: boolean;
   estimatedReadTime?: number; // in minutes
   onMarkComplete?: () => void;
+  hideCompletionMessage?: boolean; // For Final Exam module - hide the "Great job" message
 }
 
 export function LessonContentReader({
@@ -19,6 +20,7 @@ export function LessonContentReader({
   isCompleted,
   estimatedReadTime,
   onMarkComplete,
+  hideCompletionMessage = false,
 }: LessonContentReaderProps) {
   const contentRef = useRef<HTMLDivElement>(null);
   const [readingProgress, setReadingProgress] = useState(0);
@@ -141,19 +143,36 @@ export function LessonContentReader({
       />
 
       {/* Completion message - Shows when 90%+ read (button removed - use bottom nav) */}
-      {readingProgress >= 90 && !isCompleted && (
-        <div className="mt-8 p-6 bg-gradient-to-r from-burgundy-50 to-gold-50 rounded-2xl border border-burgundy-200 animate-fade-in">
-          <div className="flex items-center gap-4">
-            <div className="w-14 h-14 rounded-full bg-gradient-to-br from-burgundy-500 to-burgundy-600 flex items-center justify-center flex-shrink-0">
-              <Sparkles className="w-7 h-7 text-white" />
+      {readingProgress >= 90 && !isCompleted && !hideCompletionMessage && (
+        <div className="mt-8 relative overflow-hidden rounded-2xl animate-fade-in">
+          {/* Background gradient */}
+          <div className="absolute inset-0 bg-gradient-to-r from-burgundy-600 via-burgundy-700 to-purple-700" />
+
+          {/* Decorative elements */}
+          <div className="absolute top-0 right-0 w-32 h-32 bg-gold-400/20 rounded-full blur-2xl" />
+          <div className="absolute bottom-0 left-0 w-24 h-24 bg-purple-400/20 rounded-full blur-2xl" />
+
+          <div className="relative p-6 flex items-center gap-4">
+            {/* Icon with glow */}
+            <div className="relative flex-shrink-0">
+              <div className="absolute inset-0 bg-gold-400 rounded-full blur-md opacity-50 animate-pulse" />
+              <div className="relative w-16 h-16 rounded-full bg-gradient-to-br from-gold-400 to-gold-600 flex items-center justify-center shadow-xl">
+                <Sparkles className="w-8 h-8 text-burgundy-800" />
+              </div>
             </div>
+
             <div className="flex-1">
-              <h3 className="text-lg font-semibold text-gray-900 mb-1">
+              <h3 className="text-xl font-bold text-white mb-1">
                 Great job finishing this lesson!
               </h3>
-              <p className="text-gray-600 text-sm">
-                Click "Complete & Next" below to save your progress and continue.
+              <p className="text-burgundy-100 text-sm">
+                Click <span className="font-semibold text-gold-300">"Complete & Next"</span> below to save your progress and continue.
               </p>
+            </div>
+
+            {/* XP indicator */}
+            <div className="hidden sm:flex items-center gap-2 bg-white/10 backdrop-blur-sm rounded-full px-4 py-2 flex-shrink-0">
+              <span className="text-gold-400 font-bold">+25 XP</span>
             </div>
           </div>
         </div>

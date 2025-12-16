@@ -1,0 +1,514 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lesson 1.8: Case Studies - Seeing the Whole Picture</title>
+    <style>
+        * { box-sizing: border-box; }
+        body { font-family: Georgia, 'Times New Roman', serif; line-height: 1.8; color: #2d2d2d; background: #f8f6f3; margin: 0; padding: 0; }
+        .lesson-container { max-width: 860px; margin: 0 auto; padding: 40px 30px; background: #ffffff; min-height: 100vh; box-shadow: 0 0 60px rgba(0,0,0,0.08); }
+        .brand-header { text-align: center; padding-bottom: 30px; margin-bottom: 35px; border-bottom: 1px solid #eee; }
+        .brand-logo { max-width: 180px; height: auto; }
+        .module-header { background: linear-gradient(135deg, #722F37 0%, #8B3A42 100%); padding: 35px 35px 30px; border-radius: 16px; margin-bottom: 30px; position: relative; overflow: hidden; }
+        .module-header::before { content: ''; position: absolute; top: 0; right: 0; width: 300px; height: 300px; background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%); transform: translate(100px, -100px); }
+        .module-header::after { content: ''; position: absolute; bottom: 0; left: 0; width: 100%; height: 4px; background: linear-gradient(90deg, #B8860B, #D4A84B, #B8860B); }
+        .module-label { margin: 0; font-size: 11px; color: rgba(255,255,255,0.75); text-transform: uppercase; letter-spacing: 2.5px; font-weight: 500; }
+        .lesson-title { margin: 10px 0 0 0; font-size: 28px; color: #ffffff; font-weight: 700; line-height: 1.3; }
+        .lesson-meta { display: flex; gap: 12px; margin-top: 20px; padding-top: 18px; border-top: 1px solid rgba(255,255,255,0.15); flex-wrap: wrap; }
+        .meta-item { display: flex; align-items: center; gap: 6px; font-size: 12px; color: rgba(255,255,255,0.85); background: rgba(255,255,255,0.1); padding: 5px 12px; border-radius: 4px; }
+        .toc-box { background: linear-gradient(135deg, #fafafa 0%, #f5f5f5 100%); border-radius: 14px; padding: 24px 28px; margin-bottom: 35px; border: 1px solid #e8e8e8; }
+        .toc-box .box-label { font-weight: 600; color: #722F37; margin: 0 0 18px 0; font-size: 12px; text-transform: uppercase; letter-spacing: 2px; padding-bottom: 12px; border-bottom: 1px solid #e0e0e0; }
+        .toc-list { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px 24px; }
+        .toc-list li { margin: 0; }
+        .toc-list a { display: flex; align-items: center; padding: 8px 12px; color: #555; text-decoration: none; font-size: 14px; border-radius: 6px; transition: all 0.2s ease; }
+        .toc-list a:hover { background: white; color: #722F37; box-shadow: 0 2px 8px rgba(0,0,0,0.06); }
+        .toc-list .section-num { display: inline-flex; align-items: center; justify-content: center; width: 26px; height: 26px; background: #722F37; color: white; font-weight: 600; font-size: 11px; border-radius: 6px; margin-right: 12px; flex-shrink: 0; }
+        @media (max-width: 600px) { .toc-list { grid-template-columns: 1fr; } }
+        .welcome-box { background: linear-gradient(135deg, #fdfcfa 0%, #f9f6f1 100%); padding: 30px 35px; border-radius: 14px; margin-bottom: 40px; border: 1px solid #e8e4dc; }
+        .welcome-box h3 { margin: 0 0 15px 0; font-size: 20px; color: #722F37; font-weight: 600; }
+        .welcome-box p { margin: 0; font-size: 17px; line-height: 1.8; color: #444; }
+        .objectives-box { background: #fffef5; border: 2px solid #B8860B; border-radius: 14px; padding: 30px 35px; margin-bottom: 40px; }
+        .objectives-box .box-label { font-weight: 600; color: #8B6914; margin: 0 0 18px 0; font-size: 13px; text-transform: uppercase; letter-spacing: 2px; }
+        .objectives-box ul { margin: 0; padding-left: 22px; }
+        .objectives-box li { margin-bottom: 14px; font-size: 16px; line-height: 1.7; }
+        h2 { font-size: 24px; color: #722F37; margin: 50px 0 20px 0; font-weight: 600; position: relative; padding-bottom: 12px; }
+        h2::after { content: ''; position: absolute; bottom: 0; left: 0; width: 60px; height: 3px; background: #B8860B; }
+        h3 { font-size: 20px; color: #722F37; margin: 35px 0 15px 0; font-weight: 600; }
+        p { font-size: 17px; margin-bottom: 20px; color: #333; }
+        .highlight { background: linear-gradient(180deg, transparent 60%, #FFF59D 60%); padding: 0 4px; font-weight: 500; }
+        .content-list { font-size: 17px; margin: 20px 0; padding-left: 24px; }
+        .content-list li { margin-bottom: 14px; line-height: 1.7; }
+        .alert-box { padding: 26px 30px; margin: 35px 0; border-radius: 0 14px 14px 0; border-left: 5px solid; }
+        .alert-box .alert-label { font-weight: 600; margin: 0 0 12px 0; font-size: 12px; text-transform: uppercase; letter-spacing: 2px; }
+        .alert-box p:last-child { margin: 0; font-size: 16px; line-height: 1.7; }
+        .alert-box.warning { background: #fff8e6; border-left-color: #ff9800; }
+        .alert-box.warning .alert-label { color: #e65100; }
+        .alert-box.success { background: #f0f8f0; border-left-color: #4caf50; }
+        .alert-box.success .alert-label { color: #2e7d32; }
+        .alert-box.reflect { background: #f8f0fa; border-left-color: #9c27b0; }
+        .alert-box.reflect .alert-label { color: #7b1fa2; }
+        .case-study { background: linear-gradient(135deg, #f8f9fb 0%, #f0f2f5 100%); border-radius: 16px; padding: 0; margin: 40px 0; overflow: hidden; box-shadow: 0 4px 20px rgba(0,0,0,0.06); }
+        .case-study-header { background: linear-gradient(135deg, #722F37 0%, #8B3A42 100%); padding: 20px 30px; display: flex; align-items: center; gap: 15px; }
+        .case-study-icon { width: 45px; height: 45px; background: rgba(255,255,255,0.15); border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 22px; }
+        .case-study-header .box-label { font-weight: 600; color: #ffffff; margin: 0; font-size: 16px; }
+        .case-study-header .subtitle { color: rgba(255,255,255,0.8); font-size: 13px; margin: 4px 0 0 0; }
+        .case-study-content { padding: 28px 30px; }
+        .case-study-content p { font-size: 16px; margin-bottom: 18px; }
+        .patient-profile { display: flex; align-items: center; gap: 18px; padding: 18px 22px; background: white; border-radius: 12px; margin-bottom: 20px; border: 1px solid #e5e5e5; }
+        .patient-avatar { width: 55px; height: 55px; background: linear-gradient(135deg, #B8860B, #D4A84B); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 24px; flex-shrink: 0; }
+        .patient-info h4 { margin: 0 0 5px 0; font-size: 17px; color: #1a1a1a; }
+        .patient-info p { margin: 0; font-size: 14px; color: #666; }
+        .case-section { background: white; border-radius: 12px; padding: 20px 24px; margin-top: 20px; border: 1px solid #e5e5e5; }
+        .case-section h4 { color: #722F37; font-size: 15px; margin: 0 0 12px 0; text-transform: uppercase; letter-spacing: 1px; }
+        .case-section ul { margin: 0; padding-left: 20px; }
+        .case-section li { font-size: 15px; color: #555; margin-bottom: 8px; }
+        .analysis-box { background: linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 100%); border-radius: 12px; padding: 20px 24px; margin-top: 20px; border: 1px solid #a5d6a7; }
+        .analysis-box h4 { color: #2e7d32; font-size: 15px; margin: 0 0 12px 0; }
+        .analysis-box p { margin: 0; font-size: 15px; color: #1b5e20; line-height: 1.7; }
+        .coaching-box { background: linear-gradient(135deg, #fff3e0 0%, #ffe0b2 100%); border-radius: 12px; padding: 20px 24px; margin-top: 20px; border: 1px solid #ffcc80; }
+        .coaching-box h4 { color: #e65100; font-size: 15px; margin: 0 0 12px 0; }
+        .coaching-box ul { margin: 0; padding-left: 20px; }
+        .coaching-box li { font-size: 15px; color: #bf360c; margin-bottom: 8px; }
+        .key-terms-box { background: linear-gradient(135deg, #f0f4f8 0%, #e8ecf1 100%); border-radius: 14px; padding: 28px 30px; margin: 40px 0; border: 1px solid #d8dce0; }
+        .key-terms-box .box-label { font-weight: 600; color: #722F37; margin: 0 0 18px 0; font-size: 13px; text-transform: uppercase; letter-spacing: 2px; }
+        .terms-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 16px; }
+        .term-item { background: white; padding: 16px 18px; border-radius: 10px; border-left: 4px solid #B8860B; }
+        .term-item .term { font-weight: 700; color: #722F37; font-size: 15px; margin: 0 0 6px 0; }
+        .term-item .definition { font-size: 14px; color: #555; margin: 0; line-height: 1.6; }
+        .check-understanding { background: linear-gradient(135deg, #fdfbf7 0%, #f9f5ed 100%); border: 2px solid #B8860B; border-radius: 16px; padding: 32px; margin: 45px 0; }
+        .check-understanding .box-label { font-weight: 600; color: #8B6914; margin: 0 0 8px 0; font-size: 13px; text-transform: uppercase; letter-spacing: 2px; }
+        .check-understanding .box-subtitle { font-size: 15px; color: #666; margin: 0 0 24px 0; }
+        .question-item { background: white; border-radius: 12px; padding: 22px 24px; margin-bottom: 16px; border: 1px solid #e8e4dc; position: relative; }
+        .question-number { position: absolute; top: -12px; left: 20px; background: #722F37; color: white; width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 600; font-size: 13px; }
+        .question-text { font-size: 16px; color: #333; margin: 0 0 16px 0; line-height: 1.6; padding-top: 4px; }
+        .reveal-btn { background: #722F37; color: white; border: none; padding: 10px 20px; border-radius: 8px; font-size: 14px; cursor: pointer; font-family: inherit; }
+        .reveal-btn:hover { background: #5a252c; }
+        .answer-text { display: none; font-size: 14px; color: #2e7d32; margin: 14px 0 0 0; padding: 14px; background: #f0f8f0; border-radius: 8px; line-height: 1.6; }
+        .answer-text.show { display: block; }
+        .takeaways-box { background: linear-gradient(135deg, #722F37 0%, #8B3A42 100%); padding: 35px; margin-top: 50px; border-radius: 16px; position: relative; overflow: hidden; }
+        .takeaways-box::before { content: ''; position: absolute; top: 0; right: 0; width: 200px; height: 200px; background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%); }
+        .takeaways-box .box-label { font-weight: 600; color: #FFF59D; margin: 0 0 20px 0; font-size: 13px; text-transform: uppercase; letter-spacing: 2px; }
+        .takeaways-box ul { margin: 0; padding-left: 22px; }
+        .takeaways-box li { color: #ffffff; margin-bottom: 14px; font-size: 16px; line-height: 1.7; }
+        .references-box { background: #f8f6f3; border-radius: 14px; padding: 28px 30px; margin-top: 40px; }
+        .references-box .box-label { font-weight: 600; color: #722F37; margin: 0 0 15px 0; font-size: 13px; text-transform: uppercase; letter-spacing: 2px; }
+        .references-box ol { margin: 0; padding-left: 22px; }
+        .references-box li { font-size: 14px; color: #666; margin-bottom: 10px; line-height: 1.6; }
+        .lesson-footer { margin-top: 50px; padding-top: 30px; border-top: 1px solid #eee; text-align: center; }
+        .footer-brand { font-weight: 600; color: #722F37; font-size: 14px; margin-bottom: 5px; }
+        .footer-copyright { font-size: 13px; color: #888; }
+        .module-completion { background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%); border: 2px solid #22c55e; border-radius: 16px; padding: 35px; margin: 45px 0; text-align: center; }
+        .module-completion h3 { color: #166534; margin: 0 0 15px 0; font-size: 22px; }
+        .module-completion p { color: #166534; margin: 0; font-size: 16px; }
+        @media (max-width: 600px) { .lesson-container { padding: 25px 18px; } .module-header { padding: 28px 22px 24px; } .lesson-title { font-size: 24px; } .welcome-box, .objectives-box { padding: 24px; } h2 { font-size: 21px; } }
+    </style>
+</head>
+<body>
+    <div class="lesson-container">
+        <!-- Brand Header -->
+        <header class="brand-header">
+            <img src="../assets/accredipro-logo.png" alt="AccrediPro" class="brand-logo">
+        </header>
+
+        <!-- Module Header -->
+        <div class="module-header">
+            <p class="module-label">Module 1: Functional Medicine Foundations</p>
+            <h1 class="lesson-title">Case Studies: Seeing the Whole Picture</h1>
+            <div class="lesson-meta">
+                <span class="meta-item">
+                    <svg viewBox="0 0 24 24" width="13" height="13" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>
+                    Lesson 1.8
+                </span>
+                <span class="meta-item">
+                    <svg viewBox="0 0 24 24" width="13" height="13" fill="currentColor"><path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm.5-13H11v6l5.25 3.15.75-1.23-4.5-2.67z"/></svg>
+                    22 min read
+                </span>
+            </div>
+        </div>
+
+        <!-- Table of Contents -->
+        <nav class="toc-box">
+            <p class="box-label">In This Lesson</p>
+            <ul class="toc-list">
+                <li><a href="#case1"><span class="section-num">01</span> Case 1: Sarah's Autoimmune Journey</a></li>
+                <li><a href="#case2"><span class="section-num">02</span> Case 2: Michael's Metabolic Puzzle</a></li>
+                <li><a href="#case3"><span class="section-num">03</span> Case 3: Elena's Invisible Illness</a></li>
+                <li><a href="#patterns"><span class="section-num">04</span> Common Patterns</a></li>
+                <li><a href="#coaching"><span class="section-num">05</span> The Coaching Difference</a></li>
+                <li><a href="#synthesis"><span class="section-num">06</span> Module Synthesis</a></li>
+            </ul>
+        </nav>
+
+        <!-- Welcome Box -->
+        <div class="welcome-box">
+            <h3>Welcome to Lesson 1.8</h3>
+            <p>This final lesson of Module 1 brings together everything you've learned through three detailed case studies. You'll see how the Timeline, Matrix, ATM framework, and patient story work together to create a complete picture of health—and how health coaches support the healing journey.</p>
+        </div>
+
+        <!-- Learning Objectives -->
+        <div class="objectives-box">
+            <p class="box-label">Learning Objectives</p>
+            <ul>
+                <li>Apply functional medicine frameworks to real patient scenarios</li>
+                <li>Identify antecedents, triggers, and mediators in case presentations</li>
+                <li>Recognize how multiple systems interact to create complex conditions</li>
+                <li>Understand the health coach's role within each case scenario</li>
+                <li>Synthesize Module 1 concepts into an integrated understanding</li>
+            </ul>
+        </div>
+
+        <!-- Introduction -->
+        <h2 id="intro">Putting It All Together</h2>
+
+        <p>Throughout this module, you've learned the foundational frameworks of functional medicine: systems thinking, root cause investigation, the Timeline, the Matrix, and the power of the patient story. Now let's see how these tools work together in practice.</p>
+
+        <p><span class="highlight">Each case study demonstrates how functional medicine uncovers connections that conventional approaches often miss—and how health coaching helps patients make the changes that create lasting healing.</span></p>
+
+        <!-- Case Study 1 -->
+        <h2 id="case1">Case Study 1: Sarah's Autoimmune Journey</h2>
+
+        <div class="case-study">
+            <div class="case-study-header">
+                <div class="case-study-icon">📋</div>
+                <div>
+                    <p class="box-label">Sarah, 34 years old</p>
+                    <p class="subtitle">Rheumatoid Arthritis & Chronic Fatigue</p>
+                </div>
+            </div>
+            <div class="case-study-content">
+                <div class="patient-profile">
+                    <div class="patient-avatar">👩</div>
+                    <div class="patient-info">
+                        <h4>Sarah, 34 years old</h4>
+                        <p>Marketing manager • Single • Lives in urban apartment</p>
+                    </div>
+                </div>
+
+                <p><strong>Presenting Concerns:</strong> Sarah was diagnosed with rheumatoid arthritis two years ago after developing joint pain and swelling in her hands and wrists. Despite taking methotrexate and a biologic medication, she continues to have flares and persistent fatigue that affects her work and social life.</p>
+
+                <div class="case-section">
+                    <h4>Timeline Discoveries</h4>
+                    <ul>
+                        <li><strong>Age 8:</strong> Multiple rounds of antibiotics for chronic ear infections</li>
+                        <li><strong>Age 16:</strong> Began birth control pills, used for 15 years</li>
+                        <li><strong>Age 28:</strong> Severe food poisoning while traveling in Mexico</li>
+                        <li><strong>Age 30:</strong> High-stress job promotion, began working 60+ hours/week</li>
+                        <li><strong>Age 31:</strong> Started experiencing joint stiffness, initially dismissed</li>
+                        <li><strong>Age 32:</strong> RA diagnosis after significant joint swelling</li>
+                    </ul>
+                </div>
+
+                <div class="case-section">
+                    <h4>Matrix Assessment</h4>
+                    <ul>
+                        <li><strong>Assimilation:</strong> Bloating, irregular bowel movements, suspected intestinal permeability</li>
+                        <li><strong>Defense & Repair:</strong> Autoimmune inflammation, frequent minor infections</li>
+                        <li><strong>Energy:</strong> Profound fatigue, poor exercise tolerance</li>
+                        <li><strong>Biotransformation:</strong> Chemical sensitivities developed recently</li>
+                        <li><strong>Communication:</strong> Cortisol dysregulation from chronic stress</li>
+                    </ul>
+                </div>
+
+                <div class="analysis-box">
+                    <h4>Functional Medicine Analysis</h4>
+                    <p><strong>Antecedents:</strong> Early antibiotic use disrupting microbiome development, genetic predisposition to autoimmunity. <strong>Triggers:</strong> Food poisoning potentially initiating intestinal permeability, chronic work stress depleting immune regulation. <strong>Mediators:</strong> Ongoing gut dysfunction, stress-cortisol imbalance, inflammatory diet (skips meals, relies on convenience foods). The pattern suggests gut-immune connection with stress amplification.</p>
+                </div>
+
+                <div class="coaching-box">
+                    <h4>Health Coach's Role</h4>
+                    <ul>
+                        <li>Support implementation of elimination diet recommended by practitioner</li>
+                        <li>Help develop stress management practices despite demanding job</li>
+                        <li>Explore barriers to meal preparation and create realistic solutions</li>
+                        <li>Build consistent sleep routine to support immune regulation</li>
+                        <li>Address mindset around self-care as "selfish" vs. necessary for health</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Case Study 2 -->
+        <h2 id="case2">Case Study 2: Michael's Metabolic Puzzle</h2>
+
+        <div class="case-study">
+            <div class="case-study-header">
+                <div class="case-study-icon">📋</div>
+                <div>
+                    <p class="box-label">Michael, 52 years old</p>
+                    <p class="subtitle">Type 2 Diabetes, Hypertension & Depression</p>
+                </div>
+            </div>
+            <div class="case-study-content">
+                <div class="patient-profile">
+                    <div class="patient-avatar">👨</div>
+                    <div class="patient-info">
+                        <h4>Michael, 52 years old</h4>
+                        <p>Accountant • Married, two children • Suburban home</p>
+                    </div>
+                </div>
+
+                <p><strong>Presenting Concerns:</strong> Michael has been on medications for diabetes and hypertension for five years, but his numbers continue to worsen. He was recently prescribed an antidepressant after expressing feelings of hopelessness. He's gained 40 pounds since his 40s and feels like he's "falling apart."</p>
+
+                <div class="case-section">
+                    <h4>Timeline Discoveries</h4>
+                    <ul>
+                        <li><strong>Childhood:</strong> Father died of heart attack at 55, mother has diabetes</li>
+                        <li><strong>Age 35:</strong> Job became sedentary (transitioned from field work to desk)</li>
+                        <li><strong>Age 40:</strong> Sleep apnea diagnosed but CPAP unused (uncomfortable)</li>
+                        <li><strong>Age 42:</strong> First abnormal blood sugar readings</li>
+                        <li><strong>Age 47:</strong> Started blood pressure medication</li>
+                        <li><strong>Age 50:</strong> Added second diabetes medication</li>
+                        <li><strong>Age 52:</strong> Depression noted, sleep worse, weight at highest point</li>
+                    </ul>
+                </div>
+
+                <div class="case-section">
+                    <h4>Matrix Assessment</h4>
+                    <ul>
+                        <li><strong>Energy:</strong> Mitochondrial stress from high blood sugar, fatigue</li>
+                        <li><strong>Transport:</strong> Cardiovascular strain, elevated blood pressure</li>
+                        <li><strong>Communication:</strong> Insulin resistance, leptin resistance, low testosterone</li>
+                        <li><strong>Defense & Repair:</strong> Chronic low-grade inflammation (elevated CRP)</li>
+                        <li><strong>Structural Integrity:</strong> Visceral fat accumulation</li>
+                    </ul>
+                </div>
+
+                <div class="analysis-box">
+                    <h4>Functional Medicine Analysis</h4>
+                    <p><strong>Antecedents:</strong> Strong family history of cardiometabolic disease, genetic predisposition. <strong>Triggers:</strong> Shift to sedentary work, untreated sleep apnea disrupting metabolism. <strong>Mediators:</strong> Poor sleep → cortisol disruption → insulin resistance → weight gain → worsening sleep (vicious cycle). Depression likely secondary to metabolic dysfunction and sleep deprivation. Root pattern: sleep-metabolism-inflammation cycle.</p>
+                </div>
+
+                <div class="coaching-box">
+                    <h4>Health Coach's Role</h4>
+                    <ul>
+                        <li>Explore barriers to CPAP use and problem-solve solutions</li>
+                        <li>Develop sustainable movement plan despite sedentary job</li>
+                        <li>Address emotional eating patterns and relationship with food</li>
+                        <li>Build family support system for lifestyle changes</li>
+                        <li>Challenge hopelessness narrative with small, achievable wins</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Case Study 3 -->
+        <h2 id="case3">Case Study 3: Elena's Invisible Illness</h2>
+
+        <div class="case-study">
+            <div class="case-study-header">
+                <div class="case-study-icon">📋</div>
+                <div>
+                    <p class="box-label">Elena, 28 years old</p>
+                    <p class="subtitle">Chronic Fatigue, Brain Fog & Digestive Issues</p>
+                </div>
+            </div>
+            <div class="case-study-content">
+                <div class="patient-profile">
+                    <div class="patient-avatar">👩</div>
+                    <div class="patient-info">
+                        <h4>Elena, 28 years old</h4>
+                        <p>Graduate student • Living with partner • Recently moved cities</p>
+                    </div>
+                </div>
+
+                <p><strong>Presenting Concerns:</strong> Elena has been struggling with debilitating fatigue, difficulty concentrating, bloating, and intermittent anxiety for three years. Multiple doctors have found "nothing wrong"—her labs are normal, and she's been told it's stress. She's beginning to doubt herself.</p>
+
+                <div class="case-section">
+                    <h4>Timeline Discoveries</h4>
+                    <ul>
+                        <li><strong>Childhood:</strong> Sensitive child, frequent stomach aches, anxious temperament</li>
+                        <li><strong>Age 18:</strong> Went vegetarian, initially felt great</li>
+                        <li><strong>Age 23:</strong> Intense period of dissertation stress, began PhD program</li>
+                        <li><strong>Age 24:</strong> Mononucleosis infection, "never felt the same"</li>
+                        <li><strong>Age 25:</strong> Symptoms began: fatigue, brain fog, bloating, anxiety</li>
+                        <li><strong>Age 26:</strong> Moved to new city, living in older apartment building</li>
+                        <li><strong>Age 28:</strong> Symptoms at worst point, considering leaving program</li>
+                    </ul>
+                </div>
+
+                <div class="case-section">
+                    <h4>Matrix Assessment</h4>
+                    <ul>
+                        <li><strong>Assimilation:</strong> IBS symptoms, suspected SIBO, possible food sensitivities</li>
+                        <li><strong>Energy:</strong> Post-viral mitochondrial dysfunction, profound fatigue</li>
+                        <li><strong>Defense & Repair:</strong> Possible reactivated viral infection, immune dysregulation</li>
+                        <li><strong>Communication:</strong> Anxiety, brain fog, possible thyroid suboptimal function</li>
+                        <li><strong>Biotransformation:</strong> Possible mold exposure in older apartment</li>
+                    </ul>
+                </div>
+
+                <div class="analysis-box">
+                    <h4>Functional Medicine Analysis</h4>
+                    <p><strong>Antecedents:</strong> Sensitive constitution, possible genetic variants affecting detoxification and methylation. <strong>Triggers:</strong> Epstein-Barr virus infection (mononucleosis), possible mold exposure from apartment. <strong>Mediators:</strong> Vegetarian diet possibly low in B12 and iron, chronic academic stress, disrupted sleep during dissertation, gut dysbiosis. Pattern suggests post-viral syndrome with environmental and nutritional contributors.</p>
+                </div>
+
+                <div class="coaching-box">
+                    <h4>Health Coach's Role</h4>
+                    <ul>
+                        <li>Validate her experience—her symptoms are real, not "just stress"</li>
+                        <li>Support implementation of anti-inflammatory, nutrient-dense diet</li>
+                        <li>Help establish strict sleep schedule despite academic demands</li>
+                        <li>Develop pacing strategies to avoid boom-bust energy cycles</li>
+                        <li>Explore housing options if mold testing confirms exposure</li>
+                        <li>Address self-doubt and identity concerns around illness</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Common Patterns -->
+        <h2 id="patterns">Common Patterns Across Cases</h2>
+
+        <p>Looking at these three cases, several patterns emerge that are common in functional medicine practice:</p>
+
+        <ul class="content-list">
+            <li><strong>Gut-system connections:</strong> All three cases involve digestive issues that connect to symptoms throughout the body</li>
+            <li><strong>Stress as amplifier:</strong> Chronic stress appears in every case as a mediator that worsens underlying imbalances</li>
+            <li><strong>Sleep disruption:</strong> Poor sleep appears in all cases, both as a cause and consequence of dysfunction</li>
+            <li><strong>Multiple triggers:</strong> Rarely is there one single cause; multiple factors combine to create illness</li>
+            <li><strong>Lifestyle as medicine:</strong> In each case, lifestyle changes are central to the treatment plan</li>
+        </ul>
+
+        <div class="alert-box warning">
+            <p class="alert-label">The Conventional Difference</p>
+            <p>In conventional medicine, Sarah would receive RA medications, Michael would get more prescriptions, and Elena might be referred to psychiatry. Functional medicine doesn't reject these approaches—it asks "what else?" and "why?" to address root causes alongside symptom management.</p>
+        </div>
+
+        <!-- The Coaching Difference -->
+        <h2 id="coaching">The Coaching Difference</h2>
+
+        <p>In each case, the health coach brings unique value to the healing team:</p>
+
+        <ul class="content-list">
+            <li><strong>Time and presence:</strong> Coaches have more time to explore the nuances of daily life, habits, and barriers</li>
+            <li><strong>Implementation support:</strong> Knowing what to do is different from doing it—coaches bridge that gap</li>
+            <li><strong>Accountability:</strong> Regular check-ins help patients stay on track with challenging lifestyle changes</li>
+            <li><strong>Emotional support:</strong> Chronic illness is emotionally taxing; coaches provide consistent support</li>
+            <li><strong>Behavior change expertise:</strong> Coaches understand the psychology of change and how to facilitate it</li>
+        </ul>
+
+        <div class="alert-box success">
+            <p class="alert-label">The Coach's Impact</p>
+            <p>Research shows that health coaching increases adherence to treatment plans, improves patient satisfaction, and enhances clinical outcomes. The coach-patient relationship provides the ongoing support that makes complex lifestyle changes sustainable.</p>
+        </div>
+
+        <!-- Module Synthesis -->
+        <h2 id="synthesis">Module 1 Synthesis</h2>
+
+        <p>As you complete Module 1, you now have a foundation in functional medicine thinking:</p>
+
+        <ul class="content-list">
+            <li><strong>Systems thinking:</strong> The body is an interconnected web, not isolated parts</li>
+            <li><strong>Root cause focus:</strong> We ask "why" rather than just "what"</li>
+            <li><strong>The Timeline:</strong> History reveals antecedents, triggers, and mediators</li>
+            <li><strong>The Matrix:</strong> Seven nodes organize physiological function with lifestyle at the center</li>
+            <li><strong>The patient story:</strong> Narrative is clinically essential, and listening is therapeutic</li>
+            <li><strong>Integration:</strong> Functional and conventional medicine can work together</li>
+        </ul>
+
+        <p><span class="highlight">As a health coach, you don't diagnose or treat—but you understand the framework that guides treatment, and you're essential to helping patients implement the changes that create healing.</span></p>
+
+        <!-- Key Terms -->
+        <div class="key-terms-box">
+            <p class="box-label">Key Terms Review</p>
+            <div class="terms-grid">
+                <div class="term-item">
+                    <p class="term">Antecedents</p>
+                    <p class="definition">Predisposing factors from genetics, early life, and history that set the stage for illness.</p>
+                </div>
+                <div class="term-item">
+                    <p class="term">Triggers</p>
+                    <p class="definition">Events or exposures that initiate the onset of symptoms or disease.</p>
+                </div>
+                <div class="term-item">
+                    <p class="term">Mediators</p>
+                    <p class="definition">Ongoing factors that perpetuate or worsen symptoms once illness has begun.</p>
+                </div>
+                <div class="term-item">
+                    <p class="term">Systems Biology</p>
+                    <p class="definition">Understanding the body as an interconnected web where all systems influence each other.</p>
+                </div>
+                <div class="term-item">
+                    <p class="term">Root Cause</p>
+                    <p class="definition">The underlying dysfunction creating symptoms, rather than the symptoms themselves.</p>
+                </div>
+                <div class="term-item">
+                    <p class="term">Therapeutic Partnership</p>
+                    <p class="definition">Collaborative relationship between patient and provider where both actively participate in healing.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Check Your Understanding -->
+        <div class="check-understanding">
+            <p class="box-label">Check Your Understanding</p>
+            <p class="box-subtitle">Reflect on what you've learned across Module 1.</p>
+
+            <div class="question-item">
+                <div class="question-number">1</div>
+                <p class="question-text">In Sarah's case, what might explain the connection between her gut symptoms and her autoimmune condition?</p>
+                <button class="reveal-btn" onclick="toggleAnswer(this)">Reveal Answer</button>
+                <p class="answer-text">The gut-immune connection is well established. Early antibiotic use disrupted Sarah's microbiome development (antecedent). Food poisoning may have triggered intestinal permeability ("leaky gut"), allowing food particles and bacteria to cross into the bloodstream and trigger immune activation. Ongoing gut dysfunction and inflammatory diet (mediators) perpetuate immune dysregulation. The gut is a major site of immune system development and regulation—when gut function is compromised, autoimmune conditions often result.</p>
+            </div>
+
+            <div class="question-item">
+                <div class="question-number">2</div>
+                <p class="question-text">Why might addressing Michael's sleep apnea be more important than adding another diabetes medication?</p>
+                <button class="reveal-btn" onclick="toggleAnswer(this)">Reveal Answer</button>
+                <p class="answer-text">Untreated sleep apnea disrupts the metabolic system in multiple ways: it raises cortisol (increasing blood sugar), disrupts appetite hormones (causing weight gain), impairs insulin sensitivity, raises blood pressure, and contributes to depression through chronic sleep deprivation. By addressing the root cause (sleep apnea), multiple downstream effects can improve. Adding another diabetes medication treats symptoms but doesn't address why his metabolism is dysregulated. This is the difference between treating symptoms and treating causes.</p>
+            </div>
+
+            <div class="question-item">
+                <div class="question-number">3</div>
+                <p class="question-text">How would a health coach's approach to Elena differ from simply telling her to "reduce stress"?</p>
+                <button class="reveal-btn" onclick="toggleAnswer(this)">Reveal Answer</button>
+                <p class="answer-text">A health coach would: (1) First validate that her symptoms are real, addressing her self-doubt; (2) Explore what "stress" means specifically for her—academic pressure, relationship dynamics, financial concerns; (3) Identify what she's already tried and what hasn't worked; (4) Help her find personalized stress management approaches that fit her life; (5) Develop pacing strategies for managing limited energy; (6) Create small, achievable goals rather than overwhelming changes; (7) Provide ongoing support and accountability. "Reduce stress" is advice; coaching is a process of exploration, partnership, and supported change.</p>
+            </div>
+        </div>
+
+        <!-- Key Takeaways -->
+        <div class="takeaways-box">
+            <p class="box-label">Key Takeaways</p>
+            <ul>
+                <li>Real cases demonstrate how Timeline, Matrix, and ATM frameworks reveal patterns invisible to conventional approaches</li>
+                <li>Gut health, stress, and sleep appear as common threads across many chronic conditions</li>
+                <li>Multiple factors combine to create illness—rarely is there a single cause</li>
+                <li>Functional medicine works alongside conventional care, not against it</li>
+                <li>Health coaches are essential for translating clinical recommendations into sustainable lifestyle change</li>
+            </ul>
+        </div>
+
+        <!-- Module Completion -->
+        <div class="module-completion">
+            <h3>Module 1 Complete!</h3>
+            <p>Congratulations on completing the Functional Medicine Foundations module. You now have the conceptual framework that will guide your work as a functional medicine health coach. In Module 2, you'll build on this foundation with essential coaching skills.</p>
+        </div>
+
+        <!-- References -->
+        <div class="references-box">
+            <p class="box-label">References & Further Reading</p>
+            <ol>
+                <li>Institute for Functional Medicine. (2023). Applying the Functional Medicine Model. IFM Training Materials.</li>
+                <li>Bland, J. S. (2014). The Disease Delusion. Harper Wave.</li>
+                <li>Hyman, M. (2020). The Pegan Diet. Little, Brown Spark.</li>
+                <li>Kresser, C. (2017). Unconventional Medicine. Lioncrest Publishing.</li>
+            </ol>
+        </div>
+
+        <!-- Footer -->
+        <footer class="lesson-footer">
+            <p class="footer-brand">Functional Medicine Certified Health Coach Program</p>
+            <p class="footer-copyright">© 2024 AccrediPro. All rights reserved.</p>
+        </footer>
+    </div>
+
+    <script>
+        function toggleAnswer(button) {
+            const answerText = button.nextElementSibling;
+            answerText.classList.toggle('show');
+            button.textContent = answerText.classList.contains('show') ? 'Hide Answer' : 'Reveal Answer';
+        }
+    </script>
+</body>
+</html>

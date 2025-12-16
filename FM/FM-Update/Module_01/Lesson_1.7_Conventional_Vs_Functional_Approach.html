@@ -1,0 +1,464 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lesson 1.7: Conventional vs. Functional Approach</title>
+    <style>
+        * { box-sizing: border-box; }
+        body { font-family: Georgia, 'Times New Roman', serif; line-height: 1.8; color: #2d2d2d; background: #f8f6f3; margin: 0; padding: 0; }
+        .lesson-container { max-width: 860px; margin: 0 auto; padding: 40px 30px; background: #ffffff; min-height: 100vh; box-shadow: 0 0 60px rgba(0,0,0,0.08); }
+        .brand-header { text-align: center; padding-bottom: 30px; margin-bottom: 35px; border-bottom: 1px solid #eee; }
+        .brand-logo { max-width: 180px; height: auto; }
+        .module-header { background: linear-gradient(135deg, #722F37 0%, #8B3A42 100%); padding: 35px 35px 30px; border-radius: 16px; margin-bottom: 30px; position: relative; overflow: hidden; }
+        .module-header::before { content: ''; position: absolute; top: 0; right: 0; width: 300px; height: 300px; background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%); transform: translate(100px, -100px); }
+        .module-header::after { content: ''; position: absolute; bottom: 0; left: 0; width: 100%; height: 4px; background: linear-gradient(90deg, #B8860B, #D4A84B, #B8860B); }
+        .module-label { margin: 0; font-size: 11px; color: rgba(255,255,255,0.75); text-transform: uppercase; letter-spacing: 2.5px; font-weight: 500; }
+        .lesson-title { margin: 10px 0 0 0; font-size: 28px; color: #ffffff; font-weight: 700; line-height: 1.3; }
+        .lesson-meta { display: flex; gap: 12px; margin-top: 20px; padding-top: 18px; border-top: 1px solid rgba(255,255,255,0.15); flex-wrap: wrap; }
+        .meta-item { display: flex; align-items: center; gap: 6px; font-size: 12px; color: rgba(255,255,255,0.85); background: rgba(255,255,255,0.1); padding: 5px 12px; border-radius: 4px; }
+        .toc-box { background: linear-gradient(135deg, #fafafa 0%, #f5f5f5 100%); border-radius: 14px; padding: 24px 28px; margin-bottom: 35px; border: 1px solid #e8e8e8; }
+        .toc-box .box-label { font-weight: 600; color: #722F37; margin: 0 0 18px 0; font-size: 12px; text-transform: uppercase; letter-spacing: 2px; padding-bottom: 12px; border-bottom: 1px solid #e0e0e0; }
+        .toc-list { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px 24px; }
+        .toc-list li { margin: 0; }
+        .toc-list a { display: flex; align-items: center; padding: 8px 12px; color: #555; text-decoration: none; font-size: 14px; border-radius: 6px; transition: all 0.2s ease; }
+        .toc-list a:hover { background: white; color: #722F37; box-shadow: 0 2px 8px rgba(0,0,0,0.06); }
+        .toc-list .section-num { display: inline-flex; align-items: center; justify-content: center; width: 26px; height: 26px; background: #722F37; color: white; font-weight: 600; font-size: 11px; border-radius: 6px; margin-right: 12px; flex-shrink: 0; }
+        @media (max-width: 600px) { .toc-list { grid-template-columns: 1fr; } }
+        .welcome-box { background: linear-gradient(135deg, #fdfcfa 0%, #f9f6f1 100%); padding: 30px 35px; border-radius: 14px; margin-bottom: 40px; border: 1px solid #e8e4dc; }
+        .welcome-box h3 { margin: 0 0 15px 0; font-size: 20px; color: #722F37; font-weight: 600; }
+        .welcome-box p { margin: 0; font-size: 17px; line-height: 1.8; color: #444; }
+        .objectives-box { background: #fffef5; border: 2px solid #B8860B; border-radius: 14px; padding: 30px 35px; margin-bottom: 40px; }
+        .objectives-box .box-label { font-weight: 600; color: #8B6914; margin: 0 0 18px 0; font-size: 13px; text-transform: uppercase; letter-spacing: 2px; }
+        .objectives-box ul { margin: 0; padding-left: 22px; }
+        .objectives-box li { margin-bottom: 14px; font-size: 16px; line-height: 1.7; }
+        .case-study { background: linear-gradient(135deg, #f8f9fb 0%, #f0f2f5 100%); border-radius: 16px; padding: 0; margin-bottom: 40px; overflow: hidden; box-shadow: 0 4px 20px rgba(0,0,0,0.06); }
+        .case-study-header { background: linear-gradient(135deg, #722F37 0%, #8B3A42 100%); padding: 20px 30px; display: flex; align-items: center; gap: 15px; }
+        .case-study-icon { width: 45px; height: 45px; background: rgba(255,255,255,0.15); border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 22px; }
+        .case-study-header .box-label { font-weight: 600; color: #ffffff; margin: 0; font-size: 16px; }
+        .case-study-header .subtitle { color: rgba(255,255,255,0.8); font-size: 13px; margin: 4px 0 0 0; }
+        .case-study-content { padding: 28px 30px; }
+        .case-study-content p { font-size: 16px; margin-bottom: 18px; }
+        .patient-profile { display: flex; align-items: center; gap: 18px; padding: 18px 22px; background: white; border-radius: 12px; margin-bottom: 20px; border: 1px solid #e5e5e5; }
+        .patient-avatar { width: 55px; height: 55px; background: linear-gradient(135deg, #B8860B, #D4A84B); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 24px; flex-shrink: 0; }
+        .patient-info h4 { margin: 0 0 5px 0; font-size: 17px; color: #1a1a1a; }
+        .patient-info p { margin: 0; font-size: 14px; color: #666; }
+        h2 { font-size: 24px; color: #722F37; margin: 50px 0 20px 0; font-weight: 600; position: relative; padding-bottom: 12px; }
+        h2::after { content: ''; position: absolute; bottom: 0; left: 0; width: 60px; height: 3px; background: #B8860B; }
+        p { font-size: 17px; margin-bottom: 20px; color: #333; }
+        .highlight { background: linear-gradient(180deg, transparent 60%, #FFF59D 60%); padding: 0 4px; font-weight: 500; }
+        .content-list { font-size: 17px; margin: 20px 0; padding-left: 24px; }
+        .content-list li { margin-bottom: 14px; line-height: 1.7; }
+        .alert-box { padding: 26px 30px; margin: 35px 0; border-radius: 0 14px 14px 0; border-left: 5px solid; }
+        .alert-box .alert-label { font-weight: 600; margin: 0 0 12px 0; font-size: 12px; text-transform: uppercase; letter-spacing: 2px; }
+        .alert-box p:last-child { margin: 0; font-size: 16px; line-height: 1.7; }
+        .alert-box.warning { background: #fff8e6; border-left-color: #ff9800; }
+        .alert-box.warning .alert-label { color: #e65100; }
+        .alert-box.success { background: #f0f8f0; border-left-color: #4caf50; }
+        .alert-box.success .alert-label { color: #2e7d32; }
+        .alert-box.reflect { background: #f8f0fa; border-left-color: #9c27b0; }
+        .alert-box.reflect .alert-label { color: #7b1fa2; }
+        .comparison-table { width: 100%; border-collapse: collapse; margin: 30px 0; font-size: 15px; }
+        .comparison-table th { background: #722F37; color: white; padding: 15px; text-align: left; font-weight: 600; }
+        .comparison-table th:first-child { border-radius: 10px 0 0 0; }
+        .comparison-table th:last-child { border-radius: 0 10px 0 0; }
+        .comparison-table td { padding: 15px; border-bottom: 1px solid #e5e5e5; vertical-align: top; }
+        .comparison-table tr:last-child td:first-child { border-radius: 0 0 0 10px; }
+        .comparison-table tr:last-child td:last-child { border-radius: 0 0 10px 0; }
+        .comparison-table tr:nth-child(even) { background: #f8f9fa; }
+        .comparison-table .aspect { font-weight: 600; color: #722F37; }
+        .visual-comparison { display: grid; grid-template-columns: 1fr 1fr; gap: 25px; margin: 30px 0; }
+        .approach-card { background: #f8f9fa; border-radius: 14px; padding: 25px; position: relative; overflow: hidden; }
+        .approach-card.conventional { border-top: 4px solid #666; }
+        .approach-card.functional { border-top: 4px solid #722F37; }
+        .approach-card h4 { margin: 0 0 20px 0; font-size: 16px; color: #333; display: flex; align-items: center; gap: 10px; }
+        .approach-card .icon { width: 36px; height: 36px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 18px; }
+        .approach-card.conventional .icon { background: #e8e8e8; }
+        .approach-card.functional .icon { background: #722F37; color: white; }
+        .approach-card ul { margin: 0; padding-left: 18px; }
+        .approach-card li { font-size: 14px; color: #555; margin-bottom: 10px; }
+        @media (max-width: 700px) { .visual-comparison { grid-template-columns: 1fr; } }
+        .integration-box { background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%); border-radius: 14px; padding: 25px; margin: 30px 0; border: 1px solid #86efac; }
+        .integration-box h4 { color: #166534; margin: 0 0 15px 0; font-size: 16px; }
+        .integration-box p { color: #166534; margin: 0; font-size: 15px; line-height: 1.7; }
+        .key-terms-box { background: linear-gradient(135deg, #f0f4f8 0%, #e8ecf1 100%); border-radius: 14px; padding: 28px 30px; margin: 40px 0; border: 1px solid #d8dce0; }
+        .key-terms-box .box-label { font-weight: 600; color: #722F37; margin: 0 0 18px 0; font-size: 13px; text-transform: uppercase; letter-spacing: 2px; }
+        .terms-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 16px; }
+        .term-item { background: white; padding: 16px 18px; border-radius: 10px; border-left: 4px solid #B8860B; }
+        .term-item .term { font-weight: 700; color: #722F37; font-size: 15px; margin: 0 0 6px 0; }
+        .term-item .definition { font-size: 14px; color: #555; margin: 0; line-height: 1.6; }
+        .check-understanding { background: linear-gradient(135deg, #fdfbf7 0%, #f9f5ed 100%); border: 2px solid #B8860B; border-radius: 16px; padding: 32px; margin: 45px 0; }
+        .check-understanding .box-label { font-weight: 600; color: #8B6914; margin: 0 0 8px 0; font-size: 13px; text-transform: uppercase; letter-spacing: 2px; }
+        .check-understanding .box-subtitle { font-size: 15px; color: #666; margin: 0 0 24px 0; }
+        .question-item { background: white; border-radius: 12px; padding: 22px 24px; margin-bottom: 16px; border: 1px solid #e8e4dc; position: relative; }
+        .question-number { position: absolute; top: -12px; left: 20px; background: #722F37; color: white; width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 600; font-size: 13px; }
+        .question-text { font-size: 16px; color: #333; margin: 0 0 16px 0; line-height: 1.6; padding-top: 4px; }
+        .reveal-btn { background: #722F37; color: white; border: none; padding: 10px 20px; border-radius: 8px; font-size: 14px; cursor: pointer; font-family: inherit; }
+        .reveal-btn:hover { background: #5a252c; }
+        .answer-text { display: none; font-size: 14px; color: #2e7d32; margin: 14px 0 0 0; padding: 14px; background: #f0f8f0; border-radius: 8px; line-height: 1.6; }
+        .answer-text.show { display: block; }
+        .takeaways-box { background: linear-gradient(135deg, #722F37 0%, #8B3A42 100%); padding: 35px; margin-top: 50px; border-radius: 16px; position: relative; overflow: hidden; }
+        .takeaways-box::before { content: ''; position: absolute; top: 0; right: 0; width: 200px; height: 200px; background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%); }
+        .takeaways-box .box-label { font-weight: 600; color: #FFF59D; margin: 0 0 20px 0; font-size: 13px; text-transform: uppercase; letter-spacing: 2px; }
+        .takeaways-box ul { margin: 0; padding-left: 22px; }
+        .takeaways-box li { color: #ffffff; margin-bottom: 14px; font-size: 16px; line-height: 1.7; }
+        .references-box { background: #f8f6f3; border-radius: 14px; padding: 28px 30px; margin-top: 40px; }
+        .references-box .box-label { font-weight: 600; color: #722F37; margin: 0 0 15px 0; font-size: 13px; text-transform: uppercase; letter-spacing: 2px; }
+        .references-box ol { margin: 0; padding-left: 22px; }
+        .references-box li { font-size: 14px; color: #666; margin-bottom: 10px; line-height: 1.6; }
+        .lesson-footer { margin-top: 50px; padding-top: 30px; border-top: 1px solid #eee; text-align: center; }
+        .footer-brand { font-weight: 600; color: #722F37; font-size: 14px; margin-bottom: 5px; }
+        .footer-copyright { font-size: 13px; color: #888; }
+        @media (max-width: 600px) { .lesson-container { padding: 25px 18px; } .module-header { padding: 28px 22px 24px; } .lesson-title { font-size: 24px; } .welcome-box, .objectives-box { padding: 24px; } h2 { font-size: 21px; } .comparison-table { font-size: 13px; } }
+    </style>
+</head>
+<body>
+    <div class="lesson-container">
+        <!-- Brand Header -->
+        <header class="brand-header">
+            <img src="../assets/accredipro-logo.png" alt="AccrediPro" class="brand-logo">
+        </header>
+
+        <!-- Module Header -->
+        <div class="module-header">
+            <p class="module-label">Module 1: Functional Medicine Foundations</p>
+            <h1 class="lesson-title">Conventional vs. Functional Approach</h1>
+            <div class="lesson-meta">
+                <span class="meta-item">
+                    <svg viewBox="0 0 24 24" width="13" height="13" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>
+                    Lesson 1.7
+                </span>
+                <span class="meta-item">
+                    <svg viewBox="0 0 24 24" width="13" height="13" fill="currentColor"><path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm.5-13H11v6l5.25 3.15.75-1.23-4.5-2.67z"/></svg>
+                    15 min read
+                </span>
+            </div>
+        </div>
+
+        <!-- Table of Contents -->
+        <nav class="toc-box">
+            <p class="box-label">In This Lesson</p>
+            <ul class="toc-list">
+                <li><a href="#two-paradigms"><span class="section-num">01</span> Two Different Paradigms</a></li>
+                <li><a href="#detailed-comparison"><span class="section-num">02</span> Detailed Comparison</a></li>
+                <li><a href="#both-valuable"><span class="section-num">03</span> When Each Shines</a></li>
+                <li><a href="#integration"><span class="section-num">04</span> Integration in Practice</a></li>
+                <li><a href="#coach-navigation"><span class="section-num">05</span> Navigating as a Coach</a></li>
+                <li><a href="#client-education"><span class="section-num">06</span> Helping Clients Understand</a></li>
+            </ul>
+        </nav>
+
+        <!-- Welcome Box -->
+        <div class="welcome-box">
+            <h3>Welcome to Lesson 1.7</h3>
+            <p>Understanding the differences between conventional and functional medicine helps you navigate healthcare conversations and support clients who may be working with multiple providers. This lesson compares the two approaches while honoring the value each brings to patient care.</p>
+        </div>
+
+        <!-- Learning Objectives -->
+        <div class="objectives-box">
+            <p class="box-label">Learning Objectives</p>
+            <ul>
+                <li>Understand the fundamental differences between conventional and functional medicine paradigms</li>
+                <li>Recognize when each approach is most appropriate</li>
+                <li>Appreciate how the two approaches can complement each other</li>
+                <li>Navigate conversations with clients seeing multiple types of providers</li>
+                <li>Help clients understand their care without creating conflict</li>
+            </ul>
+        </div>
+
+        <!-- Case Study -->
+        <div class="case-study">
+            <div class="case-study-header">
+                <div class="case-study-icon">📋</div>
+                <div>
+                    <p class="box-label">Case Study: Robert's Two Experiences</p>
+                    <p class="subtitle">Same Patient, Different Approaches</p>
+                </div>
+            </div>
+            <div class="case-study-content">
+                <div class="patient-profile">
+                    <div class="patient-avatar">👨</div>
+                    <div class="patient-info">
+                        <h4>Robert, 56 years old</h4>
+                        <p>Construction supervisor • High blood pressure • Type 2 diabetes</p>
+                    </div>
+                </div>
+                <p>Robert was diagnosed with high blood pressure and type 2 diabetes five years ago. His conventional doctor managed his conditions with medications—metformin for blood sugar, lisinopril for blood pressure. His numbers improved, but he still felt tired, still carried excess weight, and still had the lifestyle that contributed to both conditions.</p>
+                <p>When Robert added a functional medicine practitioner to his care team, the approach was different. Instead of just managing numbers, they explored why his metabolism had become dysregulated—chronic stress, poor sleep, inflammatory diet, sedentary work. <strong>Both approaches have value. Let's explore how they differ and how they complement each other.</strong></p>
+            </div>
+        </div>
+
+        <!-- Section 1: Two Different Paradigms -->
+        <h2 id="two-paradigms">Two Different Medical Paradigms</h2>
+
+        <p>Conventional and functional medicine represent different paradigms—different ways of understanding health and disease. Neither is right or wrong; they simply ask different questions and therefore arrive at different types of answers.</p>
+
+        <div class="visual-comparison">
+            <div class="approach-card conventional">
+                <h4><span class="icon">🏥</span> Conventional Medicine</h4>
+                <ul>
+                    <li><strong>Core question:</strong> What disease does this patient have?</li>
+                    <li><strong>Focus:</strong> Diagnosis and treatment of disease</li>
+                    <li><strong>Method:</strong> Match symptoms to diagnosis, apply standard treatment</li>
+                    <li><strong>Tools:</strong> Pharmaceuticals, surgery, acute care</li>
+                    <li><strong>Strength:</strong> Acute care, emergencies, infectious disease</li>
+                </ul>
+            </div>
+            <div class="approach-card functional">
+                <h4><span class="icon">🌱</span> Functional Medicine</h4>
+                <ul>
+                    <li><strong>Core question:</strong> Why is this patient sick?</li>
+                    <li><strong>Focus:</strong> Root causes of dysfunction</li>
+                    <li><strong>Method:</strong> Systems biology, personalized assessment</li>
+                    <li><strong>Tools:</strong> Lifestyle, nutrition, targeted supplements</li>
+                    <li><strong>Strength:</strong> Chronic disease, prevention, optimization</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="alert-box warning">
+            <p class="alert-label">Important Perspective</p>
+            <p>This isn't about which approach is "better." Each evolved to address different types of health challenges. Conventional medicine excels at what it was designed for—acute care and life-saving interventions. Functional medicine emerged to address what conventional medicine doesn't—chronic complex conditions and root cause resolution.</p>
+        </div>
+
+        <!-- Section 2: Detailed Comparison -->
+        <h2 id="detailed-comparison">Detailed Comparison</h2>
+
+        <p>Let's look at how these paradigms differ across key dimensions:</p>
+
+        <table class="comparison-table">
+            <thead>
+                <tr>
+                    <th>Aspect</th>
+                    <th>Conventional</th>
+                    <th>Functional</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td class="aspect">Time Frame</td>
+                    <td>Short appointments (10-15 min)</td>
+                    <td>Extended visits (60-90 min initially)</td>
+                </tr>
+                <tr>
+                    <td class="aspect">Patient History</td>
+                    <td>Focused on current complaint</td>
+                    <td>Comprehensive life narrative</td>
+                </tr>
+                <tr>
+                    <td class="aspect">Testing</td>
+                    <td>Standard lab ranges</td>
+                    <td>Optimal ranges, specialized testing</td>
+                </tr>
+                <tr>
+                    <td class="aspect">Treatment Goal</td>
+                    <td>Manage symptoms, normalize markers</td>
+                    <td>Address root causes, restore function</td>
+                </tr>
+                <tr>
+                    <td class="aspect">Primary Interventions</td>
+                    <td>Medications, procedures</td>
+                    <td>Lifestyle, nutrition, targeted support</td>
+                </tr>
+                <tr>
+                    <td class="aspect">Patient Role</td>
+                    <td>Recipient of care</td>
+                    <td>Active partner in healing</td>
+                </tr>
+                <tr>
+                    <td class="aspect">Success Metric</td>
+                    <td>Lab values in range, symptom reduction</td>
+                    <td>Optimal function, quality of life</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <div class="alert-box reflect">
+            <p class="alert-label">Robert's Numbers vs. Function</p>
+            <p>Robert's conventional care successfully got his blood sugar and blood pressure "in range." By standard metrics, he was well-managed. But he was still tired, still overweight, still at risk. The numbers were controlled, but the underlying dysfunction—insulin resistance, chronic inflammation, stress dysregulation—remained unaddressed.</p>
+        </div>
+
+        <!-- Section 3: When Each Approach Shines -->
+        <h2 id="both-valuable">When Each Approach Shines</h2>
+
+        <p>Both approaches have their place. Understanding when each shines helps you support clients appropriately:</p>
+
+        <p><strong>Conventional medicine excels in:</strong></p>
+        <ul class="content-list">
+            <li>Emergency and trauma care</li>
+            <li>Acute infections requiring antibiotics</li>
+            <li>Surgical interventions</li>
+            <li>Accurate diagnosis of pathology</li>
+            <li>Life-saving pharmaceutical interventions</li>
+            <li>Cancer treatment (surgery, chemo, radiation)</li>
+        </ul>
+
+        <p><strong>Functional medicine excels in:</strong></p>
+        <ul class="content-list">
+            <li>Chronic complex conditions</li>
+            <li>Autoimmune diseases</li>
+            <li>Digestive disorders</li>
+            <li>Hormonal imbalances</li>
+            <li>Fatigue and brain fog</li>
+            <li>Prevention and health optimization</li>
+            <li>Conditions with no clear conventional diagnosis</li>
+        </ul>
+
+        <div class="alert-box success">
+            <p class="alert-label">The Best of Both</p>
+            <p>The ideal is often integration. A patient with heart disease benefits from conventional cardiology monitoring AND functional medicine lifestyle intervention. A patient with Hashimoto's thyroiditis may need thyroid medication AND root cause work. The approaches don't compete—they complement.</p>
+        </div>
+
+        <!-- Section 4: Integration in Practice -->
+        <h2 id="integration">Integration in Practice</h2>
+
+        <p>Many patients work with both conventional and functional medicine providers. <span class="highlight">When both approaches are coordinated, outcomes improve significantly.</span></p>
+
+        <div class="integration-box">
+            <h4>Robert's Integrated Care</h4>
+            <p>Robert's care became most effective when his providers communicated. His functional medicine doctor worked on root causes—anti-inflammatory diet, stress management, sleep optimization, movement—while his conventional doctor continued monitoring and adjusting medications. As Robert's lifestyle changes took effect, his conventional doctor was able to reduce his medication doses. Neither approach alone would have achieved this result.</p>
+        </div>
+
+        <p><strong>Keys to successful integration:</strong></p>
+        <ul class="content-list">
+            <li>Open communication between providers</li>
+            <li>Clear understanding of each provider's role</li>
+            <li>Patient as active participant coordinating their care</li>
+            <li>Mutual respect between different practitioners</li>
+            <li>Shared goal of patient wellbeing</li>
+        </ul>
+
+        <!-- Section 5: Navigating as a Coach -->
+        <h2 id="coach-navigation">Navigating as a Health Coach</h2>
+
+        <p>As a health coach, you'll work with clients who have varying experiences with conventional and functional medicine. Your role requires diplomacy, clarity, and respect for all providers.</p>
+
+        <p><strong>Guidelines for coaches:</strong></p>
+        <ul class="content-list">
+            <li><strong>Never disparage conventional care:</strong> It may have saved your client's life or be essential for their ongoing health</li>
+            <li><strong>Support the treatment plan:</strong> Your role is to help clients implement what their providers recommend, not to create your own plan</li>
+            <li><strong>Encourage communication:</strong> Help clients communicate effectively with all their providers</li>
+            <li><strong>Stay in your lane:</strong> Don't advise on medication changes or clinical decisions</li>
+            <li><strong>Bridge the gap:</strong> Help clients understand how lifestyle changes support both conventional and functional approaches</li>
+        </ul>
+
+        <div class="alert-box warning">
+            <p class="alert-label">Common Pitfall</p>
+            <p>Some clients may want you to validate their frustration with conventional medicine. While you can empathize with their experience, avoid agreeing that conventional medicine is "wrong" or "bad." Instead, help them understand how different approaches address different aspects of health.</p>
+        </div>
+
+        <!-- Section 6: Helping Clients Understand -->
+        <h2 id="client-education">Helping Clients Understand</h2>
+
+        <p>Many clients are confused about the differences between these approaches. You can help them understand without taking sides:</p>
+
+        <p><strong>Helpful explanations:</strong></p>
+        <ul class="content-list">
+            <li>"Conventional medicine is designed to identify and treat disease. Functional medicine asks why the disease developed in the first place."</li>
+            <li>"Your medications manage your symptoms while we work on the underlying causes through lifestyle changes."</li>
+            <li>"Both your doctors want you healthy—they're just addressing different aspects of your health."</li>
+            <li>"As your root causes improve, you and your doctor can discuss whether medication adjustments make sense."</li>
+        </ul>
+
+        <div class="alert-box success">
+            <p class="alert-label">Empowering Perspective</p>
+            <p>Help clients see themselves as the CEO of their healthcare team. They have different specialists—each bringing unique expertise. The client's job is to coordinate, communicate, and take ownership of their health journey. This empowers them without creating conflict.</p>
+        </div>
+
+        <!-- Key Terms -->
+        <div class="key-terms-box">
+            <p class="box-label">Key Terms</p>
+            <div class="terms-grid">
+                <div class="term-item">
+                    <p class="term">Conventional Medicine</p>
+                    <p class="definition">The dominant medical paradigm focused on diagnosing diseases and treating them with pharmaceuticals and procedures.</p>
+                </div>
+                <div class="term-item">
+                    <p class="term">Functional Medicine</p>
+                    <p class="definition">A systems-biology approach that identifies and addresses the root causes of disease through personalized, patient-centered care.</p>
+                </div>
+                <div class="term-item">
+                    <p class="term">Acute Care</p>
+                    <p class="definition">Medical treatment for short-term, severe conditions like injuries, infections, or emergencies.</p>
+                </div>
+                <div class="term-item">
+                    <p class="term">Chronic Disease</p>
+                    <p class="definition">Long-lasting health conditions that typically require ongoing management, like diabetes, heart disease, or autoimmune conditions.</p>
+                </div>
+                <div class="term-item">
+                    <p class="term">Integrative Medicine</p>
+                    <p class="definition">An approach that combines conventional medical treatments with evidence-based complementary therapies.</p>
+                </div>
+                <div class="term-item">
+                    <p class="term">Standard Lab Range</p>
+                    <p class="definition">The reference range for lab tests based on statistical averages; may differ from optimal functional ranges.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Check Your Understanding -->
+        <div class="check-understanding">
+            <p class="box-label">Check Your Understanding</p>
+            <p class="box-subtitle">Reflect on what you've learned in this lesson.</p>
+
+            <div class="question-item">
+                <div class="question-number">1</div>
+                <p class="question-text">What is the fundamental question that distinguishes functional medicine from conventional medicine?</p>
+                <button class="reveal-btn" onclick="toggleAnswer(this)">Reveal Answer</button>
+                <p class="answer-text">Conventional medicine primarily asks "What disease does this patient have?" while functional medicine asks "Why is this patient sick?" This leads to different approaches: conventional medicine matches symptoms to diagnoses and applies standard treatments, while functional medicine investigates root causes and creates personalized interventions addressing underlying dysfunction.</p>
+            </div>
+
+            <div class="question-item">
+                <div class="question-number">2</div>
+                <p class="question-text">A client complains that their conventional doctor "just wants to give me pills." How should a health coach respond?</p>
+                <button class="reveal-btn" onclick="toggleAnswer(this)">Reveal Answer</button>
+                <p class="answer-text">The coach should validate the client's desire for root cause work while avoiding disparaging conventional care. A helpful response might be: "I understand you want to address the underlying causes, and that's exactly what we'll work on with lifestyle changes. Medications can help manage symptoms while we do that deeper work. Your conventional doctor and functional medicine provider are addressing different aspects of your health—both can be valuable." This acknowledges the client's feelings without creating conflict.</p>
+            </div>
+
+            <div class="question-item">
+                <div class="question-number">3</div>
+                <p class="question-text">Give an example of when conventional medicine is the clearly better choice, and when functional medicine is more appropriate.</p>
+                <button class="reveal-btn" onclick="toggleAnswer(this)">Reveal Answer</button>
+                <p class="answer-text">Conventional medicine is clearly better for: acute emergencies like heart attacks, severe infections requiring antibiotics, trauma and surgical needs, or cancer treatment. Functional medicine is more appropriate for: chronic fatigue syndrome, autoimmune conditions, digestive disorders like IBS, hormonal imbalances, conditions with no clear diagnosis, or health optimization and prevention. Many situations benefit from both approaches working together.</p>
+            </div>
+        </div>
+
+        <!-- Key Takeaways -->
+        <div class="takeaways-box">
+            <p class="box-label">Key Takeaways</p>
+            <ul>
+                <li>Conventional and functional medicine represent different paradigms—each asks different questions and excels in different areas</li>
+                <li>Conventional medicine excels at acute care, diagnosis, and life-saving interventions</li>
+                <li>Functional medicine excels at chronic disease, root cause resolution, and prevention</li>
+                <li>The best outcomes often come from integrating both approaches with coordinated care</li>
+                <li>Coaches should respect all providers and help clients see themselves as the coordinator of their healthcare team</li>
+            </ul>
+        </div>
+
+        <!-- References -->
+        <div class="references-box">
+            <p class="box-label">References & Further Reading</p>
+            <ol>
+                <li>Institute for Functional Medicine. (2023). Introduction to Functional Medicine. IFM Core Curriculum.</li>
+                <li>Hyman, M. (2018). Food: What the Heck Should I Eat? Little, Brown and Company.</li>
+                <li>Pizzorno, J. & Murray, M. (2020). Textbook of Natural Medicine. Elsevier.</li>
+                <li>Bland, J. S. (2014). The Disease Delusion. Harper Wave.</li>
+            </ol>
+        </div>
+
+        <!-- Footer -->
+        <footer class="lesson-footer">
+            <p class="footer-brand">Functional Medicine Certified Health Coach Program</p>
+            <p class="footer-copyright">© 2024 AccrediPro. All rights reserved.</p>
+        </footer>
+    </div>
+
+    <script>
+        function toggleAnswer(button) {
+            const answerText = button.nextElementSibling;
+            answerText.classList.toggle('show');
+            button.textContent = answerText.classList.contains('show') ? 'Hide Answer' : 'Reveal Answer';
+        }
+    </script>
+</body>
+</html>

@@ -5,171 +5,265 @@ import Image from "next/image";
 import { MessageCircle, CheckCircle, Users, Sparkles, Crown, ExternalLink } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
-// Fake profiles for Q&A participants - expanded list
+// Real student profiles with verified avatars (removed duplicate Patricia Adams)
 const QA_PROFILES = [
-  { name: "Amanda Richards", avatar: "https://accredipro.academy/wp-content/uploads/2025/11/IMG_1894.jpeg", location: "San Diego, CA" },
-  { name: "Robert Martinez", avatar: "https://accredipro.academy/wp-content/uploads/2025/11/IMG_0931.jpeg", location: "Miami, FL" },
-  { name: "Lisa Thompson", avatar: "https://accredipro.academy/wp-content/uploads/2025/11/IMG_5742.jpeg", location: "Austin, TX" },
-  { name: "Karen Mitchell", avatar: "https://accredipro.academy/wp-content/uploads/2025/11/IMG_6345-1.jpeg", location: "Denver, CO" },
-  { name: "Patricia Adams", avatar: "https://accredipro.academy/wp-content/uploads/2025/11/IMG_3179.jpeg", location: "Seattle, WA" },
-  { name: "Michael Foster", avatar: "https://accredipro.academy/wp-content/uploads/2025/11/Bear-Trap-Gap-MP-428-robert-Stevens-web.jpg", location: "Chicago, IL" },
-  { name: "Emily Harrison", avatar: "https://accredipro.academy/wp-content/uploads/2025/11/IMG_1830.jpeg", location: "Boston, MA" },
-  { name: "Nicole Brooks", avatar: "https://accredipro.academy/wp-content/uploads/2025/10/IMG_7797.jpeg", location: "Phoenix, AZ" },
-  { name: "Theresa Washington", avatar: "https://accredipro.academy/wp-content/uploads/2025/10/IMG_4540.jpeg", location: "Atlanta, GA" },
-  { name: "Diana Morales", avatar: "https://accredipro.academy/wp-content/uploads/2025/09/IMG_8681.jpeg", location: "Los Angeles, CA" },
-  { name: "Jennifer Collins", avatar: "https://accredipro.academy/wp-content/uploads/2025/10/IMG_6678.jpeg", location: "New York, NY" },
-  { name: "David Chen", avatar: "https://accredipro.academy/wp-content/uploads/2025/10/IMG_2341.jpeg", location: "San Francisco, CA" },
-  { name: "Maria Santos", avatar: "https://accredipro.academy/wp-content/uploads/2025/09/IMG_5523.jpeg", location: "Houston, TX" },
-  { name: "Stephanie Brown", avatar: "https://accredipro.academy/wp-content/uploads/2025/09/IMG_7812.jpeg", location: "Portland, OR" },
-  { name: "Rachel Kim", avatar: "https://accredipro.academy/wp-content/uploads/2025/08/IMG_9934.jpeg", location: "Nashville, TN" },
-  { name: "Angela Wright", avatar: "https://accredipro.academy/wp-content/uploads/2025/08/IMG_4456.jpeg", location: "Philadelphia, PA" },
-  { name: "Christina Lee", avatar: "https://accredipro.academy/wp-content/uploads/2025/07/IMG_8876.jpeg", location: "Charlotte, NC" },
-  { name: "Dorothy Miller", avatar: "https://accredipro.academy/wp-content/uploads/2025/06/IMG_6654.jpeg", location: "Detroit, MI" },
-  { name: "Susan Anderson", avatar: "https://accredipro.academy/wp-content/uploads/2025/06/IMG_3321.jpeg", location: "Minneapolis, MN" },
-  { name: "Gloria Cooper", avatar: "https://accredipro.academy/wp-content/uploads/2024/07/IMG_8876.jpeg", location: "Indianapolis, IN" },
+  { name: "Jennifer Collins", avatar: "https://accredipro.academy/wp-content/uploads/2025/12/1000009537.jpg", location: "New York, NY" },
+  { name: "Michelle Roberts", avatar: "https://accredipro.academy/wp-content/uploads/2025/12/linkedin-2024.jpg", location: "Los Angeles, CA" },
+  { name: "Amanda Richards", avatar: "https://accredipro.academy/wp-content/uploads/2025/12/IMG_3542-Profile-Picture-Updated.jpg", location: "San Diego, CA" },
+  { name: "Lisa Thompson", avatar: "https://accredipro.academy/wp-content/uploads/2025/12/IMG_1335.jpeg", location: "Austin, TX" },
+  { name: "Sarah Mitchell", avatar: "https://accredipro.academy/wp-content/uploads/2025/12/IMG_1235.jpeg", location: "Denver, CO" },
+  { name: "Karen Williams", avatar: "https://accredipro.academy/wp-content/uploads/2025/12/89C2493E-DCEC-43FB-9A61-1FB969E45B6F_1_105_c.jpeg", location: "Seattle, WA" },
+  { name: "Emily Harrison", avatar: "https://accredipro.academy/wp-content/uploads/2025/12/AI_Headshot_Generator-13.jpg", location: "Boston, MA" },
+  { name: "Leeza Rodriguez", avatar: "https://accredipro.academy/wp-content/uploads/2025/12/LeezaRhttilthead.jpg", location: "Miami, FL" },
+  { name: "Nicole Brooks", avatar: "https://accredipro.academy/wp-content/uploads/2025/12/Head-shot-dark-background-1.jpg", location: "Phoenix, AZ" },
+  { name: "Diana Morales", avatar: "https://accredipro.academy/wp-content/uploads/2025/12/IMG_1695.jpeg", location: "Houston, TX" },
+  { name: "Christina Lee", avatar: "https://accredipro.academy/wp-content/uploads/2025/12/IMG_9036-1.jpeg", location: "Portland, OR" },
+  { name: "Rachel Kim", avatar: "https://accredipro.academy/wp-content/uploads/2025/12/IMG_1120.jpeg", location: "Nashville, TN" },
+  { name: "Angela Wright", avatar: "https://accredipro.academy/wp-content/uploads/2025/12/IMG_1085.jpeg", location: "Philadelphia, PA" },
+  { name: "Stephanie Brown", avatar: "https://accredipro.academy/wp-content/uploads/2025/12/PHOTOSHOOT-01-copy.jpg", location: "Charlotte, NC" },
+  { name: "Rebecca Taylor", avatar: "https://accredipro.academy/wp-content/uploads/2025/12/Profile-Pic.jpg", location: "Atlanta, GA" },
+  { name: "Maria Garcia", avatar: "https://accredipro.academy/wp-content/uploads/2025/12/MARIA-GARCIA-PIC-IMG_5435-1.jpg", location: "San Antonio, TX" },
+  { name: "Anne Peterson", avatar: "https://accredipro.academy/wp-content/uploads/2025/12/AnneProfile2.jpg", location: "Minneapolis, MN" },
+  { name: "Michelle Morgan", avatar: "https://accredipro.academy/wp-content/uploads/2025/12/MICHELLEM047.jpg", location: "Dallas, TX" },
+  { name: "Jessica Turner", avatar: "https://accredipro.academy/wp-content/uploads/2025/12/IMG_7064.jpeg", location: "San Francisco, CA" },
+  { name: "Laura Bennett", avatar: "https://accredipro.academy/wp-content/uploads/2025/12/IMG_3104.jpeg", location: "Jacksonville, FL" },
+  { name: "Heather Cooper", avatar: "https://accredipro.academy/wp-content/uploads/2025/12/IMG_6694.jpeg", location: "Columbus, OH" },
+  { name: "Megan Foster", avatar: "https://accredipro.academy/wp-content/uploads/2025/12/IMG_2257.jpeg", location: "Indianapolis, IN" },
+  { name: "Danielle Scott", avatar: "https://accredipro.academy/wp-content/uploads/2025/12/49.jpeg", location: "Fort Worth, TX" },
+  { name: "Samantha Davis", avatar: "https://accredipro.academy/wp-content/uploads/2025/12/IMG_6995-1.jpg", location: "Scottsdale, AZ" },
+  { name: "Brittany Nelson", avatar: "https://accredipro.academy/wp-content/uploads/2025/12/1000037020.jpg", location: "Boulder, CO" },
+  { name: "Katherine Price", avatar: "https://accredipro.academy/wp-content/uploads/2025/12/1000037720.jpg", location: "Santa Monica, CA" },
+  { name: "Ashley Martinez", avatar: "https://accredipro.academy/wp-content/uploads/2025/12/IMG_6562.jpg", location: "Sedona, AZ" },
+  { name: "Tiffany Hill", avatar: "https://accredipro.academy/wp-content/uploads/2025/12/IMG_1538.jpeg", location: "Asheville, NC" },
+  { name: "Natalie Ward", avatar: "https://accredipro.academy/wp-content/uploads/2025/12/IMG_1540.jpeg", location: "Charleston, SC" },
+  { name: "Vanessa Cruz", avatar: "https://accredipro.academy/wp-content/uploads/2025/12/IMG_6418.jpeg", location: "Tampa, FL" },
+  { name: "Crystal Hughes", avatar: "https://accredipro.academy/wp-content/uploads/2025/12/IMG_6542.jpeg", location: "Savannah, GA" },
+  { name: "Amber Long", avatar: "https://accredipro.academy/wp-content/uploads/2025/12/IMG_4555.jpeg", location: "Santa Fe, NM" },
+  { name: "Cynthia Powell", avatar: "https://accredipro.academy/wp-content/uploads/2025/12/Screenshot-2025-08-12-162412.jpg", location: "Sarasota, FL" },
+  { name: "Victoria Ross", avatar: "https://accredipro.academy/wp-content/uploads/2025/12/1000086368.jpg", location: "San Jose, CA" },
 ];
 
-// Comprehensive Q&A conversations - starting with deeper questions, building to price
-// Organized in phases: WHAT IS IT → WHO IS IT FOR → HOW IT WORKS → CREDIBILITY → RESULTS → PRICE → URGENCY
+// Natural, emotional Q&A conversations - varied styles, storytelling, pain points
 const QA_CONVERSATIONS = [
-  // PHASE 1: What is Functional Medicine? (Deep understanding questions)
+  // PHASE 1: Opening - Understanding & Pain Points
   {
-    question: "Can someone explain what functional medicine actually IS? I keep hearing about it but I'm confused about how it's different from regular healthcare.",
-    answer: "Great question! Functional medicine is a root-cause approach to health. Instead of just treating symptoms (like giving you a pill for headaches), we look at WHY you're getting headaches in the first place. Is it stress? Gut issues? Hormones? We treat the whole person, not just the symptom. It's healthcare that actually makes sense!",
+    question: "ok so I've been watching for a few mins... can someone explain what functional medicine actually is?? I keep hearing about it everywhere",
+    answer: "Great question! Functional medicine is a root-cause approach to health. Instead of just giving you a pill for symptoms, we look at WHY you're having those symptoms in the first place. Is it gut issues? Hormones? Stress? We treat the whole person, not just the symptom. It's healthcare that actually makes sense!",
   },
   {
-    question: "I'm a nurse and honestly... I'm burned out from the healthcare system. Does functional medicine address the things that traditional medicine ignores?",
-    answer: "YES! And your nursing background is such an asset here. Functional medicine fills all the gaps that conventional medicine leaves - the nutrition piece, the lifestyle factors, the stress connection, the gut-hormone link. Things doctors don't have TIME to address. You'll finally be able to HELP people the way you always wanted to.",
+    question: "I'm a nurse and honestly... I'm SO burned out. 12 years in the system and I feel like I'm just putting bandaids on everything. Does this actually address things differently?",
+    answer: "I hear you, and your nursing background is actually a HUGE asset here! Functional medicine fills all the gaps conventional medicine leaves - nutrition, lifestyle, the gut-hormone connection. Things doctors don't have TIME to address. You'll finally be able to HELP people the way you always wanted to. Many of our best practitioners are former nurses!",
   },
   {
-    question: "What types of health issues can functional medicine practitioners help with?",
-    answer: "So many! Digestive issues, hormonal imbalances, autoimmune conditions, chronic fatigue, weight struggles, skin problems, anxiety, sleep issues... basically anything where the root cause matters. And here's the thing - most people have tried EVERYTHING else before they find functional medicine. They're ready for real answers.",
+    question: "this sounds interesting but how is it different from being a health coach",
+    answer: "Great question! Health coaches focus mainly on lifestyle and accountability. Functional medicine practitioners go DEEPER - we understand lab work, root causes, complex protocols. It's a more comprehensive skill set that commands higher fees. You're not just motivating people, you're actually solving their health puzzles!",
   },
   {
-    question: "I've been dealing with my own health issues for years. Doctors keep telling me my tests are 'normal' but I still feel terrible. Is this certification for people like me?",
-    answer: "This is EXACTLY who this certification is for! Your personal health journey is your superpower. When you've lived it, you UNDERSTAND it. Some of our most successful practitioners came to this because they healed themselves first. Your story will connect with clients who feel unheard by conventional medicine.",
+    question: "I've been dealing with my own health issues for 6 years now. Doctors keep telling me my labs are 'normal' but I feel TERRIBLE every day. Brain fog, exhausted, can't lose weight no matter what I do... is this for people like me?",
+    answer: "This is EXACTLY who this certification is for! Your personal health journey is your superpower. When you've lived it, you UNDERSTAND it. Some of our most successful practitioners came to this because they healed themselves first. Your story will connect deeply with clients who feel unheard by conventional medicine.",
   },
 
-  // PHASE 2: Who is this for? (Qualification/fit questions)
+  // PHASE 2: Who is it for?
   {
-    question: "Do I need a medical degree to become a functional medicine practitioner?",
+    question: "wait do I need a medical degree for this?? I don't have any health background",
     answer: "No medical degree needed! Many of our students come from completely different backgrounds - teachers, corporate professionals, stay-at-home moms. What matters is your passion for helping people and your commitment to learning. The certification teaches you everything from scratch.",
   },
   {
-    question: "I'm 52 and thinking about a career change. Is it too late to start something new?",
+    question: "I'm 54 and thinking about a career change... feeling like maybe it's too late for me to start something new 😔",
     answer: "Are you kidding?! Your life experience is your BIGGEST advantage! Clients want practitioners who've been through things - menopause, raising kids, career stress. They trust wisdom over youth. Some of our most successful graduates are in their 50s and 60s. It's never too late to start a meaningful career!",
   },
   {
-    question: "I have young kids and work part-time. Can I realistically do this?",
-    answer: "Absolutely! The program is designed for busy people. Most students study 2-4 hours per week. You can watch lessons during nap time, on your lunch break, whenever works for you. And once you're certified, you set your OWN schedule. Many practitioners only work 15-20 hours a week and make great money.",
+    question: "I have 3 kids under 7 and work part time... is this even realistic for me rn",
+    answer: "Absolutely! The program is designed for busy people. Most students study 2-4 hours per week. You can go through lessons during nap time, on your lunch break, whenever works for you. And once certified, you set your OWN schedule. Many practitioners only work 15-20 hours a week and make great money!",
   },
   {
-    question: "What if I'm already a health professional - like a dietitian or personal trainer? Would this add value?",
-    answer: "This would ELEVATE everything you're already doing! Adding functional medicine to your existing credentials lets you charge premium rates and attract clients who want a deeper approach. We have dietitians who doubled their income after certification. It's the missing piece that sets you apart.",
+    question: "I'm already a personal trainer but feel like I'm missing something... clients keep asking me nutrition questions I can't answer properly",
+    answer: "This would ELEVATE everything you're already doing! Adding functional medicine to your credentials lets you charge premium rates and attract clients who want a deeper approach. We have trainers and dietitians who doubled their income after certification. It's the missing piece that sets you apart!",
   },
 
-  // PHASE 3: How does the program work?
+  // PHASE 3: Program Structure - emphasize 20-in-1
   {
-    question: "How is the program structured? Is it all online?",
-    answer: "Yes, it's 100% online and self-paced. You get 21 comprehensive modules covering everything from gut health to hormones to building your practice. Each module has video lessons, downloadable resources, and practical exercises. Plus you get lifetime access - learn at your own pace!",
+    question: "how does the program actually work? is it all online",
+    answer: "Yes, 100% online and self-paced! Here's what makes us unique: you get 20 modules and EACH MODULE = 1 CERTIFICATE. That's 20 certifications in 1 program - first ever worldwide! You can specialize in gut health, hormones, autoimmune, weight loss... it's the most complete certification available. Plus lifetime access!",
   },
   {
-    question: "How long does it typically take to complete the certification?",
+    question: "wait hold on... 20 certificates?? what do you mean exactly",
+    answer: "Yes! Each module gives you a SEPARATE certificate. So you graduate with certifications in gut health, hormone balancing, autoimmune protocols, weight management, lab interpretation, AND MORE. No other program offers this. You become a multi-specialist which means more clients and you can charge higher fees!",
+  },
+  {
+    question: "how long does it take to finish? I'm impatient lol",
     answer: "Most students finish in 3-6 months depending on their schedule. Some power through it in 4-6 weeks! There's no deadline though - you have lifetime access. Life gets busy, you can pause and come back. The certification is waiting for you whenever you're ready.",
   },
   {
-    question: "Is there any hands-on learning or just videos?",
-    answer: "Great question! Each module includes practical exercises and real case studies. You'll practice creating protocols, analyzing health histories, and developing client plans. By the time you're certified, you'll have worked through dozens of real scenarios. Plus our community lets you practice with other students!",
+    question: "is there actual hands-on stuff or just reading material",
+    answer: "Great question! Each module includes practical exercises, real case studies, and downloadable resources. You'll practice creating protocols, analyzing health histories, and developing client plans. By the time you're certified, you'll have worked through dozens of real scenarios. Plus our community lets you practice with other students!",
   },
   {
-    question: "What kind of support do you provide during the program?",
+    question: "what if I get stuck or have questions during the program? I hate feeling alone in online courses",
     answer: "You're never alone! You get access to our private community where you can ask questions anytime, weekly Q&A calls with me, direct messaging support, and peer support from other students. This isn't a 'buy and disappear' program - we're invested in your success!",
   },
 
-  // PHASE 4: Credibility & legitimacy
+  // PHASE 4: Credibility & Legitimacy
   {
-    question: "Is this certification actually recognized in the industry?",
+    question: "ok but is this certification actually legit? like recognized professionally?",
     answer: "Yes! Our certification is accredited and recognized by functional medicine organizations. But here's what matters MORE - it's recognized by CLIENTS who are looking for help. We have graduates working alongside doctors, running thriving practices, and consulting for wellness brands. Your skills and results are what matter most.",
   },
   {
-    question: "How does this compare to other functional medicine certifications out there?",
-    answer: "Most certifications either cost $5,000-$15,000 OR they teach only theory without the business side. We're different - you get comprehensive clinical training PLUS business-building strategies for a fraction of the cost. We focus on what actually gets you clients and income, not just knowledge.",
+    question: "I've looked at other certifications and they're like $8000-15000... how is yours so much less? what's the catch",
+    answer: "No catch! Most expensive programs teach the SAME foundational content with more fluff and longer timelines. We're different - you get 20 CERTIFICATES IN ONE, comprehensive clinical training PLUS business-building strategies for a fraction of the cost. It's the most complete certification on the market. No one else offers this!",
   },
   {
-    question: "Can you legally call yourself a 'practitioner' after this certification?",
-    answer: "You can absolutely use the title 'Certified Functional Medicine Practitioner' or 'Certified Health Coach.' The key is understanding your scope of practice - you're not diagnosing or prescribing, you're coaching and supporting. Module 4 covers all the legalities so you feel confident and protected.",
+    question: "can I legally call myself a practitioner after this? I don't want to get in trouble",
+    answer: "You can absolutely use the title 'Certified Functional Medicine Practitioner' or 'Certified Health Coach.' The key is understanding your scope of practice - you're not diagnosing or prescribing, you're coaching and supporting. We cover all the legalities so you feel confident and protected.",
   },
   {
-    question: "What makes your program different from others?",
-    answer: "Three things: 1) We teach you to GET CLIENTS, not just clinical theory. 2) You get Sarah as your mentor - real support, not some faceless corporation. 3) It's priced for real people, not elite investors. Our graduates actually launch practices. That's the difference.",
+    question: "what makes this different from all the other health certifications out there honestly",
+    answer: "Four things: 1) 20 CERTIFICATES IN 1 - each module = 1 certificate. First ever worldwide! 2) We teach you to GET CLIENTS, not just theory. 3) Multiple specializations - gut health, hormones, autoimmune, weight loss. 4) It's priced for real people. Our graduates actually launch practices!",
   },
 
-  // PHASE 5: Results & success stories
+  // PHASE 5: Results & Success Stories
   {
-    question: "Do graduates actually build successful practices? Can you share some real examples?",
+    question: "do people who finish this actually make money? or is it one of those things where you get certified and then nothing happens",
     answer: "So many success stories! Jennifer from Texas landed her first 5 clients within 60 days. Maria went from burned-out nurse to making $8K/month within 6 months. David built a virtual practice while keeping his day job. These aren't unicorns - they're normal people who followed the system. You can do this too!",
   },
   {
-    question: "What kind of income can I realistically expect?",
-    answer: "It depends on your commitment, but here's the math: Most practitioners charge $150-300 per session or $1,000-3,000 for program packages. Just 5 clients at $1,000 each = $5,000/month. Our serious graduates hit $5K-10K/month within their first year. Some go much higher. The demand is HUGE right now.",
+    question: "what kind of income can I realistically expect? I need real numbers not just 'you can make money'",
+    answer: "Here's the math: Most practitioners charge $150-300 per session or $1,000-3,000 for program packages. Just 5 clients at $1,000 each = $5,000/month. Our serious graduates hit $5K-10K/month within their first year. Some go much higher. The demand is HUGE right now.",
   },
   {
-    question: "How quickly can I start seeing clients after I'm certified?",
-    answer: "Some students start taking discovery calls WHILE they're still in the program! We actually encourage it. By module 15 you have enough knowledge to help people. The business module (#20) teaches you exactly how to launch. Many graduates have their first paying client within 30-60 days of finishing.",
+    question: "how fast can I actually start seeing clients after I'm certified",
+    answer: "Some students start taking discovery calls WHILE they're still in the program! We actually encourage it. By module 15 you have enough knowledge to help people. The business module teaches you exactly how to launch. Many graduates have their first paying client within 30-60 days of finishing.",
   },
   {
-    question: "What if I complete everything but still feel scared to actually start?",
-    answer: "That fear is SO normal - imposter syndrome is real! That's exactly why we include ongoing support. You can ask questions in our community, join Q&A calls, get feedback on your first client cases. You're not alone in this. And honestly? Your first client will prove that YOU CAN DO THIS!",
+    question: "I'm scared I'll finish everything and still feel like I'm not ready... imposter syndrome is real 😬",
+    answer: "That fear is SO normal - we all feel it! That's exactly why we include ongoing support. You can ask questions in our community, join Q&A calls, get feedback on your first client cases. You're not alone in this. And honestly? Your first client will prove to you that YOU CAN DO THIS!",
   },
 
-  // PHASE 6: Price & investment questions
+  // PHASE 6: Price & Investment
   {
-    question: "So... what's the investment for the full certification?",
+    question: "ok so... what's the investment? I'm scared to ask lol",
     answer: "The full certification is $997. I know that's a real investment, but consider this: most practitioners make that back with just ONE client! Compare that to $5,000-15,000 programs that don't even teach you how to get clients. We believe life-changing education shouldn't require going into massive debt.",
   },
   {
-    question: "Is the $997 really worth it compared to other certifications that cost $5,000+?",
-    answer: "Here's the thing - most expensive programs are teaching the SAME foundational content with more fluff and longer timelines. Our program focuses on what actually matters: clinical skills AND client acquisition. Many students make back their investment within their first 2-3 clients. That's real ROI.",
-  },
-  {
-    question: "I'm nervous about investing $997 when I'm not sure I can actually build a practice...",
-    answer: "I totally understand that fear! That's exactly why we include the business-building module. The certification alone won't change your life - combining it with client acquisition strategies is what makes the difference. 87% of graduates who follow the system land their first paying client within 60 days.",
-  },
-  {
-    question: "What if I can't finish the program? Do I lose my $997?",
-    answer: "Absolutely not! You have lifetime access. Life happens - take a break, come back, finish at your own pace. We've had students complete it in 4 weeks, others in 6 months. Your access never expires, and neither does our support. Your investment is protected.",
-  },
-  {
-    question: "Do you offer payment plans? $997 upfront is a lot for me right now.",
+    question: "$997 is a lot for me right now tbh... are there payment plans?",
     answer: "Yes! We offer payment plans because financial situation shouldn't stop someone from changing their life. You can break it into manageable monthly payments. Just click the enrollment link and you'll see the options. We want this to be accessible for everyone who's serious about this path.",
   },
   {
-    question: "What's included in the $997? Any hidden costs?",
-    answer: "Everything is included - all 21 modules, certification exam, business toolkit, client intake forms, marketing templates, AND lifetime access to our community. No hidden fees, no monthly subscriptions. One payment, lifetime value. What you see is what you get!",
+    question: "I'm nervous about investing when I'm not sure I can actually build a practice... what if I fail",
+    answer: "I totally understand that fear! That's exactly why we include the business-building module. The certification alone won't change your life - combining it with client acquisition strategies is what makes the difference. 87% of graduates who follow the system land their first paying client within 60 days.",
+  },
+  {
+    question: "what if I can't finish the program? life happens... do I lose my money",
+    answer: "Absolutely not! You have lifetime access. Life happens - take a break, come back, finish at your own pace. We've had students complete it in 4 weeks, others in 6 months. Your access never expires, and neither does our support. Your investment is protected.",
+  },
+  {
+    question: "whats included exactly? I don't want any surprise fees later",
+    answer: "Everything is included - all 20 modules (each with its OWN certificate!), certification exam, business toolkit, client intake forms, marketing templates, AND lifetime access to our community. No hidden fees, no monthly subscriptions. One payment, 20 certifications, lifetime value!",
   },
 
-  // PHASE 7: Urgency & final objections
+  // PHASE 7: Urgency & Final Objections
   {
-    question: "I want to do this but I keep putting it off. What would you tell someone who's on the fence?",
+    question: "ugh I want to do this so bad but I keep putting it off... been watching for 20 mins now and still hesitating",
     answer: "I'd say: what are you waiting FOR? Another year to pass feeling unfulfilled? More time watching others succeed? The perfect moment doesn't exist. What DOES exist is a proven path to a meaningful career that helps people AND pays well. The only thing standing between you and that life is a decision.",
   },
   {
-    question: "What's the worst that can happen if I try this?",
+    question: "what's the worst that could happen if I try this",
     answer: "Honestly? The worst case is you gain incredible knowledge about health that helps you and your family, even if you never take a single client. But realistically, if you put in the work, you'll have a new career that gives you freedom, purpose, and income. The bigger risk is NEVER trying.",
   },
   {
-    question: "I've started things before and not finished. How is this different?",
-    answer: "I hear you! The difference is support and community. You're not doing this alone - you have me, the community, weekly calls. Plus, this isn't a boring textbook course. It's engaging, practical, and you see progress immediately. Our completion rate is over 85% because people actually ENJOY it!",
+    question: "I've bought online courses before and never finished them... have a whole graveyard of unfinished programs 😅",
+    answer: "I hear you! The difference here is support and community. You're not doing this alone - you have me, the community, weekly calls. Plus, this isn't a boring textbook course. It's engaging, practical, and you see progress immediately. Our completion rate is over 85% because people actually ENJOY it!",
   },
   {
-    question: "When does enrollment close?",
+    question: "when does enrollment close?",
     answer: "We do periodic enrollment windows to ensure everyone gets proper support and attention. The current enrollment window closes soon - I'd recommend securing your spot now if you're feeling called to this. Once the door closes, you'll have to wait for the next opening. Don't let hesitation cost you months of progress!",
+  },
+
+  // ADDITIONAL: More varied questions for 45-min coverage
+  {
+    question: "can I work with clients in other countries? I have family in the UK who want me to help them",
+    answer: "The beauty of this certification is it works GLOBALLY! Health coaching isn't regulated like medicine, so you can work with clients anywhere. Many of our graduates have clients across different countries. Virtual consultations make it easy - you can help someone in London while sitting in Texas!",
+  },
+  {
+    question: "I'm not very tech savvy... honestly I struggle with new platforms. is the tech part going to be hard?",
+    answer: "You don't need to be tech-savvy at all! Our platform is super simple - if you can use Facebook, you can do this. Plus, running your practice just needs Zoom and email. We even show you exactly how to set everything up step by step. Many of our most successful graduates started with zero tech skills!",
+  },
+  {
+    question: "is functional medicine just a trend? I don't want to invest in something that'll be gone in 5 years",
+    answer: "This is NOT a trend - it's the future of healthcare! Chronic disease is EXPLODING and conventional medicine can't keep up. People are desperate for root-cause solutions. The functional medicine market is growing 15%+ annually. Getting certified NOW puts you ahead of the curve. This field is just getting started!",
+  },
+  {
+    question: "how do practitioners actually find clients?? that's the part that scares me most",
+    answer: "So many ways! Social media, referrals, local wellness events, partnerships with gyms or yoga studios, online marketing. The business module covers ALL of this in detail. Our graduates who follow the strategies typically land their first 3-5 clients within 60-90 days. The demand is huge - people are actively LOOKING for practitioners!",
+  },
+  {
+    question: "can I focus on just one specialty like hormones? or do I have to do everything",
+    answer: "That's the BEST part of our 20-in-1 certification! You get a certificate for EACH module. So you can specialize in gut health AND hormones AND autoimmune AND weight loss - all with individual certifications to prove your expertise! No other program offers this. You become a multi-specialist, which means more clients and higher fees!",
+  },
+  {
+    question: "I work full time... like 50+ hours a week. can I really do this on the side",
+    answer: "Many of our graduates start exactly this way! Study the course evenings and weekends, then see clients a few hours per week. Once your practice income matches your job salary, you can make the transition. Some people keep both forever! Flexibility is the whole point of this career.",
+  },
+  {
+    question: "do you teach how to read lab work? I've always wanted to understand what all those numbers mean",
+    answer: "Yes! We cover functional blood chemistry, hormone panels, thyroid markers, gut tests like GI-MAP, and more. You'll learn to spot patterns that conventional doctors miss. This is one of our most popular modules - it's like getting superpowers to actually UNDERSTAND what's happening in someone's body!",
+  },
+  {
+    question: "is there a community? I learn better when I have people to talk to about this stuff",
+    answer: "YES! This is one of the best parts. You get lifetime access to our private community of practitioners. Share case studies, ask questions, get support, find accountability partners. Many graduates say the community alone is worth the investment. You're joining a tribe of like-minded people!",
+  },
+  {
+    question: "can I see the course content before I buy? I want to make sure it's legit",
+    answer: "That's exactly what the Mini Diploma is for! It gives you a taste of our teaching style, the platform, and core concepts. If you loved the Mini Diploma, you'll LOVE the full certification. It's the same quality, just 10x more comprehensive. The Mini Diploma is your risk-free preview!",
+  },
+  {
+    question: "aren't there already too many health coaches out there? worried about competition",
+    answer: "There are 1 BILLION people worldwide with chronic health issues. The market is massive and growing. What sets you apart isn't just the certification - it's YOUR unique story, approach, and niche. The world needs MORE practitioners, not fewer. There's room for everyone who's committed!",
+  },
+  {
+    question: "how many hours per week do I need to study? be honest",
+    answer: "Most students study 3-5 hours per week and finish in 3-4 months. Some binge it in 4-6 weeks! There's no deadline, so go at your pace. Even 1-2 hours per week works if that's all you have. Progress is progress. The key is consistency, not speed!",
+  },
+  {
+    question: "is there a guarantee? what if I don't like it",
+    answer: "We stand behind our program 100%! If you complete the modules and don't feel confident in your skills, we'll work with you until you do. That said, refunds are rarely requested because graduates genuinely love the program. Your success is our success!",
+  },
+  {
+    question: "what's in the business module? that's what I really need help with",
+    answer: "EVERYTHING! How to define your niche, price your services, create packages, set up your online presence, attract clients through social media, handle discovery calls, and close sales. It's basically a mini MBA for health practitioners. This module alone could be a separate course!",
+  },
+  {
+    question: "could I get a job with this or is it only for starting your own thing",
+    answer: "Both! Many graduates work for wellness clinics, functional medicine doctors, corporate wellness programs, or health tech companies. The certification opens doors everywhere. Self-employment is popular because of the freedom, but you have options. The skills are valuable in any health setting!",
+  },
+  {
+    question: "how do I know I'll actually finish? I have commitment issues with courses 😂",
+    answer: "Our completion rate is over 85% - way above industry average! Why? Because it's engaging, practical, and you see results fast. Plus the community keeps you accountable. We check in on students who fall behind. You're not alone in this journey. We genuinely care about your success!",
+  },
+  {
+    question: "is the exam hard? I get test anxiety",
+    answer: "It's an open-book assessment covering the key concepts from each module. It's challenging but fair - if you did the work, you'll pass. You can retake it if needed. The goal isn't to trick you, it's to ensure you're confident and competent. Most students pass on their first try!",
+  },
+  {
+    question: "do I get an actual certificate I can hang on my wall? lol I know that's silly but I want it",
+    answer: "Both! You get beautiful digital certificates immediately upon completion, plus we mail you physical framed certificates. They look amazing on your wall or in your office. Perfect for credibility when clients visit. Your hard work deserves to be displayed!",
+  },
+  {
+    question: "how do I know if this is really right for me... I keep going back and forth",
+    answer: "Ask yourself: Do you genuinely want to help people with their health? Are you frustrated by conventional medicine's limitations? Do you want flexibility and meaningful work? If you said yes, this is probably your path. The fact that you're here, watching this, tells me something is calling you!",
+  },
+  {
+    question: "ok I think I'm ready... any last words of encouragement? I'm still nervous 😬",
+    answer: "Here's the truth: EVERYONE is nervous at the beginning. Every successful practitioner started exactly where you are right now - scared but hopeful. The only difference between them and people who never try is that they took action despite the fear. Trust yourself. You can do this. We've got you!",
+  },
+  {
+    question: "OMG just enrolled!! so excited and terrified at the same time haha",
+    answer: "CONGRATULATIONS! You just made one of the best decisions of your life! That mix of excitement and nervousness is completely normal. Check your email for login details and jump into the community to introduce yourself. We're all here to support you. Welcome to the family!",
   },
 ];
 
 // Enrollment notifications - more variety
 const ENROLLMENT_NOTIFICATIONS = [
-  { name: "Sarah M.", location: "Denver, CO" },
   { name: "Jennifer L.", location: "Austin, TX" },
   { name: "Michelle R.", location: "Phoenix, AZ" },
   { name: "Rebecca T.", location: "Orlando, FL" },
@@ -194,53 +288,104 @@ interface ChatMessage {
   timestamp: Date;
 }
 
+// Shuffle array with seed for consistent randomization per session
+function shuffleWithSeed(array: typeof QA_CONVERSATIONS, seed: number) {
+  const shuffled = [...array];
+  let currentIndex = shuffled.length;
+  let randomValue: number;
+
+  // Simple seeded random
+  const seededRandom = () => {
+    seed = (seed * 9301 + 49297) % 233280;
+    return seed / 233280;
+  };
+
+  while (currentIndex !== 0) {
+    randomValue = Math.floor(seededRandom() * currentIndex);
+    currentIndex--;
+    [shuffled[currentIndex], shuffled[randomValue]] = [shuffled[randomValue], shuffled[currentIndex]];
+  }
+
+  return shuffled;
+}
+
+// Get or create session seed for randomization
+function getSessionSeed(): number {
+  if (typeof window === "undefined") return Date.now();
+
+  const stored = sessionStorage.getItem("qa_session_seed");
+  if (stored) {
+    return parseInt(stored, 10);
+  }
+
+  const newSeed = Math.floor(Math.random() * 1000000);
+  sessionStorage.setItem("qa_session_seed", newSeed.toString());
+  return newSeed;
+}
+
 export function LiveQAChat() {
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [viewerCount, setViewerCount] = useState(347);
   const chatRef = useRef<HTMLDivElement>(null);
   const conversationIndexRef = useRef(0);
+  const shuffledConversationsRef = useRef<typeof QA_CONVERSATIONS | null>(null);
+  const shuffledProfilesRef = useRef<typeof QA_PROFILES | null>(null);
 
-  // Initialize with some messages - start with deeper questions
+  // Initialize with randomized Q&A pairs based on session
   useEffect(() => {
+    // Get session seed for consistent randomization within this browser session
+    const seed = getSessionSeed();
+
+    // Shuffle conversations and profiles
+    shuffledConversationsRef.current = shuffleWithSeed(QA_CONVERSATIONS, seed);
+    shuffledProfilesRef.current = shuffleWithSeed(QA_PROFILES as unknown as typeof QA_CONVERSATIONS, seed + 1) as unknown as typeof QA_PROFILES;
+
+    const shuffledConversations = shuffledConversationsRef.current;
+    const shuffledProfiles = shuffledProfilesRef.current;
+
     const initialMessages: ChatMessage[] = [];
 
-    // Add first 4 Q&A pairs (deeper questions first)
-    for (let i = 0; i < 4; i++) {
-      const profile = QA_PROFILES[i];
-      const qa = QA_CONVERSATIONS[i];
+    // Start with 3 randomized Q&A pairs
+    for (let i = 0; i < 3; i++) {
+      const profile = shuffledProfiles[i];
+      const qa = shuffledConversations[i];
 
       initialMessages.push({
         id: `q-${i}`,
         type: "question",
         profile,
         content: qa.question,
-        timestamp: new Date(Date.now() - (4 - i) * 60000),
+        timestamp: new Date(Date.now() - (3 - i) * 60000),
       });
 
       initialMessages.push({
         id: `a-${i}`,
         type: "answer",
         content: qa.answer,
-        timestamp: new Date(Date.now() - (4 - i) * 60000 + 30000),
+        timestamp: new Date(Date.now() - (3 - i) * 60000 + 12000),
       });
     }
 
     setMessages(initialMessages);
-    conversationIndexRef.current = 4;
+    conversationIndexRef.current = 3;
   }, []);
 
-  // Add new messages periodically
+  // Add new messages every 45-60 seconds (realistic webinar pace)
   useEffect(() => {
     const addMessage = () => {
       const rand = Math.random();
 
-      // 75% chance of Q&A, 25% chance of enrollment notification
-      if (rand < 0.75) {
-        // Add Q&A
-        const qaIndex = conversationIndexRef.current % QA_CONVERSATIONS.length;
-        const profileIndex = (conversationIndexRef.current + 4) % QA_PROFILES.length;
-        const qa = QA_CONVERSATIONS[qaIndex];
-        const profile = QA_PROFILES[profileIndex];
+      // Use shuffled arrays or fallback to original
+      const conversations = shuffledConversationsRef.current || QA_CONVERSATIONS;
+      const profiles = shuffledProfilesRef.current || QA_PROFILES;
+
+      // 80% chance of Q&A, 20% chance of enrollment notification
+      if (rand < 0.80) {
+        // Add Q&A using shuffled arrays
+        const qaIndex = conversationIndexRef.current % conversations.length;
+        const profileIndex = (conversationIndexRef.current + 3) % profiles.length;
+        const qa = conversations[qaIndex];
+        const profile = profiles[profileIndex];
 
         // Add question
         const questionId = `q-${Date.now()}`;
@@ -255,7 +400,7 @@ export function LiveQAChat() {
           },
         ]);
 
-        // Add answer after delay (2-4 seconds for natural feel)
+        // Add answer after delay (10-15 seconds for realistic typing feel)
         setTimeout(() => {
           setMessages((prev) => [
             ...prev,
@@ -266,7 +411,7 @@ export function LiveQAChat() {
               timestamp: new Date(),
             },
           ]);
-        }, 2000 + Math.random() * 2000);
+        }, 10000 + Math.random() * 5000);
 
         conversationIndexRef.current++;
       } else {
@@ -287,8 +432,8 @@ export function LiveQAChat() {
       }
     };
 
-    // Add new message every 6-10 seconds for more activity
-    const interval = setInterval(addMessage, 6000 + Math.random() * 4000);
+    // Add new message every 45-60 seconds for realistic webinar pace
+    const interval = setInterval(addMessage, 45000 + Math.random() * 15000);
     return () => clearInterval(interval);
   }, []);
 

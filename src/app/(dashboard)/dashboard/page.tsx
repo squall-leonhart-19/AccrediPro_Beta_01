@@ -219,21 +219,21 @@ export default async function DashboardPage() {
 
   const currentCareer = getCurrentStage();
 
-  // Get career stage message
+  // Get career stage message - focused on earning potential and life transformation
   const getCareerMessage = () => {
     if (currentCareer.stage === 0) {
-      return "You're exploring your path to becoming a certified practitioner.";
+      return "Start your journey to a rewarding career helping others transform their health — and earn $3K-$50K+/month doing what you love.";
     }
     if (currentCareer.stage === 1) {
-      return "You're building the skills to work confidently with real clients.";
+      return "You're on your way to earning $3K-$5K/month as a Certified Practitioner. Keep going — your new career awaits!";
     }
     if (currentCareer.stage === 2) {
-      return "You're developing your practice and building your income foundation.";
+      return "Building toward $5K-$10K/month with your own practice. You're turning your passion into a real income.";
     }
     if (currentCareer.stage === 3) {
-      return "You're mastering advanced techniques and becoming an industry authority.";
+      return "Advancing to $10K-$30K/month as an industry authority. Premium clients and premium rates ahead!";
     }
-    return "You're scaling your business and building leverage.";
+    return "Scaling to $30K-$50K+/month with teams and leverage. You're building a wellness empire!";
   };
 
   // Get meaningful activity interpretations
@@ -254,7 +254,7 @@ export default async function DashboardPage() {
   return (
     <DashboardWrapper userName={firstName} userId={session.user.id} hasCompletedOnboarding={hasCompletedOnboarding}>
       <div className="space-y-6 animate-fade-in">
-        {/* FIX #1 - Career Context Header */}
+        {/* ACCREDIPRO HERO HEADER */}
         <Card className="bg-gradient-to-br from-burgundy-600 via-burgundy-700 to-burgundy-800 border-0 overflow-hidden relative">
           <div className="absolute inset-0 opacity-10">
             <div className="absolute top-0 right-0 w-64 h-64 bg-gold-400 rounded-full blur-3xl -translate-y-1/2 translate-x-1/4" />
@@ -262,84 +262,90 @@ export default async function DashboardPage() {
           </div>
           <CardContent className="p-6 md:p-8 relative">
             <div className="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-6">
-              <div>
-                {/* Welcome + Career Context */}
-                <div className="inline-flex items-center gap-2 text-gold-300 text-sm font-medium mb-2 bg-white/10 backdrop-blur-sm px-3 py-1 rounded-full">
-                  <Shield className="w-4 h-4" />
-                  Welcome back, {firstName}
-                </div>
-
-                <div className="mb-4">
-                  <p className="text-burgundy-200 text-sm mb-1">Career Path</p>
-                  <h1 className="text-2xl md:text-3xl font-bold text-white">
-                    {specialization.name} Practitioner
-                  </h1>
-                </div>
-
-                <div className="mb-4">
-                  <p className="text-burgundy-200 text-sm mb-1">Current Stage</p>
-                  <div className="flex items-center gap-2">
-                    <Badge className="bg-gold-400/20 text-gold-300 border-gold-400/30 text-base px-3 py-1">
-                      {currentCareer.title}
+              <div className="flex-1">
+                {/* AccrediPro Branding */}
+                <div className="flex items-center gap-3 mb-4">
+                  <div className="w-12 h-12 rounded-xl bg-white/10 backdrop-blur-sm flex items-center justify-center border border-white/20">
+                    <Shield className="w-6 h-6 text-gold-400" />
+                  </div>
+                  <div>
+                    <Badge className="bg-gold-400/20 text-gold-300 border-gold-400/30 mb-1">
+                      AccrediPro Dashboard
                     </Badge>
-                    {currentCareer.status === "in_progress" && (
-                      <span className="text-gold-300 text-sm">(In Progress)</span>
-                    )}
+                    <h1 className="text-2xl md:text-3xl font-bold text-white">
+                      Welcome back, {firstName}!
+                    </h1>
                   </div>
                 </div>
 
-                <p className="text-burgundy-100 text-base max-w-xl">
+                {/* Career Context */}
+                <div className="bg-white/10 backdrop-blur-sm rounded-xl p-4 border border-white/20 mb-4 max-w-md">
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 rounded-lg bg-gold-400/20 flex items-center justify-center">
+                      <GraduationCap className="w-5 h-5 text-gold-300" />
+                    </div>
+                    <div>
+                      <p className="text-burgundy-200 text-xs">Your Career Path</p>
+                      <p className="text-white font-semibold">{specialization.name} Practitioner</p>
+                    </div>
+                    <Badge className="ml-auto bg-emerald-500/20 text-emerald-300 border-emerald-400/30">
+                      {currentCareer.title}
+                    </Badge>
+                  </div>
+                </div>
+
+                <p className="text-burgundy-100 text-base max-w-lg">
                   {getCareerMessage()}
                 </p>
               </div>
 
-              {/* FIX #2 - Smarter Next Best Step */}
-              <div className="lg:w-80 bg-white/10 backdrop-blur-sm rounded-2xl p-5 border border-white/20">
-                <div className="flex items-center gap-2 text-gold-300 font-semibold mb-3">
+              {/* Next Best Step Card */}
+              <div className="lg:w-80 bg-white rounded-2xl p-5 shadow-xl">
+                <div className="flex items-center gap-2 text-burgundy-700 font-semibold mb-3">
                   <Target className="w-5 h-5" />
-                  Your Next Best Step
+                  Your Next Step
                 </div>
                 {nextLesson ? (
                   <>
-                    <p className="text-white font-medium mb-1">
-                      Complete "{nextLesson.title}"
+                    <p className="text-gray-900 font-medium mb-1 line-clamp-2">
+                      {nextLesson.title}
                     </p>
-                    <p className="text-burgundy-200 text-sm mb-4">
-                      This moves you closer to {currentCareer.title} status.
+                    <p className="text-gray-500 text-sm mb-4">
+                      Continue building toward {currentCareer.title}.
                     </p>
                     <Link href={`/learning/${nextLesson.courseSlug}/${nextLesson.lessonId}`}>
-                      <Button size="sm" className="w-full bg-white text-burgundy-700 hover:bg-white/90 font-semibold">
+                      <Button size="sm" className="w-full bg-burgundy-600 hover:bg-burgundy-700 font-semibold">
+                        <Play className="w-4 h-4 mr-2" />
                         Continue Lesson
-                        <ArrowRight className="w-4 h-4 ml-2" />
                       </Button>
                     </Link>
                   </>
                 ) : enrollments.length === 0 ? (
                   <>
-                    <p className="text-white font-medium mb-1">
-                      Start your free mini diploma
+                    <p className="text-gray-900 font-medium mb-1">
+                      Start Your Free Mini Diploma
                     </p>
-                    <p className="text-burgundy-200 text-sm mb-4">
-                      Begin your journey to becoming a certified practitioner.
+                    <p className="text-gray-500 text-sm mb-4">
+                      Begin your journey to certification with AccrediPro.
                     </p>
                     <Link href="/roadmap">
-                      <Button size="sm" className="w-full bg-white text-burgundy-700 hover:bg-white/90 font-semibold">
-                        View Roadmap
+                      <Button size="sm" className="w-full bg-burgundy-600 hover:bg-burgundy-700 font-semibold">
+                        View My Roadmap
                         <ArrowRight className="w-4 h-4 ml-2" />
                       </Button>
                     </Link>
                   </>
                 ) : (
                   <>
-                    <p className="text-white font-medium mb-1">
-                      Explore your next certification
+                    <p className="text-gray-900 font-medium mb-1">
+                      Explore Your Next Certification
                     </p>
-                    <p className="text-burgundy-200 text-sm mb-4">
-                      Continue advancing your career path.
+                    <p className="text-gray-500 text-sm mb-4">
+                      Continue advancing your AccrediPro career.
                     </p>
                     <Link href="/roadmap">
-                      <Button size="sm" className="w-full bg-white text-burgundy-700 hover:bg-white/90 font-semibold">
-                        View Roadmap
+                      <Button size="sm" className="w-full bg-burgundy-600 hover:bg-burgundy-700 font-semibold">
+                        View My Roadmap
                         <ArrowRight className="w-4 h-4 ml-2" />
                       </Button>
                     </Link>
@@ -350,101 +356,37 @@ export default async function DashboardPage() {
           </CardContent>
         </Card>
 
-        {/* MISSION/PROMISE STRIP */}
-        <div className="bg-gradient-to-r from-gold-50 via-white to-gold-50 border border-gold-200/50 rounded-xl p-4">
-          <div className="flex flex-col md:flex-row items-center justify-center gap-3 md:gap-8 text-center">
-            <div className="flex items-center gap-2">
-              <div className="w-8 h-8 rounded-full bg-gold-100 flex items-center justify-center">
-                <Award className="w-4 h-4 text-gold-600" />
-              </div>
-              <span className="text-sm font-medium text-gray-700">9x Accredited Certifications</span>
-            </div>
-            <div className="hidden md:block w-px h-6 bg-gold-200" />
-            <div className="flex items-center gap-2">
-              <div className="w-8 h-8 rounded-full bg-green-100 flex items-center justify-center">
-                <Shield className="w-4 h-4 text-green-600" />
-              </div>
-              <span className="text-sm font-medium text-gray-700">Practice with Full Legitimacy</span>
-            </div>
-            <div className="hidden md:block w-px h-6 bg-gold-200" />
-            <div className="flex items-center gap-2">
-              <div className="w-8 h-8 rounded-full bg-burgundy-100 flex items-center justify-center">
-                <Users className="w-4 h-4 text-burgundy-600" />
-              </div>
-              <span className="text-sm font-medium text-gray-700">Join 500+ Certified Practitioners</span>
-            </div>
-          </div>
-        </div>
-
-        {/* FIX #2 - Stats Grid with Meaningful Labels */}
-        <div className="grid grid-cols-2 lg:grid-cols-5 gap-4">
-          <Card className="card-premium">
-            <CardContent className="p-4">
-              <div className="flex items-center gap-3">
-                <div className="p-2.5 rounded-xl bg-gradient-to-br from-burgundy-100 to-burgundy-50">
-                  <BookOpen className="w-5 h-5 text-burgundy-600" />
-                </div>
-                <div>
-                  <p className="text-2xl font-bold text-gray-900">{inProgressCourses}</p>
-                  <p className="text-xs text-gray-500">Courses In Progress</p>
-                </div>
-              </div>
+        {/* Stats Grid - Cleaner Design */}
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+          <Card className="bg-gradient-to-br from-burgundy-500 to-burgundy-600 border-0 shadow-lg">
+            <CardContent className="p-4 text-center">
+              <BookOpen className="w-6 h-6 text-white/80 mx-auto mb-2" />
+              <p className="text-3xl font-bold text-white">{inProgressCourses}</p>
+              <p className="text-xs text-burgundy-100">Active Courses</p>
             </CardContent>
           </Card>
 
-          <Card className="card-premium">
-            <CardContent className="p-4">
-              <div className="flex items-center gap-3">
-                <div className="p-2.5 rounded-xl bg-gradient-to-br from-green-100 to-green-50">
-                  <CheckCircle className="w-5 h-5 text-green-600" />
-                </div>
-                <div>
-                  <p className="text-2xl font-bold text-gray-900">{completedCourses}</p>
-                  <p className="text-xs text-gray-500">Milestones Completed</p>
-                </div>
-              </div>
+          <Card className="bg-gradient-to-br from-emerald-500 to-emerald-600 border-0 shadow-lg">
+            <CardContent className="p-4 text-center">
+              <CheckCircle className="w-6 h-6 text-white/80 mx-auto mb-2" />
+              <p className="text-3xl font-bold text-white">{completedCourses}</p>
+              <p className="text-xs text-emerald-100">Completed</p>
             </CardContent>
           </Card>
 
-          <Card className="card-premium">
-            <CardContent className="p-4">
-              <div className="flex items-center gap-3">
-                <div className="p-2.5 rounded-xl bg-gradient-to-br from-gold-100 to-gold-50">
-                  <Award className="w-5 h-5 text-gold-600" />
-                </div>
-                <div>
-                  <p className="text-2xl font-bold text-gray-900">{certificates}</p>
-                  <p className="text-xs text-gray-500">Certificates Earned</p>
-                </div>
-              </div>
+          <Card className="bg-gradient-to-br from-gold-500 to-amber-500 border-0 shadow-lg">
+            <CardContent className="p-4 text-center">
+              <Award className="w-6 h-6 text-white/80 mx-auto mb-2" />
+              <p className="text-3xl font-bold text-white">{certificates}</p>
+              <p className="text-xs text-amber-100">Certificates</p>
             </CardContent>
           </Card>
 
-          <Card className="card-premium">
-            <CardContent className="p-4">
-              <div className="flex items-center gap-3">
-                <div className="p-2.5 rounded-xl bg-gradient-to-br from-purple-100 to-purple-50">
-                  <Clock className="w-5 h-5 text-purple-600" />
-                </div>
-                <div>
-                  <p className="text-2xl font-bold text-gray-900">{formatWatchTime(totalWatchTime)}</p>
-                  <p className="text-xs text-gray-500">Study Time</p>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-
-          <Card className="card-premium">
-            <CardContent className="p-4">
-              <div className="flex items-center gap-3">
-                <div className="p-2.5 rounded-xl bg-gradient-to-br from-orange-100 to-orange-50">
-                  <Flame className="w-5 h-5 text-orange-600" />
-                </div>
-                <div>
-                  <p className="text-2xl font-bold text-gray-900">{userStreak?.currentStreak || 0}</p>
-                  <p className="text-xs text-gray-500">Consistency Streak</p>
-                </div>
-              </div>
+          <Card className="bg-gradient-to-br from-blue-500 to-blue-600 border-0 shadow-lg">
+            <CardContent className="p-4 text-center">
+              <Clock className="w-6 h-6 text-white/80 mx-auto mb-2" />
+              <p className="text-3xl font-bold text-white">{formatWatchTime(totalWatchTime) || "0m"}</p>
+              <p className="text-xs text-blue-100">Study Time</p>
             </CardContent>
           </Card>
         </div>
@@ -637,109 +579,121 @@ export default async function DashboardPage() {
 
           {/* Sidebar */}
           <div className="space-y-6">
-            {/* FIX #4 & #7 - Career Milestones with Clear Status */}
-            <Card className="card-premium">
-              <CardContent className="p-5">
-                <h3 className="font-semibold text-gray-900 mb-4 flex items-center gap-2">
-                  <Trophy className="w-5 h-5 text-gold-600" />
-                  Career Milestones
+            {/* AccrediPro Career Ladder */}
+            <Card className="card-premium overflow-hidden">
+              <div className="bg-gradient-to-r from-burgundy-600 to-burgundy-700 p-4">
+                <h3 className="font-semibold text-white flex items-center gap-2">
+                  <Trophy className="w-5 h-5 text-gold-400" />
+                  Your Career Ladder
                 </h3>
-                <div className="space-y-3">
-                  {CAREER_STAGES.map((stage) => {
+                <p className="text-burgundy-200 text-xs mt-1">Unlock income levels as you progress</p>
+              </div>
+              <CardContent className="p-4">
+                <div className="space-y-2">
+                  {CAREER_STAGES.map((stage, index) => {
                     const isUnlocked = currentCareer.stage >= stage.id;
                     const isCurrent = currentCareer.stage === stage.id - 1;
+                    const isNext = currentCareer.stage === stage.id;
+
+                    // Gradient colors for each step
+                    const stepColors = [
+                      { bg: "from-emerald-500 to-emerald-600", light: "bg-emerald-50", border: "border-emerald-200" },
+                      { bg: "from-amber-500 to-amber-600", light: "bg-amber-50", border: "border-amber-200" },
+                      { bg: "from-blue-500 to-blue-600", light: "bg-blue-50", border: "border-blue-200" },
+                      { bg: "from-burgundy-500 to-burgundy-600", light: "bg-burgundy-50", border: "border-burgundy-200" },
+                    ];
+                    const colors = stepColors[index];
 
                     return (
                       <div
                         key={stage.id}
-                        className={`flex items-center gap-3 p-3 rounded-xl ${
+                        className={`relative flex items-center gap-3 p-3 rounded-xl transition-all ${
                           isUnlocked
-                            ? "bg-gold-50 border border-gold-200"
-                            : isCurrent
-                              ? "bg-burgundy-50 border border-burgundy-200"
-                              : "bg-gray-50 border border-gray-200"
+                            ? `${colors.light} ${colors.border} border`
+                            : isCurrent || isNext
+                              ? "bg-gray-50 border border-gray-200 ring-2 ring-burgundy-400/50"
+                              : "bg-gray-50 border border-gray-100 opacity-60"
                         }`}
                       >
-                        <div className={`w-8 h-8 rounded-full flex items-center justify-center ${
-                          isUnlocked
-                            ? "bg-gold-100"
-                            : isCurrent
-                              ? "bg-burgundy-100"
-                              : "bg-gray-200"
+                        {/* Step Number */}
+                        <div className={`w-10 h-10 rounded-xl flex items-center justify-center font-bold text-white shadow-md ${
+                          isUnlocked || isCurrent || isNext
+                            ? `bg-gradient-to-br ${colors.bg}`
+                            : "bg-gray-300"
                         }`}>
                           {isUnlocked ? (
-                            <CheckCircle className="w-4 h-4 text-green-600" />
+                            <CheckCircle className="w-5 h-5" />
                           ) : (
-                            <Lock className="w-4 h-4 text-gray-400" />
+                            <span>{stage.id}</span>
                           )}
                         </div>
-                        <div className="flex-1">
+
+                        <div className="flex-1 min-w-0">
                           <div className="flex items-center gap-2">
-                            <span className="text-xs">
-                              {isUnlocked ? "✅" : isCurrent ? "🔄" : "🔒"}
-                            </span>
-                            <p className={`text-sm font-medium ${
-                              isUnlocked ? "text-gold-700" : isCurrent ? "text-burgundy-700" : "text-gray-500"
+                            <p className={`text-sm font-semibold ${
+                              isUnlocked ? "text-gray-900" : isCurrent || isNext ? "text-gray-800" : "text-gray-500"
                             }`}>
                               {stage.title}
                             </p>
+                            {(isCurrent || isNext) && !isUnlocked && (
+                              <Badge className="bg-burgundy-100 text-burgundy-700 border-0 text-xs px-2 py-0">
+                                Current
+                              </Badge>
+                            )}
                           </div>
-                          <p className={`text-xs ${
-                            isUnlocked ? "text-green-600" : isCurrent ? "text-burgundy-600" : "text-gray-400"
+                          <p className={`text-xs font-medium ${
+                            isUnlocked ? "text-green-600" : "text-gray-400"
                           }`}>
-                            {isUnlocked ? "Completed" : isCurrent ? "In Progress" : "Locked"}
+                            {stage.income}
                           </p>
                         </div>
+
+                        {/* Connecting line */}
+                        {index < CAREER_STAGES.length - 1 && (
+                          <div className={`absolute left-7 top-full w-0.5 h-2 ${
+                            isUnlocked ? "bg-green-400" : "bg-gray-200"
+                          }`} />
+                        )}
                       </div>
                     );
                   })}
                 </div>
-                <p className="text-xs text-gray-500 mt-4 text-center">
-                  Each level unlocks only after completing the previous one.
-                </p>
+
+                <Link href="/roadmap" className="block mt-4">
+                  <Button variant="outline" size="sm" className="w-full border-burgundy-200 text-burgundy-700 hover:bg-burgundy-50">
+                    <Map className="w-4 h-4 mr-2" />
+                    View Full Roadmap
+                  </Button>
+                </Link>
               </CardContent>
             </Card>
 
-            {/* FIX #8 - Enhanced Coach Card */}
-            {coach && (
-              <Card className="card-premium overflow-hidden">
-                <div className="h-16 bg-gradient-to-r from-burgundy-500 to-burgundy-600 relative">
-                  <div className="absolute inset-0 opacity-30">
-                    <div className="absolute top-0 right-0 w-20 h-20 bg-gold-400 rounded-full blur-2xl -translate-y-1/2" />
+            {/* Need Help? - Compact Coach Card */}
+            <Card className="border border-burgundy-200 bg-gradient-to-br from-burgundy-50 to-white shadow-sm">
+              <CardContent className="p-4">
+                <div className="flex items-center gap-3">
+                  <div className="relative flex-shrink-0">
+                    <div className="w-12 h-12 rounded-full overflow-hidden border-2 border-burgundy-200 shadow-md">
+                      <img
+                        src="/coaches/sarah-coach.webp"
+                        alt="Coach Sarah"
+                        className="w-full h-full object-cover"
+                      />
+                    </div>
+                    <div className="absolute -bottom-0.5 -right-0.5 w-4 h-4 bg-green-500 rounded-full border-2 border-white" />
                   </div>
+                  <div className="flex-1 min-w-0">
+                    <p className="text-sm font-semibold text-gray-900">Need Help?</p>
+                    <p className="text-xs text-gray-500">Sarah responds in &lt;2 hours</p>
+                  </div>
+                  <Link href="/messages">
+                    <Button size="sm" className="bg-burgundy-600 hover:bg-burgundy-700 text-white shadow-sm">
+                      <MessageSquare className="w-4 h-4" />
+                    </Button>
+                  </Link>
                 </div>
-                <CardContent className="p-5 -mt-8 relative">
-                  <div className="flex flex-col items-center text-center">
-                    <Avatar className="h-16 w-16 ring-4 ring-white shadow-xl mb-3">
-                      <AvatarImage src={coach.avatar || undefined} />
-                      <AvatarFallback className="bg-gradient-to-br from-gold-400 to-gold-600 text-burgundy-900 text-lg font-bold">
-                        {getInitials(coach.firstName, coach.lastName)}
-                      </AvatarFallback>
-                    </Avatar>
-                    <Badge className="mb-2 bg-gold-100 text-gold-700 border-0 text-xs">
-                      Your Coach
-                    </Badge>
-                    <h3 className="font-semibold text-gray-900">
-                      {coach.firstName} {coach.lastName}
-                    </h3>
-                    <p className="text-xs text-gray-500 mt-1">
-                      Lead {specialization.name} Educator
-                    </p>
-
-                    <p className="text-sm text-gray-600 mt-3">
-                      Have a question or feeling unsure? Send a message — real support is part of your journey.
-                    </p>
-
-                    <Link href={`/messages?to=${coach.id}`} className="w-full mt-4">
-                      <Button className="w-full bg-burgundy-600 hover:bg-burgundy-700" size="sm">
-                        <MessageSquare className="w-4 h-4 mr-2" />
-                        Message Your Coach
-                      </Button>
-                    </Link>
-                  </div>
-                </CardContent>
-              </Card>
-            )}
+              </CardContent>
+            </Card>
 
             {/* FIX #9 - Student Momentum */}
             <Card className="card-premium bg-gradient-to-br from-green-50 to-emerald-50 border-green-200">

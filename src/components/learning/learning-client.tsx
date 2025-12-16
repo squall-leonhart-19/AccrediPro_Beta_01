@@ -31,6 +31,7 @@ import {
   ChevronDown,
   ChevronUp,
   GraduationCap,
+  StickyNote,
 } from "lucide-react";
 
 // Types
@@ -108,6 +109,7 @@ interface Course {
   id: string;
   title: string;
   slug: string;
+  certificateType?: string;
   modules: Module[];
   coach: Coach | null;
 }
@@ -152,7 +154,7 @@ export function LearningClient({
   progress,
   navigation,
   userStreak,
-  progressMap,
+  progressMap: initialProgressMap,
   quiz,
   quizAttempts,
   hasPassed,
@@ -163,6 +165,9 @@ export function LearningClient({
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [expandedModules, setExpandedModules] = useState<string[]>([module.id]);
   const [localCompleted, setLocalCompleted] = useState(progress.isCompleted);
+  // Local progress map for optimistic updates - initialized from server
+  const [localProgressMap, setLocalProgressMap] = useState(initialProgressMap);
+  const [localCourseProgress, setLocalCourseProgress] = useState(progress.courseProgress);
 
   // Set sidebar open on desktop after mount (avoids SSR hydration mismatch)
   useEffect(() => {
@@ -172,12 +177,20 @@ export function LearningClient({
     }
   }, []);
 
+  // Sync state when lesson changes (new page navigation)
+  // This ensures we start fresh with server data on each lesson
+  useEffect(() => {
+    setLocalCompleted(progress.isCompleted);
+    setLocalProgressMap(initialProgressMap);
+    setLocalCourseProgress(progress.courseProgress);
+  }, [lesson.id, progress.isCompleted, initialProgressMap, progress.courseProgress]);
+
   const moduleProgressPercent = progress.moduleProgress.total > 0
     ? (progress.moduleProgress.completed / progress.moduleProgress.total) * 100
     : 0;
 
-  const courseProgressPercent = progress.courseProgress.total > 0
-    ? (progress.courseProgress.completed / progress.courseProgress.total) * 100
+  const courseProgressPercent = localCourseProgress.total > 0
+    ? (localCourseProgress.completed / localCourseProgress.total) * 100
     : 0;
 
   const coachInitials = course.coach
@@ -207,14 +220,29 @@ export function LearningClient({
     const lessonIndex = allLessonsInOrder.findIndex((l) => l.id === lessonId);
     if (lessonIndex === 0) return true;
     const previousLesson = allLessonsInOrder[lessonIndex - 1];
-    return previousLesson ? progressMap[previousLesson.id]?.isCompleted === true : false;
+    return previousLesson ? localProgressMap[previousLesson.id]?.isCompleted === true : false;
   };
 
-  // Handle mark complete callback
+  // Handle mark complete callback - update local state immediately for optimistic UI
   const handleMarkComplete = () => {
-    setLocalCompleted(true);
-    router.refresh();
+    // Only update if not already completed (prevent double counting)
+    if (!localCompleted) {
+      setLocalCompleted(true);
+      // Update local progress map for sidebar
+      setLocalProgressMap(prev => ({
+        ...prev,
+        [lesson.id]: { isCompleted: true }
+      }));
+      // Update course progress count
+      setLocalCourseProgress(prev => ({
+        ...prev,
+        completed: prev.completed + 1
+      }));
+    }
   };
+
+  // Determine if this is the Final Exam module (no next module = final exam)
+  const isFinalExam = !nextModule && navigation.isLastLessonInModule && navigation.moduleHasQuiz;
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-slate-100 -m-4 lg:-m-8">
@@ -384,7 +412,8 @@ export function LearningClient({
             )}
 
             {/* Lesson Content */}
-            {lesson.content && (
+            {/* Lesson Content - Hidden for Final Exam (quiz intro replaces it) */}
+            {lesson.content && !isFinalExam && (
               <div className="mb-8">
                 <div className="bg-white rounded-2xl p-6 lg:p-8 shadow-lg border border-gray-100">
                   {lesson.lessonType === "VIDEO" ? (
@@ -404,16 +433,33 @@ export function LearningClient({
                       lessonId={lesson.id}
                       isCompleted={localCompleted}
                       onMarkComplete={handleMarkComplete}
+                      hideCompletionMessage={isFinalExam}
                     />
                   )}
                 </div>
 
-{/* Mark complete is handled by the one-click navigation at the bottom */}
+                {/* Notes Section for TEXT lessons - Hidden for Final Exam */}
+                {lesson.lessonType !== "VIDEO" && !isFinalExam && (
+                  <div className="mt-8 p-6 bg-amber-50 rounded-2xl border border-amber-200">
+                    <div className="flex items-center justify-between mb-4">
+                      <div className="flex items-center gap-3">
+                        <div className="w-10 h-10 rounded-xl bg-amber-100 flex items-center justify-center">
+                          <StickyNote className="w-5 h-5 text-amber-600" />
+                        </div>
+                        <div>
+                          <h3 className="font-semibold text-gray-900">Your Notes</h3>
+                          <p className="text-sm text-gray-500">Take notes to remember key points</p>
+                        </div>
+                      </div>
+                      <LessonNotes lessonId={lesson.id} lessonTitle={lesson.title} />
+                    </div>
+                  </div>
+                )}
               </div>
             )}
 
-            {/* Resources */}
-            {lesson.resources.length > 0 && (
+            {/* Resources - Hidden for mini diplomas */}
+            {lesson.resources.length > 0 && course.certificateType !== "MINI_DIPLOMA" && (
               <div className="mb-8">
                 <h3 className="text-xl font-bold text-gray-900 mb-4 flex items-center gap-3">
                   <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center">
@@ -446,14 +492,14 @@ export function LearningClient({
               </div>
             )}
 
-            {/* Coach Support - with profile image */}
-            {course.coach && (
+            {/* Coach Support - with profile image - Hidden for Final Exam */}
+            {course.coach && !isFinalExam && (
               <div className="mb-8">
                 <div className="bg-burgundy-700 rounded-2xl p-5 sm:p-6">
                   <div className="flex items-center gap-4">
                     {/* Coach Photo */}
                     <Avatar className="w-14 h-14 sm:w-16 sm:h-16 ring-4 ring-burgundy-500 flex-shrink-0">
-                      <AvatarImage src={course.coach.image || "/images/coaches/sarah.jpg"} />
+                      <AvatarImage src={course.coach.image || "/coaches/sarah-coach.webp"} />
                       <AvatarFallback className="bg-burgundy-600 text-white text-lg sm:text-xl font-bold">
                         {coachInitials}
                       </AvatarFallback>
@@ -489,6 +535,7 @@ export function LearningClient({
                   id: course.id,
                   title: course.title,
                   slug: course.slug,
+                  certificateType: course.certificateType,
                   coach: course.coach ? {
                     id: course.coach.id,
                     firstName: course.coach.firstName || "",
@@ -499,6 +546,7 @@ export function LearningClient({
                 nextModule={nextModule || undefined}
                 hasPassed={hasPassed}
                 previousAttempts={quizAttempts}
+                isFinalExam={!nextModule} // No next module = this is the final exam
               />
             )}
 
@@ -527,11 +575,12 @@ export function LearningClient({
                 prevLesson={null}
                 nextLesson={navigation.nextLesson}
                 isCompleted={localCompleted}
-                completedLessons={progress.courseProgress.completed}
-                totalLessons={progress.courseProgress.total}
+                completedLessons={localCourseProgress.completed}
+                totalLessons={localCourseProgress.total}
                 canAccessNextLesson={true}
                 showQuizButton={navigation.isLastLessonInModule && navigation.moduleHasQuiz}
                 bottomBar
+                onMarkComplete={handleMarkComplete}
               />
             </div>
 
@@ -566,7 +615,7 @@ export function LearningClient({
               </div>
               <Progress value={courseProgressPercent} className="h-2" />
               <p className="text-xs text-gray-500 mt-2">
-                {progress.courseProgress.completed} of {progress.courseProgress.total} lessons completed
+                {localCourseProgress.completed} of {localCourseProgress.total} lessons completed
               </p>
             </div>
           </div>
@@ -577,7 +626,7 @@ export function LearningClient({
               const isExpanded = expandedModules.includes(mod.id);
               const isCurrentModule = mod.id === module.id;
               const completedInModule = mod.lessons.filter(
-                (l) => progressMap[l.id]?.isCompleted
+                (l) => localProgressMap[l.id]?.isCompleted
               ).length;
               const modProgress = mod.lessons.length > 0
                 ? (completedInModule / mod.lessons.length) * 100
@@ -639,7 +688,7 @@ export function LearningClient({
                   {isExpanded && (
                     <div className="pb-4 px-4">
                       {mod.lessons.map((les) => {
-                        const lessonProgress = progressMap[les.id];
+                        const lessonProgress = localProgressMap[les.id];
                         const isLesCompleted = lessonProgress?.isCompleted;
                         const isCurrent = les.id === lesson.id;
                         const isUnlocked = isLessonUnlocked(les.id);
@@ -710,19 +759,36 @@ export function LearningClient({
                       })}
 
                       {/* Quiz indicator */}
-                      {mod.quiz && (
-                        <div className={cn(
-                          "flex items-center gap-3 px-4 py-3 rounded-xl mt-2 border-t border-gray-100 pt-4",
-                          isCurrentModule && navigation.isLastLessonInModule
-                            ? "bg-purple-50 border border-purple-200"
-                            : ""
-                        )}>
-                          <div className="w-8 h-8 rounded-lg bg-purple-100 flex items-center justify-center">
-                            <Award className="w-4 h-4 text-purple-600" />
+                      {mod.quiz && (() => {
+                        // Check if this module is the final exam (last module with a quiz)
+                        const isModuleFinalExam = moduleIndex === course.modules.length - 1;
+                        return (
+                          <div className={cn(
+                            "flex items-center gap-3 px-4 py-3 rounded-xl mt-2 border-t border-gray-100 pt-4",
+                            isCurrentModule && navigation.isLastLessonInModule
+                              ? isModuleFinalExam
+                                ? "bg-gold-50 border border-gold-200"
+                                : "bg-purple-50 border border-purple-200"
+                              : ""
+                          )}>
+                            <div className={cn(
+                              "w-8 h-8 rounded-lg flex items-center justify-center",
+                              isModuleFinalExam ? "bg-gold-100" : "bg-purple-100"
+                            )}>
+                              <Award className={cn(
+                                "w-4 h-4",
+                                isModuleFinalExam ? "text-gold-600" : "text-purple-600"
+                              )} />
+                            </div>
+                            <span className={cn(
+                              "text-sm font-medium",
+                              isModuleFinalExam ? "text-gold-700" : "text-purple-700"
+                            )}>
+                              {isModuleFinalExam ? "Final Exam" : "Module Quiz"}
+                            </span>
                           </div>
-                          <span className="text-sm font-medium text-purple-700">Module Quiz</span>
-                        </div>
-                      )}
+                        );
+                      })()}
                     </div>
                   )}
                 </div>

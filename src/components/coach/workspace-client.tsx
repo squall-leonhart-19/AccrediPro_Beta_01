@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
@@ -417,45 +418,69 @@ export function CoachWorkspaceClient({ clients: initialClients, stats }: CoachWo
     };
 
     return (
-        <div className="max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8 py-6">
-            {/* Header */}
-            <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4 mb-6">
-                <div className="flex items-center gap-4">
-                    <div className="w-14 h-14 bg-gradient-to-br from-emerald-500 to-teal-600 rounded-2xl flex items-center justify-center shadow-lg">
-                        <Stethoscope className="w-7 h-7 text-white" />
-                    </div>
-                    <div>
-                        <h1 className="text-2xl font-bold text-gray-900">Coach Workspace</h1>
-                        <p className="text-gray-500">Your professional practice management hub</p>
+        <>
+            {/* Welcome Header - Premium Coach Dashboard */}
+            <div className="bg-gradient-to-br from-burgundy-700 via-burgundy-800 to-burgundy-900 relative overflow-hidden">
+                {/* Decorative Elements */}
+                <div className="absolute inset-0">
+                    <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-gold-400/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/4" />
+                    <div className="absolute bottom-0 left-0 w-[300px] h-[300px] bg-burgundy-500/20 rounded-full blur-3xl translate-y-1/2 -translate-x-1/4" />
+                    <div className="absolute inset-0 bg-[url('/patterns/grid.svg')] opacity-5" />
+                </div>
+                <div className="max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8 py-8 relative z-10">
+                    <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
+                        {/* Left: Welcome + Stats */}
+                        <div className="flex items-start gap-5">
+                            <div className="w-14 h-14 bg-gradient-to-br from-gold-400 to-gold-500 rounded-2xl flex items-center justify-center shadow-lg shadow-gold-500/20">
+                                <Briefcase className="w-7 h-7 text-burgundy-900" />
+                            </div>
+                            <div>
+                                <div className="flex items-center gap-3 mb-1">
+                                    <h1 className="text-2xl md:text-3xl font-bold text-white">Coach Workspace</h1>
+                                    <Badge className="bg-gold-400/20 text-gold-300 border-gold-400/30 text-xs">Pro</Badge>
+                                </div>
+                                <p className="text-burgundy-200 text-sm mb-3">Manage clients, track progress & grow your practice</p>
+                                {/* Mini Stats */}
+                                <div className="flex items-center gap-4">
+                                    <div className="flex items-center gap-2 text-white/80">
+                                        <Users className="w-4 h-4" />
+                                        <span className="text-sm font-medium">{stats.totalClients} Clients</span>
+                                    </div>
+                                    <div className="w-px h-4 bg-white/20" />
+                                    <div className="flex items-center gap-2 text-green-400">
+                                        <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse" />
+                                        <span className="text-sm font-medium">{stats.activeClients} Active</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* Right: Chat with Sarah */}
+                        <a href="/messages" className="flex items-center gap-4 bg-white/10 hover:bg-white/15 backdrop-blur-sm rounded-2xl px-5 py-4 border border-white/10 transition-all group shadow-lg">
+                            <div className="relative">
+                                <div className="w-12 h-12 rounded-xl overflow-hidden border-2 border-gold-400/50 shadow-lg">
+                                    <img src="/coaches/sarah-coach.webp" alt="Coach Sarah" className="w-full h-full object-cover" />
+                                </div>
+                                <div className="absolute -bottom-1 -right-1 w-4 h-4 bg-green-500 rounded-full border-2 border-burgundy-800 flex items-center justify-center">
+                                    <span className="w-2 h-2 bg-white rounded-full animate-pulse" />
+                                </div>
+                            </div>
+                            <div className="hidden sm:block">
+                                <p className="text-white font-semibold text-sm">Need Help? Ask Sarah</p>
+                                <p className="text-burgundy-200 text-xs flex items-center gap-1">
+                                    <span className="w-1.5 h-1.5 bg-green-400 rounded-full" />
+                                    Online • Usually replies in 2h
+                                </p>
+                            </div>
+                            <div className="w-10 h-10 rounded-xl bg-white/10 group-hover:bg-white/20 flex items-center justify-center transition-colors">
+                                <MessageSquare className="w-5 h-5 text-white" />
+                            </div>
+                        </a>
                     </div>
                 </div>
-                <Button onClick={() => setShowAddClient(true)} className="gap-2 bg-emerald-600 hover:bg-emerald-700">
-                    <Plus className="w-4 h-4" /> New Client
-                </Button>
             </div>
 
-            {/* Stats Cards */}
-            <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
-                {[
-                    { label: "Total Clients", value: stats.totalClients, icon: Users, color: "blue", trend: "+12%" },
-                    { label: "Active Programs", value: stats.activeClients, icon: Heart, color: "green", badge: "Active" },
-                    { label: "Pending Tasks", value: stats.pendingTasks, icon: CheckSquare, color: "orange", alert: stats.pendingTasks > 0 },
-                    { label: "Sessions This Week", value: stats.thisWeekSessions, icon: Calendar, color: "purple" },
-                ].map((stat) => (
-                    <div key={stat.label} className="bg-white rounded-2xl border border-gray-100 p-5 hover:shadow-md transition-shadow">
-                        <div className="flex items-center justify-between mb-3">
-                            <div className={`w-10 h-10 bg-${stat.color}-100 rounded-xl flex items-center justify-center`}>
-                                <stat.icon className={`w-5 h-5 text-${stat.color}-600`} />
-                            </div>
-                            {stat.trend && <span className="text-xs text-green-600 font-medium flex items-center gap-1"><ArrowUpRight className="w-3 h-3" /> {stat.trend}</span>}
-                            {stat.badge && <Badge className="bg-green-100 text-green-700 border-0 text-xs">{stat.badge}</Badge>}
-                            {stat.alert && <Badge className="bg-orange-100 text-orange-700 border-0 text-xs animate-pulse">Action needed</Badge>}
-                        </div>
-                        <p className="text-3xl font-bold text-gray-900">{stat.value}</p>
-                        <p className="text-sm text-gray-500">{stat.label}</p>
-                    </div>
-                ))}
-            </div>
+            <div className="max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8 py-6">
 
             {/* MODALS */}
 
@@ -488,7 +513,7 @@ export function CoachWorkspaceClient({ clients: initialClients, stats }: CoachWo
                             </div>
                             <div className="pt-4 flex gap-3">
                                 <Button variant="outline" onClick={() => setShowAddClient(false)} className="flex-1">Cancel</Button>
-                                <Button onClick={handleAddClient} disabled={saving || !newClient.name.trim()} className="flex-1 bg-emerald-600 hover:bg-emerald-700">
+                                <Button onClick={handleAddClient} disabled={saving || !newClient.name.trim()} className="flex-1 bg-burgundy-600 hover:bg-burgundy-700">
                                     {saving ? <Loader2 className="w-4 h-4 animate-spin mr-2" /> : <Plus className="w-4 h-4 mr-2" />} Add Client
                                 </Button>
                             </div>
@@ -513,7 +538,7 @@ export function CoachWorkspaceClient({ clients: initialClients, stats }: CoachWo
                                         <button
                                             key={t.id}
                                             onClick={() => setNewSession({ ...newSession, type: t.id })}
-                                            className={cn("p-3 rounded-xl border text-left transition-all", newSession.type === t.id ? "border-emerald-500 bg-emerald-50" : "border-gray-200 hover:border-emerald-200")}
+                                            className={cn("p-3 rounded-xl border text-left transition-all", newSession.type === t.id ? "border-burgundy-500 bg-burgundy-50" : "border-gray-200 hover:border-burgundy-200")}
                                         >
                                             <span className="text-xl">{t.icon}</span>
                                             <p className="text-sm font-medium mt-1">{t.name}</p>
@@ -532,7 +557,7 @@ export function CoachWorkspaceClient({ clients: initialClients, stats }: CoachWo
                             </div>
                             <div className="pt-4 flex gap-3">
                                 <Button variant="outline" onClick={() => setShowAddSession(false)} className="flex-1">Cancel</Button>
-                                <Button onClick={handleAddSession} disabled={saving || !newSession.type || !newSession.date} className="flex-1 bg-emerald-600 hover:bg-emerald-700">
+                                <Button onClick={handleAddSession} disabled={saving || !newSession.type || !newSession.date} className="flex-1 bg-burgundy-600 hover:bg-burgundy-700">
                                     {saving ? <Loader2 className="w-4 h-4 animate-spin mr-2" /> : <Check className="w-4 h-4 mr-2" />} Save Session
                                 </Button>
                             </div>
@@ -554,7 +579,7 @@ export function CoachWorkspaceClient({ clients: initialClients, stats }: CoachWo
                                 <button
                                     key={p.id}
                                     onClick={() => setSelectedProtocol(p)}
-                                    className={cn("p-4 rounded-xl border text-left transition-all", selectedProtocol?.id === p.id ? "border-emerald-500 bg-emerald-50 ring-2 ring-emerald-200" : "border-gray-200 hover:border-emerald-200")}
+                                    className={cn("p-4 rounded-xl border text-left transition-all", selectedProtocol?.id === p.id ? "border-burgundy-500 bg-burgundy-50 ring-2 ring-burgundy-200" : "border-gray-200 hover:border-burgundy-200")}
                                 >
                                     <div className="flex items-center gap-3 mb-2">
                                         <span className="text-3xl">{p.icon}</span>
@@ -569,7 +594,7 @@ export function CoachWorkspaceClient({ clients: initialClients, stats }: CoachWo
                         </div>
                         <div className="flex gap-3">
                             <Button variant="outline" onClick={() => { setShowAssignProtocol(false); setSelectedProtocol(null); }} className="flex-1">Cancel</Button>
-                            <Button onClick={handleAssignProtocol} disabled={saving || !selectedProtocol} className="flex-1 bg-emerald-600 hover:bg-emerald-700">
+                            <Button onClick={handleAssignProtocol} disabled={saving || !selectedProtocol} className="flex-1 bg-burgundy-600 hover:bg-burgundy-700">
                                 {saving ? <Loader2 className="w-4 h-4 animate-spin mr-2" /> : <ClipboardList className="w-4 h-4 mr-2" />} Assign Protocol
                             </Button>
                         </div>
@@ -596,7 +621,7 @@ export function CoachWorkspaceClient({ clients: initialClients, stats }: CoachWo
                             </div>
                             <div className="pt-4 flex gap-3">
                                 <Button variant="outline" onClick={() => setShowAddTask(false)} className="flex-1">Cancel</Button>
-                                <Button onClick={handleAddTask} disabled={saving || !newTask.task.trim()} className="flex-1 bg-emerald-600 hover:bg-emerald-700">
+                                <Button onClick={handleAddTask} disabled={saving || !newTask.task.trim()} className="flex-1 bg-burgundy-600 hover:bg-burgundy-700">
                                     {saving ? <Loader2 className="w-4 h-4 animate-spin mr-2" /> : <Plus className="w-4 h-4 mr-2" />} Add Task
                                 </Button>
                             </div>
@@ -615,12 +640,12 @@ export function CoachWorkspaceClient({ clients: initialClients, stats }: CoachWo
                         </div>
                         <div className="space-y-3 mb-6">
                             {INTAKE_FORMS.map((form) => (
-                                <div key={form.id} className="flex items-center gap-4 p-4 border border-gray-100 rounded-xl hover:border-emerald-200 transition-colors">
+                                <div key={form.id} className="flex items-center gap-4 p-4 border border-gray-100 rounded-xl hover:border-burgundy-200 transition-colors">
                                     <span className="text-2xl">{form.icon}</span>
                                     <div className="flex-1">
                                         <p className="font-medium text-gray-900">{form.name}</p>
                                     </div>
-                                    <Button size="sm" onClick={() => { alert(`Form "${form.name}" sent to ${selectedClient.email || 'client'}!`); setShowSendForm(false); }}>
+                                    <Button size="sm" onClick={() => { toast.success(`Form "${form.name}" sent to ${selectedClient.email || 'client'}!`); setShowSendForm(false); }}>
                                         <Send className="w-3 h-3 mr-1" /> Send
                                     </Button>
                                 </div>
@@ -631,61 +656,17 @@ export function CoachWorkspaceClient({ clients: initialClients, stats }: CoachWo
                 </div>
             )}
 
-            {/* Main Content */}
-            <div className="grid lg:grid-cols-12 gap-6">
-                {/* Sidebar - Client List */}
-                <div className="lg:col-span-3">
-                    <div className="bg-white rounded-2xl border border-gray-100 overflow-hidden sticky top-24">
-                        <div className="p-4 border-b border-gray-100">
-                            <div className="relative">
-                                <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
-                                <Input placeholder="Search clients..." value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} className="pl-10" />
-                            </div>
-                        </div>
-                        <div className="divide-y divide-gray-50 max-h-[600px] overflow-y-auto">
-                            {filteredClients.length > 0 ? (
-                                filteredClients.map((client) => (
-                                    <button
-                                        key={client.id}
-                                        onClick={() => setSelectedClient(client)}
-                                        className={cn("w-full flex items-center gap-3 p-4 text-left hover:bg-gray-50 transition-colors", selectedClient?.id === client.id && "bg-emerald-50 border-l-4 border-emerald-500")}
-                                    >
-                                        <Avatar className="h-11 w-11 ring-2 ring-gray-100">
-                                            <AvatarFallback className={cn("font-semibold text-sm", client.status === "ACTIVE" ? "bg-emerald-100 text-emerald-700" : "bg-gray-100 text-gray-600")}>
-                                                {getInitials(client.name)}
-                                            </AvatarFallback>
-                                        </Avatar>
-                                        <div className="flex-1 min-w-0">
-                                            <p className="font-medium text-gray-900 truncate">{client.name}</p>
-                                            <p className="text-xs text-gray-500">{client._count.sessions} sessions</p>
-                                        </div>
-                                        <div className={cn("w-2 h-2 rounded-full", client.status === "ACTIVE" ? "bg-green-500" : client.status === "PAUSED" ? "bg-yellow-500" : "bg-blue-500")} />
-                                    </button>
-                                ))
-                            ) : (
-                                <div className="p-8 text-center">
-                                    <Users className="w-12 h-12 mx-auto mb-3 text-gray-200" />
-                                    <p className="text-gray-500 text-sm">No clients yet</p>
-                                    <Button size="sm" variant="outline" onClick={() => setShowAddClient(true)} className="mt-3">
-                                        <Plus className="w-3 h-3 mr-1" /> Add Client
-                                    </Button>
-                                </div>
-                            )}
-                        </div>
-                    </div>
-                </div>
-
-                {/* Main Panel */}
-                <div className="lg:col-span-9">
+            {/* Main Content - Full Width */}
+            <div>
                     {selectedClient ? (
                         <div className="space-y-6">
                             {/* Client Header */}
                             <div className="bg-white rounded-2xl border border-gray-100 overflow-hidden">
-                                <div className="bg-gradient-to-r from-emerald-600 to-teal-600 p-6 text-white">
+                                <div className="bg-gradient-to-r from-burgundy-600 to-burgundy-700 p-6 text-white">
                                     <div className="flex items-start justify-between">
                                         <div className="flex items-center gap-4">
                                             <Avatar className="h-16 w-16 ring-4 ring-white/30">
-                                                <AvatarFallback className="bg-white text-emerald-700 text-xl font-bold">{getInitials(selectedClient.name)}</AvatarFallback>
+                                                <AvatarFallback className="bg-white text-burgundy-700 text-xl font-bold">{getInitials(selectedClient.name)}</AvatarFallback>
                                             </Avatar>
                                             <div>
                                                 <h2 className="text-2xl font-bold">{selectedClient.name}</h2>
@@ -760,7 +741,7 @@ export function CoachWorkspaceClient({ clients: initialClients, stats }: CoachWo
                                                     <Video className="w-5 h-5 text-blue-500" /><span className="text-xs">Log Session</span>
                                                 </Button>
                                                 <Button variant="outline" onClick={() => setShowSendForm(true)} className="h-auto py-3 flex-col gap-1">
-                                                    <Send className="w-5 h-5 text-emerald-500" /><span className="text-xs">Send Form</span>
+                                                    <Send className="w-5 h-5 text-burgundy-500" /><span className="text-xs">Send Form</span>
                                                 </Button>
                                                 <Button variant="outline" onClick={() => setShowAssignProtocol(true)} className="h-auto py-3 flex-col gap-1">
                                                     <ClipboardList className="w-5 h-5 text-purple-500" /><span className="text-xs">Assign Protocol</span>
@@ -773,7 +754,7 @@ export function CoachWorkspaceClient({ clients: initialClients, stats }: CoachWo
 
                                         {/* Health Summary */}
                                         <div className="bg-white rounded-2xl border border-gray-100 p-5">
-                                            <h3 className="font-bold text-gray-900 mb-4 flex items-center gap-2"><Target className="w-5 h-5 text-emerald-500" />Health Goals</h3>
+                                            <h3 className="font-bold text-gray-900 mb-4 flex items-center gap-2"><Target className="w-5 h-5 text-burgundy-500" />Health Goals</h3>
                                             {selectedClient.healthGoals ? (
                                                 <p className="text-sm text-gray-600">{selectedClient.healthGoals}</p>
                                             ) : (
@@ -844,7 +825,7 @@ export function CoachWorkspaceClient({ clients: initialClients, stats }: CoachWo
                                                                     <p className="text-xs font-semibold text-gray-500 uppercase mb-2">Recommended Supplements</p>
                                                                     <div className="flex flex-wrap gap-2">
                                                                         {protocolDetails.supplements.map((s, i) => (
-                                                                            <span key={i} className="px-3 py-1 bg-emerald-50 text-emerald-700 rounded-full text-xs font-medium">{s}</span>
+                                                                            <span key={i} className="px-3 py-1 bg-burgundy-50 text-burgundy-700 rounded-full text-xs font-medium">{s}</span>
                                                                         ))}
                                                                     </div>
                                                                 </div>
@@ -853,9 +834,9 @@ export function CoachWorkspaceClient({ clients: initialClients, stats }: CoachWo
                                                     }
 
                                                     return (
-                                                        <div className="bg-gradient-to-br from-emerald-50 to-teal-50 rounded-xl p-4 border border-emerald-100">
-                                                            <p className="font-medium text-emerald-900">{activeProtocolName}</p>
-                                                            <Badge className="mt-2 bg-emerald-100 text-emerald-700 border-0">{selectedClient.protocols[0]?.status}</Badge>
+                                                        <div className="bg-gradient-to-br from-burgundy-50 to-burgundy-100/50 rounded-xl p-4 border border-burgundy-100">
+                                                            <p className="font-medium text-burgundy-900">{activeProtocolName}</p>
+                                                            <Badge className="mt-2 bg-burgundy-100 text-burgundy-700 border-0">{selectedClient.protocols[0]?.status}</Badge>
                                                         </div>
                                                     );
                                                 })()
@@ -897,7 +878,7 @@ export function CoachWorkspaceClient({ clients: initialClients, stats }: CoachWo
                                     <div className="bg-white rounded-2xl border border-gray-100 p-6">
                                         <div className="flex items-center justify-between mb-6">
                                             <h3 className="font-bold text-gray-900">Session History</h3>
-                                            <Button size="sm" onClick={() => setShowAddSession(true)} className="bg-emerald-600 hover:bg-emerald-700">
+                                            <Button size="sm" onClick={() => setShowAddSession(true)} className="bg-burgundy-600 hover:bg-burgundy-700">
                                                 <Plus className="w-4 h-4 mr-2" /> Log Session
                                             </Button>
                                         </div>
@@ -935,7 +916,7 @@ export function CoachWorkspaceClient({ clients: initialClients, stats }: CoachWo
                                                 { label: "Energy Level", current: 7, previous: 5, icon: "⚡", color: "yellow" },
                                                 { label: "Sleep Quality", current: 8, previous: 6, icon: "😴", color: "blue" },
                                                 { label: "Stress Level", current: 4, previous: 7, icon: "🧘", color: "green", inverse: true },
-                                                { label: "Overall Wellness", current: 75, previous: 60, icon: "❤️", color: "emerald", isPercent: true },
+                                                { label: "Overall Wellness", current: 75, previous: 60, icon: "❤️", color: "burgundy", isPercent: true },
                                             ].map((metric) => (
                                                 <div key={metric.label} className="bg-white rounded-xl border border-gray-100 p-4">
                                                     <div className="flex items-center gap-2 mb-2">
@@ -952,7 +933,7 @@ export function CoachWorkspaceClient({ clients: initialClients, stats }: CoachWo
 
                                         {/* Progress Chart Visualization */}
                                         <div className="bg-white rounded-2xl border border-gray-100 p-6">
-                                            <h3 className="font-bold text-gray-900 mb-4 flex items-center gap-2"><TrendingUp className="w-5 h-5 text-emerald-500" />Progress Over Time (Based on Sessions)</h3>
+                                            <h3 className="font-bold text-gray-900 mb-4 flex items-center gap-2"><TrendingUp className="w-5 h-5 text-burgundy-500" />Progress Over Time (Based on Sessions)</h3>
                                             <div className="space-y-4">
                                                 {/* Session-based progress - each session = ~15% progress */}
                                                 {selectedClient.sessions.length > 0 ? (
@@ -963,7 +944,7 @@ export function CoachWorkspaceClient({ clients: initialClients, stats }: CoachWo
                                                                 <span className="text-xs text-gray-500 w-20">Session {i + 1}</span>
                                                                 <div className="flex-1 h-6 bg-gray-100 rounded-full overflow-hidden">
                                                                     <div
-                                                                        className="h-full bg-gradient-to-r from-emerald-400 to-teal-500 rounded-full transition-all"
+                                                                        className="h-full bg-gradient-to-r from-burgundy-400 to-burgundy-600 rounded-full transition-all"
                                                                         style={{ width: `${progress}%` }}
                                                                     />
                                                                 </div>
@@ -991,12 +972,12 @@ export function CoachWorkspaceClient({ clients: initialClients, stats }: CoachWo
                                                         { title: "30-Day Check-in", date: "Dec 15", icon: "📊", done: false },
                                                         { title: "Protocol Completion", date: "Dec 28", icon: "🎉", done: false },
                                                     ].map((milestone, i) => (
-                                                        <div key={i} className={cn("flex items-center gap-3 p-3 rounded-xl", milestone.done ? "bg-emerald-50" : "bg-gray-50")}>
-                                                            <div className={cn("w-8 h-8 rounded-full flex items-center justify-center", milestone.done ? "bg-emerald-100" : "bg-gray-200")}>
-                                                                {milestone.done ? <Check className="w-4 h-4 text-emerald-600" /> : <span className="text-xs text-gray-500">{i + 1}</span>}
+                                                        <div key={i} className={cn("flex items-center gap-3 p-3 rounded-xl", milestone.done ? "bg-burgundy-50" : "bg-gray-50")}>
+                                                            <div className={cn("w-8 h-8 rounded-full flex items-center justify-center", milestone.done ? "bg-burgundy-100" : "bg-gray-200")}>
+                                                                {milestone.done ? <Check className="w-4 h-4 text-burgundy-600" /> : <span className="text-xs text-gray-500">{i + 1}</span>}
                                                             </div>
                                                             <div className="flex-1">
-                                                                <p className={cn("text-sm font-medium", milestone.done ? "text-emerald-900" : "text-gray-700")}>{milestone.title}</p>
+                                                                <p className={cn("text-sm font-medium", milestone.done ? "text-burgundy-900" : "text-gray-700")}>{milestone.title}</p>
                                                                 <p className="text-xs text-gray-500">{milestone.date}</p>
                                                             </div>
                                                             <span className="text-lg">{milestone.icon}</span>
@@ -1021,11 +1002,11 @@ export function CoachWorkspaceClient({ clients: initialClients, stats }: CoachWo
                                                         <label className="text-sm font-medium text-gray-700 mb-2 block">Score (1-10)</label>
                                                         <div className="flex gap-1">
                                                             {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((n) => (
-                                                                <button key={n} className="w-8 h-8 rounded-lg border border-gray-200 hover:bg-emerald-50 hover:border-emerald-300 text-sm font-medium transition-colors">{n}</button>
+                                                                <button key={n} className="w-8 h-8 rounded-lg border border-gray-200 hover:bg-burgundy-50 hover:border-burgundy-300 text-sm font-medium transition-colors">{n}</button>
                                                             ))}
                                                         </div>
                                                     </div>
-                                                    <Button className="w-full bg-emerald-600 hover:bg-emerald-700">
+                                                    <Button className="w-full bg-burgundy-600 hover:bg-burgundy-700">
                                                         <Plus className="w-4 h-4 mr-2" /> Save Assessment
                                                     </Button>
                                                 </div>
@@ -1060,7 +1041,7 @@ export function CoachWorkspaceClient({ clients: initialClients, stats }: CoachWo
                                     <div className="bg-white rounded-2xl border border-gray-100 p-6">
                                         <div className="flex items-center justify-between mb-6">
                                             <h3 className="font-bold text-gray-900">Protocol Library</h3>
-                                            <Button size="sm" onClick={() => setShowAssignProtocol(true)} className="bg-emerald-600 hover:bg-emerald-700">
+                                            <Button size="sm" onClick={() => setShowAssignProtocol(true)} className="bg-burgundy-600 hover:bg-burgundy-700">
                                                 <Plus className="w-4 h-4 mr-2" /> Assign Protocol
                                             </Button>
                                         </div>
@@ -1070,12 +1051,12 @@ export function CoachWorkspaceClient({ clients: initialClients, stats }: CoachWo
                                                 <h4 className="text-sm font-medium text-gray-700 mb-3">Assigned to {selectedClient.name}</h4>
                                                 <div className="space-y-2">
                                                     {selectedClient.protocols.map((p) => (
-                                                        <div key={p.id} className="flex items-center gap-4 p-4 bg-emerald-50 rounded-xl border border-emerald-100">
-                                                            <ClipboardList className="w-6 h-6 text-emerald-600" />
+                                                        <div key={p.id} className="flex items-center gap-4 p-4 bg-burgundy-50 rounded-xl border border-burgundy-100">
+                                                            <ClipboardList className="w-6 h-6 text-burgundy-600" />
                                                             <div className="flex-1">
                                                                 <p className="font-medium text-gray-900">{p.name}</p>
                                                             </div>
-                                                            <Badge className="bg-emerald-100 text-emerald-700">{p.status}</Badge>
+                                                            <Badge className="bg-burgundy-100 text-burgundy-700">{p.status}</Badge>
                                                         </div>
                                                     ))}
                                                 </div>
@@ -1143,9 +1124,9 @@ export function CoachWorkspaceClient({ clients: initialClients, stats }: CoachWo
                                         </div>
 
                                         {selectedClient.packageType && (
-                                            <div className="mb-6 p-4 bg-emerald-50 rounded-xl border border-emerald-100">
-                                                <p className="text-xs font-medium text-emerald-600 mb-1">Current Package</p>
-                                                <p className="font-semibold text-emerald-900">{selectedClient.packageType}</p>
+                                            <div className="mb-6 p-4 bg-burgundy-50 rounded-xl border border-burgundy-100">
+                                                <p className="text-xs font-medium text-burgundy-600 mb-1">Current Package</p>
+                                                <p className="font-semibold text-burgundy-900">{selectedClient.packageType}</p>
                                             </div>
                                         )}
 
@@ -1166,7 +1147,7 @@ export function CoachWorkspaceClient({ clients: initialClients, stats }: CoachWo
                                                     <span className="text-2xl font-bold text-blue-600">$497</span>
                                                     <span className="text-sm text-gray-500">/month</span>
                                                 </div>
-                                                <Button className="w-full bg-blue-600 hover:bg-blue-700" onClick={() => alert(`Package offered to ${selectedClient.name}!`)}>
+                                                <Button className="w-full bg-blue-600 hover:bg-blue-700" onClick={() => toast.success(`Package offered to ${selectedClient.name}!`)}>
                                                     Offer Package
                                                 </Button>
                                             </div>
@@ -1188,15 +1169,15 @@ export function CoachWorkspaceClient({ clients: initialClients, stats }: CoachWo
                                                     <span className="text-2xl font-bold text-purple-600">$197</span>
                                                     <span className="text-sm text-gray-500">/month</span>
                                                 </div>
-                                                <Button className="w-full bg-purple-600 hover:bg-purple-700" onClick={() => alert(`Package offered to ${selectedClient.name}!`)}>
+                                                <Button className="w-full bg-purple-600 hover:bg-purple-700" onClick={() => toast.success(`Package offered to ${selectedClient.name}!`)}>
                                                     Offer Package
                                                 </Button>
                                             </div>
 
                                             {/* Program */}
-                                            <div className="p-5 border-2 border-emerald-200 rounded-xl bg-gradient-to-br from-emerald-50 to-teal-50 hover:shadow-lg transition-all">
-                                                <div className="w-12 h-12 bg-emerald-100 rounded-xl flex items-center justify-center mb-4">
-                                                    <Target className="w-6 h-6 text-emerald-600" />
+                                            <div className="p-5 border-2 border-burgundy-200 rounded-xl bg-gradient-to-br from-burgundy-50 to-burgundy-100/50 hover:shadow-lg transition-all">
+                                                <div className="w-12 h-12 bg-burgundy-100 rounded-xl flex items-center justify-center mb-4">
+                                                    <Target className="w-6 h-6 text-burgundy-600" />
                                                 </div>
                                                 <h4 className="font-bold text-gray-900 mb-1">8-Week Program</h4>
                                                 <p className="text-sm text-gray-600 mb-3">Complete transformation program</p>
@@ -1206,10 +1187,10 @@ export function CoachWorkspaceClient({ clients: initialClients, stats }: CoachWo
                                                     <p>✓ 2x monthly 1:1 calls</p>
                                                 </div>
                                                 <div className="flex items-baseline gap-1 mb-3">
-                                                    <span className="text-2xl font-bold text-emerald-600">$997</span>
+                                                    <span className="text-2xl font-bold text-burgundy-600">$997</span>
                                                     <span className="text-sm text-gray-500">one-time</span>
                                                 </div>
-                                                <Button className="w-full bg-emerald-600 hover:bg-emerald-700" onClick={() => alert(`Package offered to ${selectedClient.name}!`)}>
+                                                <Button className="w-full bg-burgundy-600 hover:bg-burgundy-700" onClick={() => toast.success(`Package offered to ${selectedClient.name}!`)}>
                                                     Offer Package
                                                 </Button>
                                             </div>
@@ -1228,7 +1209,7 @@ export function CoachWorkspaceClient({ clients: initialClients, stats }: CoachWo
                                     <div className="bg-white rounded-2xl border border-gray-100 p-6">
                                         <div className="flex items-center justify-between mb-6">
                                             <h3 className="font-bold text-gray-900">Client Tasks</h3>
-                                            <Button size="sm" onClick={() => setShowAddTask(true)} className="bg-emerald-600 hover:bg-emerald-700">
+                                            <Button size="sm" onClick={() => setShowAddTask(true)} className="bg-burgundy-600 hover:bg-burgundy-700">
                                                 <Plus className="w-4 h-4 mr-2" /> Add Task
                                             </Button>
                                         </div>
@@ -1236,8 +1217,8 @@ export function CoachWorkspaceClient({ clients: initialClients, stats }: CoachWo
                                             <div className="space-y-3">
                                                 {selectedClient.tasks.map((task) => (
                                                     <div key={task.id} className="flex items-center gap-4 p-4 border border-gray-100 rounded-xl">
-                                                        <button onClick={() => handleCompleteTask(task.id)} className="w-6 h-6 rounded-full border-2 border-gray-300 hover:border-emerald-500 hover:bg-emerald-50 transition-colors flex items-center justify-center">
-                                                            <Check className="w-3 h-3 text-transparent hover:text-emerald-500" />
+                                                        <button onClick={() => handleCompleteTask(task.id)} className="w-6 h-6 rounded-full border-2 border-gray-300 hover:border-burgundy-500 hover:bg-burgundy-50 transition-colors flex items-center justify-center">
+                                                            <Check className="w-3 h-3 text-transparent hover:text-burgundy-500" />
                                                         </button>
                                                         <div className="flex-1">
                                                             <p className="font-medium text-gray-900">{task.task}</p>
@@ -1302,7 +1283,7 @@ PLAN:
                                             />
                                             <div className="flex justify-between items-center mt-4">
                                                 <p className="text-xs text-gray-400">{clientNotes.length} characters</p>
-                                                <Button onClick={handleSaveNotes} disabled={saving} className="bg-emerald-600 hover:bg-emerald-700">
+                                                <Button onClick={handleSaveNotes} disabled={saving} className="bg-burgundy-600 hover:bg-burgundy-700">
                                                     {saving ? <Loader2 className="w-4 h-4 animate-spin mr-2" /> : <Check className="w-4 h-4 mr-2" />}
                                                     Save Notes
                                                 </Button>
@@ -1390,20 +1371,13 @@ PLAN:
                     ) : (
                         /* FULL DASHBOARD - When No Client Selected */
                         <div className="space-y-6">
-                            {/* Dashboard Header */}
-                            <div className="bg-gradient-to-r from-emerald-600 to-teal-600 rounded-2xl p-6 text-white">
-                                <h2 className="text-2xl font-bold mb-2">👋 Welcome back, Coach!</h2>
-                                <p className="text-white/80">Here's your practice overview for today</p>
-                            </div>
-
                             {/* Quick Stats Row */}
-                            <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
+                            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                                 {[
                                     { label: "Total Clients", value: clients.length, icon: Users, color: "blue" },
                                     { label: "Active Protocols", value: clients.filter(c => c.protocols.length > 0).length, icon: ClipboardList, color: "purple" },
                                     { label: "Pending Tasks", value: clients.reduce((sum, c) => sum + c.tasks.length, 0), icon: CheckSquare, color: "orange" },
                                     { label: "Sessions This Week", value: stats.thisWeekSessions, icon: Calendar, color: "green" },
-                                    { label: "Est. Revenue", value: `$${clients.length * 197}`, icon: TrendingUp, color: "emerald" },
                                 ].map((stat) => (
                                     <div key={stat.label} className="bg-white rounded-xl border border-gray-100 p-4 hover:shadow-md transition-shadow">
                                         <stat.icon className={`w-5 h-5 text-${stat.color}-500 mb-2`} />
@@ -1413,20 +1387,40 @@ PLAN:
                                 ))}
                             </div>
 
-                            {/* Dashboard Tabs */}
+                            {/* Dashboard Navigation Bar */}
                             <Tabs defaultValue="my-profile" className="w-full">
-                                <TabsList className="bg-gray-100 p-1 rounded-xl flex-wrap">
-                                    <TabsTrigger value="my-profile" className="rounded-lg"><UserCircle className="w-4 h-4 mr-2" />My Profile</TabsTrigger>
-                                    <TabsTrigger value="overview" className="rounded-lg"><Activity className="w-4 h-4 mr-2" />Overview</TabsTrigger>
-                                    <TabsTrigger value="emails" className="rounded-lg"><Mail className="w-4 h-4 mr-2" />Email Templates</TabsTrigger>
-                                    <TabsTrigger value="resources" className="rounded-lg"><FileText className="w-4 h-4 mr-2" />Resources</TabsTrigger>
-                                    <TabsTrigger value="my-protocols" className="rounded-lg"><ClipboardList className="w-4 h-4 mr-2" />My Protocols</TabsTrigger>
-                                    <TabsTrigger value="groups" className="rounded-lg"><Users className="w-4 h-4 mr-2" />Groups</TabsTrigger>
-                                    <TabsTrigger value="billing" className="rounded-lg"><TrendingUp className="w-4 h-4 mr-2" />Billing</TabsTrigger>
-                                    <TabsTrigger value="notes-library" className="rounded-lg"><Edit className="w-4 h-4 mr-2" />Session Notes</TabsTrigger>
-                                    <TabsTrigger value="availability" className="rounded-lg"><Calendar className="w-4 h-4 mr-2" />Availability</TabsTrigger>
-                                    <TabsTrigger value="analytics" className="rounded-lg"><Activity className="w-4 h-4 mr-2" />Analytics</TabsTrigger>
-                                </TabsList>
+                                <div className="bg-white rounded-xl border border-gray-200 p-2 mb-6">
+                                    <div className="flex items-center justify-between gap-4">
+                                        {/* Tabs - Scrollable on mobile */}
+                                        <div className="flex-1 overflow-x-auto">
+                                            <TabsList className="bg-gray-50 p-1 rounded-lg inline-flex min-w-max">
+                                                <TabsTrigger value="my-profile" className="rounded-md px-3 py-2 text-sm"><UserCircle className="w-4 h-4 mr-1.5" />Profile</TabsTrigger>
+                                                <TabsTrigger value="overview" className="rounded-md px-3 py-2 text-sm"><Activity className="w-4 h-4 mr-1.5" />Overview</TabsTrigger>
+                                                <TabsTrigger value="emails" className="rounded-md px-3 py-2 text-sm"><Mail className="w-4 h-4 mr-1.5" />Emails</TabsTrigger>
+                                                <TabsTrigger value="resources" className="rounded-md px-3 py-2 text-sm"><FileText className="w-4 h-4 mr-1.5" />Resources</TabsTrigger>
+                                                <TabsTrigger value="programs" className="rounded-md px-3 py-2 text-sm"><ClipboardList className="w-4 h-4 mr-1.5" />Programs</TabsTrigger>
+                                                <TabsTrigger value="groups" className="rounded-md px-3 py-2 text-sm"><Users className="w-4 h-4 mr-1.5" />Groups</TabsTrigger>
+                                                <TabsTrigger value="notes-library" className="rounded-md px-3 py-2 text-sm"><Edit className="w-4 h-4 mr-1.5" />Notes</TabsTrigger>
+                                                <TabsTrigger value="availability" className="rounded-md px-3 py-2 text-sm"><Calendar className="w-4 h-4 mr-1.5" />Schedule</TabsTrigger>
+                                            </TabsList>
+                                        </div>
+                                        {/* Actions */}
+                                        <div className="flex items-center gap-2 flex-shrink-0">
+                                            <div className="relative hidden sm:block">
+                                                <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+                                                <Input
+                                                    placeholder="Search..."
+                                                    value={searchQuery}
+                                                    onChange={(e) => setSearchQuery(e.target.value)}
+                                                    className="pl-9 w-[140px] h-9 text-sm"
+                                                />
+                                            </div>
+                                            <Button onClick={() => setShowAddClient(true)} size="sm" className="bg-burgundy-600 hover:bg-burgundy-700 text-white font-medium h-9">
+                                                <Plus className="w-4 h-4 mr-1" /> Add Client
+                                            </Button>
+                                        </div>
+                                    </div>
+                                </div>
 
                                 {/* Overview Tab */}
                                 <TabsContent value="overview" className="mt-6">
@@ -1480,12 +1474,12 @@ PLAN:
 
                                         {/* Client Progress */}
                                         <div className="bg-white rounded-2xl border border-gray-100 p-5 md:col-span-2">
-                                            <h3 className="font-bold text-gray-900 mb-4 flex items-center gap-2"><TrendingUp className="w-5 h-5 text-emerald-500" />Client Progress Overview</h3>
+                                            <h3 className="font-bold text-gray-900 mb-4 flex items-center gap-2"><TrendingUp className="w-5 h-5 text-burgundy-500" />Client Progress Overview</h3>
                                             <div className="grid grid-cols-3 gap-4">
                                                 {clients.slice(0, 6).map((client) => (
-                                                    <button key={client.id} onClick={() => setSelectedClient(client)} className="text-left p-3 border border-gray-100 rounded-xl hover:border-emerald-200 transition-colors">
+                                                    <button key={client.id} onClick={() => setSelectedClient(client)} className="text-left p-3 border border-gray-100 rounded-xl hover:border-burgundy-200 transition-colors">
                                                         <div className="flex items-center gap-2 mb-2">
-                                                            <Avatar className="h-7 w-7"><AvatarFallback className="text-xs bg-emerald-100 text-emerald-700">{getInitials(client.name)}</AvatarFallback></Avatar>
+                                                            <Avatar className="h-7 w-7"><AvatarFallback className="text-xs bg-burgundy-100 text-burgundy-700">{getInitials(client.name)}</AvatarFallback></Avatar>
                                                             <p className="font-medium text-sm truncate">{client.name}</p>
                                                         </div>
                                                         <Progress value={Math.min(client._count.sessions * 15, 100)} className="h-1.5" />
@@ -1678,10 +1672,10 @@ So grateful to be part of your journey,
                                                         <pre className="whitespace-pre-wrap text-sm text-gray-700 font-sans mb-4 bg-white p-4 rounded-lg border border-gray-100">{template.fullText}</pre>
                                                         <Button
                                                             size="sm"
-                                                            className="bg-emerald-600 hover:bg-emerald-700"
+                                                            className="bg-burgundy-600 hover:bg-burgundy-700"
                                                             onClick={() => {
                                                                 navigator.clipboard.writeText(template.fullText);
-                                                                alert("✅ Template copied to clipboard!");
+                                                                toast.success("Template copied to clipboard!");
                                                             }}
                                                         >
                                                             📋 Copy Full Template
@@ -1702,7 +1696,7 @@ So grateful to be part of your journey,
                                                 <h3 className="font-bold text-gray-900">My Resources</h3>
                                                 <p className="text-sm text-gray-500">Upload and manage resources to share with clients</p>
                                             </div>
-                                            <Button className="bg-blue-600 hover:bg-blue-700" onClick={() => alert("Upload feature coming soon! For now, use the built-in resources below.")}>
+                                            <Button className="bg-blue-600 hover:bg-blue-700" onClick={() => toast.info("Upload feature coming soon! For now, use the built-in resources below.")}>
                                                 <Plus className="w-4 h-4 mr-2" /> Upload Resource
                                             </Button>
                                         </div>
@@ -1734,7 +1728,7 @@ So grateful to be part of your journey,
                                                                 <p className="text-xs text-gray-500">{resource.type} • {resource.category}</p>
                                                             </div>
                                                         </div>
-                                                        <Button size="sm" variant="outline" className="w-full mt-2" onClick={() => alert(`"${resource.title}" ready to share! Select a client first.`)}>
+                                                        <Button size="sm" variant="outline" className="w-full mt-2" onClick={() => toast.info(`"${resource.title}" ready to share! Select a client first.`)}>
                                                             Share with Client
                                                         </Button>
                                                     </div>
@@ -1743,18 +1737,18 @@ So grateful to be part of your journey,
                                         </div>
 
                                         {/* Upsell - Premium Resources */}
-                                        <div className="bg-gradient-to-r from-purple-50 to-pink-50 rounded-xl p-5 border border-purple-100">
+                                        <div className="bg-gradient-to-r from-burgundy-50 to-gold-50 rounded-xl p-5 border border-burgundy-100">
                                             <div className="flex items-start gap-4">
-                                                <div className="w-12 h-12 bg-purple-100 rounded-xl flex items-center justify-center flex-shrink-0">
-                                                    <Heart className="w-6 h-6 text-purple-600" />
+                                                <div className="w-12 h-12 bg-burgundy-100 rounded-xl flex items-center justify-center flex-shrink-0">
+                                                    <Heart className="w-6 h-6 text-burgundy-600" />
                                                 </div>
                                                 <div className="flex-1">
-                                                    <h4 className="font-bold text-purple-900 mb-1">Need Professional Resources?</h4>
-                                                    <p className="text-sm text-purple-700 mb-3">
+                                                    <h4 className="font-bold text-burgundy-900 mb-1">Need Professional Resources?</h4>
+                                                    <p className="text-sm text-burgundy-700 mb-3">
                                                         Get 50+ done-for-you guides, meal plans, client handouts, and more - professionally designed and ready to brand!
                                                     </p>
-                                                    <a href="/dfy-resources" className="inline-flex items-center gap-2 px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 text-sm font-medium transition-colors">
-                                                        Browse DFY Resources →
+                                                    <a href="/programs" className="inline-flex items-center gap-2 px-4 py-2 bg-burgundy-600 text-white rounded-lg hover:bg-burgundy-700 text-sm font-medium transition-colors">
+                                                        Browse Program Library →
                                                     </a>
                                                 </div>
                                             </div>
@@ -1762,44 +1756,67 @@ So grateful to be part of your journey,
                                     </div>
                                 </TabsContent>
 
-                                {/* My Protocols Tab */}
-                                <TabsContent value="my-protocols" className="mt-6">
+                                {/* Programs Tab - Locked Programs to Buy */}
+                                <TabsContent value="programs" className="mt-6">
                                     <div className="bg-white rounded-2xl border border-gray-100 p-6">
                                         <div className="flex items-center justify-between mb-6">
                                             <div>
-                                                <h3 className="font-bold text-gray-900">My Custom Protocols</h3>
-                                                <p className="text-sm text-gray-500">Create and manage your signature programs</p>
+                                                <h3 className="font-bold text-gray-900">Done-For-You Client Programs</h3>
+                                                <p className="text-sm text-gray-500">Professional protocols ready to use with your clients</p>
                                             </div>
-                                            <Button className="bg-purple-600 hover:bg-purple-700">
-                                                <Plus className="w-4 h-4 mr-2" /> Create Protocol
-                                            </Button>
+                                            <a href="/programs">
+                                                <Button className="bg-burgundy-600 hover:bg-burgundy-700">
+                                                    <ExternalLink className="w-4 h-4 mr-2" /> View Full Library
+                                                </Button>
+                                            </a>
                                         </div>
 
-                                        {/* Template Protocols */}
-                                        <div className="mb-6">
-                                            <h4 className="text-sm font-medium text-gray-700 mb-3">Template Protocols (Use as starting point)</h4>
-                                            <div className="grid md:grid-cols-2 gap-4">
-                                                {PROTOCOL_TEMPLATES.slice(0, 4).map((p) => (
-                                                    <div key={p.id} className="p-4 border border-gray-100 rounded-xl">
-                                                        <div className="flex items-center gap-3 mb-2">
-                                                            <span className="text-2xl">{p.icon}</span>
-                                                            <div>
-                                                                <p className="font-medium">{p.name}</p>
-                                                                <p className="text-xs text-gray-500">{p.weeks} weeks</p>
-                                                            </div>
+                                        {/* Featured Programs Grid */}
+                                        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4 mb-6">
+                                            {[
+                                                { name: "21-Day Gut Reset Protocol", price: "$197", category: "Gut Health", icon: "🌿", popular: true },
+                                                { name: "Hormone Balance Blueprint", price: "$247", category: "Hormone Health", icon: "⚖️", popular: false },
+                                                { name: "Detox & Cleanse Program", price: "$147", category: "Detox", icon: "✨", popular: false },
+                                                { name: "Stress & Adrenal Recovery", price: "$197", category: "Stress", icon: "🧘", popular: true },
+                                                { name: "Weight Loss Transformation", price: "$297", category: "Weight Loss", icon: "🎯", popular: false },
+                                                { name: "Sleep Optimization System", price: "$147", category: "Sleep", icon: "😴", popular: false },
+                                            ].map((program, i) => (
+                                                <div key={i} className="relative p-5 border border-gray-200 rounded-xl hover:border-burgundy-200 hover:shadow-md transition-all bg-gradient-to-br from-white to-gray-50">
+                                                    {program.popular && (
+                                                        <Badge className="absolute top-3 right-3 bg-gold-500 text-white border-0 text-xs">Popular</Badge>
+                                                    )}
+                                                    <div className="flex items-center gap-3 mb-3">
+                                                        <span className="text-3xl">{program.icon}</span>
+                                                        <div>
+                                                            <p className="font-semibold text-gray-900">{program.name}</p>
+                                                            <p className="text-xs text-gray-500">{program.category}</p>
                                                         </div>
-                                                        <Button size="sm" variant="outline" className="w-full mt-2">Duplicate & Customize</Button>
                                                     </div>
-                                                ))}
-                                            </div>
+                                                    <div className="flex items-center justify-between mt-4">
+                                                        <span className="text-lg font-bold text-burgundy-600">{program.price}</span>
+                                                        <a href="/programs">
+                                                            <Button size="sm" variant="outline" className="text-burgundy-600 border-burgundy-200 hover:bg-burgundy-50">
+                                                                View Details
+                                                            </Button>
+                                                        </a>
+                                                    </div>
+                                                </div>
+                                            ))}
                                         </div>
 
-                                        {/* Empty State */}
-                                        <div className="border-2 border-dashed border-gray-200 rounded-xl p-8 text-center">
-                                            <ClipboardList className="w-12 h-12 mx-auto mb-3 text-gray-300" />
-                                            <h4 className="font-medium text-gray-900 mb-1">No custom protocols yet</h4>
-                                            <p className="text-sm text-gray-500 mb-4">Create your signature program to use with clients</p>
-                                            <Button variant="outline"><Plus className="w-4 h-4 mr-2" /> Create Your First Protocol</Button>
+                                        {/* CTA Banner */}
+                                        <div className="bg-gradient-to-r from-burgundy-600 to-burgundy-700 rounded-xl p-6 text-white">
+                                            <div className="flex flex-col md:flex-row items-center justify-between gap-4">
+                                                <div>
+                                                    <h4 className="font-bold text-lg mb-1">Unlock All 50+ Programs</h4>
+                                                    <p className="text-burgundy-200 text-sm">Get instant access to our complete library of done-for-you client programs</p>
+                                                </div>
+                                                <a href="/programs">
+                                                    <Button className="bg-white text-burgundy-700 hover:bg-gold-50 font-semibold">
+                                                        Browse All Programs →
+                                                    </Button>
+                                                </a>
+                                            </div>
                                         </div>
                                     </div>
                                 </TabsContent>
@@ -1812,7 +1829,7 @@ So grateful to be part of your journey,
                                                 <h3 className="font-bold text-gray-900">Group Coaching</h3>
                                                 <p className="text-sm text-gray-500">Manage group programs and cohorts</p>
                                             </div>
-                                            <Button className="bg-purple-600 hover:bg-purple-700">
+                                            <Button onClick={() => toast.info("Group creation coming soon! This feature is in development.")} className="bg-burgundy-600 hover:bg-burgundy-700">
                                                 <Plus className="w-4 h-4 mr-2" /> Create Group
                                             </Button>
                                         </div>
@@ -1822,7 +1839,7 @@ So grateful to be part of your journey,
                                             <Users className="w-12 h-12 mx-auto mb-3 text-gray-300" />
                                             <h4 className="font-medium text-gray-900 mb-1">No groups yet</h4>
                                             <p className="text-sm text-gray-500 mb-4">Create a group program to coach multiple clients together</p>
-                                            <Button variant="outline"><Plus className="w-4 h-4 mr-2" /> Create Your First Group</Button>
+                                            <Button variant="outline" onClick={() => toast.info("Group creation coming soon! This feature is in development.")}><Plus className="w-4 h-4 mr-2" /> Create Your First Group</Button>
                                         </div>
 
                                         {/* Group Benefits */}
@@ -1832,10 +1849,10 @@ So grateful to be part of your journey,
                                                 { icon: "📚", title: "Shared Resources", desc: "Share materials with entire group" },
                                                 { icon: "💬", title: "Community", desc: "Members can support each other" },
                                             ].map((benefit, i) => (
-                                                <div key={i} className="p-4 bg-purple-50 rounded-xl">
+                                                <div key={i} className="p-4 bg-burgundy-50 rounded-xl">
                                                     <span className="text-2xl mb-2 block">{benefit.icon}</span>
-                                                    <p className="font-medium text-purple-900">{benefit.title}</p>
-                                                    <p className="text-xs text-purple-700">{benefit.desc}</p>
+                                                    <p className="font-medium text-burgundy-900">{benefit.title}</p>
+                                                    <p className="text-xs text-burgundy-700">{benefit.desc}</p>
                                                 </div>
                                             ))}
                                         </div>
@@ -1845,66 +1862,20 @@ So grateful to be part of your journey,
                                 {/* Billing Tab */}
                                 <TabsContent value="billing" className="mt-6">
                                     <div className="bg-white rounded-2xl border border-gray-100 p-6">
-                                        <div className="flex items-center justify-between mb-6">
-                                            <div>
-                                                <h3 className="font-bold text-gray-900">Billing & Revenue</h3>
-                                                <p className="text-sm text-gray-500">Track payments and client billing</p>
+                                        <div className="text-center py-12">
+                                            <div className="w-20 h-20 bg-burgundy-100 rounded-full flex items-center justify-center mx-auto mb-6">
+                                                <TrendingUp className="w-10 h-10 text-burgundy-600" />
                                             </div>
-                                        </div>
-
-                                        {/* Revenue Summary */}
-                                        <div className="grid md:grid-cols-4 gap-4 mb-6">
-                                            {[
-                                                { label: "This Month", value: `$${clients.length * 197}`, trend: "+12%", color: "emerald" },
-                                                { label: "Last Month", value: `$${(clients.length - 1) * 197}`, color: "gray" },
-                                                { label: "Outstanding", value: "$0", color: "orange" },
-                                                { label: "Total Clients", value: clients.length, color: "blue" },
-                                            ].map((stat) => (
-                                                <div key={stat.label} className={`p-4 bg-${stat.color}-50 rounded-xl`}>
-                                                    <p className="text-xs text-gray-500">{stat.label}</p>
-                                                    <p className={`text-2xl font-bold text-${stat.color}-700`}>{stat.value}</p>
-                                                    {stat.trend && <p className="text-xs text-emerald-600">{stat.trend} from last month</p>}
-                                                </div>
-                                            ))}
-                                        </div>
-
-                                        {/* Client Billing Table */}
-                                        <h4 className="font-medium text-gray-900 mb-3">Client Billing Status</h4>
-                                        <div className="border border-gray-100 rounded-xl overflow-hidden">
-                                            <table className="w-full">
-                                                <thead className="bg-gray-50">
-                                                    <tr>
-                                                        <th className="text-left p-3 text-xs font-medium text-gray-500">Client</th>
-                                                        <th className="text-left p-3 text-xs font-medium text-gray-500">Package</th>
-                                                        <th className="text-left p-3 text-xs font-medium text-gray-500">Status</th>
-                                                        <th className="text-left p-3 text-xs font-medium text-gray-500">Next Payment</th>
-                                                        <th className="text-right p-3 text-xs font-medium text-gray-500">Amount</th>
-                                                    </tr>
-                                                </thead>
-                                                <tbody className="divide-y divide-gray-50">
-                                                    {clients.slice(0, 5).map((client) => (
-                                                        <tr key={client.id} className="hover:bg-gray-50">
-                                                            <td className="p-3">
-                                                                <div className="flex items-center gap-2">
-                                                                    <Avatar className="h-7 w-7"><AvatarFallback className="text-xs">{getInitials(client.name)}</AvatarFallback></Avatar>
-                                                                    <span className="text-sm font-medium">{client.name}</span>
-                                                                </div>
-                                                            </td>
-                                                            <td className="p-3 text-sm text-gray-600">{client.packageType || "1:1 Coaching"}</td>
-                                                            <td className="p-3"><Badge className="bg-green-100 text-green-700 border-0 text-xs">Paid</Badge></td>
-                                                            <td className="p-3 text-sm text-gray-500">{new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toLocaleDateString()}</td>
-                                                            <td className="p-3 text-sm font-medium text-right">${client.packageType?.includes("Group") ? 197 : 497}</td>
-                                                        </tr>
-                                                    ))}
-                                                </tbody>
-                                            </table>
-                                        </div>
-
-                                        {/* Stripe Note */}
-                                        <div className="mt-6 p-4 bg-amber-50 rounded-xl border border-amber-100">
-                                            <p className="text-xs text-amber-800">
-                                                <strong>💳 Stripe Integration Coming Soon:</strong> Connect your Stripe account to automatically collect payments and track revenue.
+                                            <h3 className="text-2xl font-bold text-gray-900 mb-2">Billing & Payments</h3>
+                                            <p className="text-gray-500 mb-6 max-w-md mx-auto">
+                                                Track client payments, manage invoices, and connect your payment processor.
                                             </p>
+                                            <div className="p-4 bg-amber-50 rounded-xl border border-amber-100 max-w-lg mx-auto">
+                                                <p className="text-sm text-amber-800">
+                                                    <strong>💳 Stripe Integration Coming Soon</strong><br />
+                                                    <span className="text-xs">Connect your Stripe account to automatically collect payments and track your business.</span>
+                                                </p>
+                                            </div>
                                         </div>
                                     </div>
                                 </TabsContent>
@@ -1917,7 +1888,7 @@ So grateful to be part of your journey,
                                                 <h3 className="font-bold text-gray-900 text-xl">Session Notes Library</h3>
                                                 <p className="text-sm text-gray-500">Reusable session notes and templates</p>
                                             </div>
-                                            <Button className="bg-emerald-600 hover:bg-emerald-700">
+                                            <Button onClick={() => toast.info("Note template creation coming soon!")} className="bg-burgundy-600 hover:bg-burgundy-700">
                                                 <Plus className="w-4 h-4 mr-2" /> Add Note Template
                                             </Button>
                                         </div>
@@ -1936,6 +1907,7 @@ So grateful to be part of your journey,
                                                     variant={i === 0 ? "default" : "outline"}
                                                     size="sm"
                                                     className={i === 0 ? "bg-burgundy-600" : ""}
+                                                    onClick={() => toast.info(`Filtering by: ${cat}`)}
                                                 >
                                                     {cat}
                                                 </Button>
@@ -1961,10 +1933,10 @@ So grateful to be part of your journey,
                                                     <div className="flex items-center justify-between">
                                                         <span className="text-xs text-gray-400">Last used: {note.lastUsed}</span>
                                                         <div className="flex gap-2">
-                                                            <Button variant="ghost" size="sm" className="h-7">
+                                                            <Button variant="ghost" size="sm" className="h-7" onClick={() => toast.success(`Viewing: ${note.title}`)}>
                                                                 <Eye className="w-3 h-3 mr-1" /> View
                                                             </Button>
-                                                            <Button variant="ghost" size="sm" className="h-7">
+                                                            <Button variant="ghost" size="sm" className="h-7" onClick={() => toast.success(`Using template: ${note.title}`)}>
                                                                 <Edit className="w-3 h-3 mr-1" /> Use
                                                             </Button>
                                                         </div>
@@ -1983,7 +1955,7 @@ So grateful to be part of your journey,
                                                 <h3 className="font-bold text-gray-900 text-xl">Availability Settings</h3>
                                                 <p className="text-sm text-gray-500">Set your coaching availability hours</p>
                                             </div>
-                                            <Button className="bg-emerald-600 hover:bg-emerald-700">
+                                            <Button onClick={() => toast.success("Availability settings saved!")} className="bg-burgundy-600 hover:bg-burgundy-700">
                                                 <Save className="w-4 h-4 mr-2" /> Save Changes
                                             </Button>
                                         </div>
@@ -2077,11 +2049,11 @@ So grateful to be part of your journey,
                                             </div>
                                             <p className="text-sm text-blue-700 mb-4">Connect your external calendar for two-way sync</p>
                                             <div className="flex gap-3">
-                                                <Button variant="outline" className="bg-white">
+                                                <Button variant="outline" className="bg-white" onClick={() => toast.info("Google Calendar integration coming soon!")}>
                                                     <img src="https://www.google.com/calendar/images/favicon.ico" alt="" className="w-4 h-4 mr-2" />
                                                     Google Calendar
                                                 </Button>
-                                                <Button variant="outline" className="bg-white">
+                                                <Button variant="outline" className="bg-white" onClick={() => toast.info("Calendly integration coming soon!")}>
                                                     <span className="w-4 h-4 mr-2">📅</span>
                                                     Calendly
                                                 </Button>
@@ -2098,21 +2070,21 @@ So grateful to be part of your journey,
                                                 <h3 className="font-bold text-gray-900 text-xl">Practice Analytics</h3>
                                                 <p className="text-sm text-gray-500">Track your coaching practice performance</p>
                                             </div>
-                                            <Badge className="bg-emerald-100 text-emerald-700 border-0">Last 30 Days</Badge>
+                                            <Badge className="bg-burgundy-100 text-burgundy-700 border-0">Last 30 Days</Badge>
                                         </div>
 
                                         {/* Key Metrics */}
                                         <div className="grid md:grid-cols-4 gap-4 mb-8">
                                             {[
                                                 { label: "Total Sessions", value: clients.reduce((acc, c) => acc + c.sessions.length, 0), trend: "+12%", color: "blue", icon: Calendar },
-                                                { label: "Active Clients", value: clients.filter(c => c.status === "ACTIVE").length, trend: "+3", color: "emerald", icon: Users },
+                                                { label: "Active Clients", value: clients.filter(c => c.status === "ACTIVE").length, trend: "+3", color: "burgundy", icon: Users },
                                                 { label: "Completion Rate", value: "78%", trend: "+5%", color: "purple", icon: Target },
                                                 { label: "Avg. Session/Client", value: clients.length > 0 ? (clients.reduce((acc, c) => acc + c.sessions.length, 0) / clients.length).toFixed(1) : "0", color: "amber", icon: TrendingUp },
                                             ].map((metric) => (
                                                 <div key={metric.label} className={`p-4 bg-${metric.color}-50 rounded-xl`}>
                                                     <div className="flex items-center justify-between mb-2">
                                                         <metric.icon className={`w-5 h-5 text-${metric.color}-600`} />
-                                                        {metric.trend && <span className="text-xs text-emerald-600 font-medium">{metric.trend}</span>}
+                                                        {metric.trend && <span className="text-xs text-burgundy-600 font-medium">{metric.trend}</span>}
                                                     </div>
                                                     <p className={`text-2xl font-bold text-${metric.color}-700`}>{metric.value}</p>
                                                     <p className="text-xs text-gray-500">{metric.label}</p>
@@ -2146,7 +2118,7 @@ So grateful to be part of your journey,
                                                 <h4 className="font-semibold text-gray-900 mb-4">Client Distribution</h4>
                                                 <div className="space-y-3">
                                                     {[
-                                                        { label: "Active", count: clients.filter(c => c.status === "ACTIVE").length, color: "emerald", pct: 60 },
+                                                        { label: "Active", count: clients.filter(c => c.status === "ACTIVE").length, color: "burgundy", pct: 60 },
                                                         { label: "Paused", count: clients.filter(c => c.status === "PAUSED").length, color: "amber", pct: 25 },
                                                         { label: "Completed", count: clients.filter(c => c.status === "COMPLETED").length, color: "blue", pct: 15 },
                                                     ].map((status) => (
@@ -2200,12 +2172,12 @@ So grateful to be part of your journey,
                                                 <p className="text-sm text-gray-500">Build your professional coaching identity</p>
                                             </div>
                                             <Button
-                                                className="bg-emerald-600 hover:bg-emerald-700"
+                                                className="bg-burgundy-600 hover:bg-burgundy-700"
                                                 onClick={() => {
                                                     setProfileSaving(true);
                                                     setTimeout(() => {
                                                         setProfileSaving(false);
-                                                        alert("✅ Profile saved successfully!");
+                                                        toast.success("Profile saved successfully!");
                                                     }, 1000);
                                                 }}
                                             >
@@ -2266,9 +2238,9 @@ So grateful to be part of your journey,
                                                 </div>
 
                                                 {/* Coach Status */}
-                                                <div className="bg-gradient-to-br from-emerald-50 to-teal-50 rounded-xl p-4 text-center border border-emerald-100">
-                                                    <Badge className="bg-emerald-600 text-white border-0 text-sm px-3 py-1">✓ Certified Coach</Badge>
-                                                    <p className="text-xs text-emerald-700 mt-2">Status auto-updated from certifications</p>
+                                                <div className="bg-gradient-to-br from-burgundy-50 to-burgundy-100/50 rounded-xl p-4 text-center border border-burgundy-100">
+                                                    <Badge className="bg-burgundy-600 text-white border-0 text-sm px-3 py-1">✓ Certified Coach</Badge>
+                                                    <p className="text-xs text-burgundy-700 mt-2">Status auto-updated from certifications</p>
                                                 </div>
 
                                                 {/* Coach Level */}
@@ -2371,7 +2343,7 @@ So grateful to be part of your journey,
                                         {/* Certifications - Auto Populated */}
                                         <div className="mb-8">
                                             <h4 className="font-bold text-gray-900 mb-4 flex items-center gap-2">
-                                                <Award className="w-5 h-5 text-emerald-600" />
+                                                <Award className="w-5 h-5 text-burgundy-600" />
                                                 Your Certifications
                                             </h4>
                                             <div className="grid md:grid-cols-3 gap-4">
@@ -2379,15 +2351,15 @@ So grateful to be part of your journey,
                                                     { name: "Certified Health Coach", issuer: "AccrediPro Academy", date: "Nov 2024", status: "Active" },
                                                     { name: "Gut Health Specialist", issuer: "AccrediPro Academy", date: "Dec 2024", status: "Active" },
                                                 ].map((cert, i) => (
-                                                    <div key={i} className="bg-gradient-to-br from-emerald-50 to-teal-50 rounded-xl p-4 border border-emerald-100">
+                                                    <div key={i} className="bg-gradient-to-br from-burgundy-50 to-burgundy-100/50 rounded-xl p-4 border border-burgundy-100">
                                                         <div className="flex items-start gap-3">
-                                                            <div className="w-10 h-10 bg-emerald-100 rounded-lg flex items-center justify-center">
-                                                                <Award className="w-5 h-5 text-emerald-600" />
+                                                            <div className="w-10 h-10 bg-burgundy-100 rounded-lg flex items-center justify-center">
+                                                                <Award className="w-5 h-5 text-burgundy-600" />
                                                             </div>
                                                             <div>
                                                                 <p className="font-semibold text-gray-900 text-sm">{cert.name}</p>
                                                                 <p className="text-xs text-gray-500">{cert.issuer}</p>
-                                                                <p className="text-xs text-emerald-600 mt-1">{cert.date} • {cert.status}</p>
+                                                                <p className="text-xs text-burgundy-600 mt-1">{cert.date} • {cert.status}</p>
                                                             </div>
                                                         </div>
                                                     </div>
@@ -2649,8 +2621,8 @@ So grateful to be part of your journey,
                             </Tabs>
                         </div>
                     )}
-                </div>
             </div>
-        </div>
+            </div>
+        </>
     );
 }

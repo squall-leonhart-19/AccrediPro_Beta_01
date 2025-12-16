@@ -36,6 +36,8 @@ export async function POST(req: NextRequest) {
       commentType = "sarah",
       commentContent,
       likesToAdd = 0,
+      setExactLikeCount, // If provided, set likes to this exact number
+      setReactions, // If provided, set reactions to this exact JSON object
     } = body;
 
     if (!postId) {
@@ -117,8 +119,36 @@ export async function POST(req: NextRequest) {
       results.comment = true;
     }
 
-    // Add likes if requested
-    if (likesToAdd > 0) {
+    // Set reactions JSON if provided (syncs to all views)
+    if (setReactions && typeof setReactions === "object") {
+      // Calculate total likes from all reactions
+      const totalLikes = Object.values(setReactions as Record<string, number>).reduce(
+        (sum: number, count: number) => sum + (count || 0), 0
+      );
+
+      await prisma.communityPost.update({
+        where: { id: postId },
+        data: {
+          reactions: setReactions,
+          likeCount: totalLikes,
+        },
+      });
+
+      results.likes = totalLikes;
+    }
+    // Set exact like count if provided (legacy)
+    else if (typeof setExactLikeCount === "number" && setExactLikeCount >= 0) {
+      await prisma.communityPost.update({
+        where: { id: postId },
+        data: {
+          likeCount: setExactLikeCount,
+        },
+      });
+
+      results.likes = setExactLikeCount;
+    }
+    // Otherwise add likes incrementally if requested (legacy)
+    else if (likesToAdd > 0) {
       await prisma.communityPost.update({
         where: { id: postId },
         data: {

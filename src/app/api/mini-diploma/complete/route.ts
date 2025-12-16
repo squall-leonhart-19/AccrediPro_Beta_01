@@ -70,6 +70,23 @@ export async function POST(request: NextRequest) {
             },
         });
 
+        // === TAG TRACKING ===
+        const categorySlug = user.miniDiplomaCategory || "unknown";
+        const tagsToCreate = [
+            `mini_diploma_completed`,
+            `mini_diploma_${categorySlug}_completed`,
+            `graduate_${categorySlug}`,
+        ];
+
+        for (const tag of tagsToCreate) {
+            await prisma.userTag.upsert({
+                where: { userId_tag: { userId, tag } },
+                update: {},
+                create: { userId, tag },
+            });
+        }
+        console.log(`🏷️ Created tags for ${user.email}: ${tagsToCreate.join(", ")}`);
+
         // Find Sarah coach for functional medicine
         const sarahCoach = await prisma.user.findFirst({
             where: {

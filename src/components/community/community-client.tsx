@@ -65,13 +65,15 @@ const SORT_OPTIONS = [
 ];
 
 // Post categories for filtering within communities
-// Order: Introduce Yourself, Daily Coach Tips, Share Your Wins, New Graduates
-// Comment-only: introductions, tips (users can only comment, not create new posts)
+// Order: Row 1: Introduce Yourself, Coaching Tips | Row 2: Wins, Graduates | Row 3: Questions, Career
+// Comment-only: introductions, tips, questions-everyone-has, career-pathway (users can only comment, not create new posts)
 const postCategories = [
   { id: "introductions", label: "Introduce Yourself", icon: Hand, color: "bg-pink-100 text-pink-700", bgGradient: "from-pink-50 to-rose-50", commentOnly: true },
-  { id: "tips", label: "Coaching Tips", icon: Lightbulb, color: "bg-green-100 text-green-700", bgGradient: "from-green-50 to-emerald-50", commentOnly: true },
+  { id: "coaching-tips", label: "Coaching Tips", icon: Lightbulb, color: "bg-green-100 text-green-700", bgGradient: "from-green-50 to-emerald-50", commentOnly: true },
   { id: "wins", label: "Share Your Wins", icon: Trophy, color: "bg-amber-100 text-amber-700", bgGradient: "from-amber-50 to-yellow-50" },
   { id: "graduates", label: "New Graduates", icon: GraduationCap, color: "bg-emerald-100 text-emerald-700", bgGradient: "from-emerald-50 to-teal-50" },
+  { id: "questions-everyone-has", label: "Questions Everyone Has", icon: HelpCircle, color: "bg-blue-100 text-blue-700", bgGradient: "from-blue-50 to-indigo-50", commentOnly: true },
+  { id: "career-pathway", label: "Career Pathway", icon: Target, color: "bg-purple-100 text-purple-700", bgGradient: "from-purple-50 to-violet-50", commentOnly: true },
 ];
 
 // Featured graduates pool - rotates daily with realistic zombie profiles
@@ -177,54 +179,8 @@ const getDailyFeaturedGraduate = () => {
   return FEATURED_GRADUATES[dayOfYear % FEATURED_GRADUATES.length];
 };
 
-// Generate unique reactions for each post based on post ID (deterministic)
-function generatePostReactions(postId: string, category: string | null, isPinned: boolean): Record<string, number> {
-  // Simple hash function to get a consistent number from post ID
-  let hash = 0;
-  for (let i = 0; i < postId.length; i++) {
-    const char = postId.charCodeAt(i);
-    hash = ((hash << 5) - hash) + char;
-    hash = hash & hash; // Convert to 32bit integer
-  }
-  hash = Math.abs(hash);
-
-  // Base multipliers based on post type
-  let baseMultiplier = 1;
-  if (isPinned) {
-    baseMultiplier = 3; // Pinned posts get more engagement
-  } else if (category === "wins") {
-    baseMultiplier = 2.5;
-  } else if (category === "tips") {
-    baseMultiplier = 2;
-  } else if (category === "introductions") {
-    baseMultiplier = 1.8;
-  } else if (category === "graduates") {
-    baseMultiplier = 2.2;
-  } else if (category === "questions") {
-    baseMultiplier = 1.2;
-  }
-
-  // Generate varied but consistent numbers for each emoji
-  const seed1 = (hash % 100) + 50;
-  const seed2 = ((hash >> 4) % 80) + 30;
-  const seed3 = ((hash >> 8) % 60) + 20;
-  const seed4 = ((hash >> 12) % 50) + 15;
-  const seed5 = ((hash >> 16) % 40) + 10;
-  const seed6 = ((hash >> 20) % 30) + 8;
-  const seed7 = ((hash >> 24) % 20) + 5;
-  const seed8 = ((hash >> 28) % 15) + 3;
-
-  return {
-    "❤️": Math.round(seed1 * baseMultiplier),
-    "🔥": Math.round(seed2 * baseMultiplier),
-    "👏": Math.round(seed3 * baseMultiplier),
-    "💯": Math.round(seed4 * baseMultiplier),
-    "🎉": Math.round(seed5 * baseMultiplier),
-    "💪": Math.round(seed6 * baseMultiplier),
-    "⭐": Math.round(seed7 * baseMultiplier),
-    "🙌": Math.round(seed8 * baseMultiplier),
-  };
-}
+// Note: Reactions are now stored in the database and passed from the server
+// The generatePostReactions function is no longer needed - reactions come from DB
 
 // Note: All posts and comments now come from database
 
@@ -240,6 +196,7 @@ interface Post {
   categoryColor?: string | null;
   isPinned: boolean;
   viewCount: number;
+  likeCount?: number; // Total of all reactions (for sync)
   createdAt: Date;
   author: {
     id: string;
@@ -253,7 +210,7 @@ interface Post {
     comments: number;
     likes: number;
   };
-  reactions?: Record<string, number>;
+  reactions?: Record<string, number> | null; // Stored reactions from database
 }
 
 interface Stats {
@@ -407,18 +364,13 @@ export function CommunityClient({ posts: dbPosts, stats, communities = [], isAdm
     return () => clearInterval(interval);
   }, []);
 
-  // All posts now come from the database - generate unique reactions for each post
+  // All posts and reactions now come from the database - no generation needed
   const allPosts = useMemo(() => {
-    return dbPosts.map(post => {
-      // Generate unique reactions for each post based on its ID
-      if (!post.reactions || Object.keys(post.reactions).length === 0) {
-        return {
-          ...post,
-          reactions: generatePostReactions(post.id, post.category, post.isPinned),
-        };
-      }
-      return post;
-    });
+    return dbPosts.map(post => ({
+      ...post,
+      // Use stored reactions from DB, or empty object if null
+      reactions: (post.reactions as Record<string, number>) || {},
+    }));
   }, [dbPosts]);
 
   const filteredAndSortedPosts = useMemo(() => {
@@ -555,7 +507,7 @@ export function CommunityClient({ posts: dbPosts, stats, communities = [], isAdm
                 <Heart className="w-7 h-7 text-gold-400" />
               </div>
               <div>
-                <h1 className="text-3xl font-bold text-white tracking-tight">Community</h1>
+                <h1 className="text-3xl font-bold text-white tracking-tight">AccrediPro Community</h1>
                 <div className="flex items-center gap-3 text-sm mt-1">
                   <span className="flex items-center gap-1.5 text-green-400 font-medium">
                     <span className="w-2.5 h-2.5 bg-green-400 rounded-full animate-pulse shadow-lg shadow-green-400/50" />
@@ -680,55 +632,55 @@ export function CommunityClient({ posts: dbPosts, stats, communities = [], isAdm
               </h3>
               <p className="text-burgundy-200 text-xs mt-1">Explore {Object.values(categoryPostCounts).reduce((a, b) => a + b, 0).toLocaleString()}+ posts</p>
             </div>
-            <CardContent className="p-2">
-              <div className="space-y-1">
+            <CardContent className="p-3">
+              <div className="grid grid-cols-2 gap-2">
                 {postCategories.map((cat) => {
                   const Icon = cat.icon;
                   const isSelected = selectedCategory === cat.id;
                   const postCount = categoryPostCounts[cat.id] || 0;
 
                   // Color mapping for each category
-                  const colorMap: Record<string, { bg: string; text: string; border: string; icon: string; badge: string }> = {
-                    introductions: { bg: "bg-pink-50", text: "text-pink-700", border: "border-pink-300", icon: "bg-pink-500", badge: "bg-pink-500" },
-                    tips: { bg: "bg-green-50", text: "text-green-700", border: "border-green-300", icon: "bg-green-500", badge: "bg-green-500" },
-                    wins: { bg: "bg-amber-50", text: "text-amber-700", border: "border-amber-300", icon: "bg-amber-500", badge: "bg-amber-500" },
-                    graduates: { bg: "bg-emerald-50", text: "text-emerald-700", border: "border-emerald-300", icon: "bg-emerald-500", badge: "bg-emerald-500" },
+                  const colorMap: Record<string, { bg: string; text: string; border: string; icon: string; iconBg: string; gradient: string }> = {
+                    introductions: { bg: "bg-pink-50", text: "text-pink-700", border: "border-pink-200", icon: "text-pink-600", iconBg: "bg-pink-100", gradient: "from-pink-500 to-rose-500" },
+                    "questions-everyone-has": { bg: "bg-blue-50", text: "text-blue-700", border: "border-blue-200", icon: "text-blue-600", iconBg: "bg-blue-100", gradient: "from-blue-500 to-indigo-500" },
+                    "career-pathway": { bg: "bg-purple-50", text: "text-purple-700", border: "border-purple-200", icon: "text-purple-600", iconBg: "bg-purple-100", gradient: "from-purple-500 to-violet-500" },
+                    "coaching-tips": { bg: "bg-green-50", text: "text-green-700", border: "border-green-200", icon: "text-green-600", iconBg: "bg-green-100", gradient: "from-green-500 to-emerald-500" },
+                    wins: { bg: "bg-amber-50", text: "text-amber-700", border: "border-amber-200", icon: "text-amber-600", iconBg: "bg-amber-100", gradient: "from-amber-500 to-orange-500" },
+                    graduates: { bg: "bg-emerald-50", text: "text-emerald-700", border: "border-emerald-200", icon: "text-emerald-600", iconBg: "bg-emerald-100", gradient: "from-emerald-500 to-teal-500" },
                   };
-                  const colors = colorMap[cat.id] || { bg: "bg-gray-50", text: "text-gray-700", border: "border-gray-300", icon: "bg-gray-500", badge: "bg-gray-500" };
+                  const colors = colorMap[cat.id] || { bg: "bg-gray-50", text: "text-gray-700", border: "border-gray-200", icon: "text-gray-600", iconBg: "bg-gray-100", gradient: "from-gray-500 to-gray-600" };
 
                   return (
                     <button
                       key={cat.id}
                       onClick={() => setSelectedCategory(isSelected ? null : cat.id)}
-                      className={`w-full flex items-center gap-3 p-3 rounded-xl text-left transition-all duration-200 group ${
+                      className={`relative flex flex-col items-center p-3 rounded-xl text-center transition-all duration-200 group overflow-hidden ${
                         isSelected
-                          ? `${colors.bg} border-2 ${colors.border} shadow-sm`
-                          : "hover:bg-gray-50 border-2 border-transparent"
+                          ? `${colors.bg} border ${colors.border} shadow-md ring-2 ring-offset-1 ring-${cat.id === 'wins' ? 'amber' : cat.id === 'graduates' ? 'emerald' : cat.id === 'questions-everyone-has' ? 'blue' : cat.id === 'career-pathway' ? 'purple' : cat.id === 'coaching-tips' ? 'green' : 'pink'}-400`
+                          : `bg-white hover:${colors.bg} border border-gray-100 hover:border-gray-200 hover:shadow-sm`
                       }`}
                     >
-                      {/* Icon */}
-                      <div className={`p-2.5 rounded-xl ${isSelected ? colors.icon : "bg-gray-100 group-hover:" + colors.icon} transition-colors`}>
-                        <Icon className={`w-4 h-4 ${isSelected ? "text-white" : "text-gray-500 group-hover:text-white"}`} />
+                      {/* Icon with gradient background when selected */}
+                      <div className={`p-2 rounded-lg mb-1.5 transition-all duration-200 ${
+                        isSelected
+                          ? `bg-gradient-to-br ${colors.gradient} shadow-sm`
+                          : `${colors.iconBg} group-hover:scale-105`
+                      }`}>
+                        <Icon className={`w-4 h-4 ${isSelected ? "text-white" : colors.icon}`} />
                       </div>
 
                       {/* Label */}
-                      <div className="flex-1 min-w-0">
-                        <span className={`font-semibold text-sm block ${isSelected ? colors.text : "text-gray-700"}`}>
-                          {cat.label}
-                        </span>
-                        {"commentOnly" in cat && cat.commentOnly && (
-                          <span className="text-[10px] text-gray-400 flex items-center gap-1">
-                            <MessageCircle className="w-2.5 h-2.5" /> Join the discussion
-                          </span>
-                        )}
-                      </div>
+                      <span className={`font-medium text-xs leading-tight block ${isSelected ? colors.text : "text-gray-700"}`}>
+                        {cat.label}
+                      </span>
 
-                      {/* Post count */}
-                      <div className={`flex flex-col items-end`}>
-                        <span className={`text-sm font-bold ${isSelected ? colors.text : "text-gray-900"}`}>
-                          {postCount.toLocaleString()}
-                        </span>
-                        <span className="text-[10px] text-gray-400">posts</span>
+                      {/* Post count badge */}
+                      <div className={`mt-1.5 px-2 py-0.5 rounded-full text-[10px] font-bold ${
+                        isSelected
+                          ? `bg-gradient-to-r ${colors.gradient} text-white shadow-sm`
+                          : `${colors.iconBg} ${colors.text}`
+                      }`}>
+                        {postCount.toLocaleString()}
                       </div>
                     </button>
                   );
@@ -739,7 +691,7 @@ export function CommunityClient({ posts: dbPosts, stats, communities = [], isAdm
               {selectedCategory && (
                 <button
                   onClick={() => setSelectedCategory(null)}
-                  className="w-full mt-2 p-2 text-xs text-burgundy-600 hover:text-burgundy-700 hover:bg-burgundy-50 rounded-lg transition-colors flex items-center justify-center gap-1"
+                  className="w-full mt-3 p-2 text-xs text-burgundy-600 hover:text-burgundy-700 bg-burgundy-50 hover:bg-burgundy-100 rounded-lg transition-colors flex items-center justify-center gap-1 font-medium"
                 >
                   <X className="w-3 h-3" /> Clear filter
                 </button>
@@ -861,10 +813,15 @@ export function CommunityClient({ posts: dbPosts, stats, communities = [], isAdm
               const catStyle = getCategoryStyle(post.category);
               const CatIcon = catStyle.icon;
 
-              // Get actual reaction emojis that have counts > 0
+              // Get actual reaction emojis that have counts > 0, heart first
               const activeReactions = Object.entries(post.reactions || {})
                 .filter(([_, count]) => count > 0)
-                .sort((a, b) => (b[1] as number) - (a[1] as number))
+                .sort(([a], [b]) => {
+                  // Heart first, then by count
+                  if (a === "❤️") return -1;
+                  if (b === "❤️") return 1;
+                  return 0;
+                })
                 .slice(0, 4);
 
               return (
@@ -876,19 +833,13 @@ export function CommunityClient({ posts: dbPosts, stats, communities = [], isAdm
                   }`}>
                     {/* Pinned Post Banner - Prominent red banner */}
                     {post.isPinned && (
-                      <div className="bg-gradient-to-r from-red-600 to-red-500 px-4 py-2 flex items-center justify-between">
+                      <div className="bg-gradient-to-r from-red-600 to-red-500 px-4 py-2 flex items-center">
                         <div className="flex items-center gap-2">
                           <div className="p-1.5 rounded-lg bg-white/20">
                             <Pin className="w-4 h-4 text-white" />
                           </div>
-                          <div>
-                            <span className="text-white font-bold text-sm">Pinned Post</span>
-                            <span className="text-red-100 text-xs ml-2">Important announcement from the team</span>
-                          </div>
+                          <span className="text-white font-bold text-sm">Pinned Post</span>
                         </div>
-                        <Badge className="bg-white text-red-600 border-0 text-[10px] font-bold">
-                          MUST READ
-                        </Badge>
                       </div>
                     )}
                     {/* Category Banner - Hide when filtering by that category (and not pinned, since pinned has its own banner) */}

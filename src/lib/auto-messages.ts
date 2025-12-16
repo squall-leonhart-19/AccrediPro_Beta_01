@@ -9,9 +9,10 @@ interface TriggerAutoMessageOptions {
     | "enrollment"
     | "course_complete"
     | "module_complete"
+    | "mini_diploma_module_complete"
     | "inactive_7d"
     | "mini_diploma_complete"
-    | "graduate_training_watched"
+    | "training_video_complete"
     | "pricing_page_visit"
     | "sequence_day_5"
     | "sequence_day_10"
@@ -221,6 +222,120 @@ No pressure at all. Just here to help!
 - Sarah`,
     voiceScript: null,
     hasVoice: false,
+  },
+  training_video_complete: {
+    text: `{{firstName}}! 🎬
+
+I just saw you finished watching the Graduate Training - that's AMAZING!
+
+I put so much into that training because I wanted you to really SEE what's possible with functional medicine. The real transformations. The actual client results.
+
+So now that you've seen it... what do you think? Can you picture yourself doing this?
+
+I left you a voice message with some thoughts. Listen when you can!
+
+If you have ANY questions about the certification, the investment, or whether this is right for you - just reply here. I'm always happy to chat.
+
+- Sarah 💛`,
+    voiceScript: `{{firstName}}! I just saw you finished watching the Graduate Training, and I had to send you a quick message.
+
+That training... I put my heart into it. Because I wanted you to really see what's possible. Not just theory, but real transformations. Real client results. Real lives being changed.
+
+So now that you've seen it... I have to ask... can you picture yourself doing this? Can you see yourself helping people the way I showed you?
+
+If there's even a small part of you that's thinking yes... I want you to know that the full certification is where it all comes together. It's where you go from knowing about functional medicine... to actually being able to help people.
+
+Message me back if you want to talk about it. I'm here for you.`,
+    hasVoice: true,
+  },
+};
+
+// Mini Diploma Module completion messages - DM from Coach Sarah for each module (0-3)
+// Module 4 is Final Exam - handled by mini_diploma_complete trigger
+const MINI_DIPLOMA_MODULE_MESSAGES: Record<number, { text: string; voiceScript: string | null; hasVoice: boolean }> = {
+  0: {
+    text: `{{firstName}}! 🎉
+
+You just completed the Welcome Module of your Mini Diploma!
+
+I'm SO excited you're here and taking this first step. You now know what functional medicine is all about and why it's so different from conventional approaches.
+
+This is just the beginning! The next modules are going to blow your mind.
+
+I left you a quick voice note - give it a listen!
+
+- Sarah 💜`,
+    voiceScript: `{{firstName}}! You just completed the Welcome Module of your Mini Diploma!
+
+I'm SO excited you're here. You've taken that first important step, and now you understand what functional medicine is all about.
+
+This is just the beginning! The next modules are going to teach you so much more. I can't wait for you to dive deeper.
+
+Keep going, you're doing amazing!`,
+    hasVoice: true,
+  },
+  1: {
+    text: `{{firstName}}! 🎉
+
+You just completed Module 1 of your Mini Diploma - that's such a great start!
+
+You're now understanding the foundations of Functional Medicine, and trust me, this knowledge is going to serve you SO well.
+
+I left you a quick voice note to celebrate! Keep going, you're doing amazing!
+
+- Sarah ✨`,
+    voiceScript: `{{firstName}}! You just completed Module 1 of your Mini Diploma!
+
+I'm so proud of you for taking action. You're now understanding the foundations of functional medicine, and this is exactly where the magic starts.
+
+Keep that momentum going! You've got three more modules to go, and I know you're going to crush them.
+
+Talk soon!`,
+    hasVoice: true,
+  },
+  2: {
+    text: `{{firstName}}!! 💪
+
+Module 2 DONE! You're officially halfway through your Mini Diploma!
+
+I have to say... most people who download free courses never even open them. But YOU? You're showing up. You're doing the work. That tells me everything I need to know about you.
+
+Listen to my voice message when you get a chance!
+
+- Sarah 🌟`,
+    voiceScript: `{{firstName}}! Module 2 complete! You are officially halfway through your Mini Diploma!
+
+Can I tell you something? Most people who download free courses... they never even open them. But you? You're different. You're showing up. You're putting in the work.
+
+That tells me something about you. You're not just curious... you're serious about this.
+
+Two more modules to go. You've got this!`,
+    hasVoice: true,
+  },
+  3: {
+    text: `{{firstName}}!!! 🔥
+
+OH WOW - Module 3 is DONE! You're SO close now!
+
+Just the Final Exam left, and then you'll have completed your entire Mini Diploma. Can you believe how far you've come?
+
+I'm genuinely excited for you. This is real progress, real knowledge, real transformation happening.
+
+I left you a voice message - give it a listen!
+
+Almost there! 🎓
+
+- Sarah`,
+    voiceScript: `{{firstName}}! Module 3 is done! Oh my gosh, you are SO close now!
+
+Just the Final Exam left, and then... you'll have completed your entire Mini Diploma. Can you believe how far you've come?
+
+I'm genuinely excited for you right now. This is real progress. Real knowledge. Real transformation happening.
+
+Go take that Final Exam. I believe in you. And when you pass... we'll celebrate together.
+
+You've got this!`,
+    hasVoice: true,
   },
 };
 
@@ -504,23 +619,50 @@ Sarah 🎓✨🎉`,
 
 /**
  * Creates the initial admin welcome message (sent immediately on signup)
- * Now from "AccrediPro Founder"
+ * Now from "AccrediPro Founder" - includes accreditations, portal preview, trust signals
  */
 function getAdminWelcomeMessage(firstName: string): string {
   return `Welcome to AccrediPro Academy, ${firstName}!
 
-Your account has been created successfully. Here's what you have access to:
+Congratulations on taking this important step toward your functional medicine journey.
 
-✅ Free Mini Diploma in Functional Medicine
-✅ Your Personal Dashboard
-✅ Direct Messaging with Your Coach
+🎓 WHAT YOU'VE UNLOCKED:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-Your coach Sarah will be reaching out to you shortly with a personal welcome message.
+📚 FREE Mini Diploma in Functional Medicine
+• Module 1: Foundations of Functional Medicine
+• Module 2: The Functional Medicine Matrix
+• Module 3: Nutrition & Lifestyle Protocols
+• Final Assessment + Certificate
 
-In the meantime, feel free to explore your dashboard and start your Mini Diploma whenever you're ready!
+🖥️ YOUR PERSONAL LEARNING PORTAL:
+• My Mini Diploma - Track your progress through modules
+• Dashboard - Your learning hub with quick access to everything
+• Roadmap - See your path from beginner to certified practitioner
+• Messages - Direct chat with your personal coach Sarah
+• Certificates - Download your Mini Diploma certificate upon completion
+• Community - Connect with fellow students worldwide
+
+🏛️ YOUR CERTIFICATION IS BACKED BY 9 ACCREDITATIONS:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+CMA • IPHM • IAOTH • ICAHP • IGCT • CTAA • IHTCP • IIOHT • CPD
+
+✅ Practice legally in 30+ countries
+✅ Qualify for professional liability insurance
+✅ Use MCMA post-nominal letters (with CMA membership)
+✅ CPD certified for existing healthcare professionals
+
+📍 WHAT TO DO NOW:
+1. Click "My Mini Diploma" in the sidebar to start learning
+2. Watch for a personal voice message from your coach Sarah
+3. Complete all 3 modules + Final Exam to earn your certificate
+
+Your coach Sarah will be reaching out shortly with a personal welcome message (including a voice note just for you!).
+
+We're thrilled to have you in our global community of 12,000+ students from 45+ countries.
 
 Best,
-AccrediPro Founder`;
+The AccrediPro Team`;
 }
 
 /**
@@ -636,7 +778,7 @@ export async function triggerAutoMessage({
       return; // Don't process other auto-messages for first login
     }
 
-    // SPECIAL HANDLING: Module completion DM with voice
+    // SPECIAL HANDLING: Module completion DM with voice (Main Certification)
     if (trigger === "module_complete" && triggerValue) {
       const moduleNumber = parseInt(triggerValue, 10);
       const moduleContent = MODULE_COMPLETION_MESSAGES[moduleNumber];
@@ -644,6 +786,22 @@ export async function triggerAutoMessage({
         await sendAutoDM(userId, user.firstName || "there", coachId, `module_${moduleNumber}_complete`, moduleContent);
         return;
       }
+    }
+
+    // SPECIAL HANDLING: Mini Diploma module completion DM with voice
+    // Module 0-3 = Content modules, Module 4 = Final Exam (handled by mini_diploma_complete)
+    if (trigger === "mini_diploma_module_complete" && triggerValue) {
+      const moduleNumber = parseInt(triggerValue, 10);
+      // Send DMs for modules 0, 1, 2, 3 (not Final Exam which is 4+)
+      if (moduleNumber >= 0 && moduleNumber <= 3) {
+        const miniDiplomaModuleContent = MINI_DIPLOMA_MODULE_MESSAGES[moduleNumber];
+        if (miniDiplomaModuleContent) {
+          await sendAutoDM(userId, user.firstName || "there", coachId, `mini_diploma_module_${moduleNumber}_complete`, miniDiplomaModuleContent);
+          return;
+        }
+      }
+      // Final Exam (4+) is handled by mini_diploma_complete trigger
+      return;
     }
 
     // Handle DM triggers with voice messages
@@ -875,14 +1033,31 @@ export async function processScheduledMessages() {
         // Extract first name from receiver or parse from voiceText
         const firstName = scheduled.receiver?.firstName || "there";
 
-        // Send Sarah's welcome with voice
-        await sendSarahWelcomeWithVoiceFromScheduled(
-          scheduled.receiverId,
-          firstName,
-          scheduled.senderId,
-          scheduled.textContent,
-          scheduled.voiceText
-        );
+        // Check if this is a trigger-based scheduled message (module completion)
+        if (scheduled.textContent.startsWith("trigger:")) {
+          // Parse trigger from format: "trigger:mini_diploma_module_complete:0"
+          const parts = scheduled.textContent.split(":");
+          const trigger = parts[1] as TriggerAutoMessageOptions["trigger"];
+          const triggerValue = parts[2];
+
+          console.log(`[SCHEDULED] Processing trigger: ${trigger} value: ${triggerValue} for user ${scheduled.receiverId}`);
+
+          // Call the triggerAutoMessage function
+          await triggerAutoMessage({
+            userId: scheduled.receiverId,
+            trigger,
+            triggerValue,
+          });
+        } else {
+          // Original behavior: Send Sarah's welcome with voice
+          await sendSarahWelcomeWithVoiceFromScheduled(
+            scheduled.receiverId,
+            firstName,
+            scheduled.senderId,
+            scheduled.textContent,
+            scheduled.voiceText
+          );
+        }
 
         // Mark as sent
         await prisma.scheduledVoiceMessage.update({

@@ -176,6 +176,24 @@ export async function POST(request: NextRequest) {
                 },
                 update: {},
             });
+
+            // Add UserTags for mini diploma tracking (for DMs/sequences)
+            const userTags = [
+                "mini_diploma_started",
+                `enrolled_${miniDiplomaCourse.slug || miniDiplomaCourse.id}`,
+                `mini_diploma_category:${miniDiplomaCategory}`,
+                `lead:${miniDiplomaCategory}`,
+            ];
+
+            for (const tag of userTags) {
+                await prisma.userTag.upsert({
+                    where: { userId_tag: { userId: user.id, tag } },
+                    update: {},
+                    create: { userId: user.id, tag },
+                });
+            }
+
+            console.log(`🏷️ Created mini diploma UserTags for ${user.id}: ${userTags.join(", ")}`);
         }
 
         // Add marketing tags

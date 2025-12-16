@@ -43,8 +43,10 @@ const navItems = [
   { href: "/programs", label: "Client Program Library", icon: Package, tourId: "programs" },
   { href: "/community", label: "Community", icon: Users, tourId: "community" },
   { href: "/messages", label: "Private Mentor Chat", icon: MessageSquare, notificationKey: "messages" as const, tourId: "messages" },
-  { href: "/challenges", label: "Challenges", icon: Flame, tourId: "challenges" },
-  { href: "/certificates", label: "Certificates", icon: Award, tourId: "certificates" },
+  // TEMPORARILY HIDDEN - Re-enable when videos arrive (5-7 days from Dec 16, 2024)
+  // See: /docs/CHALLENGES_REACTIVATION.md
+  // { href: "/challenges", label: "Challenges", icon: Flame, tourId: "challenges" },
+  { href: "/certificates", label: "My Certificates", icon: Award, notificationKey: "certificates" as const, tourId: "certificates" },
   { href: "/my-library", label: "My Library", icon: Library, tourId: "my-library" },
   { href: "/ebooks", label: "Professional Library", icon: ShoppingBag, tourId: "ebooks" },
   { href: "/training", label: "Training", icon: GraduationCap, tourId: "training" },
@@ -72,7 +74,7 @@ export function DashboardNav() {
   const initials = `${user?.firstName?.charAt(0) || ""}${user?.lastName?.charAt(0) || ""}`.toUpperCase() || "U";
   const isAdmin = user?.role === "ADMIN";
 
-  const getNotificationCount = (key?: "messages" | "announcements") => {
+  const getNotificationCount = (key?: "messages" | "certificates" | "announcements") => {
     if (!key) return 0;
     return counts[key] || 0;
   };

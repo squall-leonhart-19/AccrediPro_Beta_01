@@ -136,6 +136,7 @@ export default async function CommunityPostPage({
     isPinned: post.isPinned,
     viewCount: post.viewCount + 1, // Include the current view
     likeCount: post.likeCount,
+    reactions: post.reactions as Record<string, number> | null, // Pass stored reactions from DB
     createdAt: post.createdAt,
     author: post.author,
     comments: post.comments.map((comment) => ({

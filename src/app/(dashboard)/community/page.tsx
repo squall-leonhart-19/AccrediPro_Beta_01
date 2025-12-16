@@ -54,7 +54,18 @@ async function getUserCommunities(userId: string) {
 async function getPosts() {
   return prisma.communityPost.findMany({
     where: {},
-    include: {
+    select: {
+      id: true,
+      title: true,
+      content: true,
+      isPinned: true,
+      isLocked: true,
+      viewCount: true,
+      likeCount: true,
+      reactions: true, // Get stored reactions
+      categoryId: true,
+      communityId: true,
+      createdAt: true,
       author: {
         select: {
           id: true,
@@ -148,6 +159,8 @@ export default async function CommunityPage() {
     categoryColor: post.community?.category?.color,
     isPinned: post.isPinned,
     viewCount: post.viewCount,
+    likeCount: post.likeCount,
+    reactions: post.reactions as Record<string, number> | null, // Pass stored reactions
     createdAt: post.createdAt,
     author: post.author,
     _count: post._count,

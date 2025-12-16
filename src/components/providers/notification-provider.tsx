@@ -4,6 +4,7 @@ import { createContext, useContext, useEffect, useState, useCallback, ReactNode 
 
 interface NotificationCounts {
   messages: number;
+  certificates: number;
   announcements: number;
   total: number;
 }
@@ -19,6 +20,7 @@ const NotificationContext = createContext<NotificationContextType | undefined>(u
 export function NotificationProvider({ children }: { children: ReactNode }) {
   const [counts, setCounts] = useState<NotificationCounts>({
     messages: 0,
+    certificates: 0,
     announcements: 0,
     total: 0,
   });
