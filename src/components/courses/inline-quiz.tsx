@@ -209,21 +209,23 @@ export function InlineQuiz({
         });
         setHasPassed(data.passed);
 
-        // Always celebrate - everyone passes!
-        const duration = 2 * 1000;
-        const animationEnd = Date.now() + duration;
-        const defaults = { startVelocity: 30, spread: 360, ticks: 60, zIndex: 9999 };
+        // Only celebrate if PASSED!
+        if (data.passed) {
+          const duration = 2 * 1000;
+          const animationEnd = Date.now() + duration;
+          const defaults = { startVelocity: 30, spread: 360, ticks: 60, zIndex: 9999 };
 
-        const randomInRange = (min: number, max: number) => Math.random() * (max - min) + min;
+          const randomInRange = (min: number, max: number) => Math.random() * (max - min) + min;
 
-        const interval = setInterval(() => {
-          const timeLeft = animationEnd - Date.now();
-          if (timeLeft <= 0) return clearInterval(interval);
+          const interval = setInterval(() => {
+            const timeLeft = animationEnd - Date.now();
+            if (timeLeft <= 0) return clearInterval(interval);
 
-          const particleCount = 50 * (timeLeft / duration);
-          confetti({ ...defaults, particleCount, origin: { x: randomInRange(0.1, 0.3), y: Math.random() - 0.2 } });
-          confetti({ ...defaults, particleCount, origin: { x: randomInRange(0.7, 0.9), y: Math.random() - 0.2 } });
-        }, 250);
+            const particleCount = 50 * (timeLeft / duration);
+            confetti({ ...defaults, particleCount, origin: { x: randomInRange(0.1, 0.3), y: Math.random() - 0.2 } });
+            confetti({ ...defaults, particleCount, origin: { x: randomInRange(0.7, 0.9), y: Math.random() - 0.2 } });
+          }, 250);
+        }
       } else {
         console.error("Quiz submit error:", data.error);
       }
@@ -382,11 +384,11 @@ export function InlineQuiz({
   if (results) {
     const correctCount = Object.keys(results.correctAnswers).length > 0
       ? quiz.questions.filter(q => {
-          const userAnswers = selectedAnswers[q.id] || [];
-          const correctAnswers = results.correctAnswers[q.id] || [];
-          return userAnswers.length === correctAnswers.length &&
-                 userAnswers.every(a => correctAnswers.includes(a));
-        }).length
+        const userAnswers = selectedAnswers[q.id] || [];
+        const correctAnswers = results.correctAnswers[q.id] || [];
+        return userAnswers.length === correctAnswers.length &&
+          userAnswers.every(a => correctAnswers.includes(a));
+      }).length
       : Math.round((results.score / 100) * totalQuestions);
 
     return (
@@ -505,54 +507,83 @@ export function InlineQuiz({
           })}
         </div>
 
-        {/* Score Summary Card */}
-        <div className="bg-burgundy-600 rounded-2xl p-6 text-white mb-6">
+        {/* Score Summary Card - Different styling for pass/fail */}
+        <div className={cn(
+          "rounded-2xl p-6 text-white mb-6",
+          results.passed ? "bg-burgundy-600" : "bg-red-600"
+        )}>
           <div className="flex items-center justify-between mb-4">
             <div className="flex items-center gap-3">
               <div className="w-12 h-12 bg-white/20 rounded-xl flex items-center justify-center">
-                <Trophy className="w-6 h-6 text-gold-300" />
+                {results.passed ? (
+                  <Trophy className="w-6 h-6 text-gold-300" />
+                ) : (
+                  <XCircle className="w-6 h-6 text-white" />
+                )}
               </div>
               <div>
-                <h3 className="text-lg font-bold">Quiz Complete!</h3>
-                <p className="text-burgundy-200 text-sm">Great effort on this module</p>
+                <h3 className="text-lg font-bold">
+                  {results.passed ? "Quiz Passed!" : "Quiz Not Passed"}
+                </h3>
+                <p className={cn(
+                  "text-sm",
+                  results.passed ? "text-burgundy-200" : "text-red-200"
+                )}>
+                  {results.passed ? "Great effort on this module" : "You need to pass to continue"}
+                </p>
               </div>
             </div>
             <div className="text-right">
               <div className="text-3xl font-bold">{correctCount}/{totalQuestions}</div>
-              <p className="text-burgundy-200 text-xs">Questions correct</p>
+              <p className={cn(
+                "text-xs",
+                results.passed ? "text-burgundy-200" : "text-red-200"
+              )}>Questions correct</p>
             </div>
           </div>
 
           {/* Progress bar */}
           <div className="h-2 bg-white/20 rounded-full overflow-hidden mb-4">
             <div
-              className="h-full bg-gold-400 rounded-full transition-all duration-500"
+              className={cn(
+                "h-full rounded-full transition-all duration-500",
+                results.passed ? "bg-gold-400" : "bg-red-300"
+              )}
               style={{ width: `${(correctCount / totalQuestions) * 100}%` }}
             />
           </div>
 
-          <p className="text-burgundy-100 text-sm text-center">
-            {correctCount === totalQuestions
-              ? "Perfect score! You really understand this material."
-              : correctCount >= totalQuestions / 2
-              ? "Good work! Review the explanations above to strengthen your understanding."
-              : "Review the explanations above - you've got this!"}
+          <p className={cn(
+            "text-sm text-center",
+            results.passed ? "text-burgundy-100" : "text-red-100"
+          )}>
+            {results.passed
+              ? correctCount === totalQuestions
+                ? "Perfect score! You really understand this material."
+                : "Good work! You passed the quiz."
+              : `You need at least ${quiz.passingScore}% to pass. Please review and try again.`}
           </p>
         </div>
 
-        {/* Action Buttons - Retake First, Then Continue */}
+        {/* Action Buttons - Only show Continue if PASSED */}
         <div className="space-y-3">
           <Button
             onClick={handleRetry}
             variant="outline"
             disabled={isNavigating}
-            className="w-full h-12 border-2 border-burgundy-200 text-burgundy-700 hover:bg-burgundy-50 font-medium disabled:opacity-50"
+            className={cn(
+              "w-full h-12 border-2 font-medium disabled:opacity-50",
+              results.passed
+                ? "border-burgundy-200 text-burgundy-700 hover:bg-burgundy-50"
+                : "border-red-300 text-red-700 hover:bg-red-50"
+            )}
           >
             <RotateCcw className="w-4 h-4 mr-2" />
-            Retake Quiz
+            {results.passed ? "Retake Quiz" : "Try Again"}
           </Button>
 
-          {nextModule ? (
+          {/* Only show Continue button if PASSED */}
+          {results.passed && nextModule ? (
             <Button
               size="lg"
               onClick={() => handleContinue(`/learning/${course.slug}/${nextModule.firstLessonId}`)}
@@ -571,7 +602,7 @@ export function InlineQuiz({
                 </>
               )}
             </Button>
-          ) : (
+          ) : results.passed && !nextModule ? (
             <Button
               size="lg"
               onClick={() => handleContinue(`/my-mini-diploma`)}
@@ -590,7 +621,7 @@ export function InlineQuiz({
                 </>
               )}
             </Button>
-          )}
+          ) : null}
         </div>
       </div>
     );
