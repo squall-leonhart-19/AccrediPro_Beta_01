@@ -17,9 +17,9 @@ export async function GET(request: NextRequest) {
 
         const now = new Date();
 
-        // Get all sequence enrollments
+        // Get all sequence enrollments (any status)
         const enrollments = await prisma.sequenceEnrollment.findMany({
-            where: { status: "ACTIVE" },
+            // No status filter - show all
             include: {
                 user: { select: { email: true, firstName: true } },
                 sequence: {
