@@ -26,8 +26,8 @@ Over the next 3 days, you're going to discover the root-cause approach that's he
 
 This is your path to a fulfilling career in health. Let's dive in!`;
 
-// Sarah M profile image
-const SARAH_PROFILE_IMAGE = "https://i.ibb.co/jvHN9vv/Sarah-M-Coach.png";
+// Sarah M profile image - use local coach image
+const SARAH_PROFILE_IMAGE = "/coaches/sarah-coach.webp";
 
 // Updated welcome content with audio player at the top
 const WELCOME_LESSON_CONTENT_WITH_AUDIO = (audioUrl: string) => `
