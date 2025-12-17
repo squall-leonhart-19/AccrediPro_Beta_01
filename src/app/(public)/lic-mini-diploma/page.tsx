@@ -178,7 +178,7 @@ export default function FreeMiniDiplomaPage() {
 
         // Redirect directly to Module 1 to maximize starting rate
         // Credentials are sent via email
-        window.location.href = "/mini-diploma/module/1";
+        window.location.href = "/my-mini-diploma";
       } else {
         setError(data.error || "Something went wrong. Please try again.");
         if (data.suggestedEmail) {
