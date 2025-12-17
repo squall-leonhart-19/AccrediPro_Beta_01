@@ -1,7 +1,11 @@
 "use client";
 
 import { useState, useCallback, useEffect } from "react";
+import { signIn } from "next-auth/react";
 import { initMetaTracking, trackLead } from "@/lib/meta-tracking";
+
+// Standard password for freebie users (must match API)
+const FREEBIE_PASSWORD = "Futurecoach2025";
 
 // Country codes for phone field
 const COUNTRY_CODES = [
@@ -148,8 +152,22 @@ export default function FreeMiniDiplomaPage() {
           phone: fullPhone,
         });
 
+        // Auto-login user with the standard password
+        const signInResult = await signIn("credentials", {
+          email: formData.email,
+          password: FREEBIE_PASSWORD,
+          redirect: false,
+        });
+
+        if (signInResult?.ok) {
+          // Redirect to welcome lesson
+          window.location.href = "/learning/functional-medicine-mini-diploma/cmjad06ft0000rd6vd9pqbui8";
+        } else {
+          // If auto-login fails, redirect to login page
+          console.error("Auto-login failed:", signInResult?.error);
+          window.location.href = "/login?registered=true&email=" + encodeURIComponent(formData.email);
+        }
         setLoading(false);
-        window.location.href = "/learning/functional-medicine-mini-diploma/cmjad06ft0000rd6vd9pqbui8";
       } else {
         setError(data.error || "Something went wrong. Please try again.");
         if (data.suggestedEmail) {
