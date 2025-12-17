@@ -9,11 +9,22 @@ import { initMetaTracking, trackLead } from "@/lib/meta-tracking";
 // Standard password for freebie users - must match register-freebie API
 const FREEBIE_PASSWORD = "Futurecoach2025";
 
+// Country codes for phone field
+const COUNTRY_CODES = [
+  { code: "+1", country: "US", flag: "🇺🇸", label: "United States" },
+  { code: "+1", country: "CA", flag: "🇨🇦", label: "Canada" },
+  { code: "+44", country: "UK", flag: "🇬🇧", label: "United Kingdom" },
+  { code: "+61", country: "AU", flag: "🇦🇺", label: "Australia" },
+  { code: "+64", country: "NZ", flag: "🇳🇿", label: "New Zealand" },
+];
+
 export default function FreeMiniDiplomaPage() {
   const [formData, setFormData] = useState({
     firstName: "",
     lastName: "",
     email: "",
+    phone: "",
+    countryCode: "+1",
   });
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
@@ -119,11 +130,17 @@ export default function FreeMiniDiplomaPage() {
     setLoading(true);
     setError("");
 
+    // Combine phone with country code
+    const fullPhone = formData.phone ? `${formData.countryCode}${formData.phone.replace(/\D/g, "")}` : "";
+
     try {
       const res = await fetch("/api/auth/register-freebie", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(formData),
+        body: JSON.stringify({
+          ...formData,
+          phone: fullPhone,
+        }),
       });
 
       const data = await res.json();
@@ -134,6 +151,7 @@ export default function FreeMiniDiplomaPage() {
           first_name: formData.firstName,
           last_name: formData.lastName,
           content_name: "Mini Diploma",
+          phone: fullPhone,
         });
 
         // Registration successful - auto-login the user
@@ -236,10 +254,7 @@ export default function FreeMiniDiplomaPage() {
             unoptimized
           />
           <div className="flex items-center gap-2 text-sm mt-3 md:mt-0" style={{ color: "#6B6E76" }}>
-            <svg className="w-4 h-4" fill="#F59E0B" viewBox="0 0 20 20">
-              <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-            </svg>
-            <span><strong>4,200+</strong> students enrolled</span>
+            <span>FREE TRAINING • 9 LESSONS • CERTIFICATE INCLUDED</span>
           </div>
         </div>
 
@@ -248,38 +263,36 @@ export default function FreeMiniDiplomaPage() {
           className="text-center py-2.5 px-4 rounded-xl mb-6 text-white font-extrabold text-sm tracking-wide"
           style={{ background: "linear-gradient(135deg, #722F37, #8B3D47)" }}
         >
-          🎓 FREE FUNCTIONAL MEDICINE MINI DIPLOMA • OPEN TO ALL • LIMITED SPOTS
+          🎓 Free Training for Healthcare Professionals & Career Changers
         </div>
 
         {/* Hero Section */}
         <section className="text-center py-5">
-          <span
-            className="inline-block rounded-full px-4 py-2 font-extrabold text-sm mb-4"
-            style={{ background: "linear-gradient(180deg, #FDF2F4, #FAE5E8)", border: "1px solid #E8A0A8", color: "#722F37" }}
-          >
-            🎓 NO EXPERIENCE REQUIRED • CAREER-CHANGERS WELCOME
-          </span>
-
-          <h1 className="text-3xl md:text-4xl lg:text-5xl font-black mb-3 leading-tight max-w-[900px] mx-auto" style={{ color: "#722F37" }}>
-            Free Functional Medicine Mini Diploma — Open Enrollment
+          <h1 className="text-3xl md:text-4xl lg:text-5xl font-black mb-4 leading-tight max-w-[900px] mx-auto" style={{ color: "#722F37" }}>
+            Burned Out From a Healthcare System That&apos;s Broken? Here&apos;s Your Way Out.
           </h1>
 
           <p className="text-base md:text-lg max-w-[820px] mx-auto mb-6" style={{ color: "#6B6E76", lineHeight: 1.6 }}>
-            Discover the Foundations of Root-Cause Healing in 3 Days. Earn Your Mini Diploma • Pass the Final Exam • Unlock Your Graduation Pathway.
-            Complete in 90 minutes or 3 days.
+            This free training reveals how a $72k burned-out ER nurse became a $144k/year Functional Medicine Practitioner — working just 3 days a week, actually helping people heal.
           </p>
 
-          {/* Credentials Bar */}
-          <div className="flex flex-wrap justify-center gap-2 max-w-[800px] mx-auto mb-6">
-            {["✓ No Experience Required", "✓ Official Mini Diploma", "✓ 3-Day Training", "✓ 100% Free"].map((item, i) => (
-              <span
-                key={i}
-                className="px-3 py-1.5 rounded-lg text-xs font-bold"
-                style={{ background: "#FDF2F4", border: "1px solid #E8A0A8", color: "#722F37" }}
-              >
-                {item}
-              </span>
-            ))}
+          {/* Hero Bullets */}
+          <div className="max-w-[700px] mx-auto text-left mb-6">
+            <ul className="space-y-2">
+              {[
+                "9 lessons — complete in 2-3 hours at your own pace",
+                "Real case study: Michelle's complete $72k → $144k transformation story",
+                "The Functional Timeline — the #1 clinical tool practitioners use to find root causes",
+                "Income calculator to see your realistic earning potential",
+                "Official Mini Diploma certificate upon completion",
+                "Clear next steps if you decide to pursue full certification",
+              ].map((item, i) => (
+                <li key={i} className="flex items-start gap-2 text-sm" style={{ color: "#4A5568" }}>
+                  <span className="text-green-600 font-bold mt-0.5">✓</span>
+                  <span>{item}</span>
+                </li>
+              ))}
+            </ul>
           </div>
 
           {/* Stats Bar */}
@@ -288,9 +301,9 @@ export default function FreeMiniDiplomaPage() {
             style={{ background: "white", border: "1px solid #ECE8E2", boxShadow: "0 12px 28px rgba(0,0,0,.07)" }}
           >
             {[
-              { number: "10,000+", label: "Students Enrolled" },
-              { number: "$3k-$10k", label: "Potential Monthly" },
-              { number: "90m", label: "Time to Complete" },
+              { number: "10,000+", label: "Healthcare Professionals" },
+              { number: "9", label: "Lessons" },
+              { number: "$100-300/hr", label: "Practitioner Rate" },
             ].map((stat, i) => (
               <div key={i} className="text-center flex-1">
                 <span className="block text-xl md:text-2xl font-black" style={{ color: "#722F37" }}>{stat.number}</span>
@@ -299,56 +312,20 @@ export default function FreeMiniDiplomaPage() {
             ))}
           </div>
 
-          {/* Certificate Preview */}
+          {/* Honest Callout Box */}
           <div
-            className="max-w-[740px] mx-auto rounded-2xl overflow-hidden mb-7"
-            style={{ border: "1px solid #ECE8E2", boxShadow: "0 20px 50px rgba(114,47,55,0.15)" }}
+            className="max-w-[800px] mx-auto rounded-xl p-5 mb-7 text-left"
+            style={{ background: "#FFF5EC", border: "2px solid #F4C976" }}
           >
-            <div
-              className="p-6 md:p-8 text-center relative"
-              style={{ background: "linear-gradient(135deg, #fdfbf7, #fff9f0)" }}
-            >
-              {/* Gold border */}
-              <div className="absolute inset-2 border-2 rounded-lg pointer-events-none" style={{ borderColor: "#C9A85C" }} />
-
-              <Image
-                src="https://coach.accredipro.academy/wp-content/uploads/2025/10/Senza-titolo-Logo-1.png"
-                alt="AccrediPro"
-                width={120}
-                height={30}
-                className="mx-auto mb-4"
-                unoptimized
-              />
-              <div className="text-[0.7rem] uppercase tracking-widest mb-2" style={{ color: "#888" }}>AccrediPro Academy</div>
-              <div className="text-2xl font-extrabold mb-1" style={{ color: "#722F37" }}>Mini Diploma</div>
-              <div className="text-sm mb-4" style={{ color: "#666" }}>This is to certify that</div>
-              <div className="text-2xl font-bold italic mb-3" style={{ color: "#333" }}>Your Name Here</div>
-              <div className="text-sm mb-5" style={{ color: "#555" }}>
-                Has successfully completed the<br /><strong>Functional Medicine Foundations</strong><br />Mini Diploma Program
-              </div>
-              <div
-                className="w-16 h-16 rounded-full mx-auto mb-4 flex items-center justify-center"
-                style={{ background: "linear-gradient(135deg, #F4D35E, #C9A85C)", boxShadow: "0 4px 12px rgba(201,168,92,0.3)" }}
-              >
-                <svg className="w-8 h-8 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                  <path d="M9 12l2 2 4-4" />
-                  <circle cx="12" cy="12" r="10" />
-                </svg>
-              </div>
-              <div className="flex flex-col md:flex-row justify-between items-center pt-4 border-t gap-3" style={{ borderColor: "#E5E1D8" }}>
-                <div className="text-left text-xs" style={{ color: "#888" }}>
-                  <strong className="block" style={{ color: "#333" }}>Date Issued</strong>
-                  December 2025
-                </div>
-                <div className="text-right text-xs" style={{ color: "#888" }}>
-                  <strong className="block" style={{ color: "#333" }}>Certificate ID</strong>
-                  #MD-XXXXX
-                </div>
-              </div>
-            </div>
+            <h3 className="font-extrabold mb-2" style={{ color: "#92400E" }}>Let&apos;s be direct:</h3>
+            <p className="text-sm" style={{ color: "#78350F" }}>
+              This is not a &quot;get rich quick&quot; scheme. Building a Functional Medicine practice takes 3-6 months of real work.
+              Our full certification program costs $997 — this free training will help you decide if that investment is right for you.
+              No pressure, no obligation. But if you&apos;re not open to investing in your education eventually, this probably isn&apos;t for you.
+            </p>
           </div>
 
-          {/* Sarah Intro - Gold Background */}
+          {/* Sarah Intro */}
           <div
             className="flex flex-col md:flex-row items-center gap-5 max-w-[900px] mx-auto rounded-xl p-5 text-white"
             style={{ background: "linear-gradient(135deg, #C9A85C, #B8944E)" }}
@@ -363,9 +340,10 @@ export default function FreeMiniDiplomaPage() {
               unoptimized
             />
             <div className="text-center md:text-left">
-              <h3 className="text-lg font-bold mb-2">Hi, I&apos;m Sarah — your mentor for the next 3 days 💕</h3>
+              <h3 className="text-lg font-bold mb-2">Hi, I&apos;m Sarah — I&apos;ll be your guide for this training 💕</h3>
               <p className="text-sm opacity-95 leading-relaxed">
-                I&apos;ve helped 10,000+ students from all backgrounds discover the power of Functional Medicine. Whether you&apos;re a clinician or a health-seeker, I&apos;ll guide you through the root-cause framework and show you how to turn your passion into a thriving career.
+                I&apos;ve spent 20+ years in functional medicine and integrative health. I&apos;ve helped thousands of women escape the exact situation you might be in right now — burned out, frustrated with a system that doesn&apos;t work.
+                I&apos;ll be honest with you: this isn&apos;t for everyone. If you&apos;re a healthcare professional ready to explore a different path — or a career changer serious about building something meaningful — this training will show you exactly what&apos;s possible.
               </p>
             </div>
           </div>
@@ -377,18 +355,18 @@ export default function FreeMiniDiplomaPage() {
           style={{ background: "linear-gradient(135deg, #FFF5EC, #FFEFD5)", border: "2px solid #F4C976" }}
         >
           <h3 className="text-center font-extrabold text-lg md:text-xl mb-5" style={{ color: "#1F2432" }}>
-            🎯 Who This Mini Diploma Is For
+            🎯 Is This Training Right for You?
           </h3>
           <div className="grid md:grid-cols-2 gap-6">
             <div className="bg-white rounded-xl p-5" style={{ border: "1px solid #F4C976" }}>
               <h4 className="font-extrabold mb-3" style={{ color: "#722F37" }}>✓ This IS for you if:</h4>
               <ul className="space-y-2">
                 {[
-                  "Anyone passionate about health & healing",
-                  "Women exploring a new purpose",
-                  "People considering a career in wellness",
-                  "Clinicians (RN, NP, PA, RD, PharmD, PT)",
-                  "Those wanting to earn $500–$3,000/month helping others",
+                  "You're a licensed healthcare professional (RN, NP, PA, RD, PharmD, PT, MD, DO) feeling burned out",
+                  "You're 40+ and ready for a meaningful second career",
+                  "You've seen conventional medicine fail — for yourself, patients, or loved ones",
+                  "You're open to investing in professional certification ($997) if it's right for you",
+                  "You can commit 2-3 hours to complete this training seriously",
                 ].map((item, i) => (
                   <li key={i} className="flex items-start gap-2 text-sm" style={{ color: "#6B6E76" }}>
                     <span className="text-green-600 font-black">✓</span>
@@ -401,11 +379,11 @@ export default function FreeMiniDiplomaPage() {
               <h4 className="font-extrabold mb-3" style={{ color: "#D94B4B" }}>✗ This is NOT for you if:</h4>
               <ul className="space-y-2">
                 {[
-                  "People who refuse to study",
-                  "People expecting overnight results without effort",
-                  "Cynics and skeptics",
-                  "People who don't care about wellness",
-                  "Those looking for \"get rich quick\" schemes",
+                  "You're looking for \"passive income\" or a get-rich-quick scheme",
+                  "You're not willing to eventually invest in your education ($997)",
+                  "You need income in the next 30 days — building a practice takes 3-6 months",
+                  "You just want free content with no intention of taking action",
+                  "You're happy with the current healthcare system",
                 ].map((item, i) => (
                   <li key={i} className="flex items-start gap-2 text-sm" style={{ color: "#6B6E76" }}>
                     <span style={{ color: "#D94B4B" }} className="font-black">✗</span>
@@ -422,62 +400,75 @@ export default function FreeMiniDiplomaPage() {
           {/* Left Column - Content */}
           <div>
             <h2 className="text-2xl md:text-3xl font-black mb-4" style={{ color: "#722F37" }}>
-              What You&apos;ll Learn (3-Day Training • 90 Minutes Total)
+              What You&apos;ll Learn in the Mini Diploma
             </h2>
             <p className="mb-5" style={{ color: "#6B6E76", fontSize: "0.95rem" }}>
-              If you&apos;re passionate about healing, wellness, and helping others, this Mini Diploma gives you a real, accredited introduction to Functional Medicine. Learn the exact process behind $1,500–$3,000 client programs.
+              9 lessons across 3 modules — complete at your own pace
             </p>
 
-            {/* Learning Items */}
-            <ul className="space-y-3 mb-8">
+            {/* Module Cards */}
+            <div className="space-y-4 mb-8">
               {[
-                { title: "Day 1: Functional Medicine Foundations", desc: "Systems biology • FM matrix • Root cause vs symptoms • How practitioners uncover hidden causes of fatigue, gut issues, hormone imbalance & more." },
-                { title: "Day 2: Case Studies & Clinical Pattern Recognition", desc: "Real case walk-through (Michelle, 42) • Gut-hormone-stress loop • How FM practitioners transform clients ethically & effectively." },
-                { title: "Day 3: Your Practitioner Pathway & Income Potential", desc: "How FM practitioners earn $3K–$10K/month • 12-week transformation program model • The 3 certification pathways • Your next academic steps." },
-                { title: "Earn Your Mini Diploma + Academic Credits", desc: "Score 92–96 points on the final exam to unlock your Mini Diploma." },
-              ].map((item, i) => (
-                <li
+                {
+                  module: "Module 1",
+                  title: "The 'Sick Care' Crisis & Your Second Act",
+                  desc: "Why the healthcare system is failing 60% of Americans with chronic illness — and why YOUR life experience is exactly what's needed to fix it.",
+                  lessons: ["The Sick Care Crisis", "The Rise of Functional Medicine", "Why YOU Are the Solution"],
+                  time: "~37 minutes"
+                },
+                {
+                  module: "Module 2",
+                  title: "The Proof — Michelle's $144k Story",
+                  desc: "Follow a real nurse who escaped the system. Her exact journey from $72,000/year and miserable to $144,000/year working 3 days a week.",
+                  lessons: ["Meet Michelle", "The Turning Point", "The First Client Win"],
+                  time: "~37 minutes"
+                },
+                {
+                  module: "Module 3",
+                  title: "The Education — The Functional Timeline",
+                  desc: "Learn the #1 clinical tool that separates root-cause practitioners from symptom-chasers. You'll actually use this tool on yourself.",
+                  lessons: ["The Problem with Conventional Medicine", "The Functional Timeline", "Your Turn: Create Your Own Timeline"],
+                  time: "~41 minutes"
+                },
+              ].map((mod, i) => (
+                <div
                   key={i}
-                  className="flex gap-3 rounded-xl p-4 transition-all hover:shadow-md hover:-translate-y-0.5"
+                  className="rounded-xl p-5"
                   style={{ background: "#FFF9F3", border: "1px solid #F1E7D8" }}
                 >
-                  <span
-                    className="w-7 h-7 rounded-full flex items-center justify-center text-white font-black text-sm flex-shrink-0"
-                    style={{ background: "#722F37" }}
-                  >
-                    ✓
-                  </span>
-                  <div>
-                    <div className="font-bold mb-1" style={{ color: "#1F2432" }}>{item.title}</div>
-                    <div className="text-sm" style={{ color: "#666" }}>{item.desc}</div>
+                  <div className="flex items-center gap-2 mb-2">
+                    <span className="px-2 py-1 rounded text-xs font-bold" style={{ background: "#722F37", color: "white" }}>{mod.module}</span>
+                    <span className="text-xs" style={{ color: "#6B6E76" }}>{mod.time}</span>
                   </div>
-                </li>
+                  <h4 className="font-bold mb-2" style={{ color: "#1F2432" }}>{mod.title}</h4>
+                  <p className="text-sm mb-3" style={{ color: "#6B6E76" }}>{mod.desc}</p>
+                  <div className="flex flex-wrap gap-2">
+                    {mod.lessons.map((lesson, j) => (
+                      <span key={j} className="text-xs px-2 py-1 rounded" style={{ background: "#FDF2F4", color: "#722F37" }}>
+                        • {lesson}
+                      </span>
+                    ))}
+                  </div>
+                </div>
               ))}
-            </ul>
-
-            <h3 className="text-xl font-extrabold mb-4" style={{ color: "#3C4B5A" }}>
-              🎓 What Happens After You Enroll
-            </h3>
-            <p className="mb-5" style={{ color: "#6B6E76", fontSize: "0.95rem" }}>
-              You&apos;ll get instant access to all 3 training modules. Complete them at your own pace, earn your Mini Diploma, and unlock your Graduation Training to see your certification pathway.
-            </p>
+            </div>
 
             {/* Testimonials */}
+            <h3 className="text-xl font-extrabold mb-4" style={{ color: "#3C4B5A" }}>
+              What Students Are Saying
+            </h3>
             <div className="space-y-4">
-              <div className="rounded-xl p-5" style={{ background: "#FDF2F4", border: "1px solid #E8A0A8" }}>
-                <p className="italic mb-3" style={{ color: "#4A5568" }}>
-                  &ldquo;I always knew I wanted to help people heal, but I didn&apos;t know where to start. This Mini Diploma opened my eyes to the science of Functional Medicine. I learned more in 3 days than I did in years of reading blogs. I&apos;m now on my way to becoming a certified coach!&rdquo;
-                </p>
-                <div className="font-extrabold" style={{ color: "#1F2432" }}>Amanda T.</div>
-                <div className="text-sm" style={{ color: "#6B6E76" }}>Wellness Enthusiast & Career Changer</div>
-              </div>
-              <div className="rounded-xl p-5" style={{ background: "#FDF2F4", border: "1px solid #E8A0A8" }}>
-                <p className="italic mb-3" style={{ color: "#4A5568" }}>
-                  &ldquo;As a nurse, I was burnt out. I took this free intensive just to see if there was another way. The &apos;Day 2&apos; case study blew my mind—it showed me exactly how to treat the whole person, not just symptoms. I&apos;m so excited about my future again.&rdquo;
-                </p>
-                <div className="font-extrabold" style={{ color: "#1F2432" }}>Sarah J., RN</div>
-                <div className="text-sm" style={{ color: "#6B6E76" }}>Registered Nurse & Aspiring Coach</div>
-              </div>
+              {[
+                { quote: "I've been a nurse for 18 years. I was completely burned out — thinking about leaving healthcare entirely. This training showed me there's another way to use my skills. The case study in Module 2 made me cry. I finally see a future I'm excited about.", name: "Sarah J., RN", role: "Registered Nurse, 18 years" },
+                { quote: "I'm 52 and was worried I was too old to start something new. This training showed me that my age and life experience are actually my biggest advantages. Women my age WANT to work with someone who understands them.", name: "Jennifer K.", role: "Career Changer, Former Marketing Executive" },
+                { quote: "I was skeptical. I've bought wellness courses before that were all fluff. This was different — real clinical tools, real case studies, real numbers. No hype. Sarah's approach is refreshingly honest.", name: "Amanda T., PharmD", role: "Pharmacist" },
+              ].map((t, i) => (
+                <div key={i} className="rounded-xl p-5" style={{ background: "#FDF2F4", border: "1px solid #E8A0A8" }}>
+                  <p className="italic mb-3" style={{ color: "#4A5568" }}>&ldquo;{t.quote}&rdquo;</p>
+                  <div className="font-extrabold" style={{ color: "#1F2432" }}>{t.name}</div>
+                  <div className="text-sm" style={{ color: "#6B6E76" }}>{t.role}</div>
+                </div>
+              ))}
             </div>
           </div>
 
@@ -493,8 +484,8 @@ export default function FreeMiniDiplomaPage() {
             >
               {/* Form Header */}
               <div className="text-center mb-5 pb-5 border-b-2" style={{ borderColor: "#ECE8E2" }}>
-                <h3 className="text-xl font-black mb-1" style={{ color: "#722F37" }}>Start the Mini Diploma</h3>
-                <p className="text-sm" style={{ color: "#6B6E76" }}>100% Free • Instant Access</p>
+                <h3 className="text-xl font-black mb-1" style={{ color: "#722F37" }}>Request Your Free Access</h3>
+                <p className="text-sm" style={{ color: "#6B6E76" }}>100% Free • No Credit Card Required</p>
 
                 {/* Urgency Banner */}
                 <div
@@ -502,7 +493,7 @@ export default function FreeMiniDiplomaPage() {
                   style={{ background: "linear-gradient(135deg, #FFEBEE, #FFCDD2)", border: "2px solid #E57373" }}
                 >
                   <div className="text-xs font-extrabold uppercase tracking-wide mb-1" style={{ color: "#C62828" }}>
-                    🔥 Enrollment Closing Soon
+                    🔥 Limited Spots Available
                   </div>
                   <div className="text-xl font-black font-mono" style={{ color: "#B71C1C" }}>
                     {String(countdown.minutes).padStart(2, "0")}:{String(countdown.seconds).padStart(2, "0")}
@@ -512,7 +503,7 @@ export default function FreeMiniDiplomaPage() {
 
               {/* Value Pills */}
               <div className="flex flex-wrap justify-center gap-2 mb-5">
-                {["✓ 100% Free", "✓ Certificate", "✓ No Experience", "✓ Self-Paced"].map((pill, i) => (
+                {["✓ 100% Free", "✓ Certificate", "✓ No Experience Required"].map((pill, i) => (
                   <span
                     key={i}
                     className="px-3 py-1.5 rounded-full text-xs font-bold"
@@ -559,10 +550,9 @@ export default function FreeMiniDiplomaPage() {
                     required
                     value={formData.email}
                     onChange={handleEmailChange}
-                    className={`w-full px-4 py-3 rounded-lg border transition-all focus:outline-none ${
-                      emailStatus === "valid" ? "border-green-500 bg-green-50" :
-                      emailStatus === "invalid" ? "border-red-500 bg-red-50" : ""
-                    }`}
+                    className={`w-full px-4 py-3 rounded-lg border transition-all focus:outline-none ${emailStatus === "valid" ? "border-green-500 bg-green-50" :
+                        emailStatus === "invalid" ? "border-red-500 bg-red-50" : ""
+                      }`}
                     style={{ borderColor: emailStatus === "idle" ? "#D1D5DB" : undefined }}
                     placeholder="sarah@example.com"
                   />
@@ -595,6 +585,35 @@ export default function FreeMiniDiplomaPage() {
                   )}
                 </div>
 
+                {/* Phone Field with Country Code */}
+                <div>
+                  <label className="block text-sm font-semibold mb-1.5" style={{ color: "#1F2432" }}>
+                    Phone <span className="font-normal text-gray-500">(Optional — for text reminders)</span>
+                  </label>
+                  <div className="flex gap-2">
+                    <select
+                      value={formData.countryCode}
+                      onChange={(e) => setFormData({ ...formData, countryCode: e.target.value })}
+                      className="px-3 py-3 rounded-lg border transition-all focus:outline-none w-28"
+                      style={{ borderColor: "#D1D5DB" }}
+                    >
+                      {COUNTRY_CODES.map((c) => (
+                        <option key={`${c.country}-${c.code}`} value={c.code}>
+                          {c.flag} {c.code}
+                        </option>
+                      ))}
+                    </select>
+                    <input
+                      type="tel"
+                      value={formData.phone}
+                      onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+                      className="flex-1 px-4 py-3 rounded-lg border transition-all focus:outline-none"
+                      style={{ borderColor: "#D1D5DB" }}
+                      placeholder="(555) 123-4567"
+                    />
+                  </div>
+                </div>
+
                 {error && (
                   <div className="rounded-lg p-3 text-sm" style={{ background: "#FFF5F5", color: "#D94B4B" }}>
                     {error}
@@ -617,21 +636,27 @@ export default function FreeMiniDiplomaPage() {
                       ? "Creating Your Account..."
                       : emailStatus === "checking"
                         ? "Verifying Email..."
-                        : "Get Free Instant Access"}
+                        : "Request Free Access →"}
                 </button>
 
                 <p className="text-center text-xs" style={{ color: "#6B6E76" }}>
-                  By signing up, you agree to our Terms of Service and Privacy Policy.
-                  We&apos;ll also send you helpful emails about functional medicine.
+                  🔒 Secure & Private • Instant Access After Signup
                 </p>
               </form>
             </div>
           </div>
         </section>
 
+        {/* Income Disclaimer */}
+        <p className="text-center text-xs mt-8 max-w-[800px] mx-auto" style={{ color: "#9A9EA6" }}>
+          *Income figures represent results of successful graduates who completed our full certification program and built active practices.
+          Results vary based on effort, location, and business development. The free Mini Diploma provides education only — earning potential
+          comes from completing full certification and building a client base over 3-6+ months.
+        </p>
+
         {/* Footer */}
-        <p className="text-center text-sm mt-12 pt-8 border-t" style={{ color: "#9A9EA6", borderColor: "#ECE8E2" }}>
-          © 2025 AccrediPro Academy • Functional Medicine Mini Diploma • Questions? Email info@coach.accredipro.academy
+        <p className="text-center text-sm mt-8 pt-8 border-t" style={{ color: "#9A9EA6", borderColor: "#ECE8E2" }}>
+          © 2025 AccrediPro Academy • <Link href="/privacy-policy" className="hover:underline">Privacy Policy</Link> • <Link href="/terms" className="hover:underline">Terms of Service</Link> • Questions? Email info@coach.accredipro.academy
         </p>
       </main>
     </div>

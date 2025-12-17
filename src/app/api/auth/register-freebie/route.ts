@@ -24,7 +24,7 @@ const FREEBIE_PASSWORD = "Futurecoach2025";
 export async function POST(request: NextRequest) {
     try {
         const body = await request.json();
-        const { email, firstName, lastName, name, miniDiplomaCategory = "functional-medicine" } = body;
+        const { email, firstName, lastName, name, phone, miniDiplomaCategory = "functional-medicine" } = body;
 
         // Validation
         if (!email) {
@@ -155,6 +155,7 @@ export async function POST(request: NextRequest) {
                 email: emailLower,
                 firstName: fName,
                 lastName: lName,
+                phone: phone || null,
                 passwordHash,
                 role: "STUDENT",
                 isActive: true,
