@@ -6,8 +6,9 @@ import prisma from "@/lib/prisma";
 /**
  * POST /api/seed-announcements
  * 
- * Creates pinned announcements for community categories.
- * Must be run by an admin.
+ * Creates SHORT pinned announcements for community categories.
+ * These explain what to do in each category - NOT actual posts.
+ * NOTE: "introductions" and "coaching-tips" posts are NOT announcements.
  */
 export async function POST() {
     const session = await getServerSession(authOptions);
@@ -33,103 +34,45 @@ export async function POST() {
         }
 
         /**
-         * Category announcements content
-         * These are pinned announcements that appear at the top of each category
-         * They have reactions but no comments (announcement style)
+         * SHORT Category announcements
+         * These are pinned explanations of what to do in each category
+         * NOT: introductions (keep as post with comments)
+         * NOT: coaching-tips individual tips (those are regular posts)
          */
         const announcements = [
             {
                 id: "announcement-wins",
                 categoryId: "wins",
-                title: "🏆 Share Your Wins & Celebrate Together!",
-                content: `<p>This is your celebration space! 🎉</p>
-<p>Every win matters — big or small. Whether you just landed your first client, completed a challenging module, received amazing feedback from a patient, or simply showed up today when it was hard...</p>
-<p><strong>WE WANT TO CELEBRATE WITH YOU!</strong></p>
-<p>Create your own post to share:</p>
-<ul>
-<li>🌟 Client success stories</li>
-<li>💪 Personal breakthroughs</li>
-<li>📚 Course milestones</li>
-<li>🎯 Goals achieved</li>
-<li>✨ Anything that made you proud!</li>
-</ul>
-<p>Remember: Your wins inspire others. When you share your success, you give someone else permission to dream bigger.</p>
-<p>Go ahead — create a post and let us celebrate YOU! 🥳</p>
-<p><em>Sarah M. 💕</em></p>`,
+                title: "🏆 Share Your Wins & Celebrate Together! 🎉",
+                content: `<p>This is your space to celebrate every win—big or small. Whether it's a client success, a course milestone, a personal breakthrough, or simply showing up on a hard day, your progress matters. Share your wins here and let the community celebrate you 💚</p>`,
                 reactions: { "❤️": 156, "🔥": 89, "👏": 124, "🎉": 203, "💯": 67 },
             },
             {
                 id: "announcement-graduates",
                 categoryId: "graduates",
-                title: "🎓 Welcome New Graduates!",
-                content: `<p>Congratulations on your achievement! 🎉</p>
-<p>You've worked hard, shown up consistently, and earned your place here. This is YOUR moment!</p>
-<p>This space is dedicated to celebrating our newest certified practitioners. Share your graduation story with us:</p>
-<ul>
-<li>🎓 Your certification journey</li>
-<li>🌟 What this means to you</li>
-<li>💪 How you're feeling right now</li>
-<li>🚀 Your next steps</li>
-</ul>
-<p>We're so proud of every single one of you. Your diploma represents not just knowledge, but dedication to helping others transform their health.</p>
-<p>Welcome to the family of certified practitioners! 🏆</p>
-<p><em>Sarah M. 💕</em></p>`,
+                title: "🎓 Welcome New Graduates! 🎉",
+                content: `<p>Congratulations on your achievement! This is your moment to celebrate and share your graduation story. Tell us about your journey, what this certification means to you, and what's next. We're so proud of every single one of you! 💪</p>`,
                 reactions: { "❤️": 234, "🎉": 312, "👏": 187, "🔥": 95, "💯": 76 },
             },
             {
                 id: "announcement-questions-everyone-has",
                 categoryId: "questions-everyone-has",
                 title: "❓ Questions Everyone Has",
-                content: `<p>You're not alone in your questions! 💡</p>
-<p>This is a safe space for the questions you might be afraid to ask. Trust us — if you're wondering about it, dozens of others are too.</p>
-<p>Common topics discussed here:</p>
-<ul>
-<li>🤔 Starting your practice journey</li>
-<li>💰 Investment and payment considerations</li>
-<li>⏰ Time management and balance</li>
-<li>😰 Imposter syndrome and fears</li>
-<li>📋 What to expect from the certification</li>
-</ul>
-<p>Browse existing threads — your answer might already be here! Or create a new post if you don't see your question addressed.</p>
-<p>There are no silly questions here. Ask away! 🙋‍♀️</p>
-<p><em>Sarah M. 💕</em></p>`,
+                content: `<p>You're not alone! This is a safe space for the questions you might be afraid to ask. Whether it's about starting your practice, time management, investment, or imposter syndrome—if you're wondering about it, others are too. Browse existing threads or create a new post 🙋‍♀️</p>`,
                 reactions: { "❤️": 189, "💡": 145, "👏": 78, "🙌": 92, "💯": 56 },
             },
             {
                 id: "announcement-career-pathway",
                 categoryId: "career-pathway",
                 title: "🚀 Career Pathway & Next Steps",
-                content: `<p>Your journey to a thriving practice starts here! 🌟</p>
-<p>This category is all about your future — the vision you're building, the life you're creating, and how this certification gets you there.</p>
-<p>Topics you'll find here:</p>
-<ul>
-<li>💼 Career transition stories</li>
-<li>💵 Income and business growth</li>
-<li>🎯 Niche specialization ideas</li>
-<li>📈 Scaling your practice</li>
-<li>🌍 Working with clients worldwide</li>
-</ul>
-<p>Whether you're dreaming about your first client or planning your 6-figure practice, you'll find inspiration and guidance here.</p>
-<p>Dream big. You've got this! 💪</p>
-<p><em>Sarah M. 💕</em></p>`,
+                content: `<p>Your journey to a thriving practice starts here! Share your career transition stories, ask about income potential, discuss niche specializations, or get inspired by others scaling their practices. Dream big—you've got this! 💪</p>`,
                 reactions: { "❤️": 167, "🔥": 134, "🚀": 189, "💯": 89, "👏": 112 },
             },
             {
                 id: "announcement-coaching-tips",
                 categoryId: "coaching-tips",
                 title: "💡 Coaching Tips & Pro Insights",
-                content: `<p>Learn from the best! 🌟</p>
-<p>This is where Sarah and our community of experienced practitioners share wisdom, strategies, and insider tips that you won't find anywhere else.</p>
-<p>What you'll discover here:</p>
-<ul>
-<li>📋 Client session strategies</li>
-<li>💬 Communication scripts that work</li>
-<li>🧠 Mindset shifts for success</li>
-<li>⚡ Quick wins you can implement today</li>
-<li>🎯 Advanced practitioner techniques</li>
-</ul>
-<p>These tips come from real experience working with thousands of clients. Take notes! 📝</p>
-<p><em>Sarah M. 💕</em></p>`,
+                content: `<p>Learn from experienced practitioners! This is where Sarah and our community share real-world strategies, client session tips, communication scripts, and mindset shifts for success. Take notes! 📝</p>`,
                 reactions: { "❤️": 245, "💡": 198, "🔥": 156, "💯": 123, "👏": 178 },
             },
         ];
@@ -142,7 +85,6 @@ export async function POST() {
 
         for (const announcement of announcements) {
             try {
-                // Upsert the announcement
                 await prisma.communityPost.upsert({
                     where: { id: announcement.id },
                     update: {
@@ -170,7 +112,7 @@ export async function POST() {
             }
         }
 
-        // Optionally: Unpin any old pinned posts that aren't our new announcements
+        // Unpin any old pinned posts that aren't our new announcements
         const announcementIds = announcements.map(a => a.id);
         const unpinnedOthers = await prisma.communityPost.updateMany({
             where: {
@@ -198,8 +140,7 @@ export async function POST() {
 
 /**
  * DELETE /api/seed-announcements
- * 
- * Delete a specific post by ID (or unpin it)
+ * Delete or unpin a specific post by ID
  */
 export async function DELETE(request: Request) {
     const session = await getServerSession(authOptions);

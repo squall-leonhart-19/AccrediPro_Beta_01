@@ -825,12 +825,24 @@ export function CommunityClient({ posts: dbPosts, stats, communities = [], isAdm
                 // Pinned Announcements: Show full content inline, no clicking needed
                 post.isPinned ? (
                   <div key={post.id} className="bg-gradient-to-br from-burgundy-50 to-burgundy-100/50 border-2 border-burgundy-200 rounded-xl overflow-hidden">
-                    {/* Announcement Header */}
+                    {/* Announcement Header with Sarah's Profile */}
                     <div className="bg-gradient-to-r from-burgundy-700 to-burgundy-600 px-4 py-2.5 flex items-center justify-between">
-                      <span className="text-white font-bold text-sm flex items-center gap-2">
-                        <Megaphone className="w-4 h-4" />
-                        Announcement
-                      </span>
+                      <div className="flex items-center gap-2">
+                        <Avatar className="w-7 h-7 ring-2 ring-white/30">
+                          <AvatarImage src={post.author.avatar || "/coaches/sarah-coach.webp"} />
+                          <AvatarFallback className="bg-white/20 text-white text-xs font-bold">
+                            {getInitials(post.author.firstName, post.author.lastName)}
+                          </AvatarFallback>
+                        </Avatar>
+                        <span className="text-white font-semibold text-sm">
+                          {post.author.firstName} {post.author.lastName}
+                        </span>
+                        <span className="text-white/60">•</span>
+                        <span className="text-white font-bold text-sm flex items-center gap-1">
+                          <Megaphone className="w-3.5 h-3.5" />
+                          Announcement
+                        </span>
+                      </div>
                       <Badge className="bg-white/20 text-white border-0 text-[10px]">
                         Pinned
                       </Badge>
