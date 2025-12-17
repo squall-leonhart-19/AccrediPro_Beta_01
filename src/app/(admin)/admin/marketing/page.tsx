@@ -1215,7 +1215,7 @@ export default function MarketingPage() {
                           className="h-7 w-7"
                           title="Preview"
                           onClick={() => {
-                            setSelectedNurtureEmail({ day: 30 + index, name: downsell.name, subject: downsell.subject });
+                            setSelectedNurtureEmail({ day: 30 + index, name: email.name, subject: email.subject });
                             setShowNurtureEmailPreview(true);
                           }}
                         >
