@@ -163,7 +163,7 @@ const STATE_CONFIG: Record<string, {
     step1_completed: {
         welcomeMessage: "Congratulations! You've earned your certification. Now it's time to turn that knowledge into real income.",
         actionLabel: "Activate My Practice Path",
-        actionHref: "/catalog",
+        actionHref: "/courses/functional-medicine-complete-certification",
         actionIcon: Rocket,
         motivation: "You have the clinical foundation. Now let's build the practice and income you deserve — ethically and sustainably.",
         nextUnlockTitle: "Step 2: Working Practitioner",
@@ -633,7 +633,7 @@ export function RoadmapContent({ data, steps, userName, specialization }: Roadma
                                             {isCertificationStep && !completed && !enrolled && step.step === 1 && (
                                                 <div className="flex items-center gap-3 mt-3">
                                                     <span className="text-lg font-bold text-gray-700">$997</span>
-                                                    <Link href="/catalog">
+                                                    <Link href="/courses/functional-medicine-complete-certification">
                                                         <Button size="sm" variant="outline" className="border-gray-300 text-gray-600 hover:bg-gray-50">
                                                             <Eye className="w-4 h-4 mr-1" /> View Program Details
                                                         </Button>
