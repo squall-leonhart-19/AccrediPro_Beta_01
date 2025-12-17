@@ -33,6 +33,7 @@ import {
   Tag,
   Lock,
   Phone,
+  UserCog,
 } from "lucide-react";
 import {
   DropdownMenu,
@@ -51,6 +52,14 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
+import { Label } from "@/components/ui/label";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 interface UserStreak {
   currentStreak: number;
@@ -149,6 +158,22 @@ export function UsersClient({ users, courses }: UsersClientProps) {
   const [detailTab, setDetailTab] = useState<"overview" | "tags" | "activity">("overview");
   const [activityData, setActivityData] = useState<any>(null);
   const [loadingActivity, setLoadingActivity] = useState(false);
+
+  // Role change state
+  const [roleDialogOpen, setRoleDialogOpen] = useState(false);
+  const [changingRole, setChangingRole] = useState(false);
+  const [selectedRole, setSelectedRole] = useState<string>("");
+
+  // Create user state
+  const [createUserDialogOpen, setCreateUserDialogOpen] = useState(false);
+  const [creatingUser, setCreatingUser] = useState(false);
+  const [newUserData, setNewUserData] = useState({
+    email: "",
+    firstName: "",
+    lastName: "",
+    password: "",
+    role: "STUDENT",
+  });
 
   const fetchUserActivity = async (userId: string) => {
     console.log('Fetching activity for user:', userId);
@@ -396,6 +421,62 @@ export function UsersClient({ users, courses }: UsersClientProps) {
     setKnowledgeDialogOpen(true);
   };
 
+  const openRoleDialog = (user: User) => {
+    setSelectedUser(user);
+    setSelectedRole(user.role);
+    setRoleDialogOpen(true);
+  };
+
+  const handleChangeRole = async () => {
+    if (!selectedUser || !selectedRole) return;
+    setChangingRole(true);
+    try {
+      const response = await fetch("/api/admin/users/role", {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          userId: selectedUser.id,
+          role: selectedRole,
+        }),
+      });
+      if (response.ok) {
+        setRoleDialogOpen(false);
+        router.refresh();
+      }
+    } catch (error) {
+      console.error("Failed to change role:", error);
+    } finally {
+      setChangingRole(false);
+    }
+  };
+
+  const handleCreateUser = async () => {
+    if (!newUserData.email || !newUserData.password) return;
+    setCreatingUser(true);
+    try {
+      const response = await fetch("/api/admin/users/create", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(newUserData),
+      });
+      if (response.ok) {
+        setCreateUserDialogOpen(false);
+        setNewUserData({
+          email: "",
+          firstName: "",
+          lastName: "",
+          password: "",
+          role: "STUDENT",
+        });
+        router.refresh();
+      }
+    } catch (error) {
+      console.error("Failed to create user:", error);
+    } finally {
+      setCreatingUser(false);
+    }
+  };
+
   const handleSaveKnowledge = async () => {
     if (!selectedUser) return;
     setSavingKnowledge(true);
@@ -516,7 +597,10 @@ export function UsersClient({ users, courses }: UsersClientProps) {
             <Download className="w-4 h-4" />
             Export
           </Button>
-          <Button className="bg-burgundy-600 hover:bg-burgundy-700 gap-2">
+          <Button
+            onClick={() => setCreateUserDialogOpen(true)}
+            className="bg-burgundy-600 hover:bg-burgundy-700 gap-2"
+          >
             <UserPlus className="w-4 h-4" />
             Add User
           </Button>
@@ -873,6 +957,13 @@ export function UsersClient({ users, courses }: UsersClientProps) {
                               >
                                 <Lock className="w-4 h-4 mr-2 text-burgundy-600" />
                                 Change Password
+                              </DropdownMenuItem>
+                              <DropdownMenuItem
+                                onClick={() => openRoleDialog(user)}
+                                className="cursor-pointer"
+                              >
+                                <UserCog className="w-4 h-4 mr-2 text-purple-600" />
+                                Change Role
                               </DropdownMenuItem>
                               <DropdownMenuSeparator />
                               <DropdownMenuItem
@@ -1750,6 +1841,166 @@ export function UsersClient({ users, courses }: UsersClientProps) {
                   {usersToDelete.length === 1 ? "Delete User" : `Delete ${usersToDelete.length} Users`}
                 </>
               )}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Change Role Dialog */}
+      <Dialog open={roleDialogOpen} onOpenChange={setRoleDialogOpen}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              <UserCog className="w-5 h-5 text-purple-600" />
+              Change User Role
+            </DialogTitle>
+            <DialogDescription>
+              {selectedUser && (
+                <span>
+                  Change the role for{" "}
+                  <strong>
+                    {selectedUser.firstName} {selectedUser.lastName}
+                  </strong>{" "}
+                  ({selectedUser.email})
+                </span>
+              )}
+            </DialogDescription>
+          </DialogHeader>
+          <div className="space-y-4 py-4">
+            <div className="space-y-2">
+              <Label>Current Role</Label>
+              <Badge className={`border ${selectedUser ? roleColors[selectedUser.role] : ""}`}>
+                {selectedUser?.role}
+              </Badge>
+            </div>
+            <div className="space-y-2">
+              <Label>New Role</Label>
+              <Select value={selectedRole} onValueChange={setSelectedRole}>
+                <SelectTrigger>
+                  <SelectValue placeholder="Select a role" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="STUDENT">Student</SelectItem>
+                  <SelectItem value="MENTOR">Mentor</SelectItem>
+                  <SelectItem value="INSTRUCTOR">Instructor</SelectItem>
+                  <SelectItem value="ADMIN">Admin</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+          </div>
+          <DialogFooter>
+            <Button
+              variant="outline"
+              onClick={() => setRoleDialogOpen(false)}
+              disabled={changingRole}
+            >
+              Cancel
+            </Button>
+            <Button
+              onClick={handleChangeRole}
+              className="bg-purple-600 hover:bg-purple-700"
+              disabled={changingRole || selectedRole === selectedUser?.role}
+            >
+              {changingRole ? "Updating..." : "Update Role"}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Create User Dialog */}
+      <Dialog open={createUserDialogOpen} onOpenChange={setCreateUserDialogOpen}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              <UserPlus className="w-5 h-5 text-burgundy-600" />
+              Create New User
+            </DialogTitle>
+            <DialogDescription>
+              Add a new user to the platform with their login credentials.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="space-y-4 py-4">
+            <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <Label htmlFor="firstName">First Name</Label>
+                <Input
+                  id="firstName"
+                  value={newUserData.firstName}
+                  onChange={(e) => setNewUserData(prev => ({ ...prev, firstName: e.target.value }))}
+                  placeholder="John"
+                />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="lastName">Last Name</Label>
+                <Input
+                  id="lastName"
+                  value={newUserData.lastName}
+                  onChange={(e) => setNewUserData(prev => ({ ...prev, lastName: e.target.value }))}
+                  placeholder="Doe"
+                />
+              </div>
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="email">Email *</Label>
+              <Input
+                id="email"
+                type="email"
+                value={newUserData.email}
+                onChange={(e) => setNewUserData(prev => ({ ...prev, email: e.target.value }))}
+                placeholder="john@example.com"
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="password">Password *</Label>
+              <Input
+                id="password"
+                type="password"
+                value={newUserData.password}
+                onChange={(e) => setNewUserData(prev => ({ ...prev, password: e.target.value }))}
+                placeholder="Minimum 8 characters"
+              />
+            </div>
+            <div className="space-y-2">
+              <Label>Role</Label>
+              <Select
+                value={newUserData.role}
+                onValueChange={(value) => setNewUserData(prev => ({ ...prev, role: value }))}
+              >
+                <SelectTrigger>
+                  <SelectValue placeholder="Select a role" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="STUDENT">Student</SelectItem>
+                  <SelectItem value="MENTOR">Mentor</SelectItem>
+                  <SelectItem value="INSTRUCTOR">Instructor</SelectItem>
+                  <SelectItem value="ADMIN">Admin</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+          </div>
+          <DialogFooter>
+            <Button
+              variant="outline"
+              onClick={() => {
+                setCreateUserDialogOpen(false);
+                setNewUserData({
+                  email: "",
+                  firstName: "",
+                  lastName: "",
+                  password: "",
+                  role: "STUDENT",
+                });
+              }}
+              disabled={creatingUser}
+            >
+              Cancel
+            </Button>
+            <Button
+              onClick={handleCreateUser}
+              className="bg-burgundy-600 hover:bg-burgundy-700"
+              disabled={creatingUser || !newUserData.email || !newUserData.password}
+            >
+              {creatingUser ? "Creating..." : "Create User"}
             </Button>
           </DialogFooter>
         </DialogContent>

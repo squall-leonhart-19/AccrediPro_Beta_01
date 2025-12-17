@@ -760,17 +760,8 @@ export function ProfileTabs({ user, allBadges }: ProfileTabsProps) {
                                 <div className="p-4 bg-gray-50 rounded-xl">
                                     <p className="text-sm text-gray-500 mb-1">Account Status</p>
                                     <p className="font-medium text-gray-900 flex items-center gap-2">
-                                        {user.emailVerified ? (
-                                            <>
-                                                <CheckCircle2 className="w-4 h-4 text-green-500" />
-                                                Verified
-                                            </>
-                                        ) : (
-                                            <>
-                                                <Shield className="w-4 h-4 text-amber-500" />
-                                                Not Verified
-                                            </>
-                                        )}
+                                        <CheckCircle2 className="w-4 h-4 text-green-500" />
+                                        Verified
                                     </p>
                                 </div>
                                 <div className="p-4 bg-gray-50 rounded-xl">
