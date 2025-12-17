@@ -110,7 +110,7 @@ export async function POST(request: NextRequest) {
       },
     });
 
-    // Special tag: fm_free_mini_diploma_lead grants mini-diploma access
+    // Special tag: fm_free_mini_diploma_lead grants mini-diploma access + enrolls in nurture sequence
     if (data.tag === "fm_free_mini_diploma_lead") {
       await prisma.user.update({
         where: { id: data.userId },
@@ -127,6 +127,7 @@ export async function POST(request: NextRequest) {
         "source:mini-diploma-freebie",
         "source:functional-medicine",
         "mini_diploma_category:functional-medicine",
+        "mini_diploma_started",
       ];
       for (const relatedTag of relatedTags) {
         await prisma.userTag.upsert({
@@ -136,11 +137,63 @@ export async function POST(request: NextRequest) {
         });
       }
 
+      // Enroll in 30-Day Nurture Sequence
+      let nurtureEnrolled = false;
+      try {
+        const nurtureSequence = await prisma.sequence.findFirst({
+          where: {
+            OR: [
+              { slug: "mini-diploma-nurture" },
+              { triggerType: "MINI_DIPLOMA_STARTED" },
+            ],
+            isActive: true,
+          },
+        });
+
+        if (nurtureSequence) {
+          const existingEnrollment = await prisma.sequenceEnrollment.findUnique({
+            where: {
+              userId_sequenceId: {
+                userId: data.userId,
+                sequenceId: nurtureSequence.id,
+              },
+            },
+          });
+
+          if (!existingEnrollment) {
+            const nextSendAt = new Date();
+            nextSendAt.setHours(nextSendAt.getHours() + 1); // First email 1 hour after tag
+
+            await prisma.sequenceEnrollment.create({
+              data: {
+                userId: data.userId,
+                sequenceId: nurtureSequence.id,
+                status: "ACTIVE",
+                currentEmailIndex: 0,
+                nextSendAt,
+              },
+            });
+
+            await prisma.sequence.update({
+              where: { id: nurtureSequence.id },
+              data: { totalEnrolled: { increment: 1 } },
+            });
+
+            nurtureEnrolled = true;
+          }
+        }
+      } catch (err) {
+        console.error("Error enrolling in nurture sequence:", err);
+      }
+
       return NextResponse.json({
         success: true,
-        message: "Tag added + Mini Diploma access granted!",
+        message: nurtureEnrolled
+          ? "Tag added + Mini Diploma access granted + Enrolled in nurture sequence!"
+          : "Tag added + Mini Diploma access granted!",
         tag,
         miniDiplomaGranted: true,
+        nurtureEnrolled,
       });
     }
 
