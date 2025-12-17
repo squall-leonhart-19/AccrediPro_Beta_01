@@ -683,6 +683,7 @@ export function CourseCatalogFilters({
                         const isFMPractitioner = course.slug === "functional-medicine-complete-certification";
                         const isWomensHormone = course.slug === "womens-hormone-health-coach";
                         const isGutHealth = course.slug === "gut-health-digestive-wellness-coach";
+                        const isCohortClosed = isWomensHormone || isGutHealth;
                         const enrolledCount = isFMPractitioner ? 1447 : isWomensHormone ? 892 : isGutHealth ? 756 : (course.analytics?.totalEnrolled || course._count.enrollments) + 100;
                         const reviewCount = isFMPractitioner ? 823 : isWomensHormone ? 412 : isGutHealth ? 347 : course._count.reviews;
                         const coach = course.coach || DEFAULT_COACH;
@@ -734,8 +735,8 @@ export function CourseCatalogFilters({
                                             <button
                                                 onClick={(e) => toggleWishlist(e, course.id)}
                                                 className={`w-9 h-9 rounded-full flex items-center justify-center transition-all shadow-lg ${isWishlisted
-                                                        ? "bg-red-500 text-white"
-                                                        : "bg-white/90 text-gray-600 hover:bg-white hover:text-red-500"
+                                                    ? "bg-red-500 text-white"
+                                                    : "bg-white/90 text-gray-600 hover:bg-white hover:text-red-500"
                                                     }`}
                                                 disabled={isLoadingWishlist}
                                             >
@@ -800,10 +801,10 @@ export function CourseCatalogFilters({
                                                         <TrendingUp className="w-4 h-4 text-emerald-600" />
                                                         <span className="text-xs font-semibold text-emerald-700 uppercase tracking-wide">Career Outlook</span>
                                                         <Badge className={`ml-auto text-[10px] px-1.5 py-0 ${careerData.demandLevel === "Very High"
-                                                                ? "bg-red-100 text-red-700"
-                                                                : careerData.demandLevel === "High"
-                                                                    ? "bg-orange-100 text-orange-700"
-                                                                    : "bg-blue-100 text-blue-700"
+                                                            ? "bg-red-100 text-red-700"
+                                                            : careerData.demandLevel === "High"
+                                                                ? "bg-orange-100 text-orange-700"
+                                                                : "bg-blue-100 text-blue-700"
                                                             }`}>
                                                             {careerData.demandLevel} Demand
                                                         </Badge>
@@ -909,6 +910,12 @@ export function CourseCatalogFilters({
                                                     <span className="sm:hidden">Continue</span>
                                                 </Button>
                                             </div>
+                                        ) : isCohortClosed ? (
+                                            <Button size="sm" className="w-full bg-gray-400 cursor-not-allowed font-semibold text-xs sm:text-sm h-8 sm:h-10" disabled>
+                                                <Lock className="w-3 h-3 sm:w-4 sm:h-4 mr-1 sm:mr-2" />
+                                                <span className="hidden sm:inline">Cohort Closed - Spots Filled</span>
+                                                <span className="sm:hidden">Sold Out</span>
+                                            </Button>
                                         ) : (
                                             <Button size="sm" className="w-full bg-burgundy-600 hover:bg-burgundy-700 font-semibold group-hover:bg-burgundy-700 text-xs sm:text-sm h-8 sm:h-10">
                                                 {course.isFree ? (
@@ -980,15 +987,15 @@ export function CourseCatalogFilters({
 
                                     {/* Status Badge */}
                                     <Badge className={`absolute top-2 right-2 text-[10px] shadow-lg ${spec.badge === "CORE" ? "bg-emerald-500 text-white" :
-                                            spec.badge === "HIGH DEMAND" ? "bg-green-500 text-white" :
-                                                spec.badge === "TRENDING" ? "bg-pink-500 text-white" :
-                                                    spec.badge === "GROWING" ? "bg-purple-500 text-white" :
-                                                        spec.badge === "EVERGREEN" ? "bg-amber-500 text-white" :
-                                                            spec.badge === "HIGH VOLUME" ? "bg-orange-500 text-white" :
-                                                                spec.badge === "SPECIALIST" ? "bg-red-500 text-white" :
-                                                                    spec.badge === "EMERGING" ? "bg-indigo-500 text-white" :
-                                                                        spec.badge === "NICHE" ? "bg-blue-500 text-white" :
-                                                                            "bg-teal-500 text-white"
+                                        spec.badge === "HIGH DEMAND" ? "bg-green-500 text-white" :
+                                            spec.badge === "TRENDING" ? "bg-pink-500 text-white" :
+                                                spec.badge === "GROWING" ? "bg-purple-500 text-white" :
+                                                    spec.badge === "EVERGREEN" ? "bg-amber-500 text-white" :
+                                                        spec.badge === "HIGH VOLUME" ? "bg-orange-500 text-white" :
+                                                            spec.badge === "SPECIALIST" ? "bg-red-500 text-white" :
+                                                                spec.badge === "EMERGING" ? "bg-indigo-500 text-white" :
+                                                                    spec.badge === "NICHE" ? "bg-blue-500 text-white" :
+                                                                        "bg-teal-500 text-white"
                                         }`}>
                                         {spec.badge}
                                     </Badge>
@@ -1005,9 +1012,9 @@ export function CourseCatalogFilters({
                                         <div className="flex items-center justify-between">
                                             <span className="text-[10px] text-gray-400 uppercase tracking-wide">Market Demand</span>
                                             <Badge className={`text-[9px] px-1.5 py-0 ${spec.marketDemand === "Very High" ? "bg-red-100 text-red-700" :
-                                                    spec.marketDemand === "High" ? "bg-orange-100 text-orange-700" :
-                                                        spec.marketDemand === "Growing" ? "bg-blue-100 text-blue-700" :
-                                                            "bg-gray-100 text-gray-700"
+                                                spec.marketDemand === "High" ? "bg-orange-100 text-orange-700" :
+                                                    spec.marketDemand === "Growing" ? "bg-blue-100 text-blue-700" :
+                                                        "bg-gray-100 text-gray-700"
                                                 }`}>
                                                 {spec.marketDemand}
                                             </Badge>
@@ -1087,8 +1094,8 @@ export function CourseCatalogFilters({
                                             <div
                                                 key={j}
                                                 className={`flex items-center gap-3 p-3 rounded-xl border ${step.status === "available"
-                                                        ? "bg-white border-gray-200"
-                                                        : "bg-gray-50 border-gray-100"
+                                                    ? "bg-white border-gray-200"
+                                                    : "bg-gray-50 border-gray-100"
                                                     }`}
                                             >
                                                 <span className="text-lg">{getStepIcon(step.type)}</span>
