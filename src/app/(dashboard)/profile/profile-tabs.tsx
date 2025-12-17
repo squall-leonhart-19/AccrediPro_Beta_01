@@ -43,6 +43,8 @@ import {
     EyeOff,
     Loader2,
     Bot,
+    Phone,
+    Pencil,
 } from "lucide-react";
 
 // Level definitions
@@ -91,6 +93,7 @@ interface ProfileTabsProps {
         firstName: string | null;
         lastName: string | null;
         email: string;
+        phone: string | null;
         knowledgeBase?: string | null; // Added field
         avatar: string | null;
         bio: string | null;
@@ -159,6 +162,30 @@ export function ProfileTabs({ user, allBadges }: ProfileTabsProps) {
     const [passwordError, setPasswordError] = useState("");
     const [passwordSuccess, setPasswordSuccess] = useState(false);
     const [isChangingPassword, setIsChangingPassword] = useState(false);
+
+    // Phone editing state
+    const [isEditingPhone, setIsEditingPhone] = useState(false);
+    const [phoneValue, setPhoneValue] = useState(user.phone || "");
+    const [isSavingPhone, setIsSavingPhone] = useState(false);
+
+    const handleSavePhone = async () => {
+        setIsSavingPhone(true);
+        try {
+            const response = await fetch("/api/user/profile", {
+                method: "PATCH",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ phone: phoneValue }),
+            });
+            if (response.ok) {
+                setIsEditingPhone(false);
+                window.location.reload();
+            }
+        } catch (error) {
+            console.error("Failed to save phone:", error);
+        } finally {
+            setIsSavingPhone(false);
+        }
+    };
 
     const handleChangePassword = async () => {
         setPasswordError("");
@@ -745,6 +772,60 @@ export function ProfileTabs({ user, allBadges }: ProfileTabsProps) {
                                             </>
                                         )}
                                     </p>
+                                </div>
+                                <div className="p-4 bg-gray-50 rounded-xl">
+                                    <div className="flex items-center justify-between">
+                                        <div>
+                                            <p className="text-sm text-gray-500 mb-1 flex items-center gap-1">
+                                                <Phone className="w-3 h-3" />
+                                                Phone Number
+                                            </p>
+                                            {isEditingPhone ? (
+                                                <div className="flex items-center gap-2 mt-1">
+                                                    <Input
+                                                        value={phoneValue}
+                                                        onChange={(e) => setPhoneValue(e.target.value)}
+                                                        placeholder="(555) 123-4567"
+                                                        type="tel"
+                                                        className="h-8 w-40"
+                                                    />
+                                                    <Button
+                                                        size="sm"
+                                                        onClick={handleSavePhone}
+                                                        disabled={isSavingPhone}
+                                                        className="h-8 bg-burgundy-600 hover:bg-burgundy-700"
+                                                    >
+                                                        {isSavingPhone ? <Loader2 className="w-3 h-3 animate-spin" /> : "Save"}
+                                                    </Button>
+                                                    <Button
+                                                        size="sm"
+                                                        variant="ghost"
+                                                        onClick={() => {
+                                                            setIsEditingPhone(false);
+                                                            setPhoneValue(user.phone || "");
+                                                        }}
+                                                        className="h-8"
+                                                    >
+                                                        Cancel
+                                                    </Button>
+                                                </div>
+                                            ) : (
+                                                <p className="font-medium text-gray-900">
+                                                    {user.phone || <span className="text-gray-400 italic">Not set</span>}
+                                                </p>
+                                            )}
+                                        </div>
+                                        {!isEditingPhone && (
+                                            <Button
+                                                variant="ghost"
+                                                size="sm"
+                                                onClick={() => setIsEditingPhone(true)}
+                                                className="text-burgundy-600 hover:text-burgundy-700"
+                                            >
+                                                <Pencil className="w-4 h-4" />
+                                            </Button>
+                                        )}
+                                    </div>
                                 </div>
                             </div>
                         </CardContent>

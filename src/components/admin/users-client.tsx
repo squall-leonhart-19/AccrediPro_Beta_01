@@ -32,6 +32,7 @@ import {
   AlertTriangle,
   Tag,
   Lock,
+  Phone,
 } from "lucide-react";
 import {
   DropdownMenu,
@@ -63,6 +64,7 @@ interface User {
   firstName: string | null;
   lastName: string | null;
   avatar: string | null;
+  phone: string | null;
   role: string;
   isActive: boolean;
   createdAt: Date;
@@ -723,6 +725,12 @@ export function UsersClient({ users, courses }: UsersClientProps) {
                               {user.firstName} {user.lastName}
                             </p>
                             <p className="text-sm text-gray-500 truncate">{user.email}</p>
+                            {user.phone && (
+                              <p className="text-xs text-gray-500 flex items-center gap-1 mt-0.5">
+                                <Phone className="w-3 h-3 text-green-500" />
+                                {user.phone}
+                              </p>
+                            )}
                             {user.leadSource && (
                               <p className="text-xs text-gray-400 mt-0.5">
                                 via {user.leadSource}{user.leadSourceDetail ? ` - ${user.leadSourceDetail}` : ""}
@@ -996,6 +1004,12 @@ export function UsersClient({ users, courses }: UsersClientProps) {
                   <div>
                     <p className="text-lg font-semibold">{selectedUser.firstName} {selectedUser.lastName}</p>
                     <p className="text-sm text-gray-500 font-normal">{selectedUser.email}</p>
+                    {selectedUser.phone && (
+                      <p className="text-sm text-gray-500 font-normal flex items-center gap-1">
+                        <Phone className="w-3 h-3 text-green-500" />
+                        {selectedUser.phone}
+                      </p>
+                    )}
                   </div>
                 </>
               )}

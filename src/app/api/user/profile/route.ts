@@ -9,6 +9,7 @@ const profileUpdateSchema = z.object({
     bio: z.string().max(500).optional(),
     firstName: z.string().min(1).max(50).optional(),
     lastName: z.string().min(1).max(50).optional(),
+    phone: z.string().max(20).optional(),
 });
 
 export async function PATCH(request: NextRequest) {
@@ -41,6 +42,9 @@ export async function PATCH(request: NextRequest) {
         if (validatedData.lastName !== undefined) {
             updateData.lastName = validatedData.lastName;
         }
+        if (validatedData.phone !== undefined) {
+            updateData.phone = validatedData.phone;
+        }
 
         // Update user profile
         const updatedUser = await prisma.user.update({
@@ -52,6 +56,7 @@ export async function PATCH(request: NextRequest) {
                 bio: true,
                 firstName: true,
                 lastName: true,
+                phone: true,
             },
         });
 
