@@ -33,7 +33,9 @@ import {
     Zap,
     Moon,
     Droplets,
+    Lock,
 } from "lucide-react";
+import Image from "next/image";
 import { FM_SPECIALIZATIONS } from "@/lib/specializations-data";
 
 const ICONS = {
@@ -76,54 +78,49 @@ export function TrackContent({ track, isLoggedIn }: TrackContentProps) {
     };
 
     return (
-        <div className="space-y-8 animate-fade-in">
-            {/* Hero Header */}
-            <div className={`relative bg-gradient-to-br ${track.gradient} rounded-2xl overflow-hidden`}>
-                <div className="absolute inset-0">
-                    <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-gold-400/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/4" />
-                </div>
-
-                <div className="relative z-10 p-8 md:p-12 text-white">
-                    <div className="max-w-4xl mx-auto text-center">
-                        {/* Brand + Rating */}
-                        <div className="flex flex-wrap items-center justify-center gap-3 mb-6">
-                            <div className="inline-flex items-center gap-2 bg-white/10 backdrop-blur-sm px-4 py-2 rounded-full border border-white/20">
-                                <Shield className="w-4 h-4 text-gold-400" />
-                                <span className="text-sm font-semibold text-white">ACCREDIPRO</span>
+        <div className="space-y-6 animate-fade-in">
+            {/* Compact Hero Header - Matching Catalog Style */}
+            <div className="relative bg-gradient-to-r from-burgundy-700 via-burgundy-600 to-burgundy-700 rounded-xl overflow-hidden">
+                <div className="relative z-10 px-5 py-4">
+                    <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
+                        {/* Left: Icon + Title + Subtitle */}
+                        <div className="flex items-start gap-4">
+                            <div className="w-12 h-12 rounded-xl bg-white/10 flex items-center justify-center flex-shrink-0">
+                                <Icon className="w-6 h-6 text-gold-400" />
                             </div>
-                            {track.rating && (
-                                <div className="inline-flex items-center gap-2 bg-gold-400/20 backdrop-blur-sm px-4 py-2 rounded-full border border-gold-400/30">
-                                    <div className="flex">
-                                        {[...Array(5)].map((_, i) => (
-                                            <Star key={i} className={`w-3.5 h-3.5 ${i < Math.floor(track.rating) ? "text-gold-400 fill-gold-400" : "text-gold-400/30"}`} />
-                                        ))}
-                                    </div>
-                                    <span className="text-sm font-medium text-gold-200">{track.rating} ({track.totalReviews?.toLocaleString()} reviews)</span>
+                            <div>
+                                <div className="flex items-center gap-2 mb-1">
+                                    <Badge className="bg-gold-400/20 text-gold-300 border-gold-400/30 text-xs">
+                                        Career Roadmap
+                                    </Badge>
+                                    {track.rating && (
+                                        <div className="flex items-center gap-1">
+                                            <Star className="w-3.5 h-3.5 text-gold-400 fill-gold-400" />
+                                            <span className="text-sm text-gold-200">{track.rating}</span>
+                                        </div>
+                                    )}
                                 </div>
-                            )}
-                        </div>
-
-                        <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-4 leading-tight">{track.heroTitle}</h1>
-                        <p className="text-lg text-white/80 mb-6 max-w-2xl mx-auto">{track.heroDescription}</p>
-
-                        {/* Key Value Props */}
-                        <div className="flex flex-wrap justify-center gap-3 mb-6">
-                            <div className="flex items-center gap-2 bg-white/10 backdrop-blur-sm px-4 py-2 rounded-lg">
-                                <BookOpen className="w-4 h-4 text-gold-400" />
-                                <span className="text-sm font-medium">{track.format}</span>
+                                <h1 className="text-xl md:text-2xl font-bold text-white">{track.heroTitle}</h1>
+                                <p className="text-sm text-white/70 mt-1">{track.heroDescription}</p>
                             </div>
-                            <div className="flex items-center gap-2 bg-white/10 backdrop-blur-sm px-4 py-2 rounded-lg">
+                        </div>
+                        {/* Right: Stats */}
+                        <div className="flex flex-wrap items-center gap-4 text-white/80 text-sm">
+                            <div className="flex items-center gap-1.5">
+                                <BookOpen className="w-4 h-4 text-gold-400" />
+                                <span>{track.format}</span>
+                            </div>
+                            <div className="flex items-center gap-1.5">
                                 <Clock className="w-4 h-4 text-gold-400" />
-                                <span className="text-sm font-medium">{track.access}</span>
+                                <span>{track.access}</span>
                             </div>
                             {track.totalStudents && (
-                                <div className="flex items-center gap-2 bg-white/10 backdrop-blur-sm px-4 py-2 rounded-lg">
+                                <div className="flex items-center gap-1.5">
                                     <Users className="w-4 h-4 text-gold-400" />
-                                    <span className="text-sm font-medium">{track.totalStudents?.toLocaleString()} students</span>
+                                    <span>{track.totalStudents?.toLocaleString()} students</span>
                                 </div>
                             )}
                         </div>
-
                     </div>
                 </div>
             </div>
@@ -169,6 +166,7 @@ export function TrackContent({ track, isLoggedIn }: TrackContentProps) {
                     <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
                         {track.steps?.map((step: any, index: number) => {
                             const isLaunching = step.status === "launching";
+                            const isLocked = step.status === "locked" || step.requiresStep1;
 
                             return (
                                 <div key={index} className="relative">
@@ -182,22 +180,38 @@ export function TrackContent({ track, isLoggedIn }: TrackContentProps) {
                                     <div className={`relative p-4 rounded-xl border-2 transition-all h-full ${
                                         step.isMainCourse
                                             ? "border-gold-400 bg-gradient-to-br from-gold-50 to-amber-50 shadow-md ring-2 ring-gold-200"
-                                            : isLaunching
-                                                ? "border-blue-200 bg-blue-50/50"
-                                                : `${getStepBgLight(step.step)} border`
+                                            : isLocked
+                                                ? "border-gray-200 bg-gray-50 opacity-75"
+                                                : isLaunching
+                                                    ? "border-blue-200 bg-blue-50/50"
+                                                    : `${getStepBgLight(step.step)} border`
                                     }`}>
+                                        {/* Locked overlay */}
+                                        {isLocked && (
+                                            <div className="absolute top-2 right-2">
+                                                <Lock className="w-4 h-4 text-gray-400" />
+                                            </div>
+                                        )}
+
                                         {/* Step Badge */}
                                         <div className={`inline-flex items-center gap-1.5 px-2 py-1 rounded-full text-xs font-bold mb-2 ${
                                             step.isMainCourse
                                                 ? "bg-gold-400 text-burgundy-900"
-                                                : isLaunching
-                                                    ? "bg-blue-500 text-white"
-                                                    : `bg-gradient-to-r ${getStepGradient(step.step)} text-white`
+                                                : isLocked
+                                                    ? "bg-gray-300 text-gray-600"
+                                                    : isLaunching
+                                                        ? "bg-blue-500 text-white"
+                                                        : `bg-gradient-to-r ${getStepGradient(step.step)} text-white`
                                         }`}>
                                             {step.isMainCourse ? (
                                                 <>
                                                     <Star className="w-3 h-3 fill-current" />
                                                     START HERE
+                                                </>
+                                            ) : isLocked ? (
+                                                <>
+                                                    <Lock className="w-3 h-3" />
+                                                    LOCKED
                                                 </>
                                             ) : isLaunching ? (
                                                 <>Launching Soon</>
@@ -206,30 +220,37 @@ export function TrackContent({ track, isLoggedIn }: TrackContentProps) {
                                             )}
                                         </div>
 
-                                        <h3 className="font-bold text-sm mb-1 text-gray-900">{step.title}</h3>
+                                        <h3 className={`font-bold text-sm mb-1 ${isLocked ? "text-gray-500" : "text-gray-900"}`}>{step.title}</h3>
 
                                         {/* Question it answers */}
-                                        {step.questionItAnswers && (
+                                        {step.questionItAnswers && !isLocked && (
                                             <p className="text-xs text-burgundy-600 italic mb-2 flex items-start gap-1">
                                                 <HelpCircle className="w-3 h-3 mt-0.5 flex-shrink-0" />
-                                                "{step.questionItAnswers}"
+                                                &quot;{step.questionItAnswers}&quot;
+                                            </p>
+                                        )}
+
+                                        {/* Locked message for step 2 */}
+                                        {isLocked && (
+                                            <p className="text-xs text-gray-500 mb-2">
+                                                Complete Step 1 to unlock
                                             </p>
                                         )}
 
                                         {/* Price */}
                                         <div className="mt-auto pt-2">
-                                            <span className={`font-bold ${step.isMainCourse ? "text-burgundy-700" : getStepTextColor(step.step)}`}>
+                                            <span className={`font-bold ${isLocked ? "text-gray-400" : step.isMainCourse ? "text-burgundy-700" : getStepTextColor(step.step)}`}>
                                                 {step.price}
                                             </span>
                                         </div>
 
                                         {/* Income Preview */}
-                                        {step.incomeVision?.starting && (
+                                        {!isLocked && step.incomeVision?.starting && (
                                             <p className="text-xs text-green-600 font-medium mt-1">
                                                 → {step.incomeVision.starting}
                                             </p>
                                         )}
-                                        {step.incomeVision?.primary && (
+                                        {!isLocked && step.incomeVision?.primary && (
                                             <p className="text-xs text-green-600 font-medium mt-1">
                                                 → {step.incomeVision.primary}
                                             </p>
@@ -700,12 +721,17 @@ export function TrackContent({ track, isLoggedIn }: TrackContentProps) {
 
                                         {/* CTA */}
                                         {step.isDoneForYou ? (
-                                            <a href={track.doneForYou?.ctaLink || "#"} target="_blank" rel="noopener noreferrer" className="block">
+                                            <Link href="/messages?coach=sarah" className="block">
                                                 <Button className="w-full h-12 bg-gradient-to-r from-burgundy-600 to-burgundy-700 hover:from-burgundy-700 hover:to-burgundy-800 shadow-lg">
-                                                    <Phone className="w-4 h-4 mr-2" />
+                                                    <MessageCircle className="w-4 h-4 mr-2" />
                                                     Apply for Mentorship
                                                 </Button>
-                                            </a>
+                                            </Link>
+                                        ) : step.status === "locked" || step.requiresStep1 ? (
+                                            <Button className="w-full h-12 bg-gray-300 text-gray-600 cursor-not-allowed" disabled>
+                                                <Lock className="w-4 h-4 mr-2" />
+                                                Complete Step 1 First
+                                            </Button>
                                         ) : isLaunching ? (
                                             <Button className="w-full h-12 bg-blue-500 hover:bg-blue-600" disabled>
                                                 Launching Soon
@@ -844,9 +870,20 @@ export function TrackContent({ track, isLoggedIn }: TrackContentProps) {
                         {/* Coach Info */}
                         {track.coach && (
                             <div className="flex items-center gap-4 md:flex-1">
-                                <div className="w-16 h-16 rounded-full bg-white/20 flex items-center justify-center text-white text-xl font-bold flex-shrink-0 border-2 border-gold-400/50">
-                                    {track.coach.name.split(' ').map((n: string) => n[0]).join('')}
-                                </div>
+                                {track.coach.avatar ? (
+                                    <Image
+                                        src={track.coach.avatar}
+                                        alt={track.coach.name}
+                                        width={64}
+                                        height={64}
+                                        className="w-16 h-16 rounded-full object-cover border-2 border-gold-400/50 flex-shrink-0"
+                                        unoptimized
+                                    />
+                                ) : (
+                                    <div className="w-16 h-16 rounded-full bg-white/20 flex items-center justify-center text-white text-xl font-bold flex-shrink-0 border-2 border-gold-400/50">
+                                        {track.coach.name.split(' ').map((n: string) => n[0]).join('')}
+                                    </div>
+                                )}
                                 <div>
                                     <p className="text-xs text-gold-300 font-medium">YOUR INSTRUCTOR</p>
                                     <p className="font-bold text-lg">{track.coach.name}</p>

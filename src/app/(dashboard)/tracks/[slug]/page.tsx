@@ -55,7 +55,7 @@ const TRACKS = {
                 subtitle: "The Main Course",
                 name: "Functional Medicine Health Coach Certification",
                 tagline: "Certification + Practitioner Status Included",
-                slug: "functional-medicine-health-coach",
+                slug: "functional-medicine-complete-certification",
                 price: "$997",
                 priceValue: 997,
                 accessNote: "Self-Paced · Lifetime Access",
@@ -88,12 +88,13 @@ const TRACKS = {
             {
                 step: 2,
                 color: "amber",
-                status: "available",
+                status: "locked",
+                requiresStep1: true,
                 stepLabel: "STEP 2",
                 title: "WORKING PRACTITIONER",
                 subtitle: "Income in Motion",
                 name: "Practice & Income Path",
-                tagline: "Turn your certification into paying clients",
+                tagline: "Complete Step 1 to unlock",
                 slug: "practice-income-path",
                 price: "$1,997",
                 priceValue: 1997,
@@ -432,6 +433,7 @@ const TRACKS = {
             title: "Lead Functional Medicine Educator",
             credentials: "NBHWC Certified · 15+ Years Experience",
             bio: "Sarah is a certified Functional Medicine practitioner who has trained hundreds of practitioners worldwide. Her approach combines clinical excellence with practical business guidance.",
+            avatar: "https://randomuser.me/api/portraits/women/44.jpg",
         },
         // Success stories with income and ratings
         testimonials: [
