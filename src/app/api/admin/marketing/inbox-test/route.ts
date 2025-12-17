@@ -2796,6 +2796,110 @@ Sarah
 
 P.S. A lot of people who complete the Mini Diploma tell me it was a turning point for them. Not the content alone - but the act of finishing. Of proving to themselves they could follow through. That shift in self-trust is worth more than any certificate.`,
   },
+
+  // ============================================
+  // MILESTONE COMPLETION EMAILS - Progress Nudges
+  // Triggered when user completes Day 1, 2, 3 of Mini Diploma
+  // ============================================
+
+  // Milestone 1 - Day 1 Complete
+  {
+    id: 45,
+    name: "Milestone: Day 1 Complete",
+    day: 1,
+    originalSubject: "Great job on Day 1!",
+    subject: "Re: just wanted to say...",
+    useHtmlBranding: false,
+    content: `{{firstName}},
+
+Just noticed you finished Day 1 - wanted to say nice work!
+
+You now know more about root-cause health than most people learn in their entire lives. Seriously.
+
+<strong>Day 2 is where it gets really interesting:</strong>
+
+You'll learn the 7 Body Systems framework - the same approach that helps practitioners earn $5-10k/month helping people truly heal.
+
+It only takes about 30 minutes. Perfect for lunch break or after dinner.
+
+Your progress: <strong>1/3 days complete</strong>
+
+Keep going: https://learn.accredipro.academy/my-mini-diploma
+
+You're doing great,
+Sarah
+
+P.S. Most people who finish Day 1 go on to complete the whole thing. You're already ahead of the curve.`,
+  },
+
+  // Milestone 2 - Day 2 Complete
+  {
+    id: 46,
+    name: "Milestone: Day 2 Complete",
+    day: 2,
+    originalSubject: "Almost there!",
+    subject: "Re: Day 2 done!",
+    useHtmlBranding: false,
+    content: `{{firstName}}!
+
+You did it - Day 2 complete!
+
+You now understand the 7 Body Systems framework. That's not nothing - it's actually a pretty big deal.
+
+<strong>One more day to go.</strong>
+
+Day 3 covers:
+- How to create real protocols that work
+- The business side (yes, you can earn real money doing this)
+- Your path to certification
+
+Then a quick final exam, and you'll officially be a <strong>Mini Diploma Graduate</strong>.
+
+Your certificate is waiting - just one more push!
+
+https://learn.accredipro.academy/my-mini-diploma
+
+Almost there,
+Sarah
+
+P.S. I'm genuinely excited for you. The final exam is easier than you think, and graduates consistently tell me Day 3 is their favorite.`,
+  },
+
+  // Milestone 3 - Day 3 Complete (Take Exam!)
+  {
+    id: 47,
+    name: "Milestone: Day 3 Complete (Take Exam)",
+    day: 3,
+    originalSubject: "Time for your final exam!",
+    subject: "Re: you did it!",
+    useHtmlBranding: false,
+    content: `{{firstName}},
+
+ALL THREE DAYS COMPLETE!
+
+You've learned more about functional medicine in 3 days than most people do in months of reading random articles online.
+
+<strong>One thing left: Your Final Exam</strong>
+
+Don't stress - it's designed to help you succeed:
+- Just 10 questions
+- Based on what you learned
+- You can retake if needed
+
+Pass it, and you'll get:
+- Your official <strong>Mini Diploma Certificate</strong>
+- A credential you can proudly share
+- Access to what comes next (hint: it's exciting)
+
+Go take your exam now: https://learn.accredipro.academy/my-mini-diploma
+
+I'll be sending your certificate the moment you pass.
+
+So proud of you,
+Sarah
+
+P.S. 96% of people who reach this point pass on their first try. You've got this.`,
+  },
 ];
 
 // GET - Return all variants info
