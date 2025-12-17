@@ -5156,7 +5156,7 @@ export default function MyLibraryPage() {
                 </Badge>
               </div>
               {/* CTA */}
-              <Link href="/ebook-store">
+              <Link href="/ebook">
                 <Button size="sm" className="bg-gold-400 text-burgundy-900 hover:bg-gold-300 font-semibold h-9">
                   <ShoppingBag className="w-4 h-4 mr-1.5" />
                   Get More
