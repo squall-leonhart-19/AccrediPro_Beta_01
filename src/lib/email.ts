@@ -8,7 +8,7 @@ const FROM_EMAIL_TRANSACTIONAL = process.env.FROM_EMAIL || "AccrediPro Academy <
 // Format: "Sarah <email>" looks like a personal email, not marketing
 const FROM_EMAIL_MARKETING = process.env.FROM_EMAIL_MARKETING || "Sarah <info@accredipro-certificate.com>";
 
-const BASE_URL = process.env.NEXTAUTH_URL || "https://app.accredipro.academy";
+const BASE_URL = process.env.NEXTAUTH_URL || "https://learn.accredipro.academy";
 const LOGO_URL = "https://coach.accredipro.academy/wp-content/uploads/2025/10/Senza-titolo-Logo-1.png";
 const UNSUBSCRIBE_URL = `${BASE_URL}/unsubscribe`;
 
@@ -1109,7 +1109,7 @@ export type EmailType =
 // ============================================
 
 export function generateEmailPreview(emailType: EmailType): string {
-  const BASE_URL = process.env.NEXTAUTH_URL || "https://app.accredipro.academy";
+  const BASE_URL = process.env.NEXTAUTH_URL || "https://learn.accredipro.academy";
 
   // Sample data for previews
   const sampleData = {

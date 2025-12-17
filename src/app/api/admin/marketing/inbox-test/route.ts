@@ -2441,7 +2441,7 @@ Is everything okay?
 Sometimes the welcome email goes to spam (check your promotions tab if you're on Gmail). Or maybe you just got busy - happens to all of us.
 
 Here's your login link in case you need it:
-https://app.accredipro.academy/login
+https://learn.accredipro.academy/login
 
 Your email: {{email}}
 Your password: Futurecoach2025
@@ -2489,7 +2489,7 @@ Your Mini Diploma isn't going anywhere - but your motivation might. There's no b
 Sarah
 
 P.S. Login details again:
-https://app.accredipro.academy/login
+https://learn.accredipro.academy/login
 Email: {{email}}
 Password: Futurecoach2025`,
   },
@@ -2526,7 +2526,7 @@ That 20 minutes could be the start of something that changes your whole trajecto
 
 Your choice.
 
-Login here: https://app.accredipro.academy/login
+Login here: https://learn.accredipro.academy/login
 Email: {{email}}
 Password: Futurecoach2025
 
@@ -2570,7 +2570,7 @@ Not the whole thing. Just 5 minutes.
 
 I promise by minute 3, you'll want to keep going. The content is that good.
 
-Start here: https://app.accredipro.academy/my-mini-diploma
+Start here: https://learn.accredipro.academy/my-mini-diploma
 
 You already did the hard part (signing up, logging in). This is the easy part - just press play.
 
@@ -2617,7 +2617,7 @@ But if the answer is yes, or even "maybe"...
 
 Then stop reading this email and go watch Lesson 1.
 
-https://app.accredipro.academy/my-mini-diploma
+https://learn.accredipro.academy/my-mini-diploma
 
 I believe in you more than you believe in yourself right now.
 
@@ -2656,7 +2656,7 @@ Not because it's easy. Not because you feel ready. But because you deserve more 
 
 Your Mini Diploma is still there. Lesson 1 is still waiting.
 
-https://app.accredipro.academy/my-mini-diploma
+https://learn.accredipro.academy/my-mini-diploma
 
 The only thing standing between you and starting is a single click.
 
@@ -2706,7 +2706,7 @@ What if you finished one lesson today?
 
 Just one. 15 minutes. You probably waste that much time scrolling social media anyway (no judgment - we all do).
 
-Continue here: https://app.accredipro.academy/my-mini-diploma
+Continue here: https://learn.accredipro.academy/my-mini-diploma
 
 The hard part is already behind you. Let's finish what you started.
 
@@ -2743,7 +2743,7 @@ And when it's done, that quiet nagging goes away. In its place: a certificate, n
 
 <strong>Which sounds better to you?</strong>
 
-Continue here: https://app.accredipro.academy/my-mini-diploma
+Continue here: https://learn.accredipro.academy/my-mini-diploma
 
 You've already done the hard work. Let's close this loop.
 
@@ -2770,7 +2770,7 @@ Three weeks ago, you were making progress. Now your account is sitting at {{prog
 
 If you want to finish - and I think part of you does, or you would've unsubscribed by now - then go finish.
 
-https://app.accredipro.academy/my-mini-diploma
+https://learn.accredipro.academy/my-mini-diploma
 
 {{lessonsLeft}} lessons. A few hours. That's it.
 
@@ -2990,7 +2990,7 @@ export async function POST(request: NextRequest) {
               You're receiving this because of your account activity.
             </p>
             <p style="margin: 10px 0 0 0;">
-              <a href="https://app.accredipro.academy/unsubscribe" style="color: #999; font-size: 10px; text-decoration: underline;">Unsubscribe</a>
+              <a href="https://learn.accredipro.academy/unsubscribe" style="color: #999; font-size: 10px; text-decoration: underline;">Unsubscribe</a>
             </p>
           </div>
         </div>

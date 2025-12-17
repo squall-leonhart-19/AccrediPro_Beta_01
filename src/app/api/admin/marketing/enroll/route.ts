@@ -60,7 +60,7 @@ function generateBrandedHtml(content: string, firstName: string): string {
               You're receiving this because of your account activity.
             </p>
             <p style="margin: 10px 0 0 0;">
-              <a href="https://app.accredipro.academy/unsubscribe" style="color: #999; font-size: 10px; text-decoration: underline;">Unsubscribe</a>
+              <a href="https://learn.accredipro.academy/unsubscribe" style="color: #999; font-size: 10px; text-decoration: underline;">Unsubscribe</a>
             </p>
           </div>
         </div>
