@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
-import { sendEmail, personalEmailWrapper } from "@/lib/email";
+import { sendEmail, brandedEmailWrapper } from "@/lib/email";
 
 /**
  * CRON: Send sequence emails (nurture + recovery)
@@ -141,7 +141,7 @@ export async function GET(request: NextRequest) {
         const result = await sendEmail({
           to: user.email,
           subject,
-          html: personalEmailWrapper(htmlContent),
+          html: brandedEmailWrapper(htmlContent),
           type: "marketing",
         });
 

@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import prisma from "@/lib/prisma";
-import { sendEmail, personalEmailWrapper } from "@/lib/email";
+import { sendEmail, brandedEmailWrapper } from "@/lib/email";
 
 // POST /api/admin/marketing/sequences/[id]/test - Send test sequence to an email
 export async function POST(
@@ -101,7 +101,7 @@ export async function POST(
         const result = await sendEmail({
           to: testEmail,
           subject: subject, // No [TEST] prefix - looks like spam
-          html: personalEmailWrapper(htmlContent),
+          html: brandedEmailWrapper(htmlContent),
           type: 'marketing', // MUST be marketing for "Sarah <email>" FROM
         });
 

@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import prisma from "@/lib/prisma";
-import { sendEmail, personalEmailWrapper } from "@/lib/email";
+import { sendEmail, brandedEmailWrapper } from "@/lib/email";
 
 // POST /api/admin/marketing/sequences/[id]/enroll - Manually enroll a user
 export async function POST(
@@ -133,7 +133,7 @@ export async function POST(
           const result = await sendEmail({
             to: user.email,
             subject,
-            html: personalEmailWrapper(htmlContent),
+            html: brandedEmailWrapper(htmlContent),
             type: 'marketing',
           });
 
@@ -263,7 +263,7 @@ export async function POST(
         const result = await sendEmail({
           to: user.email,
           subject,
-          html: personalEmailWrapper(htmlContent),
+          html: brandedEmailWrapper(htmlContent),
           type: 'marketing',
         });
 

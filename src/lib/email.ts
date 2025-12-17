@@ -99,6 +99,69 @@ ${simplifiedContent}
 </html>`;
 }
 
+// Branded wrapper for nurture sequence emails - AccrediPro burgundy header styling
+// This matches the inbox-test route's HTML output with full branding
+export function brandedEmailWrapper(content: string): string {
+  // Format content into paragraphs if not already wrapped
+  const formattedContent = content
+    .split('\n\n')
+    .map(p => `<p style="color: #555; font-size: 16px; margin: 0 0 16px 0;">${p.replace(/\n/g, '<br>')}</p>`)
+    .join('');
+
+  return `<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="x-apple-disable-message-reformatting">
+    <!--[if mso]>
+    <style type="text/css">
+      body, table, td {font-family: Arial, Helvetica, sans-serif !important;}
+    </style>
+    <![endif]-->
+  </head>
+  <body style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif; line-height: 1.6; color: #333; margin: 0; padding: 0; background-color: #f5f5f5;">
+    <div style="display:none;font-size:1px;color:#f5f5f5;line-height:1px;max-height:0px;max-width:0px;opacity:0;overflow:hidden;">Your functional medicine journey continues...</div>
+    <div style="max-width: 600px; margin: 0 auto; padding: 20px;">
+      <div style="background: white; border-radius: 16px; overflow: hidden; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
+
+        <!-- Header -->
+        <div style="background: linear-gradient(135deg, #722F37 0%, #8B3A42 100%); padding: 40px 30px; text-align: center;">
+          <h1 style="color: #D4AF37; margin: 0; font-size: 28px; font-family: Georgia, serif;">AccrediPro Academy</h1>
+          <p style="color: rgba(255,255,255,0.8); margin: 5px 0 0 0; font-size: 14px;">Functional Medicine Excellence</p>
+        </div>
+
+        <!-- Content -->
+        <div style="padding: 40px 30px;">
+          ${formattedContent}
+        </div>
+
+        <!-- Footer -->
+        <div style="background: #f8f9fa; padding: 30px; text-align: center; border-top: 1px solid #eee;">
+          <p style="margin: 0 0 5px 0; color: #722F37; font-size: 13px; font-weight: bold;">AccrediPro LLC</p>
+          <p style="margin: 0; color: #999; font-size: 11px;">(At Rockefeller Center)</p>
+          <p style="margin: 0; color: #999; font-size: 11px;">1270 Ave of the Americas, 7th Fl -1182</p>
+          <p style="margin: 0; color: #999; font-size: 11px;">New York, NY 10020</p>
+          <p style="margin: 0 0 15px 0; color: #999; font-size: 11px;">United States</p>
+          <p style="margin: 0; color: #bbb; font-size: 10px; font-style: italic;">Veritas Et Excellentia - Truth and Excellence in Education</p>
+          <div style="margin-top: 20px; padding-top: 20px; border-top: 1px solid #eee;">
+            <p style="margin: 0; color: #bbb; font-size: 10px;">
+              This email is from AccrediPro Academy.<br/>
+              You're receiving this because of your account activity.
+            </p>
+            <p style="margin: 10px 0 0 0;">
+              <a href="${UNSUBSCRIBE_URL}" style="color: #999; font-size: 10px; text-decoration: underline;">Unsubscribe</a>
+            </p>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </body>
+</html>`;
+}
+
+
 // Alternative: Pure plain text email (no HTML at all) - best for inbox
 export function plainTextEmail(content: string): string {
   // Strip HTML and return plain text
