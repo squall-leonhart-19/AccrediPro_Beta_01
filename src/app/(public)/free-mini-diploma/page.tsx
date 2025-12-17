@@ -276,7 +276,7 @@ export default function FreeMiniDiplomaPage() {
           }}>
             {[
               { number: '10,000+', label: 'Students Enrolled' },
-              { number: '$3k-$10k', label: 'Potential Monthly' },
+              { number: '$5k-$10k+', label: 'Earning Monthly' },
               { number: '90m', label: 'Time to Complete' }
             ].map((stat, idx) => (
               <div key={idx} style={{ textAlign: 'center', flex: 1, minWidth: 0 }}>
@@ -452,8 +452,7 @@ export default function FreeMiniDiplomaPage() {
             {[
               { title: 'Day 1: Functional Medicine Foundations', desc: 'Systems biology • FM matrix • Root cause vs symptoms • How practitioners uncover hidden causes of fatigue, gut issues, hormone imbalance & more.' },
               { title: 'Day 2: Case Studies & Clinical Pattern Recognition', desc: 'Real case walk-through (Michelle, 42) • Gut-hormone-stress loop • How FM practitioners transform clients ethically & effectively.' },
-              { title: 'Day 3: Your Practitioner Pathway & Income Potential', desc: 'How FM practitioners earn $3K–$10K/month • 12-week transformation program model • The 3 certification pathways • Your next academic steps.' },
-              { title: 'Earn Your Mini Diploma + Academic Credits', desc: 'Score 92–96 points on the final exam to unlock your Mini Diploma.' }
+              { title: 'Day 3: Your Practitioner Pathway & Income Potential', desc: 'How FM practitioners earn $5K–$10K+/month • 12-week transformation program model • The 3 certification pathways • Your next academic steps.' }
             ].map((item, idx) => (
               <div key={idx} style={{
                 display: 'flex',
@@ -517,11 +516,14 @@ export default function FreeMiniDiplomaPage() {
             top: 20
           }}>
             <div style={{ textAlign: 'center', marginBottom: 20, paddingBottom: 18, borderBottom: '2px solid #ECE8E2' }}>
+              <div style={{ display: 'inline-block', background: '#2D6A4F', color: 'white', padding: '4px 12px', borderRadius: 20, fontSize: '0.7rem', fontWeight: 800, textTransform: 'uppercase', letterSpacing: 1, marginBottom: 10 }}>
+                ✨ Limited Spots Available
+              </div>
               <h3 style={{ margin: '0 0 6px', color: '#2D6A4F', fontSize: 'clamp(1.2rem, 3vw, 1.4rem)', fontWeight: 900 }}>
-                Start the Mini Diploma
+                Apply for Free Access
               </h3>
               <p style={{ color: '#6B6E76', fontSize: 'clamp(0.85rem, 2vw, 0.9rem)', margin: 0 }}>
-                100% Free • Instant Access
+                Complete your application in 30 seconds
               </p>
               <div style={{
                 background: 'linear-gradient(135deg, #FFEBEE, #FFCDD2)',
