@@ -228,6 +228,15 @@ const HEALTH_NICHES = [
     "Holistic Wellness",
 ];
 
+// Country codes for phone input
+const COUNTRY_CODES = [
+    { code: "+1", country: "US", flag: "🇺🇸", label: "United States" },
+    { code: "+1", country: "CA", flag: "🇨🇦", label: "Canada" },
+    { code: "+44", country: "UK", flag: "🇬🇧", label: "United Kingdom" },
+    { code: "+61", country: "AU", flag: "🇦🇺", label: "Australia" },
+    { code: "+64", country: "NZ", flag: "🇳🇿", label: "New Zealand" },
+];
+
 interface OnboardingData {
     primaryGoal: string;
     incomeGoal: string;
@@ -237,6 +246,7 @@ interface OnboardingData {
     obstacles: string[];
     niches: string[];
     phone: string;
+    countryCode: string;
     location: string;
     referralSource: string;
     personalMessage: string;
@@ -259,6 +269,7 @@ export function OnboardingWizard({ onComplete, userName, userId }: OnboardingWiz
         obstacles: [],
         niches: [],
         phone: "",
+        countryCode: "+1",
         location: "",
         referralSource: "",
         personalMessage: "",
@@ -338,7 +349,7 @@ export function OnboardingWizard({ onComplete, userName, userId }: OnboardingWiz
                     currentSituation: data.currentSituation,
                     investmentReadiness: data.investmentReadiness,
                     obstacles: data.obstacles,
-                    phone: data.phone || undefined,
+                    phone: data.phone ? `${data.countryCode} ${data.phone}` : undefined,
                     location: data.location || undefined,
                     referralSource: data.referralSource || undefined,
                     personalMessage: data.personalMessage || undefined,
@@ -612,61 +623,47 @@ export function OnboardingWizard({ onComplete, userName, userId }: OnboardingWiz
 
                     {/* Step 8: Contact & Final */}
                     {step === 8 && (
-                        <div className="space-y-5">
+                        <div className="space-y-6">
                             <div>
-                                <label className="flex items-center gap-2 text-sm font-medium text-gray-700 mb-2">
-                                    <Phone className="w-4 h-4" />
-                                    WhatsApp / Phone (for support)
+                                <label className="flex items-center gap-2 text-sm font-medium text-gray-700 mb-3">
+                                    <Phone className="w-4 h-4 text-green-600" />
+                                    WhatsApp / Phone (for support & updates)
                                 </label>
-                                <Input
-                                    type="tel"
-                                    placeholder="+1 (555) 000-0000"
-                                    value={data.phone}
-                                    onChange={(e) => setData({ ...data, phone: e.target.value })}
-                                    className="h-12"
-                                />
-                            </div>
-
-                            <div>
-                                <label className="flex items-center gap-2 text-sm font-medium text-gray-700 mb-2">
-                                    <MapPin className="w-4 h-4" />
-                                    Location
-                                </label>
-                                <Input
-                                    type="text"
-                                    placeholder="City, Country"
-                                    value={data.location}
-                                    onChange={(e) => setData({ ...data, location: e.target.value })}
-                                    className="h-12"
-                                />
-                            </div>
-
-                            <div>
-                                <label className="flex items-center gap-2 text-sm font-medium text-gray-700 mb-2">
-                                    <Globe className="w-4 h-4" />
-                                    How did you discover us?
-                                </label>
-                                <Input
-                                    type="text"
-                                    placeholder="Google, Instagram, friend referral, etc."
-                                    value={data.referralSource}
-                                    onChange={(e) => setData({ ...data, referralSource: e.target.value })}
-                                    className="h-12"
-                                />
-                            </div>
-
-                            <div>
-                                <label className="flex items-center gap-2 text-sm font-medium text-gray-700 mb-2">
-                                    <Heart className="w-4 h-4" />
-                                    Anything else you'd like us to know?
-                                </label>
-                                <Textarea
-                                    placeholder="Share your story, questions, or what you're most excited about..."
-                                    value={data.personalMessage}
-                                    onChange={(e) => setData({ ...data, personalMessage: e.target.value })}
-                                    rows={3}
-                                    className="resize-none"
-                                />
+                                <div className="flex gap-2">
+                                    {/* Country Code Dropdown */}
+                                    <div className="relative">
+                                        <select
+                                            value={`${data.countryCode}-${COUNTRY_CODES.find(c => c.code === data.countryCode)?.country || 'US'}`}
+                                            onChange={(e) => {
+                                                const [code] = e.target.value.split('-');
+                                                setData({ ...data, countryCode: code });
+                                            }}
+                                            className="h-12 pl-4 pr-10 rounded-xl border border-gray-200 bg-gray-50 text-gray-700 font-medium focus:outline-none focus:ring-2 focus:ring-burgundy-500 focus:border-burgundy-500 appearance-none cursor-pointer"
+                                        >
+                                            {COUNTRY_CODES.map((country) => (
+                                                <option key={`${country.code}-${country.country}`} value={`${country.code}-${country.country}`}>
+                                                    {country.flag} {country.code}
+                                                </option>
+                                            ))}
+                                        </select>
+                                        <div className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none">
+                                            <svg className="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                                            </svg>
+                                        </div>
+                                    </div>
+                                    {/* Phone Number Input */}
+                                    <Input
+                                        type="tel"
+                                        placeholder="(555) 123-4567"
+                                        value={data.phone}
+                                        onChange={(e) => setData({ ...data, phone: e.target.value })}
+                                        className="h-12 flex-1 rounded-xl"
+                                    />
+                                </div>
+                                <p className="text-xs text-gray-500 mt-2">
+                                    We&apos;ll only use this to send you important updates and support messages
+                                </p>
                             </div>
 
                             <div className="bg-gradient-to-r from-gold-50 to-amber-50 p-4 rounded-xl border border-gold-200">
