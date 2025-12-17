@@ -4,6 +4,29 @@ import { useState, useCallback, useEffect } from "react";
 import { signIn } from "next-auth/react";
 import { initMetaTracking, trackLead } from "@/lib/meta-tracking";
 
+// Helper to get Facebook cookies and fbclid
+function getFacebookParams() {
+  const getCookie = (name: string) => {
+    const match = document.cookie.match(new RegExp('(^| )' + name + '=([^;]+)'));
+    return match ? match[2] : undefined;
+  };
+
+  // Get fbclid from URL if present
+  const urlParams = new URLSearchParams(window.location.search);
+  const fbclid = urlParams.get('fbclid');
+
+  // fbc format: fb.1.{timestamp}.{fbclid}
+  let fbc = getCookie('_fbc');
+  if (!fbc && fbclid) {
+    fbc = `fb.1.${Date.now()}.${fbclid}`;
+  }
+
+  return {
+    fbp: getCookie('_fbp'),
+    fbc,
+  };
+}
+
 // Standard password for freebie users (must match API)
 const FREEBIE_PASSWORD = "Futurecoach2025";
 
@@ -132,6 +155,9 @@ export default function FreeMiniDiplomaPage() {
     const fullPhone = formData.phone ? `${formData.countryCode}${formData.phone.replace(/\D/g, "")}` : "";
 
     try {
+      // Get Facebook tracking params for CAPI
+      const fbParams = getFacebookParams();
+
       const res = await fetch("/api/auth/register-freebie", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -139,6 +165,9 @@ export default function FreeMiniDiplomaPage() {
           ...formData,
           phone: fullPhone,
           miniDiplomaCategory: "functional-medicine-general",
+          // Facebook tracking params for CAPI
+          fbc: fbParams.fbc,
+          fbp: fbParams.fbp,
         }),
       });
 

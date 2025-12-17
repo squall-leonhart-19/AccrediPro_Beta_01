@@ -202,9 +202,13 @@ export async function sendLeadEvent(params: {
     email: string;
     firstName?: string;
     lastName?: string;
+    phone?: string;
+    externalId?: string;
     contentName?: string;
     clientIp?: string;
     userAgent?: string;
+    fbc?: string;
+    fbp?: string;
 }) {
     return sendMetaEvent({
         eventName: "Lead",

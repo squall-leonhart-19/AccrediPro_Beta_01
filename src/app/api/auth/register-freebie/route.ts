@@ -28,7 +28,9 @@ export async function POST(request: NextRequest) {
         const {
             email, firstName, lastName, name, phone,
             licenseType, licenseState, employmentStatus, goal,
-            miniDiplomaCategory = "functional-medicine"
+            miniDiplomaCategory = "functional-medicine",
+            // Facebook tracking params
+            fbc, fbp,
         } = body;
 
         // Validation
@@ -275,10 +277,22 @@ export async function POST(request: NextRequest) {
 
         // === SERVER-SIDE META TRACKING ===
         // Send Lead event to Meta CAPI for accurate ad tracking
+        // Get client IP and user agent from request headers
+        const clientIp = request.headers.get("x-forwarded-for")?.split(",")[0] ||
+                         request.headers.get("x-real-ip") ||
+                         undefined;
+        const userAgent = request.headers.get("user-agent") || undefined;
+
         sendLeadEvent({
             email: emailLower,
             firstName: fName,
             lastName: lName,
+            phone: phone || undefined,
+            externalId: user.id,
+            clientIp,
+            userAgent,
+            fbc: fbc || undefined,
+            fbp: fbp || undefined,
             contentName: `Mini Diploma - ${miniDiplomaCategory}`,
         }).catch((err) => {
             console.error(`[META] Failed to send Lead event:`, err);
