@@ -114,6 +114,20 @@ export async function POST(request: NextRequest) {
             // Add freebie tag
             await addFreebieTag(existingUser.id);
 
+            // Add source UserTags for marketing emails
+            const sourceTags = [
+                "source:mini-diploma-freebie",
+                `source:${miniDiplomaCategory}`,
+                `mini_diploma_category:${miniDiplomaCategory}`,
+            ];
+            for (const tag of sourceTags) {
+                await prisma.userTag.upsert({
+                    where: { userId_tag: { userId: existingUser.id, tag } },
+                    update: {},
+                    create: { userId: existingUser.id, tag },
+                });
+            }
+
             // Enroll in nurture sequence
             await enrollInNurtureSequence(existingUser.id);
 
@@ -177,12 +191,14 @@ export async function POST(request: NextRequest) {
                 update: {},
             });
 
-            // Add UserTags for mini diploma tracking (for DMs/sequences)
+            // Add UserTags for mini diploma tracking (for DMs/sequences/marketing)
             const userTags = [
                 "mini_diploma_started",
                 `enrolled_${miniDiplomaCourse.slug || miniDiplomaCourse.id}`,
                 `mini_diploma_category:${miniDiplomaCategory}`,
                 `lead:${miniDiplomaCategory}`,
+                "source:mini-diploma-freebie",
+                `source:${miniDiplomaCategory}`,
             ];
 
             for (const tag of userTags) {

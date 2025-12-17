@@ -10,7 +10,7 @@ const addTagSchema = z.object({
   value: z.string().optional(),
 });
 
-// GET - Fetch all unique tags for dropdown
+// GET - Fetch all unique tags for dropdown (includes UserTags + suggested from leadSource)
 export async function GET() {
   try {
     const session = await getServerSession(authOptions);
@@ -19,7 +19,7 @@ export async function GET() {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    // Get all unique tags from the database
+    // Get all unique tags from UserTag table
     const tags = await prisma.userTag.findMany({
       select: {
         tag: true,
@@ -30,12 +30,40 @@ export async function GET() {
       },
     });
 
-    // Get unique tag names
-    const uniqueTags = [...new Set(tags.map((t) => t.tag))];
+    // Get unique leadSource values to suggest as tags
+    const leadSources = await prisma.user.findMany({
+      where: {
+        leadSource: { not: null },
+      },
+      select: {
+        leadSource: true,
+        leadSourceDetail: true,
+      },
+      distinct: ["leadSource", "leadSourceDetail"],
+    });
+
+    // Build suggested tags from leadSource
+    const suggestedFromLeadSource: string[] = [];
+    for (const ls of leadSources) {
+      if (ls.leadSource) {
+        suggestedFromLeadSource.push(`source:${ls.leadSource}`);
+      }
+      if (ls.leadSourceDetail) {
+        suggestedFromLeadSource.push(`source:${ls.leadSourceDetail}`);
+      }
+    }
+
+    // Combine all tags and remove duplicates
+    const allTags = [
+      ...new Set([
+        ...tags.map((t) => t.tag),
+        ...suggestedFromLeadSource,
+      ]),
+    ].sort();
 
     return NextResponse.json({
       success: true,
-      tags: uniqueTags,
+      tags: allTags,
     });
   } catch (error) {
     console.error("Get tags error:", error);

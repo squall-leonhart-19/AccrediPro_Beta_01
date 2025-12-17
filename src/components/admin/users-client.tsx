@@ -189,6 +189,8 @@ export function UsersClient({ users, courses }: UsersClientProps) {
 
   // Common tags for quick selection
   const COMMON_TAGS = [
+    "source:mini-diploma-freebie",
+    "source:functional-medicine",
     "enrolled_functional_medicine",
     "enrolled_health_coach",
     "lead:hot",
@@ -198,6 +200,8 @@ export function UsersClient({ users, courses }: UsersClientProps) {
     "needs_support",
     "upsell_candidate",
     "referral_partner",
+    "mini_diploma_started",
+    "mini_diploma_completed",
   ];
 
   // Fetch existing tags when dialog opens
