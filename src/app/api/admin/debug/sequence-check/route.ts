@@ -27,7 +27,7 @@ export async function GET(request: NextRequest) {
                         name: true,
                         isActive: true,
                         emails: {
-                            select: { id: true, subject: true, isActive: true, order: true },
+                            select: { id: true, customSubject: true, isActive: true, order: true },
                             orderBy: { order: "asc" },
                         },
                     },
@@ -51,12 +51,12 @@ export async function GET(request: NextRequest) {
                 sequenceActive: e.sequence.isActive,
                 currentEmailIndex: e.currentEmailIndex,
                 totalEmails: e.sequence.emails.length,
-                currentEmailSubject: currentEmail?.subject || "N/A",
+                currentEmailSubject: currentEmail?.customSubject || "N/A",
                 currentEmailActive: currentEmail?.isActive ?? "N/A",
                 nextSendAt: e.nextSendAt?.toISOString() || null,
                 isReadyToSend,
                 minutesUntilSend,
-                enrolledAt: e.createdAt.toISOString(),
+                enrolledAt: e.enrolledAt?.toISOString() || "N/A",
                 emailsReceived: e.emailsReceived,
             };
         });
