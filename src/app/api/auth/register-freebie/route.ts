@@ -25,7 +25,11 @@ const FREEBIE_PASSWORD = "Futurecoach2025";
 export async function POST(request: NextRequest) {
     try {
         const body = await request.json();
-        const { email, firstName, lastName, name, phone, miniDiplomaCategory = "functional-medicine" } = body;
+        const {
+            email, firstName, lastName, name, phone,
+            licenseType, licenseState, employmentStatus, goal,
+            miniDiplomaCategory = "functional-medicine"
+        } = body;
 
         // Validation
         if (!email) {
@@ -213,6 +217,25 @@ export async function POST(request: NextRequest) {
             }
 
             console.log(`🏷️ Created mini diploma UserTags for ${user.id}: ${userTags.join(", ")}`);
+        }
+
+        // Add license/qualification tags if provided (from clinician application form)
+        if (licenseType || licenseState || employmentStatus || goal) {
+            const qualificationTags = [];
+            if (licenseType) qualificationTags.push(`license_type:${licenseType}`);
+            if (licenseState) qualificationTags.push(`license_state:${licenseState}`);
+            if (employmentStatus) qualificationTags.push(`employment:${employmentStatus}`);
+            if (goal) qualificationTags.push(`goal:${goal}`);
+            qualificationTags.push("clinician_applicant");
+
+            for (const tag of qualificationTags) {
+                await prisma.userTag.upsert({
+                    where: { userId_tag: { userId: user.id, tag } },
+                    update: {},
+                    create: { userId: user.id, tag },
+                });
+            }
+            console.log(`🏷️ Saved clinician qualification tags: ${qualificationTags.join(", ")}`);
         }
 
         // Add marketing tags
