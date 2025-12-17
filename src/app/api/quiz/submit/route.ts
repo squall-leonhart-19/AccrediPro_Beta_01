@@ -3,6 +3,7 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import prisma from "@/lib/prisma";
 import { triggerAutoMessage } from "@/lib/auto-messages";
+import { sendMiniDiplomaCompleteEvent } from "@/lib/meta-capi";
 
 export async function POST(request: NextRequest) {
   try {
@@ -332,6 +333,24 @@ export async function POST(request: NextRequest) {
           where: { id: session.user.id },
           data: { miniDiplomaCompletedAt: new Date() },
         });
+
+        // === SERVER-SIDE META TRACKING ===
+        // Send CompleteMiniDiploma event to Meta CAPI
+        const user = await prisma.user.findUnique({
+          where: { id: session.user.id },
+          select: { email: true, firstName: true, miniDiplomaCategory: true },
+        });
+
+        if (user?.email) {
+          sendMiniDiplomaCompleteEvent({
+            email: user.email,
+            firstName: user.firstName || undefined,
+            contentName: `Mini Diploma - ${user.miniDiplomaCategory || 'Functional Medicine'}`,
+          }).catch((err) => {
+            console.error(`[META] Failed to send CompleteMiniDiploma event:`, err);
+          });
+          console.log(`📊 [META] CompleteMiniDiploma event sent for ${user.email}`);
+        }
       }
 
       // For MAIN CERTIFICATION ($997 course): Create certificates for modules and final
@@ -387,8 +406,8 @@ export async function POST(request: NextRequest) {
         : "Module Complete!";
       const notificationMessage = isFinalAssessment
         ? (isMiniDiploma
-            ? `Congratulations! You've completed the Functional Medicine Mini Diploma!`
-            : `Congratulations! You've completed the course and earned your certificate!`)
+          ? `Congratulations! You've completed the Functional Medicine Mini Diploma!`
+          : `Congratulations! You've completed the course and earned your certificate!`)
         : `Congratulations! You've passed the quiz.`;
 
       // Only create MODULE_COMPLETE notification for main certification (not mini diploma)
