@@ -175,8 +175,8 @@ export function DashboardNav() {
             </Link>
           )}
 
-          {/* Coach Section - visible to ALL users including students */}
-          {user && (
+          {/* Coach Section - only for ADMIN, INSTRUCTOR, MENTOR */}
+          {user && ["ADMIN", "INSTRUCTOR", "MENTOR"].includes(user.role) && (
             <>
               <div className="pt-3 mt-3 border-t border-burgundy-600/30">
                 <p className="px-3 py-1 text-xs font-semibold text-emerald-400 uppercase tracking-wider">

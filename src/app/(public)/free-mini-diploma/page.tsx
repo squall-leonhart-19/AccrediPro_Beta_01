@@ -149,7 +149,7 @@ export default function FreeMiniDiplomaPage() {
         });
 
         setLoading(false);
-        window.location.href = "/my-mini-diploma";
+        window.location.href = "/learning/functional-medicine-mini-diploma/cmjad06ft0000rd6vd9pqbui8";
       } else {
         setError(data.error || "Something went wrong. Please try again.");
         if (data.suggestedEmail) {
