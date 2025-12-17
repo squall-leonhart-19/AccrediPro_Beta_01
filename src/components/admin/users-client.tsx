@@ -182,6 +182,9 @@ export function UsersClient({ users, courses }: UsersClientProps) {
   const [addTagDialogOpen, setAddTagDialogOpen] = useState(false);
   const [newTag, setNewTag] = useState("");
   const [addingTag, setAddingTag] = useState(false);
+  const [existingTags, setExistingTags] = useState<string[]>([]);
+  const [loadingTags, setLoadingTags] = useState(false);
+  const [tagSearch, setTagSearch] = useState("");
 
   // Common tags for quick selection
   const COMMON_TAGS = [
@@ -195,6 +198,22 @@ export function UsersClient({ users, courses }: UsersClientProps) {
     "upsell_candidate",
     "referral_partner",
   ];
+
+  // Fetch existing tags when dialog opens
+  const fetchExistingTags = async () => {
+    setLoadingTags(true);
+    try {
+      const res = await fetch("/api/admin/users/tags");
+      if (res.ok) {
+        const data = await res.json();
+        setExistingTags(data.tags || []);
+      }
+    } catch (error) {
+      console.error("Failed to fetch tags:", error);
+    } finally {
+      setLoadingTags(false);
+    }
+  };
 
   const fetchUserActivity = async (userId: string) => {
     console.log('Fetching activity for user:', userId);
@@ -520,7 +539,9 @@ export function UsersClient({ users, courses }: UsersClientProps) {
   const openAddTagDialog = (user: User) => {
     setSelectedUser(user);
     setNewTag("");
+    setTagSearch("");
     setAddTagDialogOpen(true);
+    fetchExistingTags();
   };
 
   const handleAddTag = async () => {
@@ -2158,7 +2179,7 @@ export function UsersClient({ users, courses }: UsersClientProps) {
 
       {/* Add Tag Dialog */}
       <Dialog open={addTagDialogOpen} onOpenChange={setAddTagDialogOpen}>
-        <DialogContent className="sm:max-w-md">
+        <DialogContent className="sm:max-w-lg">
           <DialogHeader>
             <DialogTitle className="flex items-center gap-2">
               <Tag className="w-5 h-5 text-green-600" />
@@ -2176,8 +2197,54 @@ export function UsersClient({ users, courses }: UsersClientProps) {
             </DialogDescription>
           </DialogHeader>
           <div className="space-y-4 py-4">
+            {/* Search existing tags */}
             <div className="space-y-2">
-              <Label>Quick Select</Label>
+              <Label className="flex items-center gap-2">
+                <Search className="w-4 h-4" />
+                Search Existing Tags
+              </Label>
+              <Input
+                value={tagSearch}
+                onChange={(e) => setTagSearch(e.target.value)}
+                placeholder="Search tags..."
+                className="mb-2"
+              />
+              {loadingTags ? (
+                <div className="text-center py-4 text-gray-500 text-sm">Loading tags...</div>
+              ) : (
+                <div className="max-h-40 overflow-y-auto border rounded-lg p-2 bg-gray-50">
+                  {existingTags.length === 0 ? (
+                    <p className="text-center text-gray-400 text-sm py-2">No existing tags found</p>
+                  ) : (
+                    <div className="flex flex-wrap gap-2">
+                      {existingTags
+                        .filter((tag) => tag.toLowerCase().includes(tagSearch.toLowerCase()))
+                        .map((tag) => (
+                          <button
+                            key={tag}
+                            type="button"
+                            onClick={() => setNewTag(tag)}
+                            className={`px-2 py-1 text-xs rounded-full border transition-colors ${
+                              newTag === tag
+                                ? "bg-green-100 border-green-300 text-green-700"
+                                : "bg-white border-gray-200 text-gray-600 hover:bg-green-50 hover:border-green-200"
+                            }`}
+                          >
+                            {tag}
+                          </button>
+                        ))}
+                      {existingTags.filter((tag) => tag.toLowerCase().includes(tagSearch.toLowerCase())).length === 0 && (
+                        <p className="text-center text-gray-400 text-sm py-2 w-full">No tags match your search</p>
+                      )}
+                    </div>
+                  )}
+                </div>
+              )}
+            </div>
+
+            {/* Common quick tags */}
+            <div className="space-y-2">
+              <Label>Quick Select (Common Tags)</Label>
               <div className="flex flex-wrap gap-2">
                 {COMMON_TAGS.map((tag) => (
                   <button
@@ -2195,6 +2262,8 @@ export function UsersClient({ users, courses }: UsersClientProps) {
                 ))}
               </div>
             </div>
+
+            {/* Custom tag input */}
             <div className="space-y-2">
               <Label htmlFor="tagInput">Or enter custom tag</Label>
               <Input
@@ -2204,6 +2273,15 @@ export function UsersClient({ users, courses }: UsersClientProps) {
                 placeholder="e.g., vip_customer, referral:john"
               />
             </div>
+
+            {/* Selected tag display */}
+            {newTag && (
+              <div className="p-3 bg-green-50 border border-green-200 rounded-lg">
+                <p className="text-sm text-green-700">
+                  <strong>Selected tag:</strong> {newTag}
+                </p>
+              </div>
+            )}
           </div>
           <DialogFooter>
             <Button

@@ -10,6 +10,42 @@ const addTagSchema = z.object({
   value: z.string().optional(),
 });
 
+// GET - Fetch all unique tags for dropdown
+export async function GET() {
+  try {
+    const session = await getServerSession(authOptions);
+
+    if (!session?.user?.id || session.user.role !== "ADMIN") {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
+
+    // Get all unique tags from the database
+    const tags = await prisma.userTag.findMany({
+      select: {
+        tag: true,
+      },
+      distinct: ["tag"],
+      orderBy: {
+        tag: "asc",
+      },
+    });
+
+    // Get unique tag names
+    const uniqueTags = [...new Set(tags.map((t) => t.tag))];
+
+    return NextResponse.json({
+      success: true,
+      tags: uniqueTags,
+    });
+  } catch (error) {
+    console.error("Get tags error:", error);
+    return NextResponse.json(
+      { error: "Failed to fetch tags" },
+      { status: 500 }
+    );
+  }
+}
+
 export async function POST(request: NextRequest) {
   try {
     const session = await getServerSession(authOptions);
