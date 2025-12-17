@@ -201,9 +201,9 @@ export default function FreeMiniDiplomaPage() {
         <section style={{ textAlign: 'center', padding: '20px 0' }}>
           <div style={{
             display: 'inline-block',
-            background: 'linear-gradient(180deg, #F0F7F4, #E8F5EF)',
-            border: '1px solid #9FE2BF',
-            color: '#2D6A4F',
+            background: 'linear-gradient(180deg, #FBF4F4, #F8EDED)',
+            border: '1px solid #D4A5A5',
+            color: '#722F37',
             borderRadius: 999,
             padding: '8px 18px',
             fontWeight: 800,
@@ -219,7 +219,7 @@ export default function FreeMiniDiplomaPage() {
             maxWidth: 900,
             fontSize: 'clamp(24px, 5vw, 44px)',
             lineHeight: 1.15,
-            color: '#284B63',
+            color: '#722F37',
             fontWeight: 900
           }}>
             Free Functional Medicine Mini Diploma — Open Enrollment
@@ -246,13 +246,13 @@ export default function FreeMiniDiplomaPage() {
           }}>
             {['✓ No Experience Required', '✓ Official Mini Diploma', '✓ 3-Day Training', '✓ 100% Free'].map((text, idx) => (
               <div key={idx} style={{
-                background: '#F0F7F4',
-                border: '1px solid #9FE2BF',
+                background: '#FBF4F4',
+                border: '1px solid #D4A5A5',
                 padding: '6px 12px',
                 borderRadius: 8,
                 fontSize: '0.75rem',
                 fontWeight: 700,
-                color: '#2D6A4F'
+                color: '#722F37'
               }}>
                 {text}
               </div>
@@ -275,7 +275,7 @@ export default function FreeMiniDiplomaPage() {
             flexWrap: 'wrap'
           }}>
             {[
-              { number: '10,000+', label: 'Students Enrolled' },
+              { number: '1,787+', label: 'Students Enrolled' },
               { number: '$5k-$10k+', label: 'Earning Monthly' },
               { number: '90m', label: 'Time to Complete' }
             ].map((stat, idx) => (
@@ -283,7 +283,7 @@ export default function FreeMiniDiplomaPage() {
                 <span style={{
                   fontSize: 'clamp(1.2rem, 4vw, 1.7rem)',
                   fontWeight: 900,
-                  color: '#2D6A4F',
+                  color: '#722F37',
                   display: 'block',
                   lineHeight: 1.2
                 }}>{stat.number}</span>
@@ -341,7 +341,7 @@ export default function FreeMiniDiplomaPage() {
                 Hi, I'm Sarah — your mentor for the next 3 days 💕
               </h3>
               <p style={{ margin: 0, fontSize: '0.95rem', opacity: 0.97, lineHeight: 1.5 }}>
-                I've helped 10,000+ students from all backgrounds discover the power of Functional Medicine. Whether you're a clinician or a health-seeker, I'll guide you through the root-cause framework and show you how to turn your passion into a thriving career.
+                I've helped 1,787+ students from all backgrounds discover the power of Functional Medicine. Whether you're a clinician or a health-seeker, I'll guide you through the root-cause framework and show you how to turn your passion into a thriving career.
               </p>
             </div>
           </div>
@@ -349,8 +349,8 @@ export default function FreeMiniDiplomaPage() {
 
         {/* Eligibility Section */}
         <section style={{
-          background: 'linear-gradient(135deg, #FFF5EC, #FFEFD5)',
-          border: '2px solid #F4C976',
+          background: 'linear-gradient(135deg, #FBF4F4, #F8EDED)',
+          border: '2px solid #D4A5A5',
           borderRadius: 14,
           padding: 26,
           margin: '32px auto',
@@ -373,11 +373,11 @@ export default function FreeMiniDiplomaPage() {
           }}>
             <div style={{
               background: 'white',
-              border: '1px solid #F4C976',
+              border: '1px solid #D4A5A5',
               borderRadius: 12,
               padding: 18
             }}>
-              <h4 style={{ margin: '0 0 12px', color: '#2D6A4F', fontSize: 'clamp(0.95rem, 2.5vw, 1.05rem)', fontWeight: 800 }}>
+              <h4 style={{ margin: '0 0 12px', color: '#722F37', fontSize: 'clamp(0.95rem, 2.5vw, 1.05rem)', fontWeight: 800 }}>
                 ✓ This IS for you if:
               </h4>
               <ul style={{ listStyle: 'none', padding: 0, margin: 0 }}>
@@ -398,7 +398,7 @@ export default function FreeMiniDiplomaPage() {
                     gap: 9,
                     lineHeight: 1.5
                   }}>
-                    <span style={{ color: '#2AA97B', fontWeight: 900, fontSize: '1.05rem', flexShrink: 0, marginTop: 2 }}>✓</span>
+                    <span style={{ color: '#722F37', fontWeight: 900, fontSize: '1.05rem', flexShrink: 0, marginTop: 2 }}>✓</span>
                     {item}
                   </li>
                 ))}
@@ -406,7 +406,7 @@ export default function FreeMiniDiplomaPage() {
             </div>
             <div style={{
               background: 'white',
-              border: '1px solid #F4C976',
+              border: '1px solid #D4A5A5',
               borderRadius: 12,
               padding: 18
             }}>
@@ -482,7 +482,7 @@ export default function FreeMiniDiplomaPage() {
                   width: 27,
                   height: 27,
                   borderRadius: '50%',
-                  background: '#2AA97B',
+                  background: '#722F37',
                   color: '#fff',
                   display: 'flex',
                   alignItems: 'center',
@@ -521,7 +521,7 @@ export default function FreeMiniDiplomaPage() {
           {/* Form Card */}
           <div style={{
             background: 'linear-gradient(135deg, #FFFFFF 0%, #FFF9F3 100%)',
-            border: '2px solid #2D6A4F',
+            border: '2px solid #722F37',
             borderRadius: 16,
             boxShadow: '0 16px 48px rgba(45,106,79,0.12)',
             padding: 28,
@@ -529,10 +529,10 @@ export default function FreeMiniDiplomaPage() {
             top: 20
           }}>
             <div style={{ textAlign: 'center', marginBottom: 20, paddingBottom: 18, borderBottom: '2px solid #ECE8E2' }}>
-              <div style={{ display: 'inline-block', background: '#2D6A4F', color: 'white', padding: '4px 12px', borderRadius: 20, fontSize: '0.7rem', fontWeight: 800, textTransform: 'uppercase', letterSpacing: 1, marginBottom: 10 }}>
+              <div style={{ display: 'inline-block', background: '#722F37', color: 'white', padding: '4px 12px', borderRadius: 20, fontSize: '0.7rem', fontWeight: 800, textTransform: 'uppercase', letterSpacing: 1, marginBottom: 10 }}>
                 ✨ Limited Spots Available
               </div>
-              <h3 style={{ margin: '0 0 6px', color: '#2D6A4F', fontSize: 'clamp(1.2rem, 3vw, 1.4rem)', fontWeight: 900 }}>
+              <h3 style={{ margin: '0 0 6px', color: '#722F37', fontSize: 'clamp(1.2rem, 3vw, 1.4rem)', fontWeight: 900 }}>
                 Apply for Free Access
               </h3>
               <p style={{ color: '#6B6E76', fontSize: 'clamp(0.85rem, 2vw, 0.9rem)', margin: 0 }}>
@@ -561,7 +561,7 @@ export default function FreeMiniDiplomaPage() {
                 <div key={idx} style={{
                   background: '#F0F7F4',
                   border: '1px solid #9FE2BF',
-                  color: '#2D6A4F',
+                  color: '#722F37',
                   padding: '6px 13px',
                   borderRadius: 20,
                   fontSize: 'clamp(0.75rem, 2vw, 0.8rem)',
@@ -634,7 +634,7 @@ export default function FreeMiniDiplomaPage() {
                     width: '100%',
                     padding: '12px 14px',
                     borderRadius: 10,
-                    border: `1px solid ${emailStatus === 'invalid' ? '#D94B4B' : emailStatus === 'valid' ? '#2AA97B' : '#ECE8E2'}`,
+                    border: `1px solid ${emailStatus === 'invalid' ? '#D94B4B' : emailStatus === 'valid' ? '#722F37' : '#ECE8E2'}`,
                     fontSize: '1rem',
                     outline: 'none',
                     boxSizing: 'border-box'
@@ -648,9 +648,9 @@ export default function FreeMiniDiplomaPage() {
                   <p style={{ fontSize: '0.75rem', color: '#D94B4B', marginTop: 4 }}>{emailError}</p>
                 )}
                 {suggestedEmail && (
-                  <p style={{ fontSize: '0.75rem', color: '#2D6A4F', marginTop: 4 }}>
+                  <p style={{ fontSize: '0.75rem', color: '#722F37', marginTop: 4 }}>
                     Did you mean{' '}
-                    <button type="button" onClick={useSuggestedEmail} style={{ color: '#2D6A4F', fontWeight: 700, textDecoration: 'underline', background: 'none', border: 'none', cursor: 'pointer' }}>
+                    <button type="button" onClick={useSuggestedEmail} style={{ color: '#722F37', fontWeight: 700, textDecoration: 'underline', background: 'none', border: 'none', cursor: 'pointer' }}>
                       {suggestedEmail}
                     </button>
                     ?
@@ -723,7 +723,7 @@ export default function FreeMiniDiplomaPage() {
                   padding: '16px 24px',
                   borderRadius: 12,
                   border: 'none',
-                  background: loading ? '#6B6E76' : 'linear-gradient(135deg, #2D6A4F, #245B45)',
+                  background: loading ? '#6B6E76' : 'linear-gradient(135deg, #722F37, #8B3A42)',
                   color: 'white',
                   fontSize: '1.1rem',
                   fontWeight: 800,
