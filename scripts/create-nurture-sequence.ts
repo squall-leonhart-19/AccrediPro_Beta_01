@@ -1,7 +1,6 @@
 import prisma from "../src/lib/prisma";
 
-// Store plain text content - the enroll API will wrap it with the branded template
-// (same template that makes the welcome email look beautiful)
+// Use <strong> tags (same format as inbox-test route for perfect HTML rendering)
 const NURTURE_EMAILS = [
   {
     day: 0,
@@ -12,21 +11,21 @@ You're in.
 
 I just saw your name come through, and I wanted to personally welcome you.
 
-**Your Free Mini Diploma in Functional Medicine is ready** - you can start right now if you want.
+<strong>Your Free Mini Diploma in Functional Medicine is ready</strong> - you can start right now if you want.
 
 But before you dive in, I need to tell you something important:
 
-**This isn't like other freebies.**
+<strong>This isn't like other freebies.</strong>
 
 You know those PDFs that sit in your downloads folder collecting digital dust? Those "free courses" that are really just 45-minute sales pitches?
 
 This isn't that.
 
-This is **real training**. The same foundational content our certified practitioners learned. By the end, you'll understand root-cause thinking in a way that changes how you see health forever.
+This is <strong>real training</strong>. The same foundational content our certified practitioners learned. By the end, you'll understand root-cause thinking in a way that changes how you see health forever.
 
 You'll also earn an actual credential - a Mini Diploma you can be proud of.
 
-**Here's what I want you to do:**
+<strong>Here's what I want you to do:</strong>
 
 Log into the platform and start Lesson 1. It takes about 20 minutes. By the end, you'll know if this path is right for you.
 
@@ -45,7 +44,7 @@ P.S. Check your messages inside the platform - I've left you a personal voice no
 
 Can I tell you something I don't share with everyone?
 
-**The Kitchen Floor Moment**
+<strong>The Kitchen Floor Moment</strong>
 
 It was 11pm on a Tuesday. My daughter was finally asleep. I was sitting on my kitchen floor, bills spread around me, calculator in hand.
 
@@ -55,13 +54,13 @@ I'd just worked a 12-hour day at a job that was slowly killing me. Gave the same
 
 I knew it wasn't helping anyone. And I couldn't even take my own advice - I was exhausted, inflamed, running on coffee and anxiety.
 
-**I looked at my reflection in the microwave door and didn't recognize myself.**
+<strong>I looked at my reflection in the microwave door and didn't recognize myself.</strong>
 
 When did I become this tired, defeated person? When did "helping people" start feeling like a lie I told myself to get through the day?
 
 Have you ever felt that way, {{firstName}}? That gap between who you are and who you wanted to become?
 
-**The Moment Everything Changed**
+<strong>The Moment Everything Changed</strong>
 
 That night, I couldn't sleep. I started researching at 2am. Functional medicine. Root-cause health. A different approach.
 
@@ -69,13 +68,13 @@ And something clicked.
 
 For the first time, I understood WHY I felt so stuck. Why my clients weren't getting better. Why the advice I'd been giving was like putting band-aids on broken legs.
 
-**It wasn't that I was bad at my job. I just didn't have the right tools.**
+<strong>It wasn't that I was bad at my job. I just didn't have the right tools.</strong>
 
 Fast forward three years: I work from home. I set my own hours. I help people who've been dismissed by every doctor they've seen. And my daughter? She tells her friends her mom "helps people feel better."
 
 That's worth everything.
 
-**I'm telling you this because...**
+<strong>I'm telling you this because...</strong>
 
 If you're where I was - tired, stuck, wondering if there's more - I need you to know: there is.
 
