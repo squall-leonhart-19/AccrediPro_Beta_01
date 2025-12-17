@@ -20,6 +20,7 @@ export default function FreeMiniDiplomaPage() {
   const [loggingIn, setLoggingIn] = useState(false);
   const [error, setError] = useState("");
   const [suggestedEmail, setSuggestedEmail] = useState("");
+  const [countdown, setCountdown] = useState({ minutes: 14, seconds: 58 });
 
   // Email validation states
   const [emailStatus, setEmailStatus] = useState<"idle" | "checking" | "valid" | "invalid">("idle");
@@ -29,6 +30,22 @@ export default function FreeMiniDiplomaPage() {
   // Initialize Meta tracking on page load
   useEffect(() => {
     initMetaTracking();
+  }, []);
+
+  // Countdown timer
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setCountdown(prev => {
+        if (prev.seconds === 0) {
+          if (prev.minutes === 0) {
+            return { minutes: 14, seconds: 58 };
+          }
+          return { minutes: prev.minutes - 1, seconds: 59 };
+        }
+        return { ...prev, seconds: prev.seconds - 1 };
+      });
+    }, 1000);
+    return () => clearInterval(timer);
   }, []);
 
   // Debounced email validation
@@ -171,41 +188,45 @@ export default function FreeMiniDiplomaPage() {
     setTimeout(() => validateEmail(suggestedEmail), 100);
   };
 
+  // Success State
   if (success) {
     return (
-      <div className="min-h-screen bg-gradient-to-b from-burgundy-50 to-white flex items-center justify-center p-4">
-        <div className="max-w-md w-full bg-white rounded-2xl shadow-xl p-8 text-center">
-          <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-6">
-            <svg className="w-8 h-8 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-            </svg>
-          </div>
-          <h2 className="text-2xl font-bold text-gray-900 mb-4">You&apos;re In!</h2>
-          <p className="text-gray-600 mb-6">
-            Check your email for your login details. Your free Mini Diploma is waiting for you inside.
-          </p>
-          <div className="bg-burgundy-50 rounded-lg p-4 mb-6">
-            <p className="text-sm text-burgundy-800">
-              <strong>Your login email:</strong> {formData.email}<br />
-              <strong>Your password:</strong> Futurecoach2025
+      <div className="min-h-screen" style={{ background: "#FDF8F6", fontFamily: "Inter, system-ui, sans-serif" }}>
+        <div className="max-w-md mx-auto px-4 py-20">
+          <div className="bg-white rounded-2xl shadow-xl p-8 text-center border-2" style={{ borderColor: "#722F37" }}>
+            <div className="w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-6" style={{ background: "#DEF7EC" }}>
+              <svg className="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke="#059669">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+              </svg>
+            </div>
+            <h2 className="text-2xl font-bold mb-4" style={{ color: "#1F2432" }}>You&apos;re In!</h2>
+            <p className="mb-6" style={{ color: "#6B6E76" }}>
+              Check your email for your login details. Your free Mini Diploma is waiting for you inside.
             </p>
+            <div className="rounded-lg p-4 mb-6 text-left" style={{ background: "#FDF2F4" }}>
+              <p className="text-sm" style={{ color: "#722F37" }}>
+                <strong>Your login email:</strong> {formData.email}<br />
+                <strong>Your password:</strong> Futurecoach2025
+              </p>
+            </div>
+            <Link
+              href="/login"
+              className="inline-block w-full py-3 px-6 rounded-lg font-semibold text-white transition-all hover:opacity-90"
+              style={{ background: "linear-gradient(135deg, #722F37, #5C262D)" }}
+            >
+              Login Now
+            </Link>
           </div>
-          <Link
-            href="/login"
-            className="inline-block w-full bg-burgundy-600 text-white py-3 px-6 rounded-lg font-semibold hover:bg-burgundy-700 transition-colors"
-          >
-            Login Now
-          </Link>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-burgundy-50 to-white">
-      {/* Header */}
-      <div className="bg-white shadow-sm">
-        <div className="max-w-6xl mx-auto px-4 py-4 flex items-center justify-between">
+    <div className="min-h-screen" style={{ background: "#FDF8F6", fontFamily: "Inter, system-ui, sans-serif" }}>
+      <main className="max-w-[1160px] mx-auto px-5 py-5">
+        {/* Logo Header */}
+        <div className="flex flex-col md:flex-row justify-between items-center mb-6 pb-4 border-b" style={{ borderColor: "#ECE8E2" }}>
           <Image
             src="https://coach.accredipro.academy/wp-content/uploads/2025/10/Senza-titolo-Logo-1.png"
             alt="AccrediPro Academy"
@@ -214,245 +235,356 @@ export default function FreeMiniDiplomaPage() {
             className="h-10 w-auto"
             unoptimized
           />
-          <div className="hidden md:flex items-center gap-2 text-sm text-gray-600">
-            <span className="flex items-center gap-1">
-              <svg className="w-4 h-4 text-yellow-500" fill="currentColor" viewBox="0 0 20 20">
-                <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-              </svg>
-              <span className="font-medium">4,200+ students enrolled</span>
-            </span>
+          <div className="flex items-center gap-2 text-sm mt-3 md:mt-0" style={{ color: "#6B6E76" }}>
+            <svg className="w-4 h-4" fill="#F59E0B" viewBox="0 0 20 20">
+              <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+            </svg>
+            <span><strong>4,200+</strong> students enrolled</span>
           </div>
         </div>
-      </div>
 
-      {/* Main Content */}
-      <div className="max-w-6xl mx-auto px-4 py-8 md:py-12">
-        <div className="grid md:grid-cols-2 gap-8 md:gap-12 items-start">
-          {/* Left Side - Copy */}
-          <div>
-            <span className="inline-block bg-burgundy-100 text-burgundy-700 text-sm font-semibold px-4 py-1.5 rounded-full mb-4">
-              FREE MINI DIPLOMA — OPEN ENROLLMENT
-            </span>
+        {/* Professional Header Banner */}
+        <div
+          className="text-center py-2.5 px-4 rounded-xl mb-6 text-white font-extrabold text-sm tracking-wide"
+          style={{ background: "linear-gradient(135deg, #722F37, #8B3D47)" }}
+        >
+          🎓 FREE FUNCTIONAL MEDICINE MINI DIPLOMA • OPEN TO ALL • LIMITED SPOTS
+        </div>
 
-            <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold text-gray-900 mb-4 leading-tight">
-              Burned Out From a Healthcare System That&apos;s Broken?
-            </h1>
+        {/* Hero Section */}
+        <section className="text-center py-5">
+          <span
+            className="inline-block rounded-full px-4 py-2 font-extrabold text-sm mb-4"
+            style={{ background: "linear-gradient(180deg, #FDF2F4, #FAE5E8)", border: "1px solid #E8A0A8", color: "#722F37" }}
+          >
+            🎓 NO EXPERIENCE REQUIRED • CAREER-CHANGERS WELCOME
+          </span>
 
-            <p className="text-lg md:text-xl text-gray-700 mb-6 leading-relaxed">
-              Here&apos;s how nurses are escaping to $100k+ careers that actually help people heal.
-            </p>
+          <h1 className="text-3xl md:text-4xl lg:text-5xl font-black mb-3 leading-tight max-w-[900px] mx-auto" style={{ color: "#722F37" }}>
+            Free Functional Medicine Mini Diploma — Open Enrollment
+          </h1>
 
-            <p className="text-base text-gray-600 mb-8 leading-relaxed">
-              This free training reveals the root-cause approach that turned a $72k burned-out nurse into a $144k/year practitioner working just 3 days a week.
-            </p>
+          <p className="text-base md:text-lg max-w-[820px] mx-auto mb-6" style={{ color: "#6B6E76", lineHeight: 1.6 }}>
+            Discover the Foundations of Root-Cause Healing in 3 Days. Earn Your Mini Diploma • Pass the Final Exam • Unlock Your Graduation Pathway.
+            Complete in 90 minutes or 3 days.
+          </p>
 
-            {/* What You'll Learn */}
-            <div className="mb-8">
-              <h2 className="text-xl font-bold text-gray-900 mb-4">What You&apos;ll Learn:</h2>
-              <div className="space-y-3">
-                <div className="flex items-start gap-3">
-                  <div className="w-6 h-6 bg-green-100 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
-                    <svg className="w-4 h-4 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                    </svg>
-                  </div>
-                  <div>
-                    <span className="font-semibold text-gray-900">The 7 Body Systems Model</span>
-                    <p className="text-sm text-gray-600">The root-cause framework that doctors don&apos;t teach</p>
-                  </div>
-                </div>
+          {/* Credentials Bar */}
+          <div className="flex flex-wrap justify-center gap-2 max-w-[800px] mx-auto mb-6">
+            {["✓ No Experience Required", "✓ Official Mini Diploma", "✓ 3-Day Training", "✓ 100% Free"].map((item, i) => (
+              <span
+                key={i}
+                className="px-3 py-1.5 rounded-lg text-xs font-bold"
+                style={{ background: "#FDF2F4", border: "1px solid #E8A0A8", color: "#722F37" }}
+              >
+                {item}
+              </span>
+            ))}
+          </div>
 
-                <div className="flex items-start gap-3">
-                  <div className="w-6 h-6 bg-green-100 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
-                    <svg className="w-4 h-4 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                    </svg>
-                  </div>
-                  <div>
-                    <span className="font-semibold text-gray-900">Real Case Study: Michelle&apos;s Transformation</span>
-                    <p className="text-sm text-gray-600">See how a 42-year-old mom reversed chronic fatigue in 12 weeks</p>
-                  </div>
-                </div>
-
-                <div className="flex items-start gap-3">
-                  <div className="w-6 h-6 bg-green-100 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
-                    <svg className="w-4 h-4 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                    </svg>
-                  </div>
-                  <div>
-                    <span className="font-semibold text-gray-900">Your Path Forward</span>
-                    <p className="text-sm text-gray-600">The 2 paths: heal yourself OR help others heal</p>
-                  </div>
-                </div>
+          {/* Stats Bar */}
+          <div
+            className="flex justify-between items-center max-w-[780px] mx-auto rounded-xl p-4 mb-7"
+            style={{ background: "white", border: "1px solid #ECE8E2", boxShadow: "0 12px 28px rgba(0,0,0,.07)" }}
+          >
+            {[
+              { number: "10,000+", label: "Students Enrolled" },
+              { number: "$3k-$10k", label: "Potential Monthly" },
+              { number: "90m", label: "Time to Complete" },
+            ].map((stat, i) => (
+              <div key={i} className="text-center flex-1">
+                <span className="block text-xl md:text-2xl font-black" style={{ color: "#722F37" }}>{stat.number}</span>
+                <span className="text-[0.7rem] uppercase tracking-wide" style={{ color: "#6B6E76" }}>{stat.label}</span>
               </div>
-            </div>
+            ))}
+          </div>
 
-            {/* What's Included */}
-            <div className="bg-gray-50 rounded-xl p-6 mb-6">
-              <h3 className="font-bold text-gray-900 mb-4">What&apos;s Included:</h3>
-              <div className="space-y-3">
-                <div className="flex items-center gap-3">
-                  <svg className="w-5 h-5 text-burgundy-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                  </svg>
-                  <span className="text-gray-700">4 Training Modules + Final Exam</span>
-                </div>
-                <div className="flex items-center gap-3">
-                  <svg className="w-5 h-5 text-burgundy-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                  </svg>
-                  <span className="text-gray-700">Official Mini Diploma Certificate</span>
-                </div>
-                <div className="flex items-center gap-3">
-                  <svg className="w-5 h-5 text-burgundy-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                  </svg>
-                  <span className="text-gray-700">Interactive Quizzes After Each Module</span>
-                </div>
-                <div className="flex items-center gap-3">
-                  <svg className="w-5 h-5 text-burgundy-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                  </svg>
-                  <span className="text-gray-700">Lifetime Access — Learn at Your Own Pace</span>
-                </div>
-                <div className="flex items-center gap-3">
-                  <svg className="w-5 h-5 text-burgundy-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                  </svg>
-                  <span className="text-gray-700">Personal Voice Message from Sarah</span>
-                </div>
+          {/* Certificate Preview */}
+          <div
+            className="max-w-[740px] mx-auto rounded-2xl overflow-hidden mb-7"
+            style={{ border: "1px solid #ECE8E2", boxShadow: "0 20px 50px rgba(114,47,55,0.15)" }}
+          >
+            <div
+              className="p-6 md:p-8 text-center relative"
+              style={{ background: "linear-gradient(135deg, #fdfbf7, #fff9f0)" }}
+            >
+              {/* Gold border */}
+              <div className="absolute inset-2 border-2 rounded-lg pointer-events-none" style={{ borderColor: "#C9A85C" }} />
+
+              <Image
+                src="https://coach.accredipro.academy/wp-content/uploads/2025/10/Senza-titolo-Logo-1.png"
+                alt="AccrediPro"
+                width={120}
+                height={30}
+                className="mx-auto mb-4"
+                unoptimized
+              />
+              <div className="text-[0.7rem] uppercase tracking-widest mb-2" style={{ color: "#888" }}>AccrediPro Academy</div>
+              <div className="text-2xl font-extrabold mb-1" style={{ color: "#722F37" }}>Mini Diploma</div>
+              <div className="text-sm mb-4" style={{ color: "#666" }}>This is to certify that</div>
+              <div className="text-2xl font-bold italic mb-3" style={{ color: "#333" }}>Your Name Here</div>
+              <div className="text-sm mb-5" style={{ color: "#555" }}>
+                Has successfully completed the<br /><strong>Functional Medicine Foundations</strong><br />Mini Diploma Program
               </div>
-            </div>
-
-            {/* Module Breakdown - Desktop Only */}
-            <div className="hidden md:block">
-              <h3 className="font-bold text-gray-900 mb-3">Course Modules:</h3>
-              <div className="space-y-2 text-sm">
-                <div className="flex items-center gap-2 text-gray-600">
-                  <span className="w-6 h-6 bg-burgundy-100 text-burgundy-700 rounded-full flex items-center justify-center text-xs font-bold">0</span>
-                  <span>Welcome: Your New Beginning</span>
+              <div
+                className="w-16 h-16 rounded-full mx-auto mb-4 flex items-center justify-center"
+                style={{ background: "linear-gradient(135deg, #F4D35E, #C9A85C)", boxShadow: "0 4px 12px rgba(201,168,92,0.3)" }}
+              >
+                <svg className="w-8 h-8 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <path d="M9 12l2 2 4-4" />
+                  <circle cx="12" cy="12" r="10" />
+                </svg>
+              </div>
+              <div className="flex flex-col md:flex-row justify-between items-center pt-4 border-t gap-3" style={{ borderColor: "#E5E1D8" }}>
+                <div className="text-left text-xs" style={{ color: "#888" }}>
+                  <strong className="block" style={{ color: "#333" }}>Date Issued</strong>
+                  December 2025
                 </div>
-                <div className="flex items-center gap-2 text-gray-600">
-                  <span className="w-6 h-6 bg-burgundy-100 text-burgundy-700 rounded-full flex items-center justify-center text-xs font-bold">1</span>
-                  <span>The Root-Cause Framework (7 Body Systems)</span>
-                </div>
-                <div className="flex items-center gap-2 text-gray-600">
-                  <span className="w-6 h-6 bg-burgundy-100 text-burgundy-700 rounded-full flex items-center justify-center text-xs font-bold">2</span>
-                  <span>Case Study: Michelle&apos;s 12-Week Transformation</span>
-                </div>
-                <div className="flex items-center gap-2 text-gray-600">
-                  <span className="w-6 h-6 bg-burgundy-100 text-burgundy-700 rounded-full flex items-center justify-center text-xs font-bold">3</span>
-                  <span>Your Path Forward</span>
-                </div>
-                <div className="flex items-center gap-2 text-gray-600">
-                  <span className="w-6 h-6 bg-burgundy-600 text-white rounded-full flex items-center justify-center text-xs font-bold">!</span>
-                  <span>Final Exam + Certificate</span>
+                <div className="text-right text-xs" style={{ color: "#888" }}>
+                  <strong className="block" style={{ color: "#333" }}>Certificate ID</strong>
+                  #MD-XXXXX
                 </div>
               </div>
             </div>
           </div>
 
-          {/* Right Side - Form */}
-          <div className="md:sticky md:top-8">
-            <div className="bg-white rounded-2xl shadow-xl p-6 md:p-8 border border-gray-100">
-              {/* Urgency Banner */}
-              <div className="bg-gradient-to-r from-burgundy-600 to-burgundy-700 text-white text-center py-3 px-4 rounded-lg mb-6 -mx-6 -mt-6 md:-mx-8 md:-mt-8 rounded-t-2xl">
-                <p className="text-sm font-medium">100% FREE — Get Instant Access</p>
-              </div>
+          {/* Sarah Intro - Gold Background */}
+          <div
+            className="flex flex-col md:flex-row items-center gap-5 max-w-[900px] mx-auto rounded-xl p-5 text-white"
+            style={{ background: "linear-gradient(135deg, #C9A85C, #B8944E)" }}
+          >
+            <Image
+              src="https://i.ibb.co/5hzyDsg0/coaching-thumbnail.jpg"
+              alt="Sarah"
+              width={85}
+              height={85}
+              className="w-20 h-20 rounded-full border-3 object-cover flex-shrink-0"
+              style={{ borderWidth: "3px", borderColor: "white" }}
+              unoptimized
+            />
+            <div className="text-center md:text-left">
+              <h3 className="text-lg font-bold mb-2">Hi, I&apos;m Sarah — your mentor for the next 3 days 💕</h3>
+              <p className="text-sm opacity-95 leading-relaxed">
+                I&apos;ve helped 10,000+ students from all backgrounds discover the power of Functional Medicine. Whether you&apos;re a clinician or a health-seeker, I&apos;ll guide you through the root-cause framework and show you how to turn your passion into a thriving career.
+              </p>
+            </div>
+          </div>
+        </section>
 
-              <div className="text-center mb-6">
-                <h2 className="text-2xl font-bold text-gray-900">Start Your Free Training</h2>
-                <p className="text-gray-600 mt-2">Enter your details below for instant access</p>
-              </div>
+        {/* Eligibility Section */}
+        <section
+          className="rounded-xl p-6 my-8 max-w-[1000px] mx-auto"
+          style={{ background: "linear-gradient(135deg, #FFF5EC, #FFEFD5)", border: "2px solid #F4C976" }}
+        >
+          <h3 className="text-center font-extrabold text-lg md:text-xl mb-5" style={{ color: "#1F2432" }}>
+            🎯 Who This Mini Diploma Is For
+          </h3>
+          <div className="grid md:grid-cols-2 gap-6">
+            <div className="bg-white rounded-xl p-5" style={{ border: "1px solid #F4C976" }}>
+              <h4 className="font-extrabold mb-3" style={{ color: "#722F37" }}>✓ This IS for you if:</h4>
+              <ul className="space-y-2">
+                {[
+                  "Anyone passionate about health & healing",
+                  "Women exploring a new purpose",
+                  "People considering a career in wellness",
+                  "Clinicians (RN, NP, PA, RD, PharmD, PT)",
+                  "Those wanting to earn $500–$3,000/month helping others",
+                ].map((item, i) => (
+                  <li key={i} className="flex items-start gap-2 text-sm" style={{ color: "#6B6E76" }}>
+                    <span className="text-green-600 font-black">✓</span>
+                    {item}
+                  </li>
+                ))}
+              </ul>
+            </div>
+            <div className="bg-white rounded-xl p-5" style={{ border: "1px solid #F4C976" }}>
+              <h4 className="font-extrabold mb-3" style={{ color: "#D94B4B" }}>✗ This is NOT for you if:</h4>
+              <ul className="space-y-2">
+                {[
+                  "People who refuse to study",
+                  "People expecting overnight results without effort",
+                  "Cynics and skeptics",
+                  "People who don't care about wellness",
+                  "Those looking for \"get rich quick\" schemes",
+                ].map((item, i) => (
+                  <li key={i} className="flex items-start gap-2 text-sm" style={{ color: "#6B6E76" }}>
+                    <span style={{ color: "#D94B4B" }} className="font-black">✗</span>
+                    {item}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </div>
+        </section>
 
-              <form onSubmit={handleSubmit} className="space-y-4">
-                <div className="grid grid-cols-2 gap-4">
+        {/* Two Column Grid */}
+        <section className="grid lg:grid-cols-[1.35fr_0.65fr] gap-7 mt-8">
+          {/* Left Column - Content */}
+          <div>
+            <h2 className="text-2xl md:text-3xl font-black mb-4" style={{ color: "#722F37" }}>
+              What You&apos;ll Learn (3-Day Training • 90 Minutes Total)
+            </h2>
+            <p className="mb-5" style={{ color: "#6B6E76", fontSize: "0.95rem" }}>
+              If you&apos;re passionate about healing, wellness, and helping others, this Mini Diploma gives you a real, accredited introduction to Functional Medicine. Learn the exact process behind $1,500–$3,000 client programs.
+            </p>
+
+            {/* Learning Items */}
+            <ul className="space-y-3 mb-8">
+              {[
+                { title: "Day 1: Functional Medicine Foundations", desc: "Systems biology • FM matrix • Root cause vs symptoms • How practitioners uncover hidden causes of fatigue, gut issues, hormone imbalance & more." },
+                { title: "Day 2: Case Studies & Clinical Pattern Recognition", desc: "Real case walk-through (Michelle, 42) • Gut-hormone-stress loop • How FM practitioners transform clients ethically & effectively." },
+                { title: "Day 3: Your Practitioner Pathway & Income Potential", desc: "How FM practitioners earn $3K–$10K/month • 12-week transformation program model • The 3 certification pathways • Your next academic steps." },
+                { title: "Earn Your Mini Diploma + Academic Credits", desc: "Score 92–96 points on the final exam to unlock your Mini Diploma." },
+              ].map((item, i) => (
+                <li
+                  key={i}
+                  className="flex gap-3 rounded-xl p-4 transition-all hover:shadow-md hover:-translate-y-0.5"
+                  style={{ background: "#FFF9F3", border: "1px solid #F1E7D8" }}
+                >
+                  <span
+                    className="w-7 h-7 rounded-full flex items-center justify-center text-white font-black text-sm flex-shrink-0"
+                    style={{ background: "#722F37" }}
+                  >
+                    ✓
+                  </span>
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
-                      First Name
-                    </label>
+                    <div className="font-bold mb-1" style={{ color: "#1F2432" }}>{item.title}</div>
+                    <div className="text-sm" style={{ color: "#666" }}>{item.desc}</div>
+                  </div>
+                </li>
+              ))}
+            </ul>
+
+            <h3 className="text-xl font-extrabold mb-4" style={{ color: "#3C4B5A" }}>
+              🎓 What Happens After You Enroll
+            </h3>
+            <p className="mb-5" style={{ color: "#6B6E76", fontSize: "0.95rem" }}>
+              You&apos;ll get instant access to all 3 training modules. Complete them at your own pace, earn your Mini Diploma, and unlock your Graduation Training to see your certification pathway.
+            </p>
+
+            {/* Testimonials */}
+            <div className="space-y-4">
+              <div className="rounded-xl p-5" style={{ background: "#FDF2F4", border: "1px solid #E8A0A8" }}>
+                <p className="italic mb-3" style={{ color: "#4A5568" }}>
+                  &ldquo;I always knew I wanted to help people heal, but I didn&apos;t know where to start. This Mini Diploma opened my eyes to the science of Functional Medicine. I learned more in 3 days than I did in years of reading blogs. I&apos;m now on my way to becoming a certified coach!&rdquo;
+                </p>
+                <div className="font-extrabold" style={{ color: "#1F2432" }}>Amanda T.</div>
+                <div className="text-sm" style={{ color: "#6B6E76" }}>Wellness Enthusiast & Career Changer</div>
+              </div>
+              <div className="rounded-xl p-5" style={{ background: "#FDF2F4", border: "1px solid #E8A0A8" }}>
+                <p className="italic mb-3" style={{ color: "#4A5568" }}>
+                  &ldquo;As a nurse, I was burnt out. I took this free intensive just to see if there was another way. The &apos;Day 2&apos; case study blew my mind—it showed me exactly how to treat the whole person, not just symptoms. I&apos;m so excited about my future again.&rdquo;
+                </p>
+                <div className="font-extrabold" style={{ color: "#1F2432" }}>Sarah J., RN</div>
+                <div className="text-sm" style={{ color: "#6B6E76" }}>Registered Nurse & Aspiring Coach</div>
+              </div>
+            </div>
+          </div>
+
+          {/* Right Column - Form */}
+          <div className="lg:sticky lg:top-5">
+            <div
+              className="rounded-2xl p-6"
+              style={{
+                background: "linear-gradient(135deg, #FFFFFF 0%, #FDF8F6 100%)",
+                border: "2px solid #722F37",
+                boxShadow: "0 16px 48px rgba(114,47,55,0.12)"
+              }}
+            >
+              {/* Form Header */}
+              <div className="text-center mb-5 pb-5 border-b-2" style={{ borderColor: "#ECE8E2" }}>
+                <h3 className="text-xl font-black mb-1" style={{ color: "#722F37" }}>Start the Mini Diploma</h3>
+                <p className="text-sm" style={{ color: "#6B6E76" }}>100% Free • Instant Access</p>
+
+                {/* Urgency Banner */}
+                <div
+                  className="rounded-lg p-2.5 mt-3 text-center"
+                  style={{ background: "linear-gradient(135deg, #FFEBEE, #FFCDD2)", border: "2px solid #E57373" }}
+                >
+                  <div className="text-xs font-extrabold uppercase tracking-wide mb-1" style={{ color: "#C62828" }}>
+                    🔥 Enrollment Closing Soon
+                  </div>
+                  <div className="text-xl font-black font-mono" style={{ color: "#B71C1C" }}>
+                    {String(countdown.minutes).padStart(2, "0")}:{String(countdown.seconds).padStart(2, "0")}
+                  </div>
+                </div>
+              </div>
+
+              {/* Value Pills */}
+              <div className="flex flex-wrap justify-center gap-2 mb-5">
+                {["✓ 100% Free", "✓ Certificate", "✓ No Experience", "✓ Self-Paced"].map((pill, i) => (
+                  <span
+                    key={i}
+                    className="px-3 py-1.5 rounded-full text-xs font-bold"
+                    style={{ background: "#FDF2F4", border: "1px solid #E8A0A8", color: "#722F37" }}
+                  >
+                    {pill}
+                  </span>
+                ))}
+              </div>
+
+              {/* Registration Form */}
+              <form onSubmit={handleSubmit} className="space-y-4">
+                <div className="grid grid-cols-2 gap-3">
+                  <div>
+                    <label className="block text-sm font-semibold mb-1.5" style={{ color: "#1F2432" }}>First Name</label>
                     <input
                       type="text"
                       required
                       value={formData.firstName}
                       onChange={(e) => setFormData({ ...formData, firstName: e.target.value })}
-                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-burgundy-500 focus:border-burgundy-500"
+                      className="w-full px-4 py-3 rounded-lg border transition-all focus:outline-none"
+                      style={{ borderColor: "#D1D5DB" }}
                       placeholder="Sarah"
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
-                      Last Name
-                    </label>
+                    <label className="block text-sm font-semibold mb-1.5" style={{ color: "#1F2432" }}>Last Name</label>
                     <input
                       type="text"
                       required
                       value={formData.lastName}
                       onChange={(e) => setFormData({ ...formData, lastName: e.target.value })}
-                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-burgundy-500 focus:border-burgundy-500"
+                      className="w-full px-4 py-3 rounded-lg border transition-all focus:outline-none"
+                      style={{ borderColor: "#D1D5DB" }}
                       placeholder="Johnson"
                     />
                   </div>
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Email Address
-                  </label>
-                  <div className="relative">
-                    <input
-                      type="email"
-                      required
-                      value={formData.email}
-                      onChange={handleEmailChange}
-                      className={`w-full px-4 py-3 pr-10 border rounded-lg focus:ring-2 focus:ring-burgundy-500 focus:border-burgundy-500 ${
-                        emailStatus === "valid"
-                          ? "border-green-500 bg-green-50"
-                          : emailStatus === "invalid"
-                            ? "border-red-500 bg-red-50"
-                            : "border-gray-300"
-                      }`}
-                      placeholder="sarah@example.com"
-                    />
-                    {/* Status indicator */}
-                    <div className="absolute right-3 top-1/2 -translate-y-1/2">
-                      {emailStatus === "checking" && (
-                        <svg className="w-5 h-5 text-gray-400 animate-spin" fill="none" viewBox="0 0 24 24">
-                          <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
-                          <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
-                        </svg>
-                      )}
-                      {emailStatus === "valid" && (
-                        <svg className="w-5 h-5 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                        </svg>
-                      )}
-                      {emailStatus === "invalid" && (
-                        <svg className="w-5 h-5 text-red-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                        </svg>
-                      )}
-                    </div>
-                  </div>
+                  <label className="block text-sm font-semibold mb-1.5" style={{ color: "#1F2432" }}>Email Address</label>
+                  <input
+                    type="email"
+                    required
+                    value={formData.email}
+                    onChange={handleEmailChange}
+                    className={`w-full px-4 py-3 rounded-lg border transition-all focus:outline-none ${
+                      emailStatus === "valid" ? "border-green-500 bg-green-50" :
+                      emailStatus === "invalid" ? "border-red-500 bg-red-50" : ""
+                    }`}
+                    style={{ borderColor: emailStatus === "idle" ? "#D1D5DB" : undefined }}
+                    placeholder="sarah@example.com"
+                  />
 
-                  {/* Email validation feedback */}
+                  {/* Email Status */}
                   {emailStatus === "checking" && (
-                    <p className="text-sm text-gray-500 mt-1">Verifying email...</p>
+                    <p className="text-sm mt-1" style={{ color: "#6B6E76" }}>Verifying email...</p>
                   )}
                   {emailStatus === "valid" && (
-                    <p className="text-sm text-green-600 mt-1">Email verified!</p>
+                    <p className="text-sm mt-1 text-green-600">Email verified!</p>
                   )}
                   {emailStatus === "invalid" && (
                     <div className="mt-2">
                       <p className="text-sm text-red-600">{emailError}</p>
                       {suggestedEmail && (
-                        <p className="text-sm text-gray-700 mt-1">
+                        <p className="text-sm mt-1" style={{ color: "#1F2432" }}>
                           Did you mean:{" "}
                           <button
                             type="button"
                             onClick={useSuggestedEmail}
-                            className="text-burgundy-600 font-semibold hover:underline"
+                            className="font-semibold hover:underline"
+                            style={{ color: "#722F37" }}
                           >
                             {suggestedEmail}
                           </button>
@@ -464,7 +596,7 @@ export default function FreeMiniDiplomaPage() {
                 </div>
 
                 {error && (
-                  <div className="bg-red-50 text-red-600 text-sm p-3 rounded-lg">
+                  <div className="rounded-lg p-3 text-sm" style={{ background: "#FFF5F5", color: "#D94B4B" }}>
                     {error}
                   </div>
                 )}
@@ -472,11 +604,12 @@ export default function FreeMiniDiplomaPage() {
                 <button
                   type="submit"
                   disabled={loading || loggingIn || emailStatus === "invalid" || emailStatus === "checking"}
-                  className={`w-full py-4 px-6 rounded-lg font-semibold text-lg transition-colors ${
-                    loading || loggingIn || emailStatus === "invalid" || emailStatus === "checking"
-                      ? "bg-gray-300 text-gray-500 cursor-not-allowed"
-                      : "bg-burgundy-600 text-white hover:bg-burgundy-700"
-                  }`}
+                  className="w-full py-4 rounded-xl font-bold text-lg text-white transition-all disabled:opacity-50 disabled:cursor-not-allowed hover:shadow-lg hover:-translate-y-0.5"
+                  style={{
+                    background: loading || loggingIn || emailStatus === "invalid" || emailStatus === "checking"
+                      ? "#D1D5DB"
+                      : "linear-gradient(135deg, #722F37, #5C262D)"
+                  }}
                 >
                   {loggingIn
                     ? "Logging you in..."
@@ -487,123 +620,20 @@ export default function FreeMiniDiplomaPage() {
                         : "Get Free Instant Access"}
                 </button>
 
-                <p className="text-xs text-gray-500 text-center">
+                <p className="text-center text-xs" style={{ color: "#6B6E76" }}>
                   By signing up, you agree to our Terms of Service and Privacy Policy.
                   We&apos;ll also send you helpful emails about functional medicine.
                 </p>
               </form>
-
-              <div className="mt-6 pt-6 border-t border-gray-200">
-                <p className="text-center text-sm text-gray-600">
-                  Already have an account?{" "}
-                  <Link href="/login" className="text-burgundy-600 font-semibold hover:underline">
-                    Log in here
-                  </Link>
-                </p>
-              </div>
-            </div>
-
-            {/* Certificate Preview Card */}
-            <div className="mt-6 bg-gradient-to-br from-burgundy-50 to-amber-50 rounded-xl p-5 border border-burgundy-100">
-              <div className="flex items-center gap-4">
-                <div className="w-16 h-16 bg-white rounded-lg shadow-md flex items-center justify-center border border-amber-200">
-                  <svg className="w-8 h-8 text-amber-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z" />
-                  </svg>
-                </div>
-                <div>
-                  <p className="font-bold text-gray-900">Earn Your Certificate</p>
-                  <p className="text-sm text-gray-600">Pass the final exam and receive your official Mini Diploma certificate from AccrediPro Academy.</p>
-                </div>
-              </div>
             </div>
           </div>
-        </div>
-      </div>
+        </section>
 
-      {/* Who This Is For Section */}
-      <div className="bg-white py-12 md:py-16">
-        <div className="max-w-4xl mx-auto px-4">
-          <h2 className="text-2xl md:text-3xl font-bold text-center text-gray-900 mb-8">
-            This Training Is For You If...
-          </h2>
-          <div className="grid md:grid-cols-2 gap-6">
-            <div className="flex items-start gap-3">
-              <svg className="w-6 h-6 text-green-600 flex-shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-              </svg>
-              <p className="text-gray-700">You&apos;re a nurse, healthcare worker, or wellness professional feeling burned out by the conventional system</p>
-            </div>
-            <div className="flex items-start gap-3">
-              <svg className="w-6 h-6 text-green-600 flex-shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-              </svg>
-              <p className="text-gray-700">You believe there&apos;s more to health than just managing symptoms with medications</p>
-            </div>
-            <div className="flex items-start gap-3">
-              <svg className="w-6 h-6 text-green-600 flex-shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-              </svg>
-              <p className="text-gray-700">You want to explore a career helping people heal at the root cause level</p>
-            </div>
-            <div className="flex items-start gap-3">
-              <svg className="w-6 h-6 text-green-600 flex-shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-              </svg>
-              <p className="text-gray-700">You&apos;re curious about Functional Medicine but don&apos;t know where to start</p>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* Trust Badges */}
-      <div className="bg-gray-50 py-8 md:py-12">
-        <div className="max-w-6xl mx-auto px-4">
-          <div className="flex flex-wrap justify-center items-center gap-6 md:gap-8 text-gray-500">
-            <div className="flex items-center gap-2">
-              <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-                <path fillRule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clipRule="evenodd" />
-              </svg>
-              <span className="text-sm font-medium">Secure & Private</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-                <path d="M2.003 5.884L10 9.882l7.997-3.998A2 2 0 0016 4H4a2 2 0 00-1.997 1.884z" />
-                <path d="M18 8.118l-8 4-8-4V14a2 2 0 002 2h12a2 2 0 002-2V8.118z" />
-              </svg>
-              <span className="text-sm font-medium">No Spam, Ever</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-                <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
-              </svg>
-              <span className="text-sm font-medium">100% Free</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-                <path d="M10 12a2 2 0 100-4 2 2 0 000 4z" />
-                <path fillRule="evenodd" d="M.458 10C1.732 5.943 5.522 3 10 3s8.268 2.943 9.542 7c-1.274 4.057-5.064 7-9.542 7S1.732 14.057.458 10zM14 10a4 4 0 11-8 0 4 4 0 018 0z" clipRule="evenodd" />
-              </svg>
-              <span className="text-sm font-medium">Instant Access</span>
-            </div>
-          </div>
-
-          {/* Testimonial Quote */}
-          <div className="mt-8 max-w-2xl mx-auto text-center">
-            <blockquote className="text-gray-600 italic text-lg">
-              &ldquo;After 12 years as an ICU nurse, I was completely burned out. This mini diploma showed me there&apos;s another way — and now I help people actually heal, not just survive.&rdquo;
-            </blockquote>
-            <p className="mt-3 text-sm text-gray-500">— Sarah, Former ICU Nurse, Now Functional Medicine Practitioner</p>
-          </div>
-        </div>
-      </div>
-
-      {/* Footer */}
-      <div className="bg-white py-6 border-t border-gray-200">
-        <div className="max-w-6xl mx-auto px-4 text-center text-sm text-gray-500">
-          <p>&copy; {new Date().getFullYear()} AccrediPro Academy. All rights reserved.</p>
-        </div>
-      </div>
+        {/* Footer */}
+        <p className="text-center text-sm mt-12 pt-8 border-t" style={{ color: "#9A9EA6", borderColor: "#ECE8E2" }}>
+          © 2025 AccrediPro Academy • Functional Medicine Mini Diploma • Questions? Email info@coach.accredipro.academy
+        </p>
+      </main>
     </div>
   );
 }
