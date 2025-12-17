@@ -41,7 +41,14 @@ async function getAdminStats() {
   const twoWeeksAgo = new Date(now.getTime() - 14 * 24 * 60 * 60 * 1000);
 
   // Base filter for real users (excludes fake profiles and null emails)
-  const realUserFilter = { email: { not: null }, isFakeProfile: false };
+  // Using OR to handle case where isFakeProfile column might not exist yet on some deployments
+  const realUserFilter = {
+    email: { not: null },
+    OR: [
+      { isFakeProfile: false },
+      { isFakeProfile: null }
+    ]
+  };
 
   const [
     totalUsers,
