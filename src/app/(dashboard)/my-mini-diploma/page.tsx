@@ -35,13 +35,17 @@ export default async function MyMiniDiplomaPage() {
     }
 
     // Find the mini diploma course for this category
+    // Handle variants like "functional-medicine-general" -> search for "functional-medicine"
+    const baseCategory = user.miniDiplomaCategory?.replace(/-general$/, '').replace(/-clinician$/, '') || "";
+
     const miniDiplomaCourse = await prisma.course.findFirst({
         where: {
             certificateType: "MINI_DIPLOMA",
             isPublished: true,
             OR: [
-                { slug: { contains: user.miniDiplomaCategory || "" } },
-                { category: { slug: user.miniDiplomaCategory || "" } },
+                { slug: { contains: baseCategory } },
+                { slug: { contains: "mini-diploma" } },
+                { category: { slug: baseCategory } },
             ],
         },
         include: {

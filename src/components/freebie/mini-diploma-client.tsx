@@ -47,6 +47,8 @@ interface MiniDiplomaClientProps {
 
 const categoryLabels: Record<string, string> = {
     "functional-medicine": "Functional Medicine",
+    "functional-medicine-general": "Functional Medicine",
+    "functional-medicine-clinician": "Functional Medicine",
     "gut-health": "Gut Health",
     "autism": "Autism & Neurodevelopment",
     "hormones": "Women's Hormones",
@@ -260,32 +262,29 @@ export function MiniDiplomaClient({
                                 return (
                                     <div
                                         key={module.id}
-                                        className={`bg-white rounded-xl border-2 overflow-hidden transition-all ${
-                                            isCurrentModule
+                                        className={`bg-white rounded-xl border-2 overflow-hidden transition-all ${isCurrentModule
                                                 ? 'border-burgundy-200 shadow-lg shadow-burgundy-100'
                                                 : moduleComplete
                                                     ? 'border-green-200'
                                                     : 'border-gray-100'
-                                        }`}
+                                            }`}
                                     >
                                         <div className="p-5 sm:p-6">
                                             <div className="flex items-start gap-4">
                                                 {/* Module Number/Status */}
-                                                <div className={`w-12 h-12 rounded-xl flex items-center justify-center flex-shrink-0 ${
-                                                    moduleComplete
+                                                <div className={`w-12 h-12 rounded-xl flex items-center justify-center flex-shrink-0 ${moduleComplete
                                                         ? 'bg-green-100'
                                                         : isCurrentModule
                                                             ? 'bg-burgundy-100'
                                                             : 'bg-gray-100'
-                                                }`}>
+                                                    }`}>
                                                     {moduleComplete ? (
                                                         <CheckCircle2 className="w-6 h-6 text-green-600" />
                                                     ) : isLocked && moduleIndex > 0 ? (
                                                         <Lock className="w-5 h-5 text-gray-400" />
                                                     ) : (
-                                                        <span className={`text-lg font-bold ${
-                                                            isCurrentModule ? 'text-burgundy-600' : 'text-gray-400'
-                                                        }`}>
+                                                        <span className={`text-lg font-bold ${isCurrentModule ? 'text-burgundy-600' : 'text-gray-400'
+                                                            }`}>
                                                             {moduleIndex}
                                                         </span>
                                                     )}
@@ -295,9 +294,8 @@ export function MiniDiplomaClient({
                                                 <div className="flex-1 min-w-0">
                                                     <div className="flex items-start justify-between gap-4">
                                                         <div>
-                                                            <h3 className={`font-semibold text-lg ${
-                                                                moduleComplete ? 'text-green-700' : 'text-gray-900'
-                                                            }`}>
+                                                            <h3 className={`font-semibold text-lg ${moduleComplete ? 'text-green-700' : 'text-gray-900'
+                                                                }`}>
                                                                 {module.title}
                                                             </h3>
                                                             <p className="text-sm text-gray-500 mt-0.5">
@@ -327,13 +325,12 @@ export function MiniDiplomaClient({
                                                                 <Link
                                                                     key={lesson.id}
                                                                     href={`/learning/${course.slug}/${lesson.id}`}
-                                                                    className={`flex items-center gap-3 p-3 rounded-lg transition-all group ${
-                                                                        isCompleted
+                                                                    className={`flex items-center gap-3 p-3 rounded-lg transition-all group ${isCompleted
                                                                             ? 'bg-green-50 hover:bg-green-100'
                                                                             : isCurrent
                                                                                 ? 'bg-burgundy-50 hover:bg-burgundy-100 ring-2 ring-burgundy-200'
                                                                                 : 'bg-gray-50 hover:bg-gray-100'
-                                                                    }`}
+                                                                        }`}
                                                                 >
                                                                     {isCompleted ? (
                                                                         <CheckCircle2 className="w-5 h-5 text-green-600 flex-shrink-0" />
@@ -342,22 +339,20 @@ export function MiniDiplomaClient({
                                                                     ) : (
                                                                         <FileText className="w-5 h-5 text-gray-400 flex-shrink-0" />
                                                                     )}
-                                                                    <span className={`text-sm flex-1 ${
-                                                                        isCompleted
+                                                                    <span className={`text-sm flex-1 ${isCompleted
                                                                             ? 'text-green-700'
                                                                             : isCurrent
                                                                                 ? 'text-burgundy-700 font-medium'
                                                                                 : 'text-gray-600'
-                                                                    }`}>
+                                                                        }`}>
                                                                         {lesson.title}
                                                                     </span>
-                                                                    <ChevronRight className={`w-4 h-4 transition-transform group-hover:translate-x-1 ${
-                                                                        isCompleted
+                                                                    <ChevronRight className={`w-4 h-4 transition-transform group-hover:translate-x-1 ${isCompleted
                                                                             ? 'text-green-400'
                                                                             : isCurrent
                                                                                 ? 'text-burgundy-400'
                                                                                 : 'text-gray-300'
-                                                                    }`} />
+                                                                        }`} />
                                                                 </Link>
                                                             );
                                                         })}
