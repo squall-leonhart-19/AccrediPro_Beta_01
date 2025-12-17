@@ -139,6 +139,7 @@ export function StartHereClient({ user, userId, enrollments, tourComplete: initi
     };
 
     // Calculate checklist progress - Reordered for best user experience
+    // SIMPLIFIED: Removed personalization questions per user request
     const checklist: {
         id: string;
         label: string;
@@ -151,79 +152,69 @@ export function StartHereClient({ user, userId, enrollments, tourComplete: initi
         emoji: string;
         reward?: string;
     }[] = [
-        {
-            id: "tutorial",
-            label: "Take the Platform Tour",
-            description: "Get a quick walkthrough of all the amazing features",
-            completed: tourCompleted,
-            link: null,
-            action: tourCompleted ? null : startTour,
-            icon: Compass,
-            color: "purple",
-            emoji: "🗺️",
-            reward: "+10 XP",
-        },
-        {
-            id: "questions",
-            label: "Personalize Your Experience",
-            description: "Answer a few questions so we can customize your journey",
-            completed: questionsCompleted,
-            link: null,
-            action: () => setShowQuestionsWizard(true),
-            icon: Wand2,
-            color: "pink",
-            emoji: "✨",
-            reward: "+15 XP",
-        },
-        {
-            id: "profile",
-            label: "Upload Your Profile Photo",
-            description: "Let your coach and community see the real you!",
-            completed: user?.hasProfilePhoto || false,
-            link: "/profile",
-            action: null,
-            icon: Camera,
-            color: "blue",
-            emoji: "📸",
-            reward: "+10 XP",
-        },
-        {
-            id: "coach",
-            label: "Say Hi to Your Dedicated Coach",
-            description: "Introduce yourself and start building your mentorship",
-            completed: false,
-            link: "/messages",
-            action: null,
-            icon: UserCheck,
-            color: "emerald",
-            emoji: "👋",
-            reward: "+20 XP",
-        },
-        {
-            id: "community",
-            label: "Share Your Story with the Community",
-            description: "Present yourself and connect with fellow students",
-            completed: false,
-            link: "/community",
-            action: null,
-            icon: Users,
-            color: "orange",
-            emoji: "💬",
-            reward: "+15 XP",
-        },
-        {
-            id: "explore",
-            label: "Explore the Course Catalog",
-            description: "Discover all the certifications available to you",
-            completed: false,
-            link: "/courses",
-            action: null,
-            icon: Library,
-            color: "burgundy",
-            emoji: "📚",
-            reward: "+10 XP",
-        },
-    ];
+            {
+                id: "tutorial",
+                label: "Take the Platform Tour",
+                description: "Get a quick walkthrough of all the amazing features",
+                completed: tourCompleted,
+                link: null,
+                action: tourCompleted ? null : startTour,
+                icon: Compass,
+                color: "purple",
+                emoji: "🗺️",
+                reward: "+10 XP",
+            },
+            {
+                id: "profile",
+                label: "Upload Your Profile Photo",
+                description: "Let your coach and community see the real you!",
+                completed: user?.hasProfilePhoto || false,
+                link: "/profile",
+                action: null,
+                icon: Camera,
+                color: "blue",
+                emoji: "📸",
+                reward: "+10 XP",
+            },
+            {
+                id: "coach",
+                label: "Say Hi to Your Dedicated Coach",
+                description: "Meet Sarah - she's here to guide your journey!",
+                completed: false,
+                // Opens chat with Sarah M directly
+                link: "/messages?to=sarah",
+                action: null,
+                icon: UserCheck,
+                color: "emerald",
+                emoji: "👋",
+                reward: "+20 XP",
+            },
+            {
+                id: "community",
+                label: "Share Your Story with the Community",
+                description: "Introduce yourself to fellow health advocates",
+                completed: false,
+                // Links to specific community introduction page
+                link: "/community/cmj94foua0000736vfwdlheir",
+                action: null,
+                icon: Users,
+                color: "orange",
+                emoji: "💬",
+                reward: "+15 XP",
+            },
+            {
+                id: "explore",
+                label: "Start Your First Lesson",
+                description: "Begin your Mini Diploma journey today!",
+                completed: false,
+                link: "/my-mini-diploma",
+                action: null,
+                icon: Play,
+                color: "burgundy",
+                emoji: "🎓",
+                reward: "+10 XP",
+            },
+        ];
 
     const completedCount = checklist.filter(item => item.completed).length;
     const progress = (completedCount / checklist.length) * 100;
@@ -312,32 +303,29 @@ export function StartHereClient({ user, userId, enrollments, tourComplete: initi
                                         const isNextStep = !item.completed && checklist.slice(0, index).every(i => i.completed);
 
                                         const content = (
-                                            <div className={`group relative flex items-center gap-4 p-4 rounded-2xl border-2 transition-all duration-200 ${
-                                                item.completed
+                                            <div className={`group relative flex items-center gap-4 p-4 rounded-2xl border-2 transition-all duration-200 ${item.completed
                                                     ? "bg-gradient-to-r from-green-50 to-emerald-50 border-green-200"
                                                     : isNextStep
                                                         ? "bg-gradient-to-r from-gold-50 to-amber-50 border-gold-300 shadow-md shadow-gold-100 hover:shadow-lg hover:shadow-gold-200 cursor-pointer"
                                                         : "bg-gray-50 border-gray-200 hover:border-burgundy-200 hover:bg-burgundy-50/50 cursor-pointer"
-                                            }`}>
+                                                }`}>
                                                 {/* Step indicator */}
-                                                <div className={`relative w-14 h-14 rounded-xl flex items-center justify-center flex-shrink-0 transition-all ${
-                                                    item.completed
+                                                <div className={`relative w-14 h-14 rounded-xl flex items-center justify-center flex-shrink-0 transition-all ${item.completed
                                                         ? "bg-gradient-to-br from-green-500 to-emerald-600"
                                                         : isNextStep
                                                             ? "bg-gradient-to-br from-gold-400 to-amber-500 animate-pulse"
                                                             : `bg-${item.color}-100`
-                                                }`}>
+                                                    }`}>
                                                     {item.completed ? (
                                                         <CheckCircle className="w-7 h-7 text-white" />
                                                     ) : (
                                                         <IconComponent className={`w-6 h-6 ${isNextStep ? "text-white" : `text-${item.color}-600`}`} />
                                                     )}
                                                     {/* Step number badge */}
-                                                    <div className={`absolute -top-1 -right-1 w-5 h-5 rounded-full text-xs font-bold flex items-center justify-center ${
-                                                        item.completed
+                                                    <div className={`absolute -top-1 -right-1 w-5 h-5 rounded-full text-xs font-bold flex items-center justify-center ${item.completed
                                                             ? "bg-green-600 text-white"
                                                             : "bg-white shadow border border-gray-200 text-gray-600"
-                                                    }`}>
+                                                        }`}>
                                                         {item.completed ? "✓" : stepNumber}
                                                     </div>
                                                 </div>
@@ -346,15 +334,13 @@ export function StartHereClient({ user, userId, enrollments, tourComplete: initi
                                                 <div className="flex-1 min-w-0">
                                                     <div className="flex items-center gap-2">
                                                         <span className="text-lg">{item.emoji}</span>
-                                                        <h3 className={`font-semibold text-base ${
-                                                            item.completed ? "text-green-700" : "text-gray-900"
-                                                        }`}>
+                                                        <h3 className={`font-semibold text-base ${item.completed ? "text-green-700" : "text-gray-900"
+                                                            }`}>
                                                             {item.label}
                                                         </h3>
                                                     </div>
-                                                    <p className={`text-sm mt-0.5 ${
-                                                        item.completed ? "text-green-600" : "text-gray-500"
-                                                    }`}>
+                                                    <p className={`text-sm mt-0.5 ${item.completed ? "text-green-600" : "text-gray-500"
+                                                        }`}>
                                                         {item.description}
                                                     </p>
                                                 </div>
@@ -368,17 +354,15 @@ export function StartHereClient({ user, userId, enrollments, tourComplete: initi
                                                     ) : (
                                                         <>
                                                             {item.reward && (
-                                                                <Badge className={`${
-                                                                    isNextStep
+                                                                <Badge className={`${isNextStep
                                                                         ? "bg-gold-100 text-gold-700 border-gold-300"
                                                                         : "bg-gray-100 text-gray-600 border-gray-200"
-                                                                }`}>
+                                                                    }`}>
                                                                     {item.reward}
                                                                 </Badge>
                                                             )}
-                                                            <ArrowRight className={`w-5 h-5 transition-transform group-hover:translate-x-1 ${
-                                                                isNextStep ? "text-gold-600" : "text-gray-400"
-                                                            }`} />
+                                                            <ArrowRight className={`w-5 h-5 transition-transform group-hover:translate-x-1 ${isNextStep ? "text-gold-600" : "text-gray-400"
+                                                                }`} />
                                                         </>
                                                     )}
                                                 </div>
