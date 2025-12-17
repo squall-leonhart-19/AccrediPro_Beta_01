@@ -462,535 +462,532 @@ export default function EbooksStorePage() {
     };
 
     return (
-        <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-burgundy-50/30">
-            <div className="px-4 sm:px-6 lg:px-8 py-8">
+        <div className="space-y-6 animate-fade-in">
+            {/* Hero Header */}
+            <div className="relative mb-10 bg-gradient-to-r from-burgundy-700 via-burgundy-600 to-burgundy-800 rounded-3xl p-8 md:p-12 text-white overflow-hidden">
+                <div className="absolute inset-0 opacity-10">
+                    <div className="absolute top-0 right-0 w-96 h-96 bg-white rounded-full blur-3xl -translate-y-1/2 translate-x-1/2" />
+                    <div className="absolute bottom-0 left-0 w-64 h-64 bg-burgundy-300 rounded-full blur-3xl translate-y-1/2 -translate-x-1/4" />
+                </div>
 
-                {/* Hero Header */}
-                <div className="relative mb-10 bg-gradient-to-r from-burgundy-700 via-burgundy-600 to-burgundy-800 rounded-3xl p-8 md:p-12 text-white overflow-hidden">
-                    <div className="absolute inset-0 opacity-10">
-                        <div className="absolute top-0 right-0 w-96 h-96 bg-white rounded-full blur-3xl -translate-y-1/2 translate-x-1/2" />
-                        <div className="absolute bottom-0 left-0 w-64 h-64 bg-burgundy-300 rounded-full blur-3xl translate-y-1/2 -translate-x-1/4" />
-                    </div>
-
-                    <div className="relative z-10">
-                        <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-6">
-                            <div className="flex-1">
-                                <div className="flex items-center gap-3 mb-4">
-                                    <div className="w-14 h-14 bg-white/20 backdrop-blur-sm rounded-2xl flex items-center justify-center">
-                                        <BookOpen className="w-7 h-7 text-white" />
-                                    </div>
-                                    <Badge className="bg-gold-400 text-burgundy-900 border-0 font-semibold">Functional Medicine</Badge>
+                <div className="relative z-10">
+                    <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-6">
+                        <div className="flex-1">
+                            <div className="flex items-center gap-3 mb-4">
+                                <div className="w-14 h-14 bg-white/20 backdrop-blur-sm rounded-2xl flex items-center justify-center">
+                                    <BookOpen className="w-7 h-7 text-white" />
                                 </div>
-
-                                <h1 className="text-3xl md:text-4xl font-bold mb-4">
-                                    Professional AccrediPro E-Book & Resources Library
-                                </h1>
-
-                                <p className="text-lg text-burgundy-100 max-w-2xl mb-6">
-                                    Find everything here: expert guides, protocols, and resources designed for practitioners.
-                                    <span className="text-gold-300 font-medium"> Continue from where you left off!</span>
-                                </p>
-
-                                {isGraduate && (
-                                    <div className="inline-flex items-center gap-2 bg-gold-400/20 text-gold-200 px-4 py-2 rounded-full text-sm mb-4">
-                                        <GraduationCap className="w-4 h-4" />
-                                        <span className="font-medium">Graduate Pricing Unlocked!</span>
-                                        <span className="text-gold-300">Save $10-20 on every ebook</span>
-                                    </div>
-                                )}
-
-                                <div className="flex flex-wrap gap-4 text-sm text-white/80">
-                                    <span><FileText className="w-4 h-4 inline mr-1" /> 9 E-Books</span>
-                                    <span><Package className="w-4 h-4 inline mr-1" /> 3 Bundles</span>
-                                    <span><Star className="w-4 h-4 inline mr-1 text-gold-400" /> 4.9 Avg Rating</span>
-                                </div>
+                                <Badge className="bg-gold-400 text-burgundy-900 border-0 font-semibold">Functional Medicine</Badge>
                             </div>
 
-                            <div className="flex flex-col gap-3">
-                                <div className="bg-white/10 backdrop-blur-sm rounded-xl p-4 border border-white/20">
-                                    <p className="text-sm font-medium text-white mb-2">Already have e-books?</p>
-                                    <a href="/my-library">
-                                        <Button className="w-full bg-white text-burgundy-700 hover:bg-burgundy-50">
-                                            <Library className="w-4 h-4 mr-2" />
-                                            Open My Library
-                                        </Button>
-                                    </a>
+                            <h1 className="text-3xl md:text-4xl font-bold mb-4">
+                                Professional AccrediPro E-Book & Resources Library
+                            </h1>
+
+                            <p className="text-lg text-burgundy-100 max-w-2xl mb-6">
+                                Find everything here: expert guides, protocols, and resources designed for practitioners.
+                                <span className="text-gold-300 font-medium"> Continue from where you left off!</span>
+                            </p>
+
+                            {isGraduate && (
+                                <div className="inline-flex items-center gap-2 bg-gold-400/20 text-gold-200 px-4 py-2 rounded-full text-sm mb-4">
+                                    <GraduationCap className="w-4 h-4" />
+                                    <span className="font-medium">Graduate Pricing Unlocked!</span>
+                                    <span className="text-gold-300">Save $10-20 on every ebook</span>
                                 </div>
+                            )}
+
+                            <div className="flex flex-wrap gap-4 text-sm text-white/80">
+                                <span><FileText className="w-4 h-4 inline mr-1" /> 9 E-Books</span>
+                                <span><Package className="w-4 h-4 inline mr-1" /> 3 Bundles</span>
+                                <span><Star className="w-4 h-4 inline mr-1 text-gold-400" /> 4.9 Avg Rating</span>
+                            </div>
+                        </div>
+
+                        <div className="flex flex-col gap-3">
+                            <div className="bg-white/10 backdrop-blur-sm rounded-xl p-4 border border-white/20">
+                                <p className="text-sm font-medium text-white mb-2">Already have e-books?</p>
+                                <a href="/my-library">
+                                    <Button className="w-full bg-white text-burgundy-700 hover:bg-burgundy-50">
+                                        <Library className="w-4 h-4 mr-2" />
+                                        Open My Library
+                                    </Button>
+                                </a>
                             </div>
                         </div>
                     </div>
                 </div>
+            </div>
 
-                {/* Tabs */}
-                <div className="flex gap-2 mb-6">
-                    <button
-                        onClick={() => setActiveTab("ebooks")}
-                        className={`px-6 py-3 rounded-xl font-medium transition-all ${activeTab === "ebooks" ? "bg-burgundy-600 text-white" : "bg-white text-gray-600 hover:bg-gray-50 border border-gray-200"}`}
-                    >
-                        <BookOpen className="w-4 h-4 inline mr-2" /> E-Books ({allEbooks.length})
-                    </button>
-                    <button
-                        onClick={() => setActiveTab("bundles")}
-                        className={`px-6 py-3 rounded-xl font-medium transition-all flex items-center gap-2 ${activeTab === "bundles" ? "bg-burgundy-600 text-white" : "bg-white text-gray-600 hover:bg-gray-50 border border-gray-200"}`}
-                    >
-                        <Package className="w-4 h-4" /> Bundles ({BUNDLES.length})
-                        <Badge className="bg-red-100 text-red-700 border-0 text-xs">Save up to $132</Badge>
-                    </button>
-                </div>
+            {/* Tabs */}
+            <div className="flex gap-2 mb-6">
+                <button
+                    onClick={() => setActiveTab("ebooks")}
+                    className={`px-6 py-3 rounded-xl font-medium transition-all ${activeTab === "ebooks" ? "bg-burgundy-600 text-white" : "bg-white text-gray-600 hover:bg-gray-50 border border-gray-200"}`}
+                >
+                    <BookOpen className="w-4 h-4 inline mr-2" /> E-Books ({allEbooks.length})
+                </button>
+                <button
+                    onClick={() => setActiveTab("bundles")}
+                    className={`px-6 py-3 rounded-xl font-medium transition-all flex items-center gap-2 ${activeTab === "bundles" ? "bg-burgundy-600 text-white" : "bg-white text-gray-600 hover:bg-gray-50 border border-gray-200"}`}
+                >
+                    <Package className="w-4 h-4" /> Bundles ({BUNDLES.length})
+                    <Badge className="bg-red-100 text-red-700 border-0 text-xs">Save up to $132</Badge>
+                </button>
+            </div>
 
-                {/* E-Books Tab */}
-                {activeTab === "ebooks" && (
-                    <>
-                        {/* Categories */}
-                        <div className="flex gap-2 mb-6 overflow-x-auto pb-2">
-                            {CATEGORIES.map((cat) => (
-                                <button
-                                    key={cat.id}
-                                    onClick={() => setSelectedCategory(cat.id)}
-                                    className={`flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium whitespace-nowrap transition-all ${selectedCategory === cat.id ? "bg-burgundy-100 text-burgundy-700 border-2 border-burgundy-300" : "bg-white text-gray-600 border border-gray-200 hover:bg-gray-50"}`}
-                                >
-                                    <span>{cat.icon}</span> {cat.label}
-                                </button>
-                            ))}
-                        </div>
+            {/* E-Books Tab */}
+            {activeTab === "ebooks" && (
+                <>
+                    {/* Categories */}
+                    <div className="flex gap-2 mb-6 overflow-x-auto pb-2">
+                        {CATEGORIES.map((cat) => (
+                            <button
+                                key={cat.id}
+                                onClick={() => setSelectedCategory(cat.id)}
+                                className={`flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium whitespace-nowrap transition-all ${selectedCategory === cat.id ? "bg-burgundy-100 text-burgundy-700 border-2 border-burgundy-300" : "bg-white text-gray-600 border border-gray-200 hover:bg-gray-50"}`}
+                            >
+                                <span>{cat.icon}</span> {cat.label}
+                            </button>
+                        ))}
+                    </div>
 
-                        {/* Search */}
-                        <div className="relative mb-8">
-                            <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
-                            <Input
-                                placeholder="Search e-books by title or topic..."
-                                value={searchQuery}
-                                onChange={(e) => setSearchQuery(e.target.value)}
-                                className="pl-12 py-5 rounded-xl border-gray-200"
-                            />
-                        </div>
+                    {/* Search */}
+                    <div className="relative mb-8">
+                        <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+                        <Input
+                            placeholder="Search e-books by title or topic..."
+                            value={searchQuery}
+                            onChange={(e) => setSearchQuery(e.target.value)}
+                            className="pl-12 py-5 rounded-xl border-gray-200"
+                        />
+                    </div>
 
-                        {/* Core Guides Section */}
-                        {coreEbooks.length > 0 && (
-                            <div className="mb-10">
-                                <div className="flex items-center gap-2 mb-4">
-                                    <Award className="w-5 h-5 text-burgundy-600" />
-                                    <h2 className="text-xl font-bold text-gray-900">Core Practitioner Guides</h2>
-                                    <Badge className="bg-burgundy-100 text-burgundy-700 border-0">Foundation</Badge>
-                                </div>
-                                <p className="text-gray-600 mb-4">Essential knowledge every functional medicine practitioner needs. Start here.</p>
-                                <div className="grid md:grid-cols-2 gap-6">
-                                    {coreEbooks.map((ebook) => (
-                                        <div key={ebook.id} className="bg-white rounded-2xl border border-gray-100 overflow-hidden hover:shadow-lg transition-all group">
-                                            <div className="p-6">
-                                                <div className="flex items-start justify-between mb-4">
-                                                    <div className="flex items-center gap-3">
-                                                        <span className="text-4xl">{ebook.icon}</span>
-                                                        <div>
-                                                            {ebook.isBestseller && (
-                                                                <Badge className="bg-burgundy-600 text-white border-0 text-xs mb-1">BESTSELLER</Badge>
-                                                            )}
-                                                            <h3 className="text-lg font-bold text-gray-900 group-hover:text-burgundy-600">{ebook.title}</h3>
-                                                            <p className="text-sm text-burgundy-600">{ebook.subtitle}</p>
-                                                        </div>
-                                                    </div>
-                                                </div>
-
-                                                <p className="text-gray-600 text-sm mb-4">{ebook.description}</p>
-
-                                                <div className="bg-gray-50 rounded-xl p-4 mb-4">
-                                                    <p className="text-xs font-semibold text-gray-500 mb-2">WHAT YOU'LL LEARN:</p>
-                                                    <ul className="space-y-1">
-                                                        {ebook.highlights.slice(0, 3).map((highlight, i) => (
-                                                            <li key={i} className="text-sm text-gray-700 flex items-start gap-2">
-                                                                <CheckCircle className="w-4 h-4 text-burgundy-500 flex-shrink-0 mt-0.5" /> {highlight}
-                                                            </li>
-                                                        ))}
-                                                    </ul>
-                                                </div>
-
-                                                <div className="flex items-center justify-between text-xs text-gray-500 mb-4">
-                                                    <div className="flex items-center">
-                                                        <span><FileText className="w-3 h-3 inline mr-1" /> {ebook.pages} pages</span>
-                                                        <span className="mx-2">•</span>
-                                                        <span><Clock className="w-3 h-3 inline mr-1" /> {ebook.readTime}</span>
-                                                        <span className="mx-2">•</span>
-                                                        <span><Star className="w-3 h-3 inline mr-1 text-yellow-500" /> {ebook.rating} ({ebook.reviewCount})</span>
-                                                    </div>
-                                                    <button
-                                                        onClick={() => setPreviewEbook(ebook)}
-                                                        className="text-burgundy-600 hover:text-burgundy-700 font-medium flex items-center gap-1"
-                                                    >
-                                                        <Eye className="w-3 h-3" /> Preview
-                                                    </button>
-                                                </div>
-
-                                                <div className="flex items-center justify-between">
+                    {/* Core Guides Section */}
+                    {coreEbooks.length > 0 && (
+                        <div className="mb-10">
+                            <div className="flex items-center gap-2 mb-4">
+                                <Award className="w-5 h-5 text-burgundy-600" />
+                                <h2 className="text-xl font-bold text-gray-900">Core Practitioner Guides</h2>
+                                <Badge className="bg-burgundy-100 text-burgundy-700 border-0">Foundation</Badge>
+                            </div>
+                            <p className="text-gray-600 mb-4">Essential knowledge every functional medicine practitioner needs. Start here.</p>
+                            <div className="grid md:grid-cols-2 gap-6">
+                                {coreEbooks.map((ebook) => (
+                                    <div key={ebook.id} className="bg-white rounded-2xl border border-gray-100 overflow-hidden hover:shadow-lg transition-all group">
+                                        <div className="p-6">
+                                            <div className="flex items-start justify-between mb-4">
+                                                <div className="flex items-center gap-3">
+                                                    <span className="text-4xl">{ebook.icon}</span>
                                                     <div>
-                                                        <span className="text-2xl font-bold text-burgundy-700">${getDisplayPrice(ebook)}</span>
-                                                        <span className="text-lg text-gray-400 line-through ml-2">${ebook.compareAtPrice}</span>
-                                                        {isGraduate && (
-                                                            <Badge className="bg-gold-100 text-gold-700 border-0 text-xs ml-2">Graduate Price</Badge>
+                                                        {ebook.isBestseller && (
+                                                            <Badge className="bg-burgundy-600 text-white border-0 text-xs mb-1">BESTSELLER</Badge>
                                                         )}
+                                                        <h3 className="text-lg font-bold text-gray-900 group-hover:text-burgundy-600">{ebook.title}</h3>
+                                                        <p className="text-sm text-burgundy-600">{ebook.subtitle}</p>
                                                     </div>
-                                                    <Button className="bg-burgundy-600 hover:bg-burgundy-700" onClick={() => handlePurchase(ebook, "ebook")}>
-                                                        <ShoppingCart className="w-4 h-4 mr-2" /> Buy Now
-                                                    </Button>
                                                 </div>
                                             </div>
-                                        </div>
-                                    ))}
-                                </div>
-                            </div>
-                        )}
 
-                        {/* Specialty Protocols Section */}
-                        {specialtyEbooks.length > 0 && (
-                            <div className="mb-10">
-                                <div className="flex items-center gap-2 mb-4">
-                                    <Sparkles className="w-5 h-5 text-purple-600" />
-                                    <h2 className="text-xl font-bold text-gray-900">Specialty Protocol Guides</h2>
-                                    <Badge className="bg-purple-100 text-purple-700 border-0">Advanced</Badge>
-                                </div>
-                                <p className="text-gray-600 mb-4">Deep-dive guides for specific conditions. Expand your clinical expertise.</p>
-                                <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-                                    {specialtyEbooks.map((ebook) => (
-                                        <div key={ebook.id} className="bg-white rounded-2xl border border-gray-100 overflow-hidden hover:shadow-lg transition-all group">
-                                            <div className="p-6">
-                                                <div className="flex items-start justify-between mb-3">
-                                                    <span className="text-3xl">{ebook.icon}</span>
-                                                    {ebook.isBestseller && (
-                                                        <Badge className="bg-burgundy-600 text-white border-0 text-xs">BESTSELLER</Badge>
+                                            <p className="text-gray-600 text-sm mb-4">{ebook.description}</p>
+
+                                            <div className="bg-gray-50 rounded-xl p-4 mb-4">
+                                                <p className="text-xs font-semibold text-gray-500 mb-2">WHAT YOU'LL LEARN:</p>
+                                                <ul className="space-y-1">
+                                                    {ebook.highlights.slice(0, 3).map((highlight, i) => (
+                                                        <li key={i} className="text-sm text-gray-700 flex items-start gap-2">
+                                                            <CheckCircle className="w-4 h-4 text-burgundy-500 flex-shrink-0 mt-0.5" /> {highlight}
+                                                        </li>
+                                                    ))}
+                                                </ul>
+                                            </div>
+
+                                            <div className="flex items-center justify-between text-xs text-gray-500 mb-4">
+                                                <div className="flex items-center">
+                                                    <span><FileText className="w-3 h-3 inline mr-1" /> {ebook.pages} pages</span>
+                                                    <span className="mx-2">•</span>
+                                                    <span><Clock className="w-3 h-3 inline mr-1" /> {ebook.readTime}</span>
+                                                    <span className="mx-2">•</span>
+                                                    <span><Star className="w-3 h-3 inline mr-1 text-yellow-500" /> {ebook.rating} ({ebook.reviewCount})</span>
+                                                </div>
+                                                <button
+                                                    onClick={() => setPreviewEbook(ebook)}
+                                                    className="text-burgundy-600 hover:text-burgundy-700 font-medium flex items-center gap-1"
+                                                >
+                                                    <Eye className="w-3 h-3" /> Preview
+                                                </button>
+                                            </div>
+
+                                            <div className="flex items-center justify-between">
+                                                <div>
+                                                    <span className="text-2xl font-bold text-burgundy-700">${getDisplayPrice(ebook)}</span>
+                                                    <span className="text-lg text-gray-400 line-through ml-2">${ebook.compareAtPrice}</span>
+                                                    {isGraduate && (
+                                                        <Badge className="bg-gold-100 text-gold-700 border-0 text-xs ml-2">Graduate Price</Badge>
                                                     )}
                                                 </div>
-
-                                                <h3 className="text-lg font-bold text-gray-900 mb-1 group-hover:text-burgundy-600">{ebook.title}</h3>
-                                                <p className="text-sm text-burgundy-600 mb-3">{ebook.subtitle}</p>
-                                                <p className="text-gray-600 text-sm mb-3 line-clamp-2">{ebook.description}</p>
-
-                                                <div className="flex flex-wrap gap-1 mb-3">
-                                                    {ebook.topics.slice(0, 3).map((topic) => (
-                                                        <Badge key={topic} variant="outline" className="text-xs">{topic}</Badge>
-                                                    ))}
-                                                </div>
-
-                                                <div className="flex items-center justify-between text-xs text-gray-500 mb-4">
-                                                    <div className="flex items-center">
-                                                        <span><FileText className="w-3 h-3 inline mr-1" /> {ebook.pages}p</span>
-                                                        <span className="mx-2">•</span>
-                                                        <span><Star className="w-3 h-3 inline mr-1 text-yellow-500" /> {ebook.rating}</span>
-                                                    </div>
-                                                    <button
-                                                        onClick={() => setPreviewEbook(ebook)}
-                                                        className="text-burgundy-600 hover:text-burgundy-700 font-medium flex items-center gap-1"
-                                                    >
-                                                        <Eye className="w-3 h-3" /> Preview
-                                                    </button>
-                                                </div>
-
-                                                <div className="flex items-center justify-between mb-3">
-                                                    <div>
-                                                        <span className="text-xl font-bold text-burgundy-700">${getDisplayPrice(ebook)}</span>
-                                                        <span className="text-sm text-gray-400 line-through ml-2">${ebook.compareAtPrice}</span>
-                                                    </div>
-                                                </div>
-
-                                                <Button className="w-full bg-burgundy-600 hover:bg-burgundy-700" onClick={() => handlePurchase(ebook, "ebook")}>
+                                                <Button className="bg-burgundy-600 hover:bg-burgundy-700" onClick={() => handlePurchase(ebook, "ebook")}>
                                                     <ShoppingCart className="w-4 h-4 mr-2" /> Buy Now
                                                 </Button>
                                             </div>
                                         </div>
-                                    ))}
-                                </div>
-                            </div>
-                        )}
-
-                        {filteredEbooks.length === 0 && (
-                            <div className="text-center py-12 bg-white rounded-2xl border border-gray-100">
-                                <BookOpen className="w-12 h-12 mx-auto mb-4 text-gray-300" />
-                                <p className="text-gray-500 mb-4">No e-books found matching your search</p>
-                                <Button variant="outline" onClick={() => { setSelectedCategory("all"); setSearchQuery(""); }}>
-                                    View All E-Books
-                                </Button>
-                            </div>
-                        )}
-                    </>
-                )}
-
-                {/* Bundles Tab */}
-                {activeTab === "bundles" && (
-                    <>
-                        {/* Bundle Explanation */}
-                        <div className="bg-gradient-to-r from-purple-50 to-pink-50 rounded-xl p-6 mb-8 border border-purple-100">
-                            <div className="flex items-start gap-4">
-                                <div className="w-12 h-12 bg-purple-100 rounded-xl flex items-center justify-center flex-shrink-0">
-                                    <Gift className="w-6 h-6 text-purple-600" />
-                                </div>
-                                <div>
-                                    <h3 className="font-bold text-gray-900 mb-1">Why Buy a Bundle?</h3>
-                                    <p className="text-gray-600 text-sm">
-                                        Save up to <span className="font-bold text-purple-600">$132</span> compared to buying individually.
-                                        Bundles include complementary guides that work together to build your expertise faster.
-                                    </p>
-                                </div>
+                                    </div>
+                                ))}
                             </div>
                         </div>
+                    )}
 
-                        {/* Best Value Bundle */}
-                        {BUNDLES.filter(b => b.isBestseller).map((bundle) => (
-                            <div key={bundle.id} className="mb-8 bg-gradient-to-r from-burgundy-50 via-burgundy-50/50 to-burgundy-50 rounded-2xl border-2 border-burgundy-300 p-8 relative overflow-hidden">
-                                <div className="absolute top-0 right-0 bg-burgundy-600 text-white px-4 py-1 text-sm font-semibold rounded-bl-xl">
-                                    🏆 BEST VALUE
-                                </div>
-                                <div className="flex flex-col lg:flex-row gap-8">
-                                    <div className="flex-1">
-                                        <div className="flex items-center gap-4 mb-4">
-                                            <span className="text-6xl">{bundle.icon}</span>
-                                            <div>
-                                                <h3 className="text-2xl font-bold text-gray-900">{bundle.title}</h3>
-                                                <p className="text-burgundy-700 font-medium">{bundle.subtitle}</p>
+                    {/* Specialty Protocols Section */}
+                    {specialtyEbooks.length > 0 && (
+                        <div className="mb-10">
+                            <div className="flex items-center gap-2 mb-4">
+                                <Sparkles className="w-5 h-5 text-purple-600" />
+                                <h2 className="text-xl font-bold text-gray-900">Specialty Protocol Guides</h2>
+                                <Badge className="bg-purple-100 text-purple-700 border-0">Advanced</Badge>
+                            </div>
+                            <p className="text-gray-600 mb-4">Deep-dive guides for specific conditions. Expand your clinical expertise.</p>
+                            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                                {specialtyEbooks.map((ebook) => (
+                                    <div key={ebook.id} className="bg-white rounded-2xl border border-gray-100 overflow-hidden hover:shadow-lg transition-all group">
+                                        <div className="p-6">
+                                            <div className="flex items-start justify-between mb-3">
+                                                <span className="text-3xl">{ebook.icon}</span>
+                                                {ebook.isBestseller && (
+                                                    <Badge className="bg-burgundy-600 text-white border-0 text-xs">BESTSELLER</Badge>
+                                                )}
                                             </div>
-                                        </div>
 
-                                        <p className="text-gray-600 mb-6">{bundle.description}</p>
+                                            <h3 className="text-lg font-bold text-gray-900 mb-1 group-hover:text-burgundy-600">{ebook.title}</h3>
+                                            <p className="text-sm text-burgundy-600 mb-3">{ebook.subtitle}</p>
+                                            <p className="text-gray-600 text-sm mb-3 line-clamp-2">{ebook.description}</p>
 
-                                        <div className="bg-white/60 rounded-xl p-5 mb-6">
-                                            <p className="text-sm font-semibold text-gray-500 mb-3">INCLUDES {bundle.includedEbooks.length} E-BOOKS:</p>
-                                            <div className="grid md:grid-cols-2 gap-2">
-                                                {bundle.includedTitles.map((title, i) => (
-                                                    <div key={i} className="flex items-center gap-2 text-sm text-gray-700">
-                                                        <CheckCircle className="w-4 h-4 text-burgundy-500" /> {title}
-                                                    </div>
+                                            <div className="flex flex-wrap gap-1 mb-3">
+                                                {ebook.topics.slice(0, 3).map((topic) => (
+                                                    <Badge key={topic} variant="outline" className="text-xs">{topic}</Badge>
                                                 ))}
                                             </div>
-                                        </div>
 
-                                        <div className="flex items-center gap-2 text-sm text-gray-500">
-                                            <Star className="w-4 h-4 text-yellow-500" />
-                                            <span>{bundle.rating} ({bundle.reviewCount} reviews)</span>
-                                            <span className="mx-2">•</span>
-                                            <Users className="w-4 h-4" />
-                                            <span>{bundle.buyers.toLocaleString()} practitioners purchased</span>
-                                        </div>
-                                    </div>
-
-                                    <div className="lg:w-80 bg-white rounded-xl p-6 shadow-lg">
-                                        <div className="text-center mb-4">
-                                            <div className="mb-2">
-                                                <span className="text-4xl font-bold text-burgundy-700">${getDisplayPrice(bundle)}</span>
-                                                <span className="text-xl text-gray-400 line-through ml-2">${bundle.compareAtPrice}</span>
+                                            <div className="flex items-center justify-between text-xs text-gray-500 mb-4">
+                                                <div className="flex items-center">
+                                                    <span><FileText className="w-3 h-3 inline mr-1" /> {ebook.pages}p</span>
+                                                    <span className="mx-2">•</span>
+                                                    <span><Star className="w-3 h-3 inline mr-1 text-yellow-500" /> {ebook.rating}</span>
+                                                </div>
+                                                <button
+                                                    onClick={() => setPreviewEbook(ebook)}
+                                                    className="text-burgundy-600 hover:text-burgundy-700 font-medium flex items-center gap-1"
+                                                >
+                                                    <Eye className="w-3 h-3" /> Preview
+                                                </button>
                                             </div>
-                                            <Badge className="bg-red-100 text-red-700 border-0">Save ${bundle.savings}</Badge>
-                                            {isGraduate && (
-                                                <Badge className="bg-gold-100 text-gold-700 border-0 ml-2">Graduate Price</Badge>
-                                            )}
-                                        </div>
 
-                                        <Button
-                                            className="w-full bg-burgundy-600 hover:bg-burgundy-700 py-6 text-lg mb-3"
-                                            onClick={() => handlePurchase(bundle, "bundle")}
-                                        >
-                                            <Zap className="w-5 h-5 mr-2" /> Get This Bundle
-                                        </Button>
+                                            <div className="flex items-center justify-between mb-3">
+                                                <div>
+                                                    <span className="text-xl font-bold text-burgundy-700">${getDisplayPrice(ebook)}</span>
+                                                    <span className="text-sm text-gray-400 line-through ml-2">${ebook.compareAtPrice}</span>
+                                                </div>
+                                            </div>
 
-                                        <p className="text-xs text-center text-gray-500">Instant download • Lifetime access</p>
-                                    </div>
-                                </div>
-                            </div>
-                        ))}
-
-                        {/* Other Bundles */}
-                        <h2 className="text-xl font-bold text-gray-900 mb-4">All Bundles</h2>
-                        <div className="grid md:grid-cols-2 gap-6 mb-8">
-                            {BUNDLES.filter(b => !b.isBestseller).map((bundle) => (
-                                <div key={bundle.id} className="bg-white rounded-2xl border border-gray-200 p-6 hover:shadow-xl transition-all">
-                                    <div className="flex items-start gap-4 mb-4">
-                                        <span className="text-4xl">{bundle.icon}</span>
-                                        <div>
-                                            <h3 className="text-xl font-bold text-gray-900">{bundle.title}</h3>
-                                            <p className="text-sm text-burgundy-600">{bundle.subtitle}</p>
+                                            <Button className="w-full bg-burgundy-600 hover:bg-burgundy-700" onClick={() => handlePurchase(ebook, "ebook")}>
+                                                <ShoppingCart className="w-4 h-4 mr-2" /> Buy Now
+                                            </Button>
                                         </div>
                                     </div>
-
-                                    <p className="text-gray-600 text-sm mb-4">{bundle.description}</p>
-
-                                    <div className="bg-gray-50 rounded-xl p-4 mb-4">
-                                        <p className="text-xs font-semibold text-gray-500 mb-2">INCLUDES:</p>
-                                        <ul className="space-y-1">
-                                            {bundle.includedTitles.map((title, i) => (
-                                                <li key={i} className="text-sm text-gray-700 flex items-center gap-2">
-                                                    <CheckCircle className="w-4 h-4 text-burgundy-500" /> {title}
-                                                </li>
-                                            ))}
-                                        </ul>
-                                    </div>
-
-                                    <div className="flex items-center gap-2 text-xs text-gray-500 mb-4">
-                                        <Star className="w-3 h-3 text-yellow-500" />
-                                        <span>{bundle.rating}</span>
-                                        <span>•</span>
-                                        <span>{bundle.buyers.toLocaleString()} purchased</span>
-                                    </div>
-
-                                    <div className="flex items-center gap-3 mb-4">
-                                        <span className="text-3xl font-bold text-burgundy-700">${getDisplayPrice(bundle)}</span>
-                                        <span className="text-lg text-gray-400 line-through">${bundle.compareAtPrice}</span>
-                                        <Badge className="bg-red-100 text-red-700 border-0">Save ${bundle.savings}</Badge>
-                                    </div>
-
-                                    <Button className="w-full bg-burgundy-600 hover:bg-burgundy-700" onClick={() => handlePurchase(bundle, "bundle")}>
-                                        <Package className="w-4 h-4 mr-2" /> Get This Bundle
-                                    </Button>
-                                </div>
-                            ))}
-                        </div>
-                    </>
-                )}
-
-                {/* Graduate Pricing CTA (if not graduate) */}
-                {!isGraduate && (
-                    <div className="mt-12 bg-gradient-to-r from-gold-100 to-amber-100 rounded-2xl p-8 border border-gold-200">
-                        <div className="flex flex-col md:flex-row items-center justify-between gap-6">
-                            <div className="flex items-center gap-4">
-                                <div className="w-16 h-16 bg-gold-200 rounded-2xl flex items-center justify-center">
-                                    <GraduationCap className="w-8 h-8 text-gold-700" />
-                                </div>
-                                <div>
-                                    <h2 className="text-2xl font-bold text-gray-900 mb-1">Unlock Graduate Pricing</h2>
-                                    <p className="text-gray-600">Complete your certification to save $10-20 on every e-book purchase</p>
-                                </div>
+                                ))}
                             </div>
-                            <a href="/catalog">
-                                <Button className="bg-gold-500 hover:bg-gold-600 text-white font-semibold px-6 py-6 text-lg">
-                                    View Certifications <ArrowRight className="w-5 h-5 ml-2" />
-                                </Button>
-                            </a>
                         </div>
-                    </div>
-                )}
+                    )}
 
-                {/* Bottom CTA */}
-                <div className="mt-8 bg-gradient-to-r from-burgundy-700 to-burgundy-800 rounded-2xl p-8 text-white">
-                    <div className="flex flex-col md:flex-row items-center justify-between gap-6">
-                        <div className="flex items-center gap-4">
-                            <div className="w-16 h-16 bg-white/10 rounded-2xl flex items-center justify-center">
-                                <Library className="w-8 h-8 text-gold-300" />
+                    {filteredEbooks.length === 0 && (
+                        <div className="text-center py-12 bg-white rounded-2xl border border-gray-100">
+                            <BookOpen className="w-12 h-12 mx-auto mb-4 text-gray-300" />
+                            <p className="text-gray-500 mb-4">No e-books found matching your search</p>
+                            <Button variant="outline" onClick={() => { setSelectedCategory("all"); setSearchQuery(""); }}>
+                                View All E-Books
+                            </Button>
+                        </div>
+                    )}
+                </>
+            )}
+
+            {/* Bundles Tab */}
+            {activeTab === "bundles" && (
+                <>
+                    {/* Bundle Explanation */}
+                    <div className="bg-gradient-to-r from-purple-50 to-pink-50 rounded-xl p-6 mb-8 border border-purple-100">
+                        <div className="flex items-start gap-4">
+                            <div className="w-12 h-12 bg-purple-100 rounded-xl flex items-center justify-center flex-shrink-0">
+                                <Gift className="w-6 h-6 text-purple-600" />
                             </div>
                             <div>
-                                <h2 className="text-2xl font-bold mb-1">Ready to Start Reading?</h2>
-                                <p className="text-white/70">Access your purchased e-books anytime in your library</p>
+                                <h3 className="font-bold text-gray-900 mb-1">Why Buy a Bundle?</h3>
+                                <p className="text-gray-600 text-sm">
+                                    Save up to <span className="font-bold text-purple-600">$132</span> compared to buying individually.
+                                    Bundles include complementary guides that work together to build your expertise faster.
+                                </p>
                             </div>
                         </div>
-                        <a href="/my-library">
-                            <Button className="bg-white text-burgundy-700 hover:bg-burgundy-50 font-semibold px-6 py-6 text-lg">
-                                Open My Library <ChevronRight className="w-5 h-5 ml-2" />
+                    </div>
+
+                    {/* Best Value Bundle */}
+                    {BUNDLES.filter(b => b.isBestseller).map((bundle) => (
+                        <div key={bundle.id} className="mb-8 bg-gradient-to-r from-burgundy-50 via-burgundy-50/50 to-burgundy-50 rounded-2xl border-2 border-burgundy-300 p-8 relative overflow-hidden">
+                            <div className="absolute top-0 right-0 bg-burgundy-600 text-white px-4 py-1 text-sm font-semibold rounded-bl-xl">
+                                🏆 BEST VALUE
+                            </div>
+                            <div className="flex flex-col lg:flex-row gap-8">
+                                <div className="flex-1">
+                                    <div className="flex items-center gap-4 mb-4">
+                                        <span className="text-6xl">{bundle.icon}</span>
+                                        <div>
+                                            <h3 className="text-2xl font-bold text-gray-900">{bundle.title}</h3>
+                                            <p className="text-burgundy-700 font-medium">{bundle.subtitle}</p>
+                                        </div>
+                                    </div>
+
+                                    <p className="text-gray-600 mb-6">{bundle.description}</p>
+
+                                    <div className="bg-white/60 rounded-xl p-5 mb-6">
+                                        <p className="text-sm font-semibold text-gray-500 mb-3">INCLUDES {bundle.includedEbooks.length} E-BOOKS:</p>
+                                        <div className="grid md:grid-cols-2 gap-2">
+                                            {bundle.includedTitles.map((title, i) => (
+                                                <div key={i} className="flex items-center gap-2 text-sm text-gray-700">
+                                                    <CheckCircle className="w-4 h-4 text-burgundy-500" /> {title}
+                                                </div>
+                                            ))}
+                                        </div>
+                                    </div>
+
+                                    <div className="flex items-center gap-2 text-sm text-gray-500">
+                                        <Star className="w-4 h-4 text-yellow-500" />
+                                        <span>{bundle.rating} ({bundle.reviewCount} reviews)</span>
+                                        <span className="mx-2">•</span>
+                                        <Users className="w-4 h-4" />
+                                        <span>{bundle.buyers.toLocaleString()} practitioners purchased</span>
+                                    </div>
+                                </div>
+
+                                <div className="lg:w-80 bg-white rounded-xl p-6 shadow-lg">
+                                    <div className="text-center mb-4">
+                                        <div className="mb-2">
+                                            <span className="text-4xl font-bold text-burgundy-700">${getDisplayPrice(bundle)}</span>
+                                            <span className="text-xl text-gray-400 line-through ml-2">${bundle.compareAtPrice}</span>
+                                        </div>
+                                        <Badge className="bg-red-100 text-red-700 border-0">Save ${bundle.savings}</Badge>
+                                        {isGraduate && (
+                                            <Badge className="bg-gold-100 text-gold-700 border-0 ml-2">Graduate Price</Badge>
+                                        )}
+                                    </div>
+
+                                    <Button
+                                        className="w-full bg-burgundy-600 hover:bg-burgundy-700 py-6 text-lg mb-3"
+                                        onClick={() => handlePurchase(bundle, "bundle")}
+                                    >
+                                        <Zap className="w-5 h-5 mr-2" /> Get This Bundle
+                                    </Button>
+
+                                    <p className="text-xs text-center text-gray-500">Instant download • Lifetime access</p>
+                                </div>
+                            </div>
+                        </div>
+                    ))}
+
+                    {/* Other Bundles */}
+                    <h2 className="text-xl font-bold text-gray-900 mb-4">All Bundles</h2>
+                    <div className="grid md:grid-cols-2 gap-6 mb-8">
+                        {BUNDLES.filter(b => !b.isBestseller).map((bundle) => (
+                            <div key={bundle.id} className="bg-white rounded-2xl border border-gray-200 p-6 hover:shadow-xl transition-all">
+                                <div className="flex items-start gap-4 mb-4">
+                                    <span className="text-4xl">{bundle.icon}</span>
+                                    <div>
+                                        <h3 className="text-xl font-bold text-gray-900">{bundle.title}</h3>
+                                        <p className="text-sm text-burgundy-600">{bundle.subtitle}</p>
+                                    </div>
+                                </div>
+
+                                <p className="text-gray-600 text-sm mb-4">{bundle.description}</p>
+
+                                <div className="bg-gray-50 rounded-xl p-4 mb-4">
+                                    <p className="text-xs font-semibold text-gray-500 mb-2">INCLUDES:</p>
+                                    <ul className="space-y-1">
+                                        {bundle.includedTitles.map((title, i) => (
+                                            <li key={i} className="text-sm text-gray-700 flex items-center gap-2">
+                                                <CheckCircle className="w-4 h-4 text-burgundy-500" /> {title}
+                                            </li>
+                                        ))}
+                                    </ul>
+                                </div>
+
+                                <div className="flex items-center gap-2 text-xs text-gray-500 mb-4">
+                                    <Star className="w-3 h-3 text-yellow-500" />
+                                    <span>{bundle.rating}</span>
+                                    <span>•</span>
+                                    <span>{bundle.buyers.toLocaleString()} purchased</span>
+                                </div>
+
+                                <div className="flex items-center gap-3 mb-4">
+                                    <span className="text-3xl font-bold text-burgundy-700">${getDisplayPrice(bundle)}</span>
+                                    <span className="text-lg text-gray-400 line-through">${bundle.compareAtPrice}</span>
+                                    <Badge className="bg-red-100 text-red-700 border-0">Save ${bundle.savings}</Badge>
+                                </div>
+
+                                <Button className="w-full bg-burgundy-600 hover:bg-burgundy-700" onClick={() => handlePurchase(bundle, "bundle")}>
+                                    <Package className="w-4 h-4 mr-2" /> Get This Bundle
+                                </Button>
+                            </div>
+                        ))}
+                    </div>
+                </>
+            )}
+
+            {/* Graduate Pricing CTA (if not graduate) */}
+            {!isGraduate && (
+                <div className="mt-12 bg-gradient-to-r from-gold-100 to-amber-100 rounded-2xl p-8 border border-gold-200">
+                    <div className="flex flex-col md:flex-row items-center justify-between gap-6">
+                        <div className="flex items-center gap-4">
+                            <div className="w-16 h-16 bg-gold-200 rounded-2xl flex items-center justify-center">
+                                <GraduationCap className="w-8 h-8 text-gold-700" />
+                            </div>
+                            <div>
+                                <h2 className="text-2xl font-bold text-gray-900 mb-1">Unlock Graduate Pricing</h2>
+                                <p className="text-gray-600">Complete your certification to save $10-20 on every e-book purchase</p>
+                            </div>
+                        </div>
+                        <a href="/catalog">
+                            <Button className="bg-gold-500 hover:bg-gold-600 text-white font-semibold px-6 py-6 text-lg">
+                                View Certifications <ArrowRight className="w-5 h-5 ml-2" />
                             </Button>
                         </a>
                     </div>
+                </div>
+            )}
+
+            {/* Bottom CTA */}
+            <div className="mt-8 bg-gradient-to-r from-burgundy-700 to-burgundy-800 rounded-2xl p-8 text-white">
+                <div className="flex flex-col md:flex-row items-center justify-between gap-6">
+                    <div className="flex items-center gap-4">
+                        <div className="w-16 h-16 bg-white/10 rounded-2xl flex items-center justify-center">
+                            <Library className="w-8 h-8 text-gold-300" />
+                        </div>
+                        <div>
+                            <h2 className="text-2xl font-bold mb-1">Ready to Start Reading?</h2>
+                            <p className="text-white/70">Access your purchased e-books anytime in your library</p>
+                        </div>
+                    </div>
+                    <a href="/my-library">
+                        <Button className="bg-white text-burgundy-700 hover:bg-burgundy-50 font-semibold px-6 py-6 text-lg">
+                            Open My Library <ChevronRight className="w-5 h-5 ml-2" />
+                        </Button>
+                    </a>
                 </div>
             </div>
 
             {/* E-Book Preview Modal */}
             {previewEbook && (
-                <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4" onClick={() => setPreviewEbook(null)}>
-                    <div className="bg-white rounded-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto shadow-2xl" onClick={(e) => e.stopPropagation()}>
-                        {/* Header */}
-                        <div className="sticky top-0 bg-gradient-to-r from-burgundy-700 to-burgundy-800 text-white p-6 rounded-t-2xl">
-                            <button
-                                onClick={() => setPreviewEbook(null)}
-                                className="absolute top-4 right-4 w-8 h-8 bg-white/20 rounded-full flex items-center justify-center hover:bg-white/30"
-                            >
-                                <X className="w-5 h-5" />
-                            </button>
-                            <div className="flex items-start gap-4">
-                                <span className="text-5xl">{previewEbook.icon}</span>
-                                <div>
-                                    <h2 className="text-2xl font-bold">{previewEbook.title}</h2>
-                                    <p className="text-burgundy-200">{previewEbook.subtitle}</p>
-                                    <div className="flex items-center gap-3 mt-2 text-sm text-white/80">
-                                        <span><FileText className="w-4 h-4 inline mr-1" /> {previewEbook.pages} pages</span>
-                                        <span><Clock className="w-4 h-4 inline mr-1" /> {previewEbook.readTime}</span>
-                                        <span><Star className="w-4 h-4 inline mr-1 text-gold-400" /> {previewEbook.rating}</span>
-                                    </div>
+            <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4" onClick={() => setPreviewEbook(null)}>
+                <div className="bg-white rounded-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto shadow-2xl" onClick={(e) => e.stopPropagation()}>
+                    {/* Header */}
+                    <div className="sticky top-0 bg-gradient-to-r from-burgundy-700 to-burgundy-800 text-white p-6 rounded-t-2xl">
+                        <button
+                            onClick={() => setPreviewEbook(null)}
+                            className="absolute top-4 right-4 w-8 h-8 bg-white/20 rounded-full flex items-center justify-center hover:bg-white/30"
+                        >
+                            <X className="w-5 h-5" />
+                        </button>
+                        <div className="flex items-start gap-4">
+                            <span className="text-5xl">{previewEbook.icon}</span>
+                            <div>
+                                <h2 className="text-2xl font-bold">{previewEbook.title}</h2>
+                                <p className="text-burgundy-200">{previewEbook.subtitle}</p>
+                                <div className="flex items-center gap-3 mt-2 text-sm text-white/80">
+                                    <span><FileText className="w-4 h-4 inline mr-1" /> {previewEbook.pages} pages</span>
+                                    <span><Clock className="w-4 h-4 inline mr-1" /> {previewEbook.readTime}</span>
+                                    <span><Star className="w-4 h-4 inline mr-1 text-gold-400" /> {previewEbook.rating}</span>
                                 </div>
-                            </div>
-                        </div>
-
-                        {/* Content */}
-                        <div className="p-6">
-                            {/* Full Description */}
-                            <div className="mb-6">
-                                <h3 className="font-bold text-gray-900 mb-2 flex items-center gap-2">
-                                    <BookOpen className="w-5 h-5 text-burgundy-600" /> About This E-Book
-                                </h3>
-                                <p className="text-gray-600 leading-relaxed">{previewEbook.description}</p>
-                            </div>
-
-                            {/* Table of Contents */}
-                            {previewEbook.tableOfContents && (
-                                <div className="mb-6">
-                                    <h3 className="font-bold text-gray-900 mb-3 flex items-center gap-2">
-                                        <ListOrdered className="w-5 h-5 text-burgundy-600" /> Table of Contents
-                                    </h3>
-                                    <div className="bg-gray-50 rounded-xl p-4">
-                                        <ul className="space-y-2">
-                                            {previewEbook.tableOfContents.map((chapter, i) => (
-                                                <li key={i} className="flex items-start gap-3 text-sm text-gray-700">
-                                                    <span className="w-6 h-6 bg-burgundy-100 text-burgundy-700 rounded-full flex items-center justify-center flex-shrink-0 text-xs font-medium">
-                                                        {i + 1}
-                                                    </span>
-                                                    {chapter.replace(/^Chapter \d+:\s*/, '')}
-                                                </li>
-                                            ))}
-                                        </ul>
-                                    </div>
-                                </div>
-                            )}
-
-                            {/* What You'll Learn */}
-                            <div className="mb-6">
-                                <h3 className="font-bold text-gray-900 mb-3 flex items-center gap-2">
-                                    <CheckCircle className="w-5 h-5 text-burgundy-600" /> What You'll Learn
-                                </h3>
-                                <ul className="space-y-2">
-                                    {previewEbook.highlights.map((highlight, i) => (
-                                        <li key={i} className="flex items-start gap-2 text-sm text-gray-700">
-                                            <CheckCircle className="w-4 h-4 text-burgundy-500 flex-shrink-0 mt-0.5" />
-                                            {highlight}
-                                        </li>
-                                    ))}
-                                </ul>
-                            </div>
-
-                            {/* Topics Covered */}
-                            <div className="mb-6">
-                                <h3 className="font-bold text-gray-900 mb-3">Topics Covered</h3>
-                                <div className="flex flex-wrap gap-2">
-                                    {previewEbook.topics.map((topic) => (
-                                        <Badge key={topic} variant="outline" className="bg-burgundy-50 text-burgundy-700 border-burgundy-200">
-                                            {topic}
-                                        </Badge>
-                                    ))}
-                                </div>
-                            </div>
-
-                            {/* Pricing & CTA */}
-                            <div className="border-t pt-6 flex items-center justify-between">
-                                <div>
-                                    <span className="text-3xl font-bold text-burgundy-700">${getDisplayPrice(previewEbook)}</span>
-                                    <span className="text-lg text-gray-400 line-through ml-2">${previewEbook.compareAtPrice}</span>
-                                    {isGraduate && (
-                                        <Badge className="bg-gold-100 text-gold-700 border-0 text-xs ml-2">Graduate Price</Badge>
-                                    )}
-                                </div>
-                                <Button
-                                    className="bg-burgundy-600 hover:bg-burgundy-700 px-8"
-                                    onClick={() => {
-                                        handlePurchase(previewEbook, "ebook");
-                                        setPreviewEbook(null);
-                                    }}
-                                >
-                                    <ShoppingCart className="w-4 h-4 mr-2" /> Buy Now
-                                </Button>
                             </div>
                         </div>
                     </div>
+
+                    {/* Content */}
+                    <div className="p-6">
+                        {/* Full Description */}
+                        <div className="mb-6">
+                            <h3 className="font-bold text-gray-900 mb-2 flex items-center gap-2">
+                                <BookOpen className="w-5 h-5 text-burgundy-600" /> About This E-Book
+                            </h3>
+                            <p className="text-gray-600 leading-relaxed">{previewEbook.description}</p>
+                        </div>
+
+                        {/* Table of Contents */}
+                        {previewEbook.tableOfContents && (
+                            <div className="mb-6">
+                                <h3 className="font-bold text-gray-900 mb-3 flex items-center gap-2">
+                                    <ListOrdered className="w-5 h-5 text-burgundy-600" /> Table of Contents
+                                </h3>
+                                <div className="bg-gray-50 rounded-xl p-4">
+                                    <ul className="space-y-2">
+                                        {previewEbook.tableOfContents.map((chapter, i) => (
+                                            <li key={i} className="flex items-start gap-3 text-sm text-gray-700">
+                                                <span className="w-6 h-6 bg-burgundy-100 text-burgundy-700 rounded-full flex items-center justify-center flex-shrink-0 text-xs font-medium">
+                                                    {i + 1}
+                                                </span>
+                                                {chapter.replace(/^Chapter \d+:\s*/, '')}
+                                            </li>
+                                        ))}
+                                    </ul>
+                                </div>
+                            </div>
+                        )}
+
+                        {/* What You'll Learn */}
+                        <div className="mb-6">
+                            <h3 className="font-bold text-gray-900 mb-3 flex items-center gap-2">
+                                <CheckCircle className="w-5 h-5 text-burgundy-600" /> What You'll Learn
+                            </h3>
+                            <ul className="space-y-2">
+                                {previewEbook.highlights.map((highlight, i) => (
+                                    <li key={i} className="flex items-start gap-2 text-sm text-gray-700">
+                                        <CheckCircle className="w-4 h-4 text-burgundy-500 flex-shrink-0 mt-0.5" />
+                                        {highlight}
+                                    </li>
+                                ))}
+                            </ul>
+                        </div>
+
+                        {/* Topics Covered */}
+                        <div className="mb-6">
+                            <h3 className="font-bold text-gray-900 mb-3">Topics Covered</h3>
+                            <div className="flex flex-wrap gap-2">
+                                {previewEbook.topics.map((topic) => (
+                                    <Badge key={topic} variant="outline" className="bg-burgundy-50 text-burgundy-700 border-burgundy-200">
+                                        {topic}
+                                    </Badge>
+                                ))}
+                            </div>
+                        </div>
+
+                        {/* Pricing & CTA */}
+                        <div className="border-t pt-6 flex items-center justify-between">
+                            <div>
+                                <span className="text-3xl font-bold text-burgundy-700">${getDisplayPrice(previewEbook)}</span>
+                                <span className="text-lg text-gray-400 line-through ml-2">${previewEbook.compareAtPrice}</span>
+                                {isGraduate && (
+                                    <Badge className="bg-gold-100 text-gold-700 border-0 text-xs ml-2">Graduate Price</Badge>
+                                )}
+                            </div>
+                            <Button
+                                className="bg-burgundy-600 hover:bg-burgundy-700 px-8"
+                                onClick={() => {
+                                    handlePurchase(previewEbook, "ebook");
+                                    setPreviewEbook(null);
+                                }}
+                            >
+                                <ShoppingCart className="w-4 h-4 mr-2" /> Buy Now
+                            </Button>
+                        </div>
+                    </div>
                 </div>
+            </div>
             )}
         </div>
     );

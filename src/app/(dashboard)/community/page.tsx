@@ -167,11 +167,13 @@ export default async function CommunityPage() {
   }));
 
   return (
-    <CommunityClient
-      posts={postsData}
-      stats={stats}
-      communities={communities}
-      isAdmin={isAdmin}
-    />
+    <div className="space-y-6 animate-fade-in">
+      <CommunityClient
+        posts={postsData}
+        stats={stats}
+        communities={communities}
+        isAdmin={isAdmin}
+      />
+    </div>
   );
 }

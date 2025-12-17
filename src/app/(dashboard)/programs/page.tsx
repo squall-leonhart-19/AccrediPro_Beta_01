@@ -484,666 +484,663 @@ export default function ClientProgramLibraryPage() {
     };
 
     return (
-        <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-burgundy-50/30">
-            <div className="px-4 sm:px-6 lg:px-8 py-8">
-
-                {/* Hero Header with Logo */}
-                <div className="relative mb-10 bg-gradient-to-r from-burgundy-700 via-burgundy-600 to-burgundy-800 rounded-3xl p-8 md:p-12 text-white overflow-hidden">
-                    <div className="absolute inset-0 opacity-10">
-                        <div className="absolute top-0 right-0 w-96 h-96 bg-gold-400 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2" />
-                        <div className="absolute bottom-0 left-0 w-64 h-64 bg-burgundy-300 rounded-full blur-3xl translate-y-1/2 -translate-x-1/4" />
-                    </div>
-
-                    <div className="relative z-10">
-                        <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-6">
-                            <div className="flex-1">
-                                {/* Logo Header */}
-                                <div className="flex items-center gap-4 mb-6">
-                                    <div className="w-16 h-16 bg-white/20 backdrop-blur-sm rounded-2xl flex items-center justify-center">
-                                        <svg xmlns="http://www.w3.org/2000/svg" className="w-9 h-9 text-gold-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                                            <path d="M22 10v6M2 10l10-5 10 5-10 5z"/>
-                                            <path d="M6 12v5c3 3 9 3 12 0v-5"/>
-                                        </svg>
-                                    </div>
-                                    <div>
-                                        <Badge className="bg-gold-400 text-burgundy-900 border-0 font-bold mb-1">Done-For-You Resources</Badge>
-                                        <p className="text-sm text-burgundy-200">AccrediPro Academy</p>
-                                    </div>
-                                </div>
-
-                                <h1 className="text-3xl md:text-4xl font-bold mb-4">
-                                    Client Program Library
-                                </h1>
-
-                                <p className="text-lg text-burgundy-100 max-w-2xl mb-6">
-                                    Professional, done-for-you programs and business kits.
-                                    <span className="text-gold-300 font-medium"> Start earning faster with client-ready assets.</span>
-                                </p>
-
-                                <div className="flex flex-wrap gap-4 text-sm text-white/80 mb-6">
-                                    <span className="flex items-center gap-1"><Package className="w-4 h-4 text-gold-400" /> {CORE_PROGRAMS.length + SPECIALTY_KITS.length + BUSINESS_KITS.length}+ Resources</span>
-                                    <span className="flex items-center gap-1"><Users className="w-4 h-4 text-gold-400" /> 743+ practitioners using</span>
-                                    <span className="flex items-center gap-1"><Star className="w-4 h-4 text-gold-400" /> 4.9 Avg Rating</span>
-                                </div>
-
-                                {/* Value Proposition */}
-                                <div className="bg-white/10 backdrop-blur-sm rounded-xl p-4 border border-white/20 max-w-lg">
-                                    <p className="text-sm font-medium text-gold-300 mb-2">Why DFY Resources?</p>
-                                    <ul className="text-sm text-white/80 space-y-1">
-                                        <li className="flex items-center gap-2"><CheckCircle className="w-4 h-4 text-green-400" /> Start earning immediately after certification</li>
-                                        <li className="flex items-center gap-2"><CheckCircle className="w-4 h-4 text-green-400" /> Look professional from Day 1</li>
-                                        <li className="flex items-center gap-2"><CheckCircle className="w-4 h-4 text-green-400" /> White-label rights included</li>
-                                    </ul>
-                                </div>
-                            </div>
-
-                            {/* Quick Stats Card */}
-                            <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-6 border border-white/20 w-full md:w-80">
-                                <p className="text-sm font-semibold text-gold-300 mb-4">Practitioner Results</p>
-                                <div className="space-y-4">
-                                    <div className="flex items-center justify-between">
-                                        <span className="text-white/80 text-sm">Avg. client pricing:</span>
-                                        <span className="font-bold text-white">$1,500+</span>
-                                    </div>
-                                    <div className="flex items-center justify-between">
-                                        <span className="text-white/80 text-sm">Time to first client:</span>
-                                        <span className="font-bold text-white">2-4 weeks</span>
-                                    </div>
-                                    <div className="flex items-center justify-between">
-                                        <span className="text-white/80 text-sm">ROI on resources:</span>
-                                        <span className="font-bold text-green-400">10-50x</span>
-                                    </div>
-                                </div>
-                                <div className="mt-4 pt-4 border-t border-white/20">
-                                    <p className="text-xs text-white/60 italic">"I made back my investment with my first client!" — Sarah M.</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+        <div className="space-y-6 animate-fade-in">
+            {/* Hero Header with Logo */}
+            <div className="relative mb-10 bg-gradient-to-r from-burgundy-700 via-burgundy-600 to-burgundy-800 rounded-3xl p-8 md:p-12 text-white overflow-hidden">
+                <div className="absolute inset-0 opacity-10">
+                    <div className="absolute top-0 right-0 w-96 h-96 bg-gold-400 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2" />
+                    <div className="absolute bottom-0 left-0 w-64 h-64 bg-burgundy-300 rounded-full blur-3xl translate-y-1/2 -translate-x-1/4" />
                 </div>
 
-                {/* Access Notice for Mini Diploma */}
-                {!canAccess && (
-                    <div className="mb-6 bg-gradient-to-r from-gold-50 to-amber-50 border border-gold-200 rounded-xl p-4 flex items-center justify-between">
-                        <div className="flex items-center gap-3">
-                            <div className="w-10 h-10 bg-gold-100 rounded-xl flex items-center justify-center">
-                                <Lock className="w-5 h-5 text-gold-600" />
-                            </div>
-                            <div>
-                                <p className="font-semibold text-gray-900">Unlock Full Access</p>
-                                <p className="text-sm text-gray-600">Complete your Step 1 Certification to access DFY resources</p>
-                            </div>
-                        </div>
-                        <Button className="bg-burgundy-600 hover:bg-burgundy-700">
-                            View Certification <ChevronRight className="w-4 h-4 ml-1" />
-                        </Button>
-                    </div>
-                )}
-
-                {/* Category Tabs */}
-                <div className="flex flex-wrap gap-2 mb-8">
-                    <button
-                        onClick={() => setActiveTab("core")}
-                        className={`px-6 py-3 rounded-xl font-medium transition-all flex items-center gap-2 ${activeTab === "core" ? "bg-burgundy-600 text-white" : "bg-white text-gray-600 hover:bg-gray-50 border border-gray-200"}`}
-                    >
-                        <Target className="w-4 h-4" /> Core Programs ({CORE_PROGRAMS.length})
-                    </button>
-                    <button
-                        onClick={() => setActiveTab("specialty")}
-                        className={`px-6 py-3 rounded-xl font-medium transition-all flex items-center gap-2 ${activeTab === "specialty" ? "bg-burgundy-600 text-white" : "bg-white text-gray-600 hover:bg-gray-50 border border-gray-200"}`}
-                    >
-                        <Sparkles className="w-4 h-4" /> Specialty Kits ({SPECIALTY_KITS.length})
-                    </button>
-                    <button
-                        onClick={() => setActiveTab("business")}
-                        className={`px-6 py-3 rounded-xl font-medium transition-all flex items-center gap-2 ${activeTab === "business" ? "bg-burgundy-600 text-white" : "bg-white text-gray-600 hover:bg-gray-50 border border-gray-200"}`}
-                    >
-                        <Briefcase className="w-4 h-4" /> Business Kits ({BUSINESS_KITS.length})
-                    </button>
-                    <button
-                        onClick={() => setActiveTab("accelerators")}
-                        className={`px-6 py-3 rounded-xl font-medium transition-all flex items-center gap-2 ${activeTab === "accelerators" ? "bg-burgundy-600 text-white" : "bg-white text-gray-600 hover:bg-gray-50 border border-gray-200"}`}
-                    >
-                        <Rocket className="w-4 h-4" /> Accelerators ({ACCELERATOR_BUNDLES.length})
-                        <Badge className="bg-red-100 text-red-700 border-0 text-xs">Save $10K+</Badge>
-                    </button>
-                </div>
-
-                {/* Search */}
-                <div className="relative mb-8">
-                    <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
-                    <Input
-                        placeholder="Search programs, kits, and resources..."
-                        value={searchQuery}
-                        onChange={(e) => setSearchQuery(e.target.value)}
-                        className="pl-12 py-5 rounded-xl border-gray-200"
-                    />
-                </div>
-
-                {/* ==================== CORE PROGRAMS TAB ==================== */}
-                {activeTab === "core" && (
-                    <div className="space-y-8">
-                        {/* Section Header */}
-                        <div className="flex items-center gap-3">
-                            <div className="w-12 h-12 bg-burgundy-100 rounded-xl flex items-center justify-center">
-                                <Target className="w-6 h-6 text-burgundy-600" />
-                            </div>
-                            <div>
-                                <h2 className="text-2xl font-bold text-gray-900">Core Client Programs</h2>
-                                <p className="text-gray-600">The backbone of every successful FM practice. Pick your signature offer.</p>
-                            </div>
-                        </div>
-
-                        {/* Programs Grid */}
-                        <div className="grid lg:grid-cols-2 gap-6">
-                            {CORE_PROGRAMS.map((program) => (
-                                <div key={program.id} className={`bg-white rounded-2xl border ${program.isBestseller ? "border-burgundy-300 ring-2 ring-burgundy-100" : "border-gray-100"} overflow-hidden hover:shadow-xl transition-all group relative`}>
-                                    {program.isBestseller && (
-                                        <div className="absolute top-0 right-0 bg-burgundy-600 text-white px-4 py-1 text-sm font-semibold rounded-bl-xl z-10">
-                                            ⭐ BESTSELLER
-                                        </div>
-                                    )}
-                                    <div className="p-6">
-                                        {/* Header */}
-                                        <div className="flex items-start justify-between mb-4">
-                                            <div className="flex items-center gap-3">
-                                                <span className="text-4xl">{program.icon}</span>
-                                                <div>
-                                                    <Badge className={`${program.badgeColor} text-white border-0 text-xs mb-1`}>{program.badge}</Badge>
-                                                    <h3 className="text-lg font-bold text-gray-900 group-hover:text-burgundy-600">{program.title}</h3>
-                                                    <p className="text-sm text-burgundy-600">{program.subtitle}</p>
-                                                </div>
-                                            </div>
-                                        </div>
-
-                                        <p className="text-gray-600 text-sm mb-4">{program.description}</p>
-
-                                        {/* Client Pricing Highlight */}
-                                        <div className="bg-green-50 border border-green-100 rounded-xl p-3 mb-4">
-                                            <div className="flex items-center gap-2">
-                                                <DollarSign className="w-5 h-5 text-green-600" />
-                                                <div>
-                                                    <p className="text-xs text-green-700 font-medium">Your clients pay you:</p>
-                                                    <p className="text-lg font-bold text-green-700">{program.clientPricing}</p>
-                                                </div>
-                                            </div>
-                                        </div>
-
-                                        {/* What's Included */}
-                                        <div className="bg-gray-50 rounded-xl p-4 mb-4">
-                                            <p className="text-xs font-semibold text-gray-500 mb-2">WHAT'S INCLUDED:</p>
-                                            <ul className="space-y-1">
-                                                {program.includes.slice(0, 4).map((item, i) => (
-                                                    <li key={i} className="text-sm text-gray-700 flex items-start gap-2">
-                                                        <CheckCircle className="w-4 h-4 text-burgundy-500 flex-shrink-0 mt-0.5" /> {item}
-                                                    </li>
-                                                ))}
-                                                {program.includes.length > 4 && (
-                                                    <li className="text-sm text-burgundy-600 font-medium">+ {program.includes.length - 4} more...</li>
-                                                )}
-                                            </ul>
-                                        </div>
-
-                                        {/* Meta */}
-                                        <div className="flex items-center justify-between text-xs text-gray-500 mb-4">
-                                            <div className="flex items-center gap-2">
-                                                <span><Star className="w-3 h-3 inline mr-1 text-yellow-500" /> {program.rating}</span>
-                                                <span>•</span>
-                                                <span>{program.buyers?.toLocaleString()}+ purchased</span>
-                                            </div>
-                                            <button
-                                                onClick={() => setPreviewItem(program)}
-                                                className="text-burgundy-600 hover:text-burgundy-700 font-medium flex items-center gap-1"
-                                            >
-                                                <Eye className="w-3 h-3" /> Preview
-                                            </button>
-                                        </div>
-
-                                        {/* Pricing & CTA */}
-                                        <div className="flex items-center justify-between pt-4 border-t border-gray-100">
-                                            <div>
-                                                <span className="text-2xl font-bold text-burgundy-700">${program.price}</span>
-                                                <span className="text-lg text-gray-400 line-through ml-2">${program.compareAtPrice}</span>
-                                            </div>
-                                            <Button
-                                                className={`${canAccess ? "bg-burgundy-600 hover:bg-burgundy-700" : "bg-gray-400"}`}
-                                                onClick={() => handlePurchase(program)}
-                                            >
-                                                {canAccess ? <><ShoppingCart className="w-4 h-4 mr-2" /> Get Program</> : <><Lock className="w-4 h-4 mr-2" /> Unlock</>}
-                                            </Button>
-                                        </div>
-                                    </div>
-                                </div>
-                            ))}
-                        </div>
-                    </div>
-                )}
-
-                {/* ==================== SPECIALTY KITS TAB ==================== */}
-                {activeTab === "specialty" && (
-                    <div className="space-y-8">
-                        {/* Section Header */}
-                        <div className="flex items-center gap-3">
-                            <div className="w-12 h-12 bg-purple-100 rounded-xl flex items-center justify-center">
-                                <Sparkles className="w-6 h-6 text-purple-600" />
-                            </div>
-                            <div>
-                                <h2 className="text-2xl font-bold text-gray-900">Specialty Client Kits</h2>
-                                <p className="text-gray-600">Problem-specific add-ons to enhance your core programs.</p>
-                            </div>
-                        </div>
-
-                        {/* Kits Grid */}
-                        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-                            {SPECIALTY_KITS.map((kit) => (
-                                <div key={kit.id} className="bg-white rounded-2xl border border-gray-100 overflow-hidden hover:shadow-lg transition-all group">
-                                    <div className="p-6">
-                                        <div className="flex items-start justify-between mb-3">
-                                            <span className="text-3xl">{kit.icon}</span>
-                                            <Badge variant="outline" className="text-xs">{kit.category}</Badge>
-                                        </div>
-
-                                        <h3 className="text-lg font-bold text-gray-900 mb-1 group-hover:text-burgundy-600">{kit.title}</h3>
-                                        <p className="text-sm text-burgundy-600 mb-2">{kit.subtitle}</p>
-                                        <p className="text-gray-600 text-sm mb-3">{kit.description}</p>
-
-                                        {/* What's Included Preview */}
-                                        <div className="bg-gray-50 rounded-lg p-3 mb-3">
-                                            <p className="text-xs font-semibold text-gray-500 mb-2">INCLUDES:</p>
-                                            <ul className="space-y-1">
-                                                {kit.includes.slice(0, 3).map((item, i) => (
-                                                    <li key={i} className="text-xs text-gray-600 flex items-start gap-1">
-                                                        <CheckCircle className="w-3 h-3 text-burgundy-500 flex-shrink-0 mt-0.5" /> {item}
-                                                    </li>
-                                                ))}
-                                                {kit.includes.length > 3 && (
-                                                    <li className="text-xs text-burgundy-600 font-medium">+ {kit.includes.length - 3} more...</li>
-                                                )}
-                                            </ul>
-                                        </div>
-
-                                        {/* Client Pricing */}
-                                        <div className="bg-green-50 rounded-lg p-2 mb-3 flex items-center gap-2">
-                                            <DollarSign className="w-4 h-4 text-green-600" />
-                                            <span className="text-sm text-green-700">Client pricing: <strong>{kit.clientPricing}</strong></span>
-                                        </div>
-
-                                        <div className="flex items-center justify-between text-xs text-gray-500 mb-4">
-                                            <div className="flex items-center gap-2">
-                                                <span><Star className="w-3 h-3 inline mr-1 text-yellow-500" /> {kit.rating}</span>
-                                                <span>•</span>
-                                                <span>{kit.reviewCount} reviews</span>
-                                            </div>
-                                            <button
-                                                onClick={() => setPreviewItem(kit)}
-                                                className="text-burgundy-600 hover:text-burgundy-700 font-medium flex items-center gap-1"
-                                            >
-                                                <Eye className="w-3 h-3" /> Preview
-                                            </button>
-                                        </div>
-
-                                        <div className="flex items-center justify-between pt-3 border-t border-gray-100">
-                                            <div>
-                                                <span className="text-xl font-bold text-burgundy-700">${kit.price}</span>
-                                                <span className="text-sm text-gray-400 line-through ml-2">${kit.compareAtPrice}</span>
-                                            </div>
-                                            <Button
-                                                size="sm"
-                                                className={`${canAccess ? "bg-burgundy-600 hover:bg-burgundy-700" : "bg-gray-400"}`}
-                                                onClick={() => handlePurchase(kit)}
-                                            >
-                                                {canAccess ? "Add to Cart" : <Lock className="w-4 h-4" />}
-                                            </Button>
-                                        </div>
-                                    </div>
-                                </div>
-                            ))}
-                        </div>
-                    </div>
-                )}
-
-                {/* ==================== BUSINESS KITS TAB ==================== */}
-                {activeTab === "business" && (
-                    <div className="space-y-8">
-                        {/* Section Header */}
-                        <div className="flex items-center gap-3">
-                            <div className="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center">
-                                <Briefcase className="w-6 h-6 text-blue-600" />
-                            </div>
-                            <div>
-                                <h2 className="text-2xl font-bold text-gray-900">Practitioner Business Kits</h2>
-                                <p className="text-gray-600">DFY infrastructure for your practice. Remove all setup friction.</p>
-                            </div>
-                        </div>
-
-                        {/* Business Kits */}
-                        <div className="grid lg:grid-cols-3 gap-6">
-                            {BUSINESS_KITS.map((kit) => (
-                                <div key={kit.id} className={`bg-white rounded-2xl border ${kit.isPopular ? "border-green-300 ring-2 ring-green-100" : "border-gray-100"} overflow-hidden hover:shadow-xl transition-all relative`}>
-                                    {kit.isPopular && (
-                                        <div className="absolute top-0 right-0 bg-green-600 text-white px-3 py-1 text-xs font-semibold rounded-bl-xl">
-                                            🔥 POPULAR
-                                        </div>
-                                    )}
-                                    <div className="p-6">
-                                        <div className="flex items-center gap-3 mb-4">
-                                            <span className="text-3xl">{kit.icon}</span>
-                                            <Badge className={`${kit.badgeColor} text-white border-0 text-xs`}>{kit.badge}</Badge>
-                                        </div>
-
-                                        <h3 className="text-xl font-bold text-gray-900 mb-1">{kit.title}</h3>
-                                        <p className="text-sm text-burgundy-600 mb-3">{kit.subtitle}</p>
-                                        <p className="text-gray-600 text-sm mb-4">{kit.description}</p>
-
-                                        <div className="bg-gray-50 rounded-xl p-4 mb-4">
-                                            <p className="text-xs font-semibold text-gray-500 mb-2">INCLUDES:</p>
-                                            <ul className="space-y-1">
-                                                {kit.includes.slice(0, 5).map((item, i) => (
-                                                    <li key={i} className="text-sm text-gray-700 flex items-start gap-2">
-                                                        <CheckCircle className="w-4 h-4 text-green-500 flex-shrink-0 mt-0.5" /> {item}
-                                                    </li>
-                                                ))}
-                                                {kit.includes.length > 5 && (
-                                                    <li className="text-sm text-burgundy-600 font-medium">+ {kit.includes.length - 5} more...</li>
-                                                )}
-                                            </ul>
-                                        </div>
-
-                                        <div className="flex items-center justify-between text-xs text-gray-500 mb-4">
-                                            <div className="flex items-center gap-2">
-                                                <span><Star className="w-3 h-3 inline mr-1 text-yellow-500" /> {kit.rating}</span>
-                                                <span>•</span>
-                                                <span>{kit.buyers?.toLocaleString()}+ purchased</span>
-                                            </div>
-                                            <button
-                                                onClick={() => setPreviewItem(kit)}
-                                                className="text-burgundy-600 hover:text-burgundy-700 font-medium flex items-center gap-1"
-                                            >
-                                                <Eye className="w-3 h-3" /> Preview
-                                            </button>
-                                        </div>
-
-                                        <div className="border-t border-gray-100 pt-4">
-                                            <div className="flex items-center justify-between mb-3">
-                                                <div>
-                                                    <span className="text-2xl font-bold text-burgundy-700">${kit.price.toLocaleString()}</span>
-                                                    <span className="text-lg text-gray-400 line-through ml-2">${kit.compareAtPrice.toLocaleString()}</span>
-                                                </div>
-                                            </div>
-                                            <Button
-                                                className={`w-full ${canAccess ? "bg-burgundy-600 hover:bg-burgundy-700" : "bg-gray-400"}`}
-                                                onClick={() => handlePurchase(kit)}
-                                            >
-                                                {canAccess ? <><ShoppingCart className="w-4 h-4 mr-2" /> Get Business Kit</> : <><Lock className="w-4 h-4 mr-2" /> Unlock Access</>}
-                                            </Button>
-                                        </div>
-                                    </div>
-                                </div>
-                            ))}
-                        </div>
-                    </div>
-                )}
-
-                {/* ==================== ACCELERATORS TAB ==================== */}
-                {activeTab === "accelerators" && (
-                    <div className="space-y-8">
-                        {/* Section Header */}
-                        <div className="flex items-center gap-3">
-                            <div className="w-12 h-12 bg-gradient-to-br from-burgundy-100 to-gold-100 rounded-xl flex items-center justify-center">
-                                <Rocket className="w-6 h-6 text-burgundy-600" />
-                            </div>
-                            <div>
-                                <h2 className="text-2xl font-bold text-gray-900">Accelerator Bundles</h2>
-                                <p className="text-gray-600">Maximum value packages for serious practitioners ready to scale. <span className="text-burgundy-600 font-semibold">We handle EVERYTHING — you just help people.</span></p>
-                            </div>
-                        </div>
-
-                        {/* DFY Banner */}
-                        <div className="bg-gradient-to-r from-green-50 to-emerald-50 border border-green-200 rounded-xl p-4">
-                            <div className="flex items-center gap-3">
-                                <div className="w-10 h-10 bg-green-100 rounded-full flex items-center justify-center">
-                                    <Sparkles className="w-5 h-5 text-green-600" />
+                <div className="relative z-10">
+                    <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-6">
+                        <div className="flex-1">
+                            {/* Logo Header */}
+                            <div className="flex items-center gap-4 mb-6">
+                                <div className="w-16 h-16 bg-white/20 backdrop-blur-sm rounded-2xl flex items-center justify-center">
+                                    <svg xmlns="http://www.w3.org/2000/svg" className="w-9 h-9 text-gold-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                        <path d="M22 10v6M2 10l10-5 10 5-10 5z" />
+                                        <path d="M6 12v5c3 3 9 3 12 0v-5" />
+                                    </svg>
                                 </div>
                                 <div>
-                                    <p className="font-bold text-green-800">100% DONE-FOR-YOU</p>
-                                    <p className="text-sm text-green-700">Website, Social Media, Email Campaigns, Ads, Funnels — We create it ALL. You focus on helping clients.</p>
+                                    <Badge className="bg-gold-400 text-burgundy-900 border-0 font-bold mb-1">Done-For-You Resources</Badge>
+                                    <p className="text-sm text-burgundy-200">AccrediPro Academy</p>
                                 </div>
+                            </div>
+
+                            <h1 className="text-3xl md:text-4xl font-bold mb-4">
+                                Client Program Library
+                            </h1>
+
+                            <p className="text-lg text-burgundy-100 max-w-2xl mb-6">
+                                Professional, done-for-you programs and business kits.
+                                <span className="text-gold-300 font-medium"> Start earning faster with client-ready assets.</span>
+                            </p>
+
+                            <div className="flex flex-wrap gap-4 text-sm text-white/80 mb-6">
+                                <span className="flex items-center gap-1"><Package className="w-4 h-4 text-gold-400" /> {CORE_PROGRAMS.length + SPECIALTY_KITS.length + BUSINESS_KITS.length}+ Resources</span>
+                                <span className="flex items-center gap-1"><Users className="w-4 h-4 text-gold-400" /> 743+ practitioners using</span>
+                                <span className="flex items-center gap-1"><Star className="w-4 h-4 text-gold-400" /> 4.9 Avg Rating</span>
+                            </div>
+
+                            {/* Value Proposition */}
+                            <div className="bg-white/10 backdrop-blur-sm rounded-xl p-4 border border-white/20 max-w-lg">
+                                <p className="text-sm font-medium text-gold-300 mb-2">Why DFY Resources?</p>
+                                <ul className="text-sm text-white/80 space-y-1">
+                                    <li className="flex items-center gap-2"><CheckCircle className="w-4 h-4 text-green-400" /> Start earning immediately after certification</li>
+                                    <li className="flex items-center gap-2"><CheckCircle className="w-4 h-4 text-green-400" /> Look professional from Day 1</li>
+                                    <li className="flex items-center gap-2"><CheckCircle className="w-4 h-4 text-green-400" /> White-label rights included</li>
+                                </ul>
                             </div>
                         </div>
 
-                        {/* Accelerator Bundles */}
-                        {ACCELERATOR_BUNDLES.map((bundle) => (
-                            <div key={bundle.id} className="bg-gradient-to-r from-burgundy-50 via-white to-gold-50 rounded-2xl border-2 border-burgundy-200 p-8 relative overflow-hidden">
-                                <div className={`absolute top-0 right-0 ${bundle.badgeColor} text-white px-6 py-2 text-sm font-bold rounded-bl-2xl`}>
-                                    {bundle.badge}
+                        {/* Quick Stats Card */}
+                        <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-6 border border-white/20 w-full md:w-80">
+                            <p className="text-sm font-semibold text-gold-300 mb-4">Practitioner Results</p>
+                            <div className="space-y-4">
+                                <div className="flex items-center justify-between">
+                                    <span className="text-white/80 text-sm">Avg. client pricing:</span>
+                                    <span className="font-bold text-white">$1,500+</span>
                                 </div>
+                                <div className="flex items-center justify-between">
+                                    <span className="text-white/80 text-sm">Time to first client:</span>
+                                    <span className="font-bold text-white">2-4 weeks</span>
+                                </div>
+                                <div className="flex items-center justify-between">
+                                    <span className="text-white/80 text-sm">ROI on resources:</span>
+                                    <span className="font-bold text-green-400">10-50x</span>
+                                </div>
+                            </div>
+                            <div className="mt-4 pt-4 border-t border-white/20">
+                                <p className="text-xs text-white/60 italic">"I made back my investment with my first client!" — Sarah M.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
 
-                                <div className="flex flex-col lg:flex-row gap-8">
-                                    <div className="flex-1">
-                                        <div className="flex items-center gap-4 mb-4">
-                                            <span className="text-6xl">{bundle.icon}</span>
+            {/* Access Notice for Mini Diploma */}
+            {!canAccess && (
+                <div className="mb-6 bg-gradient-to-r from-gold-50 to-amber-50 border border-gold-200 rounded-xl p-4 flex items-center justify-between">
+                    <div className="flex items-center gap-3">
+                        <div className="w-10 h-10 bg-gold-100 rounded-xl flex items-center justify-center">
+                            <Lock className="w-5 h-5 text-gold-600" />
+                        </div>
+                        <div>
+                            <p className="font-semibold text-gray-900">Unlock Full Access</p>
+                            <p className="text-sm text-gray-600">Complete your Step 1 Certification to access DFY resources</p>
+                        </div>
+                    </div>
+                    <Button className="bg-burgundy-600 hover:bg-burgundy-700">
+                        View Certification <ChevronRight className="w-4 h-4 ml-1" />
+                    </Button>
+                </div>
+            )}
+
+            {/* Category Tabs */}
+            <div className="flex flex-wrap gap-2 mb-8">
+                <button
+                    onClick={() => setActiveTab("core")}
+                    className={`px-6 py-3 rounded-xl font-medium transition-all flex items-center gap-2 ${activeTab === "core" ? "bg-burgundy-600 text-white" : "bg-white text-gray-600 hover:bg-gray-50 border border-gray-200"}`}
+                >
+                    <Target className="w-4 h-4" /> Core Programs ({CORE_PROGRAMS.length})
+                </button>
+                <button
+                    onClick={() => setActiveTab("specialty")}
+                    className={`px-6 py-3 rounded-xl font-medium transition-all flex items-center gap-2 ${activeTab === "specialty" ? "bg-burgundy-600 text-white" : "bg-white text-gray-600 hover:bg-gray-50 border border-gray-200"}`}
+                >
+                    <Sparkles className="w-4 h-4" /> Specialty Kits ({SPECIALTY_KITS.length})
+                </button>
+                <button
+                    onClick={() => setActiveTab("business")}
+                    className={`px-6 py-3 rounded-xl font-medium transition-all flex items-center gap-2 ${activeTab === "business" ? "bg-burgundy-600 text-white" : "bg-white text-gray-600 hover:bg-gray-50 border border-gray-200"}`}
+                >
+                    <Briefcase className="w-4 h-4" /> Business Kits ({BUSINESS_KITS.length})
+                </button>
+                <button
+                    onClick={() => setActiveTab("accelerators")}
+                    className={`px-6 py-3 rounded-xl font-medium transition-all flex items-center gap-2 ${activeTab === "accelerators" ? "bg-burgundy-600 text-white" : "bg-white text-gray-600 hover:bg-gray-50 border border-gray-200"}`}
+                >
+                    <Rocket className="w-4 h-4" /> Accelerators ({ACCELERATOR_BUNDLES.length})
+                    <Badge className="bg-red-100 text-red-700 border-0 text-xs">Save $10K+</Badge>
+                </button>
+            </div>
+
+            {/* Search */}
+            <div className="relative mb-8">
+                <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+                <Input
+                    placeholder="Search programs, kits, and resources..."
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    className="pl-12 py-5 rounded-xl border-gray-200"
+                />
+            </div>
+
+            {/* ==================== CORE PROGRAMS TAB ==================== */}
+            {activeTab === "core" && (
+                <div className="space-y-8">
+                    {/* Section Header */}
+                    <div className="flex items-center gap-3">
+                        <div className="w-12 h-12 bg-burgundy-100 rounded-xl flex items-center justify-center">
+                            <Target className="w-6 h-6 text-burgundy-600" />
+                        </div>
+                        <div>
+                            <h2 className="text-2xl font-bold text-gray-900">Core Client Programs</h2>
+                            <p className="text-gray-600">The backbone of every successful FM practice. Pick your signature offer.</p>
+                        </div>
+                    </div>
+
+                    {/* Programs Grid */}
+                    <div className="grid lg:grid-cols-2 gap-6">
+                        {CORE_PROGRAMS.map((program) => (
+                            <div key={program.id} className={`bg-white rounded-2xl border ${program.isBestseller ? "border-burgundy-300 ring-2 ring-burgundy-100" : "border-gray-100"} overflow-hidden hover:shadow-xl transition-all group relative`}>
+                                {program.isBestseller && (
+                                    <div className="absolute top-0 right-0 bg-burgundy-600 text-white px-4 py-1 text-sm font-semibold rounded-bl-xl z-10">
+                                        ⭐ BESTSELLER
+                                    </div>
+                                )}
+                                <div className="p-6">
+                                    {/* Header */}
+                                    <div className="flex items-start justify-between mb-4">
+                                        <div className="flex items-center gap-3">
+                                            <span className="text-4xl">{program.icon}</span>
                                             <div>
-                                                <h3 className="text-2xl font-bold text-gray-900">{bundle.title}</h3>
-                                                <p className="text-burgundy-600 font-medium">{bundle.subtitle}</p>
+                                                <Badge className={`${program.badgeColor} text-white border-0 text-xs mb-1`}>{program.badge}</Badge>
+                                                <h3 className="text-lg font-bold text-gray-900 group-hover:text-burgundy-600">{program.title}</h3>
+                                                <p className="text-sm text-burgundy-600">{program.subtitle}</p>
                                             </div>
-                                        </div>
-
-                                        <p className="text-gray-600 mb-4">{bundle.description}</p>
-
-                                        {/* Earning Guarantee */}
-                                        <div className="bg-gradient-to-r from-green-100 to-emerald-100 border border-green-300 rounded-xl p-4 mb-6">
-                                            <div className="flex items-center gap-3">
-                                                <div className="w-12 h-12 bg-green-500 rounded-full flex items-center justify-center">
-                                                    <Shield className="w-6 h-6 text-white" />
-                                                </div>
-                                                <div>
-                                                    <p className="text-xs font-bold text-green-800 uppercase">Earning Guarantee</p>
-                                                    <p className="text-lg font-bold text-green-700">{bundle.earningGuarantee}</p>
-                                                </div>
-                                            </div>
-                                        </div>
-
-                                        {/* DFY Highlights */}
-                                        {"highlights" in bundle && (
-                                            <div className="bg-burgundy-50 border border-burgundy-200 rounded-xl p-4 mb-6">
-                                                <p className="text-sm font-bold text-burgundy-800 mb-3 flex items-center gap-2">
-                                                    <Sparkles className="w-4 h-4" /> DONE-FOR-YOU HIGHLIGHTS:
-                                                </p>
-                                                <div className="grid md:grid-cols-2 gap-2">
-                                                    {bundle.highlights.map((item, i) => (
-                                                        <div key={i} className="flex items-center gap-2 text-sm text-burgundy-700 font-medium">
-                                                            <CheckCircle className="w-4 h-4 text-burgundy-500" /> {item}
-                                                        </div>
-                                                    ))}
-                                                </div>
-                                            </div>
-                                        )}
-
-                                        <div className="bg-white/80 rounded-xl p-5 mb-6">
-                                            <p className="text-sm font-semibold text-gray-500 mb-3">EVERYTHING INCLUDED:</p>
-                                            <div className="grid md:grid-cols-2 gap-2">
-                                                {bundle.includes.map((item, i) => (
-                                                    <div key={i} className="flex items-start gap-2 text-sm text-gray-700">
-                                                        <CheckCircle className="w-4 h-4 text-green-500 flex-shrink-0 mt-0.5" /> {item}
-                                                    </div>
-                                                ))}
-                                            </div>
-                                        </div>
-
-                                        <div className="flex items-center gap-4 text-sm text-gray-500">
-                                            <span><Star className="w-4 h-4 inline mr-1 text-yellow-500" /> {bundle.rating} ({bundle.reviewCount} reviews)</span>
-                                            <span>•</span>
-                                            <span><Users className="w-4 h-4 inline mr-1" /> {bundle.buyers} practitioners enrolled</span>
-                                            <span>•</span>
-                                            <span><Clock className="w-4 h-4 inline mr-1" /> {bundle.duration}</span>
                                         </div>
                                     </div>
 
-                                    <div className="lg:w-80 bg-white rounded-xl p-6 shadow-lg">
-                                        {/* Duration Badge */}
-                                        <div className="text-center mb-4">
-                                            <Badge className="bg-burgundy-100 text-burgundy-700 border-0 text-sm px-4 py-1 mb-3">
-                                                <Clock className="w-3 h-3 inline mr-1" /> {bundle.duration} Program
-                                            </Badge>
-                                            <div className="mb-2">
-                                                <span className="text-4xl font-bold text-burgundy-700">${bundle.price.toLocaleString()}</span>
-                                                <span className="text-xl text-gray-400 line-through ml-2">${bundle.compareAtPrice.toLocaleString()}</span>
+                                    <p className="text-gray-600 text-sm mb-4">{program.description}</p>
+
+                                    {/* Client Pricing Highlight */}
+                                    <div className="bg-green-50 border border-green-100 rounded-xl p-3 mb-4">
+                                        <div className="flex items-center gap-2">
+                                            <DollarSign className="w-5 h-5 text-green-600" />
+                                            <div>
+                                                <p className="text-xs text-green-700 font-medium">Your clients pay you:</p>
+                                                <p className="text-lg font-bold text-green-700">{program.clientPricing}</p>
                                             </div>
-                                            <Badge className="bg-red-100 text-red-700 border-0 text-lg px-4 py-1">
-                                                Save ${bundle.savings.toLocaleString()}
-                                            </Badge>
                                         </div>
+                                    </div>
 
-                                        <Button
-                                            className={`w-full py-6 text-lg mb-3 ${canAccess ? "bg-burgundy-600 hover:bg-burgundy-700" : "bg-gray-400"}`}
-                                            onClick={() => handlePurchase(bundle)}
-                                        >
-                                            {canAccess ? <><Zap className="w-5 h-5 mr-2" /> Get Accelerator</> : <><Lock className="w-5 h-5 mr-2" /> Unlock Access</>}
-                                        </Button>
+                                    {/* What's Included */}
+                                    <div className="bg-gray-50 rounded-xl p-4 mb-4">
+                                        <p className="text-xs font-semibold text-gray-500 mb-2">WHAT'S INCLUDED:</p>
+                                        <ul className="space-y-1">
+                                            {program.includes.slice(0, 4).map((item, i) => (
+                                                <li key={i} className="text-sm text-gray-700 flex items-start gap-2">
+                                                    <CheckCircle className="w-4 h-4 text-burgundy-500 flex-shrink-0 mt-0.5" /> {item}
+                                                </li>
+                                            ))}
+                                            {program.includes.length > 4 && (
+                                                <li className="text-sm text-burgundy-600 font-medium">+ {program.includes.length - 4} more...</li>
+                                            )}
+                                        </ul>
+                                    </div>
 
-                                        {/* Contact Coach CTA */}
-                                        <Button
-                                            variant="outline"
-                                            className="w-full py-4 mb-3 border-burgundy-300 text-burgundy-700 hover:bg-burgundy-50"
-                                        >
-                                            <Users className="w-4 h-4 mr-2" /> Contact Your Coach
-                                        </Button>
-
-                                        <p className="text-xs text-center text-gray-500 mb-3">Questions? Chat with your coach first.</p>
-
-                                        <div className="pt-3 border-t border-gray-100 space-y-2">
-                                            <p className="text-xs text-gray-500 text-center">
-                                                💳 Payment plans available
-                                            </p>
-                                            <p className="text-xs text-green-600 text-center font-medium">
-                                                ✓ Earning Guarantee Included
-                                            </p>
+                                    {/* Meta */}
+                                    <div className="flex items-center justify-between text-xs text-gray-500 mb-4">
+                                        <div className="flex items-center gap-2">
+                                            <span><Star className="w-3 h-3 inline mr-1 text-yellow-500" /> {program.rating}</span>
+                                            <span>•</span>
+                                            <span>{program.buyers?.toLocaleString()}+ purchased</span>
                                         </div>
+                                        <button
+                                            onClick={() => setPreviewItem(program)}
+                                            className="text-burgundy-600 hover:text-burgundy-700 font-medium flex items-center gap-1"
+                                        >
+                                            <Eye className="w-3 h-3" /> Preview
+                                        </button>
+                                    </div>
+
+                                    {/* Pricing & CTA */}
+                                    <div className="flex items-center justify-between pt-4 border-t border-gray-100">
+                                        <div>
+                                            <span className="text-2xl font-bold text-burgundy-700">${program.price}</span>
+                                            <span className="text-lg text-gray-400 line-through ml-2">${program.compareAtPrice}</span>
+                                        </div>
+                                        <Button
+                                            className={`${canAccess ? "bg-burgundy-600 hover:bg-burgundy-700" : "bg-gray-400"}`}
+                                            onClick={() => handlePurchase(program)}
+                                        >
+                                            {canAccess ? <><ShoppingCart className="w-4 h-4 mr-2" /> Get Program</> : <><Lock className="w-4 h-4 mr-2" /> Unlock</>}
+                                        </Button>
                                     </div>
                                 </div>
                             </div>
                         ))}
                     </div>
-                )}
+                </div>
+            )}
 
-                {/* Bottom CTA */}
-                <div className="mt-12 bg-gradient-to-r from-burgundy-700 to-burgundy-800 rounded-2xl p-8 text-white">
-                    <div className="flex flex-col md:flex-row items-center justify-between gap-6">
-                        <div className="flex items-center gap-4">
-                            <div className="w-16 h-16 bg-white/10 rounded-2xl flex items-center justify-center">
-                                <svg xmlns="http://www.w3.org/2000/svg" className="w-9 h-9 text-gold-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                                    <path d="M22 10v6M2 10l10-5 10 5-10 5z"/>
-                                    <path d="M6 12v5c3 3 9 3 12 0v-5"/>
-                                </svg>
-                            </div>
-                            <div>
-                                <h2 className="text-2xl font-bold mb-1">Not Sure Where to Start?</h2>
-                                <p className="text-white/70">Chat with your coach and we'll recommend the right resources for you.</p>
-                            </div>
+            {/* ==================== SPECIALTY KITS TAB ==================== */}
+            {activeTab === "specialty" && (
+                <div className="space-y-8">
+                    {/* Section Header */}
+                    <div className="flex items-center gap-3">
+                        <div className="w-12 h-12 bg-purple-100 rounded-xl flex items-center justify-center">
+                            <Sparkles className="w-6 h-6 text-purple-600" />
                         </div>
-                        <Button className="bg-gold-400 hover:bg-gold-500 text-burgundy-900 font-semibold px-8 py-6 text-lg">
-                            Chat with Your Coach <ChevronRight className="w-5 h-5 ml-2" />
-                        </Button>
+                        <div>
+                            <h2 className="text-2xl font-bold text-gray-900">Specialty Client Kits</h2>
+                            <p className="text-gray-600">Problem-specific add-ons to enhance your core programs.</p>
+                        </div>
+                    </div>
+
+                    {/* Kits Grid */}
+                    <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                        {SPECIALTY_KITS.map((kit) => (
+                            <div key={kit.id} className="bg-white rounded-2xl border border-gray-100 overflow-hidden hover:shadow-lg transition-all group">
+                                <div className="p-6">
+                                    <div className="flex items-start justify-between mb-3">
+                                        <span className="text-3xl">{kit.icon}</span>
+                                        <Badge variant="outline" className="text-xs">{kit.category}</Badge>
+                                    </div>
+
+                                    <h3 className="text-lg font-bold text-gray-900 mb-1 group-hover:text-burgundy-600">{kit.title}</h3>
+                                    <p className="text-sm text-burgundy-600 mb-2">{kit.subtitle}</p>
+                                    <p className="text-gray-600 text-sm mb-3">{kit.description}</p>
+
+                                    {/* What's Included Preview */}
+                                    <div className="bg-gray-50 rounded-lg p-3 mb-3">
+                                        <p className="text-xs font-semibold text-gray-500 mb-2">INCLUDES:</p>
+                                        <ul className="space-y-1">
+                                            {kit.includes.slice(0, 3).map((item, i) => (
+                                                <li key={i} className="text-xs text-gray-600 flex items-start gap-1">
+                                                    <CheckCircle className="w-3 h-3 text-burgundy-500 flex-shrink-0 mt-0.5" /> {item}
+                                                </li>
+                                            ))}
+                                            {kit.includes.length > 3 && (
+                                                <li className="text-xs text-burgundy-600 font-medium">+ {kit.includes.length - 3} more...</li>
+                                            )}
+                                        </ul>
+                                    </div>
+
+                                    {/* Client Pricing */}
+                                    <div className="bg-green-50 rounded-lg p-2 mb-3 flex items-center gap-2">
+                                        <DollarSign className="w-4 h-4 text-green-600" />
+                                        <span className="text-sm text-green-700">Client pricing: <strong>{kit.clientPricing}</strong></span>
+                                    </div>
+
+                                    <div className="flex items-center justify-between text-xs text-gray-500 mb-4">
+                                        <div className="flex items-center gap-2">
+                                            <span><Star className="w-3 h-3 inline mr-1 text-yellow-500" /> {kit.rating}</span>
+                                            <span>•</span>
+                                            <span>{kit.reviewCount} reviews</span>
+                                        </div>
+                                        <button
+                                            onClick={() => setPreviewItem(kit)}
+                                            className="text-burgundy-600 hover:text-burgundy-700 font-medium flex items-center gap-1"
+                                        >
+                                            <Eye className="w-3 h-3" /> Preview
+                                        </button>
+                                    </div>
+
+                                    <div className="flex items-center justify-between pt-3 border-t border-gray-100">
+                                        <div>
+                                            <span className="text-xl font-bold text-burgundy-700">${kit.price}</span>
+                                            <span className="text-sm text-gray-400 line-through ml-2">${kit.compareAtPrice}</span>
+                                        </div>
+                                        <Button
+                                            size="sm"
+                                            className={`${canAccess ? "bg-burgundy-600 hover:bg-burgundy-700" : "bg-gray-400"}`}
+                                            onClick={() => handlePurchase(kit)}
+                                        >
+                                            {canAccess ? "Add to Cart" : <Lock className="w-4 h-4" />}
+                                        </Button>
+                                    </div>
+                                </div>
+                            </div>
+                        ))}
                     </div>
                 </div>
+            )}
 
-                {/* AccrediPro Branding Footer */}
-                <div className="mt-8 text-center">
-                    <div className="inline-flex items-center gap-2 text-sm text-gray-400">
-                        <div className="w-6 h-6 bg-burgundy-600 rounded flex items-center justify-center">
-                            <svg xmlns="http://www.w3.org/2000/svg" className="w-4 h-4 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                                <path d="M22 10v6M2 10l10-5 10 5-10 5z"/>
+            {/* ==================== BUSINESS KITS TAB ==================== */}
+            {activeTab === "business" && (
+                <div className="space-y-8">
+                    {/* Section Header */}
+                    <div className="flex items-center gap-3">
+                        <div className="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center">
+                            <Briefcase className="w-6 h-6 text-blue-600" />
+                        </div>
+                        <div>
+                            <h2 className="text-2xl font-bold text-gray-900">Practitioner Business Kits</h2>
+                            <p className="text-gray-600">DFY infrastructure for your practice. Remove all setup friction.</p>
+                        </div>
+                    </div>
+
+                    {/* Business Kits */}
+                    <div className="grid lg:grid-cols-3 gap-6">
+                        {BUSINESS_KITS.map((kit) => (
+                            <div key={kit.id} className={`bg-white rounded-2xl border ${kit.isPopular ? "border-green-300 ring-2 ring-green-100" : "border-gray-100"} overflow-hidden hover:shadow-xl transition-all relative`}>
+                                {kit.isPopular && (
+                                    <div className="absolute top-0 right-0 bg-green-600 text-white px-3 py-1 text-xs font-semibold rounded-bl-xl">
+                                        🔥 POPULAR
+                                    </div>
+                                )}
+                                <div className="p-6">
+                                    <div className="flex items-center gap-3 mb-4">
+                                        <span className="text-3xl">{kit.icon}</span>
+                                        <Badge className={`${kit.badgeColor} text-white border-0 text-xs`}>{kit.badge}</Badge>
+                                    </div>
+
+                                    <h3 className="text-xl font-bold text-gray-900 mb-1">{kit.title}</h3>
+                                    <p className="text-sm text-burgundy-600 mb-3">{kit.subtitle}</p>
+                                    <p className="text-gray-600 text-sm mb-4">{kit.description}</p>
+
+                                    <div className="bg-gray-50 rounded-xl p-4 mb-4">
+                                        <p className="text-xs font-semibold text-gray-500 mb-2">INCLUDES:</p>
+                                        <ul className="space-y-1">
+                                            {kit.includes.slice(0, 5).map((item, i) => (
+                                                <li key={i} className="text-sm text-gray-700 flex items-start gap-2">
+                                                    <CheckCircle className="w-4 h-4 text-green-500 flex-shrink-0 mt-0.5" /> {item}
+                                                </li>
+                                            ))}
+                                            {kit.includes.length > 5 && (
+                                                <li className="text-sm text-burgundy-600 font-medium">+ {kit.includes.length - 5} more...</li>
+                                            )}
+                                        </ul>
+                                    </div>
+
+                                    <div className="flex items-center justify-between text-xs text-gray-500 mb-4">
+                                        <div className="flex items-center gap-2">
+                                            <span><Star className="w-3 h-3 inline mr-1 text-yellow-500" /> {kit.rating}</span>
+                                            <span>•</span>
+                                            <span>{kit.buyers?.toLocaleString()}+ purchased</span>
+                                        </div>
+                                        <button
+                                            onClick={() => setPreviewItem(kit)}
+                                            className="text-burgundy-600 hover:text-burgundy-700 font-medium flex items-center gap-1"
+                                        >
+                                            <Eye className="w-3 h-3" /> Preview
+                                        </button>
+                                    </div>
+
+                                    <div className="border-t border-gray-100 pt-4">
+                                        <div className="flex items-center justify-between mb-3">
+                                            <div>
+                                                <span className="text-2xl font-bold text-burgundy-700">${kit.price.toLocaleString()}</span>
+                                                <span className="text-lg text-gray-400 line-through ml-2">${kit.compareAtPrice.toLocaleString()}</span>
+                                            </div>
+                                        </div>
+                                        <Button
+                                            className={`w-full ${canAccess ? "bg-burgundy-600 hover:bg-burgundy-700" : "bg-gray-400"}`}
+                                            onClick={() => handlePurchase(kit)}
+                                        >
+                                            {canAccess ? <><ShoppingCart className="w-4 h-4 mr-2" /> Get Business Kit</> : <><Lock className="w-4 h-4 mr-2" /> Unlock Access</>}
+                                        </Button>
+                                    </div>
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+                </div>
+            )}
+
+            {/* ==================== ACCELERATORS TAB ==================== */}
+            {activeTab === "accelerators" && (
+                <div className="space-y-8">
+                    {/* Section Header */}
+                    <div className="flex items-center gap-3">
+                        <div className="w-12 h-12 bg-gradient-to-br from-burgundy-100 to-gold-100 rounded-xl flex items-center justify-center">
+                            <Rocket className="w-6 h-6 text-burgundy-600" />
+                        </div>
+                        <div>
+                            <h2 className="text-2xl font-bold text-gray-900">Accelerator Bundles</h2>
+                            <p className="text-gray-600">Maximum value packages for serious practitioners ready to scale. <span className="text-burgundy-600 font-semibold">We handle EVERYTHING — you just help people.</span></p>
+                        </div>
+                    </div>
+
+                    {/* DFY Banner */}
+                    <div className="bg-gradient-to-r from-green-50 to-emerald-50 border border-green-200 rounded-xl p-4">
+                        <div className="flex items-center gap-3">
+                            <div className="w-10 h-10 bg-green-100 rounded-full flex items-center justify-center">
+                                <Sparkles className="w-5 h-5 text-green-600" />
+                            </div>
+                            <div>
+                                <p className="font-bold text-green-800">100% DONE-FOR-YOU</p>
+                                <p className="text-sm text-green-700">Website, Social Media, Email Campaigns, Ads, Funnels — We create it ALL. You focus on helping clients.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* Accelerator Bundles */}
+                    {ACCELERATOR_BUNDLES.map((bundle) => (
+                        <div key={bundle.id} className="bg-gradient-to-r from-burgundy-50 via-white to-gold-50 rounded-2xl border-2 border-burgundy-200 p-8 relative overflow-hidden">
+                            <div className={`absolute top-0 right-0 ${bundle.badgeColor} text-white px-6 py-2 text-sm font-bold rounded-bl-2xl`}>
+                                {bundle.badge}
+                            </div>
+
+                            <div className="flex flex-col lg:flex-row gap-8">
+                                <div className="flex-1">
+                                    <div className="flex items-center gap-4 mb-4">
+                                        <span className="text-6xl">{bundle.icon}</span>
+                                        <div>
+                                            <h3 className="text-2xl font-bold text-gray-900">{bundle.title}</h3>
+                                            <p className="text-burgundy-600 font-medium">{bundle.subtitle}</p>
+                                        </div>
+                                    </div>
+
+                                    <p className="text-gray-600 mb-4">{bundle.description}</p>
+
+                                    {/* Earning Guarantee */}
+                                    <div className="bg-gradient-to-r from-green-100 to-emerald-100 border border-green-300 rounded-xl p-4 mb-6">
+                                        <div className="flex items-center gap-3">
+                                            <div className="w-12 h-12 bg-green-500 rounded-full flex items-center justify-center">
+                                                <Shield className="w-6 h-6 text-white" />
+                                            </div>
+                                            <div>
+                                                <p className="text-xs font-bold text-green-800 uppercase">Earning Guarantee</p>
+                                                <p className="text-lg font-bold text-green-700">{bundle.earningGuarantee}</p>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    {/* DFY Highlights */}
+                                    {"highlights" in bundle && (
+                                        <div className="bg-burgundy-50 border border-burgundy-200 rounded-xl p-4 mb-6">
+                                            <p className="text-sm font-bold text-burgundy-800 mb-3 flex items-center gap-2">
+                                                <Sparkles className="w-4 h-4" /> DONE-FOR-YOU HIGHLIGHTS:
+                                            </p>
+                                            <div className="grid md:grid-cols-2 gap-2">
+                                                {bundle.highlights.map((item, i) => (
+                                                    <div key={i} className="flex items-center gap-2 text-sm text-burgundy-700 font-medium">
+                                                        <CheckCircle className="w-4 h-4 text-burgundy-500" /> {item}
+                                                    </div>
+                                                ))}
+                                            </div>
+                                        </div>
+                                    )}
+
+                                    <div className="bg-white/80 rounded-xl p-5 mb-6">
+                                        <p className="text-sm font-semibold text-gray-500 mb-3">EVERYTHING INCLUDED:</p>
+                                        <div className="grid md:grid-cols-2 gap-2">
+                                            {bundle.includes.map((item, i) => (
+                                                <div key={i} className="flex items-start gap-2 text-sm text-gray-700">
+                                                    <CheckCircle className="w-4 h-4 text-green-500 flex-shrink-0 mt-0.5" /> {item}
+                                                </div>
+                                            ))}
+                                        </div>
+                                    </div>
+
+                                    <div className="flex items-center gap-4 text-sm text-gray-500">
+                                        <span><Star className="w-4 h-4 inline mr-1 text-yellow-500" /> {bundle.rating} ({bundle.reviewCount} reviews)</span>
+                                        <span>•</span>
+                                        <span><Users className="w-4 h-4 inline mr-1" /> {bundle.buyers} practitioners enrolled</span>
+                                        <span>•</span>
+                                        <span><Clock className="w-4 h-4 inline mr-1" /> {bundle.duration}</span>
+                                    </div>
+                                </div>
+
+                                <div className="lg:w-80 bg-white rounded-xl p-6 shadow-lg">
+                                    {/* Duration Badge */}
+                                    <div className="text-center mb-4">
+                                        <Badge className="bg-burgundy-100 text-burgundy-700 border-0 text-sm px-4 py-1 mb-3">
+                                            <Clock className="w-3 h-3 inline mr-1" /> {bundle.duration} Program
+                                        </Badge>
+                                        <div className="mb-2">
+                                            <span className="text-4xl font-bold text-burgundy-700">${bundle.price.toLocaleString()}</span>
+                                            <span className="text-xl text-gray-400 line-through ml-2">${bundle.compareAtPrice.toLocaleString()}</span>
+                                        </div>
+                                        <Badge className="bg-red-100 text-red-700 border-0 text-lg px-4 py-1">
+                                            Save ${bundle.savings.toLocaleString()}
+                                        </Badge>
+                                    </div>
+
+                                    <Button
+                                        className={`w-full py-6 text-lg mb-3 ${canAccess ? "bg-burgundy-600 hover:bg-burgundy-700" : "bg-gray-400"}`}
+                                        onClick={() => handlePurchase(bundle)}
+                                    >
+                                        {canAccess ? <><Zap className="w-5 h-5 mr-2" /> Get Accelerator</> : <><Lock className="w-5 h-5 mr-2" /> Unlock Access</>}
+                                    </Button>
+
+                                    {/* Contact Coach CTA */}
+                                    <Button
+                                        variant="outline"
+                                        className="w-full py-4 mb-3 border-burgundy-300 text-burgundy-700 hover:bg-burgundy-50"
+                                    >
+                                        <Users className="w-4 h-4 mr-2" /> Contact Your Coach
+                                    </Button>
+
+                                    <p className="text-xs text-center text-gray-500 mb-3">Questions? Chat with your coach first.</p>
+
+                                    <div className="pt-3 border-t border-gray-100 space-y-2">
+                                        <p className="text-xs text-gray-500 text-center">
+                                            💳 Payment plans available
+                                        </p>
+                                        <p className="text-xs text-green-600 text-center font-medium">
+                                            ✓ Earning Guarantee Included
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    ))}
+                </div>
+            )}
+
+            {/* Bottom CTA */}
+            <div className="mt-12 bg-gradient-to-r from-burgundy-700 to-burgundy-800 rounded-2xl p-8 text-white">
+                <div className="flex flex-col md:flex-row items-center justify-between gap-6">
+                    <div className="flex items-center gap-4">
+                        <div className="w-16 h-16 bg-white/10 rounded-2xl flex items-center justify-center">
+                            <svg xmlns="http://www.w3.org/2000/svg" className="w-9 h-9 text-gold-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                                <path d="M22 10v6M2 10l10-5 10 5-10 5z" />
+                                <path d="M6 12v5c3 3 9 3 12 0v-5" />
                             </svg>
                         </div>
-                        <span>AccrediPro Academy • Client Program Library</span>
+                        <div>
+                            <h2 className="text-2xl font-bold mb-1">Not Sure Where to Start?</h2>
+                            <p className="text-white/70">Chat with your coach and we'll recommend the right resources for you.</p>
+                        </div>
                     </div>
+                    <Button className="bg-gold-400 hover:bg-gold-500 text-burgundy-900 font-semibold px-8 py-6 text-lg">
+                        Chat with Your Coach <ChevronRight className="w-5 h-5 ml-2" />
+                    </Button>
+                </div>
+            </div>
+
+            {/* AccrediPro Branding Footer */}
+            <div className="mt-8 text-center">
+                <div className="inline-flex items-center gap-2 text-sm text-gray-400">
+                    <div className="w-6 h-6 bg-burgundy-600 rounded flex items-center justify-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" className="w-4 h-4 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                            <path d="M22 10v6M2 10l10-5 10 5-10 5z" />
+                        </svg>
+                    </div>
+                    <span>AccrediPro Academy • Client Program Library</span>
                 </div>
             </div>
 
             {/* Preview Modal */}
             {previewItem && (
-                <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4" onClick={() => setPreviewItem(null)}>
-                    <div className="bg-white rounded-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto shadow-2xl" onClick={(e) => e.stopPropagation()}>
-                        {/* Header */}
-                        <div className="sticky top-0 bg-gradient-to-r from-burgundy-700 to-burgundy-800 text-white p-6 rounded-t-2xl">
-                            <button
-                                onClick={() => setPreviewItem(null)}
-                                className="absolute top-4 right-4 w-8 h-8 bg-white/20 rounded-full flex items-center justify-center hover:bg-white/30"
-                            >
-                                <X className="w-5 h-5" />
-                            </button>
-                            <div className="flex items-start gap-4">
-                                <span className="text-5xl">{previewItem.icon}</span>
-                                <div>
-                                    <h2 className="text-2xl font-bold">{previewItem.title}</h2>
-                                    <p className="text-burgundy-200">{previewItem.subtitle}</p>
-                                </div>
-                            </div>
-                        </div>
-
-                        {/* Content */}
-                        <div className="p-6">
-                            <div className="mb-6">
-                                <h3 className="font-bold text-gray-900 mb-2">About This Resource</h3>
-                                <p className="text-gray-600 leading-relaxed">{previewItem.description}</p>
-                            </div>
-
-                            {"clientPricing" in previewItem && (
-                                <div className="bg-green-50 border border-green-200 rounded-xl p-4 mb-6">
-                                    <div className="flex items-center gap-3">
-                                        <DollarSign className="w-6 h-6 text-green-600" />
-                                        <div>
-                                            <p className="text-sm text-green-700">Your clients will pay you:</p>
-                                            <p className="text-2xl font-bold text-green-700">{previewItem.clientPricing}</p>
-                                        </div>
-                                    </div>
-                                </div>
-                            )}
-
-                            <div className="mb-6">
-                                <h3 className="font-bold text-gray-900 mb-3">What's Included</h3>
-                                <ul className="space-y-2">
-                                    {previewItem.includes.map((item, i) => (
-                                        <li key={i} className="flex items-start gap-2 text-sm text-gray-700">
-                                            <CheckCircle className="w-4 h-4 text-burgundy-500 flex-shrink-0 mt-0.5" />
-                                            {item}
-                                        </li>
-                                    ))}
-                                </ul>
-                            </div>
-
-                            {"bestFor" in previewItem && (
-                                <div className="mb-6">
-                                    <h3 className="font-bold text-gray-900 mb-3">Best For</h3>
-                                    <div className="flex flex-wrap gap-2">
-                                        {previewItem.bestFor.map((item) => (
-                                            <Badge key={item} variant="outline" className="bg-burgundy-50 text-burgundy-700 border-burgundy-200">
-                                                {item}
-                                            </Badge>
-                                        ))}
-                                    </div>
-                                </div>
-                            )}
-
-                            {/* Pricing & CTA */}
-                            <div className="border-t pt-6 flex items-center justify-between">
-                                <div>
-                                    <span className="text-3xl font-bold text-burgundy-700">${previewItem.price.toLocaleString()}</span>
-                                    <span className="text-lg text-gray-400 line-through ml-2">${previewItem.compareAtPrice.toLocaleString()}</span>
-                                </div>
-                                <Button
-                                    className={`px-8 ${canAccess ? "bg-burgundy-600 hover:bg-burgundy-700" : "bg-gray-400"}`}
-                                    onClick={() => {
-                                        handlePurchase(previewItem);
-                                        setPreviewItem(null);
-                                    }}
-                                >
-                                    {canAccess ? <><ShoppingCart className="w-4 h-4 mr-2" /> Get This Resource</> : <><Lock className="w-4 h-4 mr-2" /> Unlock Access</>}
-                                </Button>
+            <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4" onClick={() => setPreviewItem(null)}>
+                <div className="bg-white rounded-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto shadow-2xl" onClick={(e) => e.stopPropagation()}>
+                    {/* Header */}
+                    <div className="sticky top-0 bg-gradient-to-r from-burgundy-700 to-burgundy-800 text-white p-6 rounded-t-2xl">
+                        <button
+                            onClick={() => setPreviewItem(null)}
+                            className="absolute top-4 right-4 w-8 h-8 bg-white/20 rounded-full flex items-center justify-center hover:bg-white/30"
+                        >
+                            <X className="w-5 h-5" />
+                        </button>
+                        <div className="flex items-start gap-4">
+                            <span className="text-5xl">{previewItem.icon}</span>
+                            <div>
+                                <h2 className="text-2xl font-bold">{previewItem.title}</h2>
+                                <p className="text-burgundy-200">{previewItem.subtitle}</p>
                             </div>
                         </div>
                     </div>
+
+                    {/* Content */}
+                    <div className="p-6">
+                        <div className="mb-6">
+                            <h3 className="font-bold text-gray-900 mb-2">About This Resource</h3>
+                            <p className="text-gray-600 leading-relaxed">{previewItem.description}</p>
+                        </div>
+
+                        {"clientPricing" in previewItem && (
+                            <div className="bg-green-50 border border-green-200 rounded-xl p-4 mb-6">
+                                <div className="flex items-center gap-3">
+                                    <DollarSign className="w-6 h-6 text-green-600" />
+                                    <div>
+                                        <p className="text-sm text-green-700">Your clients will pay you:</p>
+                                        <p className="text-2xl font-bold text-green-700">{previewItem.clientPricing}</p>
+                                    </div>
+                                </div>
+                            </div>
+                        )}
+
+                        <div className="mb-6">
+                            <h3 className="font-bold text-gray-900 mb-3">What's Included</h3>
+                            <ul className="space-y-2">
+                                {previewItem.includes.map((item, i) => (
+                                    <li key={i} className="flex items-start gap-2 text-sm text-gray-700">
+                                        <CheckCircle className="w-4 h-4 text-burgundy-500 flex-shrink-0 mt-0.5" />
+                                        {item}
+                                    </li>
+                                ))}
+                            </ul>
+                        </div>
+
+                        {"bestFor" in previewItem && (
+                            <div className="mb-6">
+                                <h3 className="font-bold text-gray-900 mb-3">Best For</h3>
+                                <div className="flex flex-wrap gap-2">
+                                    {previewItem.bestFor.map((item) => (
+                                        <Badge key={item} variant="outline" className="bg-burgundy-50 text-burgundy-700 border-burgundy-200">
+                                            {item}
+                                        </Badge>
+                                    ))}
+                                </div>
+                            </div>
+                        )}
+
+                        {/* Pricing & CTA */}
+                        <div className="border-t pt-6 flex items-center justify-between">
+                            <div>
+                                <span className="text-3xl font-bold text-burgundy-700">${previewItem.price.toLocaleString()}</span>
+                                <span className="text-lg text-gray-400 line-through ml-2">${previewItem.compareAtPrice.toLocaleString()}</span>
+                            </div>
+                            <Button
+                                className={`px-8 ${canAccess ? "bg-burgundy-600 hover:bg-burgundy-700" : "bg-gray-400"}`}
+                                onClick={() => {
+                                    handlePurchase(previewItem);
+                                    setPreviewItem(null);
+                                }}
+                            >
+                                {canAccess ? <><ShoppingCart className="w-4 h-4 mr-2" /> Get This Resource</> : <><Lock className="w-4 h-4 mr-2" /> Unlock Access</>}
+                            </Button>
+                        </div>
+                    </div>
                 </div>
+            </div>
             )}
         </div>
     );
