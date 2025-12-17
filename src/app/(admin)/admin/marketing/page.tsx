@@ -626,6 +626,28 @@ export default function MarketingPage() {
       toast.error("Failed to import emails");
     }
   }
+
+  // Generic import for any sequence
+  async function importSequenceEmails(sequenceId: string, sequenceName: string) {
+    if (!confirm(`This will delete existing emails and re-import from templates for "${sequenceName}". Continue?`)) return;
+    try {
+      const res = await fetch(`/api/admin/marketing/sequences/${sequenceId}/import-emails`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+      });
+      const data = await res.json();
+      if (res.ok) {
+        toast.success(`Imported ${data.imported || 0} emails`);
+        fetchSequences();
+      } else {
+        toast.error(data.error || "Failed to import emails");
+      }
+    } catch (error) {
+      console.error("Error importing sequence emails:", error);
+      toast.error("Failed to import emails");
+    }
+  }
+
   async function removeNurtureEnrollee(userId: string) {
     if (!confirm("Remove this user from the nurture sequence?")) return;
     try {
@@ -1420,6 +1442,9 @@ export default function MarketingPage() {
                         </Button>
                         <Button variant="outline" size="sm" onClick={() => { setSelectedSequence(seq); fetchEnrollments(seq.id); setShowEnrollments(true); }} title="View Enrolled Users">
                           <Users className="h-4 w-4 mr-1" />View
+                        </Button>
+                        <Button variant="outline" size="sm" onClick={() => importSequenceEmails(seq.id, seq.name)} title="Reset/Import Emails">
+                          <RefreshCw className="h-4 w-4 mr-1" />Reset
                         </Button>
                         <div className="flex items-center gap-2">
                           <Switch
