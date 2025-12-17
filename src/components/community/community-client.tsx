@@ -823,8 +823,9 @@ export function CommunityClient({ posts: dbPosts, stats, communities = [], isAdm
 
               // Determine if this pinned post should show as announcement or regular pinned post
               // Introductions and coaching-tips pinned posts should be clickable (regular pinned)
-              // Only wins, graduates, career-pathway, questions-everyone-has show as announcements
-              const isAnnouncementStyle = post.isPinned && post.category !== 'introductions' && post.category !== 'coaching-tips';
+              // wins, graduates, career-pathway, questions-everyone-has show as announcements
+              const announcementCategories = ['wins', 'graduates', 'career-pathway', 'questions-everyone-has'];
+              const isAnnouncementStyle = post.isPinned && announcementCategories.includes(post.category || '');
 
               return (
                 // Pinned Announcements: Show full content inline, no clicking needed (except introductions)
@@ -888,18 +889,13 @@ export function CommunityClient({ posts: dbPosts, stats, communities = [], isAdm
                   // Regular Posts: Show as clickable cards
                   <Link key={post.id} href={`/community/${post.id}`}>
                     <Card className={`overflow-hidden hover:shadow-lg transition-all duration-200 shadow-sm hover:-translate-y-0.5 ${post.isPinned ? 'border-2 border-pink-300 ring-1 ring-pink-200' : 'border border-gray-100'}`}>
-                      {/* Pinned Banner for non-announcement pinned posts (like Introductions) */}
+                      {/* Pinned Banner for non-announcement pinned posts (like Introductions, Coaching Tips) */}
                       {post.isPinned && (
-                        <div className="bg-gradient-to-r from-pink-600 to-rose-500 px-4 py-2 flex items-center justify-between">
-                          <div className="flex items-center gap-2">
-                            <div className="p-1.5 rounded-lg bg-white/20">
-                              <Pin className="w-4 h-4 text-white" />
-                            </div>
-                            <span className="text-white font-bold text-sm">📌 Pinned Post</span>
+                        <div className="bg-gradient-to-r from-pink-600 to-rose-500 px-4 py-2 flex items-center gap-2">
+                          <div className="p-1.5 rounded-lg bg-white/20">
+                            <Pin className="w-4 h-4 text-white" />
                           </div>
-                          <Badge className="bg-white/20 text-white border-0 text-xs">
-                            {post.commentCount?.toLocaleString() || 0} stories shared
-                          </Badge>
+                          <span className="text-white font-bold text-sm">📌 Pinned Post</span>
                         </div>
                       )}
                       {/* Category Banner - Hide when filtering by that category or when pinned */}
