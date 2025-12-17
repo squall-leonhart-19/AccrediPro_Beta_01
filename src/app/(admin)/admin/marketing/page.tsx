@@ -745,8 +745,8 @@ export default function MarketingPage() {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">Marketing Automation</h1>
-          <p className="text-gray-600">Manage tags, sequences, and email analytics</p>
+          <h1 className="text-2xl font-bold text-gray-900">Email Marketing</h1>
+          <p className="text-gray-600">Manage tags, sequences, templates and email analytics</p>
         </div>
         <Button onClick={() => setShowCreateTag(true)}>
           <Plus className="h-4 w-4 mr-2" />
@@ -876,7 +876,7 @@ export default function MarketingPage() {
 
       {/* Main Content */}
       <Tabs value={activeTab} onValueChange={setActiveTab}>
-        <TabsList className="bg-white border">
+        <TabsList className="bg-white border flex-wrap">
           <TabsTrigger value="tags" className="flex items-center gap-2">
             <Tags className="h-4 w-4" />
             Tags ({tags.length})
@@ -884,6 +884,10 @@ export default function MarketingPage() {
           <TabsTrigger value="sequences" className="flex items-center gap-2">
             <Mail className="h-4 w-4" />
             Sequences ({sequences.length})
+          </TabsTrigger>
+          <TabsTrigger value="templates" className="flex items-center gap-2">
+            <Settings2 className="h-4 w-4" />
+            Templates
           </TabsTrigger>
           <TabsTrigger value="holidays" className="flex items-center gap-2">
             <Gift className="h-4 w-4" />
@@ -1501,6 +1505,127 @@ export default function MarketingPage() {
               </CardContent>
             </Card>
           </div>
+        </TabsContent>
+
+        {/* Email Templates Tab */}
+        <TabsContent value="templates" className="space-y-6">
+          <div className="flex justify-between items-center">
+            <div>
+              <h2 className="text-lg font-semibold">Email Templates</h2>
+              <p className="text-sm text-gray-500">Transactional and system email templates</p>
+            </div>
+            <Button
+              variant="outline"
+              onClick={() => window.location.href = "/admin/emails"}
+              className="gap-2"
+            >
+              <Settings2 className="h-4 w-4" />
+              Open Full Editor
+            </Button>
+          </div>
+
+          {/* Template Categories */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            <Card className="hover:shadow-md transition-shadow">
+              <CardHeader className="pb-3">
+                <CardTitle className="flex items-center gap-2 text-base">
+                  <div className="w-8 h-8 bg-blue-100 rounded-lg flex items-center justify-center">
+                    <UserPlus className="h-4 w-4 text-blue-600" />
+                  </div>
+                  Account Emails
+                </CardTitle>
+                <CardDescription>Registration, welcome, password reset</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-2 text-sm text-gray-600">
+                  <div className="flex items-center gap-2">
+                    <CheckCircle className="h-3 w-3 text-green-500" />
+                    Welcome Email
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <CheckCircle className="h-3 w-3 text-green-500" />
+                    Password Reset
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <CheckCircle className="h-3 w-3 text-green-500" />
+                    Login Credentials
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+
+            <Card className="hover:shadow-md transition-shadow">
+              <CardHeader className="pb-3">
+                <CardTitle className="flex items-center gap-2 text-base">
+                  <div className="w-8 h-8 bg-green-100 rounded-lg flex items-center justify-center">
+                    <Sparkles className="h-4 w-4 text-green-600" />
+                  </div>
+                  Mini Diploma
+                </CardTitle>
+                <CardDescription>Free mini diploma email journey</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-2 text-sm text-gray-600">
+                  <div className="flex items-center gap-2">
+                    <CheckCircle className="h-3 w-3 text-green-500" />
+                    Welcome to Mini Diploma
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <CheckCircle className="h-3 w-3 text-green-500" />
+                    Module Completion
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <CheckCircle className="h-3 w-3 text-green-500" />
+                    Certificate Ready
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+
+            <Card className="hover:shadow-md transition-shadow">
+              <CardHeader className="pb-3">
+                <CardTitle className="flex items-center gap-2 text-base">
+                  <div className="w-8 h-8 bg-amber-100 rounded-lg flex items-center justify-center">
+                    <Zap className="h-4 w-4 text-amber-600" />
+                  </div>
+                  Engagement
+                </CardTitle>
+                <CardDescription>Re-engagement and notification emails</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-2 text-sm text-gray-600">
+                  <div className="flex items-center gap-2">
+                    <CheckCircle className="h-3 w-3 text-green-500" />
+                    Inactivity Reminder
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <CheckCircle className="h-3 w-3 text-green-500" />
+                    New Message Alert
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <CheckCircle className="h-3 w-3 text-green-500" />
+                    Coach Message
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+
+          <Card className="bg-gradient-to-r from-burgundy-50 to-amber-50 border-burgundy-200">
+            <CardContent className="pt-6">
+              <div className="flex items-start gap-4">
+                <div className="w-12 h-12 bg-burgundy-100 rounded-xl flex items-center justify-center">
+                  <AlertCircle className="h-6 w-6 text-burgundy-600" />
+                </div>
+                <div>
+                  <h3 className="font-semibold text-burgundy-800">Need to edit templates?</h3>
+                  <p className="text-sm text-burgundy-700 mt-1">
+                    Click &quot;Open Full Editor&quot; above to access the complete email template editor where you can preview, edit HTML, and send test emails.
+                  </p>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
         </TabsContent>
 
         {/* Holiday Campaigns Tab */}

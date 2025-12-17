@@ -40,6 +40,9 @@ async function getAdminStats() {
   const lastMonth = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000);
   const twoWeeksAgo = new Date(now.getTime() - 14 * 24 * 60 * 60 * 1000);
 
+  // Base filter for real users (excludes fake profiles and null emails)
+  const realUserFilter = { email: { not: null }, isFakeProfile: false };
+
   const [
     totalUsers,
     totalCourses,
@@ -57,18 +60,17 @@ async function getAdminStats() {
     publishedCourses,
     avgCourseProgress,
   ] = await Promise.all([
-    // Only count users with email (registered users who can log in)
-    // Excludes imported leads without email addresses
-    prisma.user.count({ where: { email: { not: null } } }),
+    // Only count real users (excludes fake profiles and null emails)
+    prisma.user.count({ where: realUserFilter }),
     prisma.course.count(),
     prisma.enrollment.count(),
     prisma.certificate.count(),
-    prisma.user.count({ where: { email: { not: null }, createdAt: { gte: lastWeek } } }),
-    prisma.user.count({ where: { email: { not: null }, createdAt: { gte: twoWeeksAgo, lt: lastWeek } } }),
+    prisma.user.count({ where: { ...realUserFilter, createdAt: { gte: lastWeek } } }),
+    prisma.user.count({ where: { ...realUserFilter, createdAt: { gte: twoWeeksAgo, lt: lastWeek } } }),
     prisma.enrollment.count({
       where: { status: "COMPLETED", completedAt: { gte: lastMonth } },
     }),
-    prisma.user.count({ where: { email: { not: null }, lastLoginAt: { gte: lastWeek } } }),
+    prisma.user.count({ where: { ...realUserFilter, lastLoginAt: { gte: lastWeek } } }),
     prisma.enrollment.findMany({
       take: 5,
       orderBy: { enrolledAt: "desc" },
@@ -82,7 +84,7 @@ async function getAdminStats() {
       },
     }),
     prisma.user.findMany({
-      where: { email: { not: null } },
+      where: realUserFilter,
       take: 5,
       orderBy: { createdAt: "desc" },
       select: {
