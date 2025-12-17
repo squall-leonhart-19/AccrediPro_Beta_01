@@ -181,83 +181,42 @@ export default function FreeMiniDiplomaPage() {
       minHeight: '100vh'
     }}>
       <main style={{ maxWidth: 1160, margin: '0 auto', padding: 20 }}>
-        {/* Professional Header */}
+        {/* Top Banner */}
         <div style={{
-          background: 'linear-gradient(135deg, #2E5C8A, #3A6FA0)',
+          background: 'linear-gradient(90deg, #722F37, #8B3A42)',
           color: 'white',
           textAlign: 'center',
-          padding: 10,
-          margin: '-20px -20px 24px',
-          fontWeight: 800,
-          fontSize: 'clamp(0.7rem, 2vw, 0.9rem)',
-          letterSpacing: 0.3,
-          borderRadius: '16px 16px 0 0',
+          padding: '10px 16px',
+          fontSize: 'clamp(0.75rem, 2vw, 0.85rem)',
+          fontWeight: 700,
+          letterSpacing: 0.5,
           lineHeight: 1.4
         }}>
-          🌿 FREE FUNCTIONAL MEDICINE MINI DIPLOMA • OPEN TO ALL • LIMITED SPOTS
+          ⏰ LIMITED SPOTS — ENROLLMENT CLOSES SOON
         </div>
 
         {/* Hero */}
         <section style={{ textAlign: 'center', padding: '20px 0' }}>
-          <div style={{
-            display: 'inline-block',
-            background: 'linear-gradient(180deg, #FBF4F4, #F8EDED)',
-            border: '1px solid #D4A5A5',
-            color: '#722F37',
-            borderRadius: 999,
-            padding: '8px 18px',
-            fontWeight: 800,
-            letterSpacing: 0.3,
-            marginBottom: 14,
-            fontSize: '0.85rem'
-          }}>
-            🎓 NO EXPERIENCE REQUIRED • CAREER-CHANGERS WELCOME
-          </div>
-
           <h1 style={{
             margin: '12px auto',
             maxWidth: 900,
-            fontSize: 'clamp(24px, 5vw, 44px)',
+            fontSize: 'clamp(26px, 5vw, 48px)',
             lineHeight: 1.15,
             color: '#722F37',
             fontWeight: 900
           }}>
-            Free Functional Medicine Mini Diploma — Open Enrollment
+            Become a Certified Functional Medicine Practitioner in 3 Days
           </h1>
 
           <p style={{
-            maxWidth: 820,
-            margin: '12px auto 24px',
+            maxWidth: 720,
+            margin: '16px auto 28px',
             color: '#6B6E76',
             fontSize: 'clamp(15px, 2.6vw, 19px)',
             lineHeight: 1.6
           }}>
-            Discover the Foundations of Root-Cause Healing in 3 Days. Earn Your Mini Diploma • Pass the Final Exam • Unlock Your Graduation Pathway. Complete in 90 minutes or 3 days.
+            Learn root-cause healing, earn your Mini Diploma, and unlock a path to $5k-$10k/month helping others — <strong>no experience required.</strong>
           </p>
-
-          {/* Credentials Bar */}
-          <div style={{
-            display: 'flex',
-            flexWrap: 'wrap',
-            justifyContent: 'center',
-            gap: 8,
-            margin: '24px auto',
-            maxWidth: 800
-          }}>
-            {['✓ No Experience Required', '✓ Official Mini Diploma', '✓ 3-Day Training', '✓ 100% Free'].map((text, idx) => (
-              <div key={idx} style={{
-                background: '#FBF4F4',
-                border: '1px solid #D4A5A5',
-                padding: '6px 12px',
-                borderRadius: 8,
-                fontSize: '0.75rem',
-                fontWeight: 700,
-                color: '#722F37'
-              }}>
-                {text}
-              </div>
-            ))}
-          </div>
 
           {/* Stats Bar */}
           <div style={{
@@ -269,15 +228,15 @@ export default function FreeMiniDiplomaPage() {
             borderRadius: 14,
             padding: '16px 20px',
             margin: '24px auto',
-            maxWidth: 780,
+            maxWidth: 680,
             boxShadow: '0 12px 28px rgba(0,0,0,.07)',
             gap: 12,
             flexWrap: 'wrap'
           }}>
             {[
-              { number: '1,787+', label: 'Students Enrolled' },
-              { number: '$5k-$10k+', label: 'Earning Monthly' },
-              { number: '90m', label: 'Time to Complete' }
+              { number: '1,787+', label: 'Graduates' },
+              { number: '90 min', label: 'To Complete' },
+              { number: '100%', label: 'Free' }
             ].map((stat, idx) => (
               <div key={idx} style={{ textAlign: 'center', flex: 1, minWidth: 0 }}>
                 <span style={{
@@ -299,15 +258,53 @@ export default function FreeMiniDiplomaPage() {
             ))}
           </div>
 
-          {/* Hero Image */}
+          {/* HTML Certificate Preview */}
           <div style={{
-            margin: '28px auto',
-            maxWidth: 740,
-            borderRadius: 16,
-            overflow: 'hidden',
-            boxShadow: '0 20px 50px rgba(0,0,0,.1)'
+            margin: '32px auto',
+            maxWidth: 600,
+            background: 'linear-gradient(145deg, #FFFEF8, #FFF9E8)',
+            border: '4px solid #722F37',
+            borderRadius: 12,
+            padding: 24,
+            boxShadow: '0 20px 50px rgba(0,0,0,.12)',
+            position: 'relative'
           }}>
-            <img src="https://i.ibb.co/pvyLtpzx/Diploma-Certificate-2.png" alt="Mini Diploma Certificate Preview" style={{ width: '100%', height: 'auto', display: 'block' }} />
+            {/* Header Ribbon */}
+            <div style={{
+              background: 'linear-gradient(135deg, #722F37 0%, #8B3A42 100%)',
+              color: 'white',
+              padding: '12px 20px',
+              borderRadius: 8,
+              marginBottom: 20,
+              textAlign: 'center'
+            }}>
+              <div style={{ fontSize: '0.7rem', letterSpacing: 2, textTransform: 'uppercase', opacity: 0.9 }}>AccrediPro Academy</div>
+              <div style={{ fontSize: '1.1rem', fontWeight: 800, marginTop: 4 }}>Mini Diploma Certificate</div>
+            </div>
+
+            {/* Certificate Content */}
+            <div style={{ textAlign: 'center' }}>
+              <p style={{ color: '#722F37', fontSize: '0.85rem', margin: '0 0 8px', fontStyle: 'italic' }}>This certifies that</p>
+              <p style={{ color: '#722F37', fontSize: '1.4rem', fontWeight: 800, margin: '0 0 8px', fontFamily: 'Georgia, serif' }}>[Your Name Here]</p>
+              <p style={{ color: '#6B6E76', fontSize: '0.85rem', margin: '0 0 16px' }}>has successfully completed the</p>
+              <p style={{ color: '#722F37', fontSize: '1.1rem', fontWeight: 800, margin: '0 0 16px' }}>Functional Medicine Mini Diploma</p>
+
+              {/* Seal */}
+              <div style={{
+                width: 60,
+                height: 60,
+                borderRadius: '50%',
+                background: 'linear-gradient(135deg, #C9A14E, #E8C547)',
+                margin: '0 auto',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                boxShadow: '0 4px 12px rgba(201,161,78,0.4)'
+              }}>
+                <span style={{ fontSize: '1.5rem' }}>🎓</span>
+              </div>
+              <p style={{ color: '#722F37', fontSize: '0.75rem', marginTop: 12, fontWeight: 600 }}>Accredited • Recognized • Verified</p>
+            </div>
           </div>
 
           {/* Sarah Intro */}
