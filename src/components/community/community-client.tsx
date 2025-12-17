@@ -2,6 +2,7 @@
 
 import { useState, useMemo, useEffect } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -654,18 +655,16 @@ export function CommunityClient({ posts: dbPosts, stats, communities = [], isAdm
                     <button
                       key={cat.id}
                       onClick={() => setSelectedCategory(isSelected ? null : cat.id)}
-                      className={`relative flex flex-col items-center p-3 rounded-xl text-center transition-all duration-200 group overflow-hidden ${
-                        isSelected
+                      className={`relative flex flex-col items-center p-3 rounded-xl text-center transition-all duration-200 group overflow-hidden ${isSelected
                           ? `${colors.bg} border ${colors.border} shadow-md ring-2 ring-offset-1 ring-${cat.id === 'wins' ? 'amber' : cat.id === 'graduates' ? 'emerald' : cat.id === 'questions-everyone-has' ? 'blue' : cat.id === 'career-pathway' ? 'purple' : cat.id === 'coaching-tips' ? 'green' : 'pink'}-400`
                           : `bg-white hover:${colors.bg} border border-gray-100 hover:border-gray-200 hover:shadow-sm`
-                      }`}
+                        }`}
                     >
                       {/* Icon with gradient background when selected */}
-                      <div className={`p-2 rounded-lg mb-1.5 transition-all duration-200 ${
-                        isSelected
+                      <div className={`p-2 rounded-lg mb-1.5 transition-all duration-200 ${isSelected
                           ? `bg-gradient-to-br ${colors.gradient} shadow-sm`
                           : `${colors.iconBg} group-hover:scale-105`
-                      }`}>
+                        }`}>
                         <Icon className={`w-4 h-4 ${isSelected ? "text-white" : colors.icon}`} />
                       </div>
 
@@ -675,11 +674,10 @@ export function CommunityClient({ posts: dbPosts, stats, communities = [], isAdm
                       </span>
 
                       {/* Post count badge */}
-                      <div className={`mt-1.5 px-2 py-0.5 rounded-full text-[10px] font-bold ${
-                        isSelected
+                      <div className={`mt-1.5 px-2 py-0.5 rounded-full text-[10px] font-bold ${isSelected
                           ? `bg-gradient-to-r ${colors.gradient} text-white shadow-sm`
                           : `${colors.iconBg} ${colors.text}`
-                      }`}>
+                        }`}>
                         {postCount.toLocaleString()}
                       </div>
                     </button>
@@ -826,20 +824,26 @@ export function CommunityClient({ posts: dbPosts, stats, communities = [], isAdm
 
               return (
                 <Link key={post.id} href={`/community/${post.id}`}>
-                  <Card className={`overflow-hidden hover:shadow-lg transition-all duration-200 shadow-sm hover:-translate-y-0.5 ${
-                    post.isPinned
+                  <Card className={`overflow-hidden hover:shadow-lg transition-all duration-200 shadow-sm hover:-translate-y-0.5 ${post.isPinned
                       ? 'border-2 border-red-500 ring-2 ring-red-200 bg-red-50/30'
                       : 'border border-gray-100'
-                  }`}>
-                    {/* Pinned Post Banner - Prominent red banner */}
+                    }`}>
+                    {/* Pinned Announcement Banner - Red with AccrediPro Logo */}
                     {post.isPinned && (
-                      <div className="bg-gradient-to-r from-red-600 to-red-500 px-4 py-2 flex items-center">
-                        <div className="flex items-center gap-2">
-                          <div className="p-1.5 rounded-lg bg-white/20">
-                            <Pin className="w-4 h-4 text-white" />
-                          </div>
-                          <span className="text-white font-bold text-sm">Pinned Post</span>
+                      <div className="bg-gradient-to-r from-red-600 to-red-500 px-4 py-2 flex items-center justify-between">
+                        <div className="flex items-center gap-3">
+                          <Image
+                            src="/accredipro-logo-full.png"
+                            alt="AccrediPro"
+                            width={28}
+                            height={28}
+                            className="rounded"
+                          />
+                          <span className="text-white font-bold text-sm">📌 Announcement</span>
                         </div>
+                        <Badge className="bg-white/20 text-white border-0 text-[10px]">
+                          Pinned
+                        </Badge>
                       </div>
                     )}
                     {/* Category Banner - Hide when filtering by that category (and not pinned, since pinned has its own banner) */}
