@@ -1376,16 +1376,13 @@ export default function MarketingPage() {
                   <CardHeader className="pb-3">
                     <div className="flex items-center justify-between">
                       <div className="flex items-center gap-3">
-                        <div className={`p-2 rounded-lg ${seq.isActive ? "bg-burgundy-100" : "bg-gray-100"}`}>
-                          {seq.isActive ? <Play className="h-5 w-5 text-burgundy-600" /> : <Pause className="h-5 w-5 text-gray-400" />}
-                        </div>
                         <div>
                           <CardTitle className="text-lg">{seq.name}</CardTitle>
                           {seq.description && <CardDescription>{seq.description}</CardDescription>}
                         </div>
                       </div>
                       <div className="flex items-center gap-2">
-                        <Badge variant={seq.isActive ? "default" : "secondary"} className={seq.isActive ? "bg-burgundy-600 text-white" : ""}>{seq.isActive ? "Active" : "Paused"}</Badge>
+                        <Badge variant={seq.isActive ? "default" : "secondary"} className={seq.isActive ? "bg-green-600 text-white" : ""}>{seq.isActive ? "Active" : "Paused"}</Badge>
                         <Button variant="outline" size="sm" onClick={() => { setSelectedSequence(seq); setSequencePreview(null); setShowTestSequence(true); }} title="Test Sequence">
                           <TestTube className="h-4 w-4 mr-1" />Test
                         </Button>
