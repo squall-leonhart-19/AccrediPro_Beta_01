@@ -224,6 +224,11 @@ export default function MarketingPage() {
   const [loadingNurtureHtml, setLoadingNurtureHtml] = useState(false);
   const [nurtureEnrollCount, setNurtureEnrollCount] = useState(0);
 
+  // View nurture enrollees state
+  const [showNurtureEnrollees, setShowNurtureEnrollees] = useState(false);
+  const [nurtureEnrollees, setNurtureEnrollees] = useState<any[]>([]);
+  const [nurtureEnrolleesLoading, setNurtureEnrolleesLoading] = useState(false);
+
   // Full sequence test states
   const [showFullSequenceTest, setShowFullSequenceTest] = useState(false);
   const [fullSequenceTestEmail, setFullSequenceTestEmail] = useState("");
@@ -580,6 +585,43 @@ export default function MarketingPage() {
       }
     } catch (error) {
       console.error("Error removing enrollment:", error);
+      toast.error("Failed to remove user");
+    }
+  }
+
+  // Nurture sequence enrollees functions
+  async function fetchNurtureEnrollees() {
+    setNurtureEnrolleesLoading(true);
+    try {
+      const res = await fetch(`/api/admin/marketing/nurture-enrollees`);
+      const data = await res.json();
+      setNurtureEnrollees(data.enrollees || []);
+      setNurtureEnrollCount(data.enrollees?.length || 0);
+    } catch (error) {
+      console.error("Error fetching nurture enrollees:", error);
+    } finally {
+      setNurtureEnrolleesLoading(false);
+    }
+  }
+
+  async function removeNurtureEnrollee(userId: string) {
+    if (!confirm("Remove this user from the nurture sequence?")) return;
+    try {
+      const res = await fetch(`/api/admin/marketing/nurture-enrollees`, {
+        method: "DELETE",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ userId }),
+      });
+      if (res.ok) {
+        toast.success("User removed from nurture sequence");
+        fetchNurtureEnrollees();
+        fetchTags();
+      } else {
+        const data = await res.json();
+        toast.error(data.error || "Failed to remove user");
+      }
+    } catch (error) {
+      console.error("Error removing nurture enrollee:", error);
       toast.error("Failed to remove user");
     }
   }
@@ -1009,6 +1051,9 @@ export default function MarketingPage() {
                   </Button>
                   <Button variant="outline" size="sm" onClick={() => setShowFullSequenceTest(true)}>
                     <TestTube className="h-4 w-4 mr-1" />Test Full Sequence
+                  </Button>
+                  <Button variant="outline" size="sm" onClick={() => { fetchNurtureEnrollees(); setShowNurtureEnrollees(true); }}>
+                    <Users className="h-4 w-4 mr-1" />View Enrollees
                   </Button>
                   <a href="/admin/marketing/inbox-test">
                     <Button variant="outline" size="sm"><Mail className="h-4 w-4 mr-1" />Preview Emails</Button>
@@ -2518,6 +2563,76 @@ export default function MarketingPage() {
               ) : (
                 <><Send className="h-4 w-4 mr-2" />Send All 17 Emails</>
               )}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Nurture Enrollees Dialog */}
+      <Dialog open={showNurtureEnrollees} onOpenChange={setShowNurtureEnrollees}>
+        <DialogContent className="max-w-2xl max-h-[80vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle>Nurture Sequence Enrollees</DialogTitle>
+            <DialogDescription>
+              Users tagged with nurture-30-day and enrolled in the 30-day nurture sequence
+            </DialogDescription>
+          </DialogHeader>
+
+          {nurtureEnrolleesLoading ? (
+            <div className="flex items-center justify-center py-8">
+              <Loader2 className="h-8 w-8 animate-spin text-gray-400" />
+            </div>
+          ) : nurtureEnrollees.length === 0 ? (
+            <div className="text-center py-8 text-gray-500">
+              <Users className="h-12 w-12 mx-auto mb-4 opacity-50" />
+              <p>No enrollees found</p>
+            </div>
+          ) : (
+            <div className="space-y-2">
+              <p className="text-sm text-gray-500 mb-4">
+                {nurtureEnrollees.length} total enrollees
+              </p>
+              {nurtureEnrollees.map((enrollee: any) => (
+                <div key={enrollee.id} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg hover:bg-gray-100">
+                  <div className="flex items-center gap-3">
+                    <div className="w-8 h-8 rounded-full bg-burgundy-100 flex items-center justify-center text-burgundy-700 font-medium text-sm">
+                      {enrollee.firstName?.[0] || enrollee.email[0].toUpperCase()}
+                    </div>
+                    <div>
+                      <p className="font-medium text-sm">
+                        {enrollee.firstName} {enrollee.lastName}
+                      </p>
+                      <p className="text-xs text-gray-500">{enrollee.email}</p>
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    {enrollee.enrolledAt && (
+                      <span className="text-xs text-gray-400">
+                        Enrolled: {new Date(enrollee.enrolledAt).toLocaleDateString()}
+                      </span>
+                    )}
+                    {enrollee.currentEmailIndex !== undefined && (
+                      <Badge variant="outline" className="text-xs">
+                        Email {enrollee.currentEmailIndex + 1}
+                      </Badge>
+                    )}
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => removeNurtureEnrollee(enrollee.id)}
+                      className="text-red-500 hover:text-red-600 hover:bg-red-50 h-7 px-2"
+                    >
+                      <Trash2 className="h-3 w-3 mr-1" /> Remove
+                    </Button>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setShowNurtureEnrollees(false)}>
+              Close
             </Button>
           </DialogFooter>
         </DialogContent>
