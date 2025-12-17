@@ -154,6 +154,11 @@ export function UsersClient({ users, courses }: UsersClientProps) {
   const [knowledgeBaseContent, setKnowledgeBaseContent] = useState("");
   const [savingKnowledge, setSavingKnowledge] = useState(false);
 
+  // Change Email Dialog state
+  const [emailChangeDialogOpen, setEmailChangeDialogOpen] = useState(false);
+  const [newUserEmail, setNewUserEmail] = useState("");
+  const [changingEmail, setChangingEmail] = useState(false);
+
   // Activity tab states for dispute resolution
   const [detailTab, setDetailTab] = useState<"overview" | "tags" | "activity">("overview");
   const [activityData, setActivityData] = useState<any>(null);
@@ -459,6 +464,48 @@ export function UsersClient({ users, courses }: UsersClientProps) {
     setNewPassword("");
     setConfirmPassword("");
     setPasswordDialogOpen(true);
+  };
+
+  const openEmailChangeDialog = (user: User) => {
+    setSelectedUser(user);
+    setNewUserEmail(user.email);
+    setEmailChangeDialogOpen(true);
+  };
+
+  const handleEmailChange = async () => {
+    if (!selectedUser || !newUserEmail.trim()) return;
+    if (newUserEmail === selectedUser.email) {
+      alert("Email is the same as current");
+      return;
+    }
+
+    setChangingEmail(true);
+    try {
+      const response = await fetch("/api/admin/users/email", {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          userId: selectedUser.id,
+          newEmail: newUserEmail.trim().toLowerCase(),
+        }),
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        alert("Email updated successfully");
+        setEmailChangeDialogOpen(false);
+        setSelectedUser(null);
+        router.refresh();
+      } else {
+        alert(data.error || "Failed to update email");
+      }
+    } catch (error) {
+      console.error("Failed to update email:", error);
+      alert("An error occurred while updating the email");
+    } finally {
+      setChangingEmail(false);
+    }
   };
 
   const openKnowledgeDialog = (user: User) => {
@@ -1060,6 +1107,13 @@ export function UsersClient({ users, courses }: UsersClientProps) {
                                 Change Password
                               </DropdownMenuItem>
                               <DropdownMenuItem
+                                onClick={() => openEmailChangeDialog(user)}
+                                className="cursor-pointer"
+                              >
+                                <Mail className="w-4 h-4 mr-2 text-blue-600" />
+                                Change Email
+                              </DropdownMenuItem>
+                              <DropdownMenuItem
                                 onClick={() => openRoleDialog(user)}
                                 className="cursor-pointer"
                               >
@@ -1489,24 +1543,24 @@ export function UsersClient({ users, courses }: UsersClientProps) {
                         !t.tag.startsWith("module_") &&
                         !t.tag.startsWith("training_video_")
                       ).length > 0 && (
-                        <div className="p-4 bg-gray-50 rounded-lg border border-gray-200">
-                          <p className="text-sm font-semibold text-gray-800 mb-3">🏷️ Other Tags</p>
-                          <div className="flex flex-wrap gap-2">
-                            {selectedUser.tags.filter(t =>
-                              !t.tag.startsWith("enrolled_") &&
-                              !t.tag.includes("mini_diploma") &&
-                              !t.tag.startsWith("graduate_") &&
-                              !t.tag.startsWith("module_") &&
-                              !t.tag.startsWith("training_video_")
-                            ).map(tag => (
-                              <Badge key={tag.id} className="bg-gray-100 text-gray-700 border-gray-200">
-                                {tag.tag}
-                                {tag.value && ` (${tag.value})`}
-                              </Badge>
-                            ))}
+                          <div className="p-4 bg-gray-50 rounded-lg border border-gray-200">
+                            <p className="text-sm font-semibold text-gray-800 mb-3">🏷️ Other Tags</p>
+                            <div className="flex flex-wrap gap-2">
+                              {selectedUser.tags.filter(t =>
+                                !t.tag.startsWith("enrolled_") &&
+                                !t.tag.includes("mini_diploma") &&
+                                !t.tag.startsWith("graduate_") &&
+                                !t.tag.startsWith("module_") &&
+                                !t.tag.startsWith("training_video_")
+                              ).map(tag => (
+                                <Badge key={tag.id} className="bg-gray-100 text-gray-700 border-gray-200">
+                                  {tag.tag}
+                                  {tag.value && ` (${tag.value})`}
+                                </Badge>
+                              ))}
+                            </div>
                           </div>
-                        </div>
-                      )}
+                        )}
 
                       {/* Tag Timeline */}
                       <div className="p-4 bg-white rounded-lg border">
@@ -2155,11 +2209,10 @@ export function UsersClient({ users, courses }: UsersClientProps) {
                                     : [...prev.tags, tag]
                                 }));
                               }}
-                              className={`px-2 py-1 text-xs rounded-full border transition-colors ${
-                                newUserData.tags.includes(tag)
-                                  ? "bg-burgundy-100 border-burgundy-300 text-burgundy-700"
-                                  : "bg-white border-gray-200 text-gray-600 hover:bg-burgundy-50 hover:border-burgundy-200"
-                              }`}
+                              className={`px-2 py-1 text-xs rounded-full border transition-colors ${newUserData.tags.includes(tag)
+                                ? "bg-burgundy-100 border-burgundy-300 text-burgundy-700"
+                                : "bg-white border-gray-200 text-gray-600 hover:bg-burgundy-50 hover:border-burgundy-200"
+                                }`}
                             >
                               {tag}
                             </button>
@@ -2186,11 +2239,10 @@ export function UsersClient({ users, courses }: UsersClientProps) {
                               : [...prev.tags, tag]
                           }));
                         }}
-                        className={`px-2 py-1 text-xs rounded-full border transition-colors ${
-                          newUserData.tags.includes(tag)
-                            ? "bg-burgundy-100 border-burgundy-300 text-burgundy-700"
-                            : "bg-gray-50 border-gray-200 text-gray-600 hover:bg-gray-100"
-                        }`}
+                        className={`px-2 py-1 text-xs rounded-full border transition-colors ${newUserData.tags.includes(tag)
+                          ? "bg-burgundy-100 border-burgundy-300 text-burgundy-700"
+                          : "bg-gray-50 border-gray-200 text-gray-600 hover:bg-gray-100"
+                          }`}
                       >
                         {tag}
                       </button>
@@ -2291,11 +2343,10 @@ export function UsersClient({ users, courses }: UsersClientProps) {
                             key={tag}
                             type="button"
                             onClick={() => setNewTag(tag)}
-                            className={`px-2 py-1 text-xs rounded-full border transition-colors ${
-                              newTag === tag
-                                ? "bg-green-100 border-green-300 text-green-700"
-                                : "bg-white border-gray-200 text-gray-600 hover:bg-green-50 hover:border-green-200"
-                            }`}
+                            className={`px-2 py-1 text-xs rounded-full border transition-colors ${newTag === tag
+                              ? "bg-green-100 border-green-300 text-green-700"
+                              : "bg-white border-gray-200 text-gray-600 hover:bg-green-50 hover:border-green-200"
+                              }`}
                           >
                             {tag}
                           </button>
@@ -2318,11 +2369,10 @@ export function UsersClient({ users, courses }: UsersClientProps) {
                     key={tag}
                     type="button"
                     onClick={() => setNewTag(tag)}
-                    className={`px-2 py-1 text-xs rounded-full border transition-colors ${
-                      newTag === tag
-                        ? "bg-green-100 border-green-300 text-green-700"
-                        : "bg-gray-50 border-gray-200 text-gray-600 hover:bg-gray-100"
-                    }`}
+                    className={`px-2 py-1 text-xs rounded-full border transition-colors ${newTag === tag
+                      ? "bg-green-100 border-green-300 text-green-700"
+                      : "bg-gray-50 border-gray-200 text-gray-600 hover:bg-gray-100"
+                      }`}
                   >
                     {tag}
                   </button>
@@ -2364,6 +2414,58 @@ export function UsersClient({ users, courses }: UsersClientProps) {
               disabled={addingTag || !newTag.trim()}
             >
               {addingTag ? "Adding..." : "Add Tag"}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Email Change Dialog */}
+      <Dialog open={emailChangeDialogOpen} onOpenChange={setEmailChangeDialogOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Change Email Address</DialogTitle>
+            <DialogDescription>
+              Update email for {selectedUser?.firstName} {selectedUser?.lastName}
+            </DialogDescription>
+          </DialogHeader>
+          <div className="space-y-4 py-4">
+            <div className="space-y-2">
+              <Label htmlFor="currentEmail">Current Email</Label>
+              <Input
+                id="currentEmail"
+                value={selectedUser?.email || ""}
+                disabled
+                className="bg-gray-100"
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="newEmail">New Email</Label>
+              <Input
+                id="newEmail"
+                type="email"
+                placeholder="newemail@example.com"
+                value={newUserEmail}
+                onChange={(e) => setNewUserEmail(e.target.value)}
+              />
+            </div>
+            <p className="text-xs text-orange-600">
+              ⚠️ Changing the email will update all associated accounts and logins.
+            </p>
+          </div>
+          <DialogFooter>
+            <Button
+              variant="outline"
+              onClick={() => setEmailChangeDialogOpen(false)}
+              disabled={changingEmail}
+            >
+              Cancel
+            </Button>
+            <Button
+              onClick={handleEmailChange}
+              className="bg-blue-600 hover:bg-blue-700"
+              disabled={changingEmail || !newUserEmail.trim() || newUserEmail === selectedUser?.email}
+            >
+              {changingEmail ? "Updating..." : "Update Email"}
             </Button>
           </DialogFooter>
         </DialogContent>
