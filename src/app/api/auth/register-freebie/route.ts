@@ -5,6 +5,7 @@ import { triggerAutoMessage } from "@/lib/auto-messages";
 import { sendFreebieWelcomeEmail } from "@/lib/email";
 import { verifyEmail, isValidEmailSyntax, isDisposableEmail } from "@/lib/neverbounce";
 import { sendLeadEvent } from "@/lib/meta-capi";
+import { sendLeadToGHL } from "@/lib/ghl-webhook";
 
 // Standard password for all freebie users - simple and memorable
 const FREEBIE_PASSWORD = "Futurecoach2025";
@@ -245,6 +246,19 @@ export async function POST(request: NextRequest) {
             contentName: `Mini Diploma - ${miniDiplomaCategory}`,
         }).catch((err) => {
             console.error(`[META] Failed to send Lead event:`, err);
+        });
+
+        // === GOHIGHLEVEL INTEGRATION ===
+        // Send lead to GHL for SMS automation
+        sendLeadToGHL({
+            firstName: fName,
+            lastName: lName,
+            email: emailLower,
+            phone: phone || undefined,
+            source: "Mini Diploma Signup",
+            tags: ["mini-diploma-lead", miniDiplomaCategory],
+        }).catch((err) => {
+            console.error(`[GHL] Failed to send lead:`, err);
         });
 
         return NextResponse.json({

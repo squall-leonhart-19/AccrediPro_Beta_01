@@ -55,6 +55,22 @@ export function MiniDiplomaDownloadButton({
                 a.click();
                 window.URL.revokeObjectURL(url);
                 document.body.removeChild(a);
+
+                // Track certificate download
+                try {
+                    await fetch("/api/track/certificate-download", {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify({
+                            certificateId,
+                            certificateType: "mini-diploma",
+                            diplomaTitle,
+                        }),
+                    });
+                } catch (trackError) {
+                    // Don't block download if tracking fails
+                    console.error("Failed to track download:", trackError);
+                }
             } else {
                 throw new Error("Unexpected response format");
             }
