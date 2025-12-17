@@ -1395,9 +1395,13 @@ export default function MarketingPage() {
                         <Button variant="outline" size="sm" onClick={() => { setSelectedSequence(seq); fetchEnrollments(seq.id); setShowEnrollments(true); }} title="View Enrolled Users">
                           <Users className="h-4 w-4 mr-1" />View
                         </Button>
-                        <Button variant="ghost" size="icon" onClick={() => toggleSequenceActive(seq)} title={seq.isActive ? "Pause" : "Activate"}>
-                          {seq.isActive ? <Pause className="h-4 w-4" /> : <Play className="h-4 w-4" />}
-                        </Button>
+                        <div className="flex items-center gap-2">
+                          <Switch
+                            checked={seq.isActive}
+                            onCheckedChange={() => toggleSequenceActive(seq)}
+                          />
+                          <span className="text-xs text-gray-500">{seq.isActive ? "On" : "Off"}</span>
+                        </div>
                         <Button variant="ghost" size="icon" onClick={() => { setSelectedSequence(seq); setShowEditSequence(true); }}>
                           <Settings2 className="h-4 w-4" />
                         </Button>
