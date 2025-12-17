@@ -215,7 +215,7 @@ export default function FreeMiniDiplomaPage() {
             fontSize: 'clamp(15px, 2.6vw, 19px)',
             lineHeight: 1.6
           }}>
-            Learn root-cause healing, earn your Mini Diploma, and unlock a path to $5k-$10k/month helping others — <strong>no experience required.</strong>
+            Learn root-cause healing, earn your Mini Diploma, and unlock a path to $5k-$10k/month helping others — <strong>no medical degree needed.</strong>
           </p>
 
           {/* Stats Bar */}
