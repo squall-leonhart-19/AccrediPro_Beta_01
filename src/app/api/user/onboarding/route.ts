@@ -45,7 +45,7 @@ export async function POST(request: NextRequest) {
       data: {
         firstName: data.firstName || undefined,
         lastName: data.lastName || undefined,
-        phone: data.phone || null,
+        phone: data.phone || undefined,
         location: data.location || null,
         timezone: data.timezone || null,
         healthBackground: data.healthBackground || data.personalMessage || null,

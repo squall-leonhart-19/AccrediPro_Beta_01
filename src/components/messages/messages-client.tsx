@@ -1172,15 +1172,18 @@ export function MessagesClient({
                 <p className="text-xs text-burgundy-200">{isCoach ? "Coach Dashboard" : "Your Coach"}</p>
               </div>
             </div>
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={() => setShowMentors(!showMentors)}
-              className={cn("text-white hover:bg-white/20 gap-1.5", showMentors && "bg-white/20")}
-            >
-              <Users className="w-4 h-4" />
-              {showMentors ? "Chats" : isCoach ? "Students" : "Coaches"}
-            </Button>
+            {/* Only show toggle button for coaches - students don't need to browse coaches */}
+            {isCoach && (
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => setShowMentors(!showMentors)}
+                className={cn("text-white hover:bg-white/20 gap-1.5", showMentors && "bg-white/20")}
+              >
+                <Users className="w-4 h-4" />
+                {showMentors ? "Chats" : "Students"}
+              </Button>
+            )}
           </div>
 
           <div className="relative">
@@ -1196,12 +1199,13 @@ export function MessagesClient({
 
         {/* Conversations List */}
         <div className="flex-1 overflow-y-auto">
-          {showMentors ? (
+          {/* Only coaches can see students list - students only see their conversations */}
+          {showMentors && isCoach ? (
             <div className="p-3">
               <div className="flex items-center gap-2 px-3 py-2 mb-2">
                 <GraduationCap className="w-4 h-4 text-gold-500" />
                 <span className="text-sm font-semibold text-gray-700">
-                  {isCoach ? "Your Students" : "Available Coaches"}
+                  Your Students
                 </span>
               </div>
               {mentors.length > 0 ? (

@@ -336,9 +336,14 @@ export function OnboardingWizard({ onComplete, userName, userId }: OnboardingWiz
         else if (data.investmentReadiness === "saving_up") leadScore += 10;
         else leadScore += 0;
 
+        // Build phone number with country code
+        const fullPhone = data.phone && data.phone.trim()
+            ? `${data.countryCode} ${data.phone.trim()}`
+            : undefined;
+
         // Save to database via API
         try {
-            await fetch("/api/user/onboarding", {
+            const response = await fetch("/api/user/onboarding", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({
@@ -349,13 +354,17 @@ export function OnboardingWizard({ onComplete, userName, userId }: OnboardingWiz
                     currentSituation: data.currentSituation,
                     investmentReadiness: data.investmentReadiness,
                     obstacles: data.obstacles,
-                    phone: data.phone ? `${data.countryCode} ${data.phone}` : undefined,
+                    phone: fullPhone,
                     location: data.location || undefined,
                     referralSource: data.referralSource || undefined,
                     personalMessage: data.personalMessage || undefined,
                     leadScore: leadScore,
                 }),
             });
+
+            if (!response.ok) {
+                console.error("Onboarding API error:", await response.text());
+            }
         } catch (error) {
             console.error("Error saving onboarding data:", error);
         }
