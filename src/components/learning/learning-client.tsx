@@ -32,6 +32,8 @@ import {
   ChevronUp,
   GraduationCap,
   StickyNote,
+  Timer,
+  Users,
 } from "lucide-react";
 
 // Types
@@ -145,6 +147,7 @@ interface LearningClientProps {
   quizAttempts: { id: string; score: number; passed: boolean }[];
   hasPassed: boolean;
   nextModule: { id: string; title: string; firstLessonId: string } | null;
+  miniDiplomaData?: { optinAt: string | null; graduatesCount: number } | null;
 }
 
 export function LearningClient({
@@ -159,6 +162,7 @@ export function LearningClient({
   quizAttempts,
   hasPassed,
   nextModule,
+  miniDiplomaData,
 }: LearningClientProps) {
   const router = useRouter();
   // Initialize sidebar closed on mobile, open on desktop (lg breakpoint = 1024px)
@@ -244,8 +248,49 @@ export function LearningClient({
   // Determine if this is the Final Exam module (no next module = final exam)
   const isFinalExam = !nextModule && navigation.isLastLessonInModule && navigation.moduleHasQuiz;
 
+  // Calculate countdown for mini diploma (7 days from optin)
+  const getCountdown = () => {
+    if (!miniDiplomaData?.optinAt) return null;
+    const optinDate = new Date(miniDiplomaData.optinAt);
+    const expiryDate = new Date(optinDate.getTime() + 7 * 24 * 60 * 60 * 1000); // 7 days
+    const now = new Date();
+    const diff = expiryDate.getTime() - now.getTime();
+
+    if (diff <= 0) return { days: 0, hours: 0, expired: true };
+
+    const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+    const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+    return { days, hours, expired: false };
+  };
+
+  const countdown = getCountdown();
+  const isUrgent = countdown && !countdown.expired && countdown.days <= 1;
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-slate-100 -m-4 lg:-m-8">
+      {/* Urgency Countdown Banner - Mini Diploma only */}
+      {miniDiplomaData && countdown && !countdown.expired && (
+        <div className={cn(
+          "flex items-center justify-center gap-4 px-4 py-2 text-sm font-medium",
+          isUrgent
+            ? "bg-gradient-to-r from-red-600 to-red-500 text-white animate-pulse"
+            : "bg-gradient-to-r from-amber-500 to-orange-500 text-white"
+        )}>
+          <div className="flex items-center gap-2">
+            <Timer className="w-4 h-4" />
+            <span>
+              {isUrgent ? "⚠️ HURRY! " : ""}
+              Access expires in: <strong>{countdown.days}d {countdown.hours}h</strong>
+            </span>
+          </div>
+          <span className="hidden sm:inline text-white/80">|</span>
+          <div className="hidden sm:flex items-center gap-2">
+            <Users className="w-4 h-4" />
+            <span>{miniDiplomaData.graduatesCount.toLocaleString()}+ graduates this month</span>
+          </div>
+        </div>
+      )}
+
       {/* Top Navigation Bar - Fixed for mobile */}
       <header className="sticky top-0 z-50 bg-white border-b border-gray-200 shadow-sm">
         <div className="flex items-center justify-between px-3 sm:px-4 lg:px-6 h-14 sm:h-16">
@@ -346,7 +391,7 @@ export function LearningClient({
             </div>
           )}
 
-{/* Text lessons render their own header from HTML content - no banner needed */}
+          {/* Text lessons render their own header from HTML content - no banner needed */}
 
           {/* Content Section */}
           <div className="max-w-4xl mx-auto px-6 py-10">
@@ -646,8 +691,8 @@ export function LearningClient({
                       isCurrentModule
                         ? "bg-gradient-to-br from-burgundy-500 to-burgundy-600 text-white"
                         : modProgress === 100
-                        ? "bg-green-100 text-green-600"
-                        : "bg-gray-100 text-gray-500"
+                          ? "bg-green-100 text-green-600"
+                          : "bg-gray-100 text-gray-500"
                     )}>
                       {modProgress === 100 ? (
                         <CheckCircle className="w-5 h-5" />
@@ -723,8 +768,8 @@ export function LearningClient({
                               isLesCompleted
                                 ? "bg-green-100"
                                 : isCurrent
-                                ? "bg-burgundy-200"
-                                : "bg-gray-100"
+                                  ? "bg-burgundy-200"
+                                  : "bg-gray-100"
                             )}>
                               {isLesCompleted ? (
                                 <CheckCircle className="w-4 h-4 text-green-600" />
@@ -740,8 +785,8 @@ export function LearningClient({
                                 isCurrent
                                   ? "font-semibold text-burgundy-700"
                                   : isLesCompleted
-                                  ? "text-green-700"
-                                  : "text-gray-700"
+                                    ? "text-green-700"
+                                    : "text-gray-700"
                               )}>
                                 {les.title}
                               </p>
@@ -806,7 +851,7 @@ export function LearningClient({
         )}
       </div>
 
-{/* Mobile FAB removed - use header toggle instead */}
+      {/* Mobile FAB removed - use header toggle instead */}
     </div>
   );
 }

@@ -245,6 +245,29 @@ export default async function LearningPage({ params }: LearningPageProps) {
     notFound();
   }
 
+  // For mini diploma courses, get urgency and social proof data
+  let miniDiplomaData = null;
+  if (data.course.certificateType === "MINI_DIPLOMA") {
+    // Get user's optin date for countdown
+    const user = await prisma.user.findUnique({
+      where: { id: session.user.id },
+      select: { miniDiplomaOptinAt: true },
+    });
+
+    // Get total graduates count (users who completed mini diploma)
+    const graduatesCount = await prisma.user.count({
+      where: {
+        miniDiplomaCompletedAt: { not: null },
+        isFakeProfile: false,
+      },
+    });
+
+    miniDiplomaData = {
+      optinAt: user?.miniDiplomaOptinAt?.toISOString() || null,
+      graduatesCount: graduatesCount + 1700, // Base + real count
+    };
+  }
+
   return (
     <LearningClient
       lesson={data.lesson}
@@ -258,6 +281,7 @@ export default async function LearningPage({ params }: LearningPageProps) {
       quizAttempts={data.quizAttempts}
       hasPassed={data.hasPassed}
       nextModule={data.nextModule}
+      miniDiplomaData={miniDiplomaData}
     />
   );
 }
