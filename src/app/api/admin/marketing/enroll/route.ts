@@ -225,12 +225,18 @@ export async function POST(req: NextRequest) {
             .replace(/^\[TEST\]\s*/i, '')
             .replace(/\{\{firstName\}\}/g, firstName);
 
-          // Generate branded HTML (same as inbox-test)
-          const htmlContent = generateBrandedHtml(emailContent, firstName);
+          // Check if content is already full HTML (starts with <!DOCTYPE or <html)
+          const isFullHtml = emailContent.trim().startsWith('<!DOCTYPE') || emailContent.trim().startsWith('<html');
 
-          // Plain text version
+          // If full HTML, just replace placeholders; otherwise wrap in branded template
+          const htmlContent = isFullHtml
+            ? emailContent.replace(/\{\{firstName\}\}/g, firstName)
+            : generateBrandedHtml(emailContent, firstName);
+
+          // Plain text version - strip HTML tags
           const textContent = emailContent
             .replace(/\{\{firstName\}\}/g, firstName)
+            .replace(/<[^>]*>/g, '')
             .replace(/\*\*([^*]+)\*\*/g, '$1')
             .replace(/\*([^*]+)\*/g, '$1');
 
