@@ -320,6 +320,7 @@ async function enrollInNurtureSequence(userId: string) {
         const sequence = await prisma.sequence.findFirst({
             where: {
                 OR: [
+                    { slug: "mini-diploma-to-certification-30d" },
                     { slug: "mini-diploma-nurture" },
                     { triggerType: "MINI_DIPLOMA_STARTED" },
                 ],
