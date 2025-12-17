@@ -4,6 +4,7 @@ import { authOptions } from "@/lib/auth";
 import prisma from "@/lib/prisma";
 import { triggerAutoMessage } from "@/lib/auto-messages";
 import { sendMiniDiplomaCompleteEvent } from "@/lib/meta-capi";
+import { sendMilestoneToGHL, MilestoneType } from "@/lib/ghl-webhook";
 
 export async function POST(request: NextRequest) {
   try {
@@ -317,6 +318,30 @@ export async function POST(request: NextRequest) {
             });
 
             console.log(`📨 Mini diploma module ${moduleOrder} DM scheduled for user ${session.user.id} in ${delayMinutes.toFixed(1)} minutes (via cron)`);
+          }
+
+          // === SEND TO GHL FOR SMS AUTOMATION ===
+          // Map module order to day milestone (module 1 = day1, module 2 = day2, module 3 = day3)
+          if (moduleOrder >= 1 && moduleOrder <= 3) {
+            const milestoneMap: Record<number, MilestoneType> = {
+              1: "day1_complete",
+              2: "day2_complete",
+              3: "day3_complete",
+            };
+            const milestone = milestoneMap[moduleOrder];
+
+            // Get user email for GHL
+            const userData = await prisma.user.findUnique({
+              where: { id: session.user.id },
+              select: { email: true, firstName: true },
+            });
+
+            if (userData?.email && milestone) {
+              await sendMilestoneToGHL(userData.email, milestone, {
+                first_name: userData.firstName || "",
+              });
+              console.log(`📱 GHL milestone sent: ${userData.email} - ${milestone}`);
+            }
           }
         }
       }

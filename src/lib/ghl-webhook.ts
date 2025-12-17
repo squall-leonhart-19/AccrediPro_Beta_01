@@ -100,3 +100,55 @@ export async function sendMiniDiplomaCompleteToGHL(contact: GHLContact): Promise
         return false;
     }
 }
+
+/**
+ * Send a milestone/progress event to GHL
+ * Used for SMS automation triggers (day completions, exam, training)
+ */
+export type MilestoneType =
+    | "day1_complete"
+    | "day2_complete"
+    | "day3_complete"
+    | "exam_passed"
+    | "training_watched"
+    | "mini_diploma_graduate";
+
+export async function sendMilestoneToGHL(
+    email: string,
+    milestone: MilestoneType,
+    additionalData?: Record<string, string>
+): Promise<boolean> {
+    const webhookUrl = process.env.GHL_WEBHOOK_URL;
+
+    if (!webhookUrl) {
+        console.log("[GHL] No webhook URL configured, skipping milestone");
+        return false;
+    }
+
+    try {
+        const response = await fetch(webhookUrl, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+                email,
+                event: milestone,
+                tags: milestone,
+                milestone_timestamp: new Date().toISOString(),
+                ...additionalData,
+            }),
+        });
+
+        if (response.ok) {
+            console.log(`[GHL] ✅ Milestone sent: ${email} - ${milestone}`);
+            return true;
+        } else {
+            console.error(`[GHL] ❌ Failed to send milestone: ${response.status}`);
+            return false;
+        }
+    } catch (error) {
+        console.error("[GHL] Error sending milestone:", error);
+        return false;
+    }
+}

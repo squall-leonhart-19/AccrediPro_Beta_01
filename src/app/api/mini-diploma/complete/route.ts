@@ -5,6 +5,7 @@ import prisma from "@/lib/prisma";
 import { sendEmail } from "@/lib/email";
 import { triggerAutoMessage } from "@/lib/auto-messages";
 import { sendMiniDiplomaCompleteEvent } from "@/lib/meta-capi";
+import { sendMilestoneToGHL } from "@/lib/ghl-webhook";
 
 const categoryLabels: Record<string, string> = {
     "functional-medicine": "Functional Medicine",
@@ -87,6 +88,13 @@ export async function POST(request: NextRequest) {
             });
         }
         console.log(`🏷️ Created tags for ${user.email}: ${tagsToCreate.join(", ")}`);
+
+        // === SEND TO GHL FOR SMS AUTOMATION ===
+        await sendMilestoneToGHL(user.email, "mini_diploma_graduate", {
+            first_name: user.firstName || "",
+            category: categorySlug,
+        });
+        console.log(`📱 GHL milestone sent: ${user.email} - mini_diploma_graduate`);
 
         // Find Sarah coach for functional medicine
         const sarahCoach = await prisma.user.findFirst({
