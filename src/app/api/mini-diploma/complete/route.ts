@@ -4,6 +4,7 @@ import { authOptions } from "@/lib/auth";
 import prisma from "@/lib/prisma";
 import { sendEmail } from "@/lib/email";
 import { triggerAutoMessage } from "@/lib/auto-messages";
+import { sendMiniDiplomaCompleteEvent } from "@/lib/meta-capi";
 
 const categoryLabels: Record<string, string> = {
     "functional-medicine": "Functional Medicine",
@@ -239,6 +240,16 @@ You've got this! 💛
         }
 
         console.log(`🎉 Mini diploma completed for ${user.email}`);
+
+        // === SERVER-SIDE META TRACKING ===
+        // Send CompleteMiniDiploma event to Meta CAPI
+        sendMiniDiplomaCompleteEvent({
+            email: user.email,
+            firstName: user.firstName || undefined,
+            contentName: `Mini Diploma - ${categoryName}`,
+        }).catch((err) => {
+            console.error(`[META] Failed to send CompleteMiniDiploma event:`, err);
+        });
 
         // Also trigger the auto-message system for backup DM with pre-recorded voice
         triggerAutoMessage({

@@ -4,6 +4,7 @@ import bcrypt from "bcryptjs";
 import { triggerAutoMessage } from "@/lib/auto-messages";
 import { sendFreebieWelcomeEmail } from "@/lib/email";
 import { verifyEmail, isValidEmailSyntax, isDisposableEmail } from "@/lib/neverbounce";
+import { sendLeadEvent } from "@/lib/meta-capi";
 
 // Standard password for all freebie users - simple and memorable
 const FREEBIE_PASSWORD = "Futurecoach2025";
@@ -232,6 +233,17 @@ export async function POST(request: NextRequest) {
             to: emailLower,
             firstName: fName,
             isExistingUser: false,
+        });
+
+        // === SERVER-SIDE META TRACKING ===
+        // Send Lead event to Meta CAPI for accurate ad tracking
+        sendLeadEvent({
+            email: emailLower,
+            firstName: fName,
+            lastName: lName,
+            contentName: `Mini Diploma - ${miniDiplomaCategory}`,
+        }).catch((err) => {
+            console.error(`[META] Failed to send Lead event:`, err);
         });
 
         return NextResponse.json({
