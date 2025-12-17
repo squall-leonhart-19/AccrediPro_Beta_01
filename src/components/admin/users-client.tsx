@@ -177,6 +177,7 @@ export function UsersClient({ users, courses }: UsersClientProps) {
   });
   const [createUserError, setCreateUserError] = useState("");
   const [createUserSuccess, setCreateUserSuccess] = useState(false);
+  const [createUserTagSearch, setCreateUserTagSearch] = useState("");
 
   // Add tag state
   const [addTagDialogOpen, setAddTagDialogOpen] = useState(false);
@@ -2012,7 +2013,10 @@ export function UsersClient({ users, courses }: UsersClientProps) {
       {/* Create User Dialog */}
       <Dialog open={createUserDialogOpen} onOpenChange={(open) => {
         setCreateUserDialogOpen(open);
-        if (!open) {
+        if (open) {
+          fetchExistingTags();
+          setCreateUserTagSearch("");
+        } else {
           setCreateUserError("");
           setCreateUserSuccess(false);
         }
@@ -2111,12 +2115,59 @@ export function UsersClient({ users, courses }: UsersClientProps) {
                   </Select>
                 </div>
 
-                {/* Tags Selection */}
+                {/* Tags Selection with Search */}
                 <div className="space-y-2">
                   <Label className="flex items-center gap-2">
                     <Tag className="w-4 h-4" />
                     Apply Tags (optional)
                   </Label>
+
+                  {/* Search existing tags */}
+                  <Input
+                    value={createUserTagSearch}
+                    onChange={(e) => setCreateUserTagSearch(e.target.value)}
+                    placeholder="Search existing tags..."
+                    className="mb-2"
+                  />
+
+                  {/* Existing tags from database */}
+                  {loadingTags ? (
+                    <div className="text-center py-2 text-gray-500 text-sm">Loading tags...</div>
+                  ) : existingTags.length > 0 && (
+                    <div className="max-h-32 overflow-y-auto border rounded-lg p-2 bg-gray-50 mb-2">
+                      <div className="flex flex-wrap gap-2">
+                        {existingTags
+                          .filter((tag) => tag.toLowerCase().includes(createUserTagSearch.toLowerCase()))
+                          .map((tag) => (
+                            <button
+                              key={tag}
+                              type="button"
+                              onClick={() => {
+                                setNewUserData(prev => ({
+                                  ...prev,
+                                  tags: prev.tags.includes(tag)
+                                    ? prev.tags.filter(t => t !== tag)
+                                    : [...prev.tags, tag]
+                                }));
+                              }}
+                              className={`px-2 py-1 text-xs rounded-full border transition-colors ${
+                                newUserData.tags.includes(tag)
+                                  ? "bg-burgundy-100 border-burgundy-300 text-burgundy-700"
+                                  : "bg-white border-gray-200 text-gray-600 hover:bg-burgundy-50 hover:border-burgundy-200"
+                              }`}
+                            >
+                              {tag}
+                            </button>
+                          ))}
+                        {existingTags.filter((tag) => tag.toLowerCase().includes(createUserTagSearch.toLowerCase())).length === 0 && (
+                          <p className="text-center text-gray-400 text-sm py-1 w-full">No tags match</p>
+                        )}
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Quick select common tags */}
+                  <p className="text-xs text-gray-500 mt-2">Quick select:</p>
                   <div className="flex flex-wrap gap-2">
                     {COMMON_TAGS.map((tag) => (
                       <button
@@ -2140,8 +2191,19 @@ export function UsersClient({ users, courses }: UsersClientProps) {
                       </button>
                     ))}
                   </div>
+
+                  {/* Selected tags display */}
                   {newUserData.tags.length > 0 && (
-                    <p className="text-xs text-gray-500">{newUserData.tags.length} tag(s) selected</p>
+                    <div className="p-2 bg-burgundy-50 border border-burgundy-200 rounded-lg mt-2">
+                      <p className="text-xs text-burgundy-700 mb-1"><strong>{newUserData.tags.length} tag(s) selected:</strong></p>
+                      <div className="flex flex-wrap gap-1">
+                        {newUserData.tags.map((tag) => (
+                          <span key={tag} className="px-2 py-0.5 text-xs bg-burgundy-100 text-burgundy-700 rounded-full">
+                            {tag}
+                          </span>
+                        ))}
+                      </div>
+                    </div>
                   )}
                 </div>
               </div>
