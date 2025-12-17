@@ -149,7 +149,7 @@ export default function FreeMiniDiplomaPage() {
         });
 
         setLoading(false);
-        window.location.href = "/free-mini-diploma/thank-you";
+        window.location.href = "/mini-diploma/module/1";
       } else {
         setError(data.error || "Something went wrong. Please try again.");
         if (data.suggestedEmail) {

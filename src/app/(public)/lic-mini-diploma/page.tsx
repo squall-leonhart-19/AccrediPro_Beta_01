@@ -176,9 +176,9 @@ export default function FreeMiniDiplomaPage() {
 
         setLoading(false);
 
-        // Redirect to thank-you page instead of auto-login
-        // This builds anticipation and avoids overwhelming with catalog/prices
-        window.location.href = "/free-mini-diploma/thank-you";
+        // Redirect directly to Module 1 to maximize starting rate
+        // Credentials are sent via email
+        window.location.href = "/mini-diploma/module/1";
       } else {
         setError(data.error || "Something went wrong. Please try again.");
         if (data.suggestedEmail) {
