@@ -19,8 +19,15 @@ dotenv.config({ path: ".env.local", override: true });
 const adapter = new PrismaPg({ connectionString: process.env.DATABASE_URL });
 const prisma = new PrismaClient({ adapter });
 
-// Super short welcome script (~15 seconds)
-const WELCOME_SCRIPT = `Hey! It's Sarah here. Welcome to your Mini Diploma! I'm so excited you're taking this step. Let's dive in!`;
+// Longer welcome script (~25 seconds) with earning potential mention
+const WELCOME_SCRIPT = `Hey! It's Sarah here. Welcome to your Mini Diploma! I'm so excited you're taking this step toward becoming a Functional Medicine Practitioner.
+
+Over the next 3 days, you're going to discover the root-cause approach that's helping practitioners like you earn five to ten thousand dollars a month — helping people truly heal.
+
+This is your path to a fulfilling career in health. Let's dive in!`;
+
+// Sarah M profile image
+const SARAH_PROFILE_IMAGE = "https://i.ibb.co/jvHN9vv/Sarah-M-Coach.png";
 
 // Updated welcome content with audio player at the top
 const WELCOME_LESSON_CONTENT_WITH_AUDIO = (audioUrl: string) => `
@@ -28,7 +35,7 @@ const WELCOME_LESSON_CONTENT_WITH_AUDIO = (audioUrl: string) => `
   <!-- Audio Player Section -->
   <div style="background: linear-gradient(135deg, #FBF4F4 0%, #fff 100%); border: 2px solid #722F37; border-radius: 16px; padding: 24px; margin-bottom: 24px; text-align: center;">
     <div style="display: flex; align-items: center; justify-content: center; gap: 16px; margin-bottom: 12px;">
-      <img src="https://iili.io/3kGDUes.webp" alt="Sarah" style="width: 56px; height: 56px; border-radius: 50%; border: 3px solid #722F37; object-fit: cover;" />
+      <img src="${SARAH_PROFILE_IMAGE}" alt="Sarah M" style="width: 56px; height: 56px; border-radius: 50%; border: 3px solid #722F37; object-fit: cover;" />
       <div style="text-align: left;">
         <p style="margin: 0; font-weight: 700; color: #722F37; font-size: 16px;">A message from Sarah</p>
         <p style="margin: 0; color: #666; font-size: 13px;">Your Instructor</p>
@@ -117,72 +124,72 @@ const WELCOME_LESSON_CONTENT_WITH_AUDIO = (audioUrl: string) => `
 `;
 
 async function main() {
-    console.log("🎙️ Generating Welcome Audio for Mini Diploma...\n");
+  console.log("🎙️ Generating Welcome Audio for Mini Diploma...\n");
 
-    // Step 1: Generate audio
-    console.log(`Script: "${WELCOME_SCRIPT}"\n`);
-    console.log("Generating voice with ElevenLabs...");
+  // Step 1: Generate audio
+  console.log(`Script: "${WELCOME_SCRIPT}"\n`);
+  console.log("Generating voice with ElevenLabs...");
 
-    const voiceResult = await generateSarahVoice(WELCOME_SCRIPT, {
-        stability: 0.55,
-        similarityBoost: 0.78,
-        style: 0.3,
-        speed: 1.05,
-    });
+  const voiceResult = await generateSarahVoice(WELCOME_SCRIPT, {
+    stability: 0.55,
+    similarityBoost: 0.78,
+    style: 0.3,
+    speed: 1.05,
+  });
 
-    if (!voiceResult.success || !voiceResult.audioBase64) {
-        console.error("❌ Failed to generate voice:", voiceResult.error);
-        return;
-    }
+  if (!voiceResult.success || !voiceResult.audioBase64) {
+    console.error("❌ Failed to generate voice:", voiceResult.error);
+    return;
+  }
 
-    console.log(`✅ Voice generated! Duration: ~${voiceResult.duration}s`);
+  console.log(`✅ Voice generated! Duration: ~${voiceResult.duration}s`);
 
-    // Step 2: Save audio file
-    const audioDir = path.join(process.cwd(), "public", "audio");
-    if (!fs.existsSync(audioDir)) {
-        fs.mkdirSync(audioDir, { recursive: true });
-    }
+  // Step 2: Save audio file
+  const audioDir = path.join(process.cwd(), "public", "audio");
+  if (!fs.existsSync(audioDir)) {
+    fs.mkdirSync(audioDir, { recursive: true });
+  }
 
-    const filename = "mini-diploma-welcome.mp3";
-    const filePath = path.join(audioDir, filename);
-    const buffer = Buffer.from(voiceResult.audioBase64, "base64");
-    fs.writeFileSync(filePath, buffer);
-    console.log(`✅ Saved audio to: ${filePath}`);
+  const filename = "mini-diploma-welcome.mp3";
+  const filePath = path.join(audioDir, filename);
+  const buffer = Buffer.from(voiceResult.audioBase64, "base64");
+  fs.writeFileSync(filePath, buffer);
+  console.log(`✅ Saved audio to: ${filePath}`);
 
-    // Step 3: Update the welcome lesson with audio
-    const audioUrl = `/audio/${filename}`;
-    const updatedContent = WELCOME_LESSON_CONTENT_WITH_AUDIO(audioUrl);
+  // Step 3: Update the welcome lesson with audio
+  const audioUrl = `/audio/${filename}`;
+  const updatedContent = WELCOME_LESSON_CONTENT_WITH_AUDIO(audioUrl);
 
-    // Find the welcome lesson
-    const welcomeLesson = await prisma.lesson.findFirst({
-        where: {
-            title: "Welcome to Your Mini Diploma",
-            module: {
-                course: {
-                    slug: "functional-medicine-mini-diploma",
-                },
-            },
+  // Find the welcome lesson
+  const welcomeLesson = await prisma.lesson.findFirst({
+    where: {
+      title: "Welcome to Your Mini Diploma",
+      module: {
+        course: {
+          slug: "functional-medicine-mini-diploma",
         },
-    });
+      },
+    },
+  });
 
-    if (!welcomeLesson) {
-        console.error("❌ Welcome lesson not found!");
-        return;
-    }
+  if (!welcomeLesson) {
+    console.error("❌ Welcome lesson not found!");
+    return;
+  }
 
-    // Update the lesson content
-    await prisma.lesson.update({
-        where: { id: welcomeLesson.id },
-        data: { content: updatedContent },
-    });
+  // Update the lesson content
+  await prisma.lesson.update({
+    where: { id: welcomeLesson.id },
+    data: { content: updatedContent },
+  });
 
-    console.log(`✅ Updated welcome lesson with audio player!`);
-    console.log(`\n🎉 Done! Audio URL: ${audioUrl}`);
+  console.log(`✅ Updated welcome lesson with audio player!`);
+  console.log(`\n🎉 Done! Audio URL: ${audioUrl}`);
 }
 
 main()
-    .catch((e) => {
-        console.error("Error:", e);
-        process.exit(1);
-    })
-    .finally(() => prisma.$disconnect());
+  .catch((e) => {
+    console.error("Error:", e);
+    process.exit(1);
+  })
+  .finally(() => prisma.$disconnect());
