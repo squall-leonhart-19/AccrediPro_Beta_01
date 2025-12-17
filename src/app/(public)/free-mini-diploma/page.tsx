@@ -276,6 +276,55 @@ export default function FreeMiniDiplomaPage() {
             This free training reveals how a $72k burned-out ER nurse became a $144k/year Functional Medicine Practitioner — working just 3 days a week, actually helping people heal.
           </p>
 
+          {/* Certificate Preview */}
+          <div
+            className="max-w-[740px] mx-auto rounded-2xl overflow-hidden mb-7"
+            style={{ border: "1px solid #ECE8E2", boxShadow: "0 20px 50px rgba(114,47,55,0.15)" }}
+          >
+            <div
+              className="p-6 md:p-8 text-center relative"
+              style={{ background: "linear-gradient(135deg, #fdfbf7, #fff9f0)" }}
+            >
+              {/* Gold border */}
+              <div className="absolute inset-2 border-2 rounded-lg pointer-events-none" style={{ borderColor: "#C9A85C" }} />
+
+              <Image
+                src="https://coach.accredipro.academy/wp-content/uploads/2025/10/Senza-titolo-Logo-1.png"
+                alt="AccrediPro"
+                width={120}
+                height={30}
+                className="mx-auto mb-4"
+                unoptimized
+              />
+              <div className="text-[0.7rem] uppercase tracking-widest mb-2" style={{ color: "#888" }}>AccrediPro Academy</div>
+              <div className="text-2xl font-extrabold mb-1" style={{ color: "#722F37" }}>Mini Diploma</div>
+              <div className="text-sm mb-4" style={{ color: "#666" }}>This is to certify that</div>
+              <div className="text-2xl font-bold italic mb-3" style={{ color: "#333" }}>Your Name Here</div>
+              <div className="text-sm mb-5" style={{ color: "#555" }}>
+                Has successfully completed the<br /><strong>Functional Medicine Foundations</strong><br />Mini Diploma Program
+              </div>
+              <div
+                className="w-16 h-16 rounded-full mx-auto mb-4 flex items-center justify-center"
+                style={{ background: "linear-gradient(135deg, #F4D35E, #C9A85C)", boxShadow: "0 4px 12px rgba(201,168,92,0.3)" }}
+              >
+                <svg className="w-8 h-8 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <path d="M9 12l2 2 4-4" />
+                  <circle cx="12" cy="12" r="10" />
+                </svg>
+              </div>
+              <div className="flex flex-col md:flex-row justify-between items-center pt-4 border-t gap-3" style={{ borderColor: "#E5E1D8" }}>
+                <div className="text-left text-xs" style={{ color: "#888" }}>
+                  <strong className="block" style={{ color: "#333" }}>Date Issued</strong>
+                  December 2025
+                </div>
+                <div className="text-right text-xs" style={{ color: "#888" }}>
+                  <strong className="block" style={{ color: "#333" }}>Certificate ID</strong>
+                  #MD-XXXXX
+                </div>
+              </div>
+            </div>
+          </div>
+
           {/* Hero Bullets */}
           <div className="max-w-[700px] mx-auto text-left mb-6">
             <ul className="space-y-2">
@@ -551,7 +600,7 @@ export default function FreeMiniDiplomaPage() {
                     value={formData.email}
                     onChange={handleEmailChange}
                     className={`w-full px-4 py-3 rounded-lg border transition-all focus:outline-none ${emailStatus === "valid" ? "border-green-500 bg-green-50" :
-                        emailStatus === "invalid" ? "border-red-500 bg-red-50" : ""
+                      emailStatus === "invalid" ? "border-red-500 bg-red-50" : ""
                       }`}
                     style={{ borderColor: emailStatus === "idle" ? "#D1D5DB" : undefined }}
                     placeholder="sarah@example.com"
