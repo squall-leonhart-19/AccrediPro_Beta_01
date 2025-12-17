@@ -240,6 +240,11 @@ export async function POST(req: NextRequest) {
             .replace(/\*\*([^*]+)\*\*/g, '$1')
             .replace(/\*([^*]+)\*/g, '$1');
 
+          // Debug: Log what we're sending
+          console.log('[Marketing] Email HTML length:', htmlContent.length);
+          console.log('[Marketing] Has background gradient:', htmlContent.includes('background: linear-gradient'));
+          console.log('[Marketing] First 200 chars:', htmlContent.substring(0, 200));
+
           // Send via Resend directly (same as inbox-test)
           const { data, error } = await resend.emails.send({
             from: "Sarah <info@accredipro-certificate.com>",
