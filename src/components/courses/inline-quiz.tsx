@@ -182,11 +182,11 @@ export function InlineQuiz({
       const data = await response.json();
 
       if (response.ok && data.success !== false) {
-        // For Mini Diploma Final Exam: redirect immediately to complete page
+        // For Mini Diploma Final Exam: redirect ONLY if PASSED
         const isMiniDiplomaFinalExam = isFinalExam && course.certificateType === "MINI_DIPLOMA";
 
-        if (isMiniDiplomaFinalExam) {
-          // Quick celebration before redirect
+        if (isMiniDiplomaFinalExam && data.passed) {
+          // Quick celebration before redirect - ONLY if passed
           confetti({
             particleCount: 100,
             spread: 70,
@@ -200,6 +200,8 @@ export function InlineQuiz({
           }, 500);
           return; // Don't show results page
         }
+
+        // For failed Mini Diploma Final Exam OR regular quizzes: show results page
 
         setResults({
           score: data.score,
