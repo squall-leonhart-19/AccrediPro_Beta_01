@@ -1036,16 +1036,13 @@ export default function MarketingPage() {
             <CardHeader className="pb-3">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-3">
-                  <div className="p-2 rounded-lg bg-burgundy-100">
-                    <Play className="h-5 w-5 text-burgundy-600" />
-                  </div>
                   <div>
                     <CardTitle className="text-lg">Mini Diploma → Certification (30-Day Nurture)</CardTitle>
                     <CardDescription>High-CRO 30-day nurture sequence (Day 0-29). Welcome email sent separately via transactional template on enrollment.</CardDescription>
                   </div>
                 </div>
                 <div className="flex items-center gap-2">
-                  <Badge variant="default" className="bg-burgundy-600 text-white">Active</Badge>
+                  <Badge variant="default" className="bg-green-600 text-white">Active</Badge>
                   <Button variant="outline" size="sm" onClick={() => setShowNurtureEnroll(true)}>
                     <UserPlus className="h-4 w-4 mr-1" />Enroll
                   </Button>
@@ -1058,6 +1055,10 @@ export default function MarketingPage() {
                   <a href="/admin/marketing/inbox-test">
                     <Button variant="outline" size="sm"><Mail className="h-4 w-4 mr-1" />Preview Emails</Button>
                   </a>
+                  <div className="flex items-center gap-2">
+                    <Switch checked={true} disabled />
+                    <span className="text-xs text-gray-500">On</span>
+                  </div>
                 </div>
               </div>
             </CardHeader>
