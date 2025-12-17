@@ -214,6 +214,7 @@ export default function MarketingPage() {
   const [holidayPreviewCampaign, setHolidayPreviewCampaign] = useState<string | null>(null);
 
   // Static nurture sequence states
+  const [nurtureSequenceActive, setNurtureSequenceActive] = useState(true);
   const [showNurtureEnroll, setShowNurtureEnroll] = useState(false);
   const [nurtureEnrollEmail, setNurtureEnrollEmail] = useState("");
   const [nurtureEnrolling, setNurtureEnrolling] = useState(false);
@@ -1032,7 +1033,7 @@ export default function MarketingPage() {
           </div>
 
           {/* Mini Diploma → Certification (30-Day Nurture) - Static Display */}
-          <Card className="border-l-4 border-l-burgundy-600">
+          <Card className={`border-l-4 border-l-burgundy-600 ${!nurtureSequenceActive ? "opacity-60" : ""}`}>
             <CardHeader className="pb-3">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-3">
@@ -1042,7 +1043,7 @@ export default function MarketingPage() {
                   </div>
                 </div>
                 <div className="flex items-center gap-2">
-                  <Badge variant="default" className="bg-green-600 text-white">Active</Badge>
+                  <Badge variant={nurtureSequenceActive ? "default" : "secondary"} className={nurtureSequenceActive ? "bg-green-600 text-white" : ""}>{nurtureSequenceActive ? "Active" : "Paused"}</Badge>
                   <Button variant="outline" size="sm" onClick={() => setShowNurtureEnroll(true)}>
                     <UserPlus className="h-4 w-4 mr-1" />Enroll
                   </Button>
@@ -1056,8 +1057,11 @@ export default function MarketingPage() {
                     <Button variant="outline" size="sm"><Mail className="h-4 w-4 mr-1" />Preview Emails</Button>
                   </a>
                   <div className="flex items-center gap-2">
-                    <Switch checked={true} disabled />
-                    <span className="text-xs text-gray-500">On</span>
+                    <Switch
+                      checked={nurtureSequenceActive}
+                      onCheckedChange={setNurtureSequenceActive}
+                    />
+                    <span className="text-xs text-gray-500">{nurtureSequenceActive ? "On" : "Off"}</span>
                   </div>
                 </div>
               </div>
