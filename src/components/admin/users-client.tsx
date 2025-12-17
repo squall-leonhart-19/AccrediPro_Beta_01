@@ -189,6 +189,7 @@ export function UsersClient({ users, courses }: UsersClientProps) {
 
   // Common tags for quick selection
   const COMMON_TAGS = [
+    "fm_free_mini_diploma_lead", // Grants mini-diploma access!
     "source:mini-diploma-freebie",
     "source:functional-medicine",
     "enrolled_functional_medicine",

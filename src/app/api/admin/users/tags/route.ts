@@ -110,6 +110,40 @@ export async function POST(request: NextRequest) {
       },
     });
 
+    // Special tag: fm_free_mini_diploma_lead grants mini-diploma access
+    if (data.tag === "fm_free_mini_diploma_lead") {
+      await prisma.user.update({
+        where: { id: data.userId },
+        data: {
+          miniDiplomaCategory: "functional-medicine",
+          miniDiplomaOptinAt: new Date(),
+          leadSource: "admin-tag-grant",
+          leadSourceDetail: "fm_free_mini_diploma_lead",
+        },
+      });
+
+      // Also add related tags for consistency
+      const relatedTags = [
+        "source:mini-diploma-freebie",
+        "source:functional-medicine",
+        "mini_diploma_category:functional-medicine",
+      ];
+      for (const relatedTag of relatedTags) {
+        await prisma.userTag.upsert({
+          where: { userId_tag: { userId: data.userId, tag: relatedTag } },
+          update: {},
+          create: { userId: data.userId, tag: relatedTag },
+        });
+      }
+
+      return NextResponse.json({
+        success: true,
+        message: "Tag added + Mini Diploma access granted!",
+        tag,
+        miniDiplomaGranted: true,
+      });
+    }
+
     return NextResponse.json({
       success: true,
       message: "Tag added successfully",
