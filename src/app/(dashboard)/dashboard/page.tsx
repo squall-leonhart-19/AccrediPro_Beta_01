@@ -9,6 +9,9 @@ import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { DashboardWrapper } from "@/components/dashboard/dashboard-wrapper";
 import { getSpecializationTrack } from "@/lib/specialization-tracks";
+
+// Force dynamic rendering - no caching
+export const dynamic = "force-dynamic";
 import {
   BookOpen,
   Award,
@@ -607,20 +610,18 @@ export default async function DashboardPage() {
                     return (
                       <div
                         key={stage.id}
-                        className={`relative flex items-center gap-3 p-3 rounded-xl transition-all ${
-                          isUnlocked
+                        className={`relative flex items-center gap-3 p-3 rounded-xl transition-all ${isUnlocked
                             ? `${colors.light} ${colors.border} border`
                             : isCurrent || isNext
                               ? "bg-gray-50 border border-gray-200 ring-2 ring-burgundy-400/50"
                               : "bg-gray-50 border border-gray-100 opacity-60"
-                        }`}
+                          }`}
                       >
                         {/* Step Number */}
-                        <div className={`w-10 h-10 rounded-xl flex items-center justify-center font-bold text-white shadow-md ${
-                          isUnlocked || isCurrent || isNext
+                        <div className={`w-10 h-10 rounded-xl flex items-center justify-center font-bold text-white shadow-md ${isUnlocked || isCurrent || isNext
                             ? `bg-gradient-to-br ${colors.bg}`
                             : "bg-gray-300"
-                        }`}>
+                          }`}>
                           {isUnlocked ? (
                             <CheckCircle className="w-5 h-5" />
                           ) : (
@@ -630,9 +631,8 @@ export default async function DashboardPage() {
 
                         <div className="flex-1 min-w-0">
                           <div className="flex items-center gap-2">
-                            <p className={`text-sm font-semibold ${
-                              isUnlocked ? "text-gray-900" : isCurrent || isNext ? "text-gray-800" : "text-gray-500"
-                            }`}>
+                            <p className={`text-sm font-semibold ${isUnlocked ? "text-gray-900" : isCurrent || isNext ? "text-gray-800" : "text-gray-500"
+                              }`}>
                               {stage.title}
                             </p>
                             {(isCurrent || isNext) && !isUnlocked && (
@@ -641,18 +641,16 @@ export default async function DashboardPage() {
                               </Badge>
                             )}
                           </div>
-                          <p className={`text-xs font-medium ${
-                            isUnlocked ? "text-green-600" : "text-gray-400"
-                          }`}>
+                          <p className={`text-xs font-medium ${isUnlocked ? "text-green-600" : "text-gray-400"
+                            }`}>
                             {stage.income}
                           </p>
                         </div>
 
                         {/* Connecting line */}
                         {index < CAREER_STAGES.length - 1 && (
-                          <div className={`absolute left-7 top-full w-0.5 h-2 ${
-                            isUnlocked ? "bg-green-400" : "bg-gray-200"
-                          }`} />
+                          <div className={`absolute left-7 top-full w-0.5 h-2 ${isUnlocked ? "bg-green-400" : "bg-gray-200"
+                            }`} />
                         )}
                       </div>
                     );

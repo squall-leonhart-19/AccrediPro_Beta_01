@@ -4,6 +4,9 @@ import { redirect } from "next/navigation";
 import prisma from "@/lib/prisma";
 import { MiniDiplomaClient } from "@/components/freebie/mini-diploma-client";
 
+// Force dynamic rendering - no caching
+export const dynamic = "force-dynamic";
+
 export default async function MyMiniDiplomaPage() {
     const session = await getServerSession(authOptions);
     if (!session?.user?.id) {

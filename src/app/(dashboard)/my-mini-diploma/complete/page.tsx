@@ -4,6 +4,9 @@ import { redirect } from "next/navigation";
 import prisma from "@/lib/prisma";
 import { CompletionCelebrationClient } from "@/components/freebie/completion-celebration-client";
 import * as crypto from "crypto";
+// Force dynamic rendering - no caching
+export const dynamic = "force-dynamic";
+
 
 // Generate a stable certificate ID based on user ID and completion date
 function generateStableCertificateId(userId: string, category: string, completedAt: Date): string {

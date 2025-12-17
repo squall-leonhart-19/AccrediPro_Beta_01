@@ -2,6 +2,9 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import prisma from "@/lib/prisma";
 import { MessagesClient } from "@/components/messages/messages-client";
+// Force dynamic rendering - no caching
+export const dynamic = "force-dynamic";
+
 
 interface MessagesPageProps {
   searchParams: Promise<{ chat?: string }>;

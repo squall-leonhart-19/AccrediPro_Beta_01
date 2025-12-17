@@ -2,6 +2,9 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import prisma from "@/lib/prisma";
 import * as crypto from "crypto";
+// Force dynamic rendering - no caching
+export const dynamic = "force-dynamic";
+
 
 // Generate a stable certificate ID based on user ID and completion date
 function generateStableCertificateId(userId: string, category: string, completedAt: Date): string {
@@ -42,6 +45,9 @@ import { CertificateShareButtons } from "@/components/certificates/certificate-s
 import { TranscriptDownloadButton } from "@/components/certificates/transcript-download-button";
 import { ModuleCertificateCard } from "@/components/certificates/module-certificate-card";
 import { MarkCertificatesRead } from "@/components/certificates/mark-certificates-read";
+// Force dynamic rendering - no caching
+export const dynamic = "force-dynamic";
+
 
 // Certificate level definitions
 const CERTIFICATE_LEVELS = [

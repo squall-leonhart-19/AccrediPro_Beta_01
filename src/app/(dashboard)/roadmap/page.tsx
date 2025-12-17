@@ -5,6 +5,9 @@ import prisma from "@/lib/prisma";
 import { RoadmapContent } from "./roadmap-content";
 import { getSpecializationTrack, FUNCTIONAL_MEDICINE_TRACK, type SpecializationTrack } from "@/lib/specialization-tracks";
 
+// Force dynamic rendering - no caching
+export const dynamic = "force-dynamic";
+
 // Define the 4-step career ladder
 const CAREER_STEPS = [
     {
