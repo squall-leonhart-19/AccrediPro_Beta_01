@@ -163,7 +163,7 @@ const STATE_CONFIG: Record<string, {
     step1_completed: {
         welcomeMessage: "Congratulations! You've earned your certification. Now it's time to turn that knowledge into real income.",
         actionLabel: "Activate My Practice Path",
-        actionHref: "/courses/practice-income-path",
+        actionHref: "/catalog",
         actionIcon: Rocket,
         motivation: "You have the clinical foundation. Now let's build the practice and income you deserve — ethically and sustainably.",
         nextUnlockTitle: "Step 2: Working Practitioner",
@@ -506,23 +506,20 @@ export function RoadmapContent({ data, steps, userName, specialization }: Roadma
                                 <div key={step.id} className="relative">
                                     {/* Connector Line */}
                                     {index < allSteps.length - 1 && (
-                                        <div className={`absolute left-7 top-[72px] w-0.5 h-3 ${
-                                            completed ? "bg-green-400" : "bg-gray-200"
-                                        }`} />
+                                        <div className={`absolute left-7 top-[72px] w-0.5 h-3 ${completed ? "bg-green-400" : "bg-gray-200"
+                                            }`} />
                                     )}
 
-                                    <div className={`flex items-center gap-4 rounded-xl border-2 transition-all ${
-                                        isRecommended
+                                    <div className={`flex items-center gap-4 rounded-xl border-2 transition-all ${isRecommended
                                             ? "p-5 border-burgundy-300 bg-gradient-to-r from-burgundy-50 to-purple-50 shadow-md ring-2 ring-burgundy-200"
                                             : isChallengeAvailable
                                                 ? "p-4 border-orange-200 bg-gradient-to-r from-orange-50 to-amber-50"
                                                 : current
-                                                    ? `p-4 ${getStepColor(step.step, "border")} ${getStepColor(step.step, "light")} shadow-md ring-2 ring-offset-2 ${
-                                                        step.color === "purple" ? "ring-purple-400" :
+                                                    ? `p-4 ${getStepColor(step.step, "border")} ${getStepColor(step.step, "light")} shadow-md ring-2 ring-offset-2 ${step.color === "purple" ? "ring-purple-400" :
                                                         step.color === "emerald" ? "ring-emerald-400" :
-                                                        step.color === "amber" ? "ring-amber-400" :
-                                                        step.color === "blue" ? "ring-blue-400" :
-                                                        "ring-burgundy-400"
+                                                            step.color === "amber" ? "ring-amber-400" :
+                                                                step.color === "blue" ? "ring-blue-400" :
+                                                                    "ring-burgundy-400"
                                                     }`
                                                     : completed
                                                         ? "p-4 border-green-200 bg-green-50"
@@ -533,10 +530,9 @@ export function RoadmapContent({ data, steps, userName, specialization }: Roadma
                                                                 : locked || (isIntermediateStep && !data.completedSteps.includes(0))
                                                                     ? "p-4 border-gray-200 bg-gray-50 opacity-50"
                                                                     : "p-4 border-gray-200 bg-white"
-                                    }`}>
+                                        }`}>
                                         {/* Step Icon */}
-                                        <div className={`w-14 h-14 rounded-xl flex items-center justify-center flex-shrink-0 ${
-                                            completed
+                                        <div className={`w-14 h-14 rounded-xl flex items-center justify-center flex-shrink-0 ${completed
                                                 ? "bg-green-500"
                                                 : isRecommended
                                                     ? "bg-gradient-to-br from-burgundy-600 to-purple-600"
@@ -549,7 +545,7 @@ export function RoadmapContent({ data, steps, userName, specialization }: Roadma
                                                                 : isCertificationStep
                                                                     ? "bg-gradient-to-br from-gold-400 to-amber-500"
                                                                     : "bg-gray-100"
-                                        }`}>
+                                            }`}>
                                             {completed ? (
                                                 <CheckCircle className="w-7 h-7 text-white" />
                                             ) : locked || (isIntermediateStep && !data.completedSteps.includes(0)) ? (
@@ -563,22 +559,20 @@ export function RoadmapContent({ data, steps, userName, specialization }: Roadma
                                             ) : isCertificationStep ? (
                                                 <Rocket className="w-6 h-6 text-white" />
                                             ) : (
-                                                <span className={`text-xl font-bold ${
-                                                    current ? "text-white" : "text-gray-400"
-                                                }`}>{step.step}</span>
+                                                <span className={`text-xl font-bold ${current ? "text-white" : "text-gray-400"
+                                                    }`}>{step.step}</span>
                                             )}
                                         </div>
 
                                         {/* Step Info */}
                                         <div className="flex-1 min-w-0">
                                             <div className="flex items-center gap-2 mb-1 flex-wrap">
-                                                <h3 className={`font-bold ${
-                                                    completed ? "text-green-700" :
-                                                    isRecommended ? "text-burgundy-800" :
-                                                    isChallengeAvailable ? "text-orange-800" :
-                                                    current ? "text-gray-900" :
-                                                    locked ? "text-gray-400" : "text-gray-700"
-                                                }`}>{step.title}</h3>
+                                                <h3 className={`font-bold ${completed ? "text-green-700" :
+                                                        isRecommended ? "text-burgundy-800" :
+                                                            isChallengeAvailable ? "text-orange-800" :
+                                                                current ? "text-gray-900" :
+                                                                    locked ? "text-gray-400" : "text-gray-700"
+                                                    }`}>{step.title}</h3>
 
                                                 {/* Badges based on step type */}
                                                 {isMiniDiploma && !completed && (
@@ -608,9 +602,8 @@ export function RoadmapContent({ data, steps, userName, specialization }: Roadma
                                                     </Badge>
                                                 )}
                                             </div>
-                                            <p className={`text-sm ${
-                                                locked || (isIntermediateStep && !data.completedSteps.includes(0)) ? "text-gray-400" : "text-gray-600"
-                                            }`}>{step.description}</p>
+                                            <p className={`text-sm ${locked || (isIntermediateStep && !data.completedSteps.includes(0)) ? "text-gray-400" : "text-gray-600"
+                                                }`}>{step.description}</p>
 
                                             {/* Action buttons for intermediate steps */}
                                             {isRecommended && (
@@ -618,7 +611,7 @@ export function RoadmapContent({ data, steps, userName, specialization }: Roadma
                                                     <Badge variant="outline" className="text-xs border-burgundy-300 text-burgundy-600">
                                                         <Play className="w-3 h-3 mr-1" /> 45 minutes
                                                     </Badge>
-                                                    <Link href="/courses/graduate-training">
+                                                    <Link href="/training">
                                                         <Button size="sm" className="bg-burgundy-600 hover:bg-burgundy-700">
                                                             Watch Training <ChevronRight className="w-4 h-4 ml-1" />
                                                         </Button>
@@ -651,15 +644,14 @@ export function RoadmapContent({ data, steps, userName, specialization }: Roadma
 
                                         {/* Income Vision / Status */}
                                         <div className={`text-right hidden sm:block ${locked || (isIntermediateStep && !data.completedSteps.includes(0)) ? "opacity-40" : ""}`}>
-                                            <p className={`font-bold text-lg ${
-                                                completed ? "text-green-600" :
-                                                isRecommended ? "text-burgundy-600" :
-                                                isChallengeAvailable ? "text-orange-600" :
-                                                current ? getStepColor(step.step, "text") :
-                                                isMiniDiploma ? "text-purple-600" :
-                                                isCertificationStep ? "text-gray-700" :
-                                                "text-gray-400"
-                                            }`}>{step.incomeVision}</p>
+                                            <p className={`font-bold text-lg ${completed ? "text-green-600" :
+                                                    isRecommended ? "text-burgundy-600" :
+                                                        isChallengeAvailable ? "text-orange-600" :
+                                                            current ? getStepColor(step.step, "text") :
+                                                                isMiniDiploma ? "text-purple-600" :
+                                                                    isCertificationStep ? "text-gray-700" :
+                                                                        "text-gray-400"
+                                                }`}>{step.incomeVision}</p>
                                             {isCertificationStep && (
                                                 <p className="text-xs text-gray-400">per month</p>
                                             )}

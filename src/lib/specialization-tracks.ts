@@ -119,7 +119,7 @@ export const FUNCTIONAL_MEDICINE_TRACK: SpecializationTrack = {
         step1_completed: {
             welcomeMessage: "Congratulations! You've earned your Functional Medicine certification. Now it's time to turn that knowledge into real income.",
             actionLabel: "Activate My Practice Path",
-            actionHref: "/courses/practice-income-path",
+            actionHref: "/catalog",
             motivation: "You have the clinical foundation in FM. Now let's build the practice and income you deserve — ethically and sustainably.",
             nextUnlockTitle: "Step 2: Working Practitioner",
             nextUnlockBenefits: [
@@ -324,7 +324,7 @@ export const HEALTH_COACH_TRACK: SpecializationTrack = {
         step1_completed: {
             welcomeMessage: "Congratulations! You've earned your Health Coach certification. Now it's time to turn that knowledge into real income.",
             actionLabel: "Activate My Practice Path",
-            actionHref: "/courses/practice-income-path",
+            actionHref: "/catalog",
             motivation: "You have the coaching foundation. Now let's build the practice and income you deserve.",
             nextUnlockTitle: "Step 2: Working Coach",
             nextUnlockBenefits: [
@@ -529,7 +529,7 @@ export const MENOPAUSE_TRACK: SpecializationTrack = {
         step1_completed: {
             welcomeMessage: "Congratulations! You're now a Certified Menopause Specialist. Time to help real women transform their experience.",
             actionLabel: "Activate My Practice Path",
-            actionHref: "/courses/practice-income-path",
+            actionHref: "/catalog",
             motivation: "You have the expertise. Now let's build the practice that connects you with women who need you.",
             nextUnlockTitle: "Step 2: Working Specialist",
             nextUnlockBenefits: [
@@ -734,7 +734,7 @@ export const GUT_HEALTH_TRACK: SpecializationTrack = {
         step1_completed: {
             welcomeMessage: "Congratulations! You're now a Certified Gut Health Specialist. Time to help clients transform their health.",
             actionLabel: "Activate My Practice Path",
-            actionHref: "/courses/practice-income-path",
+            actionHref: "/catalog",
             motivation: "You have the expertise. Now let's build the practice that connects you with clients who need gut health help.",
             nextUnlockTitle: "Step 2: Working Specialist",
             nextUnlockBenefits: [
@@ -939,7 +939,7 @@ export const WOMENS_HEALTH_TRACK: SpecializationTrack = {
         step1_completed: {
             welcomeMessage: "Congratulations! You're now a Certified Women's Health Specialist. Time to serve the women who need you.",
             actionLabel: "Activate My Practice Path",
-            actionHref: "/courses/practice-income-path",
+            actionHref: "/catalog",
             motivation: "You have the expertise. Now let's build the practice that connects you with women who need you.",
             nextUnlockTitle: "Step 2: Working Specialist",
             nextUnlockBenefits: [
