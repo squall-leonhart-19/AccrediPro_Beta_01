@@ -316,12 +316,72 @@ async function addFreebieTag(userId: string) {
 
 async function enrollInNurtureSequence(userId: string) {
     try {
-        // Find the Mini Diploma nurture sequence
+        // STEP 1: Tag user with nurture-30-day (for UI count)
+        const nurtureTag = await prisma.marketingTag.findFirst({
+            where: {
+                OR: [
+                    { slug: "nurture-30-day" },
+                    { name: "nurture-30-day" },
+                ],
+            },
+        });
+
+        if (nurtureTag) {
+            // Check if already tagged
+            const existingTag = await prisma.userMarketingTag.findUnique({
+                where: {
+                    userId_tagId: {
+                        userId,
+                        tagId: nurtureTag.id,
+                    },
+                },
+            });
+
+            if (!existingTag) {
+                await prisma.userMarketingTag.create({
+                    data: {
+                        userId,
+                        tagId: nurtureTag.id,
+                    },
+                });
+
+                await prisma.marketingTag.update({
+                    where: { id: nurtureTag.id },
+                    data: { userCount: { increment: 1 } },
+                });
+
+                console.log(`[NURTURE] ✅ Tagged user ${userId} with nurture-30-day`);
+            }
+        } else {
+            console.log(`[NURTURE] ⚠️ nurture-30-day tag not found - creating...`);
+            // Create the tag if it doesn't exist
+            const newTag = await prisma.marketingTag.create({
+                data: {
+                    name: "nurture-30-day",
+                    slug: "nurture-30-day",
+                    category: "STAGE",
+                    description: "Users enrolled in 30-day nurture sequence",
+                    color: "#722F37",
+                    userCount: 1,
+                },
+            });
+
+            await prisma.userMarketingTag.create({
+                data: {
+                    userId,
+                    tagId: newTag.id,
+                },
+            });
+            console.log(`[NURTURE] ✅ Created nurture-30-day tag and tagged user`);
+        }
+
+        // STEP 2: Find and enroll in database sequence
         const sequence = await prisma.sequence.findFirst({
             where: {
                 OR: [
                     { slug: "mini-diploma-to-certification-30d" },
                     { slug: "mini-diploma-nurture" },
+                    { name: { contains: "Mini Diploma" } },
                     { triggerType: "MINI_DIPLOMA_STARTED" },
                 ],
                 isActive: true,
@@ -329,6 +389,8 @@ async function enrollInNurtureSequence(userId: string) {
         });
 
         if (sequence) {
+            console.log(`[NURTURE] Found sequence: ${sequence.name} (${sequence.id})`);
+
             // Check if already enrolled
             const existingEnrollment = await prisma.sequenceEnrollment.findUnique({
                 where: {
@@ -359,7 +421,13 @@ async function enrollInNurtureSequence(userId: string) {
                     where: { id: sequence.id },
                     data: { totalEnrolled: { increment: 1 } },
                 });
+
+                console.log(`[NURTURE] ✅ Enrolled user ${userId} in nurture sequence`);
+            } else {
+                console.log(`[NURTURE] User ${userId} already enrolled`);
             }
+        } else {
+            console.log(`[NURTURE] ⚠️ No active nurture sequence found in database`);
         }
     } catch (error) {
         console.error("Error enrolling in nurture sequence:", error);
