@@ -49,10 +49,18 @@ export async function GET(request: NextRequest) {
     const opened = (sequenceEmailStats._sum.openCount || 0) + (templateStats._sum.openCount || 0);
     const clicked = (sequenceEmailStats._sum.clickCount || 0) + (templateStats._sum.clickCount || 0);
 
-    // For now, assume all sent emails are delivered (we can add bounce tracking later)
-    const delivered = totalSent;
-    const bounced = 0;
-    const unsubscribed = 0;
+    // Get actual bounced/unsubscribed/delivered counts from EmailSend table
+    const emailStatusCounts = await prisma.emailSend.groupBy({
+      by: ["status"],
+      _count: { status: true },
+    });
+
+    const statusMap = new Map(emailStatusCounts.map((s) => [s.status, s._count.status]));
+    const delivered = (statusMap.get("DELIVERED") || 0) + (statusMap.get("OPENED") || 0) + (statusMap.get("CLICKED") || 0);
+    const bounced = statusMap.get("BOUNCED") || 0;
+    const unsubscribed = statusMap.get("UNSUBSCRIBED") || 0;
+    const complained = statusMap.get("COMPLAINED") || 0;
+    const failed = statusMap.get("FAILED") || 0;
 
     // Calculate rates
     const deliveryRate = totalSent > 0 ? (delivered / totalSent) * 100 : 0;
@@ -173,11 +181,15 @@ export async function GET(request: NextRequest) {
         clicked,
         bounced,
         unsubscribed,
+        complained,
+        failed,
         deliveryRate: deliveryRate.toFixed(1),
         openRate: openRate.toFixed(1),
         clickRate: clickRate.toFixed(1),
         bounceRate: bounceRate.toFixed(1),
         unsubscribeRate: unsubscribeRate.toFixed(1),
+        complainedRate: (totalSent > 0 ? (complained / totalSent) * 100 : 0).toFixed(1),
+        failedRate: (totalSent > 0 ? (failed / totalSent) * 100 : 0).toFixed(1),
         subscriberCount,
       },
       dailyStats,

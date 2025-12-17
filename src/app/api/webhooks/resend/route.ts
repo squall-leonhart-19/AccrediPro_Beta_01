@@ -157,6 +157,22 @@ export async function POST(request: NextRequest) {
           await addSuppressionTag(emailSend.userId, "suppress_bounced");
           break;
 
+        case "email.failed":
+          await prisma.emailSend.update({
+            where: { id: emailSend.id },
+            data: {
+              status: "FAILED",
+              errorMessage: data?.error?.message || "Email failed to send",
+            },
+          });
+          console.error(`[WEBHOOK] Email failed for user ${emailSend.userId}:`, data?.error);
+          break;
+
+        case "email.delivery_delayed":
+          // Log but don't change status - email may still deliver
+          console.warn(`[WEBHOOK] Email delivery delayed for ${emailSend.userId}:`, data);
+          break;
+
         case "email.complained":
           await prisma.emailSend.update({
             where: { id: emailSend.id },

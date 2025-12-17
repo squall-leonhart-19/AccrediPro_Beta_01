@@ -76,11 +76,15 @@ interface Analytics {
     clicked: number;
     bounced: number;
     unsubscribed: number;
+    complained: number;
+    failed: number;
     deliveryRate: string;
     openRate: string;
     clickRate: string;
     bounceRate: string;
     unsubscribeRate: string;
+    complainedRate: string;
+    failedRate: string;
     subscriberCount: number;
   };
   topEmails: Array<{
@@ -751,72 +755,119 @@ export default function MarketingPage() {
       </div>
 
       {/* Analytics Overview */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
+      <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-8 gap-3">
         <Card>
-          <CardContent className="p-4">
-            <div className="flex items-center gap-3">
-              <div className="p-2 bg-blue-100 rounded-lg">
-                <Send className="h-5 w-5 text-blue-600" />
+          <CardContent className="p-3">
+            <div className="flex items-center gap-2">
+              <div className="p-1.5 bg-blue-100 rounded-lg">
+                <Send className="h-4 w-4 text-blue-600" />
               </div>
               <div>
-                <p className="text-sm text-gray-500">Emails Sent</p>
-                <p className="text-xl font-bold">{analytics?.overview.totalSent || 0}</p>
+                <p className="text-xs text-gray-500">Sent</p>
+                <p className="text-lg font-bold">{analytics?.overview.totalSent || 0}</p>
               </div>
             </div>
           </CardContent>
         </Card>
 
         <Card>
-          <CardContent className="p-4">
-            <div className="flex items-center gap-3">
-              <div className="p-2 bg-green-100 rounded-lg">
-                <CheckCircle className="h-5 w-5 text-green-600" />
+          <CardContent className="p-3">
+            <div className="flex items-center gap-2">
+              <div className="p-1.5 bg-green-100 rounded-lg">
+                <CheckCircle className="h-4 w-4 text-green-600" />
               </div>
               <div>
-                <p className="text-sm text-gray-500">Delivered</p>
-                <p className="text-xl font-bold">{analytics?.overview.deliveryRate || 0}%</p>
+                <p className="text-xs text-gray-500">Delivered</p>
+                <p className="text-lg font-bold">{analytics?.overview.delivered || 0}</p>
+                <p className="text-xs text-green-600">{analytics?.overview.deliveryRate || 0}%</p>
               </div>
             </div>
           </CardContent>
         </Card>
 
         <Card>
-          <CardContent className="p-4">
-            <div className="flex items-center gap-3">
-              <div className="p-2 bg-purple-100 rounded-lg">
-                <Eye className="h-5 w-5 text-purple-600" />
+          <CardContent className="p-3">
+            <div className="flex items-center gap-2">
+              <div className="p-1.5 bg-purple-100 rounded-lg">
+                <Eye className="h-4 w-4 text-purple-600" />
               </div>
               <div>
-                <p className="text-sm text-gray-500">Open Rate</p>
-                <p className="text-xl font-bold">{analytics?.overview.openRate || 0}%</p>
+                <p className="text-xs text-gray-500">Opened</p>
+                <p className="text-lg font-bold">{analytics?.overview.opened || 0}</p>
+                <p className="text-xs text-purple-600">{analytics?.overview.openRate || 0}%</p>
               </div>
             </div>
           </CardContent>
         </Card>
 
         <Card>
-          <CardContent className="p-4">
-            <div className="flex items-center gap-3">
-              <div className="p-2 bg-amber-100 rounded-lg">
-                <MousePointer className="h-5 w-5 text-amber-600" />
+          <CardContent className="p-3">
+            <div className="flex items-center gap-2">
+              <div className="p-1.5 bg-amber-100 rounded-lg">
+                <MousePointer className="h-4 w-4 text-amber-600" />
               </div>
               <div>
-                <p className="text-sm text-gray-500">Click Rate</p>
-                <p className="text-xl font-bold">{analytics?.overview.clickRate || 0}%</p>
+                <p className="text-xs text-gray-500">Clicked</p>
+                <p className="text-lg font-bold">{analytics?.overview.clicked || 0}</p>
+                <p className="text-xs text-amber-600">{analytics?.overview.clickRate || 0}%</p>
               </div>
             </div>
           </CardContent>
         </Card>
 
         <Card>
-          <CardContent className="p-4">
-            <div className="flex items-center gap-3">
-              <div className="p-2 bg-rose-100 rounded-lg">
-                <Users className="h-5 w-5 text-rose-600" />
+          <CardContent className="p-3">
+            <div className="flex items-center gap-2">
+              <div className="p-1.5 bg-red-100 rounded-lg">
+                <AlertCircle className="h-4 w-4 text-red-600" />
               </div>
               <div>
-                <p className="text-sm text-gray-500">Subscribers</p>
-                <p className="text-xl font-bold">{analytics?.overview.subscriberCount || 0}</p>
+                <p className="text-xs text-gray-500">Bounced</p>
+                <p className="text-lg font-bold">{analytics?.overview.bounced || 0}</p>
+                <p className="text-xs text-red-600">{analytics?.overview.bounceRate || 0}%</p>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardContent className="p-3">
+            <div className="flex items-center gap-2">
+              <div className="p-1.5 bg-orange-100 rounded-lg">
+                <LogOut className="h-4 w-4 text-orange-600" />
+              </div>
+              <div>
+                <p className="text-xs text-gray-500">Unsubscribed</p>
+                <p className="text-lg font-bold">{analytics?.overview.unsubscribed || 0}</p>
+                <p className="text-xs text-orange-600">{analytics?.overview.unsubscribeRate || 0}%</p>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardContent className="p-3">
+            <div className="flex items-center gap-2">
+              <div className="p-1.5 bg-rose-100 rounded-lg">
+                <Users className="h-4 w-4 text-rose-600" />
+              </div>
+              <div>
+                <p className="text-xs text-gray-500">Subscribers</p>
+                <p className="text-lg font-bold">{analytics?.overview.subscriberCount || 0}</p>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardContent className="p-3">
+            <div className="flex items-center gap-2">
+              <div className="p-1.5 bg-teal-100 rounded-lg">
+                <TrendingUp className="h-4 w-4 text-teal-600" />
+              </div>
+              <div>
+                <p className="text-xs text-gray-500">Health Score</p>
+                <p className="text-lg font-bold">{analytics?.overview.bounced === 0 && analytics?.overview.unsubscribed === 0 ? "100%" : `${Math.max(0, 100 - ((analytics?.overview.bounced || 0) + (analytics?.overview.unsubscribed || 0)) / Math.max(1, analytics?.overview.totalSent || 1) * 100).toFixed(0)}%`}</p>
               </div>
             </div>
           </CardContent>

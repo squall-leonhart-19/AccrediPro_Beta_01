@@ -35,6 +35,11 @@ model User {
   leadSourceDetail  String?   // Specific detail (which freebie, etc.)
   assignedCoachId   String?   // Auto-assigned coach based on category
 
+  // Meta (Facebook) Tracking for Conversions API
+  fbclid            String?   // Facebook Click ID from URL
+  fbc               String?   // Facebook Browser Cookie (_fbc)
+  fbp               String?   // Facebook Pixel Cookie (_fbp)
+
   // Mini Diploma Freebie (Lead Magnet)
   miniDiplomaCategory String?  // functional-medicine, autism, gut-health, etc.
   miniDiplomaOptinAt  DateTime? // When they opted in
@@ -1471,6 +1476,25 @@ model EmailEvent {
 
   @@index([emailSendId])
   @@index([eventType])
+  @@index([createdAt])
+}
+
+// ==================== META CONVERSIONS TRACKING ====================
+
+model MetaEventLog {
+  id          String    @id @default(cuid())
+  eventName   String    // Lead, Purchase, etc.
+  eventId     String    // Meta event_id for deduplication
+  userEmail   String?
+  pixelId     String?
+  payload     Json?     // What we sent to Meta
+  response    Json?     // What Meta returned
+  status      String    @default("pending") // pending, success, error
+
+  createdAt   DateTime  @default(now())
+
+  @@index([eventName])
+  @@index([userEmail])
   @@index([createdAt])
 }
 
