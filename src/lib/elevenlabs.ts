@@ -8,9 +8,8 @@ import { ElevenLabsClient } from "@elevenlabs/elevenlabs-js";
  * - SARAH_VOICE_ID: The voice ID for Sarah's cloned voice
  */
 
-// Default to a pre-made voice if no custom voice ID is set
-// Pre-made voices: Rachel, Domi, Bella, Antoni, Elli, Josh, Arnold, Adam, Sam
-const DEFAULT_VOICE_ID = "EXAVITQu4vr4xnSDxMaL"; // "Bella" - warm female voice
+// Default to Sarah's custom voice - use this if SARAH_VOICE_ID env var is not set
+const DEFAULT_VOICE_ID = "Rn0vawuWHBy1e0yur4D8"; // Sarah's custom cloned voice
 
 export interface VoiceGenerationResult {
     success: boolean;

@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
@@ -469,18 +470,24 @@ const USER_ACCESS = {
 };
 
 export default function ClientProgramLibraryPage() {
+    const router = useRouter();
     const [searchQuery, setSearchQuery] = useState("");
     const [activeTab, setActiveTab] = useState<"core" | "specialty" | "business" | "accelerators">("core");
     const [previewItem, setPreviewItem] = useState<typeof CORE_PROGRAMS[0] | typeof SPECIALTY_KITS[0] | typeof BUSINESS_KITS[0] | null>(null);
 
     const canAccess = USER_ACCESS.level !== "MINI_DIPLOMA";
 
+    // Sarah's coach ID for messaging
+    const SARAH_COACH_EMAIL = "coach@accredipro-certificate.com";
+
     const handlePurchase = (item: { title: string; price: number }) => {
         if (!canAccess) {
             alert("🔒 Complete your Step 1 Certification to unlock the Client Program Library!\n\nThese done-for-you resources are available to certified practitioners.");
             return;
         }
-        alert(`🛒 Added "${item.title}" to cart for $${item.price.toLocaleString()}\n\n(Checkout coming soon!)`);
+        // Redirect to chat with Sarah with pre-filled message about interest in product
+        const message = encodeURIComponent(`Hi Sarah! I'm interested in "${item.title}" ($${item.price.toLocaleString()}). Can you tell me more about it?`);
+        router.push(`/messages?message=${message}`);
     };
 
     return (

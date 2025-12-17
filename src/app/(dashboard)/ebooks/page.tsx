@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
@@ -433,6 +434,7 @@ const BUNDLES = [
 const IS_GRADUATE = false; // Would come from session/user data
 
 export default function EbooksStorePage() {
+    const router = useRouter();
     const [searchQuery, setSearchQuery] = useState("");
     const [selectedCategory, setSelectedCategory] = useState("all");
     const [activeTab, setActiveTab] = useState<"ebooks" | "bundles">("ebooks");
@@ -454,7 +456,9 @@ export default function EbooksStorePage() {
 
     const handlePurchase = (item: typeof CORE_EBOOKS[0] | typeof BUNDLES[0], type: "ebook" | "bundle") => {
         const price = isGraduate ? item.graduatePrice : item.price;
-        alert(`🛒 Added "${item.title}" to cart for $${price}\n\n(Checkout coming soon!)`);
+        // Redirect to chat with Sarah with pre-filled message about interest in product
+        const message = encodeURIComponent(`Hi Sarah! I'm interested in "${item.title}" ($${price}). Can you tell me more about it?`);
+        router.push(`/messages?message=${message}`);
     };
 
     const getDisplayPrice = (item: typeof CORE_EBOOKS[0] | typeof BUNDLES[0]) => {

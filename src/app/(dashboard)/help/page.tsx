@@ -96,9 +96,9 @@ export default async function HelpPage() {
       title: "Email Support",
       description: "Get help via email within 24 hours",
       icon: Mail,
-      action: "support@accredipro.academy",
+      action: "info@accredipro.academy",
       type: "email" as const,
-      href: "mailto:support@accredipro.academy",
+      href: "mailto:info@accredipro.academy",
     },
     {
       title: "Live Chat",
@@ -107,14 +107,6 @@ export default async function HelpPage() {
       action: "Start Chat",
       type: "chat" as const,
       href: sarahCoach ? `/messages?chat=${sarahCoach.id}` : "/messages",
-    },
-    {
-      title: "Schedule a Call",
-      description: "Book a call with our team",
-      icon: Phone,
-      action: "Book Call",
-      type: "call" as const,
-      href: "#",
     },
   ];
 
