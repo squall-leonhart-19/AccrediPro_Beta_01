@@ -822,9 +822,9 @@ export function CommunityClient({ posts: dbPosts, stats, communities = [], isAdm
                 .slice(0, 4);
 
               // Determine if this pinned post should show as announcement or regular pinned post
-              // Introductions and coaching-tips pinned posts should be clickable (regular pinned)
-              // wins, graduates, career-pathway, questions-everyone-has show as announcements
-              const announcementCategories = ['wins', 'graduates', 'career-pathway', 'questions-everyone-has'];
+              // Only introductions pinned post should be clickable (regular pinned)
+              // All others show as announcements: wins, graduates, career-pathway, questions-everyone-has, coaching-tips
+              const announcementCategories = ['wins', 'graduates', 'career-pathway', 'questions-everyone-has', 'coaching-tips'];
               const isAnnouncementStyle = post.isPinned && announcementCategories.includes(post.category || '');
 
               return (
