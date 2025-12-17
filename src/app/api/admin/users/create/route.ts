@@ -11,6 +11,7 @@ const createUserSchema = z.object({
   firstName: z.string().optional(),
   lastName: z.string().optional(),
   role: z.enum(["STUDENT", "MENTOR", "INSTRUCTOR", "ADMIN"]).default("STUDENT"),
+  tags: z.array(z.string()).optional(),
 });
 
 export async function POST(request: NextRequest) {
@@ -61,6 +62,16 @@ export async function POST(request: NextRequest) {
         createdAt: true,
       },
     });
+
+    // Create tags if provided
+    if (data.tags && data.tags.length > 0) {
+      await prisma.userTag.createMany({
+        data: data.tags.map((tag) => ({
+          userId: user.id,
+          tag: tag,
+        })),
+      });
+    }
 
     return NextResponse.json({
       success: true,

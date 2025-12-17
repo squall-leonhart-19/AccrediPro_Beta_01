@@ -173,7 +173,28 @@ export function UsersClient({ users, courses }: UsersClientProps) {
     lastName: "",
     password: "",
     role: "STUDENT",
+    tags: [] as string[],
   });
+  const [createUserError, setCreateUserError] = useState("");
+  const [createUserSuccess, setCreateUserSuccess] = useState(false);
+
+  // Add tag state
+  const [addTagDialogOpen, setAddTagDialogOpen] = useState(false);
+  const [newTag, setNewTag] = useState("");
+  const [addingTag, setAddingTag] = useState(false);
+
+  // Common tags for quick selection
+  const COMMON_TAGS = [
+    "enrolled_functional_medicine",
+    "enrolled_health_coach",
+    "lead:hot",
+    "lead:warm",
+    "lead:cold",
+    "vip_customer",
+    "needs_support",
+    "upsell_candidate",
+    "referral_partner",
+  ];
 
   const fetchUserActivity = async (userId: string) => {
     console.log('Fetching activity for user:', userId);
@@ -453,27 +474,80 @@ export function UsersClient({ users, courses }: UsersClientProps) {
   const handleCreateUser = async () => {
     if (!newUserData.email || !newUserData.password) return;
     setCreatingUser(true);
+    setCreateUserError("");
+    setCreateUserSuccess(false);
     try {
       const response = await fetch("/api/admin/users/create", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(newUserData),
+        body: JSON.stringify({
+          email: newUserData.email,
+          password: newUserData.password,
+          firstName: newUserData.firstName,
+          lastName: newUserData.lastName,
+          role: newUserData.role,
+          tags: newUserData.tags,
+        }),
       });
+      const data = await response.json();
+
       if (response.ok) {
-        setCreateUserDialogOpen(false);
-        setNewUserData({
-          email: "",
-          firstName: "",
-          lastName: "",
-          password: "",
-          role: "STUDENT",
-        });
-        router.refresh();
+        setCreateUserSuccess(true);
+        setTimeout(() => {
+          setCreateUserDialogOpen(false);
+          setCreateUserSuccess(false);
+          setNewUserData({
+            email: "",
+            firstName: "",
+            lastName: "",
+            password: "",
+            role: "STUDENT",
+            tags: [],
+          });
+          router.refresh();
+        }, 1500);
+      } else {
+        setCreateUserError(data.error || "Failed to create user");
       }
     } catch (error) {
       console.error("Failed to create user:", error);
+      setCreateUserError("Network error. Please try again.");
     } finally {
       setCreatingUser(false);
+    }
+  };
+
+  const openAddTagDialog = (user: User) => {
+    setSelectedUser(user);
+    setNewTag("");
+    setAddTagDialogOpen(true);
+  };
+
+  const handleAddTag = async () => {
+    if (!selectedUser || !newTag.trim()) return;
+    setAddingTag(true);
+    try {
+      const response = await fetch("/api/admin/users/tags", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          userId: selectedUser.id,
+          tag: newTag.trim(),
+        }),
+      });
+      if (response.ok) {
+        setAddTagDialogOpen(false);
+        setNewTag("");
+        router.refresh();
+      } else {
+        const data = await response.json();
+        alert(data.error || "Failed to add tag");
+      }
+    } catch (error) {
+      console.error("Failed to add tag:", error);
+      alert("Failed to add tag");
+    } finally {
+      setAddingTag(false);
     }
   };
 
@@ -964,6 +1038,13 @@ export function UsersClient({ users, courses }: UsersClientProps) {
                               >
                                 <UserCog className="w-4 h-4 mr-2 text-purple-600" />
                                 Change Role
+                              </DropdownMenuItem>
+                              <DropdownMenuItem
+                                onClick={() => openAddTagDialog(user)}
+                                className="cursor-pointer"
+                              >
+                                <Tag className="w-4 h-4 mr-2 text-green-600" />
+                                Add Tag
                               </DropdownMenuItem>
                               <DropdownMenuSeparator />
                               <DropdownMenuItem
@@ -1908,8 +1989,14 @@ export function UsersClient({ users, courses }: UsersClientProps) {
       </Dialog>
 
       {/* Create User Dialog */}
-      <Dialog open={createUserDialogOpen} onOpenChange={setCreateUserDialogOpen}>
-        <DialogContent className="sm:max-w-md">
+      <Dialog open={createUserDialogOpen} onOpenChange={(open) => {
+        setCreateUserDialogOpen(open);
+        if (!open) {
+          setCreateUserError("");
+          setCreateUserSuccess(false);
+        }
+      }}>
+        <DialogContent className="sm:max-w-lg">
           <DialogHeader>
             <DialogTitle className="flex items-center gap-2">
               <UserPlus className="w-5 h-5 text-burgundy-600" />
@@ -1919,88 +2006,219 @@ export function UsersClient({ users, courses }: UsersClientProps) {
               Add a new user to the platform with their login credentials.
             </DialogDescription>
           </DialogHeader>
+
+          {/* Success Message */}
+          {createUserSuccess && (
+            <div className="p-4 bg-green-50 border border-green-200 rounded-lg flex items-center gap-3">
+              <div className="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center">
+                <svg className="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                </svg>
+              </div>
+              <div>
+                <p className="font-medium text-green-800">User Created Successfully!</p>
+                <p className="text-sm text-green-600">The user can now login with their credentials.</p>
+              </div>
+            </div>
+          )}
+
+          {/* Error Message */}
+          {createUserError && (
+            <div className="p-3 bg-red-50 border border-red-200 rounded-lg text-red-700 text-sm">
+              {createUserError}
+            </div>
+          )}
+
+          {!createUserSuccess && (
+            <>
+              <div className="space-y-4 py-4">
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="firstName">First Name</Label>
+                    <Input
+                      id="firstName"
+                      value={newUserData.firstName}
+                      onChange={(e) => setNewUserData(prev => ({ ...prev, firstName: e.target.value }))}
+                      placeholder="John"
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="lastName">Last Name</Label>
+                    <Input
+                      id="lastName"
+                      value={newUserData.lastName}
+                      onChange={(e) => setNewUserData(prev => ({ ...prev, lastName: e.target.value }))}
+                      placeholder="Doe"
+                    />
+                  </div>
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="email">Email *</Label>
+                  <Input
+                    id="email"
+                    type="email"
+                    value={newUserData.email}
+                    onChange={(e) => setNewUserData(prev => ({ ...prev, email: e.target.value }))}
+                    placeholder="john@example.com"
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="password">Password *</Label>
+                  <Input
+                    id="password"
+                    type="password"
+                    value={newUserData.password}
+                    onChange={(e) => setNewUserData(prev => ({ ...prev, password: e.target.value }))}
+                    placeholder="Minimum 8 characters"
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label>Role</Label>
+                  <Select
+                    value={newUserData.role}
+                    onValueChange={(value) => setNewUserData(prev => ({ ...prev, role: value }))}
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select a role" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="STUDENT">Student</SelectItem>
+                      <SelectItem value="MENTOR">Mentor</SelectItem>
+                      <SelectItem value="INSTRUCTOR">Instructor</SelectItem>
+                      <SelectItem value="ADMIN">Admin</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                {/* Tags Selection */}
+                <div className="space-y-2">
+                  <Label className="flex items-center gap-2">
+                    <Tag className="w-4 h-4" />
+                    Apply Tags (optional)
+                  </Label>
+                  <div className="flex flex-wrap gap-2">
+                    {COMMON_TAGS.map((tag) => (
+                      <button
+                        key={tag}
+                        type="button"
+                        onClick={() => {
+                          setNewUserData(prev => ({
+                            ...prev,
+                            tags: prev.tags.includes(tag)
+                              ? prev.tags.filter(t => t !== tag)
+                              : [...prev.tags, tag]
+                          }));
+                        }}
+                        className={`px-2 py-1 text-xs rounded-full border transition-colors ${
+                          newUserData.tags.includes(tag)
+                            ? "bg-burgundy-100 border-burgundy-300 text-burgundy-700"
+                            : "bg-gray-50 border-gray-200 text-gray-600 hover:bg-gray-100"
+                        }`}
+                      >
+                        {tag}
+                      </button>
+                    ))}
+                  </div>
+                  {newUserData.tags.length > 0 && (
+                    <p className="text-xs text-gray-500">{newUserData.tags.length} tag(s) selected</p>
+                  )}
+                </div>
+              </div>
+              <DialogFooter>
+                <Button
+                  variant="outline"
+                  onClick={() => {
+                    setCreateUserDialogOpen(false);
+                    setCreateUserError("");
+                    setNewUserData({
+                      email: "",
+                      firstName: "",
+                      lastName: "",
+                      password: "",
+                      role: "STUDENT",
+                      tags: [],
+                    });
+                  }}
+                  disabled={creatingUser}
+                >
+                  Cancel
+                </Button>
+                <Button
+                  onClick={handleCreateUser}
+                  className="bg-burgundy-600 hover:bg-burgundy-700"
+                  disabled={creatingUser || !newUserData.email || !newUserData.password}
+                >
+                  {creatingUser ? "Creating..." : "Create User"}
+                </Button>
+              </DialogFooter>
+            </>
+          )}
+        </DialogContent>
+      </Dialog>
+
+      {/* Add Tag Dialog */}
+      <Dialog open={addTagDialogOpen} onOpenChange={setAddTagDialogOpen}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              <Tag className="w-5 h-5 text-green-600" />
+              Add Tag
+            </DialogTitle>
+            <DialogDescription>
+              {selectedUser && (
+                <span>
+                  Add a tag to{" "}
+                  <strong>
+                    {selectedUser.firstName} {selectedUser.lastName}
+                  </strong>
+                </span>
+              )}
+            </DialogDescription>
+          </DialogHeader>
           <div className="space-y-4 py-4">
-            <div className="grid grid-cols-2 gap-4">
-              <div className="space-y-2">
-                <Label htmlFor="firstName">First Name</Label>
-                <Input
-                  id="firstName"
-                  value={newUserData.firstName}
-                  onChange={(e) => setNewUserData(prev => ({ ...prev, firstName: e.target.value }))}
-                  placeholder="John"
-                />
+            <div className="space-y-2">
+              <Label>Quick Select</Label>
+              <div className="flex flex-wrap gap-2">
+                {COMMON_TAGS.map((tag) => (
+                  <button
+                    key={tag}
+                    type="button"
+                    onClick={() => setNewTag(tag)}
+                    className={`px-2 py-1 text-xs rounded-full border transition-colors ${
+                      newTag === tag
+                        ? "bg-green-100 border-green-300 text-green-700"
+                        : "bg-gray-50 border-gray-200 text-gray-600 hover:bg-gray-100"
+                    }`}
+                  >
+                    {tag}
+                  </button>
+                ))}
               </div>
-              <div className="space-y-2">
-                <Label htmlFor="lastName">Last Name</Label>
-                <Input
-                  id="lastName"
-                  value={newUserData.lastName}
-                  onChange={(e) => setNewUserData(prev => ({ ...prev, lastName: e.target.value }))}
-                  placeholder="Doe"
-                />
-              </div>
             </div>
             <div className="space-y-2">
-              <Label htmlFor="email">Email *</Label>
+              <Label htmlFor="tagInput">Or enter custom tag</Label>
               <Input
-                id="email"
-                type="email"
-                value={newUserData.email}
-                onChange={(e) => setNewUserData(prev => ({ ...prev, email: e.target.value }))}
-                placeholder="john@example.com"
+                id="tagInput"
+                value={newTag}
+                onChange={(e) => setNewTag(e.target.value)}
+                placeholder="e.g., vip_customer, referral:john"
               />
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="password">Password *</Label>
-              <Input
-                id="password"
-                type="password"
-                value={newUserData.password}
-                onChange={(e) => setNewUserData(prev => ({ ...prev, password: e.target.value }))}
-                placeholder="Minimum 8 characters"
-              />
-            </div>
-            <div className="space-y-2">
-              <Label>Role</Label>
-              <Select
-                value={newUserData.role}
-                onValueChange={(value) => setNewUserData(prev => ({ ...prev, role: value }))}
-              >
-                <SelectTrigger>
-                  <SelectValue placeholder="Select a role" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="STUDENT">Student</SelectItem>
-                  <SelectItem value="MENTOR">Mentor</SelectItem>
-                  <SelectItem value="INSTRUCTOR">Instructor</SelectItem>
-                  <SelectItem value="ADMIN">Admin</SelectItem>
-                </SelectContent>
-              </Select>
             </div>
           </div>
           <DialogFooter>
             <Button
               variant="outline"
-              onClick={() => {
-                setCreateUserDialogOpen(false);
-                setNewUserData({
-                  email: "",
-                  firstName: "",
-                  lastName: "",
-                  password: "",
-                  role: "STUDENT",
-                });
-              }}
-              disabled={creatingUser}
+              onClick={() => setAddTagDialogOpen(false)}
+              disabled={addingTag}
             >
               Cancel
             </Button>
             <Button
-              onClick={handleCreateUser}
-              className="bg-burgundy-600 hover:bg-burgundy-700"
-              disabled={creatingUser || !newUserData.email || !newUserData.password}
+              onClick={handleAddTag}
+              className="bg-green-600 hover:bg-green-700"
+              disabled={addingTag || !newTag.trim()}
             >
-              {creatingUser ? "Creating..." : "Create User"}
+              {addingTag ? "Adding..." : "Add Tag"}
             </Button>
           </DialogFooter>
         </DialogContent>
