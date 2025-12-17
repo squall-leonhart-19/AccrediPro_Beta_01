@@ -8,6 +8,11 @@ import prisma from "@/lib/prisma";
  * One-time sync: Create SequenceEnrollment records for all mini-diploma users
  * who have the miniDiplomaOptinAt but no enrollment record
  */
+// Also allow GET for easy browser access
+export async function GET(request: NextRequest) {
+    return POST(request);
+}
+
 export async function POST(request: NextRequest) {
     try {
         // Allow CRON_SECRET or admin session

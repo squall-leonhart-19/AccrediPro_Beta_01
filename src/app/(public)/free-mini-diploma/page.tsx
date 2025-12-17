@@ -55,7 +55,7 @@ export default function FreeMiniDiplomaPage() {
     phone: "",
     countryCode: "+1",
     licenseType: "",
-    licenseState: "",
+    otherLicenseType: "",
     employmentStatus: "",
     goal: "",
     confirmLicense: false,
@@ -175,26 +175,10 @@ export default function FreeMiniDiplomaPage() {
         });
 
         setLoading(false);
-        setLoggingIn(true);
 
-        if (data.isExisting) {
-          setSuccess(true);
-          setLoggingIn(false);
-          return;
-        }
-
-        const loginResult = await signIn("credentials", {
-          email: formData.email.toLowerCase().trim(),
-          password: FREEBIE_PASSWORD,
-          redirect: false,
-        });
-
-        if (loginResult?.ok) {
-          window.location.href = "/dashboard";
-        } else {
-          setSuccess(true);
-          setLoggingIn(false);
-        }
+        // Redirect to thank-you page instead of auto-login
+        // This builds anticipation and avoids overwhelming with catalog/prices
+        window.location.href = "/free-mini-diploma/thank-you";
       } else {
         setError(data.error || "Something went wrong. Please try again.");
         if (data.suggestedEmail) {
@@ -547,10 +531,12 @@ export default function FreeMiniDiplomaPage() {
                   </select>
                 </div>
 
-                <div>
-                  <label className="block text-xs font-semibold mb-1" style={{ color: "#1F2432" }}>State/Country of Licensure*</label>
-                  <input type="text" required value={formData.licenseState} onChange={(e) => setFormData({ ...formData, licenseState: e.target.value })} className="w-full px-3 py-2 rounded-lg border text-sm" style={{ borderColor: "#D1D5DB" }} placeholder="e.g., California, USA" />
-                </div>
+                {formData.licenseType === "Other" && (
+                  <div>
+                    <label className="block text-xs font-semibold mb-1" style={{ color: "#1F2432" }}>Please specify your license*</label>
+                    <input type="text" required value={formData.otherLicenseType} onChange={(e) => setFormData({ ...formData, otherLicenseType: e.target.value })} className="w-full px-3 py-2 rounded-lg border text-sm" style={{ borderColor: "#D1D5DB" }} placeholder="e.g., Chiropractor, Acupuncturist" />
+                  </div>
+                )}
 
                 <div>
                   <label className="block text-xs font-semibold mb-1" style={{ color: "#1F2432" }}>Current Employment Status*</label>
