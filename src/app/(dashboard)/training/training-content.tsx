@@ -222,35 +222,39 @@ export function TrainingContent({
                                 <LiveQAChat />
                             )}
 
-                            {/* Mobile CTA */}
-                            <a
-                                href="https://www.fanbasis.com/agency-checkout/AccrediPro/XDNQW"
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className="block"
-                            >
-                                <Button size="lg" className="w-full bg-burgundy-600 hover:bg-burgundy-700 text-white font-bold shadow-lg">
-                                    <Gift className="w-5 h-5 mr-2" />
-                                    Enroll Now - $997
-                                    <ExternalLink className="w-4 h-4 ml-2" />
-                                </Button>
-                            </a>
+                            {/* Mobile CTA - Only show AFTER video watched */}
+                            {hasCompletedVideo && (
+                                <>
+                                    <a
+                                        href="https://www.fanbasis.com/agency-checkout/AccrediPro/XDNQW"
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        className="block"
+                                    >
+                                        <Button size="lg" className="w-full bg-burgundy-600 hover:bg-burgundy-700 text-white font-bold shadow-lg">
+                                            <Gift className="w-5 h-5 mr-2" />
+                                            Enroll Now - $997
+                                            <ExternalLink className="w-4 h-4 ml-2" />
+                                        </Button>
+                                    </a>
 
-                            {/* Mobile Trust Badges */}
-                            <div className="flex items-center justify-center gap-4 text-gray-500 text-xs">
-                                <div className="flex items-center gap-1">
-                                    <Shield className="w-3 h-3" />
-                                    <span>Secure</span>
-                                </div>
-                                <div className="flex items-center gap-1">
-                                    <CheckCircle className="w-3 h-3" />
-                                    <span>Lifetime Access</span>
-                                </div>
-                                <div className="flex items-center gap-1">
-                                    <Award className="w-3 h-3" />
-                                    <span>Accredited</span>
-                                </div>
-                            </div>
+                                    {/* Mobile Trust Badges */}
+                                    <div className="flex items-center justify-center gap-4 text-gray-500 text-xs">
+                                        <div className="flex items-center gap-1">
+                                            <Shield className="w-3 h-3" />
+                                            <span>Secure</span>
+                                        </div>
+                                        <div className="flex items-center gap-1">
+                                            <CheckCircle className="w-3 h-3" />
+                                            <span>Lifetime Access</span>
+                                        </div>
+                                        <div className="flex items-center gap-1">
+                                            <Award className="w-3 h-3" />
+                                            <span>Accredited</span>
+                                        </div>
+                                    </div>
+                                </>
+                            )}
                         </div>
 
                         {/* Key Benefits - Clean Cards */}
@@ -319,42 +323,44 @@ export function TrainingContent({
                             </CardContent>
                         </Card>
 
-                        {/* CTA - Desktop */}
-                        <div className="hidden lg:block">
-                            <Card className="border-2 border-burgundy-200 bg-burgundy-50">
-                                <CardContent className="p-6">
-                                    <div className="flex items-center justify-between gap-6">
-                                        <div className="flex items-center gap-4">
-                                            <div className="w-14 h-14 bg-burgundy-100 rounded-2xl flex items-center justify-center">
-                                                <Gift className="w-7 h-7 text-burgundy-600" />
+                        {/* CTA - Desktop - Only show AFTER video watched */}
+                        {hasCompletedVideo && (
+                            <div className="hidden lg:block">
+                                <Card className="border-2 border-burgundy-200 bg-burgundy-50">
+                                    <CardContent className="p-6">
+                                        <div className="flex items-center justify-between gap-6">
+                                            <div className="flex items-center gap-4">
+                                                <div className="w-14 h-14 bg-burgundy-100 rounded-2xl flex items-center justify-center">
+                                                    <Gift className="w-7 h-7 text-burgundy-600" />
+                                                </div>
+                                                <div>
+                                                    <Badge className="bg-burgundy-600 text-white border-0 mb-2">
+                                                        <Zap className="w-3 h-3 mr-1" />
+                                                        Graduate Special Offer
+                                                    </Badge>
+                                                    <h3 className="text-xl font-bold text-gray-900">
+                                                        Full Certification - <span className="text-burgundy-600">$997</span>
+                                                    </h3>
+                                                    <p className="text-sm text-gray-600">
+                                                        Save $1,000 - Limited time for graduates only
+                                                    </p>
+                                                </div>
                                             </div>
-                                            <div>
-                                                <Badge className="bg-burgundy-600 text-white border-0 mb-2">
-                                                    <Zap className="w-3 h-3 mr-1" />
-                                                    Graduate Special Offer
-                                                </Badge>
-                                                <h3 className="text-xl font-bold text-gray-900">
-                                                    Full Certification - <span className="text-burgundy-600">$997</span>
-                                                </h3>
-                                                <p className="text-sm text-gray-600">
-                                                    Save $1,000 - Limited time for graduates only
-                                                </p>
-                                            </div>
+                                            <a
+                                                href="https://www.fanbasis.com/agency-checkout/AccrediPro/XDNQW"
+                                                target="_blank"
+                                                rel="noopener noreferrer"
+                                            >
+                                                <Button size="lg" className="bg-burgundy-600 hover:bg-burgundy-700 text-white font-bold px-8 shadow-lg">
+                                                    Enroll Now
+                                                    <ArrowRight className="w-5 h-5 ml-2" />
+                                                </Button>
+                                            </a>
                                         </div>
-                                        <a
-                                            href="https://www.fanbasis.com/agency-checkout/AccrediPro/XDNQW"
-                                            target="_blank"
-                                            rel="noopener noreferrer"
-                                        >
-                                            <Button size="lg" className="bg-burgundy-600 hover:bg-burgundy-700 text-white font-bold px-8 shadow-lg">
-                                                Enroll Now
-                                                <ArrowRight className="w-5 h-5 ml-2" />
-                                            </Button>
-                                        </a>
-                                    </div>
-                                </CardContent>
-                            </Card>
-                        </div>
+                                    </CardContent>
+                                </Card>
+                            </div>
+                        )}
                     </div>
 
                     {/* Right Column - Live Q&A Chat (Desktop only) */}

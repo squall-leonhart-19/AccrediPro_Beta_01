@@ -41,7 +41,7 @@ const CAREER_STAGES = [
 ];
 
 async function getDashboardData(userId: string) {
-  const [enrollments, certificates, recentActivity, coach, userStreak, badges, user, userTags] = await Promise.all([
+  const [enrollments, certificates, recentActivity, coach, userStreak, badges, user, userTags, trainingTag] = await Promise.all([
     prisma.enrollment.findMany({
       where: { userId },
       include: {
@@ -121,6 +121,13 @@ async function getDashboardData(userId: string) {
       where: { userId },
       select: { tag: true },
     }),
+    // Check for training watched tags
+    prisma.userTag.findFirst({
+      where: {
+        userId,
+        tag: { in: ["training_video_70", "training_video_80", "training_video_90", "training_video_100"] },
+      },
+    }),
   ]);
 
   // Get completed lessons for this user
@@ -175,6 +182,7 @@ async function getDashboardData(userId: string) {
     specialization,
     nextLesson,
     completedLessonsCount: completedLessons,
+    hasWatchedTraining: !!trainingTag,
   };
 }
 
@@ -194,6 +202,7 @@ export default async function DashboardPage() {
     specialization,
     nextLesson,
     completedLessonsCount,
+    hasWatchedTraining,
   } = await getDashboardData(session.user.id);
 
   const completedCourses = enrollments.filter((e) => e.status === "COMPLETED").length;
@@ -611,16 +620,16 @@ export default async function DashboardPage() {
                       <div
                         key={stage.id}
                         className={`relative flex items-center gap-3 p-3 rounded-xl transition-all ${isUnlocked
-                            ? `${colors.light} ${colors.border} border`
-                            : isCurrent || isNext
-                              ? "bg-gray-50 border border-gray-200 ring-2 ring-burgundy-400/50"
-                              : "bg-gray-50 border border-gray-100 opacity-60"
+                          ? `${colors.light} ${colors.border} border`
+                          : isCurrent || isNext
+                            ? "bg-gray-50 border border-gray-200 ring-2 ring-burgundy-400/50"
+                            : "bg-gray-50 border border-gray-100 opacity-60"
                           }`}
                       >
                         {/* Step Number */}
                         <div className={`w-10 h-10 rounded-xl flex items-center justify-center font-bold text-white shadow-md ${isUnlocked || isCurrent || isNext
-                            ? `bg-gradient-to-br ${colors.bg}`
-                            : "bg-gray-300"
+                          ? `bg-gradient-to-br ${colors.bg}`
+                          : "bg-gray-300"
                           }`}>
                           {isUnlocked ? (
                             <CheckCircle className="w-5 h-5" />
@@ -657,12 +666,14 @@ export default async function DashboardPage() {
                   })}
                 </div>
 
-                <Link href="/roadmap" className="block mt-4">
-                  <Button variant="outline" size="sm" className="w-full border-burgundy-200 text-burgundy-700 hover:bg-burgundy-50">
-                    <Map className="w-4 h-4 mr-2" />
-                    View Full Roadmap
-                  </Button>
-                </Link>
+                {hasWatchedTraining && (
+                  <Link href="/roadmap" className="block mt-4">
+                    <Button variant="outline" size="sm" className="w-full border-burgundy-200 text-burgundy-700 hover:bg-burgundy-50">
+                      <Map className="w-4 h-4 mr-2" />
+                      View Full Roadmap
+                    </Button>
+                  </Link>
+                )}
               </CardContent>
             </Card>
 
@@ -717,23 +728,27 @@ export default async function DashboardPage() {
               </CardContent>
             </Card>
 
-            {/* Quick Links */}
+            {/* Quick Links - Hide Roadmap/Career Center until training watched */}
             <Card className="card-premium">
               <CardContent className="p-5">
                 <h3 className="font-semibold text-gray-900 mb-3">Quick Links</h3>
                 <div className="space-y-2">
-                  <Link href="/roadmap" className="block">
-                    <div className="flex items-center gap-3 p-2.5 rounded-lg hover:bg-burgundy-50 transition-colors">
-                      <Map className="w-4 h-4 text-burgundy-600" />
-                      <span className="text-sm text-gray-700">My Roadmap</span>
-                    </div>
-                  </Link>
-                  <Link href="/career-center" className="block">
-                    <div className="flex items-center gap-3 p-2.5 rounded-lg hover:bg-burgundy-50 transition-colors">
-                      <Target className="w-4 h-4 text-gold-600" />
-                      <span className="text-sm text-gray-700">Career Center</span>
-                    </div>
-                  </Link>
+                  {hasWatchedTraining && (
+                    <>
+                      <Link href="/roadmap" className="block">
+                        <div className="flex items-center gap-3 p-2.5 rounded-lg hover:bg-burgundy-50 transition-colors">
+                          <Map className="w-4 h-4 text-burgundy-600" />
+                          <span className="text-sm text-gray-700">My Roadmap</span>
+                        </div>
+                      </Link>
+                      <Link href="/career-center" className="block">
+                        <div className="flex items-center gap-3 p-2.5 rounded-lg hover:bg-burgundy-50 transition-colors">
+                          <Target className="w-4 h-4 text-gold-600" />
+                          <span className="text-sm text-gray-700">Career Center</span>
+                        </div>
+                      </Link>
+                    </>
+                  )}
                   <Link href="/certificates" className="block">
                     <div className="flex items-center gap-3 p-2.5 rounded-lg hover:bg-burgundy-50 transition-colors">
                       <Award className="w-4 h-4 text-green-600" />
