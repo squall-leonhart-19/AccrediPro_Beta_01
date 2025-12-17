@@ -585,8 +585,8 @@ export function CourseCatalogFilters({
                             <span className="text-sm font-semibold text-gold-200">Accredited Professional Training</span>
                         </div>
 
-                        <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-4 text-white">
-                            Build Your Career in <span className="text-gold-400">Health & Wellness</span> with AccrediPro
+                        <h1 className="text-2xl md:text-3xl font-bold mb-4 text-white">
+                            Build Your Career in <span className="text-gold-400">Health & Wellness</span>
                         </h1>
 
                         <p className="text-lg text-burgundy-100 mb-8 max-w-2xl mx-auto">
@@ -606,7 +606,7 @@ export function CourseCatalogFilters({
                                 <Star className="w-5 h-5 text-gold-400 fill-gold-400" />
                                 <div className="text-left">
                                     <p className="text-white font-bold">{avgRating}/5.0</p>
-                                    <p className="text-xs text-burgundy-200">{totalReviews + 500}+ Reviews</p>
+                                    <p className="text-xs text-burgundy-200">1,344+ Reviews</p>
                                 </div>
                             </div>
                             <div className="flex items-center gap-2 bg-white/10 backdrop-blur-sm px-4 py-2.5 rounded-lg">
@@ -733,11 +733,10 @@ export function CourseCatalogFilters({
                                             {/* Wishlist Button */}
                                             <button
                                                 onClick={(e) => toggleWishlist(e, course.id)}
-                                                className={`w-9 h-9 rounded-full flex items-center justify-center transition-all shadow-lg ${
-                                                    isWishlisted
+                                                className={`w-9 h-9 rounded-full flex items-center justify-center transition-all shadow-lg ${isWishlisted
                                                         ? "bg-red-500 text-white"
                                                         : "bg-white/90 text-gray-600 hover:bg-white hover:text-red-500"
-                                                }`}
+                                                    }`}
                                                 disabled={isLoadingWishlist}
                                             >
                                                 {isLoadingWishlist ? (
@@ -800,13 +799,12 @@ export function CourseCatalogFilters({
                                                     <div className="flex items-center gap-2 mb-2">
                                                         <TrendingUp className="w-4 h-4 text-emerald-600" />
                                                         <span className="text-xs font-semibold text-emerald-700 uppercase tracking-wide">Career Outlook</span>
-                                                        <Badge className={`ml-auto text-[10px] px-1.5 py-0 ${
-                                                            careerData.demandLevel === "Very High"
+                                                        <Badge className={`ml-auto text-[10px] px-1.5 py-0 ${careerData.demandLevel === "Very High"
                                                                 ? "bg-red-100 text-red-700"
                                                                 : careerData.demandLevel === "High"
                                                                     ? "bg-orange-100 text-orange-700"
                                                                     : "bg-blue-100 text-blue-700"
-                                                        }`}>
+                                                            }`}>
                                                             {careerData.demandLevel} Demand
                                                         </Badge>
                                                     </div>
@@ -981,18 +979,17 @@ export function CourseCatalogFilters({
                                     </div>
 
                                     {/* Status Badge */}
-                                    <Badge className={`absolute top-2 right-2 text-[10px] shadow-lg ${
-                                        spec.badge === "CORE" ? "bg-emerald-500 text-white" :
-                                        spec.badge === "HIGH DEMAND" ? "bg-green-500 text-white" :
-                                        spec.badge === "TRENDING" ? "bg-pink-500 text-white" :
-                                        spec.badge === "GROWING" ? "bg-purple-500 text-white" :
-                                        spec.badge === "EVERGREEN" ? "bg-amber-500 text-white" :
-                                        spec.badge === "HIGH VOLUME" ? "bg-orange-500 text-white" :
-                                        spec.badge === "SPECIALIST" ? "bg-red-500 text-white" :
-                                        spec.badge === "EMERGING" ? "bg-indigo-500 text-white" :
-                                        spec.badge === "NICHE" ? "bg-blue-500 text-white" :
-                                        "bg-teal-500 text-white"
-                                    }`}>
+                                    <Badge className={`absolute top-2 right-2 text-[10px] shadow-lg ${spec.badge === "CORE" ? "bg-emerald-500 text-white" :
+                                            spec.badge === "HIGH DEMAND" ? "bg-green-500 text-white" :
+                                                spec.badge === "TRENDING" ? "bg-pink-500 text-white" :
+                                                    spec.badge === "GROWING" ? "bg-purple-500 text-white" :
+                                                        spec.badge === "EVERGREEN" ? "bg-amber-500 text-white" :
+                                                            spec.badge === "HIGH VOLUME" ? "bg-orange-500 text-white" :
+                                                                spec.badge === "SPECIALIST" ? "bg-red-500 text-white" :
+                                                                    spec.badge === "EMERGING" ? "bg-indigo-500 text-white" :
+                                                                        spec.badge === "NICHE" ? "bg-blue-500 text-white" :
+                                                                            "bg-teal-500 text-white"
+                                        }`}>
                                         {spec.badge}
                                     </Badge>
 
@@ -1007,12 +1004,11 @@ export function CourseCatalogFilters({
                                     <div className="space-y-1.5">
                                         <div className="flex items-center justify-between">
                                             <span className="text-[10px] text-gray-400 uppercase tracking-wide">Market Demand</span>
-                                            <Badge className={`text-[9px] px-1.5 py-0 ${
-                                                spec.marketDemand === "Very High" ? "bg-red-100 text-red-700" :
-                                                spec.marketDemand === "High" ? "bg-orange-100 text-orange-700" :
-                                                spec.marketDemand === "Growing" ? "bg-blue-100 text-blue-700" :
-                                                "bg-gray-100 text-gray-700"
-                                            }`}>
+                                            <Badge className={`text-[9px] px-1.5 py-0 ${spec.marketDemand === "Very High" ? "bg-red-100 text-red-700" :
+                                                    spec.marketDemand === "High" ? "bg-orange-100 text-orange-700" :
+                                                        spec.marketDemand === "Growing" ? "bg-blue-100 text-blue-700" :
+                                                            "bg-gray-100 text-gray-700"
+                                                }`}>
                                                 {spec.marketDemand}
                                             </Badge>
                                         </div>
@@ -1090,17 +1086,15 @@ export function CourseCatalogFilters({
                                         {track.steps.map((step, j) => (
                                             <div
                                                 key={j}
-                                                className={`flex items-center gap-3 p-3 rounded-xl border ${
-                                                    step.status === "available"
+                                                className={`flex items-center gap-3 p-3 rounded-xl border ${step.status === "available"
                                                         ? "bg-white border-gray-200"
                                                         : "bg-gray-50 border-gray-100"
-                                                }`}
+                                                    }`}
                                             >
                                                 <span className="text-lg">{getStepIcon(step.type)}</span>
                                                 <div className="flex-1">
-                                                    <p className={`text-sm font-medium ${
-                                                        step.status === "available" ? "text-gray-900" : "text-gray-500"
-                                                    }`}>
+                                                    <p className={`text-sm font-medium ${step.status === "available" ? "text-gray-900" : "text-gray-500"
+                                                        }`}>
                                                         {step.name}
                                                     </p>
                                                 </div>
