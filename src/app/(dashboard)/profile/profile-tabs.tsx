@@ -242,57 +242,60 @@ export function ProfileTabs({ user, allBadges }: ProfileTabsProps) {
 
     return (
         <div className="space-y-8 animate-fade-in">
-            {/* Hero Header */}
-            <Card className="bg-gradient-to-br from-burgundy-600 via-burgundy-700 to-burgundy-800 border-0 overflow-hidden relative">
-                <div className="absolute inset-0 opacity-10">
-                    <div className="absolute top-0 right-0 w-64 h-64 bg-gold-400 rounded-full blur-3xl -translate-y-1/2 translate-x-1/4" />
-                    <div className="absolute bottom-0 left-0 w-48 h-48 bg-gold-500 rounded-full blur-3xl translate-y-1/2 -translate-x-1/4" />
-                </div>
-                <CardContent className="p-8 lg:p-10 relative">
-                    <div className="flex flex-col md:flex-row items-center gap-8">
-                        {/* Avatar Section */}
-                        <div className="flex flex-col items-center">
+            {/* Compact Header - Matching Catalog Style */}
+            <Card className="bg-gradient-to-r from-burgundy-700 via-burgundy-600 to-burgundy-700 border-0 overflow-hidden">
+                <CardContent className="px-5 py-4">
+                    <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
+                        {/* Left: Avatar + Name + Level */}
+                        <div className="flex items-center gap-4">
                             <ProfileEditor
                                 userId={user.id}
                                 avatar={user.avatar}
                                 bio={user.bio}
                                 initials={initials}
                             />
+                            <div>
+                                <div className="flex items-center gap-2 mb-1">
+                                    <Badge className="bg-gold-400/20 text-gold-300 border-gold-400/30 text-[10px]">
+                                        {user.role}
+                                    </Badge>
+                                    <Badge className="bg-white/10 text-white/80 border-0 text-[10px]">
+                                        {currentLevel.icon} Level {currentLevel.level}
+                                    </Badge>
+                                </div>
+                                <h1 className="text-xl font-bold text-white">
+                                    {user.firstName} <span className="text-gold-400">{user.lastName}</span>
+                                </h1>
+                                <p className="text-xs text-burgundy-200 mt-0.5 hidden sm:block">
+                                    {user.email}
+                                </p>
+                            </div>
                         </div>
 
-                        {/* User Info */}
-                        <div className="flex-1 text-center md:text-left">
-                            <h1 className="text-3xl lg:text-4xl font-bold text-white mb-2">
-                                {user.firstName} {user.lastName}
-                            </h1>
-                            <div className="flex flex-wrap items-center justify-center md:justify-start gap-2 mb-3">
-                                <Badge className="bg-gold-400/20 text-gold-200 border-0">
-                                    {user.role}
+                        {/* Right: Stats + Settings */}
+                        <div className="flex flex-wrap items-center gap-3">
+                            <div className="hidden md:flex items-center gap-2">
+                                <Badge className="bg-white/10 text-white border-0 px-3 py-1.5">
+                                    <Star className="w-3 h-3 mr-1.5 text-gold-400" />
+                                    {totalPoints.toLocaleString()} XP
                                 </Badge>
-                                <Badge className="bg-white/10 text-white/80 border-0">
-                                    {currentLevel.icon} Level {currentLevel.level} • {currentLevel.name}
+                                <Badge className="bg-white/10 text-white border-0 px-3 py-1.5">
+                                    <Flame className="w-3 h-3 mr-1.5 text-orange-400" />
+                                    {currentStreak} day streak
+                                </Badge>
+                                <Badge className="bg-white/10 text-white border-0 px-3 py-1.5">
+                                    <Trophy className="w-3 h-3 mr-1.5 text-purple-400" />
+                                    {user.badges.length} badges
                                 </Badge>
                             </div>
-                            <p className="text-burgundy-100">{user.email}</p>
-
-                            <div className="flex flex-wrap items-center justify-center md:justify-start gap-4 mt-4 text-burgundy-100">
-                                <div className="flex items-center gap-2 bg-white/10 backdrop-blur-sm px-4 py-2 rounded-full">
-                                    <Star className="w-4 h-4 text-gold-400" />
-                                    <span className="text-sm font-medium">{totalPoints.toLocaleString()} XP</span>
-                                </div>
-                                <div className="flex items-center gap-2 bg-white/10 backdrop-blur-sm px-4 py-2 rounded-full">
-                                    <Flame className="w-4 h-4 text-orange-400" />
-                                    <span className="text-sm font-medium">{currentStreak} day streak</span>
-                                </div>
-                                <div className="flex items-center gap-2 bg-white/10 backdrop-blur-sm px-4 py-2 rounded-full">
-                                    <Trophy className="w-4 h-4 text-purple-400" />
-                                    <span className="text-sm font-medium">{user.badges.length} badges</span>
-                                </div>
-                                <div className="flex items-center gap-2 bg-white/10 backdrop-blur-sm px-4 py-2 rounded-full">
-                                    <Calendar className="w-4 h-4 text-gold-400" />
-                                    <span className="text-sm font-medium">Since {formatDate(user.createdAt)}</span>
-                                </div>
-                            </div>
+                            <Button
+                                size="sm"
+                                className="bg-gold-400 text-burgundy-900 hover:bg-gold-300 font-semibold h-9"
+                                onClick={() => setActiveTab("settings")}
+                            >
+                                <Settings className="w-4 h-4 mr-1.5" />
+                                Settings
+                            </Button>
                         </div>
                     </div>
                 </CardContent>

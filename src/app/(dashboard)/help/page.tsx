@@ -2,6 +2,7 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import prisma from "@/lib/prisma";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
@@ -119,33 +120,48 @@ export default async function HelpPage() {
 
   return (
     <div className="space-y-8 animate-fade-in">
-      {/* Hero Header */}
-      <Card className="bg-gradient-to-br from-burgundy-600 via-burgundy-700 to-burgundy-800 border-0 overflow-hidden relative">
-        <div className="absolute inset-0 opacity-10">
-          <div className="absolute top-0 right-0 w-64 h-64 bg-gold-400 rounded-full blur-3xl -translate-y-1/2 translate-x-1/4" />
-        </div>
-        <CardContent className="p-8 relative">
-          <div className="flex items-center gap-4 mb-4">
-            <div className="w-14 h-14 rounded-2xl bg-white/10 backdrop-blur-sm flex items-center justify-center border border-white/20">
-              <HelpCircle className="w-7 h-7 text-gold-400" />
+      {/* Compact Header - Matching Catalog Style */}
+      <Card className="bg-gradient-to-r from-burgundy-700 via-burgundy-600 to-burgundy-700 border-0 overflow-hidden">
+        <CardContent className="px-5 py-4">
+          <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
+            {/* Left: Icon + Title + Subtitle */}
+            <div className="flex items-start gap-4">
+              <div className="w-11 h-11 rounded-xl bg-gold-400/20 flex items-center justify-center border border-gold-400/30 flex-shrink-0">
+                <HelpCircle className="w-5 h-5 text-gold-400" />
+              </div>
+              <div>
+                <div className="flex items-center gap-2 mb-1">
+                  <Badge className="bg-gold-400/20 text-gold-300 border-gold-400/30 text-[10px]">
+                    Support Center
+                  </Badge>
+                </div>
+                <h1 className="text-xl font-bold text-white">
+                  Help & <span className="text-gold-400">Support</span>
+                </h1>
+                <p className="text-xs text-burgundy-200 mt-0.5 max-w-md hidden sm:block">
+                  Access FAQs, troubleshooting, and direct contact options.
+                </p>
+              </div>
             </div>
-            <div>
-              <h1 className="text-3xl font-bold text-white">Help & Support</h1>
-              <p className="text-burgundy-200">We&apos;re here to assist you</p>
-            </div>
-          </div>
-          <p className="text-burgundy-100 max-w-2xl mb-6">
-            Access FAQs, troubleshooting guides, technical support, billing help, and direct contact
-            options. We&apos;re here to assist you on your learning journey.
-          </p>
 
-          {/* Search */}
-          <div className="relative max-w-lg">
-            <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
-            <Input
-              placeholder="Search for help..."
-              className="pl-12 py-6 bg-white/10 border-white/20 text-white placeholder:text-burgundy-200 focus:bg-white/20"
-            />
+            {/* Right: Search + CTA */}
+            <div className="flex flex-wrap items-center gap-3">
+              <div className="relative max-w-xs hidden md:block">
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-white/50" />
+                <Input
+                  placeholder="Search help..."
+                  className="pl-9 h-9 bg-white/10 border-white/20 text-white placeholder:text-white/50 text-sm"
+                />
+              </div>
+              <ContactSupportDialog
+                trigger={
+                  <Button size="sm" className="bg-gold-400 text-burgundy-900 hover:bg-gold-300 font-semibold h-9">
+                    <Mail className="w-4 h-4 mr-1.5" />
+                    Contact Us
+                  </Button>
+                }
+              />
+            </div>
           </div>
         </CardContent>
       </Card>
