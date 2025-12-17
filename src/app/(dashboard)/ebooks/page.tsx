@@ -463,57 +463,57 @@ export default function EbooksStorePage() {
 
     return (
         <div className="space-y-6 animate-fade-in">
-            {/* Hero Header */}
-            <div className="relative mb-10 bg-gradient-to-r from-burgundy-700 via-burgundy-600 to-burgundy-800 rounded-3xl p-8 md:p-12 text-white overflow-hidden">
-                <div className="absolute inset-0 opacity-10">
-                    <div className="absolute top-0 right-0 w-96 h-96 bg-white rounded-full blur-3xl -translate-y-1/2 translate-x-1/2" />
-                    <div className="absolute bottom-0 left-0 w-64 h-64 bg-burgundy-300 rounded-full blur-3xl translate-y-1/2 -translate-x-1/4" />
-                </div>
-
-                <div className="relative z-10">
-                    <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-6">
-                        <div className="flex-1">
-                            <div className="flex items-center gap-3 mb-4">
-                                <div className="w-14 h-14 bg-white/20 backdrop-blur-sm rounded-2xl flex items-center justify-center">
-                                    <BookOpen className="w-7 h-7 text-white" />
-                                </div>
-                                <Badge className="bg-gold-400 text-burgundy-900 border-0 font-semibold">Functional Medicine</Badge>
+            {/* Compact Header - Matching Catalog Style */}
+            <div className="relative mb-6 bg-gradient-to-r from-burgundy-700 via-burgundy-600 to-burgundy-700 rounded-xl overflow-hidden">
+                <div className="relative z-10 px-5 py-4">
+                    <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
+                        {/* Left: Icon + Title + Subtitle */}
+                        <div className="flex items-start gap-4">
+                            <div className="w-11 h-11 rounded-xl bg-gold-400/20 flex items-center justify-center border border-gold-400/30 flex-shrink-0">
+                                <BookOpen className="w-5 h-5 text-gold-400" />
                             </div>
-
-                            <h1 className="text-3xl md:text-4xl font-bold mb-4">
-                                Professional AccrediPro E-Book & Resources Library
-                            </h1>
-
-                            <p className="text-lg text-burgundy-100 max-w-2xl mb-6">
-                                Find everything here: expert guides, protocols, and resources designed for practitioners.
-                                <span className="text-gold-300 font-medium"> Continue from where you left off!</span>
-                            </p>
-
-                            {isGraduate && (
-                                <div className="inline-flex items-center gap-2 bg-gold-400/20 text-gold-200 px-4 py-2 rounded-full text-sm mb-4">
-                                    <GraduationCap className="w-4 h-4" />
-                                    <span className="font-medium">Graduate Pricing Unlocked!</span>
-                                    <span className="text-gold-300">Save $10-20 on every ebook</span>
+                            <div>
+                                <div className="flex items-center gap-2 mb-1">
+                                    <Badge className="bg-gold-400/20 text-gold-300 border-gold-400/30 text-[10px]">
+                                        Functional Medicine
+                                    </Badge>
+                                    {isGraduate && (
+                                        <Badge className="bg-green-500/20 text-green-300 border-green-400/30 text-[10px]">
+                                            <GraduationCap className="w-3 h-3 mr-1" />Graduate
+                                        </Badge>
+                                    )}
                                 </div>
-                            )}
-
-                            <div className="flex flex-wrap gap-4 text-sm text-white/80">
-                                <span><FileText className="w-4 h-4 inline mr-1" /> 9 E-Books</span>
-                                <span><Package className="w-4 h-4 inline mr-1" /> 3 Bundles</span>
-                                <span><Star className="w-4 h-4 inline mr-1 text-gold-400" /> 4.9 Avg Rating</span>
+                                <h1 className="text-xl font-bold text-white">
+                                    E-Book <span className="text-gold-400">Library</span>
+                                </h1>
+                                <p className="text-xs text-burgundy-200 mt-0.5 max-w-md hidden sm:block">
+                                    Expert guides, protocols, and resources for practitioners.
+                                </p>
                             </div>
                         </div>
 
-                        <div className="flex flex-col gap-3">
-                            <div className="bg-white/10 backdrop-blur-sm rounded-xl p-4 border border-white/20">
-                                <p className="text-sm font-medium text-white mb-2">Already have e-books?</p>
-                                <a href="/my-library">
-                                    <Button className="w-full bg-white text-burgundy-700 hover:bg-burgundy-50">
-                                        <Library className="w-4 h-4 mr-2" />
-                                        Open My Library
-                                    </Button>
-                                </a>
+                        {/* Right: Stats + CTA */}
+                        <div className="flex flex-wrap items-center gap-3">
+                            <div className="hidden md:flex items-center gap-2">
+                                <Badge className="bg-white/10 text-white border-0 px-3 py-1.5">
+                                    <FileText className="w-3 h-3 mr-1.5 text-gold-400" />
+                                    9 E-Books
+                                </Badge>
+                                <Badge className="bg-white/10 text-white border-0 px-3 py-1.5">
+                                    <Package className="w-3 h-3 mr-1.5 text-gold-400" />
+                                    3 Bundles
+                                </Badge>
+                                <Badge className="bg-white/10 text-white border-0 px-3 py-1.5">
+                                    <Star className="w-3 h-3 mr-1.5 text-gold-400" />
+                                    4.9 Rating
+                                </Badge>
                             </div>
+                            <a href="/my-library">
+                                <Button size="sm" className="bg-gold-400 text-burgundy-900 hover:bg-gold-300 font-semibold h-9">
+                                    <Library className="w-4 h-4 mr-1.5" />
+                                    My Library
+                                </Button>
+                            </a>
                         </div>
                     </div>
                 </div>
@@ -884,110 +884,110 @@ export default function EbooksStorePage() {
 
             {/* E-Book Preview Modal */}
             {previewEbook && (
-            <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4" onClick={() => setPreviewEbook(null)}>
-                <div className="bg-white rounded-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto shadow-2xl" onClick={(e) => e.stopPropagation()}>
-                    {/* Header */}
-                    <div className="sticky top-0 bg-gradient-to-r from-burgundy-700 to-burgundy-800 text-white p-6 rounded-t-2xl">
-                        <button
-                            onClick={() => setPreviewEbook(null)}
-                            className="absolute top-4 right-4 w-8 h-8 bg-white/20 rounded-full flex items-center justify-center hover:bg-white/30"
-                        >
-                            <X className="w-5 h-5" />
-                        </button>
-                        <div className="flex items-start gap-4">
-                            <span className="text-5xl">{previewEbook.icon}</span>
-                            <div>
-                                <h2 className="text-2xl font-bold">{previewEbook.title}</h2>
-                                <p className="text-burgundy-200">{previewEbook.subtitle}</p>
-                                <div className="flex items-center gap-3 mt-2 text-sm text-white/80">
-                                    <span><FileText className="w-4 h-4 inline mr-1" /> {previewEbook.pages} pages</span>
-                                    <span><Clock className="w-4 h-4 inline mr-1" /> {previewEbook.readTime}</span>
-                                    <span><Star className="w-4 h-4 inline mr-1 text-gold-400" /> {previewEbook.rating}</span>
+                <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4" onClick={() => setPreviewEbook(null)}>
+                    <div className="bg-white rounded-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto shadow-2xl" onClick={(e) => e.stopPropagation()}>
+                        {/* Header */}
+                        <div className="sticky top-0 bg-gradient-to-r from-burgundy-700 to-burgundy-800 text-white p-6 rounded-t-2xl">
+                            <button
+                                onClick={() => setPreviewEbook(null)}
+                                className="absolute top-4 right-4 w-8 h-8 bg-white/20 rounded-full flex items-center justify-center hover:bg-white/30"
+                            >
+                                <X className="w-5 h-5" />
+                            </button>
+                            <div className="flex items-start gap-4">
+                                <span className="text-5xl">{previewEbook.icon}</span>
+                                <div>
+                                    <h2 className="text-2xl font-bold">{previewEbook.title}</h2>
+                                    <p className="text-burgundy-200">{previewEbook.subtitle}</p>
+                                    <div className="flex items-center gap-3 mt-2 text-sm text-white/80">
+                                        <span><FileText className="w-4 h-4 inline mr-1" /> {previewEbook.pages} pages</span>
+                                        <span><Clock className="w-4 h-4 inline mr-1" /> {previewEbook.readTime}</span>
+                                        <span><Star className="w-4 h-4 inline mr-1 text-gold-400" /> {previewEbook.rating}</span>
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
 
-                    {/* Content */}
-                    <div className="p-6">
-                        {/* Full Description */}
-                        <div className="mb-6">
-                            <h3 className="font-bold text-gray-900 mb-2 flex items-center gap-2">
-                                <BookOpen className="w-5 h-5 text-burgundy-600" /> About This E-Book
-                            </h3>
-                            <p className="text-gray-600 leading-relaxed">{previewEbook.description}</p>
-                        </div>
+                        {/* Content */}
+                        <div className="p-6">
+                            {/* Full Description */}
+                            <div className="mb-6">
+                                <h3 className="font-bold text-gray-900 mb-2 flex items-center gap-2">
+                                    <BookOpen className="w-5 h-5 text-burgundy-600" /> About This E-Book
+                                </h3>
+                                <p className="text-gray-600 leading-relaxed">{previewEbook.description}</p>
+                            </div>
 
-                        {/* Table of Contents */}
-                        {previewEbook.tableOfContents && (
+                            {/* Table of Contents */}
+                            {previewEbook.tableOfContents && (
+                                <div className="mb-6">
+                                    <h3 className="font-bold text-gray-900 mb-3 flex items-center gap-2">
+                                        <ListOrdered className="w-5 h-5 text-burgundy-600" /> Table of Contents
+                                    </h3>
+                                    <div className="bg-gray-50 rounded-xl p-4">
+                                        <ul className="space-y-2">
+                                            {previewEbook.tableOfContents.map((chapter, i) => (
+                                                <li key={i} className="flex items-start gap-3 text-sm text-gray-700">
+                                                    <span className="w-6 h-6 bg-burgundy-100 text-burgundy-700 rounded-full flex items-center justify-center flex-shrink-0 text-xs font-medium">
+                                                        {i + 1}
+                                                    </span>
+                                                    {chapter.replace(/^Chapter \d+:\s*/, '')}
+                                                </li>
+                                            ))}
+                                        </ul>
+                                    </div>
+                                </div>
+                            )}
+
+                            {/* What You'll Learn */}
                             <div className="mb-6">
                                 <h3 className="font-bold text-gray-900 mb-3 flex items-center gap-2">
-                                    <ListOrdered className="w-5 h-5 text-burgundy-600" /> Table of Contents
+                                    <CheckCircle className="w-5 h-5 text-burgundy-600" /> What You'll Learn
                                 </h3>
-                                <div className="bg-gray-50 rounded-xl p-4">
-                                    <ul className="space-y-2">
-                                        {previewEbook.tableOfContents.map((chapter, i) => (
-                                            <li key={i} className="flex items-start gap-3 text-sm text-gray-700">
-                                                <span className="w-6 h-6 bg-burgundy-100 text-burgundy-700 rounded-full flex items-center justify-center flex-shrink-0 text-xs font-medium">
-                                                    {i + 1}
-                                                </span>
-                                                {chapter.replace(/^Chapter \d+:\s*/, '')}
-                                            </li>
-                                        ))}
-                                    </ul>
+                                <ul className="space-y-2">
+                                    {previewEbook.highlights.map((highlight, i) => (
+                                        <li key={i} className="flex items-start gap-2 text-sm text-gray-700">
+                                            <CheckCircle className="w-4 h-4 text-burgundy-500 flex-shrink-0 mt-0.5" />
+                                            {highlight}
+                                        </li>
+                                    ))}
+                                </ul>
+                            </div>
+
+                            {/* Topics Covered */}
+                            <div className="mb-6">
+                                <h3 className="font-bold text-gray-900 mb-3">Topics Covered</h3>
+                                <div className="flex flex-wrap gap-2">
+                                    {previewEbook.topics.map((topic) => (
+                                        <Badge key={topic} variant="outline" className="bg-burgundy-50 text-burgundy-700 border-burgundy-200">
+                                            {topic}
+                                        </Badge>
+                                    ))}
                                 </div>
                             </div>
-                        )}
 
-                        {/* What You'll Learn */}
-                        <div className="mb-6">
-                            <h3 className="font-bold text-gray-900 mb-3 flex items-center gap-2">
-                                <CheckCircle className="w-5 h-5 text-burgundy-600" /> What You'll Learn
-                            </h3>
-                            <ul className="space-y-2">
-                                {previewEbook.highlights.map((highlight, i) => (
-                                    <li key={i} className="flex items-start gap-2 text-sm text-gray-700">
-                                        <CheckCircle className="w-4 h-4 text-burgundy-500 flex-shrink-0 mt-0.5" />
-                                        {highlight}
-                                    </li>
-                                ))}
-                            </ul>
-                        </div>
-
-                        {/* Topics Covered */}
-                        <div className="mb-6">
-                            <h3 className="font-bold text-gray-900 mb-3">Topics Covered</h3>
-                            <div className="flex flex-wrap gap-2">
-                                {previewEbook.topics.map((topic) => (
-                                    <Badge key={topic} variant="outline" className="bg-burgundy-50 text-burgundy-700 border-burgundy-200">
-                                        {topic}
-                                    </Badge>
-                                ))}
+                            {/* Pricing & CTA */}
+                            <div className="border-t pt-6 flex items-center justify-between">
+                                <div>
+                                    <span className="text-3xl font-bold text-burgundy-700">${getDisplayPrice(previewEbook)}</span>
+                                    <span className="text-lg text-gray-400 line-through ml-2">${previewEbook.compareAtPrice}</span>
+                                    {isGraduate && (
+                                        <Badge className="bg-gold-100 text-gold-700 border-0 text-xs ml-2">Graduate Price</Badge>
+                                    )}
+                                </div>
+                                <Button
+                                    className="bg-burgundy-600 hover:bg-burgundy-700 px-8"
+                                    onClick={() => {
+                                        handlePurchase(previewEbook, "ebook");
+                                        setPreviewEbook(null);
+                                    }}
+                                >
+                                    <ShoppingCart className="w-4 h-4 mr-2" /> Buy Now
+                                </Button>
                             </div>
-                        </div>
-
-                        {/* Pricing & CTA */}
-                        <div className="border-t pt-6 flex items-center justify-between">
-                            <div>
-                                <span className="text-3xl font-bold text-burgundy-700">${getDisplayPrice(previewEbook)}</span>
-                                <span className="text-lg text-gray-400 line-through ml-2">${previewEbook.compareAtPrice}</span>
-                                {isGraduate && (
-                                    <Badge className="bg-gold-100 text-gold-700 border-0 text-xs ml-2">Graduate Price</Badge>
-                                )}
-                            </div>
-                            <Button
-                                className="bg-burgundy-600 hover:bg-burgundy-700 px-8"
-                                onClick={() => {
-                                    handlePurchase(previewEbook, "ebook");
-                                    setPreviewEbook(null);
-                                }}
-                            >
-                                <ShoppingCart className="w-4 h-4 mr-2" /> Buy Now
-                            </Button>
                         </div>
                     </div>
                 </div>
-            </div>
             )}
         </div>
     );

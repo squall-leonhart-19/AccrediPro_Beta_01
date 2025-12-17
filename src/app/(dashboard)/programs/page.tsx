@@ -485,76 +485,52 @@ export default function ClientProgramLibraryPage() {
 
     return (
         <div className="space-y-6 animate-fade-in">
-            {/* Hero Header with Logo */}
-            <div className="relative mb-10 bg-gradient-to-r from-burgundy-700 via-burgundy-600 to-burgundy-800 rounded-3xl p-8 md:p-12 text-white overflow-hidden">
-                <div className="absolute inset-0 opacity-10">
-                    <div className="absolute top-0 right-0 w-96 h-96 bg-gold-400 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2" />
-                    <div className="absolute bottom-0 left-0 w-64 h-64 bg-burgundy-300 rounded-full blur-3xl translate-y-1/2 -translate-x-1/4" />
-                </div>
-
-                <div className="relative z-10">
-                    <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-6">
-                        <div className="flex-1">
-                            {/* Logo Header */}
-                            <div className="flex items-center gap-4 mb-6">
-                                <div className="w-16 h-16 bg-white/20 backdrop-blur-sm rounded-2xl flex items-center justify-center">
-                                    <svg xmlns="http://www.w3.org/2000/svg" className="w-9 h-9 text-gold-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                                        <path d="M22 10v6M2 10l10-5 10 5-10 5z" />
-                                        <path d="M6 12v5c3 3 9 3 12 0v-5" />
-                                    </svg>
-                                </div>
-                                <div>
-                                    <Badge className="bg-gold-400 text-burgundy-900 border-0 font-bold mb-1">Done-For-You Resources</Badge>
-                                    <p className="text-sm text-burgundy-200">AccrediPro Academy</p>
-                                </div>
+            {/* Compact Header - Matching Catalog Style */}
+            <div className="relative mb-6 bg-gradient-to-r from-burgundy-700 via-burgundy-600 to-burgundy-700 rounded-xl overflow-hidden">
+                <div className="relative z-10 px-5 py-4">
+                    <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
+                        {/* Left: Icon + Title + Subtitle */}
+                        <div className="flex items-start gap-4">
+                            <div className="w-11 h-11 rounded-xl bg-gold-400/20 flex items-center justify-center border border-gold-400/30 flex-shrink-0">
+                                <Package className="w-5 h-5 text-gold-400" />
                             </div>
-
-                            <h1 className="text-3xl md:text-4xl font-bold mb-4">
-                                Client Program Library
-                            </h1>
-
-                            <p className="text-lg text-burgundy-100 max-w-2xl mb-6">
-                                Professional, done-for-you programs and business kits.
-                                <span className="text-gold-300 font-medium"> Start earning faster with client-ready assets.</span>
-                            </p>
-
-                            <div className="flex flex-wrap gap-4 text-sm text-white/80 mb-6">
-                                <span className="flex items-center gap-1"><Package className="w-4 h-4 text-gold-400" /> {CORE_PROGRAMS.length + SPECIALTY_KITS.length + BUSINESS_KITS.length}+ Resources</span>
-                                <span className="flex items-center gap-1"><Users className="w-4 h-4 text-gold-400" /> 743+ practitioners using</span>
-                                <span className="flex items-center gap-1"><Star className="w-4 h-4 text-gold-400" /> 4.9 Avg Rating</span>
-                            </div>
-
-                            {/* Value Proposition */}
-                            <div className="bg-white/10 backdrop-blur-sm rounded-xl p-4 border border-white/20 max-w-lg">
-                                <p className="text-sm font-medium text-gold-300 mb-2">Why DFY Resources?</p>
-                                <ul className="text-sm text-white/80 space-y-1">
-                                    <li className="flex items-center gap-2"><CheckCircle className="w-4 h-4 text-green-400" /> Start earning immediately after certification</li>
-                                    <li className="flex items-center gap-2"><CheckCircle className="w-4 h-4 text-green-400" /> Look professional from Day 1</li>
-                                    <li className="flex items-center gap-2"><CheckCircle className="w-4 h-4 text-green-400" /> White-label rights included</li>
-                                </ul>
+                            <div>
+                                <div className="flex items-center gap-2 mb-1">
+                                    <Badge className="bg-gold-400/20 text-gold-300 border-gold-400/30 text-[10px]">
+                                        Done-For-You Resources
+                                    </Badge>
+                                </div>
+                                <h1 className="text-xl font-bold text-white">
+                                    Client Program <span className="text-gold-400">Library</span>
+                                </h1>
+                                <p className="text-xs text-burgundy-200 mt-0.5 max-w-md hidden sm:block">
+                                    Professional, white-label resources to start earning faster.
+                                </p>
                             </div>
                         </div>
 
-                        {/* Quick Stats Card */}
-                        <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-6 border border-white/20 w-full md:w-80">
-                            <p className="text-sm font-semibold text-gold-300 mb-4">Practitioner Results</p>
-                            <div className="space-y-4">
-                                <div className="flex items-center justify-between">
-                                    <span className="text-white/80 text-sm">Avg. client pricing:</span>
-                                    <span className="font-bold text-white">$1,500+</span>
-                                </div>
-                                <div className="flex items-center justify-between">
-                                    <span className="text-white/80 text-sm">Time to first client:</span>
-                                    <span className="font-bold text-white">2-4 weeks</span>
-                                </div>
-                                <div className="flex items-center justify-between">
-                                    <span className="text-white/80 text-sm">ROI on resources:</span>
-                                    <span className="font-bold text-green-400">10-50x</span>
-                                </div>
+                        {/* Right: Stats + CTA */}
+                        <div className="flex flex-wrap items-center gap-3">
+                            <div className="hidden md:flex items-center gap-2">
+                                <Badge className="bg-white/10 text-white border-0 px-3 py-1.5">
+                                    <Package className="w-3 h-3 mr-1.5 text-gold-400" />
+                                    {CORE_PROGRAMS.length + SPECIALTY_KITS.length + BUSINESS_KITS.length}+ Resources
+                                </Badge>
+                                <Badge className="bg-white/10 text-white border-0 px-3 py-1.5">
+                                    <Users className="w-3 h-3 mr-1.5 text-gold-400" />
+                                    743+ Using
+                                </Badge>
+                                <Badge className="bg-white/10 text-white border-0 px-3 py-1.5">
+                                    <Star className="w-3 h-3 mr-1.5 text-gold-400" />
+                                    4.9 Rating
+                                </Badge>
                             </div>
-                            <div className="mt-4 pt-4 border-t border-white/20">
-                                <p className="text-xs text-white/60 italic">"I made back my investment with my first client!" — Sarah M.</p>
-                            </div>
+                            <a href="/catalog">
+                                <Button size="sm" className="bg-gold-400 text-burgundy-900 hover:bg-gold-300 font-semibold h-9">
+                                    <Sparkles className="w-4 h-4 mr-1.5" />
+                                    Get Certified
+                                </Button>
+                            </a>
                         </div>
                     </div>
                 </div>
@@ -1059,88 +1035,88 @@ export default function ClientProgramLibraryPage() {
 
             {/* Preview Modal */}
             {previewItem && (
-            <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4" onClick={() => setPreviewItem(null)}>
-                <div className="bg-white rounded-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto shadow-2xl" onClick={(e) => e.stopPropagation()}>
-                    {/* Header */}
-                    <div className="sticky top-0 bg-gradient-to-r from-burgundy-700 to-burgundy-800 text-white p-6 rounded-t-2xl">
-                        <button
-                            onClick={() => setPreviewItem(null)}
-                            className="absolute top-4 right-4 w-8 h-8 bg-white/20 rounded-full flex items-center justify-center hover:bg-white/30"
-                        >
-                            <X className="w-5 h-5" />
-                        </button>
-                        <div className="flex items-start gap-4">
-                            <span className="text-5xl">{previewItem.icon}</span>
-                            <div>
-                                <h2 className="text-2xl font-bold">{previewItem.title}</h2>
-                                <p className="text-burgundy-200">{previewItem.subtitle}</p>
+                <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4" onClick={() => setPreviewItem(null)}>
+                    <div className="bg-white rounded-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto shadow-2xl" onClick={(e) => e.stopPropagation()}>
+                        {/* Header */}
+                        <div className="sticky top-0 bg-gradient-to-r from-burgundy-700 to-burgundy-800 text-white p-6 rounded-t-2xl">
+                            <button
+                                onClick={() => setPreviewItem(null)}
+                                className="absolute top-4 right-4 w-8 h-8 bg-white/20 rounded-full flex items-center justify-center hover:bg-white/30"
+                            >
+                                <X className="w-5 h-5" />
+                            </button>
+                            <div className="flex items-start gap-4">
+                                <span className="text-5xl">{previewItem.icon}</span>
+                                <div>
+                                    <h2 className="text-2xl font-bold">{previewItem.title}</h2>
+                                    <p className="text-burgundy-200">{previewItem.subtitle}</p>
+                                </div>
                             </div>
                         </div>
-                    </div>
 
-                    {/* Content */}
-                    <div className="p-6">
-                        <div className="mb-6">
-                            <h3 className="font-bold text-gray-900 mb-2">About This Resource</h3>
-                            <p className="text-gray-600 leading-relaxed">{previewItem.description}</p>
-                        </div>
+                        {/* Content */}
+                        <div className="p-6">
+                            <div className="mb-6">
+                                <h3 className="font-bold text-gray-900 mb-2">About This Resource</h3>
+                                <p className="text-gray-600 leading-relaxed">{previewItem.description}</p>
+                            </div>
 
-                        {"clientPricing" in previewItem && (
-                            <div className="bg-green-50 border border-green-200 rounded-xl p-4 mb-6">
-                                <div className="flex items-center gap-3">
-                                    <DollarSign className="w-6 h-6 text-green-600" />
-                                    <div>
-                                        <p className="text-sm text-green-700">Your clients will pay you:</p>
-                                        <p className="text-2xl font-bold text-green-700">{previewItem.clientPricing}</p>
+                            {"clientPricing" in previewItem && (
+                                <div className="bg-green-50 border border-green-200 rounded-xl p-4 mb-6">
+                                    <div className="flex items-center gap-3">
+                                        <DollarSign className="w-6 h-6 text-green-600" />
+                                        <div>
+                                            <p className="text-sm text-green-700">Your clients will pay you:</p>
+                                            <p className="text-2xl font-bold text-green-700">{previewItem.clientPricing}</p>
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
-                        )}
+                            )}
 
-                        <div className="mb-6">
-                            <h3 className="font-bold text-gray-900 mb-3">What's Included</h3>
-                            <ul className="space-y-2">
-                                {previewItem.includes.map((item, i) => (
-                                    <li key={i} className="flex items-start gap-2 text-sm text-gray-700">
-                                        <CheckCircle className="w-4 h-4 text-burgundy-500 flex-shrink-0 mt-0.5" />
-                                        {item}
-                                    </li>
-                                ))}
-                            </ul>
-                        </div>
-
-                        {"bestFor" in previewItem && (
                             <div className="mb-6">
-                                <h3 className="font-bold text-gray-900 mb-3">Best For</h3>
-                                <div className="flex flex-wrap gap-2">
-                                    {previewItem.bestFor.map((item) => (
-                                        <Badge key={item} variant="outline" className="bg-burgundy-50 text-burgundy-700 border-burgundy-200">
+                                <h3 className="font-bold text-gray-900 mb-3">What's Included</h3>
+                                <ul className="space-y-2">
+                                    {previewItem.includes.map((item, i) => (
+                                        <li key={i} className="flex items-start gap-2 text-sm text-gray-700">
+                                            <CheckCircle className="w-4 h-4 text-burgundy-500 flex-shrink-0 mt-0.5" />
                                             {item}
-                                        </Badge>
+                                        </li>
                                     ))}
-                                </div>
+                                </ul>
                             </div>
-                        )}
 
-                        {/* Pricing & CTA */}
-                        <div className="border-t pt-6 flex items-center justify-between">
-                            <div>
-                                <span className="text-3xl font-bold text-burgundy-700">${previewItem.price.toLocaleString()}</span>
-                                <span className="text-lg text-gray-400 line-through ml-2">${previewItem.compareAtPrice.toLocaleString()}</span>
+                            {"bestFor" in previewItem && (
+                                <div className="mb-6">
+                                    <h3 className="font-bold text-gray-900 mb-3">Best For</h3>
+                                    <div className="flex flex-wrap gap-2">
+                                        {previewItem.bestFor.map((item) => (
+                                            <Badge key={item} variant="outline" className="bg-burgundy-50 text-burgundy-700 border-burgundy-200">
+                                                {item}
+                                            </Badge>
+                                        ))}
+                                    </div>
+                                </div>
+                            )}
+
+                            {/* Pricing & CTA */}
+                            <div className="border-t pt-6 flex items-center justify-between">
+                                <div>
+                                    <span className="text-3xl font-bold text-burgundy-700">${previewItem.price.toLocaleString()}</span>
+                                    <span className="text-lg text-gray-400 line-through ml-2">${previewItem.compareAtPrice.toLocaleString()}</span>
+                                </div>
+                                <Button
+                                    className={`px-8 ${canAccess ? "bg-burgundy-600 hover:bg-burgundy-700" : "bg-gray-400"}`}
+                                    onClick={() => {
+                                        handlePurchase(previewItem);
+                                        setPreviewItem(null);
+                                    }}
+                                >
+                                    {canAccess ? <><ShoppingCart className="w-4 h-4 mr-2" /> Get This Resource</> : <><Lock className="w-4 h-4 mr-2" /> Unlock Access</>}
+                                </Button>
                             </div>
-                            <Button
-                                className={`px-8 ${canAccess ? "bg-burgundy-600 hover:bg-burgundy-700" : "bg-gray-400"}`}
-                                onClick={() => {
-                                    handlePurchase(previewItem);
-                                    setPreviewItem(null);
-                                }}
-                            >
-                                {canAccess ? <><ShoppingCart className="w-4 h-4 mr-2" /> Get This Resource</> : <><Lock className="w-4 h-4 mr-2" /> Unlock Access</>}
-                            </Button>
                         </div>
                     </div>
                 </div>
-            </div>
             )}
         </div>
     );

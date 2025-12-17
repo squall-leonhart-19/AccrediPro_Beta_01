@@ -353,70 +353,52 @@ export default async function CareerCenterPage() {
 
     return (
         <div className="space-y-8 animate-fade-in">
-            {/* Hero - Enhanced */}
-            <Card className="bg-gradient-to-br from-burgundy-600 via-burgundy-700 to-burgundy-800 border-0 overflow-hidden relative">
-                <div className="absolute inset-0 opacity-10">
-                    <div className="absolute top-0 right-0 w-96 h-96 bg-gold-400 rounded-full blur-3xl -translate-y-1/2 translate-x-1/4" />
-                    <div className="absolute bottom-0 left-0 w-64 h-64 bg-gold-400 rounded-full blur-3xl translate-y-1/2 -translate-x-1/4" />
-                </div>
-                <CardContent className="p-8 lg:p-12 relative">
-                    <div className="flex flex-col lg:flex-row items-start lg:items-center gap-8">
-                        <div className="flex-1">
-                            <Badge className="bg-gold-400/20 text-gold-200 mb-4 px-3 py-1">
-                                <Briefcase className="w-3 h-3 mr-1" />
-                                AccrediPro Career Center
-                            </Badge>
-                            <h1 className="text-3xl lg:text-4xl font-bold text-white mb-4">
-                                Transform Your Passion Into a <span className="text-gold-400">Thriving Career</span> with AccrediPro!
-                            </h1>
-                            <p className="text-burgundy-100 text-lg mb-6 max-w-xl">
-                                Join <strong className="text-white">1,400+ practitioners</strong> who&apos;ve built successful wellness careers. Discover your income potential and the exact steps to get there.
-                            </p>
-                            <div className="flex flex-wrap gap-3 mb-6">
-                                <Link href="/roadmap">
-                                    <Button size="lg" className="bg-gold-400 text-burgundy-900 hover:bg-gold-500 shadow-lg font-semibold">
-                                        <Map className="w-4 h-4 mr-2" />
-                                        View My Personalized Roadmap
-                                    </Button>
-                                </Link>
-                                <Link href="/tracks/functional-medicine">
-                                    <Button size="lg" className="bg-white/20 border border-white/30 text-white hover:bg-white/30">
-                                        Explore Specialization Tracks
-                                    </Button>
-                                </Link>
+            {/* Compact Header - Matching Catalog Style */}
+            <Card className="bg-gradient-to-r from-burgundy-700 via-burgundy-600 to-burgundy-700 border-0 overflow-hidden">
+                <CardContent className="px-5 py-4">
+                    <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
+                        {/* Left: Icon + Title + Subtitle */}
+                        <div className="flex items-start gap-4">
+                            <div className="w-11 h-11 rounded-xl bg-gold-400/20 flex items-center justify-center border border-gold-400/30 flex-shrink-0">
+                                <Briefcase className="w-5 h-5 text-gold-400" />
+                            </div>
+                            <div>
+                                <div className="flex items-center gap-2 mb-1">
+                                    <Badge className="bg-gold-400/20 text-gold-300 border-gold-400/30 text-[10px]">
+                                        AccrediPro Career Center
+                                    </Badge>
+                                </div>
+                                <h1 className="text-xl font-bold text-white">
+                                    Your <span className="text-gold-400">Career Roadmap</span>
+                                </h1>
+                                <p className="text-xs text-burgundy-200 mt-0.5 max-w-md hidden sm:block">
+                                    Discover income paths, specializations, and your next steps.
+                                </p>
                             </div>
                         </div>
 
-                        {/* Stats Cards */}
-                        <div className="grid grid-cols-2 gap-3 lg:w-72">
-                            <div className="bg-white/10 backdrop-blur-sm rounded-xl p-4 border border-white/20">
-                                <div className="flex items-center gap-2 mb-1">
-                                    <Users className="w-5 h-5 text-gold-400" />
-                                    <span className="text-2xl font-bold text-white">1,447</span>
-                                </div>
-                                <p className="text-xs text-burgundy-200">Certified Practitioners</p>
+                        {/* Right: Stats + CTA */}
+                        <div className="flex flex-wrap items-center gap-3">
+                            <div className="hidden md:flex items-center gap-2">
+                                <Badge className="bg-white/10 text-white border-0 px-3 py-1.5">
+                                    <Users className="w-3 h-3 mr-1.5 text-gold-400" />
+                                    1,447 Certified
+                                </Badge>
+                                <Badge className="bg-white/10 text-white border-0 px-3 py-1.5">
+                                    <DollarSign className="w-3 h-3 mr-1.5 text-green-400" />
+                                    $8K Avg/mo
+                                </Badge>
+                                <Badge className="bg-white/10 text-white border-0 px-3 py-1.5">
+                                    <Star className="w-3 h-3 mr-1.5 text-gold-400" />
+                                    4.9 Rating
+                                </Badge>
                             </div>
-                            <div className="bg-white/10 backdrop-blur-sm rounded-xl p-4 border border-white/20">
-                                <div className="flex items-center gap-2 mb-1">
-                                    <Star className="w-5 h-5 text-gold-400 fill-gold-400" />
-                                    <span className="text-2xl font-bold text-white">4.9</span>
-                                </div>
-                                <p className="text-xs text-burgundy-200">Average Rating</p>
-                            </div>
-                            <div className="bg-white/10 backdrop-blur-sm rounded-xl p-4 border border-white/20">
-                                <div className="flex items-center gap-2 mb-1">
-                                    <DollarSign className="w-5 h-5 text-green-400" />
-                                    <span className="text-2xl font-bold text-white">$8K</span>
-                                </div>
-                                <p className="text-xs text-burgundy-200">Avg. Monthly Income</p>
-                            </div>
-                            <div className="bg-white/10 backdrop-blur-sm rounded-xl p-4 border border-white/20">
-                                <div className="flex items-center gap-2 mb-1">
-                                    <Award className="w-5 h-5 text-gold-400" />
-                                    <span className="text-2xl font-bold text-white">9x</span>
-                                </div>
-                                <p className="text-xs text-burgundy-200">Accreditations</p>
-                            </div>
+                            <Link href="/roadmap">
+                                <Button size="sm" className="bg-gold-400 text-burgundy-900 hover:bg-gold-300 font-semibold h-9">
+                                    <Map className="w-4 h-4 mr-1.5" />
+                                    My Roadmap
+                                </Button>
+                            </Link>
                         </div>
                     </div>
                 </CardContent>
@@ -456,22 +438,20 @@ export default async function CareerCenterPage() {
                                         </div>
                                     )}
 
-                                    <div className={`p-4 rounded-xl border-2 h-full transition-all hover:shadow-md ${
-                                        step.color === "gold" ? "border-gold-300 bg-gradient-to-br from-gold-50 to-amber-50 ring-2 ring-gold-200 shadow-md" :
-                                        step.color === "emerald" ? "border-emerald-200 bg-gradient-to-br from-emerald-50 to-green-50" :
-                                        step.color === "amber" ? "border-amber-200 bg-gradient-to-br from-amber-50 to-orange-50" :
-                                        step.color === "blue" ? "border-blue-200 bg-gradient-to-br from-blue-50 to-indigo-50" :
-                                        "border-burgundy-200 bg-gradient-to-br from-burgundy-50 to-rose-50"
-                                    }`}>
+                                    <div className={`p-4 rounded-xl border-2 h-full transition-all hover:shadow-md ${step.color === "gold" ? "border-gold-300 bg-gradient-to-br from-gold-50 to-amber-50 ring-2 ring-gold-200 shadow-md" :
+                                            step.color === "emerald" ? "border-emerald-200 bg-gradient-to-br from-emerald-50 to-green-50" :
+                                                step.color === "amber" ? "border-amber-200 bg-gradient-to-br from-amber-50 to-orange-50" :
+                                                    step.color === "blue" ? "border-blue-200 bg-gradient-to-br from-blue-50 to-indigo-50" :
+                                                        "border-burgundy-200 bg-gradient-to-br from-burgundy-50 to-rose-50"
+                                        }`}>
                                         {/* Step Badge */}
                                         <div className="flex items-center justify-between mb-3">
-                                            <div className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-bold ${
-                                                step.color === "gold" ? "bg-gradient-to-r from-gold-400 to-amber-500 text-white shadow-sm" :
-                                                step.color === "emerald" ? "bg-emerald-500 text-white" :
-                                                step.color === "amber" ? "bg-amber-500 text-white" :
-                                                step.color === "blue" ? "bg-blue-500 text-white" :
-                                                "bg-burgundy-600 text-white"
-                                            }`}>
+                                            <div className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-bold ${step.color === "gold" ? "bg-gradient-to-r from-gold-400 to-amber-500 text-white shadow-sm" :
+                                                    step.color === "emerald" ? "bg-emerald-500 text-white" :
+                                                        step.color === "amber" ? "bg-amber-500 text-white" :
+                                                            step.color === "blue" ? "bg-blue-500 text-white" :
+                                                                "bg-burgundy-600 text-white"
+                                                }`}>
                                                 {step.step === 0 ? "START" : `STEP ${step.step}`}
                                             </div>
                                             {step.color === "gold" && (
@@ -481,25 +461,23 @@ export default async function CareerCenterPage() {
 
                                         {/* Title & Subtitle */}
                                         <h3 className="font-bold text-sm mb-1 text-gray-900">{step.title}</h3>
-                                        <p className={`text-xs font-semibold mb-2 ${
-                                            step.color === "gold" ? "text-gold-700" :
-                                            step.color === "emerald" ? "text-emerald-700" :
-                                            step.color === "amber" ? "text-amber-700" :
-                                            step.color === "blue" ? "text-blue-700" :
-                                            "text-burgundy-700"
-                                        }`}>{step.subtitle}</p>
+                                        <p className={`text-xs font-semibold mb-2 ${step.color === "gold" ? "text-gold-700" :
+                                                step.color === "emerald" ? "text-emerald-700" :
+                                                    step.color === "amber" ? "text-amber-700" :
+                                                        step.color === "blue" ? "text-blue-700" :
+                                                            "text-burgundy-700"
+                                            }`}>{step.subtitle}</p>
 
                                         {/* Description */}
                                         <p className="text-xs text-gray-600 leading-relaxed mb-3">{step.description}</p>
 
                                         {/* Income Potential */}
-                                        <div className={`mt-auto pt-2 border-t ${
-                                            step.color === "gold" ? "border-gold-200" :
-                                            step.color === "emerald" ? "border-emerald-200" :
-                                            step.color === "amber" ? "border-amber-200" :
-                                            step.color === "blue" ? "border-blue-200" :
-                                            "border-burgundy-200"
-                                        }`}>
+                                        <div className={`mt-auto pt-2 border-t ${step.color === "gold" ? "border-gold-200" :
+                                                step.color === "emerald" ? "border-emerald-200" :
+                                                    step.color === "amber" ? "border-amber-200" :
+                                                        step.color === "blue" ? "border-blue-200" :
+                                                            "border-burgundy-200"
+                                            }`}>
                                             <p className="text-[10px] text-gray-500 uppercase tracking-wide mb-0.5">Earning Potential</p>
                                             <p className={`text-sm font-bold ${step.color === "gold" ? "text-green-600" : "text-green-600"}`}>
                                                 {incomeLabels[step.step]}
@@ -628,13 +606,13 @@ export default async function CareerCenterPage() {
                         {FM_SPECIALIZATIONS.slice(0, 10).map((spec) => {
                             const IconComponent = spec.icon === "Apple" ? Apple :
                                 spec.icon === "Leaf" ? Leaf :
-                                spec.icon === "Heart" ? Heart :
-                                spec.icon === "Brain" ? Brain :
-                                spec.icon === "Zap" ? Zap :
-                                spec.icon === "TrendingUp" ? TrendingUp :
-                                spec.icon === "Shield" ? Shield :
-                                spec.icon === "Moon" ? Moon :
-                                spec.icon === "Droplets" ? Droplets : Target;
+                                    spec.icon === "Heart" ? Heart :
+                                        spec.icon === "Brain" ? Brain :
+                                            spec.icon === "Zap" ? Zap :
+                                                spec.icon === "TrendingUp" ? TrendingUp :
+                                                    spec.icon === "Shield" ? Shield :
+                                                        spec.icon === "Moon" ? Moon :
+                                                            spec.icon === "Droplets" ? Droplets : Target;
 
                             return (
                                 <Card key={spec.id} className={`overflow-hidden hover:shadow-lg transition-all hover:-translate-y-1 ${spec.borderColor} border-2`}>
@@ -699,12 +677,11 @@ export default async function CareerCenterPage() {
                                     </div>
                                 )}
                                 <div className="p-4 rounded-xl bg-gradient-to-br from-gray-50 to-white border-2 border-gray-100 h-full flex flex-col">
-                                    <Badge className={`mb-2 w-fit ${
-                                        path.stepColor === "emerald" ? "bg-emerald-100 text-emerald-700" :
-                                        path.stepColor === "amber" ? "bg-amber-100 text-amber-700" :
-                                        path.stepColor === "blue" ? "bg-blue-100 text-blue-700" :
-                                        "bg-burgundy-100 text-burgundy-700"
-                                    }`}>
+                                    <Badge className={`mb-2 w-fit ${path.stepColor === "emerald" ? "bg-emerald-100 text-emerald-700" :
+                                            path.stepColor === "amber" ? "bg-amber-100 text-amber-700" :
+                                                path.stepColor === "blue" ? "bg-blue-100 text-blue-700" :
+                                                    "bg-burgundy-100 text-burgundy-700"
+                                        }`}>
                                         {path.step}
                                     </Badge>
                                     <Badge className="mb-2 bg-green-100 text-green-700 w-fit">{path.range}</Badge>
