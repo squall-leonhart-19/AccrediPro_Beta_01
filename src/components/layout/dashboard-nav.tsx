@@ -33,7 +33,8 @@ import {
 } from "lucide-react";
 import { useState } from "react";
 
-const navItems = [
+// Full nav items - for users with paid courses
+const fullNavItems = [
   { href: "/dashboard", label: "Dashboard", icon: LayoutDashboard, tourId: "dashboard" },
   { href: "/start-here", label: "Start Here", icon: GraduationCap, tourId: "start-here" },
   { href: "/my-courses", label: "My Courses", icon: BookOpen, tourId: "my-courses" },
@@ -43,9 +44,6 @@ const navItems = [
   { href: "/programs", label: "Client Program Library", icon: Package, tourId: "programs" },
   { href: "/community", label: "Community", icon: Users, tourId: "community" },
   { href: "/messages", label: "Private Mentor Chat", icon: MessageSquare, notificationKey: "messages" as const, tourId: "messages" },
-  // TEMPORARILY HIDDEN - Re-enable when videos arrive (5-7 days from Dec 16, 2024)
-  // See: /docs/CHALLENGES_REACTIVATION.md
-  // { href: "/challenges", label: "Challenges", icon: Flame, tourId: "challenges" },
   { href: "/certificates", label: "My Certificates", icon: Award, notificationKey: "certificates" as const, tourId: "certificates" },
   { href: "/my-library", label: "My Library", icon: Library, tourId: "my-library" },
   { href: "/ebooks", label: "Professional Library", icon: ShoppingBag, tourId: "ebooks" },
@@ -53,6 +51,20 @@ const navItems = [
   { href: "/help", label: "Help & Support", icon: HelpCircle, tourId: "help" },
   { href: "/profile", label: "My Account", icon: User, tourId: "profile" },
 ];
+
+// Simplified nav for mini-diploma-only users (no paid courses)
+// Hides: Programs, Career Center, Catalog, Roadmap - shows focused experience
+const miniDiplomaNavItems = [
+  { href: "/dashboard", label: "Dashboard", icon: LayoutDashboard, tourId: "dashboard" },
+  { href: "/my-mini-diploma", label: "🎁 My Mini Diploma", icon: GraduationCap, tourId: "mini-diploma", highlight: true },
+  { href: "/start-here", label: "Start Here", icon: GraduationCap, tourId: "start-here" },
+  { href: "/messages", label: "Chat with Sarah", icon: MessageSquare, notificationKey: "messages" as const, tourId: "messages" },
+  { href: "/community", label: "Community", icon: Users, tourId: "community" },
+  { href: "/training", label: "Training", icon: GraduationCap, tourId: "training" },
+  { href: "/help", label: "Help & Support", icon: HelpCircle, tourId: "help" },
+  { href: "/profile", label: "My Account", icon: User, tourId: "profile" },
+];
+
 
 const coachNavItems = [
   { href: "/coach/workspace", label: "Coach Workspace", icon: Briefcase },
@@ -73,6 +85,13 @@ export function DashboardNav() {
   const user = session?.user;
   const initials = `${user?.firstName?.charAt(0) || ""}${user?.lastName?.charAt(0) || ""}`.toUpperCase() || "U";
   const isAdmin = user?.role === "ADMIN";
+
+  // Detect if user is mini-diploma-only (no paid enrollments)
+  // For now, check if they have miniDiplomaCategory but no role indicating advancement
+  const isMiniDiplomaOnly = user?.miniDiplomaCategory && !isAdmin && user?.role === "STUDENT";
+
+  // Select nav items based on user type
+  const navItems = isMiniDiplomaOnly ? miniDiplomaNavItems : fullNavItems;
 
   const getNotificationCount = (key?: "messages" | "certificates" | "announcements") => {
     if (!key) return 0;
@@ -137,8 +156,9 @@ export function DashboardNav() {
             );
           })}
 
-          {/* My Mini Diploma - Only for freebie users */}
-          {user?.miniDiplomaCategory && (
+          {/* Mini Diploma link is now part of miniDiplomaNavItems for focused users */}
+          {/* Show separate mini diploma for PAID users who also have mini diploma */}
+          {user?.miniDiplomaCategory && !isMiniDiplomaOnly && (
             <Link
               href="/my-mini-diploma"
               prefetch={true}
