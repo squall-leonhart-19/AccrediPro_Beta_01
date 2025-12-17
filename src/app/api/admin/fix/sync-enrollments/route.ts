@@ -10,8 +10,15 @@ import prisma from "@/lib/prisma";
  */
 export async function POST(request: NextRequest) {
     try {
+        // Allow CRON_SECRET or admin session
+        const authHeader = request.headers.get("authorization");
+        const cronSecret = process.env.CRON_SECRET;
         const session = await getServerSession(authOptions);
-        if (!session?.user || session.user.role !== "ADMIN") {
+
+        const hasValidCron = cronSecret && authHeader === `Bearer ${cronSecret}`;
+        const hasValidSession = session?.user?.role === "ADMIN";
+
+        if (!hasValidCron && !hasValidSession) {
             return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
         }
 
