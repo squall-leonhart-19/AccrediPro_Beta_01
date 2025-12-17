@@ -363,7 +363,7 @@ export default function FreeMiniDiplomaPage() {
             fontWeight: 800,
             textAlign: 'center'
           }}>
-            🎯 Who This Mini Diploma Is For
+            🎯 This Mini Diploma Is Perfect For You If...
           </h3>
           <div style={{
             display: 'grid',
@@ -381,7 +381,14 @@ export default function FreeMiniDiplomaPage() {
                 ✓ This IS for you if:
               </h4>
               <ul style={{ listStyle: 'none', padding: 0, margin: 0 }}>
-                {['Anyone passionate about health & healing', 'Women exploring a new purpose', 'People considering a career in wellness', 'Clinicians (RN, NP, PA, RD, PharmD, PT)', 'Those wanting to earn $500–$3,000/month helping others'].map((item, idx) => (
+                {[
+                  'Burnt-out nurses ready for something more fulfilling',
+                  'Healthcare pros tired of "sick care" — wanting root-cause healing',
+                  'Career changers passionate about health & wellness',
+                  'Women dealing with autoimmune, thyroid, or hormone issues',
+                  'Health coaches wanting clinical credibility & higher income',
+                  'Anyone who tried traditional medicine with no answers',
+                ].map((item, idx) => (
                   <li key={idx} style={{
                     padding: '7px 0',
                     fontSize: 'clamp(0.85rem, 2vw, 0.9rem)',
@@ -407,7 +414,13 @@ export default function FreeMiniDiplomaPage() {
                 ✗ This is NOT for you if:
               </h4>
               <ul style={{ listStyle: 'none', padding: 0, margin: 0 }}>
-                {['People who refuse to study', 'People expecting overnight results without effort', 'Cynics and skeptics', 'People who don\'t care about wellness', 'Those looking for "get rich quick" schemes'].map((item, idx) => (
+                {[
+                  'You want a "get rich quick" scheme',
+                  'You\'re not willing to learn something new',
+                  'You think all health problems need prescription drugs',
+                  'You\'re happy with the current healthcare system',
+                  'You don\'t believe the body can heal itself naturally',
+                ].map((item, idx) => (
                   <li key={idx} style={{
                     padding: '7px 0',
                     fontSize: 'clamp(0.85rem, 2vw, 0.9rem)',
