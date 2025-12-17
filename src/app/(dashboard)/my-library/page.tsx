@@ -5112,239 +5112,237 @@ export default function MyLibraryPage() {
 
   // LIBRARY VIEW
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-burgundy-50/30">
-      <div className="px-4 sm:px-6 lg:px-8 py-8">
+    <div className="space-y-6 animate-fade-in">
 
-        {/* Compact Header - Matching Catalog Style */}
-        <div className="relative mb-6 bg-gradient-to-r from-burgundy-700 via-burgundy-600 to-burgundy-700 rounded-xl overflow-hidden">
-          <div className="relative z-10 px-5 py-4">
-            <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
-              {/* Left: Icon + Title + Subtitle */}
-              <div className="flex items-start gap-4">
-                <div className="w-11 h-11 rounded-xl bg-gold-400/20 flex items-center justify-center border border-gold-400/30 flex-shrink-0">
-                  <Library className="w-5 h-5 text-gold-400" />
-                </div>
-                <div>
-                  <div className="flex items-center gap-2 mb-1">
-                    <Badge className="bg-gold-400/20 text-gold-300 border-gold-400/30 text-[10px]">
-                      Your Collection
-                    </Badge>
-                  </div>
-                  <h1 className="text-xl font-bold text-white">
-                    My <span className="text-gold-400">Library</span>
-                  </h1>
-                  <p className="text-xs text-burgundy-200 mt-0.5 max-w-md hidden sm:block">
-                    Professional books, guides, and reference materials.
-                  </p>
-                </div>
-              </div>
-
-              {/* Right: Stats + CTA */}
-              <div className="flex flex-wrap items-center gap-3">
-                {/* Stats as pills */}
-                <div className="hidden md:flex items-center gap-2">
-                  <Badge className="bg-white/10 text-white border-0 px-3 py-1.5">
-                    <Sparkles className="w-3 h-3 mr-1.5 text-gold-400" />
-                    {totalCount} Resources
-                  </Badge>
-                  <Badge className="bg-white/10 text-white border-0 px-3 py-1.5">
-                    <PlayCircle className="w-3 h-3 mr-1.5 text-gold-400" />
-                    {inProgressCount} Reading
-                  </Badge>
-                  <Badge className="bg-white/10 text-white border-0 px-3 py-1.5">
-                    <CheckCircle2 className="w-3 h-3 mr-1.5 text-gold-400" />
-                    {completedCount} Completed
-                  </Badge>
-                </div>
-                {/* CTA */}
-                <Link href="/ebook-store">
-                  <Button size="sm" className="bg-gold-400 text-burgundy-900 hover:bg-gold-300 font-semibold h-9">
-                    <ShoppingBag className="w-4 h-4 mr-1.5" />
-                    Get More
-                  </Button>
-                </Link>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* Continue Reading Section */}
-        {inProgressCount > 0 && (
-          <div className="mb-8">
-            <h2 className="text-lg font-bold text-gray-900 mb-4 flex items-center gap-2">
-              <PlayCircle className="w-5 h-5 text-burgundy-600" /> Continue Reading
-            </h2>
-            <div className="grid md:grid-cols-3 gap-4">
-              {availableEbooks.filter(e => readingProgress[e.id]?.started && !isEbookComplete(e.id, e.chapters.length)).map((ebook) => {
-                const progress = getEbookProgress(ebook.id, ebook.chapters.length);
-                const lastChapter = readingProgress[ebook.id]?.currentChapter || 0;
-                return (
-                  <div key={ebook.id} className="bg-white rounded-xl border border-gray-200 p-4 hover:shadow-md transition-all cursor-pointer" onClick={() => startReading(ebook)}>
-                    <div className="flex items-center gap-3 mb-3">
-                      <span className="text-3xl">{ebook.icon}</span>
-                      <div className="flex-1 min-w-0">
-                        <h3 className="font-semibold text-gray-900 truncate">{ebook.title}</h3>
-                        <p className="text-xs text-gray-500">Chapter {lastChapter + 1}</p>
-                      </div>
-                    </div>
-                    <Progress value={progress} className="h-1.5 mb-2" />
-                    <div className="flex items-center justify-between">
-                      <span className="text-xs text-gray-500">{progress}% complete</span>
-                      <Button size="sm" className="bg-burgundy-600 hover:bg-burgundy-700 h-7 text-xs">
-                        <PlayCircle className="w-3 h-3 mr-1" /> Resume
-                      </Button>
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
-          </div>
-        )}
-
-        {/* Tabs */}
-        <div className="flex flex-wrap gap-2 mb-6">
-          <button onClick={() => setActiveTab("all")} className={`px-5 py-2.5 rounded-xl font-medium text-sm transition-all ${activeTab === "all" ? "bg-burgundy-600 text-white" : "bg-white text-gray-600 hover:bg-gray-50 border border-gray-200"}`}>
-            All ({MY_EBOOKS.length})
-          </button>
-          <button onClick={() => setActiveTab("inprogress")} className={`px-5 py-2.5 rounded-xl font-medium text-sm transition-all ${activeTab === "inprogress" ? "bg-burgundy-600 text-white" : "bg-white text-gray-600 hover:bg-gray-50 border border-gray-200"}`}>
-            <PlayCircle className="w-4 h-4 inline mr-1" /> Reading ({inProgressCount})
-          </button>
-          <button onClick={() => setActiveTab("completed")} className={`px-5 py-2.5 rounded-xl font-medium text-sm transition-all ${activeTab === "completed" ? "bg-burgundy-600 text-white" : "bg-white text-gray-600 hover:bg-gray-50 border border-gray-200"}`}>
-            <CheckCircle2 className="w-4 h-4 inline mr-1" /> Completed ({completedCount})
-          </button>
-        </div>
-
-        {/* Categories */}
-        <div className="flex gap-2 mb-6 overflow-x-auto pb-2">
-          {CATEGORIES.map((cat) => (
-            <button
-              key={cat.id}
-              onClick={() => setSelectedCategory(cat.id)}
-              className={`flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium whitespace-nowrap transition-all ${selectedCategory === cat.id ? "bg-burgundy-100 text-burgundy-700 border-2 border-burgundy-300" : "bg-white text-gray-600 border border-gray-200 hover:bg-gray-50"}`}
-            >
-              <span>{cat.icon}</span> {cat.label}
-            </button>
-          ))}
-        </div>
-
-        {/* Search */}
-        <div className="relative mb-6">
-          <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
-          <Input
-            placeholder="Search your library..."
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            className="pl-12 py-5 rounded-xl border-gray-200"
-          />
-        </div>
-
-        {/* E-Books Grid */}
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {filteredEbooks.map((ebook) => {
-            const progress = getEbookProgress(ebook.id, ebook.chapters.length);
-            const isComplete = isEbookComplete(ebook.id, ebook.chapters.length);
-            const hasStarted = readingProgress[ebook.id]?.started;
-
-            return (
-              <div key={ebook.id} className="bg-white rounded-2xl border border-gray-100 overflow-hidden transition-all group hover:shadow-lg hover:border-burgundy-200">
-                <div className="p-6">
-                  <div className="flex items-start justify-between mb-4">
-                    <span className="text-4xl">{ebook.icon}</span>
-                    <div className="flex items-center gap-2">
-                      {ebook.isFree && (
-                        <Badge className="bg-green-100 text-green-700 border-0 text-xs flex items-center gap-1">
-                          <Sparkles className="w-3 h-3" /> Graduate Resource
-                        </Badge>
-                      )}
-                      {isComplete && <Badge className="bg-burgundy-100 text-burgundy-700 border-0 text-xs">Complete</Badge>}
-                      {!isComplete && progress > 0 && <Badge className="bg-blue-100 text-blue-700 border-0 text-xs">{progress}%</Badge>}
-                      <Button variant="ghost" size="sm" onClick={() => toggleSaved(ebook.id)} className={savedEbooks.includes(ebook.id) ? "text-burgundy-600" : "text-gray-400"}>
-                        {savedEbooks.includes(ebook.id) ? <BookmarkCheck className="w-5 h-5" /> : <Bookmark className="w-5 h-5" />}
-                      </Button>
-                    </div>
-                  </div>
-
-                  <h3 className="text-lg font-bold mb-1 transition-colors text-gray-900 group-hover:text-burgundy-600">{ebook.title}</h3>
-                  <p className="text-sm mb-2 text-burgundy-600">{ebook.subtitle}</p>
-
-                  {/* Unlock Condition Badge */}
-                  {ebook.unlockCondition && (
-                    <div className="flex items-center gap-2 mb-3 p-2 bg-green-50 rounded-lg border border-green-100">
-                      <CheckCircle2 className="w-4 h-4 text-green-600" />
-                      <span className="text-xs text-green-700 font-medium">Unlocked: {ebook.unlockCondition}</span>
-                    </div>
-                  )}
-
-                  {/* Value Prop Blurb */}
-                  {ebook.valueProp && (
-                    <p className="text-sm font-medium px-3 py-2 rounded-lg mb-3 italic text-amber-700 bg-amber-50">
-                      &ldquo;{ebook.valueProp}&rdquo;
-                    </p>
-                  )}
-
-                  <p className="text-gray-600 text-sm mb-3 line-clamp-2">{ebook.description}</p>
-
-                  <div className="flex flex-wrap gap-2 mb-3">
-                    {ebook.topics.slice(0, 2).map((topic) => (
-                      <Badge key={topic} variant="outline" className="text-xs">{topic}</Badge>
-                    ))}
-                  </div>
-
-                  <div className="flex items-center text-xs text-gray-500 mb-4">
-                    <span><FileText className="w-3 h-3 inline mr-1" />{ebook.chapters.length > 0 ? `${ebook.chapters.length} chapters` : `${ebook.pages} pages`}</span>
-                    <span className="mx-2">•</span>
-                    <span><Clock className="w-3 h-3 inline mr-1" />{ebook.readTime}</span>
-                  </div>
-
-                  {progress > 0 && !isComplete && (
-                    <div className="mb-3">
-                      <Progress value={progress} className="h-1.5" />
-                    </div>
-                  )}
-
-                  <div className="flex gap-2">
-                    <Button className="flex-1 bg-burgundy-600 hover:bg-burgundy-700" onClick={() => startReading(ebook)}>
-                      {isComplete ? <><BookOpen className="w-4 h-4 mr-2" /> Read Again</> : hasStarted ? <><PlayCircle className="w-4 h-4 mr-2" /> Continue</> : <><BookOpen className="w-4 h-4 mr-2" /> Start Reading</>}
-                    </Button>
-
-                  </div>
-                </div>
-              </div>
-            );
-          })}
-        </div>
-
-        {filteredEbooks.length === 0 && (
-          <div className="text-center py-12 bg-white rounded-2xl border border-gray-100">
-            <BookOpen className="w-12 h-12 mx-auto mb-4 text-gray-300" />
-            <p className="text-gray-500 mb-4">No e-books found</p>
-            <Button variant="outline" onClick={() => { setActiveTab("all"); setSelectedCategory("all"); setSearchQuery(""); }}>
-              View All E-Books
-            </Button>
-          </div>
-        )}
-
-        {/* Expand Your Library CTA */}
-        <div className="mt-12 bg-gradient-to-r from-burgundy-700 via-burgundy-600 to-purple-700 rounded-2xl p-8 text-white overflow-hidden relative">
-          <div className="absolute inset-0 opacity-10">
-            <div className="absolute top-0 right-0 w-64 h-64 bg-gold-400 rounded-full blur-3xl -translate-y-1/2 translate-x-1/4" />
-          </div>
-          <div className="relative flex flex-col md:flex-row items-center justify-between gap-6">
-            <div className="flex items-center gap-4">
-              <div className="w-16 h-16 bg-gold-400/20 backdrop-blur rounded-2xl flex items-center justify-center border border-gold-400/30">
-                <Sparkles className="w-8 h-8 text-gold-300" />
+      {/* Compact Header - Matching Catalog Style */}
+      <div className="relative mb-6 bg-gradient-to-r from-burgundy-700 via-burgundy-600 to-burgundy-700 rounded-xl overflow-hidden">
+        <div className="relative z-10 px-5 py-4">
+          <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
+            {/* Left: Icon + Title + Subtitle */}
+            <div className="flex items-start gap-4">
+              <div className="w-11 h-11 rounded-xl bg-gold-400/20 flex items-center justify-center border border-gold-400/30 flex-shrink-0">
+                <Library className="w-5 h-5 text-gold-400" />
               </div>
               <div>
-                <h2 className="text-2xl font-bold mb-1">Expand Your Professional Library</h2>
-                <p className="text-white/80">Premium guides, templates, and protocol bundles for practitioners</p>
+                <div className="flex items-center gap-2 mb-1">
+                  <Badge className="bg-gold-400/20 text-gold-300 border-gold-400/30 text-[10px]">
+                    Your Collection
+                  </Badge>
+                </div>
+                <h1 className="text-xl font-bold text-white">
+                  My <span className="text-gold-400">Library</span>
+                </h1>
+                <p className="text-xs text-burgundy-200 mt-0.5 max-w-md hidden sm:block">
+                  Professional books, guides, and reference materials.
+                </p>
               </div>
             </div>
-            <a href="/ebooks">
-              <Button className="bg-gold-500 hover:bg-gold-600 text-burgundy-900 font-semibold px-6 py-6 text-lg shadow-lg">
-                <Library className="w-5 h-5 mr-2" /> Browse Resources <ChevronRight className="w-5 h-5 ml-2" />
-              </Button>
-            </a>
+
+            {/* Right: Stats + CTA */}
+            <div className="flex flex-wrap items-center gap-3">
+              {/* Stats as pills */}
+              <div className="hidden md:flex items-center gap-2">
+                <Badge className="bg-white/10 text-white border-0 px-3 py-1.5">
+                  <Sparkles className="w-3 h-3 mr-1.5 text-gold-400" />
+                  {totalCount} Resources
+                </Badge>
+                <Badge className="bg-white/10 text-white border-0 px-3 py-1.5">
+                  <PlayCircle className="w-3 h-3 mr-1.5 text-gold-400" />
+                  {inProgressCount} Reading
+                </Badge>
+                <Badge className="bg-white/10 text-white border-0 px-3 py-1.5">
+                  <CheckCircle2 className="w-3 h-3 mr-1.5 text-gold-400" />
+                  {completedCount} Completed
+                </Badge>
+              </div>
+              {/* CTA */}
+              <Link href="/ebook-store">
+                <Button size="sm" className="bg-gold-400 text-burgundy-900 hover:bg-gold-300 font-semibold h-9">
+                  <ShoppingBag className="w-4 h-4 mr-1.5" />
+                  Get More
+                </Button>
+              </Link>
+            </div>
           </div>
+        </div>
+      </div>
+
+      {/* Continue Reading Section */}
+      {inProgressCount > 0 && (
+        <div className="mb-8">
+          <h2 className="text-lg font-bold text-gray-900 mb-4 flex items-center gap-2">
+            <PlayCircle className="w-5 h-5 text-burgundy-600" /> Continue Reading
+          </h2>
+          <div className="grid md:grid-cols-3 gap-4">
+            {availableEbooks.filter(e => readingProgress[e.id]?.started && !isEbookComplete(e.id, e.chapters.length)).map((ebook) => {
+              const progress = getEbookProgress(ebook.id, ebook.chapters.length);
+              const lastChapter = readingProgress[ebook.id]?.currentChapter || 0;
+              return (
+                <div key={ebook.id} className="bg-white rounded-xl border border-gray-200 p-4 hover:shadow-md transition-all cursor-pointer" onClick={() => startReading(ebook)}>
+                  <div className="flex items-center gap-3 mb-3">
+                    <span className="text-3xl">{ebook.icon}</span>
+                    <div className="flex-1 min-w-0">
+                      <h3 className="font-semibold text-gray-900 truncate">{ebook.title}</h3>
+                      <p className="text-xs text-gray-500">Chapter {lastChapter + 1}</p>
+                    </div>
+                  </div>
+                  <Progress value={progress} className="h-1.5 mb-2" />
+                  <div className="flex items-center justify-between">
+                    <span className="text-xs text-gray-500">{progress}% complete</span>
+                    <Button size="sm" className="bg-burgundy-600 hover:bg-burgundy-700 h-7 text-xs">
+                      <PlayCircle className="w-3 h-3 mr-1" /> Resume
+                    </Button>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      )}
+
+      {/* Tabs */}
+      <div className="flex flex-wrap gap-2 mb-6">
+        <button onClick={() => setActiveTab("all")} className={`px-5 py-2.5 rounded-xl font-medium text-sm transition-all ${activeTab === "all" ? "bg-burgundy-600 text-white" : "bg-white text-gray-600 hover:bg-gray-50 border border-gray-200"}`}>
+          All ({MY_EBOOKS.length})
+        </button>
+        <button onClick={() => setActiveTab("inprogress")} className={`px-5 py-2.5 rounded-xl font-medium text-sm transition-all ${activeTab === "inprogress" ? "bg-burgundy-600 text-white" : "bg-white text-gray-600 hover:bg-gray-50 border border-gray-200"}`}>
+          <PlayCircle className="w-4 h-4 inline mr-1" /> Reading ({inProgressCount})
+        </button>
+        <button onClick={() => setActiveTab("completed")} className={`px-5 py-2.5 rounded-xl font-medium text-sm transition-all ${activeTab === "completed" ? "bg-burgundy-600 text-white" : "bg-white text-gray-600 hover:bg-gray-50 border border-gray-200"}`}>
+          <CheckCircle2 className="w-4 h-4 inline mr-1" /> Completed ({completedCount})
+        </button>
+      </div>
+
+      {/* Categories */}
+      <div className="flex gap-2 mb-6 overflow-x-auto pb-2">
+        {CATEGORIES.map((cat) => (
+          <button
+            key={cat.id}
+            onClick={() => setSelectedCategory(cat.id)}
+            className={`flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium whitespace-nowrap transition-all ${selectedCategory === cat.id ? "bg-burgundy-100 text-burgundy-700 border-2 border-burgundy-300" : "bg-white text-gray-600 border border-gray-200 hover:bg-gray-50"}`}
+          >
+            <span>{cat.icon}</span> {cat.label}
+          </button>
+        ))}
+      </div>
+
+      {/* Search */}
+      <div className="relative mb-6">
+        <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+        <Input
+          placeholder="Search your library..."
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+          className="pl-12 py-5 rounded-xl border-gray-200"
+        />
+      </div>
+
+      {/* E-Books Grid */}
+      <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {filteredEbooks.map((ebook) => {
+          const progress = getEbookProgress(ebook.id, ebook.chapters.length);
+          const isComplete = isEbookComplete(ebook.id, ebook.chapters.length);
+          const hasStarted = readingProgress[ebook.id]?.started;
+
+          return (
+            <div key={ebook.id} className="bg-white rounded-2xl border border-gray-100 overflow-hidden transition-all group hover:shadow-lg hover:border-burgundy-200">
+              <div className="p-6">
+                <div className="flex items-start justify-between mb-4">
+                  <span className="text-4xl">{ebook.icon}</span>
+                  <div className="flex items-center gap-2">
+                    {ebook.isFree && (
+                      <Badge className="bg-green-100 text-green-700 border-0 text-xs flex items-center gap-1">
+                        <Sparkles className="w-3 h-3" /> Graduate Resource
+                      </Badge>
+                    )}
+                    {isComplete && <Badge className="bg-burgundy-100 text-burgundy-700 border-0 text-xs">Complete</Badge>}
+                    {!isComplete && progress > 0 && <Badge className="bg-blue-100 text-blue-700 border-0 text-xs">{progress}%</Badge>}
+                    <Button variant="ghost" size="sm" onClick={() => toggleSaved(ebook.id)} className={savedEbooks.includes(ebook.id) ? "text-burgundy-600" : "text-gray-400"}>
+                      {savedEbooks.includes(ebook.id) ? <BookmarkCheck className="w-5 h-5" /> : <Bookmark className="w-5 h-5" />}
+                    </Button>
+                  </div>
+                </div>
+
+                <h3 className="text-lg font-bold mb-1 transition-colors text-gray-900 group-hover:text-burgundy-600">{ebook.title}</h3>
+                <p className="text-sm mb-2 text-burgundy-600">{ebook.subtitle}</p>
+
+                {/* Unlock Condition Badge */}
+                {ebook.unlockCondition && (
+                  <div className="flex items-center gap-2 mb-3 p-2 bg-green-50 rounded-lg border border-green-100">
+                    <CheckCircle2 className="w-4 h-4 text-green-600" />
+                    <span className="text-xs text-green-700 font-medium">Unlocked: {ebook.unlockCondition}</span>
+                  </div>
+                )}
+
+                {/* Value Prop Blurb */}
+                {ebook.valueProp && (
+                  <p className="text-sm font-medium px-3 py-2 rounded-lg mb-3 italic text-amber-700 bg-amber-50">
+                    &ldquo;{ebook.valueProp}&rdquo;
+                  </p>
+                )}
+
+                <p className="text-gray-600 text-sm mb-3 line-clamp-2">{ebook.description}</p>
+
+                <div className="flex flex-wrap gap-2 mb-3">
+                  {ebook.topics.slice(0, 2).map((topic) => (
+                    <Badge key={topic} variant="outline" className="text-xs">{topic}</Badge>
+                  ))}
+                </div>
+
+                <div className="flex items-center text-xs text-gray-500 mb-4">
+                  <span><FileText className="w-3 h-3 inline mr-1" />{ebook.chapters.length > 0 ? `${ebook.chapters.length} chapters` : `${ebook.pages} pages`}</span>
+                  <span className="mx-2">•</span>
+                  <span><Clock className="w-3 h-3 inline mr-1" />{ebook.readTime}</span>
+                </div>
+
+                {progress > 0 && !isComplete && (
+                  <div className="mb-3">
+                    <Progress value={progress} className="h-1.5" />
+                  </div>
+                )}
+
+                <div className="flex gap-2">
+                  <Button className="flex-1 bg-burgundy-600 hover:bg-burgundy-700" onClick={() => startReading(ebook)}>
+                    {isComplete ? <><BookOpen className="w-4 h-4 mr-2" /> Read Again</> : hasStarted ? <><PlayCircle className="w-4 h-4 mr-2" /> Continue</> : <><BookOpen className="w-4 h-4 mr-2" /> Start Reading</>}
+                  </Button>
+
+                </div>
+              </div>
+            </div>
+          );
+        })}
+      </div>
+
+      {filteredEbooks.length === 0 && (
+        <div className="text-center py-12 bg-white rounded-2xl border border-gray-100">
+          <BookOpen className="w-12 h-12 mx-auto mb-4 text-gray-300" />
+          <p className="text-gray-500 mb-4">No e-books found</p>
+          <Button variant="outline" onClick={() => { setActiveTab("all"); setSelectedCategory("all"); setSearchQuery(""); }}>
+            View All E-Books
+          </Button>
+        </div>
+      )}
+
+      {/* Expand Your Library CTA */}
+      <div className="mt-12 bg-gradient-to-r from-burgundy-700 via-burgundy-600 to-purple-700 rounded-2xl p-8 text-white overflow-hidden relative">
+        <div className="absolute inset-0 opacity-10">
+          <div className="absolute top-0 right-0 w-64 h-64 bg-gold-400 rounded-full blur-3xl -translate-y-1/2 translate-x-1/4" />
+        </div>
+        <div className="relative flex flex-col md:flex-row items-center justify-between gap-6">
+          <div className="flex items-center gap-4">
+            <div className="w-16 h-16 bg-gold-400/20 backdrop-blur rounded-2xl flex items-center justify-center border border-gold-400/30">
+              <Sparkles className="w-8 h-8 text-gold-300" />
+            </div>
+            <div>
+              <h2 className="text-2xl font-bold mb-1">Expand Your Professional Library</h2>
+              <p className="text-white/80">Premium guides, templates, and protocol bundles for practitioners</p>
+            </div>
+          </div>
+          <a href="/ebooks">
+            <Button className="bg-gold-500 hover:bg-gold-600 text-burgundy-900 font-semibold px-6 py-6 text-lg shadow-lg">
+              <Library className="w-5 h-5 mr-2" /> Browse Resources <ChevronRight className="w-5 h-5 ml-2" />
+            </Button>
+          </a>
         </div>
       </div>
     </div>

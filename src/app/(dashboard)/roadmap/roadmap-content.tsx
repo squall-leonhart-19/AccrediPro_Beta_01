@@ -396,42 +396,56 @@ export function RoadmapContent({ data, steps, userName, specialization }: Roadma
 
     return (
         <div className="space-y-6 animate-fade-in">
-            {/* BRANDED HERO HEADER */}
-            <Card className="bg-gradient-to-br from-burgundy-700 via-burgundy-600 to-burgundy-800 border-0 overflow-hidden relative">
-                <div className="absolute inset-0 opacity-10">
-                    <div className="absolute top-0 right-0 w-96 h-96 bg-gold-400 rounded-full blur-3xl -translate-y-1/2 translate-x-1/4" />
-                </div>
-                <CardContent className="p-6 md:p-8 relative">
-                    <div className="flex flex-col md:flex-row items-start md:items-center gap-6">
-                        {/* Logo */}
-                        <div className="flex items-center gap-4">
-                            <div className="w-14 h-14 rounded-2xl bg-white/10 backdrop-blur-sm flex items-center justify-center border border-white/20">
-                                <Shield className="w-7 h-7 text-gold-400" />
+            {/* Compact Hero Header - Matching Catalog Style */}
+            <Card className="bg-gradient-to-r from-burgundy-700 via-burgundy-600 to-burgundy-700 border-0 overflow-hidden relative">
+                <CardContent className="px-5 py-4 relative">
+                    <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
+                        {/* Left: Icon + Title + Subtitle */}
+                        <div className="flex items-start gap-4">
+                            <div className="w-11 h-11 rounded-xl bg-gold-400/20 flex items-center justify-center border border-gold-400/30 flex-shrink-0">
+                                <Target className="w-5 h-5 text-gold-400" />
                             </div>
                             <div>
                                 <div className="flex items-center gap-2 mb-1 flex-wrap">
-                                    <Badge className="bg-gold-400/20 text-gold-300 border-gold-400/30">
-                                        <Sparkles className="w-3 h-3 mr-1" />
-                                        ACCREDIPRO
-                                    </Badge>
-                                    <Badge className="bg-white/10 text-white/90 border-white/20">
-                                        {specialization.name}
+                                    <Badge className="bg-gold-400/20 text-gold-300 border-gold-400/30 text-[10px]">
+                                        {specialization.name} Track
                                     </Badge>
                                 </div>
-                                <h1 className="text-2xl md:text-3xl font-bold text-white">
-                                    Your AccrediPro {specialization.name} Career Roadmap
+                                <h1 className="text-xl font-bold text-white">
+                                    My <span className="text-gold-400">Career Roadmap</span>
                                 </h1>
+                                <p className="text-xs text-burgundy-200 mt-0.5 max-w-md hidden sm:block">
+                                    Welcome back, {firstName}! {config.welcomeMessage.slice(0, 60)}...
+                                </p>
                             </div>
                         </div>
 
-                        {/* Welcome Message */}
-                        <div className="flex-1 md:text-right">
-                            <p className="text-burgundy-100 text-lg mb-1">
-                                Welcome back, <span className="text-gold-300 font-semibold">{firstName}</span>
-                            </p>
-                            <p className="text-white/70 text-sm max-w-md md:ml-auto">
-                                {config.welcomeMessage}
-                            </p>
+                        {/* Right: Stats + CTA */}
+                        <div className="flex flex-wrap items-center gap-3">
+                            {/* Stats as pills */}
+                            <div className="hidden md:flex items-center gap-2">
+                                <Badge className="bg-white/10 text-white border-0 px-3 py-1.5">
+                                    <CheckCircle className="w-3 h-3 mr-1.5 text-gold-400" />
+                                    Step {data.currentStep}/4
+                                </Badge>
+                                <Badge className="bg-white/10 text-white border-0 px-3 py-1.5">
+                                    <TrendingUp className="w-3 h-3 mr-1.5 text-gold-400" />
+                                    {data.totalProgress}% Complete
+                                </Badge>
+                                {currentStepData && (
+                                    <Badge className="bg-green-500/20 text-green-300 border-0 px-3 py-1.5">
+                                        <DollarSign className="w-3 h-3 mr-1.5" />
+                                        {currentStepData.incomeVision}
+                                    </Badge>
+                                )}
+                            </div>
+                            {/* CTA */}
+                            <Link href={config.actionHref}>
+                                <Button size="sm" className="bg-gold-400 text-burgundy-900 hover:bg-gold-300 font-semibold h-9">
+                                    <config.actionIcon className="w-4 h-4 mr-1.5" />
+                                    Continue
+                                </Button>
+                            </Link>
                         </div>
                     </div>
                 </CardContent>
@@ -511,40 +525,40 @@ export function RoadmapContent({ data, steps, userName, specialization }: Roadma
                                     )}
 
                                     <div className={`flex items-center gap-4 rounded-xl border-2 transition-all ${isRecommended
-                                            ? "p-5 border-burgundy-300 bg-gradient-to-r from-burgundy-50 to-purple-50 shadow-md ring-2 ring-burgundy-200"
-                                            : isChallengeAvailable
-                                                ? "p-4 border-orange-200 bg-gradient-to-r from-orange-50 to-amber-50"
-                                                : current
-                                                    ? `p-4 ${getStepColor(step.step, "border")} ${getStepColor(step.step, "light")} shadow-md ring-2 ring-offset-2 ${step.color === "purple" ? "ring-purple-400" :
-                                                        step.color === "emerald" ? "ring-emerald-400" :
-                                                            step.color === "amber" ? "ring-amber-400" :
-                                                                step.color === "blue" ? "ring-blue-400" :
-                                                                    "ring-burgundy-400"
-                                                    }`
-                                                    : completed
-                                                        ? "p-4 border-green-200 bg-green-50"
-                                                        : enrolled
-                                                            ? `p-4 ${getStepColor(step.step, "border")} bg-white`
-                                                            : isCertificationStep && !completed && !enrolled
-                                                                ? "p-4 border-gray-200 bg-white hover:border-gray-300"
-                                                                : locked || (isIntermediateStep && !data.completedSteps.includes(0))
-                                                                    ? "p-4 border-gray-200 bg-gray-50 opacity-50"
-                                                                    : "p-4 border-gray-200 bg-white"
+                                        ? "p-5 border-burgundy-300 bg-gradient-to-r from-burgundy-50 to-purple-50 shadow-md ring-2 ring-burgundy-200"
+                                        : isChallengeAvailable
+                                            ? "p-4 border-orange-200 bg-gradient-to-r from-orange-50 to-amber-50"
+                                            : current
+                                                ? `p-4 ${getStepColor(step.step, "border")} ${getStepColor(step.step, "light")} shadow-md ring-2 ring-offset-2 ${step.color === "purple" ? "ring-purple-400" :
+                                                    step.color === "emerald" ? "ring-emerald-400" :
+                                                        step.color === "amber" ? "ring-amber-400" :
+                                                            step.color === "blue" ? "ring-blue-400" :
+                                                                "ring-burgundy-400"
+                                                }`
+                                                : completed
+                                                    ? "p-4 border-green-200 bg-green-50"
+                                                    : enrolled
+                                                        ? `p-4 ${getStepColor(step.step, "border")} bg-white`
+                                                        : isCertificationStep && !completed && !enrolled
+                                                            ? "p-4 border-gray-200 bg-white hover:border-gray-300"
+                                                            : locked || (isIntermediateStep && !data.completedSteps.includes(0))
+                                                                ? "p-4 border-gray-200 bg-gray-50 opacity-50"
+                                                                : "p-4 border-gray-200 bg-white"
                                         }`}>
                                         {/* Step Icon */}
                                         <div className={`w-14 h-14 rounded-xl flex items-center justify-center flex-shrink-0 ${completed
-                                                ? "bg-green-500"
-                                                : isRecommended
-                                                    ? "bg-gradient-to-br from-burgundy-600 to-purple-600"
-                                                    : isChallengeAvailable
-                                                        ? "bg-gradient-to-br from-orange-500 to-amber-500"
-                                                        : current
-                                                            ? `bg-gradient-to-r ${getStepColor(step.step, "gradient")}`
-                                                            : locked || (isIntermediateStep && !data.completedSteps.includes(0))
-                                                                ? "bg-gray-200"
-                                                                : isCertificationStep
-                                                                    ? "bg-gradient-to-br from-gold-400 to-amber-500"
-                                                                    : "bg-gray-100"
+                                            ? "bg-green-500"
+                                            : isRecommended
+                                                ? "bg-gradient-to-br from-burgundy-600 to-purple-600"
+                                                : isChallengeAvailable
+                                                    ? "bg-gradient-to-br from-orange-500 to-amber-500"
+                                                    : current
+                                                        ? `bg-gradient-to-r ${getStepColor(step.step, "gradient")}`
+                                                        : locked || (isIntermediateStep && !data.completedSteps.includes(0))
+                                                            ? "bg-gray-200"
+                                                            : isCertificationStep
+                                                                ? "bg-gradient-to-br from-gold-400 to-amber-500"
+                                                                : "bg-gray-100"
                                             }`}>
                                             {completed ? (
                                                 <CheckCircle className="w-7 h-7 text-white" />
@@ -568,10 +582,10 @@ export function RoadmapContent({ data, steps, userName, specialization }: Roadma
                                         <div className="flex-1 min-w-0">
                                             <div className="flex items-center gap-2 mb-1 flex-wrap">
                                                 <h3 className={`font-bold ${completed ? "text-green-700" :
-                                                        isRecommended ? "text-burgundy-800" :
-                                                            isChallengeAvailable ? "text-orange-800" :
-                                                                current ? "text-gray-900" :
-                                                                    locked ? "text-gray-400" : "text-gray-700"
+                                                    isRecommended ? "text-burgundy-800" :
+                                                        isChallengeAvailable ? "text-orange-800" :
+                                                            current ? "text-gray-900" :
+                                                                locked ? "text-gray-400" : "text-gray-700"
                                                     }`}>{step.title}</h3>
 
                                                 {/* Badges based on step type */}
@@ -645,12 +659,12 @@ export function RoadmapContent({ data, steps, userName, specialization }: Roadma
                                         {/* Income Vision / Status */}
                                         <div className={`text-right hidden sm:block ${locked || (isIntermediateStep && !data.completedSteps.includes(0)) ? "opacity-40" : ""}`}>
                                             <p className={`font-bold text-lg ${completed ? "text-green-600" :
-                                                    isRecommended ? "text-burgundy-600" :
-                                                        isChallengeAvailable ? "text-orange-600" :
-                                                            current ? getStepColor(step.step, "text") :
-                                                                isMiniDiploma ? "text-purple-600" :
-                                                                    isCertificationStep ? "text-gray-700" :
-                                                                        "text-gray-400"
+                                                isRecommended ? "text-burgundy-600" :
+                                                    isChallengeAvailable ? "text-orange-600" :
+                                                        current ? getStepColor(step.step, "text") :
+                                                            isMiniDiploma ? "text-purple-600" :
+                                                                isCertificationStep ? "text-gray-700" :
+                                                                    "text-gray-400"
                                                 }`}>{step.incomeVision}</p>
                                             {isCertificationStep && (
                                                 <p className="text-xs text-gray-400">per month</p>

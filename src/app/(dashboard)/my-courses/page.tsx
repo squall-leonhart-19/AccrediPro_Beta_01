@@ -256,7 +256,7 @@ export default async function MyCoursesPage() {
                   </Link>
                 )}
                 <Link href="/roadmap">
-                  <Button size="sm" variant="outline" className="border-white/30 text-white hover:bg-white/10 h-9">
+                  <Button size="sm" variant="outline" className="border-white/30 bg-white/10 text-burgundy-900 hover:bg-white/20 h-9">
                     <MapPin className="w-4 h-4 mr-1.5" />
                     Roadmap
                   </Button>
