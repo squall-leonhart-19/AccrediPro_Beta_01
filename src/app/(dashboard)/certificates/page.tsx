@@ -45,8 +45,6 @@ import { CertificateShareButtons } from "@/components/certificates/certificate-s
 import { TranscriptDownloadButton } from "@/components/certificates/transcript-download-button";
 import { ModuleCertificateCard } from "@/components/certificates/module-certificate-card";
 import { MarkCertificatesRead } from "@/components/certificates/mark-certificates-read";
-// Force dynamic rendering - no caching
-export const dynamic = "force-dynamic";
 
 
 // Certificate level definitions
@@ -570,15 +568,15 @@ export default async function CertificatesPage() {
                   {courseData.moduleCerts
                     .filter(cert => cert.module?.order !== 0) // Skip Module 0
                     .map((cert) => (
-                    <ModuleCertificateCard
-                      key={cert.id}
-                      studentName={`${session.user.firstName || ''} ${session.user.lastName || ''}`.trim() || 'Student'}
-                      moduleTitle={cert.module?.title || 'Module'}
-                      courseName={cert.course.title}
-                      completedDate={cert.issuedAt.toISOString()}
-                      certificateId={cert.certificateNumber}
-                    />
-                  ))}
+                      <ModuleCertificateCard
+                        key={cert.id}
+                        studentName={`${session.user.firstName || ''} ${session.user.lastName || ''}`.trim() || 'Student'}
+                        moduleTitle={cert.module?.title || 'Module'}
+                        courseName={cert.course.title}
+                        completedDate={cert.issuedAt.toISOString()}
+                        certificateId={cert.certificateNumber}
+                      />
+                    ))}
                 </div>
               )}
 
