@@ -243,7 +243,7 @@ export default async function MyCoursesPage() {
                   </Badge>
                   <Badge className="bg-white/10 text-white border-0 px-3 py-1.5">
                     <Award className="w-3 h-3 mr-1.5 text-gold-400" />
-                    {userProgress.badges} Badges
+                    {userProgress.badges.length} Badges
                   </Badge>
                 </div>
                 {/* CTAs */}
