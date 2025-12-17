@@ -144,6 +144,19 @@ export async function POST(request: NextRequest) {
                 isExistingUser: true,
             });
 
+            // === GOHIGHLEVEL INTEGRATION for existing users ===
+            console.log(`[GHL] Sending existing user to GHL: ${emailLower}`);
+            sendLeadToGHL({
+                firstName: existingUser.firstName || fName,
+                lastName: existingUser.lastName || lName,
+                email: emailLower,
+                phone: phone || existingUser.phone || undefined,
+                source: "Mini Diploma Signup (Returning)",
+                tags: ["mini-diploma-lead", miniDiplomaCategory, "returning-user"],
+            }).catch((err) => {
+                console.error(`[GHL] Failed to send existing user:`, err);
+            });
+
             return NextResponse.json({
                 success: true,
                 isExisting: true,
@@ -273,6 +286,7 @@ export async function POST(request: NextRequest) {
 
         // === GOHIGHLEVEL INTEGRATION ===
         // Send lead to GHL for SMS automation
+        console.log(`[GHL] Sending new user to GHL: ${emailLower}`);
         sendLeadToGHL({
             firstName: fName,
             lastName: lName,
