@@ -52,6 +52,7 @@ import {
   Gift,
   Sparkles,
   Calendar,
+  RefreshCw,
 } from "lucide-react";
 import { toast } from "sonner";
 
@@ -605,6 +606,26 @@ export default function MarketingPage() {
     }
   }
 
+  // Import/reset nurture emails from template
+  async function importNurtureEmails() {
+    if (!confirm("This will delete existing nurture emails and re-import all 17 emails with the latest content. Continue?")) return;
+    try {
+      const res = await fetch(`/api/admin/marketing/import-nurture-emails`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+      });
+      const data = await res.json();
+      if (res.ok) {
+        toast.success(`Imported ${data.emails?.length || 17} nurture emails`);
+        fetchSequences();
+      } else {
+        toast.error(data.error || "Failed to import emails");
+      }
+    } catch (error) {
+      console.error("Error importing nurture emails:", error);
+      toast.error("Failed to import emails");
+    }
+  }
   async function removeNurtureEnrollee(userId: string) {
     if (!confirm("Remove this user from the nurture sequence?")) return;
     try {
@@ -1052,6 +1073,9 @@ export default function MarketingPage() {
                   </Button>
                   <Button variant="outline" size="sm" onClick={() => { fetchNurtureEnrollees(); setShowNurtureEnrollees(true); }}>
                     <Users className="h-4 w-4 mr-1" />View Enrollees
+                  </Button>
+                  <Button variant="outline" size="sm" onClick={importNurtureEmails}>
+                    <RefreshCw className="h-4 w-4 mr-1" />Import Emails
                   </Button>
                   <a href="/admin/marketing/inbox-test">
                     <Button variant="outline" size="sm"><Mail className="h-4 w-4 mr-1" />Preview Emails</Button>
