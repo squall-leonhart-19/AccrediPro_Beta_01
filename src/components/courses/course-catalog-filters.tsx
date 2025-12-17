@@ -570,61 +570,57 @@ export function CourseCatalogFilters({
     };
 
     return (
-        <div className="space-y-8">
-            {/* Hero Header - Simplified, No Free Course Button */}
-            <div className="relative bg-gradient-to-br from-burgundy-700 via-burgundy-600 to-burgundy-800 rounded-2xl overflow-hidden">
-                <div className="absolute inset-0 opacity-10">
-                    <div className="absolute top-0 right-0 w-96 h-96 bg-gold-400 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2" />
-                    <div className="absolute bottom-0 left-0 w-64 h-64 bg-gold-500 rounded-full blur-3xl translate-y-1/2 -translate-x-1/4" />
-                </div>
-
-                <div className="relative z-10 p-6 md:p-10 text-center">
-                    <div className="max-w-3xl mx-auto">
-                        <div className="inline-flex items-center gap-2 bg-gold-400/20 backdrop-blur-sm px-4 py-2 rounded-full mb-4 border border-gold-400/30">
-                            <Sparkles className="w-4 h-4 text-gold-400" />
-                            <span className="text-sm font-semibold text-gold-200">Accredited Professional Training</span>
-                        </div>
-
-                        <h1 className="text-2xl md:text-3xl font-bold mb-4 text-white">
-                            Build Your Career in <span className="text-gold-400">Health & Wellness</span>
-                        </h1>
-
-                        <p className="text-lg text-burgundy-100 mb-8 max-w-2xl mx-auto">
-                            Industry-recognized certifications that give you the credentials, knowledge, and confidence to build a thriving practice.
-                        </p>
-
-                        {/* Trust Badges - Centered */}
-                        <div className="flex flex-wrap justify-center gap-4 mb-8">
-                            <div className="flex items-center gap-2 bg-white/10 backdrop-blur-sm px-4 py-2.5 rounded-lg">
-                                <Users className="w-5 h-5 text-gold-400" />
-                                <div className="text-left">
-                                    <p className="text-white font-bold">{(totalEnrolled + 2500).toLocaleString()}+</p>
-                                    <p className="text-xs text-burgundy-200">Students Enrolled</p>
-                                </div>
+        <div className="space-y-6">
+            {/* Compact Hero Header - Variant 2 Style */}
+            <div className="relative bg-gradient-to-r from-burgundy-700 via-burgundy-600 to-burgundy-700 rounded-xl overflow-hidden">
+                <div className="relative z-10 px-5 py-4">
+                    {/* Main Row */}
+                    <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
+                        {/* Left: Icon + Title + Subtitle */}
+                        <div className="flex items-start gap-4">
+                            <div className="w-11 h-11 rounded-xl bg-gold-400/20 flex items-center justify-center border border-gold-400/30 flex-shrink-0">
+                                <Sparkles className="w-5 h-5 text-gold-400" />
                             </div>
-                            <div className="flex items-center gap-2 bg-white/10 backdrop-blur-sm px-4 py-2.5 rounded-lg">
-                                <Star className="w-5 h-5 text-gold-400 fill-gold-400" />
-                                <div className="text-left">
-                                    <p className="text-white font-bold">{avgRating}/5.0</p>
-                                    <p className="text-xs text-burgundy-200">1,344+ Reviews</p>
+                            <div>
+                                <div className="flex items-center gap-2 mb-1">
+                                    <Badge className="bg-gold-400/20 text-gold-300 border-gold-400/30 text-[10px]">
+                                        Accredited Professional Training
+                                    </Badge>
                                 </div>
-                            </div>
-                            <div className="flex items-center gap-2 bg-white/10 backdrop-blur-sm px-4 py-2.5 rounded-lg">
-                                <Shield className="w-5 h-5 text-gold-400" />
-                                <div className="text-left">
-                                    <p className="text-white font-bold">Accredited</p>
-                                    <p className="text-xs text-burgundy-200">Certifications</p>
-                                </div>
+                                <h1 className="text-xl font-bold text-white">
+                                    Build Your Career in <span className="text-gold-400">Health & Wellness</span>
+                                </h1>
+                                <p className="text-xs text-burgundy-200 mt-0.5 max-w-md hidden sm:block">
+                                    Industry-recognized certifications for a thriving practice.
+                                </p>
                             </div>
                         </div>
 
-                        {/* Single CTA */}
-                        <Link href="/roadmap">
-                            <Button size="lg" className="bg-gold-400 text-burgundy-900 hover:bg-gold-300 font-semibold shadow-lg px-8">
-                                <Target className="w-5 h-5 mr-2" />
-                                View My Personalized Roadmap
-                            </Button>
-                        </Link>
+                        {/* Right: Stats + CTA */}
+                        <div className="flex flex-wrap items-center gap-3">
+                            {/* Stats as pills */}
+                            <div className="hidden md:flex items-center gap-2">
+                                <Badge className="bg-white/10 text-white border-0 px-3 py-1.5">
+                                    <Users className="w-3 h-3 mr-1.5 text-gold-400" />
+                                    {(totalEnrolled + 2500).toLocaleString()}+ Students
+                                </Badge>
+                                <Badge className="bg-white/10 text-white border-0 px-3 py-1.5">
+                                    <Star className="w-3 h-3 mr-1.5 text-gold-400 fill-gold-400" />
+                                    {avgRating} • 1,344+ Reviews
+                                </Badge>
+                                <Badge className="bg-white/10 text-white border-0 px-3 py-1.5">
+                                    <Shield className="w-3 h-3 mr-1.5 text-gold-400" />
+                                    Accredited
+                                </Badge>
+                            </div>
+                            {/* CTA */}
+                            <Link href="/roadmap">
+                                <Button size="sm" className="bg-gold-400 text-burgundy-900 hover:bg-gold-300 font-semibold h-9">
+                                    <Target className="w-4 h-4 mr-1.5" />
+                                    View Roadmap
+                                </Button>
+                            </Link>
+                        </div>
                     </div>
                 </div>
             </div>

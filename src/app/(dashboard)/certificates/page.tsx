@@ -304,21 +304,55 @@ export default async function CertificatesPage() {
       {/* Mark certificate notifications as read when visiting this page */}
       <MarkCertificatesRead />
 
-      {/* Hero Header */}
-      <Card className="bg-gradient-to-br from-burgundy-600 via-burgundy-700 to-burgundy-800 border-0 overflow-hidden relative">
-        <div className="absolute inset-0 opacity-10">
-          <div className="absolute top-0 right-0 w-64 h-64 bg-gold-400 rounded-full blur-3xl -translate-y-1/2 translate-x-1/4" />
-          <div className="absolute bottom-0 left-0 w-48 h-48 bg-gold-500 rounded-full blur-3xl translate-y-1/2 -translate-x-1/4" />
-        </div>
-        <CardContent className="p-8 lg:p-10 relative">
-          <div className="text-center max-w-2xl mx-auto">
-            <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-white/10 backdrop-blur-sm mb-4">
-              <Award className="w-8 h-8 text-gold-400" />
+      {/* Compact Hero Header - Matching Catalog Style */}
+      <Card className="bg-gradient-to-r from-burgundy-700 via-burgundy-600 to-burgundy-700 border-0 overflow-hidden relative">
+        <CardContent className="px-5 py-4 relative">
+          <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
+            {/* Left: Icon + Title + Subtitle */}
+            <div className="flex items-start gap-4">
+              <div className="w-11 h-11 rounded-xl bg-gold-400/20 flex items-center justify-center border border-gold-400/30 flex-shrink-0">
+                <Award className="w-5 h-5 text-gold-400" />
+              </div>
+              <div>
+                <div className="flex items-center gap-2 mb-1">
+                  <Badge className="bg-gold-400/20 text-gold-300 border-gold-400/30 text-[10px]">
+                    Professional Credentials
+                  </Badge>
+                </div>
+                <h1 className="text-xl font-bold text-white">
+                  My <span className="text-gold-400">Certificates</span>
+                </h1>
+                <p className="text-xs text-burgundy-200 mt-0.5 max-w-md hidden sm:block">
+                  Track progress, download certificates, and showcase your expertise.
+                </p>
+              </div>
             </div>
-            <h1 className="text-3xl lg:text-4xl font-bold text-white mb-3">My Certificates</h1>
-            <p className="text-burgundy-100 text-lg">
-              Your professional credential hub — track progress, download certificates, and showcase your expertise to clients
-            </p>
+
+            {/* Right: Stats + CTA */}
+            <div className="flex flex-wrap items-center gap-3">
+              {/* Stats as pills */}
+              <div className="hidden md:flex items-center gap-2">
+                <Badge className="bg-white/10 text-white border-0 px-3 py-1.5">
+                  <Award className="w-3 h-3 mr-1.5 text-gold-400" />
+                  {totalCertificates} Earned
+                </Badge>
+                <Badge className="bg-white/10 text-white border-0 px-3 py-1.5">
+                  <GraduationCap className="w-3 h-3 mr-1.5 text-gold-400" />
+                  {practitionerLevel} Practitioner
+                </Badge>
+                <Badge className="bg-white/10 text-white border-0 px-3 py-1.5">
+                  <Star className="w-3 h-3 mr-1.5 text-gold-400" />
+                  {stats.badges} Badges
+                </Badge>
+              </div>
+              {/* CTA */}
+              <Link href="/catalog">
+                <Button size="sm" className="bg-gold-400 text-burgundy-900 hover:bg-gold-300 font-semibold h-9">
+                  <Target className="w-4 h-4 mr-1.5" />
+                  Get More
+                </Button>
+              </Link>
+            </div>
           </div>
         </CardContent>
       </Card>

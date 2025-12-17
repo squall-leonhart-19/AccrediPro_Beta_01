@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -5114,35 +5115,54 @@ export default function MyLibraryPage() {
     <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-burgundy-50/30">
       <div className="px-4 sm:px-6 lg:px-8 py-8">
 
-        {/* Header */}
-        <div className="relative mb-10 bg-gradient-to-r from-burgundy-700 via-burgundy-600 to-burgundy-800 rounded-3xl p-8 md:p-12 text-white overflow-hidden">
-          <div className="absolute inset-0 opacity-10">
-            <div className="absolute top-0 right-0 w-96 h-96 bg-gold-400 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2" />
-          </div>
-
-          <div className="relative z-10">
-            <div className="flex items-center gap-3 mb-4">
-              <div className="w-14 h-14 bg-white/20 backdrop-blur-sm rounded-2xl flex items-center justify-center">
-                <Library className="w-7 h-7 text-gold-400" />
+        {/* Compact Header - Matching Catalog Style */}
+        <div className="relative mb-6 bg-gradient-to-r from-burgundy-700 via-burgundy-600 to-burgundy-700 rounded-xl overflow-hidden">
+          <div className="relative z-10 px-5 py-4">
+            <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
+              {/* Left: Icon + Title + Subtitle */}
+              <div className="flex items-start gap-4">
+                <div className="w-11 h-11 rounded-xl bg-gold-400/20 flex items-center justify-center border border-gold-400/30 flex-shrink-0">
+                  <Library className="w-5 h-5 text-gold-400" />
+                </div>
+                <div>
+                  <div className="flex items-center gap-2 mb-1">
+                    <Badge className="bg-gold-400/20 text-gold-300 border-gold-400/30 text-[10px]">
+                      Your Collection
+                    </Badge>
+                  </div>
+                  <h1 className="text-xl font-bold text-white">
+                    My <span className="text-gold-400">Library</span>
+                  </h1>
+                  <p className="text-xs text-burgundy-200 mt-0.5 max-w-md hidden sm:block">
+                    Professional books, guides, and reference materials.
+                  </p>
+                </div>
               </div>
-              <Badge className="bg-gold-400 text-burgundy-900 border-0 font-semibold">Your Collection</Badge>
-            </div>
 
-            <h1 className="text-3xl md:text-4xl font-bold mb-4">My Library</h1>
-
-            <p className="text-lg text-white/90 max-w-2xl mb-6">
-              Your professional books, guides, and reference materials — available as you progress.
-            </p>
-
-            <div className="flex flex-wrap gap-4 text-sm">
-              <div className="flex items-center gap-2 bg-green-500/20 px-4 py-2 rounded-full border border-green-400/30">
-                <Sparkles className="w-4 h-4 text-green-300" /> {totalCount} Resources
-              </div>
-              <div className="flex items-center gap-2 bg-white/10 px-4 py-2 rounded-full">
-                <PlayCircle className="w-4 h-4" /> {inProgressCount} Reading
-              </div>
-              <div className="flex items-center gap-2 bg-white/10 px-4 py-2 rounded-full">
-                <CheckCircle2 className="w-4 h-4" /> {completedCount} Completed
+              {/* Right: Stats + CTA */}
+              <div className="flex flex-wrap items-center gap-3">
+                {/* Stats as pills */}
+                <div className="hidden md:flex items-center gap-2">
+                  <Badge className="bg-white/10 text-white border-0 px-3 py-1.5">
+                    <Sparkles className="w-3 h-3 mr-1.5 text-gold-400" />
+                    {totalCount} Resources
+                  </Badge>
+                  <Badge className="bg-white/10 text-white border-0 px-3 py-1.5">
+                    <PlayCircle className="w-3 h-3 mr-1.5 text-gold-400" />
+                    {inProgressCount} Reading
+                  </Badge>
+                  <Badge className="bg-white/10 text-white border-0 px-3 py-1.5">
+                    <CheckCircle2 className="w-3 h-3 mr-1.5 text-gold-400" />
+                    {completedCount} Completed
+                  </Badge>
+                </div>
+                {/* CTA */}
+                <Link href="/ebook-store">
+                  <Button size="sm" className="bg-gold-400 text-burgundy-900 hover:bg-gold-300 font-semibold h-9">
+                    <ShoppingBag className="w-4 h-4 mr-1.5" />
+                    Get More
+                  </Button>
+                </Link>
               </div>
             </div>
           </div>

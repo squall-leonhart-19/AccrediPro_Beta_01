@@ -209,52 +209,59 @@ export default async function MyCoursesPage() {
   return (
     <div className="min-h-screen bg-gray-50">
       <div className="px-4 sm:px-6 lg:px-8 py-8">
-        {/* Branded Hero Header */}
-        <div className="mb-8 rounded-2xl overflow-hidden bg-gradient-to-r from-burgundy-700 via-burgundy-800 to-burgundy-900 relative">
-          {/* Decorative Elements */}
-          <div className="absolute inset-0 overflow-hidden">
-            <div className="absolute top-0 right-0 w-64 h-64 bg-gold-400/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/4" />
-            <div className="absolute bottom-0 left-1/4 w-48 h-48 bg-burgundy-400/20 rounded-full blur-3xl translate-y-1/2" />
-          </div>
+        {/* Compact Hero Header - Matching Catalog Style */}
+        <div className="mb-6 rounded-xl overflow-hidden bg-gradient-to-r from-burgundy-700 via-burgundy-600 to-burgundy-700 relative">
+          <div className="relative px-5 py-4">
+            <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
+              {/* Left: Icon + Title + Subtitle */}
+              <div className="flex items-start gap-4">
+                <div className="w-11 h-11 rounded-xl bg-gold-400/20 flex items-center justify-center border border-gold-400/30 flex-shrink-0">
+                  <GraduationCap className="w-5 h-5 text-gold-400" />
+                </div>
+                <div>
+                  <div className="flex items-center gap-2 mb-1">
+                    <Badge className="bg-gold-400/20 text-gold-300 border-gold-400/30 text-[10px]">
+                      Learning Hub
+                    </Badge>
+                  </div>
+                  <h1 className="text-xl font-bold text-white">
+                    My <span className="text-gold-400">Courses</span>
+                  </h1>
+                  <p className="text-xs text-burgundy-200 mt-0.5 max-w-md hidden sm:block">
+                    Track progress, complete certifications, and unlock your credentials.
+                  </p>
+                </div>
+              </div>
 
-          <div className="relative px-6 py-8 sm:px-8 sm:py-10">
-            {/* Badge */}
-            <div className="inline-flex items-center gap-2 px-3 py-1.5 bg-gold-400/20 border border-gold-400/30 rounded-full mb-4">
-              <GraduationCap className="w-4 h-4 text-gold-400" />
-              <span className="text-sm font-medium text-gold-300">Learning Hub</span>
-            </div>
-
-            {/* Title */}
-            <h1 className="text-2xl sm:text-3xl font-bold text-white mb-2">
-              Continue Your Learning Journey
-            </h1>
-
-            {/* Subtitle */}
-            <p className="text-burgundy-100/80 text-sm sm:text-base max-w-2xl mb-6">
-              Track your progress, complete certifications, and unlock your <span className="text-white font-medium">professional credentials</span> with AccrediPro Academy.
-            </p>
-
-            {/* CTA Buttons */}
-            <div className="flex flex-wrap gap-3">
-              {inProgressCourses[0] && (
-                <Link href={`/courses/${inProgressCourses[0].course.slug}`}>
-                  <Button className="bg-gold-400 hover:bg-gold-500 text-gold-900 font-semibold">
-                    <Play className="w-4 h-4 mr-2" />
-                    Resume Course
+              {/* Right: Stats + CTAs */}
+              <div className="flex flex-wrap items-center gap-3">
+                {/* Stats as pills */}
+                <div className="hidden md:flex items-center gap-2">
+                  <Badge className="bg-white/10 text-white border-0 px-3 py-1.5">
+                    <BookOpen className="w-3 h-3 mr-1.5 text-gold-400" />
+                    {userProgress.completedLessons}/{totalLessons} Lessons
+                  </Badge>
+                  <Badge className="bg-white/10 text-white border-0 px-3 py-1.5">
+                    <Award className="w-3 h-3 mr-1.5 text-gold-400" />
+                    {userProgress.badges} Badges
+                  </Badge>
+                </div>
+                {/* CTAs */}
+                {inProgressCourses[0] && (
+                  <Link href={`/courses/${inProgressCourses[0].course.slug}`}>
+                    <Button size="sm" className="bg-gold-400 text-burgundy-900 hover:bg-gold-300 font-semibold h-9">
+                      <Play className="w-4 h-4 mr-1.5" />
+                      Resume
+                    </Button>
+                  </Link>
+                )}
+                <Link href="/roadmap">
+                  <Button size="sm" variant="outline" className="border-white/30 text-white hover:bg-white/10 h-9">
+                    <MapPin className="w-4 h-4 mr-1.5" />
+                    Roadmap
                   </Button>
                 </Link>
-              )}
-              <Link href="/roadmap">
-                <Button className="bg-white/10 border border-white/30 text-white hover:bg-white/20">
-                  <MapPin className="w-4 h-4 mr-2" />
-                  View My Roadmap
-                </Button>
-              </Link>
-              <Link href="/catalog">
-                <Button className="bg-white/10 border border-white/30 text-white hover:bg-white/20">
-                  Explore Certifications
-                </Button>
-              </Link>
+              </div>
             </div>
           </div>
         </div>
