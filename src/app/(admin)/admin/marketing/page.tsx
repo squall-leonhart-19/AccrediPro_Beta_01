@@ -214,6 +214,8 @@ export default function MarketingPage() {
   const [enrollments, setEnrollments] = useState<any[]>([]);
   const [enrollmentsLoading, setEnrollmentsLoading] = useState(false);
   const [enrollmentCounts, setEnrollmentCounts] = useState({ ACTIVE: 0, COMPLETED: 0, EXITED: 0, PAUSED: 0 });
+  const [showRemoveAllConfirm, setShowRemoveAllConfirm] = useState(false);
+  const [removingAll, setRemovingAll] = useState(false);
 
   // Holiday campaign state
   const [holidayTestEmail, setHolidayTestEmail] = useState("at.seed019@gmail.com");
@@ -666,6 +668,41 @@ export default function MarketingPage() {
     } catch (error) {
       console.error("Error removing enrollment:", error);
       toast.error("Failed to remove user");
+    }
+  }
+
+  async function removeAllEnrollments() {
+    if (!selectedSequence) return;
+    setShowRemoveAllConfirm(false);
+    setRemovingAll(true);
+    try {
+      // Get all enrollment user IDs
+      const userIds = enrollments.map(e => e.user.id);
+      if (userIds.length === 0) {
+        toast.error("No enrollments to remove");
+        return;
+      }
+
+      const res = await fetch(`/api/admin/marketing/sequences/${selectedSequence.id}/enrollments`, {
+        method: "DELETE",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ userIds, permanent: true }),
+      });
+
+      if (res.ok) {
+        const data = await res.json();
+        toast.success(`Removed ${data.removed || userIds.length} enrollments`);
+        fetchEnrollments(selectedSequence.id);
+        fetchSequences();
+      } else {
+        const data = await res.json();
+        toast.error(data.error || "Failed to remove enrollments");
+      }
+    } catch (error) {
+      console.error("Error removing all enrollments:", error);
+      toast.error("Failed to remove enrollments");
+    } finally {
+      setRemovingAll(false);
     }
   }
 
@@ -2095,7 +2132,39 @@ export default function MarketingPage() {
               </div>
             )}
           </div>
-          <DialogFooter><Button variant="outline" onClick={() => setShowEnrollments(false)}>Close</Button></DialogFooter>
+          <DialogFooter className="flex justify-between">
+            <Button variant="destructive" onClick={() => setShowRemoveAllConfirm(true)} disabled={removingAll || enrollments.length === 0}>
+              {removingAll ? <Loader2 className="h-4 w-4 animate-spin mr-2" /> : <Trash2 className="h-4 w-4 mr-2" />}
+              Remove All ({enrollments.length})
+            </Button>
+            <Button variant="outline" onClick={() => setShowEnrollments(false)}>Close</Button>
+          </DialogFooter>
+
+          {/* Remove All Confirmation */}
+          {showRemoveAllConfirm && (
+            <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-[100]">
+              <div className="bg-white rounded-xl p-6 max-w-md mx-4 shadow-2xl">
+                <h3 className="text-lg font-bold text-red-600 mb-2">⚠️ Remove All Enrollments</h3>
+                <p className="text-slate-600 mb-4">
+                  You are about to remove <span className="font-bold text-red-600">{enrollments.length} enrollments</span> from:
+                </p>
+                <p className="font-semibold text-slate-900 mb-4 p-3 bg-slate-50 rounded-lg">
+                  {selectedSequence?.name}
+                </p>
+                <p className="text-sm text-red-600 mb-4">
+                  This will permanently delete all enrollment records. This action cannot be undone!
+                </p>
+                <div className="flex gap-3 justify-end">
+                  <Button variant="outline" onClick={() => setShowRemoveAllConfirm(false)}>
+                    Cancel
+                  </Button>
+                  <Button variant="destructive" onClick={removeAllEnrollments}>
+                    Yes, Remove All
+                  </Button>
+                </div>
+              </div>
+            </div>
+          )}
         </DialogContent>
       </Dialog>
 
