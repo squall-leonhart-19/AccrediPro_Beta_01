@@ -1999,7 +1999,7 @@ export default function MarketingPage() {
           </div>
           <DialogFooter className="flex-col sm:flex-row gap-2">
             <Button variant="outline" onClick={() => setShowEnrollUser(false)}>Cancel</Button>
-            <Button variant="outline" onClick={() => setShowEnrollAllConfirm(true)} disabled={enrollingAll || subscribersTotal === 0} className="bg-burgundy-50 border-burgundy-200 text-burgundy-700 hover:bg-burgundy-100">
+            <Button variant="outline" onClick={() => setShowEnrollAllConfirm(true)} disabled={enrollingAll} className="bg-burgundy-50 border-burgundy-200 text-burgundy-700 hover:bg-burgundy-100">
               {enrollingAll ? <Loader2 className="h-4 w-4 animate-spin mr-2" /> : <Users className="h-4 w-4 mr-2" />}
               Enroll All ({subscribersTotal})
             </Button>
