@@ -13,12 +13,21 @@ const nextConfig: NextConfig = {
       },
       {
         protocol: "https",
+        hostname: "accredipro.academy",
+        pathname: "/wp-content/uploads/**",
+      },
+      {
+        protocol: "https",
         hostname: "randomuser.me",
         pathname: "/api/portraits/**",
       },
       {
         protocol: "https",
         hostname: "images.unsplash.com",
+      },
+      {
+        protocol: "https",
+        hostname: "i.pravatar.cc",
       },
     ],
   },

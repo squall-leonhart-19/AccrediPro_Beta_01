@@ -26,11 +26,11 @@ export interface VoiceSettings {
 }
 
 // Default voice settings - tested and approved parameters
-// Balanced warmth with slight expressiveness
+// Warm, expressive, sounds like the real Sarah
 const DEFAULT_VOICE_SETTINGS: VoiceSettings = {
     stability: 0.50,       // Balanced stability/expressiveness
-    similarityBoost: 0.75, // Good voice similarity
-    style: 0.15,           // Slight expressiveness
+    similarityBoost: 1.0,  // Maximum similarity to original voice
+    style: 0.50,           // Good expressiveness for warmth
     speed: 0.85,           // Slightly slower for warmth
 };
 

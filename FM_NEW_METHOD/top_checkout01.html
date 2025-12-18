@@ -1,0 +1,902 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FM Mini Diploma Checkout</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: linear-gradient(to bottom, #fef2f2, #ffffff);
+            color: #1e293b;
+            line-height: 1.5;
+        }
+
+        /* Countdown Banner */
+        .countdown-banner {
+            background: linear-gradient(to right, #7f1d1d, #991b1b);
+            color: white;
+            padding: 10px 12px;
+            position: sticky;
+            top: 0;
+            z-index: 50;
+        }
+
+        .countdown-inner {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: center;
+            gap: 6px 12px;
+            font-size: 13px;
+        }
+
+        @media (min-width: 640px) {
+            .countdown-inner {
+                font-size: 14px;
+                gap: 8px 16px;
+            }
+        }
+
+        .live-viewers {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .pulse-dot {
+            position: relative;
+            width: 8px;
+            height: 8px;
+        }
+
+        .pulse-dot::before {
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background: #4ade80;
+            border-radius: 50%;
+            animation: ping 1s cubic-bezier(0, 0, 0.2, 1) infinite;
+        }
+
+        .pulse-dot::after {
+            content: '';
+            position: relative;
+            display: block;
+            width: 8px;
+            height: 8px;
+            background: #22c55e;
+            border-radius: 50%;
+        }
+
+        @keyframes ping {
+            75%, 100% {
+                transform: scale(2);
+                opacity: 0;
+            }
+        }
+
+        .viewers-text {
+            color: #bbf7d0;
+            font-weight: 500;
+        }
+
+        .separator {
+            color: #fca5a5;
+            display: none;
+        }
+
+        @media (min-width: 640px) {
+            .separator {
+                display: block;
+            }
+        }
+
+        .offer-text {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .zap-icon {
+            color: #fbbf24;
+        }
+
+        .timer {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-family: monospace;
+            background: rgba(255, 255, 255, 0.1);
+            padding: 4px 10px;
+            border-radius: 9999px;
+            font-size: 13px;
+        }
+
+        /* Header */
+        .header {
+            background: white;
+            border-bottom: 1px solid #e2e8f0;
+            padding: 12px 16px;
+        }
+
+        .header-inner {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            text-decoration: none;
+        }
+
+        .logo img {
+            height: 32px;
+            width: auto;
+        }
+
+        @media (min-width: 640px) {
+            .logo img {
+                height: 40px;
+            }
+        }
+
+        .secure-badge {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            color: #64748b;
+            font-size: 12px;
+            font-weight: 500;
+        }
+
+        @media (min-width: 640px) {
+            .secure-badge {
+                font-size: 14px;
+            }
+        }
+
+        .secure-badge svg {
+            color: #10b981;
+            width: 16px;
+            height: 16px;
+        }
+
+        /* Trustpilot */
+        .trustpilot-bar {
+            background: #f8fafc;
+            border-top: 1px solid #f1f5f9;
+            padding: 6px 16px;
+            text-align: center;
+        }
+
+        /* Main Content */
+        .main {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px 16px;
+        }
+
+        @media (min-width: 640px) {
+            .main {
+                padding: 24px 16px;
+            }
+        }
+
+        /* Order Card */
+        .order-card {
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            border: 1px solid #e2e8f0;
+            overflow: hidden;
+            margin-bottom: 20px;
+        }
+
+        .order-header {
+            background: linear-gradient(to right, #9f1239, #881337);
+            padding: 12px 20px;
+        }
+
+        .order-header h2 {
+            color: white;
+            font-weight: 700;
+            font-size: 15px;
+            letter-spacing: 0.5px;
+        }
+
+        .order-content {
+            padding: 20px;
+        }
+
+        .product-title {
+            font-weight: 700;
+            font-size: 18px;
+            color: #1e293b;
+            margin-bottom: 12px;
+            text-align: center;
+        }
+
+        @media (min-width: 640px) {
+            .product-title {
+                font-size: 20px;
+            }
+        }
+
+        .features-list {
+            list-style: none;
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 8px;
+            margin-bottom: 16px;
+        }
+
+        @media (min-width: 480px) {
+            .features-list {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+
+        .features-list li {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 13px;
+            color: #475569;
+        }
+
+        @media (min-width: 640px) {
+            .features-list li {
+                font-size: 14px;
+            }
+        }
+
+        .features-list svg {
+            color: #10b981;
+            flex-shrink: 0;
+            width: 16px;
+            height: 16px;
+        }
+
+        .price-row {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            padding-top: 12px;
+            border-top: 1px solid #f1f5f9;
+        }
+
+        .price-old {
+            color: #94a3b8;
+            text-decoration: line-through;
+            font-size: 18px;
+        }
+
+        .price-new {
+            font-size: 32px;
+            font-weight: 900;
+            color: #9f1239;
+        }
+
+        .price-badge {
+            background: #d1fae5;
+            color: #047857;
+            font-size: 11px;
+            font-weight: 700;
+            padding: 4px 8px;
+            border-radius: 9999px;
+        }
+
+        /* Certificate */
+        .certificate-section {
+            margin-bottom: 20px;
+        }
+
+        .certificate-label {
+            text-align: center;
+            margin-bottom: 12px;
+        }
+
+        .certificate-label span {
+            background: #fef3c7;
+            color: #92400e;
+            font-size: 11px;
+            font-weight: 600;
+            padding: 5px 10px;
+            border-radius: 9999px;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .certificate {
+            position: relative;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.15);
+            overflow: hidden;
+            border: 3px solid #fcd34d;
+            max-width: 380px;
+            margin: 0 auto;
+        }
+
+        .certificate-border {
+            position: absolute;
+            inset: 6px;
+            border: 4px solid #fef9c3;
+            pointer-events: none;
+        }
+
+        .certificate-content {
+            position: relative;
+            padding: 24px 20px;
+            text-align: center;
+            background: linear-gradient(to bottom, rgba(254, 249, 195, 0.3), white);
+        }
+
+        .certificate-logo {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, #fcd34d, #f59e0b);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 12px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .certificate-logo svg {
+            color: white;
+            width: 20px;
+            height: 20px;
+        }
+
+        .certificate h3 {
+            font-size: 9px;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            color: #92400e;
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+
+        .certificate h4 {
+            font-size: 14px;
+            font-weight: 700;
+            color: #1e293b;
+            margin-bottom: 12px;
+        }
+
+        @media (min-width: 640px) {
+            .certificate h4 {
+                font-size: 16px;
+            }
+        }
+
+        .certificate-divider {
+            width: 60px;
+            height: 1px;
+            background: linear-gradient(to right, transparent, #fcd34d, transparent);
+            margin: 0 auto 12px;
+        }
+
+        .certificate p {
+            font-size: 11px;
+            color: #64748b;
+            margin-bottom: 2px;
+        }
+
+        .certificate-name {
+            font-family: 'Georgia', serif;
+            font-size: 20px !important;
+            font-weight: 700 !important;
+            color: #9f1239 !important;
+            font-style: italic;
+            margin-bottom: 8px !important;
+        }
+
+        @media (min-width: 640px) {
+            .certificate-name {
+                font-size: 24px !important;
+            }
+        }
+
+        .certificate-course {
+            font-size: 11px;
+            color: #475569;
+            margin-bottom: 12px;
+        }
+
+        .certificate-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            background: linear-gradient(135deg, #fef3c7, #fde68a);
+            padding: 4px 10px;
+            border-radius: 9999px;
+            font-size: 10px;
+            font-weight: 600;
+            color: #92400e;
+        }
+
+        .certificate-badge svg {
+            width: 12px;
+            height: 12px;
+        }
+
+        /* Social Proof */
+        .social-proof {
+            background: #f8fafc;
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 16px;
+        }
+
+        .avatars-row {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+        }
+
+        @media (min-width: 480px) {
+            .avatars-row {
+                flex-direction: row;
+                justify-content: center;
+            }
+        }
+
+        .avatars {
+            display: flex;
+        }
+
+        .avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid white;
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+            margin-left: -8px;
+        }
+
+        .avatar:first-child {
+            margin-left: 0;
+        }
+
+        @media (min-width: 640px) {
+            .avatar {
+                width: 36px;
+                height: 36px;
+            }
+        }
+
+        .social-text {
+            font-size: 13px;
+            color: #475569;
+        }
+
+        .social-text strong {
+            color: #1e293b;
+        }
+
+        /* Guarantee */
+        .guarantee-card {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+            border: 1px solid #e2e8f0;
+            padding: 16px;
+        }
+
+        .guarantee-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .guarantee-icon {
+            width: 40px;
+            height: 40px;
+            background: #d1fae5;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .guarantee-icon svg {
+            color: #10b981;
+            width: 20px;
+            height: 20px;
+        }
+
+        .guarantee-text h4 {
+            font-weight: 700;
+            color: #1e293b;
+            font-size: 14px;
+        }
+
+        .guarantee-text p {
+            font-size: 12px;
+            color: #64748b;
+        }
+
+        /* Enrollment Toast */
+        .enrollment-toast {
+            position: fixed;
+            bottom: 80px;
+            left: 12px;
+            z-index: 40;
+            animation: slideUp 0.4s ease-out;
+            display: none;
+        }
+
+        @media (min-width: 1024px) {
+            .enrollment-toast {
+                bottom: 16px;
+            }
+        }
+
+        .enrollment-toast.visible {
+            display: block;
+        }
+
+        @keyframes slideUp {
+            from {
+                transform: translateY(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        .toast-content {
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+            border: 1px solid #e2e8f0;
+            padding: 10px 12px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            max-width: 260px;
+        }
+
+        @media (min-width: 640px) {
+            .toast-content {
+                max-width: 320px;
+                padding: 12px 14px;
+            }
+        }
+
+        .toast-avatar {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            object-fit: cover;
+            flex-shrink: 0;
+            border: 2px solid #10b981;
+        }
+
+        .toast-info p:first-child {
+            font-size: 13px;
+            font-weight: 600;
+            color: #1e293b;
+        }
+
+        .toast-info p:last-child {
+            font-size: 11px;
+            color: #64748b;
+        }
+
+        .toast-check {
+            color: #10b981;
+            flex-shrink: 0;
+            width: 18px;
+            height: 18px;
+        }
+    </style>
+</head>
+<body>
+    <!-- Countdown Banner -->
+    <div class="countdown-banner">
+        <div class="countdown-inner">
+            <div class="live-viewers">
+                <span class="pulse-dot"></span>
+                <span class="viewers-text" id="viewerCount">17 viewing now</span>
+            </div>
+            <span class="separator">|</span>
+            <span class="offer-text">
+                <svg class="zap-icon" width="14" height="14" fill="currentColor" viewBox="0 0 24 24"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+                <span style="font-weight: 500;">Limited Time: $97 → $7</span>
+            </span>
+            <span class="separator">|</span>
+            <span class="timer">
+                <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12,6 12,12 16,14"/></svg>
+                <span id="countdown">23:47:08</span>
+            </span>
+        </div>
+    </div>
+
+    <!-- Header -->
+    <div class="header">
+        <div class="header-inner">
+            <a href="#" class="logo">
+                <img src="logoimg/LOGO_ACCREDI.png" alt="AccrediPro">
+            </a>
+            <div class="secure-badge">
+                <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+                <span>Secure Checkout</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Trustpilot -->
+    <div class="trustpilot-bar">
+        <div class="trustpilot-widget" data-locale="en-US" data-template-id="5419b6ffb0d04a076446a9af" data-businessunit-id="68c1ac85e89f387ad19f7817" data-style-height="20px" data-style-width="100%" data-token="e33169fc-3158-4c67-94f8-c774e5035e30">
+            <a href="https://www.trustpilot.com/review/accredipro.academy" target="_blank" rel="noopener">Trustpilot</a>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <main class="main">
+        <!-- Order Card -->
+        <div class="order-card">
+            <div class="order-header">
+                <h2>YOUR ORDER</h2>
+            </div>
+            <div class="order-content">
+                <h3 class="product-title">Functional Medicine Mini Diploma</h3>
+                <ul class="features-list">
+                    <li>
+                        <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+                        <span>FM Foundations Training (90 min)</span>
+                    </li>
+                    <li>
+                        <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+                        <span>1:1 Experience with Sarah</span>
+                    </li>
+                    <li>
+                        <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+                        <span>Mini Diploma Certificate</span>
+                    </li>
+                    <li>
+                        <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+                        <span>Personal Coach Support</span>
+                    </li>
+                    <li>
+                        <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+                        <span>Private Community Access</span>
+                    </li>
+                    <li>
+                        <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+                        <span>6 Graduate Bonus Resources</span>
+                    </li>
+                </ul>
+                <div class="price-row">
+                    <span class="price-old">$97</span>
+                    <span class="price-new">$7</span>
+                    <span class="price-badge">SAVE 93%</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Certificate Preview -->
+        <div class="certificate-section">
+            <div class="certificate-label">
+                <span>
+                    <svg width="12" height="12" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+                    Your Certificate Preview
+                </span>
+            </div>
+            <div class="certificate">
+                <div class="certificate-border"></div>
+                <div class="certificate-content">
+                    <div class="certificate-logo">
+                        <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/></svg>
+                    </div>
+                    <h3>CERTIFICATE OF COMPLETION</h3>
+                    <h4>Functional Medicine Mini Diploma</h4>
+                    <div class="certificate-divider"></div>
+                    <p>This certifies that</p>
+                    <p class="certificate-name">Your Name Here</p>
+                    <p class="certificate-course">has successfully completed the<br/>Functional Medicine Foundations Program</p>
+                    <span class="certificate-badge">
+                        <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+                        AccrediPro Certified
+                    </span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Social Proof -->
+        <div class="social-proof">
+            <div class="avatars-row">
+                <div class="avatars">
+                    <img class="avatar" src="https://accredipro.academy/wp-content/uploads/2025/12/AI_Headshot_Generator-13.jpg" alt="Student">
+                    <img class="avatar" src="https://accredipro.academy/wp-content/uploads/2025/12/LeezaRhttilthead.jpg" alt="Student">
+                    <img class="avatar" src="https://accredipro.academy/wp-content/uploads/2025/12/Head-shot-dark-background-1.jpg" alt="Student">
+                    <img class="avatar" src="https://accredipro.academy/wp-content/uploads/2025/12/Profile-Pic.jpg" alt="Student">
+                    <img class="avatar" src="https://accredipro.academy/wp-content/uploads/2025/12/MICHELLEM047.jpg" alt="Student">
+                </div>
+                <span class="social-text"><strong>843+</strong> nurses & healthcare workers enrolled</span>
+            </div>
+        </div>
+
+        <!-- Guarantee -->
+        <div class="guarantee-card">
+            <div class="guarantee-header">
+                <div class="guarantee-icon">
+                    <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                </div>
+                <div class="guarantee-text">
+                    <h4>30-Day Money-Back Guarantee</h4>
+                    <p>100% risk-free purchase</p>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Enrollment Toast -->
+    <div class="enrollment-toast" id="enrollmentToast">
+        <div class="toast-content">
+            <img class="toast-avatar" id="toastAvatar" src="https://accredipro.academy/wp-content/uploads/2025/12/AI_Headshot_Generator-13.jpg" alt="Student">
+            <div class="toast-info">
+                <p id="toastName">Sarah K. from Houston, TX</p>
+                <p id="toastTime">Just enrolled • 2 min ago</p>
+            </div>
+            <svg class="toast-check" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+        </div>
+    </div>
+
+    <!-- Trustpilot Script -->
+    <script type="text/javascript" src="//widget.trustpilot.com/bootstrap/v5/tp.widget.bootstrap.min.js" async></script>
+
+    <script>
+        // Countdown Timer
+        let hours = 23, minutes = 47, seconds = 8;
+
+        function updateCountdown() {
+            if (seconds > 0) {
+                seconds--;
+            } else if (minutes > 0) {
+                minutes--;
+                seconds = 59;
+            } else if (hours > 0) {
+                hours--;
+                minutes = 59;
+                seconds = 59;
+            }
+            document.getElementById('countdown').textContent =
+                String(hours).padStart(2, '0') + ':' +
+                String(minutes).padStart(2, '0') + ':' +
+                String(seconds).padStart(2, '0');
+        }
+        setInterval(updateCountdown, 1000);
+
+        // Live Viewers
+        function updateViewers() {
+            const viewers = Math.floor(Math.random() * 13) + 12;
+            document.getElementById('viewerCount').textContent = viewers + ' viewing now';
+        }
+        setInterval(updateViewers, 10000);
+
+        // Enrollment Toast with real avatars and detailed locations
+        const enrollments = [
+            {
+                name: 'Sarah K.',
+                city: 'Houston',
+                state: 'TX',
+                avatar: 'https://accredipro.academy/wp-content/uploads/2025/12/AI_Headshot_Generator-13.jpg'
+            },
+            {
+                name: 'Michelle R.',
+                city: 'San Diego',
+                state: 'CA',
+                avatar: 'https://accredipro.academy/wp-content/uploads/2025/12/LeezaRhttilthead.jpg'
+            },
+            {
+                name: 'Jennifer L.',
+                city: 'Miami',
+                state: 'FL',
+                avatar: 'https://accredipro.academy/wp-content/uploads/2025/12/Head-shot-dark-background-1.jpg'
+            },
+            {
+                name: 'Amanda P.',
+                city: 'Brooklyn',
+                state: 'NY',
+                avatar: 'https://accredipro.academy/wp-content/uploads/2025/12/Profile-Pic.jpg'
+            },
+            {
+                name: 'Lisa M.',
+                city: 'Columbus',
+                state: 'OH',
+                avatar: 'https://accredipro.academy/wp-content/uploads/2025/12/MICHELLEM047.jpg'
+            },
+            {
+                name: 'Karen T.',
+                city: 'Phoenix',
+                state: 'AZ',
+                avatar: 'https://accredipro.academy/wp-content/uploads/2025/12/AnneProfile2.jpg'
+            },
+            {
+                name: 'Maria G.',
+                city: 'Austin',
+                state: 'TX',
+                avatar: 'https://accredipro.academy/wp-content/uploads/2025/12/MARIA-GARCIA-PIC-IMG_5435-1.jpg'
+            },
+            {
+                name: 'Patricia W.',
+                city: 'Denver',
+                state: 'CO',
+                avatar: 'https://accredipro.academy/wp-content/uploads/2025/12/IMG_3542-Profile-Picture-Updated.jpg'
+            },
+            {
+                name: 'Linda S.',
+                city: 'Seattle',
+                state: 'WA',
+                avatar: 'https://accredipro.academy/wp-content/uploads/2025/12/dgp03315.jpg'
+            },
+        ];
+
+        // Generate random time ago
+        function getRandomTime() {
+            const times = ['just now', '1 min ago', '2 min ago', '3 min ago', '5 min ago', '8 min ago', '12 min ago'];
+            return times[Math.floor(Math.random() * times.length)];
+        }
+
+        // Generate timestamp
+        function getTimestamp() {
+            const now = new Date();
+            let hours = now.getHours();
+            const minutes = now.getMinutes();
+            const ampm = hours >= 12 ? 'PM' : 'AM';
+            hours = hours % 12;
+            hours = hours ? hours : 12;
+            return hours + ':' + String(minutes).padStart(2, '0') + ' ' + ampm;
+        }
+
+        let currentEnrollment = 0;
+        const toast = document.getElementById('enrollmentToast');
+
+        function showToast() {
+            // Randomize which enrollment to show
+            currentEnrollment = Math.floor(Math.random() * enrollments.length);
+            const enrollment = enrollments[currentEnrollment];
+
+            document.getElementById('toastAvatar').src = enrollment.avatar;
+            document.getElementById('toastName').textContent = enrollment.name + ' from ' + enrollment.city + ', ' + enrollment.state;
+            document.getElementById('toastTime').textContent = 'Enrolled ' + getRandomTime() + ' • ' + getTimestamp();
+
+            toast.classList.add('visible');
+            setTimeout(() => toast.classList.remove('visible'), 4500);
+        }
+
+        // Show first toast after 6-10 seconds
+        setTimeout(showToast, Math.random() * 4000 + 6000);
+
+        // Show toast every 20-35 seconds randomly
+        setInterval(showToast, Math.random() * 15000 + 20000);
+    </script>
+</body>
+</html>
