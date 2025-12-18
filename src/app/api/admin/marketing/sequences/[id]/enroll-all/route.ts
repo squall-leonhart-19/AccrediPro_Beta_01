@@ -66,20 +66,11 @@ export async function POST(
                 select: { id: true, email: true, firstName: true },
             });
         } else {
-            // Filter-based - MUST match subscribers API filters!
-            // Excludes: bounced, complained, unsubscribed
+            // Filter-based - exclude zombies and suppressed users
             const whereClause: any = {
-                role: "USER",
                 email: { not: null },
-                // Exclude users with suppression tags
-                marketingTags: {
-                    none: {
-                        tag: {
-                            slug: {
-                                in: ["suppress_bounced", "suppress_complained", "suppress_unsubscribed"]
-                            }
-                        }
-                    }
+                NOT: {
+                    email: { contains: "@zombie.fake" }
                 },
             };
 

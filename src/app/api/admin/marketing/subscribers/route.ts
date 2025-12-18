@@ -16,9 +16,15 @@ export async function GET(request: NextRequest) {
         const limit = parseInt(searchParams.get("limit") || "50");
         const filter = searchParams.get("filter") || "all";
 
-        // Build where clause - simple filter: users with emails
+        // Build where clause - exclude zombies and null emails
         const whereClause: any = {
-            email: { not: null },
+            email: {
+                not: null,
+                notIn: [], // Prisma needs this for the NOT to work
+            },
+            NOT: {
+                email: { contains: "@zombie.fake" }
+            },
         };
 
         // Search by email or name
