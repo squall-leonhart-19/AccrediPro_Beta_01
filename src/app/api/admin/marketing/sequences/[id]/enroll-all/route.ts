@@ -203,6 +203,12 @@ export async function POST(
                                     },
                                 });
 
+                                // Update the SequenceEmail sentCount for analytics
+                                await prisma.sequenceEmail.update({
+                                    where: { id: firstEmail.id },
+                                    data: { sentCount: { increment: 1 } },
+                                });
+
                                 // Update enrollment
                                 await prisma.sequenceEnrollment.update({
                                     where: {
