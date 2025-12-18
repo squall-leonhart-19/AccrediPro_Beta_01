@@ -584,7 +584,7 @@ export default function MarketingPage() {
       const res = await fetch(`/api/admin/marketing/sequences/${selectedSequence.id}/enroll-all`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ userIds: selectedSubscribers, sendFirstEmail: false }),
+        body: JSON.stringify({ userIds: selectedSubscribers, sendFirstEmail: true }),
       });
       const data = await res.json();
 
@@ -612,7 +612,7 @@ export default function MarketingPage() {
       const res = await fetch(`/api/admin/marketing/sequences/${selectedSequence.id}/enroll-all`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ filter: "all", sendFirstEmail: false }),
+        body: JSON.stringify({ filter: "all", sendFirstEmail: true }),
       });
       const data = await res.json();
 
