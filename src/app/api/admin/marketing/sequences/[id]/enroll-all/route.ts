@@ -66,19 +66,30 @@ export async function POST(
                 select: { id: true, email: true, firstName: true },
             });
         } else {
-            // Filter-based
+            // Filter-based - MUST match subscribers API filters!
+            // Excludes: zombies (no emailVerified), bounced, complained, unsubscribed
             const whereClause: any = {
-                email: { not: null }, // Only users with emails
+                role: "USER",
+                email: { not: null },
+                emailVerified: { not: null }, // Exclude zombies
+                // Exclude users with suppression tags
+                marketingTags: {
+                    none: {
+                        tag: {
+                            slug: {
+                                in: ["suppress_bounced", "suppress_complained", "suppress_unsubscribed"]
+                            }
+                        }
+                    }
+                },
             };
 
             // Apply filter
             if (filter === "not-purchased") {
-                // Users who have not purchased (no courseEnrollments with isPaid = true)
                 whereClause.courseEnrollments = {
                     none: { isPaid: true },
                 };
             } else if (filter === "mini-diploma-completed") {
-                // Users who completed mini diploma (check progress)
                 whereClause.userProgress = {
                     some: {
                         course: { slug: { contains: "mini-diploma" } },
