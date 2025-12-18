@@ -16,8 +16,11 @@ export async function GET(request: NextRequest) {
         const limit = parseInt(searchParams.get("limit") || "50");
         const filter = searchParams.get("filter") || "all";
 
-        // Build where clause - use ANY to match all roles for now since types are strict
-        const whereClause: any = {};
+        // Build where clause - only include USER role with valid emails
+        const whereClause: any = {
+            role: "USER",
+            email: { not: null },
+        };
 
         // Search by email or name
         if (search) {
