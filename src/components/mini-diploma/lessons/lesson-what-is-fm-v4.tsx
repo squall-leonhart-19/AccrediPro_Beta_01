@@ -33,7 +33,6 @@ interface Message {
     content: string;
     choices?: string[];
     delay?: number;
-    hasAudio?: boolean;
     voiceDuration?: string; // For voice note display e.g. "0:47"
     systemStyle?: 'info' | 'quote' | 'comparison' | 'stats' | 'takeaway';
     showReaction?: boolean; // Show "❤️ Sarah loved this" after user choice
@@ -62,7 +61,6 @@ export function LessonWhatIsFMV4({
     const [hasEnteredName, setHasEnteredName] = useState(false);
     const [isWelcomeVoicePlaying, setIsWelcomeVoicePlaying] = useState(false);
 
-    const [completed, setCompleted] = useState(isCompleted);
     const [currentMessageIndex, setCurrentMessageIndex] = useState(0);
     const [displayedMessages, setDisplayedMessages] = useState<Message[]>([]);
     const [isTyping, setIsTyping] = useState(false); // Start false until name is entered
@@ -82,8 +80,8 @@ export function LessonWhatIsFMV4({
     // Use userName throughout the conversation (fallback to "friend" if somehow empty)
     const firstName = userName || "friend";
 
-    // Paywall triggers after message 52 (after success stories + income opportunity)
-    const PAYWALL_AFTER_MESSAGE = 52;
+    // Paywall triggers after the last message (id 61) completes
+    const PAYWALL_AFTER_MESSAGE = 61;
 
     // Parse voice duration string "1:24" to seconds
     const parseVoiceDuration = (duration: string): number => {
@@ -94,11 +92,11 @@ export function LessonWhatIsFMV4({
         return 30; // default
     };
 
-    // Calculate realistic typing delay based on content length (~35 chars/sec for 40+ audience)
+    // Calculate realistic typing delay based on content length (~20 chars/sec for comfortable reading)
     const calculateTypingDelay = (content: string): number => {
-        const baseDelay = Math.ceil(content.length / 35) * 1000;
-        const randomFactor = Math.random() * 600 - 300; // +/- 300ms variance
-        return Math.max(1800, Math.min(baseDelay + randomFactor, 6000)); // min 1.8s, max 6s
+        const baseDelay = Math.ceil(content.length / 20) * 1000; // Slower: 20 chars/sec instead of 35
+        const randomFactor = Math.random() * 800 - 400; // +/- 400ms variance
+        return Math.max(2500, Math.min(baseDelay + randomFactor, 12000)); // min 2.5s, max 12s
     };
 
     // Calculate voice note indicator delay based on duration
@@ -418,7 +416,6 @@ export function LessonWhatIsFMV4({
             type: 'coach',
             content: "Two hours. She SAW me. Not my lab numbers. ME.",
             delay: 3200,
-            hasAudio: true,
         },
         {
             id: 24,
@@ -459,8 +456,7 @@ export function LessonWhatIsFMV4({
             content: "**What is Functional Medicine?**\n\nFunctional Medicine is a patient-centered, science-based approach that asks **\"WHY\"** you're sick—not just **\"WHAT\"** disease you have.\n\nIt looks at root causes, not just symptoms.",
             systemStyle: 'info',
             delay: 3500,
-            hasAudio: true,
-        },
+                    },
         {
             id: 30,
             type: 'coach',
@@ -516,8 +512,7 @@ export function LessonWhatIsFMV4({
             type: 'coach',
             content: "But people are waking up. They're DONE being dismissed.",
             delay: 3200,
-            hasAudio: true,
-        },
+                    },
         {
             id: 38,
             type: 'system',
@@ -536,8 +531,7 @@ export function LessonWhatIsFMV4({
             type: 'coach',
             content: "It needs people like YOU. People who understand root causes. Who LISTEN. Who've maybe even lived it yourself.",
             delay: 3800,
-            hasAudio: true,
-        },
+                    },
 
         // PART 6: SUCCESS STORIES - Activating Mirror Neurons
         {
@@ -558,8 +552,7 @@ export function LessonWhatIsFMV4({
             type: 'coach',
             content: "Linda didn't need another nursing degree. She needed a different FRAMEWORK.",
             delay: 3200,
-            hasAudio: true,
-        },
+                    },
         {
             id: 44,
             type: 'system',
@@ -597,8 +590,7 @@ export function LessonWhatIsFMV4({
             type: 'coach',
             content: "Here's what I want you to understand about the OPPORTUNITY here...",
             delay: 3200,
-            hasAudio: true,
-        },
+                    },
         {
             id: 49,
             type: 'system',
@@ -617,8 +609,7 @@ export function LessonWhatIsFMV4({
             type: 'coach',
             content: "That's exactly what this Mini Diploma gives you—the foundation to start helping people (and earning) within days, not years.",
             delay: 3800,
-            hasAudio: true,
-        },
+                    },
         {
             id: 52,
             type: 'user-choice',
@@ -655,8 +646,7 @@ export function LessonWhatIsFMV4({
             content: "**Your Key Takeaway:**\n\nFunctional Medicine asks **\"WHY?\"** instead of **\"WHAT?\"**\n\nIt treats the PERSON, not just the diagnosis.\n\nAnd YOU can learn to do this—whether you want to coach others, heal yourself, or both.",
             systemStyle: 'takeaway',
             delay: 4000,
-            hasAudio: true,
-        },
+                    },
         {
             id: 57,
             type: 'coach',
@@ -666,15 +656,27 @@ export function LessonWhatIsFMV4({
         {
             id: 58,
             type: 'coach',
-            content: "Next up: The 7 Body Systems Model—where you'll learn how everything in the body connects.",
-            delay: 3200,
+            content: "Here's what's coming next...",
+            delay: 2500,
         },
         {
             id: 59,
+            type: 'system',
+            content: "📚 **Lesson 2:** The 7 Body Systems Model\nHow everything in the body connects\n\n📚 **Lesson 3-7:** Deep Dives\nGut health. Hormones. Inflammation.\nThe real frameworks you'll use.\n\n📚 **Lesson 8-9:** Your Practice\nHow to find clients, price yourself, and start earning.\n\nPlus your **Mini Diploma certificate** at the end.",
+            systemStyle: 'takeaway',
+            delay: 5000,
+        },
+        {
+            id: 60,
             type: 'coach',
-            content: "It's one of my favorite lessons. See you there!",
-            delay: 2800,
-            hasAudio: true,
+            content: "This is where you go from 'that's interesting' to 'I can actually do this.'",
+            delay: 3500,
+        },
+        {
+            id: 61,
+            type: 'coach',
+            content: `${firstName}, before we continue — can I be honest with you for a second?`,
+            delay: 3000,
         },
     ];
 
@@ -736,6 +738,15 @@ export function LessonWhatIsFMV4({
                         setTimeout(() => {
                             setCurrentMessageIndex(prev => prev + 1);
                         }, 600);
+                    } else if (currentMsg.id >= PAYWALL_AFTER_MESSAGE && !isPaid) {
+                        // Last message reached - show paywall with typing indicator first
+                        setTimeout(() => {
+                            setIsTyping(true); // Show "Sarah is typing..." first
+                            setTimeout(() => {
+                                setIsTyping(false);
+                                setShowPaywall(true);
+                            }, 2500); // Wait 2.5s before showing paywall
+                        }, 800);
                     }
                 }, typingDelay);
                 return () => clearTimeout(timer);
@@ -765,25 +776,13 @@ export function LessonWhatIsFMV4({
             }, 2500);
         }
 
-        // Check if we should show paywall after this choice
-        if (currentChoiceMsg.id === PAYWALL_AFTER_MESSAGE && !isPaid) {
-            setTimeout(() => {
-                setShowPaywall(true);
-            }, 800);
-        } else {
-            setTimeout(() => {
-                setCurrentMessageIndex(prev => prev + 1);
-            }, currentChoiceMsg.showReaction ? 1200 : 400);
-        }
-    };
-
-    const handleMarkComplete = () => {
-        setCompleted(true);
-        onComplete?.();
+        // Continue to next message after choice
+        setTimeout(() => {
+            setCurrentMessageIndex(prev => prev + 1);
+        }, currentChoiceMsg.showReaction ? 1200 : 400);
     };
 
     const progressPercent = Math.min((currentMessageIndex / (messages.length - 1)) * 100, 100);
-    const isLessonFinished = currentMessageIndex >= messages.length - 1 && displayedMessages.length >= messages.length - 4; // Account for choices
 
     const renderSystemCard = (msg: Message) => {
         const lines = msg.content.split('\n').filter(l => l.trim());
@@ -848,25 +847,6 @@ export function LessonWhatIsFMV4({
                                 );
                             }
                         })}
-                        {msg.hasAudio && (
-                            <button
-                                onClick={() => playAudio(msg.id, msg.content)}
-                                className={`mt-3 flex items-center gap-2 text-xs transition-colors ${
-                                    playingAudioId === msg.id
-                                        ? 'text-slate-700'
-                                        : 'text-slate-500 hover:text-slate-700'
-                                }`}
-                            >
-                                {isAudioLoading && playingAudioId === msg.id ? (
-                                    <Loader2 className="h-4 w-4 animate-spin" />
-                                ) : playingAudioId === msg.id ? (
-                                    <VolumeX className="h-4 w-4" />
-                                ) : (
-                                    <Volume2 className="h-4 w-4" />
-                                )}
-                                <span>{playingAudioId === msg.id ? 'Stop' : 'Listen to this'}</span>
-                            </button>
-                        )}
                     </div>
                 </div>
             </div>
@@ -886,12 +866,6 @@ export function LessonWhatIsFMV4({
                     className="w-9 h-9 rounded-full object-cover shrink-0 shadow-sm"
                 />
                 <div className="max-w-[85%]">
-                    <div className="bg-white rounded-2xl rounded-tl-md px-4 py-3 shadow-sm border border-slate-100 mb-2">
-                        <p className="text-slate-700 text-sm">{firstName}, I've loved our conversation.</p>
-                    </div>
-                    <div className="bg-white rounded-2xl rounded-tl-md px-4 py-3 shadow-sm border border-slate-100 mb-2">
-                        <p className="text-slate-700 text-sm">Here's where I ask you something.</p>
-                    </div>
                     {/* Voice message bubble */}
                     <div className="bg-gradient-to-r from-burgundy-50 to-rose-50 rounded-2xl rounded-tl-md px-4 py-3 shadow-sm border border-burgundy-100">
                         <p className="text-xs text-burgundy-600 font-medium mb-2 flex items-center gap-1">
@@ -903,7 +877,7 @@ export function LessonWhatIsFMV4({
                         </p>
                         <div className="flex items-center gap-3">
                             <button
-                                onClick={() => playAudio(9999, `${firstName}, I've really loved our conversation. And I hope you've felt something shift. What I've shown you so far is just the foundation. The REAL transformation happens in what comes next. The FM Mindset. The case studies that'll blow your mind. Whether this is actually YOUR path. Your exact next steps. It's $7. Less than a coffee. I'd love to keep talking. What do you say?`)}
+                                onClick={() => playAudio(9999, `${firstName}, you're still here. Most people leave after 30 seconds. But not you. That tells me everything. This is just the beginning of becoming a certified functional medicine coach—and finally doing work that matters.`)}
                                 className={`w-10 h-10 rounded-full flex items-center justify-center shrink-0 transition-all ${
                                     playingAudioId === 9999
                                         ? 'bg-burgundy-600 text-white'
@@ -924,7 +898,7 @@ export function LessonWhatIsFMV4({
                                         playingAudioId === 9999 ? 'animate-pulse w-full' : 'w-0'
                                     }`} />
                                 </div>
-                                <p className="text-xs text-burgundy-500 mt-1">0:58</p>
+                                <p className="text-xs text-burgundy-500 mt-1">0:20</p>
                             </div>
                         </div>
                     </div>
@@ -1142,12 +1116,19 @@ export function LessonWhatIsFMV4({
                     {/* Name Input Screen - Shows FIRST before any content */}
                     {!hasEnteredName && (
                         <div className="animate-fade-in">
-                            {/* Module Badge */}
-                            <div className="text-center mb-6">
-                                <Badge className="bg-gold-100 text-gold-700 border-0">
+                            {/* Welcome Header with Context */}
+                            <div className="text-center mb-8">
+                                <Badge className="bg-gold-100 text-gold-700 border-0 mb-3">
                                     <Coffee className="h-3 w-3 mr-1" />
-                                    Module 1 • Lesson 1
+                                    FREE Mini Diploma • 9 Lessons
                                 </Badge>
+                                <h1 className="text-2xl font-bold text-slate-800 mb-2">Discover Functional Medicine</h1>
+                                <p className="text-sm text-burgundy-600 font-medium mb-2">
+                                    The root-cause approach that's helping nurses leave burnout behind
+                                </p>
+                                <p className="text-xs text-slate-500 max-w-sm mx-auto">
+                                    Join 843+ healthcare professionals in this free interactive lesson with Sarah, your FM coach.
+                                </p>
                             </div>
 
                             {/* Sarah's name ask message */}
@@ -1303,10 +1284,10 @@ export function LessonWhatIsFMV4({
                                 </Badge>
                                 <h1 className="text-2xl font-bold text-slate-800 mb-1">What is Functional Medicine?</h1>
                                 <p className="text-sm text-burgundy-600 font-medium mb-1">
-                                    Learn 1:1 with Sarah — not a video, a real conversation.
+                                    Why health coaches are earning $50–$150/hr with this approach
                                 </p>
                                 <p className="text-xs text-slate-500">
-                                    The root-cause framework that finally makes sense.
+                                    Learn 1:1 with Sarah — a real conversation, not a video.
                                 </p>
                             </div>
 
@@ -1387,25 +1368,6 @@ export function LessonWhatIsFMV4({
                                         <div className="bg-white rounded-2xl rounded-tl-md px-4 py-3 shadow-sm border border-slate-100">
                                             <p className="text-slate-700 leading-relaxed">{msg.content}</p>
                                         </div>
-                                        {msg.hasAudio && (
-                                            <button
-                                                onClick={() => playAudio(msg.id, msg.content)}
-                                                className={`mt-1.5 ml-2 flex items-center gap-1.5 text-xs transition-colors ${
-                                                    playingAudioId === msg.id
-                                                        ? 'text-burgundy-600'
-                                                        : 'text-slate-400 hover:text-burgundy-600'
-                                                }`}
-                                            >
-                                                {isAudioLoading && playingAudioId === msg.id ? (
-                                                    <Loader2 className="h-3.5 w-3.5 animate-spin" />
-                                                ) : playingAudioId === msg.id ? (
-                                                    <VolumeX className="h-3.5 w-3.5" />
-                                                ) : (
-                                                    <Volume2 className="h-3.5 w-3.5" />
-                                                )}
-                                                <span>{playingAudioId === msg.id ? 'Stop' : 'Play audio'}</span>
-                                            </button>
-                                        )}
                                     </div>
                                 </div>
                             ) : msg.type === 'coach' && userResponses.includes(msg.content) ? (
@@ -1592,44 +1554,6 @@ export function LessonWhatIsFMV4({
                 </div>
             </div>
 
-            {/* Bottom Action Area */}
-            {isLessonFinished && (
-                <div className="sticky bottom-0 bg-white border-t border-slate-200 px-4 py-5 shadow-lg">
-                    <div className="max-w-2xl mx-auto">
-                        {/* Celebration */}
-                        <div className="text-center mb-4">
-                            <div className="inline-flex items-center gap-2 bg-emerald-100 text-emerald-700 px-4 py-2 rounded-full text-sm font-medium mb-2">
-                                <CheckCircle2 className="h-4 w-4" />
-                                Lesson 1 Complete!
-                            </div>
-                        </div>
-
-                        <div className="flex flex-col sm:flex-row items-center gap-3">
-                            {!completed ? (
-                                <Button
-                                    onClick={handleMarkComplete}
-                                    className="w-full sm:w-auto bg-emerald-600 hover:bg-emerald-700 text-white px-6 py-5 rounded-xl shadow-md"
-                                >
-                                    <CheckCircle2 className="h-5 w-5 mr-2" />
-                                    Mark Complete
-                                </Button>
-                            ) : (
-                                <div className="flex items-center gap-2 text-emerald-600 font-medium px-4">
-                                    <CheckCircle2 className="h-5 w-5" />
-                                    Completed!
-                                </div>
-                            )}
-                            <Button
-                                onClick={onNext}
-                                className="w-full sm:w-auto bg-burgundy-600 hover:bg-burgundy-700 text-white px-6 py-5 rounded-xl shadow-md"
-                            >
-                                Continue to Lesson 2
-                                <ArrowRight className="h-5 w-5 ml-2" />
-                            </Button>
-                        </div>
-                    </div>
-                </div>
-            )}
         </div>
     );
 }
