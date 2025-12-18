@@ -69,44 +69,44 @@ interface ParsedPayload {
 
 function parseClickFunnelsPayload(body: Record<string, unknown>): ParsedPayload | null {
   // Log the full payload structure for debugging
-  console.log("Parsing CF payload:", JSON.stringify(body, null, 2).substring(0, 1000));
+  console.log("Parsing CF payload:", JSON.stringify(body, null, 2).substring(0, 2000));
 
   // ClickFunnels 2.0 V2 webhooks format (order.completed, one-time-order.completed)
-  // The payload has: data.attributes.contact, data.attributes.line_items, etc.
+  // Structure: { data: { contact: { email_address, first_name, ... }, line_items: [...] }, event_type: "order.completed" }
   if (body.data && typeof body.data === 'object') {
     const data = body.data as Record<string, unknown>;
-    const attributes = data.attributes as Record<string, unknown> | undefined;
+    const contact = data.contact as Record<string, unknown> | undefined;
+    const lineItems = data.line_items as Array<Record<string, unknown>> | undefined;
+    const firstLineItem = lineItems?.[0];
+    const productsVariant = firstLineItem?.products_variant as Record<string, unknown> | undefined;
+    const originalProduct = firstLineItem?.original_product as Record<string, unknown> | undefined;
 
-    if (attributes) {
-      const contact = attributes.contact as Record<string, unknown> | undefined;
-      const lineItems = attributes.line_items as Array<Record<string, unknown>> | undefined;
-      const firstLineItem = lineItems?.[0];
-      const product = firstLineItem?.product as Record<string, unknown> | undefined;
+    // Get contact info - CF uses email_address, not email
+    const contactEmail = contact?.email_address || contact?.email || data.email_address;
+    const contactFirstName = contact?.first_name || data.first_name;
+    const contactLastName = contact?.last_name || data.last_name;
+    const contactPhone = contact?.phone_number || data.phone_number;
 
-      // Get contact info - might be nested differently
-      const contactEmail = contact?.email || attributes.email || attributes.contact_email;
-      const contactFirstName = contact?.first_name || contact?.firstName || attributes.first_name;
-      const contactLastName = contact?.last_name || contact?.lastName || attributes.last_name;
-      const contactPhone = contact?.phone || attributes.phone;
+    // Get product info from products_variant (has SKU) or original_product
+    const productSku = productsVariant?.sku;
+    const productId = productsVariant?.id || originalProduct?.id || firstLineItem?.id;
+    const productName = productsVariant?.name || originalProduct?.name;
 
-      // Get product info
-      const productSku = product?.sku || firstLineItem?.sku || attributes.sku;
-      const productId = product?.id || firstLineItem?.product_id || attributes.product_id;
-      const productName = product?.name || firstLineItem?.name || attributes.product_name;
+    console.log("Parsed contact:", { contactEmail, contactFirstName, contactLastName });
+    console.log("Parsed product:", { productSku, productId, productName });
 
-      if (contactEmail) {
-        return {
-          email: String(contactEmail),
-          firstName: String(contactFirstName || ""),
-          lastName: String(contactLastName || ""),
-          phone: contactPhone ? String(contactPhone) : undefined,
-          productId: String(productSku || productId || ""),
-          productName: productName ? String(productName) : undefined,
-          transactionId: String(data.id || attributes.id || ""),
-          amount: attributes.total_amount ? Number(attributes.total_amount) : undefined,
-          eventType: String(body.event_type || body.type || "purchase"),
-        };
-      }
+    if (contactEmail) {
+      return {
+        email: String(contactEmail),
+        firstName: String(contactFirstName || ""),
+        lastName: String(contactLastName || ""),
+        phone: contactPhone ? String(contactPhone) : undefined,
+        productId: String(productSku || productId || ""),
+        productName: productName ? String(productName) : undefined,
+        transactionId: String(data.id || data.public_id || ""),
+        amount: data.total_amount ? Number(data.total_amount) : undefined,
+        eventType: String(body.event_type || "purchase"),
+      };
     }
   }
 
