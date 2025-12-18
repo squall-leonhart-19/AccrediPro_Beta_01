@@ -1922,13 +1922,48 @@ export default function MarketingPage() {
       {/* Test Sequence Dialog */}
       <Dialog open={showTestSequence} onOpenChange={setShowTestSequence}>
         <DialogContent className="max-w-3xl max-h-[80vh]">
-          <DialogHeader><DialogTitle className="flex items-center gap-2"><TestTube className="h-5 w-5" />Test Sequence: {selectedSequence?.name}</DialogTitle><DialogDescription>Preview the full sequence flow and send a test email</DialogDescription></DialogHeader>
+          <DialogHeader><DialogTitle className="flex items-center gap-2"><TestTube className="h-5 w-5" />Test Sequence: {selectedSequence?.name}</DialogTitle><DialogDescription>Send test emails individually or test the full sequence</DialogDescription></DialogHeader>
           <div className="space-y-4">
             <div className="flex gap-2">
               <div className="flex-1"><Label>Test Email Address</Label><Input value={testEmail} onChange={(e) => setTestEmail(e.target.value)} placeholder="test@example.com" /></div>
               <div className="flex items-end gap-2">
                 <Button variant="outline" onClick={() => testSequence(false)} disabled={testingSequence}>{testingSequence ? <Loader2 className="h-4 w-4 animate-spin" /> : <Eye className="h-4 w-4 mr-1" />}Preview</Button>
-                <Button onClick={() => testSequence(true)} disabled={testingSequence || !testEmail}>{testingSequence ? <Loader2 className="h-4 w-4 animate-spin" /> : <Send className="h-4 w-4 mr-1" />}Send Test</Button>
+                <Button
+                  onClick={async () => {
+                    if (!testEmail || !selectedSequence) {
+                      toast.error("Enter test email");
+                      return;
+                    }
+                    setTestingSequence(true);
+                    const emails = sequencePreview?.emails || selectedSequence.emails || [];
+                    for (let i = 0; i < emails.length; i++) {
+                      try {
+                        const res = await fetch(`/api/admin/marketing/sequences/${selectedSequence.id}/test`, {
+                          method: "POST",
+                          headers: { "Content-Type": "application/json" },
+                          body: JSON.stringify({ testEmail, emailIndex: i }),
+                        });
+                        if (res.ok) {
+                          toast.success(`Email ${i + 1}/${emails.length} sent!`);
+                        } else {
+                          toast.error(`Email ${i + 1} failed`);
+                        }
+                        if (i < emails.length - 1) {
+                          await new Promise(r => setTimeout(r, 1000));
+                        }
+                      } catch (e) {
+                        toast.error(`Error on email ${i + 1}`);
+                      }
+                    }
+                    setTestingSequence(false);
+                    toast.success("Full sequence test complete!");
+                  }}
+                  disabled={testingSequence || !testEmail}
+                  className="bg-burgundy-600 hover:bg-burgundy-700"
+                >
+                  {testingSequence ? <Loader2 className="h-4 w-4 animate-spin mr-2" /> : <Send className="h-4 w-4 mr-1" />}
+                  Test All ({(sequencePreview?.emails || selectedSequence?.emails || []).length})
+                </Button>
               </div>
             </div>
             {sequencePreview && (
@@ -1943,7 +1978,36 @@ export default function MarketingPage() {
                         <div className="flex flex-col items-center"><div className="w-8 h-8 rounded-full bg-burgundy-600 text-white flex items-center justify-center text-sm font-medium">{index + 1}</div>{index < sequencePreview.emails.length - 1 && <div className="w-0.5 flex-1 bg-gray-300 mt-2" />}</div>
                         <div className="flex-1 pb-4">
                           <div className="bg-white rounded-lg border p-3">
-                            <div className="flex items-center justify-between mb-2"><p className="font-medium text-sm">{email.subject}</p><Badge variant="outline" className="text-xs"><Clock className="h-3 w-3 mr-1" />{email.totalDelayFormatted}</Badge></div>
+                            <div className="flex items-center justify-between mb-2">
+                              <p className="font-medium text-sm">{email.subject}</p>
+                              <div className="flex items-center gap-2">
+                                <Badge variant="outline" className="text-xs"><Clock className="h-3 w-3 mr-1" />{email.totalDelayFormatted}</Badge>
+                                <Button
+                                  variant="outline"
+                                  size="sm"
+                                  disabled={testingSequence || !testEmail}
+                                  onClick={async () => {
+                                    if (!testEmail || !selectedSequence) return;
+                                    try {
+                                      const res = await fetch(`/api/admin/marketing/sequences/${selectedSequence.id}/test`, {
+                                        method: "POST",
+                                        headers: { "Content-Type": "application/json" },
+                                        body: JSON.stringify({ testEmail, emailIndex: index }),
+                                      });
+                                      if (res.ok) {
+                                        toast.success(`Email ${index + 1} sent to ${testEmail}!`);
+                                      } else {
+                                        toast.error("Failed to send test");
+                                      }
+                                    } catch (e) {
+                                      toast.error("Error sending test");
+                                    }
+                                  }}
+                                >
+                                  <Send className="h-3 w-3 mr-1" />Send
+                                </Button>
+                              </div>
+                            </div>
                             <p className="text-xs text-gray-500 line-clamp-2">{(email.contentPreview || "").replace(/<[^>]*>/g, "")}...</p>
                             <div className="flex items-center gap-3 mt-2 text-xs text-gray-400"><span>{email.sentCount || 0} sent</span><span>{email.openCount || 0} opened</span><span>{email.clickCount || 0} clicked</span></div>
                           </div>
