@@ -17,7 +17,7 @@ export async function POST(
 
     const { id: sequenceId } = await params;
     const body = await request.json();
-    const { testEmail, sendFirstEmail } = body;
+    const { testEmail, sendFirstEmail, emailIndex } = body;
 
     if (!testEmail) {
       return NextResponse.json({ error: "Test email is required" }, { status: 400 });
@@ -56,7 +56,6 @@ export async function POST(
       exitOnClick: sequence.exitOnClick,
       totalEmails: sequence.emails.length,
       emails: sequence.emails.map((email) => {
-        // delayDays represents "days from sequence start" (absolute), not cumulative between emails
         const totalDelayMinutes = (email.delayDays * 24 * 60) + (email.delayHours * 60);
 
         return {
@@ -75,16 +74,23 @@ export async function POST(
       }),
     };
 
-    // If sendFirstEmail is true, send the first email to the test address
+    // Determine which email to send
+    let emailToSend = null;
+    if (typeof emailIndex === "number" && emailIndex >= 0 && emailIndex < sequence.emails.length) {
+      // Send specific email by index
+      emailToSend = sequence.emails[emailIndex];
+    } else if (sendFirstEmail && sequence.emails.length > 0) {
+      // Legacy: send first email
+      emailToSend = sequence.emails[0];
+    }
+
     let emailSent = false;
     let emailError = null;
 
-    if (sendFirstEmail && sequence.emails.length > 0) {
-      const firstEmail = sequence.emails[0];
-
+    if (emailToSend) {
       // Replace placeholders with test data
       const htmlContent = replaceEmailPlaceholders(
-        firstEmail.customContent || "<p>No content</p>",
+        emailToSend.customContent || "<p>No content</p>",
         {
           firstName: "Test",
           lastName: "User",
@@ -93,20 +99,24 @@ export async function POST(
       );
 
       try {
-        // Replace {{firstName}} in subject line too
-        const subject = (firstEmail.customSubject || "Test Email")
+        const subject = (emailToSend.customSubject || "Test Email")
           .replace(/\{\{firstName\}\}/g, "Test");
 
-        // Send as marketing type for proper FROM name and delivery
         const result = await sendEmail({
           to: testEmail,
-          subject: subject, // No [TEST] prefix - looks like spam
+          subject: subject,
           html: brandedEmailWrapper(htmlContent),
-          type: 'marketing', // MUST be marketing for "Sarah <email>" FROM
+          type: 'marketing',
         });
 
-        emailSent = result.success;
-        if (!result.success) {
+        if (result.success) {
+          emailSent = true;
+          // Increment sentCount for this email
+          await prisma.sequenceEmail.update({
+            where: { id: emailToSend.id },
+            data: { sentCount: { increment: 1 } },
+          });
+        } else {
           emailError = "Failed to send email";
         }
       } catch (error) {
@@ -118,7 +128,8 @@ export async function POST(
       sequence: sequencePreview,
       testEmailSent: emailSent,
       testEmailError: emailError,
-      testEmail: sendFirstEmail ? testEmail : null,
+      testEmail: emailToSend ? testEmail : null,
+      emailIndex: typeof emailIndex === "number" ? emailIndex : 0,
     });
   } catch (error) {
     console.error("Error testing sequence:", error);
