@@ -207,6 +207,7 @@ export default function MarketingPage() {
   const [selectedSubscribers, setSelectedSubscribers] = useState<string[]>([]);
   const [enrollingAll, setEnrollingAll] = useState(false);
   const [subscribersTotal, setSubscribersTotal] = useState(0);
+  const [showEnrollAllConfirm, setShowEnrollAllConfirm] = useState(false);
 
   // View enrollments state
   const [showEnrollments, setShowEnrollments] = useState(false);
@@ -605,6 +606,7 @@ export default function MarketingPage() {
 
   async function enrollAllSubscribers() {
     if (!selectedSequence) return;
+    setShowEnrollAllConfirm(false);
     setEnrollingAll(true);
     try {
       const res = await fetch(`/api/admin/marketing/sequences/${selectedSequence.id}/enroll-all`, {
@@ -1997,11 +1999,37 @@ export default function MarketingPage() {
           </div>
           <DialogFooter className="flex-col sm:flex-row gap-2">
             <Button variant="outline" onClick={() => setShowEnrollUser(false)}>Cancel</Button>
-            <Button variant="outline" onClick={enrollAllSubscribers} disabled={enrollingAll} className="bg-burgundy-50 border-burgundy-200 text-burgundy-700 hover:bg-burgundy-100">
+            <Button variant="outline" onClick={() => setShowEnrollAllConfirm(true)} disabled={enrollingAll || subscribersTotal === 0} className="bg-burgundy-50 border-burgundy-200 text-burgundy-700 hover:bg-burgundy-100">
               {enrollingAll ? <Loader2 className="h-4 w-4 animate-spin mr-2" /> : <Users className="h-4 w-4 mr-2" />}
               Enroll All ({subscribersTotal})
             </Button>
           </DialogFooter>
+
+          {/* Enroll All Confirmation Dialog */}
+          {showEnrollAllConfirm && (
+            <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-[100]">
+              <div className="bg-white rounded-xl p-6 max-w-md mx-4 shadow-2xl">
+                <h3 className="text-lg font-bold text-slate-900 mb-2">⚠️ Confirm Bulk Enrollment</h3>
+                <p className="text-slate-600 mb-4">
+                  You are about to enroll <span className="font-bold text-burgundy-600">{subscribersTotal} subscribers</span> into the sequence:
+                </p>
+                <p className="font-semibold text-slate-900 mb-4 p-3 bg-slate-50 rounded-lg">
+                  {selectedSequence?.name}
+                </p>
+                <p className="text-sm text-amber-600 mb-4">
+                  This cannot be easily undone. Are you sure you want to proceed?
+                </p>
+                <div className="flex gap-3 justify-end">
+                  <Button variant="outline" onClick={() => setShowEnrollAllConfirm(false)}>
+                    Cancel
+                  </Button>
+                  <Button onClick={enrollAllSubscribers} className="bg-burgundy-600 hover:bg-burgundy-700 text-white">
+                    Yes, Enroll All
+                  </Button>
+                </div>
+              </div>
+            </div>
+          )}
         </DialogContent>
       </Dialog>
 
