@@ -16,21 +16,9 @@ export async function GET(request: NextRequest) {
         const limit = parseInt(searchParams.get("limit") || "50");
         const filter = searchParams.get("filter") || "all";
 
-        // Build where clause - only include active, valid users
-        // Excludes: bounced, complained, unsubscribed
+        // Build where clause - simple filter: users with emails
         const whereClause: any = {
-            role: "USER",
             email: { not: null },
-            // Exclude users with suppression tags (bounced, complained, unsubscribed)
-            marketingTags: {
-                none: {
-                    tag: {
-                        slug: {
-                            in: ["suppress_bounced", "suppress_complained", "suppress_unsubscribed"]
-                        }
-                    }
-                }
-            },
         };
 
         // Search by email or name
@@ -62,6 +50,7 @@ export async function GET(request: NextRequest) {
                 lastName: true,
                 avatar: true,
                 createdAt: true,
+                role: true,
                 marketingTags: {
                     select: {
                         tag: {
@@ -79,21 +68,23 @@ export async function GET(request: NextRequest) {
             take: limit,
         });
 
-        // Get total count for the current filter
+        // Get total count
         const totalCount = await prisma.user.count({
             where: whereClause,
         });
 
-        // Format the response
-        const subscribers = users.map(user => ({
-            id: user.id,
-            email: user.email,
-            name: user.firstName ? `${user.firstName} ${user.lastName || ""}`.trim() : user.email,
-            firstName: user.firstName,
-            avatar: user.avatar,
-            createdAt: user.createdAt,
-            tags: user.marketingTags.map(t => t.tag),
-        }));
+        // Format the response - filter out admins in code
+        const subscribers = users
+            .filter(user => user.role !== "ADMIN")
+            .map(user => ({
+                id: user.id,
+                email: user.email,
+                name: user.firstName ? `${user.firstName} ${user.lastName || ""}`.trim() : user.email,
+                firstName: user.firstName,
+                avatar: user.avatar,
+                createdAt: user.createdAt,
+                tags: user.marketingTags.map(t => t.tag),
+            }));
 
         return NextResponse.json({
             subscribers,
