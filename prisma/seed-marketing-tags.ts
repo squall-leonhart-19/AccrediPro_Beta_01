@@ -239,6 +239,64 @@ const defaultTags: TagData[] = [
     isSystem: true,
   },
 
+  // ==================== SPECIFIC COURSE/NICHE TAGS ====================
+  {
+    name: "Source: FM General",
+    slug: "source_functional_medicine_general",
+    category: "SOURCE",
+    color: "#722F37", // Burgundy
+    description: "Lead source: Functional Medicine General opt-in",
+    isSystem: true,
+  },
+  {
+    name: "Source: Mini Diploma Freebie",
+    slug: "source_mini_diploma_freebie",
+    category: "SOURCE",
+    color: "#6366F1", // Indigo
+    description: "Lead source: Mini Diploma freebie download",
+    isSystem: true,
+  },
+  {
+    name: "Lead: FM General",
+    slug: "lead_functional_medicine_general",
+    category: "STAGE",
+    color: "#3B82F6", // Blue
+    description: "Lead interested in Functional Medicine",
+    isSystem: true,
+  },
+  {
+    name: "Mini Diploma: FM General",
+    slug: "mini_diploma_category_functional_medicine_general",
+    category: "STAGE",
+    color: "#8B5CF6", // Purple
+    description: "Mini Diploma category: Functional Medicine General",
+    isSystem: true,
+  },
+  {
+    name: "Enrolled FM Mini Diploma",
+    slug: "enrolled_functional_medicine_mini_diploma",
+    category: "STAGE",
+    color: "#10B981", // Green
+    description: "Enrolled in Functional Medicine Mini Diploma",
+    isSystem: true,
+  },
+  {
+    name: "Mini Diploma Started",
+    slug: "mini_diploma_started",
+    category: "STAGE",
+    color: "#F59E0B", // Amber
+    description: "User has started their Mini Diploma",
+    isSystem: true,
+  },
+  {
+    name: "Nurture 30-Day",
+    slug: "nurture_30_day",
+    category: "STAGE",
+    color: "#EC4899", // Pink
+    description: "In 30-day nurture sequence",
+    isSystem: true,
+  },
+
   // ==================== SUPPRESSION TAGS ====================
   {
     name: "Purchased - Suppress",
