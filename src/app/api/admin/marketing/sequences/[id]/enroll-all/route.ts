@@ -67,11 +67,10 @@ export async function POST(
             });
         } else {
             // Filter-based - MUST match subscribers API filters!
-            // Excludes: zombies (no emailVerified), bounced, complained, unsubscribed
+            // Excludes: bounced, complained, unsubscribed
             const whereClause: any = {
                 role: "USER",
                 email: { not: null },
-                emailVerified: { not: null }, // Exclude zombies
                 // Exclude users with suppression tags
                 marketingTags: {
                     none: {

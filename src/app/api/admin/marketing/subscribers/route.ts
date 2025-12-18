@@ -17,12 +17,10 @@ export async function GET(request: NextRequest) {
         const filter = searchParams.get("filter") || "all";
 
         // Build where clause - only include active, valid users
-        // Excludes: bounced, complained, unsubscribed, and zombie profiles
+        // Excludes: bounced, complained, unsubscribed
         const whereClause: any = {
             role: "USER",
             email: { not: null },
-            // Must have verified email (not zombie)
-            emailVerified: { not: null },
             // Exclude users with suppression tags (bounced, complained, unsubscribed)
             marketingTags: {
                 none: {
