@@ -201,6 +201,12 @@ export default function MarketingPage() {
   // Enroll user state
   const [enrollEmail, setEnrollEmail] = useState("");
   const [enrolling, setEnrolling] = useState(false);
+  const [subscribers, setSubscribers] = useState<any[]>([]);
+  const [subscribersLoading, setSubscribersLoading] = useState(false);
+  const [subscriberSearch, setSubscriberSearch] = useState("");
+  const [selectedSubscribers, setSelectedSubscribers] = useState<string[]>([]);
+  const [enrollingAll, setEnrollingAll] = useState(false);
+  const [subscribersTotal, setSubscribersTotal] = useState(0);
 
   // View enrollments state
   const [showEnrollments, setShowEnrollments] = useState(false);
@@ -520,6 +526,22 @@ export default function MarketingPage() {
     }
   }
 
+  async function fetchSubscribers(search = "") {
+    setSubscribersLoading(true);
+    try {
+      const res = await fetch(`/api/admin/marketing/subscribers?search=${encodeURIComponent(search)}&limit=50`);
+      const data = await res.json();
+      if (res.ok) {
+        setSubscribers(data.subscribers || []);
+        setSubscribersTotal(data.total || 0);
+      }
+    } catch (error) {
+      console.error("Error fetching subscribers:", error);
+    } finally {
+      setSubscribersLoading(false);
+    }
+  }
+
   async function enrollUser() {
     if (!selectedSequence || !enrollEmail) return;
     setEnrolling(true);
@@ -542,6 +564,7 @@ export default function MarketingPage() {
         fetchSequences();
         setShowEnrollUser(false);
         setEnrollEmail("");
+        setSelectedSubscribers([]);
       } else {
         toast.error(data.error || "Failed to enroll user");
       }
@@ -550,6 +573,59 @@ export default function MarketingPage() {
       toast.error("Failed to enroll user");
     } finally {
       setEnrolling(false);
+    }
+  }
+
+  async function enrollSelected() {
+    if (!selectedSequence || selectedSubscribers.length === 0) return;
+    setEnrolling(true);
+    try {
+      const res = await fetch(`/api/admin/marketing/sequences/${selectedSequence.id}/enroll-all`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ userIds: selectedSubscribers, sendFirstEmail: false }),
+      });
+      const data = await res.json();
+
+      if (res.ok) {
+        toast.success(data.message || `Enrolled ${data.enrolled} users`);
+        fetchSequences();
+        setShowEnrollUser(false);
+        setSelectedSubscribers([]);
+      } else {
+        toast.error(data.error || "Failed to enroll users");
+      }
+    } catch (error) {
+      console.error("Error enrolling users:", error);
+      toast.error("Failed to enroll users");
+    } finally {
+      setEnrolling(false);
+    }
+  }
+
+  async function enrollAllSubscribers() {
+    if (!selectedSequence) return;
+    setEnrollingAll(true);
+    try {
+      const res = await fetch(`/api/admin/marketing/sequences/${selectedSequence.id}/enroll-all`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ filter: "all", sendFirstEmail: false }),
+      });
+      const data = await res.json();
+
+      if (res.ok) {
+        toast.success(data.message || `Enrolled ${data.enrolled} users`);
+        fetchSequences();
+        setShowEnrollUser(false);
+      } else {
+        toast.error(data.error || "Failed to enroll users");
+      }
+    } catch (error) {
+      console.error("Error enrolling all:", error);
+      toast.error("Failed to enroll users");
+    } finally {
+      setEnrollingAll(false);
     }
   }
 
@@ -1847,14 +1923,85 @@ export default function MarketingPage() {
       </Dialog>
 
       {/* Enroll User Dialog */}
-      <Dialog open={showEnrollUser} onOpenChange={setShowEnrollUser}>
-        <DialogContent>
-          <DialogHeader><DialogTitle className="flex items-center gap-2"><UserPlus className="h-5 w-5" />Enroll User in Sequence</DialogTitle><DialogDescription>{selectedSequence && `Enrolling in: ${selectedSequence.name}`}</DialogDescription></DialogHeader>
+      <Dialog open={showEnrollUser} onOpenChange={(open) => { setShowEnrollUser(open); if (open) fetchSubscribers(); }}>
+        <DialogContent className="max-w-2xl">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2"><UserPlus className="h-5 w-5" />Enroll Users in Sequence</DialogTitle>
+            <DialogDescription>{selectedSequence && `Enrolling in: ${selectedSequence.name}`}</DialogDescription>
+          </DialogHeader>
           <div className="space-y-4">
-            <div><Label>User Email</Label><Input value={enrollEmail} onChange={(e) => setEnrollEmail(e.target.value)} placeholder="user@example.com" type="email" /><p className="text-xs text-gray-500 mt-1">The user must have an account in the system</p></div>
-            {selectedSequence && !selectedSequence.isActive && (<div className="flex items-center gap-2 p-3 bg-amber-50 border border-amber-200 rounded-lg text-amber-700 text-sm"><AlertCircle className="h-4 w-4" /><span>This sequence is paused. Activate it to start sending emails.</span></div>)}
+            {/* Quick enroll by email */}
+            <div className="p-3 bg-gray-50 rounded-lg border">
+              <Label className="text-sm font-medium">Quick Enroll by Email</Label>
+              <div className="flex gap-2 mt-2">
+                <Input value={enrollEmail} onChange={(e) => setEnrollEmail(e.target.value)} placeholder="user@example.com" type="email" className="flex-1" />
+                <Button onClick={enrollUser} disabled={enrolling || !enrollEmail} size="sm">
+                  {enrolling ? <Loader2 className="h-4 w-4 animate-spin" /> : <UserPlus className="h-4 w-4" />}
+                </Button>
+              </div>
+            </div>
+
+            {/* Subscriber search */}
+            <div>
+              <div className="flex items-center justify-between mb-2">
+                <Label className="text-sm font-medium">Search & Select Subscribers</Label>
+                <span className="text-xs text-gray-500">{subscribersTotal} total subscribers</span>
+              </div>
+              <Input
+                placeholder="Search by email or name..."
+                value={subscriberSearch}
+                onChange={(e) => { setSubscriberSearch(e.target.value); fetchSubscribers(e.target.value); }}
+              />
+              <div className="mt-2 max-h-48 overflow-y-auto border rounded-lg">
+                {subscribersLoading ? (
+                  <div className="flex items-center justify-center py-4"><Loader2 className="h-5 w-5 animate-spin text-gray-400" /></div>
+                ) : subscribers.length === 0 ? (
+                  <div className="text-center py-4 text-gray-500 text-sm">No subscribers found</div>
+                ) : (
+                  subscribers.map((sub) => (
+                    <div key={sub.id} className={`flex items-center gap-3 p-2 hover:bg-gray-50 cursor-pointer border-b last:border-b-0 ${selectedSubscribers.includes(sub.id) ? "bg-burgundy-50" : ""}`} onClick={() => setSelectedSubscribers(prev => prev.includes(sub.id) ? prev.filter(id => id !== sub.id) : [...prev, sub.id])}>
+                      <input type="checkbox" checked={selectedSubscribers.includes(sub.id)} readOnly className="h-4 w-4 rounded border-gray-300" />
+                      <div className="flex-1 min-w-0">
+                        <p className="text-sm font-medium truncate">{sub.name}</p>
+                        <p className="text-xs text-gray-500 truncate">{sub.email}</p>
+                      </div>
+                      {sub.tags?.length > 0 && (
+                        <div className="flex gap-1">
+                          {sub.tags.slice(0, 2).map((tag: any) => (
+                            <span key={tag.id} className="text-xs px-1.5 py-0.5 rounded" style={{ backgroundColor: `${tag.color}20`, color: tag.color }}>{tag.name}</span>
+                          ))}
+                          {sub.tags.length > 2 && <span className="text-xs text-gray-400">+{sub.tags.length - 2}</span>}
+                        </div>
+                      )}
+                    </div>
+                  ))
+                )}
+              </div>
+              {selectedSubscribers.length > 0 && (
+                <div className="mt-2 flex items-center justify-between">
+                  <span className="text-sm text-burgundy-600 font-medium">{selectedSubscribers.length} selected</span>
+                  <Button size="sm" onClick={enrollSelected} disabled={enrolling}>
+                    {enrolling ? <Loader2 className="h-4 w-4 animate-spin mr-2" /> : <UserPlus className="h-4 w-4 mr-2" />}
+                    Enroll Selected
+                  </Button>
+                </div>
+              )}
+            </div>
+
+            {selectedSequence && !selectedSequence.isActive && (
+              <div className="flex items-center gap-2 p-3 bg-amber-50 border border-amber-200 rounded-lg text-amber-700 text-sm">
+                <AlertCircle className="h-4 w-4" />
+                <span>This sequence is paused. Activate it to start sending emails.</span>
+              </div>
+            )}
           </div>
-          <DialogFooter><Button variant="outline" onClick={() => setShowEnrollUser(false)}>Cancel</Button><Button onClick={enrollUser} disabled={enrolling || !enrollEmail}>{enrolling ? <Loader2 className="h-4 w-4 animate-spin mr-2" /> : <UserPlus className="h-4 w-4 mr-2" />}Enroll User</Button></DialogFooter>
+          <DialogFooter className="flex-col sm:flex-row gap-2">
+            <Button variant="outline" onClick={() => setShowEnrollUser(false)}>Cancel</Button>
+            <Button variant="outline" onClick={enrollAllSubscribers} disabled={enrollingAll} className="bg-burgundy-50 border-burgundy-200 text-burgundy-700 hover:bg-burgundy-100">
+              {enrollingAll ? <Loader2 className="h-4 w-4 animate-spin mr-2" /> : <Users className="h-4 w-4 mr-2" />}
+              Enroll All ({subscribersTotal})
+            </Button>
+          </DialogFooter>
         </DialogContent>
       </Dialog>
 
