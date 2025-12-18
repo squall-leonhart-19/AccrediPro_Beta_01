@@ -16,10 +16,23 @@ export async function GET(request: NextRequest) {
         const limit = parseInt(searchParams.get("limit") || "50");
         const filter = searchParams.get("filter") || "all";
 
-        // Build where clause - only include USER role with valid emails
+        // Build where clause - only include active, valid users
+        // Excludes: bounced, complained, unsubscribed, and zombie profiles
         const whereClause: any = {
             role: "USER",
             email: { not: null },
+            // Must have verified email (not zombie)
+            emailVerified: { not: null },
+            // Exclude users with suppression tags (bounced, complained, unsubscribed)
+            marketingTags: {
+                none: {
+                    tag: {
+                        slug: {
+                            in: ["suppress_bounced", "suppress_complained", "suppress_unsubscribed"]
+                        }
+                    }
+                }
+            },
         };
 
         // Search by email or name
