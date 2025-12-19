@@ -373,6 +373,22 @@ export default function FMMiniDiplomaPage() {
                 }
             `}</style>
 
+            {/* Trustpilot Widget */}
+            <div className="bg-white py-3 border-b border-slate-100">
+                <div className="max-w-6xl mx-auto px-4 flex items-center justify-center gap-3">
+                    <div className="flex items-center gap-1">
+                        {[...Array(5)].map((_, i) => (
+                            <Star key={i} className="h-4 w-4 fill-emerald-500 text-emerald-500" />
+                        ))}
+                    </div>
+                    <span className="text-sm text-slate-600">
+                        <strong className="text-slate-800">Excellent</strong> • 4.9/5 on Trustpilot
+                    </span>
+                    <span className="text-xs text-slate-400">|</span>
+                    <span className="text-sm text-slate-500">Based on 127 reviews</span>
+                </div>
+            </div>
+
             {/* Trust Banner */}
             <TrustBanner />
 
@@ -733,55 +749,6 @@ export default function FMMiniDiplomaPage() {
                         </div>
                     </div>
 
-                    {/* Portal Access Feature */}
-                    <div className="bg-gradient-to-r from-slate-900 to-slate-800 rounded-3xl p-6 sm:p-8 text-white">
-                        <div className="grid lg:grid-cols-2 gap-8 items-center">
-                            <div className="order-2 lg:order-1">
-                                <Image
-                                    src="/portal-screenshot.webp"
-                                    alt="AccrediPro Portal - All in one space"
-                                    width={600}
-                                    height={400}
-                                    className="rounded-2xl shadow-2xl w-full"
-                                />
-                            </div>
-                            <div className="order-1 lg:order-2">
-                                <div className="inline-flex items-center gap-2 bg-white/10 text-white px-4 py-2 rounded-full text-sm font-semibold mb-4">
-                                    <Laptop className="h-4 w-4" />
-                                    All-In-One Portal
-                                </div>
-                                <h3 className="text-2xl font-bold mb-3">
-                                    Access the Most Complete Learning Portal
-                                </h3>
-                                <ul className="space-y-3 mb-6">
-                                    {[
-                                        "Community of 1,400+ students & graduates",
-                                        "Coach Workspace to manage your future clients",
-                                        "Listen to other students' stories & coaching tips",
-                                        "All your resources in one beautiful space",
-                                    ].map((item, i) => (
-                                        <li key={i} className="flex items-start gap-3">
-                                            <CheckCircle2 className="h-5 w-5 text-emerald-400 shrink-0 mt-0.5" />
-                                            <span className="text-slate-200">{item}</span>
-                                        </li>
-                                    ))}
-                                </ul>
-                                <div className="flex items-center gap-3 p-4 bg-white/10 rounded-xl">
-                                    <Image
-                                        src="/coaches/sarah-coach.webp"
-                                        alt="Sarah"
-                                        width={48}
-                                        height={48}
-                                        className="w-12 h-12 rounded-full object-cover border-2 border-white/30"
-                                    />
-                                    <div>
-                                        <p className="font-semibold">Private chat with me</p>
-                                        <p className="text-sm text-slate-300">Whenever you need — I'm here for you!</p>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
                 </div>
             </section>
 
@@ -907,6 +874,67 @@ export default function FMMiniDiplomaPage() {
                                 <ArrowRight className="h-5 w-5 ml-2" />
                             </Button>
                         </a>
+                    </div>
+                </div>
+            </section>
+
+            {/* Portal Access Section */}
+            <section className="py-16 sm:py-20 bg-white">
+                <div className="max-w-6xl mx-auto px-4">
+                    <div className="text-center mb-10">
+                        <p className="text-burgundy-600 font-semibold mb-2 uppercase tracking-wide">Your Learning Hub</p>
+                        <h2 className="text-3xl sm:text-4xl font-bold text-slate-900 mb-4">
+                            Access the Most Complete Portal
+                        </h2>
+                        <p className="text-xl text-slate-600 max-w-2xl mx-auto">
+                            Community of 1,400+ students & graduates. Coach Workspace to manage your future clients.
+                        </p>
+                    </div>
+
+                    {/* Portal Screenshot */}
+                    <div className="max-w-5xl mx-auto mb-10">
+                        <Image
+                            src="/portal.webp"
+                            alt="AccrediPro Portal - All in one space"
+                            width={1200}
+                            height={700}
+                            className="w-full h-auto rounded-2xl shadow-2xl border border-slate-200"
+                        />
+                    </div>
+
+                    {/* Features Grid */}
+                    <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-10">
+                        {[
+                            { icon: Users, title: "1,400+ Community", desc: "Connect with students & graduates" },
+                            { icon: Laptop, title: "Coach Workspace", desc: "Manage all your future clients" },
+                            { icon: MessageCircle, title: "Private Chat", desc: "Direct access to Sarah anytime" },
+                            { icon: BookOpen, title: "Coaching Tips", desc: "Listen to stories & strategies" },
+                        ].map((item, i) => (
+                            <div key={i} className="bg-slate-50 rounded-2xl p-5 text-center border border-slate-100">
+                                <div className="w-12 h-12 rounded-xl bg-burgundy-100 flex items-center justify-center mx-auto mb-3">
+                                    <item.icon className="h-6 w-6 text-burgundy-600" />
+                                </div>
+                                <h3 className="font-bold text-slate-900 mb-1">{item.title}</h3>
+                                <p className="text-sm text-slate-600">{item.desc}</p>
+                            </div>
+                        ))}
+                    </div>
+
+                    {/* Private Chat with Sarah */}
+                    <div className="max-w-2xl mx-auto bg-gradient-to-r from-burgundy-50 to-rose-50 rounded-2xl p-6 border border-burgundy-100">
+                        <div className="flex items-center gap-4">
+                            <Image
+                                src="/coaches/sarah-coach.webp"
+                                alt="Sarah"
+                                width={64}
+                                height={64}
+                                className="w-16 h-16 rounded-full object-cover border-4 border-white shadow-md"
+                            />
+                            <div>
+                                <p className="font-bold text-slate-900 text-lg">Private chat with me — whenever you need!</p>
+                                <p className="text-slate-600">Listen to other stories, get coaching tips, ask questions. I'm here for you.</p>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </section>
