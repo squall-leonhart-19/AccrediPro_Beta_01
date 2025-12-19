@@ -468,72 +468,74 @@ export default function FMMiniDiplomaPage() {
                 </div>
             </section>
 
-            {/* Sarah's Dramatic Story Section */}
+            {/* Sarah's Story Section - Testimonial Style */}
             <section className="py-16 sm:py-20 bg-gradient-to-b from-rose-50 to-white">
-                <div className="max-w-5xl mx-auto px-4">
-                    <div className="grid lg:grid-cols-2 gap-10 items-center">
-                        {/* Sarah's Image */}
-                        <div className="relative order-2 lg:order-1">
-                            <div className="relative rounded-3xl overflow-hidden shadow-2xl">
-                                <Image
-                                    src="/coaches/sarah-coach.webp"
-                                    alt="Sarah Mitchell - Your Functional Medicine Coach"
-                                    width={500}
-                                    height={600}
-                                    className="w-full object-cover"
-                                />
-                                <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/60 to-transparent p-6">
-                                    <p className="text-white font-bold text-xl">Sarah Mitchell</p>
-                                    <p className="text-white/80 text-sm">RN turned FM Practitioner • Single mum of 2</p>
-                                </div>
+                <div className="max-w-4xl mx-auto px-4">
+                    {/* Header with small circular photo */}
+                    <div className="flex flex-col items-center text-center mb-8">
+                        <Image
+                            src="/coaches/sarah-coach.webp"
+                            alt="Sarah Mitchell"
+                            width={100}
+                            height={100}
+                            className="w-24 h-24 rounded-full object-cover shadow-lg border-4 border-white ring-4 ring-burgundy-100 mb-4"
+                        />
+                        <p className="text-burgundy-600 font-semibold uppercase tracking-wide text-sm">Hi, I'm Sarah</p>
+                        <h2 className="text-3xl sm:text-4xl font-bold text-slate-900 mt-2">
+                            I Know Exactly How You Feel
+                        </h2>
+                    </div>
+
+                    {/* Story Content - First Person */}
+                    <div className="bg-white rounded-3xl p-8 sm:p-10 shadow-sm border border-slate-100">
+                        <div className="space-y-4 text-lg text-slate-600">
+                            <p>
+                                <strong className="text-slate-800">I was drowning.</strong> 12-hour shifts in the ER, coming home exhausted to my two kids. Bills piling up. Zero time for myself.
+                            </p>
+                            <p>
+                                Then my health crashed. <span className="text-burgundy-700 font-semibold">Thyroid issues. Gut problems. Brain fog so bad I thought I was losing my mind.</span> Doctors told me I was "fine."
+                            </p>
+                            <p className="font-medium text-slate-800">
+                                Sound familiar?
+                            </p>
+                            <p>
+                                Functional medicine changed everything. First, I healed myself. Then I realized I could help other women do the same — <strong className="text-slate-800">on MY terms, from home, around MY kids.</strong>
+                            </p>
+                        </div>
+
+                        <div className="mt-8 p-5 bg-gradient-to-r from-burgundy-50 to-gold-50 rounded-2xl border-l-4 border-burgundy-600">
+                            <p className="text-burgundy-800 font-semibold text-lg mb-2">
+                                "Now I earn more than I did as an RN — working 20 hours a week."
+                            </p>
+                            <p className="text-slate-600">
+                                I've helped 843+ students start their journey. Let me show you how.
+                            </p>
+                        </div>
+
+                        {/* Stats Row */}
+                        <div className="grid grid-cols-3 gap-4 mt-8 pt-8 border-t border-slate-100">
+                            <div className="text-center">
+                                <p className="text-2xl font-bold text-burgundy-700">12+</p>
+                                <p className="text-xs text-slate-500">Years as RN</p>
                             </div>
-                            {/* Floating badge */}
-                            <div className="absolute -top-4 -right-4 bg-white rounded-2xl shadow-lg p-4 border border-slate-100">
-                                <p className="text-3xl font-black text-burgundy-600">843+</p>
-                                <p className="text-xs text-slate-500 uppercase tracking-wide">Students Mentored</p>
+                            <div className="text-center">
+                                <p className="text-2xl font-bold text-burgundy-700">843+</p>
+                                <p className="text-xs text-slate-500">Students Mentored</p>
+                            </div>
+                            <div className="text-center">
+                                <p className="text-2xl font-bold text-burgundy-700">97%</p>
+                                <p className="text-xs text-slate-500">Completion Rate</p>
                             </div>
                         </div>
 
-                        {/* Story Content */}
-                        <div className="order-1 lg:order-2">
-                            <p className="text-burgundy-600 font-semibold mb-3 uppercase tracking-wide text-sm">My Story</p>
-                            <h2 className="text-3xl sm:text-4xl font-bold text-slate-900 mb-6 leading-tight">
-                                From Burnt-Out ER Nurse to <span className="text-burgundy-700">Thriving FM Practitioner</span>
-                            </h2>
-
-                            <div className="space-y-4 text-lg text-slate-600">
-                                <p>
-                                    <strong className="text-slate-800">I was drowning.</strong> 12-hour shifts in the ER, coming home exhausted to two kids who needed me. Bills piling up. Zero time for myself.
-                                </p>
-                                <p>
-                                    Then my own health crashed. <span className="text-burgundy-700 font-semibold">Thyroid. Gut issues. Brain fog so bad I thought I was losing my mind.</span> Doctors told me I was "fine."
-                                </p>
-                                <p>
-                                    Sound familiar?
-                                </p>
-                                <p>
-                                    Functional medicine changed everything. First, I healed myself. Then I realized: <strong className="text-slate-800">I could help other women do the same — on MY terms, from home, around MY kids.</strong>
-                                </p>
-                            </div>
-
-                            <div className="mt-8 p-5 bg-gradient-to-r from-burgundy-50 to-gold-50 rounded-2xl border-l-4 border-burgundy-600">
-                                <p className="text-burgundy-800 font-semibold text-lg mb-2">
-                                    "Now I earn more than I did as an RN — working 20 hours a week."
-                                </p>
-                                <p className="text-slate-600">
-                                    And I've helped 843+ students start their own journey. Let me show you how.
-                                </p>
-                            </div>
-
-                            <div className="mt-8">
-                                <a href="https://sarah.accredipro.academy/fm-mini-diploma-access">
-                                    <Button className="bg-gradient-to-r from-burgundy-600 to-burgundy-700 hover:from-burgundy-700 hover:to-burgundy-800 text-white font-bold py-5 px-8 rounded-xl text-lg shadow-lg">
-                                        <Heart className="h-5 w-5 mr-2" />
-                                        Learn From Sarah — $27
-                                        <ArrowRight className="h-5 w-5 ml-2" />
-                                    </Button>
-                                </a>
-                            </div>
+                        <div className="mt-8 text-center">
+                            <a href="https://sarah.accredipro.academy/fm-mini-diploma-access">
+                                <Button className="bg-gradient-to-r from-burgundy-600 to-burgundy-700 hover:from-burgundy-700 hover:to-burgundy-800 text-white font-bold py-5 px-8 rounded-xl text-lg shadow-lg">
+                                    <Heart className="h-5 w-5 mr-2" />
+                                    Learn With Me — $27
+                                    <ArrowRight className="h-5 w-5 ml-2" />
+                                </Button>
+                            </a>
                         </div>
                     </div>
                 </div>
@@ -552,16 +554,20 @@ export default function FMMiniDiplomaPage() {
                         </p>
                     </div>
 
+                    {/* Accreditation Logos Image */}
+                    <div className="max-w-4xl mx-auto mb-10">
+                        <Image
+                            src="/all-logos.png"
+                            alt="Accreditation Logos - CMA, IPHM, CPD, IAOTH, ICAHP, IGCT, CTAA, IHTCP, IIOHT"
+                            width={1200}
+                            height={200}
+                            className="w-full h-auto"
+                        />
+                    </div>
+
                     {/* Accreditation Grid */}
                     <div className="max-w-4xl mx-auto">
                         <div className="bg-gradient-to-br from-emerald-50 to-teal-50 rounded-3xl p-8 sm:p-10 border border-emerald-100">
-                            <div className="grid grid-cols-3 sm:grid-cols-3 md:grid-cols-9 gap-4 mb-6">
-                                {ACCREDITATIONS.map((acc) => (
-                                    <div key={acc.abbr} className="bg-white rounded-xl p-3 shadow-sm border border-emerald-100 text-center hover:shadow-md transition-shadow">
-                                        <p className="font-bold text-emerald-700 text-sm">{acc.abbr}</p>
-                                    </div>
-                                ))}
-                            </div>
                             <div className="text-center">
                                 <p className="text-emerald-700 font-medium mb-4">Insurance eligibility in 30+ countries • CPD certified • Lifetime validity</p>
                                 <a href="https://sarah.accredipro.academy/fm-mini-diploma-access">
