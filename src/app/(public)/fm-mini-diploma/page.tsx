@@ -75,11 +75,11 @@ const CertificatePreview = ({ name = "Jennifer Martinez" }: { name?: string }) =
             </p>
 
             {/* Accreditation Badges */}
-            <div className="mb-4 p-3 bg-gradient-to-r from-emerald-50 to-teal-50 rounded-lg border border-emerald-100">
-                <p className="text-xs font-semibold text-emerald-700 mb-2 uppercase tracking-wide">From AccrediPro Academy • Internationally Recognized</p>
+            <div className="mb-4 p-3 bg-gradient-to-r from-olive-50 to-olive-100 rounded-lg border border-olive-200">
+                <p className="text-xs font-semibold text-olive-700 mb-2 uppercase tracking-wide">From AccrediPro Academy • Internationally Recognized</p>
                 <div className="flex flex-wrap justify-center gap-1">
                     {ACCREDITATIONS.map((acc) => (
-                        <span key={acc.abbr} className="px-2 py-0.5 bg-white border border-emerald-200 rounded text-xs font-bold text-emerald-700 shadow-sm">
+                        <span key={acc.abbr} className="px-2 py-0.5 bg-white border border-olive-300 rounded text-xs font-bold text-olive-700 shadow-sm">
                             {acc.abbr}
                         </span>
                     ))}
@@ -101,7 +101,7 @@ const CertificatePreview = ({ name = "Jennifer Martinez" }: { name?: string }) =
             {/* Verification Badge */}
             <div className="pt-3 border-t border-gold-200">
                 <div className="flex items-center justify-center gap-2 text-xs text-slate-500">
-                    <Shield className="h-4 w-4 text-emerald-600" />
+                    <Shield className="h-4 w-4 text-olive-600" />
                     <span>Credential ID: APR-FM-2025-84721</span>
                 </div>
             </div>
@@ -209,8 +209,8 @@ const SuccessStory = ({
                     <p className="text-xs uppercase tracking-wide text-red-600 font-semibold mb-1">Before</p>
                     <p className="text-sm text-slate-700">{before}</p>
                 </div>
-                <div className="bg-emerald-50 rounded-xl p-4 border border-emerald-100">
-                    <p className="text-xs uppercase tracking-wide text-emerald-600 font-semibold mb-1">After</p>
+                <div className="bg-olive-50 rounded-xl p-4 border border-olive-100">
+                    <p className="text-xs uppercase tracking-wide text-olive-600 font-semibold mb-1">After</p>
                     <p className="text-sm text-slate-700">{after}</p>
                 </div>
             </div>
@@ -284,7 +284,7 @@ const RecentEnrollmentToast = () => {
                     <p className="text-sm font-semibold text-slate-800 truncate">{enrollment.name} from {enrollment.location}</p>
                     <p className="text-xs text-slate-500">Just enrolled • {enrollment.time}</p>
                 </div>
-                <CheckCircle2 className="h-5 w-5 text-emerald-500 shrink-0" />
+                <CheckCircle2 className="h-5 w-5 text-olive-600 shrink-0" />
             </div>
         </div>
     );
@@ -329,7 +329,7 @@ const TrustBanner = () => {
         <div className="bg-gradient-to-r from-burgundy-700 to-burgundy-800 text-white py-3 px-4">
             <div className="max-w-6xl mx-auto flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-6 text-sm">
                 <span className="flex items-center gap-2">
-                    <Shield className="h-4 w-4 text-emerald-400" />
+                    <Shield className="h-4 w-4 text-olive-400" />
                     <span className="font-medium">From AccrediPro Academy</span>
                 </span>
                 <span className="hidden sm:block text-burgundy-300">•</span>
@@ -349,7 +349,7 @@ const TrustBanner = () => {
 
 export default function FMMiniDiplomaPage() {
     return (
-        <div className="min-h-screen bg-gradient-to-b from-rose-50 via-white to-slate-50 pb-20 lg:pb-0">
+        <div className="min-h-screen bg-gradient-to-b from-cream-100 via-cream-50 to-white pb-20 lg:pb-0">
             {/* Sticky Mobile CTA */}
             <StickyMobileCTA />
 
@@ -490,7 +490,7 @@ export default function FMMiniDiplomaPage() {
                     </div>
 
                     <p className="text-center text-slate-500 flex items-center justify-center gap-2">
-                        <Shield className="h-4 w-4 text-emerald-600" />
+                        <Shield className="h-4 w-4 text-olive-600" />
                         30-day money-back guarantee • No risk
                     </p>
                 </div>
@@ -501,7 +501,7 @@ export default function FMMiniDiplomaPage() {
                 <div className="max-w-6xl mx-auto px-4">
                     <div className="flex flex-wrap justify-center items-center gap-8 sm:gap-16 text-slate-600">
                         <div className="flex items-center gap-2">
-                            <Shield className="h-5 w-5 text-emerald-600" />
+                            <Shield className="h-5 w-5 text-olive-600" />
                             <span className="font-medium">Secure Checkout</span>
                         </div>
                         <div className="flex items-center gap-2">
@@ -521,7 +521,7 @@ export default function FMMiniDiplomaPage() {
             </section>
 
             {/* Sarah's Story Section - Testimonial Style */}
-            <section className="py-16 sm:py-20 bg-gradient-to-b from-rose-50 to-white">
+            <section className="py-16 sm:py-20 bg-gradient-to-b from-cream-100 to-white">
                 <div className="max-w-4xl mx-auto px-4">
                     {/* Header with small circular photo */}
                     <div className="flex flex-col items-center text-center mb-8">
@@ -734,7 +734,7 @@ export default function FMMiniDiplomaPage() {
                                     "Real case studies that show FM in action",
                                 ].map((item, i) => (
                                     <li key={i} className="flex items-start gap-3">
-                                        <CheckCircle2 className="h-5 w-5 text-emerald-600 shrink-0 mt-0.5" />
+                                        <CheckCircle2 className="h-5 w-5 text-olive-600 shrink-0 mt-0.5" />
                                         <span className="text-slate-700">{item}</span>
                                     </li>
                                 ))}
@@ -761,7 +761,7 @@ export default function FMMiniDiplomaPage() {
                                     "Is this the right path for YOU? (clarity exercise)",
                                 ].map((item, i) => (
                                     <li key={i} className="flex items-start gap-3">
-                                        <CheckCircle2 className="h-5 w-5 text-emerald-600 shrink-0 mt-0.5" />
+                                        <CheckCircle2 className="h-5 w-5 text-olive-600 shrink-0 mt-0.5" />
                                         <span className="text-slate-700">{item}</span>
                                     </li>
                                 ))}
@@ -839,7 +839,7 @@ export default function FMMiniDiplomaPage() {
             </section>
 
             {/* Success Stories - Mirror Neuron Section */}
-            <section className="py-16 sm:py-20 bg-gradient-to-b from-slate-50 to-white">
+            <section className="py-16 sm:py-20 bg-gradient-to-b from-cream-50 to-white">
                 <div className="max-w-6xl mx-auto px-4">
                     <div className="text-center mb-12">
                         <p className="text-burgundy-600 font-semibold mb-2 uppercase tracking-wide">Real Transformations</p>
@@ -930,7 +930,7 @@ export default function FMMiniDiplomaPage() {
                             { icon: MessageCircle, title: "Private Chat", desc: "Direct access to Sarah anytime" },
                             { icon: BookOpen, title: "Coaching Tips", desc: "Listen to stories & strategies" },
                         ].map((item, i) => (
-                            <div key={i} className="bg-slate-50 rounded-2xl p-5 text-center border border-slate-100">
+                            <div key={i} className="bg-cream-50 rounded-2xl p-5 text-center border border-cream-200">
                                 <div className="w-12 h-12 rounded-xl bg-burgundy-100 flex items-center justify-center mx-auto mb-3">
                                     <item.icon className="h-6 w-6 text-burgundy-600" />
                                 </div>
@@ -960,7 +960,7 @@ export default function FMMiniDiplomaPage() {
             </section>
 
             {/* Everything You Get Section - COMPLETELY REDESIGNED */}
-            <section id="pricing" className="py-16 sm:py-24 bg-gradient-to-b from-slate-50 to-white">
+            <section id="pricing" className="py-16 sm:py-24 bg-gradient-to-b from-cream-50 to-white">
                 <div className="max-w-5xl mx-auto px-4">
                     {/* Header */}
                     <div className="text-center mb-10">
@@ -1002,8 +1002,8 @@ export default function FMMiniDiplomaPage() {
                                         { title: "Module 2: FM Mindset & Career", time: "45 min", desc: "Think like a practitioner + your path forward" },
                                         { title: "Mini Diploma Certificate", time: "", desc: "Official, verifiable credential for LinkedIn" },
                                     ].map((item, i) => (
-                                        <div key={i} className="flex items-start gap-3 p-3 bg-slate-50 rounded-xl">
-                                            <CheckCircle2 className="h-5 w-5 text-emerald-500 shrink-0 mt-0.5" />
+                                        <div key={i} className="flex items-start gap-3 p-3 bg-cream-50 rounded-xl">
+                                            <CheckCircle2 className="h-5 w-5 text-olive-600 shrink-0 mt-0.5" />
                                             <div className="flex-1">
                                                 <div className="flex items-center justify-between">
                                                     <span className="font-semibold text-slate-800">{item.title}</span>
@@ -1028,8 +1028,8 @@ export default function FMMiniDiplomaPage() {
                                         { title: "Private Community", desc: "Connect with 843+ students for life" },
                                         { title: "Direct Message Support", desc: "Get your questions answered" },
                                     ].map((item, i) => (
-                                        <div key={i} className="flex items-start gap-3 p-3 bg-emerald-50 rounded-xl border border-emerald-100">
-                                            <CheckCircle2 className="h-5 w-5 text-emerald-500 shrink-0 mt-0.5" />
+                                        <div key={i} className="flex items-start gap-3 p-3 bg-olive-50 rounded-xl border border-olive-100">
+                                            <CheckCircle2 className="h-5 w-5 text-olive-600 shrink-0 mt-0.5" />
                                             <div>
                                                 <span className="font-semibold text-slate-800">{item.title}</span>
                                                 <p className="text-sm text-slate-500">{item.desc}</p>
@@ -1074,14 +1074,14 @@ export default function FMMiniDiplomaPage() {
                             {/* Trust */}
                             <div className="flex flex-wrap items-center justify-center gap-4 mt-4 text-xs text-slate-500">
                                 <span className="flex items-center gap-1">
-                                    <Shield className="h-4 w-4 text-emerald-500" />
+                                    <Shield className="h-4 w-4 text-olive-600" />
                                     Secure checkout
                                 </span>
                                 <span>•</span>
                                 <span>Instant access</span>
                                 <span>•</span>
                                 <span className="flex items-center gap-1">
-                                    <CheckCircle2 className="h-4 w-4 text-emerald-500" />
+                                    <CheckCircle2 className="h-4 w-4 text-olive-600" />
                                     30-day money-back guarantee
                                 </span>
                             </div>
@@ -1167,10 +1167,10 @@ export default function FMMiniDiplomaPage() {
             </section>
 
             {/* Income Potential */}
-            <section className="py-16 sm:py-20 bg-gradient-to-b from-emerald-50 to-white">
+            <section className="py-16 sm:py-20 bg-gradient-to-b from-olive-50 to-white">
                 <div className="max-w-5xl mx-auto px-4">
                     <div className="text-center mb-12">
-                        <p className="text-emerald-600 font-semibold mb-2 uppercase tracking-wide">The Opportunity</p>
+                        <p className="text-olive-600 font-semibold mb-2 uppercase tracking-wide">The Opportunity</p>
                         <h2 className="text-3xl sm:text-4xl font-bold text-slate-900 mb-4">
                             Where This Path Can Lead
                         </h2>
@@ -1185,13 +1185,13 @@ export default function FMMiniDiplomaPage() {
                             { range: "$6K – $10K", period: "/month", desc: "Full-time practice", detail: "15-25 clients • Replace job income", highlight: true },
                             { range: "$15K – $20K+", period: "/month", desc: "Premium practice", detail: "Group programs • Scaled business" },
                         ].map((tier, i) => (
-                            <div key={i} className={`rounded-2xl p-6 text-center ${tier.highlight ? 'bg-emerald-600 text-white ring-4 ring-emerald-300 shadow-xl' : 'bg-white shadow-sm border border-emerald-100'}`}>
-                                <p className={`text-4xl font-black ${tier.highlight ? 'text-white' : 'text-emerald-600'}`}>
+                            <div key={i} className={`rounded-2xl p-6 text-center ${tier.highlight ? 'bg-olive-600 text-white ring-4 ring-olive-300 shadow-xl' : 'bg-white shadow-sm border border-olive-200'}`}>
+                                <p className={`text-4xl font-black ${tier.highlight ? 'text-white' : 'text-olive-600'}`}>
                                     {tier.range}
                                     <span className="text-lg font-medium">{tier.period}</span>
                                 </p>
-                                <p className={`font-semibold text-lg mt-2 ${tier.highlight ? 'text-emerald-100' : 'text-slate-800'}`}>{tier.desc}</p>
-                                <p className={`text-sm mt-1 ${tier.highlight ? 'text-emerald-200' : 'text-slate-500'}`}>{tier.detail}</p>
+                                <p className={`font-semibold text-lg mt-2 ${tier.highlight ? 'text-olive-100' : 'text-slate-800'}`}>{tier.desc}</p>
+                                <p className={`text-sm mt-1 ${tier.highlight ? 'text-olive-200' : 'text-slate-500'}`}>{tier.detail}</p>
                             </div>
                         ))}
                     </div>
@@ -1239,7 +1239,7 @@ export default function FMMiniDiplomaPage() {
             </section>
 
             {/* FAQ Section */}
-            <section className="py-16 sm:py-20 bg-slate-50">
+            <section className="py-16 sm:py-20 bg-cream-50">
                 <div className="max-w-3xl mx-auto px-4">
                     <div className="text-center mb-12">
                         <p className="text-burgundy-600 font-semibold mb-2 uppercase tracking-wide">Questions?</p>
@@ -1284,9 +1284,9 @@ export default function FMMiniDiplomaPage() {
             {/* Guarantee Section */}
             <section className="py-16 sm:py-20">
                 <div className="max-w-3xl mx-auto px-4 text-center">
-                    <div className="bg-gradient-to-br from-emerald-50 to-white rounded-3xl p-10 border-2 border-emerald-200">
-                        <div className="w-20 h-20 rounded-full bg-emerald-100 flex items-center justify-center mx-auto mb-6">
-                            <Shield className="h-10 w-10 text-emerald-600" />
+                    <div className="bg-gradient-to-br from-olive-50 to-white rounded-3xl p-10 border-2 border-olive-200">
+                        <div className="w-20 h-20 rounded-full bg-olive-100 flex items-center justify-center mx-auto mb-6">
+                            <Shield className="h-10 w-10 text-olive-600" />
                         </div>
                         <h2 className="text-3xl font-bold text-slate-900 mb-4">
                             100% Money-Back Guarantee
@@ -1294,7 +1294,7 @@ export default function FMMiniDiplomaPage() {
                         <p className="text-lg text-slate-600 mb-6 max-w-xl mx-auto">
                             Don't love it? Email us within 30 days for a full refund. No questions. No hassle. No hard feelings.
                         </p>
-                        <p className="text-2xl font-bold text-emerald-700">
+                        <p className="text-2xl font-bold text-olive-700">
                             You risk absolutely nothing.
                         </p>
                     </div>
@@ -1325,7 +1325,7 @@ export default function FMMiniDiplomaPage() {
                                 "30-Day Money-Back Guarantee",
                             ].map((item, i) => (
                                 <div key={i} className="flex items-center gap-2">
-                                    <CheckCircle2 className="h-5 w-5 text-emerald-400 shrink-0" />
+                                    <CheckCircle2 className="h-5 w-5 text-olive-400 shrink-0" />
                                     <span className="text-slate-200">{item}</span>
                                 </div>
                             ))}
@@ -1348,7 +1348,7 @@ export default function FMMiniDiplomaPage() {
 
                     <div className="flex flex-wrap justify-center gap-6 mt-8 text-slate-400">
                         <span className="flex items-center gap-2">
-                            <Shield className="h-5 w-5 text-emerald-500" />
+                            <Shield className="h-5 w-5 text-olive-400" />
                             Secure checkout
                         </span>
                         <span className="flex items-center gap-2">
@@ -1356,7 +1356,7 @@ export default function FMMiniDiplomaPage() {
                             Instant access
                         </span>
                         <span className="flex items-center gap-2">
-                            <CheckCircle2 className="h-5 w-5 text-emerald-500" />
+                            <CheckCircle2 className="h-5 w-5 text-olive-400" />
                             30-day guarantee
                         </span>
                     </div>
