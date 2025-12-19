@@ -9,12 +9,13 @@ import {
     TrendingUp, Target, Play, Sparkles, X,
     HeartHandshake, Laptop, Quote, Calendar,
     Brain, Flame, Activity, Leaf, Sun, Moon, Dumbbell,
-    Stethoscope, LayoutDashboard, Video, AlertCircle, Timer
+    Stethoscope, LayoutDashboard, Video, AlertCircle, Timer,
+    Gift, Infinity, DollarSign, Lock, BadgeCheck, Globe2
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
-// Real student profile images
-const STUDENT_AVATARS = [
+// All student avatars from WordPress
+const ALL_STUDENT_AVATARS = [
     "https://accredipro.academy/wp-content/uploads/2025/12/AI_Headshot_Generator-13.jpg",
     "https://accredipro.academy/wp-content/uploads/2025/12/LeezaRhttilthead.jpg",
     "https://accredipro.academy/wp-content/uploads/2025/12/Head-shot-dark-background-1.jpg",
@@ -24,7 +25,26 @@ const STUDENT_AVATARS = [
     "https://accredipro.academy/wp-content/uploads/2025/12/MARIA-GARCIA-PIC-IMG_5435-1.jpg",
     "https://accredipro.academy/wp-content/uploads/2025/12/IMG_3542-Profile-Picture-Updated.jpg",
     "https://accredipro.academy/wp-content/uploads/2025/12/dgp03315.jpg",
+    "https://accredipro.academy/wp-content/uploads/2025/12/Headshot-Ines.jpg",
+    "https://accredipro.academy/wp-content/uploads/2025/12/Shondra_Williams_Business_Headshot-scaled.jpg",
+    "https://accredipro.academy/wp-content/uploads/2025/12/Tiffany-Nelson-MD.webp",
+    "https://accredipro.academy/wp-content/uploads/2025/12/profilepic.png",
+    "https://accredipro.academy/wp-content/uploads/2025/12/MARIANAPIC.jpg",
+    "https://accredipro.academy/wp-content/uploads/2025/12/headshot.jpg",
 ];
+
+// Function to get random avatars
+const getRandomAvatars = (count: number, exclude: number[] = []) => {
+    const available = ALL_STUDENT_AVATARS.filter((_, i) => !exclude.includes(i));
+    const shuffled = [...available].sort(() => Math.random() - 0.5);
+    return shuffled.slice(0, count);
+};
+
+// Get random avatar index
+const getRandomAvatarIndex = (exclude: number[] = []) => {
+    const available = ALL_STUDENT_AVATARS.map((_, i) => i).filter(i => !exclude.includes(i));
+    return available[Math.floor(Math.random() * available.length)];
+};
 
 // Complete curriculum with 21 modules (0-20)
 const CURRICULUM_MODULES = [
@@ -51,6 +71,19 @@ const CURRICULUM_MODULES = [
     { number: 20, title: "Building Your Coaching Practice", certificate: "Certified FM Practitioner (Complete)", lessons: 12, description: "Launch and grow your successful practice", icon: TrendingUp, highlight: true },
 ];
 
+// Accreditation data
+const ACCREDITATIONS = [
+    { abbr: "CMA", name: "Complementary Medical Association", desc: "Global flagship, 106+ countries", year: "1993" },
+    { abbr: "IPHM", name: "International Practitioners of Holistic Medicine", desc: "Executive Provider status, insurance eligibility", year: "" },
+    { abbr: "CPD", name: "Continuing Professional Development", desc: "80+ CEU hours for recertification", year: "" },
+    { abbr: "IAOTH", name: "International Association of Therapists", desc: "10,000+ practitioner network", year: "" },
+    { abbr: "ICAHP", name: "Intl. Community for Alternative & Holistic Professionals", desc: "Evidence-based verification", year: "" },
+    { abbr: "IGCT", name: "International Guild of Complementary Therapists", desc: "Prestige guild recognition", year: "" },
+    { abbr: "CTAA", name: "Complementary Therapists Accredited Association", desc: "UK practice & NHS recognition", year: "" },
+    { abbr: "IHTCP", name: "Intl. Holistic Therapists & Course Providers", desc: "Curriculum quality verified", year: "" },
+    { abbr: "IIOHT", name: "International Institute of Holistic Therapists", desc: "Institute-level academic standards", year: "" },
+];
+
 // FAQ Component with rich answers
 const FAQItem = ({ question, answer }: { question: string; answer: React.ReactNode }) => {
     const [isOpen, setIsOpen] = useState(false);
@@ -65,9 +98,9 @@ const FAQItem = ({ question, answer }: { question: string; answer: React.ReactNo
     );
 };
 
-// Enhanced Testimonial with specifics
-const TestimonialCard = ({ quote, name, role, before, after, timeframe, income, avatarIndex = 0 }: {
-    quote: string; name: string; role: string; before?: string; after?: string; timeframe?: string; income?: string; avatarIndex?: number
+// Enhanced Testimonial with specifics - uses random avatars
+const TestimonialCard = ({ quote, name, role, before, after, timeframe, income, avatarSrc }: {
+    quote: string; name: string; role: string; before?: string; after?: string; timeframe?: string; income?: string; avatarSrc: string
 }) => (
     <div className="bg-white rounded-2xl p-6 shadow-sm border border-slate-100 hover:shadow-lg hover:border-burgundy-200 transition-all">
         <Quote className="h-6 w-6 text-burgundy-200 mb-3" />
@@ -102,7 +135,7 @@ const TestimonialCard = ({ quote, name, role, before, after, timeframe, income, 
             {[...Array(5)].map((_, i) => <Star key={i} className="h-4 w-4 fill-gold-400 text-gold-400" />)}
         </div>
         <div className="flex items-center gap-3 pt-4 border-t border-slate-100">
-            <Image src={STUDENT_AVATARS[avatarIndex % STUDENT_AVATARS.length]} alt={name} width={48} height={48} className="w-12 h-12 rounded-full object-cover shadow-md border-2 border-white" />
+            <Image src={avatarSrc} alt={name} width={48} height={48} className="w-12 h-12 rounded-full object-cover shadow-md border-2 border-white" />
             <div>
                 <p className="font-semibold text-slate-800">{name}</p>
                 <p className="text-sm text-slate-500">{role}</p>
@@ -111,7 +144,7 @@ const TestimonialCard = ({ quote, name, role, before, after, timeframe, income, 
     </div>
 );
 
-// Module Certificate Card
+// Module Certificate Card - compact
 const ModuleCertCard = ({ module }: { module: typeof CURRICULUM_MODULES[0] }) => {
     const Icon = module.icon;
     return (
@@ -139,16 +172,33 @@ const ModuleCertCard = ({ module }: { module: typeof CURRICULUM_MODULES[0] }) =>
     );
 };
 
-// Recent Enrollment Toast
+// Recent Enrollment Toast - with randomized avatars
 const RecentEnrollmentToast = () => {
     const [visible, setVisible] = useState(false);
     const [currentEnrollment, setCurrentEnrollment] = useState(0);
-    const enrollments = [
-        { name: 'Dr. Sarah K.', location: 'Texas', time: '3 min ago', avatarIndex: 0 },
-        { name: 'Michelle R.', location: 'California', time: '7 min ago', avatarIndex: 4 },
-        { name: 'Jennifer L.', location: 'Florida', time: '12 min ago', avatarIndex: 7 },
-        { name: 'Amanda P.', location: 'New York', time: '18 min ago', avatarIndex: 5 },
-    ];
+
+    // Randomize enrollment data on component mount
+    const [enrollments] = useState(() => {
+        const names = [
+            { name: 'Dr. Sarah K.', location: 'Texas' },
+            { name: 'Michelle R.', location: 'California' },
+            { name: 'Jennifer L.', location: 'Florida' },
+            { name: 'Amanda P.', location: 'New York' },
+            { name: 'Linda M.', location: 'Arizona' },
+            { name: 'Patricia H.', location: 'Colorado' },
+            { name: 'Nancy W.', location: 'Georgia' },
+            { name: 'Karen B.', location: 'Ohio' },
+        ];
+        const times = ['2 min ago', '5 min ago', '8 min ago', '12 min ago', '15 min ago', '21 min ago'];
+
+        // Shuffle and pick 5
+        const shuffled = [...names].sort(() => Math.random() - 0.5).slice(0, 5);
+        return shuffled.map((item, i) => ({
+            ...item,
+            time: times[i % times.length],
+            avatarIndex: Math.floor(Math.random() * ALL_STUDENT_AVATARS.length)
+        }));
+    });
 
     useEffect(() => {
         const initialTimeout = setTimeout(() => {
@@ -161,7 +211,7 @@ const RecentEnrollmentToast = () => {
             setTimeout(() => setVisible(false), 4000);
         }, 35000);
         return () => { clearTimeout(initialTimeout); clearInterval(interval); };
-    }, []);
+    }, [enrollments.length]);
 
     if (!visible) return null;
     const enrollment = enrollments[currentEnrollment];
@@ -169,7 +219,7 @@ const RecentEnrollmentToast = () => {
     return (
         <div className="fixed bottom-24 left-4 z-40 animate-slide-up lg:bottom-4">
             <div className="bg-white rounded-xl shadow-2xl border border-slate-200 p-4 flex items-center gap-3 max-w-sm">
-                <Image src={STUDENT_AVATARS[enrollment.avatarIndex]} alt={enrollment.name} width={40} height={40} className="w-10 h-10 rounded-full object-cover shadow-sm border-2 border-white shrink-0" />
+                <Image src={ALL_STUDENT_AVATARS[enrollment.avatarIndex]} alt={enrollment.name} width={40} height={40} className="w-10 h-10 rounded-full object-cover shadow-sm border-2 border-white shrink-0" />
                 <div className="min-w-0">
                     <p className="text-sm font-semibold text-slate-800 truncate">{enrollment.name} from {enrollment.location}</p>
                     <p className="text-xs text-slate-500">Enrolled in Full Certification • {enrollment.time}</p>
@@ -222,6 +272,12 @@ const StickyCTA = () => {
 };
 
 export default function FMCertificationPage() {
+    // Generate random avatars for testimonials on mount
+    const [testimonialAvatars] = useState(() => {
+        const shuffled = [...ALL_STUDENT_AVATARS].sort(() => Math.random() - 0.5);
+        return shuffled;
+    });
+
     return (
         <div className="min-h-screen bg-gradient-to-b from-cream-100 via-cream-50 to-white pb-20 lg:pb-0">
             <StickyCTA />
@@ -277,53 +333,66 @@ export default function FMCertificationPage() {
                 </div>
             </div>
 
-            {/* Hero Section */}
+            {/* Hero Section - NEW COPY */}
             <section className="relative overflow-hidden">
                 <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-burgundy-100/40 via-transparent to-transparent" />
 
                 <div className="relative max-w-6xl mx-auto px-4 pt-10 pb-12 sm:pt-14 sm:pb-16">
-                    {/* Badge */}
+                    {/* Target Audience Badge */}
                     <div className="flex justify-center mb-4">
-                        <div className="inline-flex items-center gap-2 bg-olive-50 border border-olive-200 rounded-full px-4 py-2 shadow-sm">
-                            <Calendar className="h-4 w-4 text-olive-600" />
-                            <span className="text-sm font-semibold text-olive-700">January 2025 Cohort Now Enrolling</span>
+                        <div className="inline-flex items-center gap-2 bg-burgundy-50 border border-burgundy-200 rounded-full px-4 py-2 shadow-sm">
+                            <Stethoscope className="h-4 w-4 text-burgundy-600" />
+                            <span className="text-sm font-semibold text-burgundy-700">For Nurses, NPs, PAs & Licensed Clinicians</span>
                         </div>
                     </div>
 
                     {/* Main Headline */}
                     <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold text-center text-slate-900 mb-4 leading-tight">
-                        <span className="text-burgundy-700">Certified Functional Medicine Practitioner</span>
+                        Become a <span className="text-burgundy-700">Certified<br className="sm:hidden" /> Functional Medicine Practitioner</span>
                     </h1>
 
-                    {/* Sub-headline with specializations */}
-                    <p className="text-lg sm:text-xl text-center text-slate-700 mb-2 max-w-4xl mx-auto">
-                        With specialized training in <span className="font-semibold">Thyroid, Hormones, Gut Health, Autoimmune</span> & 17 more clinical areas
+                    {/* Value Proposition */}
+                    <p className="text-lg sm:text-xl text-center text-slate-700 mb-6 max-w-3xl mx-auto">
+                        Add <span className="font-bold text-olive-700">$4,000–$8,000/month</span> helping patients actually heal — <span className="font-semibold">without quitting your job.</span>
                     </p>
-                    <p className="text-xl sm:text-2xl text-center font-bold text-burgundy-700 mb-6">
-                        Start earning in 4-8 weeks!
-                    </p>
+
+                    {/* Key Benefits */}
+                    <div className="flex flex-wrap justify-center gap-3 sm:gap-4 mb-6">
+                        <div className="flex items-center gap-2 bg-white/80 backdrop-blur-sm rounded-full px-4 py-2 shadow-sm border border-olive-100">
+                            <CheckCircle2 className="h-4 w-4 text-olive-600" />
+                            <span className="font-medium text-slate-800 text-sm">21 clinical specializations</span>
+                        </div>
+                        <div className="flex items-center gap-2 bg-white/80 backdrop-blur-sm rounded-full px-4 py-2 shadow-sm border border-olive-100">
+                            <CheckCircle2 className="h-4 w-4 text-olive-600" />
+                            <span className="font-medium text-slate-800 text-sm">Personal mentorship until certified</span>
+                        </div>
+                        <div className="flex items-center gap-2 bg-white/80 backdrop-blur-sm rounded-full px-4 py-2 shadow-sm border border-olive-100">
+                            <CheckCircle2 className="h-4 w-4 text-olive-600" />
+                            <span className="font-medium text-slate-800 text-sm">Most graduates earning within 90 days</span>
+                        </div>
+                    </div>
 
                     {/* Stats Row */}
                     <div className="flex flex-wrap justify-center gap-3 sm:gap-6 mb-6">
-                        <div className="flex items-center gap-2 bg-white/80 backdrop-blur-sm rounded-full px-3 py-1.5 shadow-sm">
+                        <div className="flex items-center gap-2 bg-white/60 backdrop-blur-sm rounded-full px-3 py-1.5">
                             <Star className="h-4 w-4 fill-gold-400 text-gold-400" />
                             <span className="font-bold text-slate-800">4.9</span>
                             <span className="text-slate-500 text-sm">(823)</span>
                         </div>
-                        <div className="flex items-center gap-2 bg-white/80 backdrop-blur-sm rounded-full px-3 py-1.5 shadow-sm">
+                        <div className="flex items-center gap-2 bg-white/60 backdrop-blur-sm rounded-full px-3 py-1.5">
                             <Users className="h-4 w-4 text-burgundy-600" />
                             <span className="font-bold text-slate-800">1,447</span>
                             <span className="text-slate-500 text-sm">enrolled</span>
                         </div>
-                        <div className="flex items-center gap-2 bg-white/80 backdrop-blur-sm rounded-full px-3 py-1.5 shadow-sm">
+                        <div className="flex items-center gap-2 bg-white/60 backdrop-blur-sm rounded-full px-3 py-1.5">
                             <BookOpen className="h-4 w-4 text-burgundy-600" />
                             <span className="font-bold text-slate-800">168</span>
                             <span className="text-slate-500 text-sm">lessons</span>
                         </div>
-                        <div className="flex items-center gap-2 bg-white/80 backdrop-blur-sm rounded-full px-3 py-1.5 shadow-sm">
-                            <Clock className="h-4 w-4 text-burgundy-600" />
-                            <span className="font-bold text-slate-800">60h</span>
-                            <span className="text-slate-500 text-sm">80+ CEU</span>
+                        <div className="flex items-center gap-2 bg-white/60 backdrop-blur-sm rounded-full px-3 py-1.5">
+                            <Award className="h-4 w-4 text-burgundy-600" />
+                            <span className="font-bold text-slate-800">80+</span>
+                            <span className="text-slate-500 text-sm">CEU</span>
                         </div>
                     </div>
 
@@ -361,10 +430,12 @@ export default function FMCertificationPage() {
                         </div>
                     </div>
 
-                    <p className="text-center text-slate-500 flex items-center justify-center gap-2 text-sm">
-                        <Shield className="h-4 w-4 text-olive-600" />
-                        30-day money-back guarantee • Lifetime access • Start today
-                    </p>
+                    <div className="flex flex-wrap justify-center gap-4 text-sm text-slate-500">
+                        <span className="flex items-center gap-1"><Shield className="h-4 w-4 text-olive-600" />30-day guarantee</span>
+                        <span className="flex items-center gap-1"><Infinity className="h-4 w-4 text-olive-600" />Lifetime access</span>
+                        <span className="flex items-center gap-1"><Clock className="h-4 w-4 text-olive-600" />Self-paced</span>
+                        <span className="flex items-center gap-1"><Zap className="h-4 w-4 text-olive-600" />Start today</span>
+                    </div>
                 </div>
             </section>
 
@@ -424,33 +495,80 @@ export default function FMCertificationPage() {
                 </div>
             </section>
 
-            {/* Master Certificate + Portal Section */}
+            {/* Master Certificate + Sample Certificates Section */}
             <section className="py-12 sm:py-16">
                 <div className="max-w-6xl mx-auto px-4">
-                    <div className="grid lg:grid-cols-2 gap-10 items-center">
-                        <div>
-                            <p className="text-burgundy-600 font-semibold mb-2 uppercase tracking-wide">Your Master Credential</p>
-                            <h2 className="text-3xl sm:text-4xl font-bold text-slate-900 mb-4">
-                                Certified Functional Medicine Practitioner
-                            </h2>
-                            <p className="text-lg text-slate-600 mb-6">
-                                Upon completion, earn the <strong className="text-slate-900">Certified FM Practitioner</strong> designation — plus 21 specialty certificates showcasing your complete expertise.
-                            </p>
-                            <div className="space-y-3">
-                                {["Master certification with unique credential ID", "21 specialty certificates (one per module)", "80+ CEU hours for license renewal", "Verifiable credentials for LinkedIn", "Lifetime validity — yours forever"].map((item, i) => (
-                                    <div key={i} className="flex items-center gap-3">
-                                        <CheckCircle2 className="h-5 w-5 text-olive-600 shrink-0" />
-                                        <span className="text-slate-700">{item}</span>
-                                    </div>
-                                ))}
-                            </div>
-                        </div>
+                    <div className="text-center mb-10">
+                        <p className="text-burgundy-600 font-semibold mb-2 uppercase tracking-wide">Your Master Credential</p>
+                        <h2 className="text-3xl sm:text-4xl font-bold text-slate-900 mb-4">
+                            Certified Functional Medicine Practitioner
+                        </h2>
+                        <p className="text-lg text-slate-600 max-w-3xl mx-auto">
+                            Upon completion, earn the <strong className="text-slate-900">Certified FM Practitioner</strong> designation — plus 21 specialty certificates showcasing your complete expertise.
+                        </p>
+                    </div>
+
+                    {/* Master Certificate */}
+                    <div className="max-w-4xl mx-auto mb-10">
                         <div className="relative">
-                            <Image src="/FUNCTIONAL_MEDICINE_CERTIFICATE.webp" alt="Certified Functional Medicine Practitioner Certificate" width={600} height={450} className="w-full rounded-2xl shadow-2xl border-4 border-gold-300" />
-                            <div className="absolute -bottom-3 -right-3 bg-burgundy-600 text-white rounded-xl px-4 py-2 shadow-lg">
-                                <p className="text-sm font-bold">+ 21 Specialty Certificates</p>
+                            <Image
+                                src="/FUNCTIONAL_MEDICINE_CERTIFICATE.webp"
+                                alt="Certified Functional Medicine Practitioner Certificate"
+                                width={800}
+                                height={600}
+                                className="w-full rounded-2xl shadow-2xl border-4 border-gold-300"
+                            />
+                            <div className="absolute -bottom-4 left-1/2 transform -translate-x-1/2 bg-burgundy-600 text-white rounded-full px-6 py-2 shadow-lg">
+                                <p className="text-sm font-bold flex items-center gap-2">
+                                    <Award className="h-4 w-4 text-gold-400" />
+                                    + 21 Specialty Certificates Below
+                                </p>
                             </div>
                         </div>
+                    </div>
+
+                    {/* Sample Module Certificates Grid */}
+                    <div className="mt-12">
+                        <p className="text-center text-slate-600 mb-6 font-medium">Sample Specialty Certificates You'll Earn:</p>
+                        <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                            {[
+                                { name: "Gut Health Specialist", icon: Activity, color: "olive" },
+                                { name: "Thyroid Health Specialist", icon: Zap, color: "burgundy" },
+                                { name: "Women's Hormone Specialist", icon: Heart, color: "burgundy" },
+                                { name: "Autoimmune Specialist", icon: Flame, color: "olive" },
+                            ].map((cert, i) => (
+                                <div key={i} className="bg-gradient-to-br from-cream-50 to-white rounded-xl p-4 border-2 border-gold-200 shadow-md relative overflow-hidden">
+                                    <div className="absolute top-0 right-0 w-20 h-20 bg-gold-100/50 rounded-full -mr-10 -mt-10" />
+                                    <div className="relative">
+                                        <div className="flex items-center justify-between mb-3">
+                                            <div className="w-10 h-10 rounded-full bg-burgundy-100 flex items-center justify-center">
+                                                <cert.icon className="h-5 w-5 text-burgundy-600" />
+                                            </div>
+                                            <Award className="h-6 w-6 text-gold-500" />
+                                        </div>
+                                        <p className="text-xs text-slate-500 uppercase tracking-wide mb-1">Certificate of Completion</p>
+                                        <p className="font-bold text-slate-900 text-sm">{cert.name}</p>
+                                        <div className="mt-2 pt-2 border-t border-gold-100 flex items-center gap-1 text-xs text-slate-500">
+                                            <Shield className="h-3 w-3" />
+                                            <span>Verified Credential</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                        <p className="text-center text-slate-500 text-sm mt-4">
+                            ...and 17 more specialty certificates, one for each module completed!
+                        </p>
+                    </div>
+
+                    {/* Benefits list */}
+                    <div className="mt-10 grid sm:grid-cols-2 lg:grid-cols-5 gap-4 max-w-5xl mx-auto">
+                        {["Master certification with unique ID", "21 specialty certificates", "80+ CEU hours", "Verifiable on LinkedIn", "Lifetime validity"].map((item, i) => (
+                            <div key={i} className="flex items-center gap-2 bg-cream-50 rounded-lg px-4 py-3 border border-cream-200">
+                                <CheckCircle2 className="h-4 w-4 text-olive-600 shrink-0" />
+                                <span className="text-sm text-slate-700">{item}</span>
+                            </div>
+                        ))}
                     </div>
                 </div>
             </section>
@@ -480,8 +598,63 @@ export default function FMCertificationPage() {
                 </div>
             </section>
 
+            {/* Also AccrediPro Section - Accreditations Detail */}
+            <section className="py-12 sm:py-16 bg-white">
+                <div className="max-w-6xl mx-auto px-4">
+                    <div className="text-center mb-10">
+                        <p className="text-burgundy-600 font-semibold mb-2 uppercase tracking-wide">Also AccrediPro</p>
+                        <h2 className="text-3xl sm:text-4xl font-bold text-slate-900 mb-4">
+                            9 Global Accreditations
+                        </h2>
+                        <p className="text-lg text-slate-600 max-w-3xl mx-auto">
+                            Practice in 30+ countries. Qualify for professional liability insurance. Credentials recognized worldwide.
+                        </p>
+                    </div>
+
+                    <div className="grid md:grid-cols-3 gap-4 mb-8">
+                        {ACCREDITATIONS.map((acc, i) => (
+                            <div key={i} className="bg-gradient-to-br from-cream-50 to-white rounded-xl p-4 border border-cream-200 hover:shadow-lg transition-all">
+                                <div className="flex items-center gap-3 mb-2">
+                                    <span className="bg-burgundy-600 text-white font-bold px-2.5 py-1 rounded text-sm">{acc.abbr}</span>
+                                    <BadgeCheck className="h-5 w-5 text-olive-600" />
+                                </div>
+                                <p className="font-semibold text-slate-800 text-sm mb-1">{acc.name}</p>
+                                <p className="text-xs text-slate-500">{acc.desc}</p>
+                            </div>
+                        ))}
+                    </div>
+
+                    {/* Key Benefits of Accreditations */}
+                    <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4 max-w-5xl mx-auto">
+                        {[
+                            { icon: Globe2, title: "Global Mobility", desc: "Practice in 30+ countries" },
+                            { icon: Shield, title: "Insurance Access", desc: "Qualify for liability coverage" },
+                            { icon: Award, title: "Premium Credibility", desc: "Command higher rates" },
+                            { icon: Infinity, title: "Lifetime Validity", desc: "Certificates never expire" },
+                        ].map((item, i) => {
+                            const Icon = item.icon || Shield;
+                            return (
+                                <div key={i} className="flex items-center gap-3 bg-olive-50 rounded-lg px-4 py-3 border border-olive-100">
+                                    <Shield className="h-5 w-5 text-olive-600 shrink-0" />
+                                    <div>
+                                        <p className="font-semibold text-slate-800 text-sm">{item.title}</p>
+                                        <p className="text-xs text-slate-500">{item.desc}</p>
+                                    </div>
+                                </div>
+                            );
+                        })}
+                    </div>
+
+                    <div className="text-center mt-6">
+                        <a href="https://learn.accredipro.academy/accreditation" target="_blank" rel="noopener noreferrer" className="text-burgundy-600 hover:text-burgundy-700 font-medium text-sm underline">
+                            View full accreditation details →
+                        </a>
+                    </div>
+                </div>
+            </section>
+
             {/* What You Get - with Images */}
-            <section className="py-12 sm:py-16">
+            <section className="py-12 sm:py-16 bg-cream-50">
                 <div className="max-w-6xl mx-auto px-4">
                     <div className="text-center mb-10">
                         <p className="text-burgundy-600 font-semibold mb-2 uppercase tracking-wide">Complete Access</p>
@@ -526,7 +699,51 @@ export default function FMCertificationPage() {
                 </div>
             </section>
 
-            {/* Sarah's Story with Video Placeholder */}
+            {/* Bonus Section - Similar to Mini Diploma */}
+            <section className="py-12 sm:py-16 bg-gradient-to-b from-burgundy-900 to-burgundy-800">
+                <div className="max-w-5xl mx-auto px-4">
+                    <div className="text-center mb-10">
+                        <div className="inline-flex items-center gap-2 bg-gold-400/20 border border-gold-400/30 rounded-full px-4 py-2 mb-4">
+                            <Gift className="h-4 w-4 text-gold-400" />
+                            <span className="text-sm font-semibold text-gold-400">BONUSES INCLUDED</span>
+                        </div>
+                        <h2 className="text-3xl sm:text-4xl font-bold text-white mb-4">
+                            6 Exclusive Bonuses Worth $497
+                        </h2>
+                        <p className="text-lg text-burgundy-200">
+                            Included FREE when you enroll today
+                        </p>
+                    </div>
+
+                    <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
+                        {[
+                            { title: "Client Intake Templates", value: "$97", desc: "Professional forms ready to use with your first client" },
+                            { title: "Protocol Builder Toolkit", value: "$147", desc: "Create custom protocols for any condition" },
+                            { title: "Pricing & Packages Guide", value: "$47", desc: "Exactly how to price your services for profit" },
+                            { title: "Marketing Starter Kit", value: "$97", desc: "Social media templates, bio scripts, and more" },
+                            { title: "First Client Script", value: "$47", desc: "Word-for-word script for your discovery call" },
+                            { title: "Graduate Resource Vault", value: "$62", desc: "Ongoing resources as the field evolves" },
+                        ].map((bonus, i) => (
+                            <div key={i} className="bg-white/10 backdrop-blur-sm rounded-xl p-4 border border-white/20">
+                                <div className="flex items-center justify-between mb-2">
+                                    <Gift className="h-5 w-5 text-gold-400" />
+                                    <span className="text-gold-400 font-bold text-sm">{bonus.value} value</span>
+                                </div>
+                                <h3 className="font-bold text-white mb-1">{bonus.title}</h3>
+                                <p className="text-sm text-burgundy-200">{bonus.desc}</p>
+                            </div>
+                        ))}
+                    </div>
+
+                    <div className="text-center mt-8">
+                        <p className="text-burgundy-200">
+                            Total Bonus Value: <span className="text-gold-400 font-bold text-xl">$497</span> — <span className="text-white font-semibold">Yours FREE</span>
+                        </p>
+                    </div>
+                </div>
+            </section>
+
+            {/* Sarah's Story */}
             <section className="py-12 sm:py-16 bg-gradient-to-b from-cream-100 to-white">
                 <div className="max-w-4xl mx-auto px-4">
                     <div className="flex flex-col items-center text-center mb-6">
@@ -556,7 +773,7 @@ export default function FMCertificationPage() {
                 </div>
             </section>
 
-            {/* Testimonials with Specifics */}
+            {/* Testimonials with Specifics - Random Avatars */}
             <section className="py-12 sm:py-16">
                 <div className="max-w-6xl mx-auto px-4">
                     <div className="text-center mb-10">
@@ -573,7 +790,7 @@ export default function FMCertificationPage() {
                             after="Working 20 hrs/week from home"
                             timeframe="Certified in 4 months"
                             income="$6,200/month"
-                            avatarIndex={1}
+                            avatarSrc={testimonialAvatars[0]}
                         />
                         <TestimonialCard
                             quote="The 21 specialty certificates are GOLD. When clients see I'm certified in thyroid, hormones, AND gut health — they trust me immediately."
@@ -583,7 +800,7 @@ export default function FMCertificationPage() {
                             after="21 specialty credentials"
                             timeframe="Completed in 5 months"
                             income="$8,400/month"
-                            avatarIndex={6}
+                            avatarSrc={testimonialAvatars[1]}
                         />
                         <TestimonialCard
                             quote="I work with Hashimoto's clients exclusively now. My specialized certificates prove I actually know my stuff. Clients pay premium rates."
@@ -593,7 +810,7 @@ export default function FMCertificationPage() {
                             after="Thyroid specialist, $150/session"
                             timeframe="First client in 3 weeks"
                             income="$9,800/month"
-                            avatarIndex={3}
+                            avatarSrc={testimonialAvatars[2]}
                         />
                         <TestimonialCard
                             quote="The Coach Workspace alone is worth it. I manage all clients, track progress, create protocols — everything in one place. So professional."
@@ -601,7 +818,7 @@ export default function FMCertificationPage() {
                             role="FM Practitioner, Texas"
                             timeframe="6 months to certification"
                             income="$5,100/month part-time"
-                            avatarIndex={2}
+                            avatarSrc={testimonialAvatars[3]}
                         />
                         <TestimonialCard
                             quote="Other certifications hand you a PDF and disappear. Here, Sarah literally messages you, checks on you, celebrates wins. Like having a partner."
@@ -610,7 +827,7 @@ export default function FMCertificationPage() {
                             before="Stuck in 9-5, unfulfilled"
                             after="Own schedule, meaningful work"
                             timeframe="Career change in 5 months"
-                            avatarIndex={8}
+                            avatarSrc={testimonialAvatars[4]}
                         />
                         <TestimonialCard
                             quote="I was skeptical — $197 seemed too good. But the content rivals $10K programs. The mentorship is what makes the difference."
@@ -618,7 +835,7 @@ export default function FMCertificationPage() {
                             role="Career Changer, Florida"
                             timeframe="Certified in 4 months"
                             income="First client at $125/hr"
-                            avatarIndex={7}
+                            avatarSrc={testimonialAvatars[5]}
                         />
                     </div>
                 </div>
@@ -675,7 +892,7 @@ export default function FMCertificationPage() {
                 </div>
             </section>
 
-            {/* Pricing Section */}
+            {/* Improved Pricing Section */}
             <section id="pricing" className="py-12 sm:py-16 bg-gradient-to-b from-cream-50 to-white">
                 <div className="max-w-4xl mx-auto px-4">
                     <div className="text-center mb-8">
@@ -683,43 +900,84 @@ export default function FMCertificationPage() {
                             <Timer className="h-4 w-4 text-red-600" />
                             <span className="text-sm font-semibold text-red-700">Christmas Special Ends Dec 26th — Only 23 Spots Left</span>
                         </div>
-                        <h2 className="text-3xl sm:text-4xl font-bold text-slate-900 mb-3">Complete Certification</h2>
+                        <h2 className="text-3xl sm:text-4xl font-bold text-slate-900 mb-3">Start Your Certification Now</h2>
                     </div>
 
                     {/* Pricing Card */}
-                    <div className="bg-white rounded-3xl shadow-xl border border-slate-200 overflow-hidden max-w-2xl mx-auto">
-                        <div className="bg-gradient-to-r from-burgundy-700 to-burgundy-800 px-6 py-5 text-center">
-                            <div className="flex items-center justify-center gap-2 mb-2">
+                    <div className="bg-white rounded-3xl shadow-2xl border-2 border-burgundy-100 overflow-hidden max-w-2xl mx-auto">
+                        <div className="bg-gradient-to-r from-burgundy-700 to-burgundy-800 px-6 py-6 text-center">
+                            <div className="flex items-center justify-center gap-2 mb-3">
                                 <GraduationCap className="h-5 w-5 text-gold-400" />
                                 <span className="text-gold-400 font-semibold uppercase tracking-wide text-sm">Certified FM Practitioner</span>
                             </div>
                             <div className="flex items-center justify-center gap-4 mb-2">
-                                <span className="text-white/60 line-through text-2xl">$497</span>
-                                <span className="text-5xl font-black text-white">$197</span>
+                                <span className="text-white/60 line-through text-3xl">$497</span>
+                                <span className="text-6xl font-black text-white">$197</span>
                             </div>
-                            <p className="text-burgundy-200 text-sm">or 2 × $109/month</p>
+                            <p className="text-burgundy-200 text-sm mb-3">one-time payment</p>
+                            <div className="inline-block bg-burgundy-600/50 rounded-lg px-4 py-2 border border-burgundy-500">
+                                <p className="text-white font-medium">or <span className="font-bold">2 × $109/month</span></p>
+                            </div>
                         </div>
 
                         <div className="p-6">
-                            <div className="grid grid-cols-2 gap-2 mb-6">
-                                {["21 modules (168 lessons)", "21 specialty certificates", "Master FM Practitioner cert", "60+ hours, 80+ CEU", "Private 1:1 mentorship", "Coach Workspace access", "Career launch support", "Lifetime community access"].map((item, i) => (
-                                    <div key={i} className="flex items-center gap-2 text-sm text-slate-700">
-                                        <CheckCircle2 className="h-4 w-4 text-olive-600 shrink-0" />{item}
-                                    </div>
-                                ))}
+                            {/* What's Included */}
+                            <div className="mb-6">
+                                <p className="font-semibold text-slate-800 mb-3 text-center">Everything Included:</p>
+                                <div className="grid grid-cols-2 gap-2">
+                                    {[
+                                        "21 modules (168 lessons)",
+                                        "21 specialty certificates",
+                                        "Master FM Practitioner cert",
+                                        "60+ hours, 80+ CEU",
+                                        "Private 1:1 mentorship",
+                                        "Coach Workspace access",
+                                        "Career launch support",
+                                        "6 bonuses ($497 value)",
+                                    ].map((item, i) => (
+                                        <div key={i} className="flex items-center gap-2 text-sm text-slate-700">
+                                            <CheckCircle2 className="h-4 w-4 text-olive-600 shrink-0" />{item}
+                                        </div>
+                                    ))}
+                                </div>
+                            </div>
+
+                            {/* Key Benefits Row */}
+                            <div className="grid grid-cols-3 gap-3 mb-6 py-4 border-y border-slate-100">
+                                <div className="text-center">
+                                    <Infinity className="h-5 w-5 text-burgundy-600 mx-auto mb-1" />
+                                    <p className="text-xs font-semibold text-slate-800">Lifetime Access</p>
+                                </div>
+                                <div className="text-center">
+                                    <Clock className="h-5 w-5 text-burgundy-600 mx-auto mb-1" />
+                                    <p className="text-xs font-semibold text-slate-800">Self-Paced</p>
+                                </div>
+                                <div className="text-center">
+                                    <HeartHandshake className="h-5 w-5 text-burgundy-600 mx-auto mb-1" />
+                                    <p className="text-xs font-semibold text-slate-800">Personal Mentorship</p>
+                                </div>
+                            </div>
+
+                            {/* Scarcity Note */}
+                            <div className="bg-burgundy-50 rounded-xl p-4 mb-6 border border-burgundy-100">
+                                <p className="text-burgundy-800 text-sm text-center">
+                                    <strong>Only accepting limited students</strong> — I personally mentor every student until they're certified.
+                                </p>
                             </div>
 
                             <a href="https://sarah.accredipro.academy/fm-certification-access" className="block">
-                                <Button className="w-full bg-gradient-to-r from-burgundy-600 to-burgundy-700 hover:from-burgundy-700 hover:to-burgundy-800 text-white font-bold py-5 rounded-xl text-lg shadow-lg">
+                                <Button className="w-full bg-gradient-to-r from-burgundy-600 to-burgundy-700 hover:from-burgundy-700 hover:to-burgundy-800 text-white font-bold py-6 rounded-xl text-lg shadow-lg">
                                     <GraduationCap className="h-5 w-5 mr-2" />
                                     Start My Certification — $197
                                 </Button>
                             </a>
 
                             <div className="flex flex-wrap items-center justify-center gap-3 mt-4 text-xs text-slate-500">
-                                <span className="flex items-center gap-1"><Shield className="h-3.5 w-3.5 text-olive-600" />Secure checkout</span>
-                                <span>•</span><span>Instant access</span><span>•</span>
-                                <span className="flex items-center gap-1"><CheckCircle2 className="h-3.5 w-3.5 text-olive-600" />30-day guarantee</span>
+                                <span className="flex items-center gap-1"><Shield className="h-3.5 w-3.5 text-olive-600" />30-day money-back guarantee</span>
+                                <span>•</span>
+                                <span>Instant access</span>
+                                <span>•</span>
+                                <span>Start today</span>
                             </div>
                         </div>
                     </div>
@@ -728,7 +986,7 @@ export default function FMCertificationPage() {
                     <div className="mt-6 text-center">
                         <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
                             <div className="flex -space-x-2">
-                                {STUDENT_AVATARS.slice(0, 5).map((src, i) => (
+                                {[...ALL_STUDENT_AVATARS].sort(() => Math.random() - 0.5).slice(0, 6).map((src, i) => (
                                     <Image key={i} src={src} alt="Student" width={32} height={32} className="w-8 h-8 rounded-full object-cover border-2 border-white shadow-sm" />
                                 ))}
                             </div>
@@ -796,16 +1054,22 @@ export default function FMCertificationPage() {
             </section>
 
             {/* Final CTA */}
-            <section className="py-16 sm:py-20 bg-gradient-to-b from-burgundy-900 to-slate-900 text-white">
+            <section className="py-16 sm:py-20 bg-gradient-to-b from-burgundy-900 to-burgundy-950 text-white">
                 <div className="max-w-4xl mx-auto px-4 text-center">
                     <p className="text-gold-400 font-semibold mb-3 uppercase tracking-wide">Your Transformation Starts Now</p>
                     <h2 className="text-3xl sm:text-4xl font-bold mb-4">Become a Certified Functional Medicine Practitioner</h2>
-                    <p className="text-lg text-slate-300 mb-3">With specialized training in Thyroid, Hormones, Gut Health, Autoimmune & 17 more areas</p>
-                    <p className="text-xl font-bold text-gold-400 mb-8">Start earning in 4-8 weeks!</p>
+                    <p className="text-lg text-slate-300 mb-3 max-w-2xl mx-auto">
+                        Add $4,000–$8,000/month helping patients actually heal — without quitting your job.
+                    </p>
+                    <div className="flex flex-wrap justify-center gap-3 mb-8">
+                        <span className="flex items-center gap-1 text-sm text-olive-300"><CheckCircle2 className="h-4 w-4" />21 specializations</span>
+                        <span className="flex items-center gap-1 text-sm text-olive-300"><CheckCircle2 className="h-4 w-4" />Personal mentorship</span>
+                        <span className="flex items-center gap-1 text-sm text-olive-300"><CheckCircle2 className="h-4 w-4" />Earning within 90 days</span>
+                    </div>
 
                     <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-6 mb-8 max-w-xl mx-auto">
                         <div className="grid grid-cols-2 gap-3 text-left text-sm">
-                            {["21 modules (168 lessons)", "21 specialty certificates", "Private 1:1 mentorship", "Coach Workspace access", "Career launch support", "Lifetime community access"].map((item, i) => (
+                            {["21 modules (168 lessons)", "21 specialty certificates", "Private 1:1 mentorship", "Coach Workspace access", "Career launch support", "Lifetime access"].map((item, i) => (
                                 <div key={i} className="flex items-center gap-2"><CheckCircle2 className="h-4 w-4 text-olive-400 shrink-0" /><span className="text-slate-200">{item}</span></div>
                             ))}
                         </div>
@@ -814,7 +1078,7 @@ export default function FMCertificationPage() {
                     <div className="mb-6">
                         <p className="text-slate-400 mb-1">Complete Investment</p>
                         <p className="text-5xl font-black text-gold-400 mb-1">$197</p>
-                        <p className="text-slate-400 text-sm">or 2 × $109/month • Lifetime access</p>
+                        <p className="text-slate-400 text-sm">or 2 × $109/month • Lifetime access • Self-paced</p>
                     </div>
 
                     <a href="https://sarah.accredipro.academy/fm-certification-access">
@@ -825,24 +1089,80 @@ export default function FMCertificationPage() {
                     </a>
 
                     <div className="flex flex-wrap justify-center gap-5 mt-6 text-slate-400 text-sm">
-                        <span className="flex items-center gap-2"><Shield className="h-4 w-4 text-olive-400" />Secure checkout</span>
+                        <span className="flex items-center gap-2"><Shield className="h-4 w-4 text-olive-400" />30-day guarantee</span>
                         <span className="flex items-center gap-2"><Zap className="h-4 w-4 text-gold-400" />Instant access</span>
-                        <span className="flex items-center gap-2"><CheckCircle2 className="h-4 w-4 text-olive-400" />30-day guarantee</span>
+                        <span className="flex items-center gap-2"><Infinity className="h-4 w-4 text-olive-400" />Lifetime access</span>
                     </div>
                 </div>
             </section>
 
-            {/* Footer */}
-            <footer className="py-8 bg-slate-900 text-slate-500 text-center text-sm">
-                <div className="max-w-5xl mx-auto px-4">
-                    <div className="flex items-center justify-center gap-2 mb-3">
-                        <GraduationCap className="h-5 w-5 text-burgundy-500" />
-                        <span className="font-semibold text-slate-300">AccrediPro Academy</span>
+            {/* Professional Footer - No Blue, Burgundy Branded */}
+            <footer className="bg-burgundy-950 text-white">
+                {/* Main Footer */}
+                <div className="max-w-6xl mx-auto px-4 py-12">
+                    <div className="grid md:grid-cols-4 gap-8 mb-10">
+                        {/* Brand */}
+                        <div className="md:col-span-2">
+                            <div className="flex items-center gap-2 mb-4">
+                                <GraduationCap className="h-8 w-8 text-gold-400" />
+                                <span className="font-bold text-xl">AccrediPro Academy</span>
+                            </div>
+                            <p className="text-burgundy-200 text-sm mb-4 max-w-sm">
+                                The most comprehensive Functional Medicine certification program. 21 specializations, personal mentorship, and career launch support.
+                            </p>
+                            <div className="flex items-center gap-4">
+                                <div className="flex items-center gap-1">
+                                    <Star className="h-4 w-4 fill-gold-400 text-gold-400" />
+                                    <Star className="h-4 w-4 fill-gold-400 text-gold-400" />
+                                    <Star className="h-4 w-4 fill-gold-400 text-gold-400" />
+                                    <Star className="h-4 w-4 fill-gold-400 text-gold-400" />
+                                    <Star className="h-4 w-4 fill-gold-400 text-gold-400" />
+                                </div>
+                                <span className="text-sm text-burgundy-200">4.9/5 (823 reviews)</span>
+                            </div>
+                        </div>
+
+                        {/* Quick Links */}
+                        <div>
+                            <h4 className="font-semibold mb-4 text-gold-400">Programs</h4>
+                            <ul className="space-y-2 text-sm text-burgundy-200">
+                                <li><a href="/fm-certification" className="hover:text-white transition-colors">Full Certification</a></li>
+                                <li><a href="/fm-mini-diploma" className="hover:text-white transition-colors">Mini Diploma</a></li>
+                                <li><a href="https://learn.accredipro.academy/accreditation" className="hover:text-white transition-colors">Accreditations</a></li>
+                            </ul>
+                        </div>
+
+                        {/* Support */}
+                        <div>
+                            <h4 className="font-semibold mb-4 text-gold-400">Support</h4>
+                            <ul className="space-y-2 text-sm text-burgundy-200">
+                                <li><a href="mailto:sarah@accredipro.academy" className="hover:text-white transition-colors">sarah@accredipro.academy</a></li>
+                                <li><a href="https://learn.accredipro.academy/login" className="hover:text-white transition-colors">Student Login</a></li>
+                            </ul>
+                        </div>
                     </div>
-                    <p className="mb-3 max-w-2xl mx-auto text-xs">
-                        *Income ranges represent goals of certified practitioners. Results vary based on effort, background, and dedication.
-                    </p>
-                    <p>© 2025 AccrediPro Academy. All rights reserved.</p>
+
+                    {/* Accreditation Badges */}
+                    <div className="border-t border-burgundy-800 pt-8 mb-8">
+                        <p className="text-center text-xs text-burgundy-400 mb-4 uppercase tracking-wide">Internationally Accredited</p>
+                        <div className="flex flex-wrap justify-center gap-3">
+                            {["CMA", "IPHM", "CPD", "IAOTH", "ICAHP", "IGCT", "CTAA", "IHTCP", "IIOHT"].map((acc, i) => (
+                                <span key={i} className="bg-burgundy-900 border border-burgundy-700 px-3 py-1 rounded text-xs font-medium text-burgundy-200">{acc}</span>
+                            ))}
+                        </div>
+                    </div>
+                </div>
+
+                {/* Bottom Bar */}
+                <div className="border-t border-burgundy-900 py-6">
+                    <div className="max-w-6xl mx-auto px-4">
+                        <div className="flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-burgundy-400">
+                            <p>© 2025 AccrediPro Academy. All rights reserved.</p>
+                            <p className="text-center">
+                                *Income ranges represent goals of certified practitioners. Results vary based on effort, background, and dedication.
+                            </p>
+                        </div>
+                    </div>
                 </div>
             </footer>
         </div>
