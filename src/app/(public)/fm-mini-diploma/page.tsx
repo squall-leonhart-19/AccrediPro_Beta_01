@@ -102,7 +102,7 @@ const CertificatePreview = ({ name = "Jennifer Martinez" }: { name?: string }) =
             <div className="pt-3 border-t border-gold-200">
                 <div className="flex items-center justify-center gap-2 text-xs text-slate-500">
                     <Shield className="h-4 w-4 text-emerald-600" />
-                    <span>Credential ID: APR-FM-2025-84721 • Verify at accredipro.com/verify</span>
+                    <span>Credential ID: APR-FM-2025-84721</span>
                 </div>
             </div>
         </div>
@@ -771,7 +771,7 @@ export default function FMMiniDiplomaPage() {
                                     { icon: FileCheck, text: "Official AccrediPro certificate with unique credential ID" },
                                     { icon: Laptop, text: "Download, print, or share digitally" },
                                     { icon: BadgeCheck, text: "Add to your LinkedIn profile" },
-                                    { icon: Shield, text: "Verifiable at accredipro.com/verify" },
+                                    { icon: Shield, text: "Lifetime validity — yours forever" },
                                 ].map((item, i) => (
                                     <div key={i} className="flex items-center gap-3">
                                         <div className="w-10 h-10 rounded-lg bg-burgundy-100 flex items-center justify-center shrink-0">
