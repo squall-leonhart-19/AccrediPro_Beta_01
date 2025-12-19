@@ -309,8 +309,8 @@ const StickyMobileCTA = () => {
         <div className="fixed bottom-0 left-0 right-0 z-50 lg:hidden bg-white border-t border-slate-200 shadow-2xl p-4 animate-slide-up">
             <div className="flex items-center justify-between gap-3 max-w-lg mx-auto">
                 <div>
-                    <p className="text-slate-500 text-xs line-through">$197</p>
-                    <p className="text-2xl font-black text-burgundy-700">$27</p>
+                    <p className="text-slate-500 text-xs line-through">$47</p>
+                    <p className="text-2xl font-black text-burgundy-700">$27 <span className="text-xs text-red-600 font-bold">🎄 -$20</span></p>
                 </div>
                 <a href="https://sarah.accredipro.academy/fm-mini-diploma-access" className="flex-1">
                     <Button className="w-full bg-gradient-to-r from-burgundy-600 to-burgundy-700 hover:from-burgundy-700 hover:to-burgundy-800 text-white font-bold py-4 rounded-xl">
@@ -372,6 +372,25 @@ export default function FMMiniDiplomaPage() {
                     animation: slide-up 0.3s ease-out forwards;
                 }
             `}</style>
+
+            {/* Christmas Discount Banner */}
+            <div className="bg-gradient-to-r from-red-600 via-red-500 to-green-600 text-white py-2.5 px-4">
+                <div className="max-w-6xl mx-auto flex flex-col sm:flex-row items-center justify-center gap-2 sm:gap-4 text-sm">
+                    <span className="flex items-center gap-2 font-bold">
+                        <span className="text-lg">🎄</span>
+                        Christmas Discount: Save $20!
+                    </span>
+                    <span className="hidden sm:block text-white/60">|</span>
+                    <span className="text-white/90">
+                        Until <strong>26 December</strong>
+                    </span>
+                    <span className="hidden sm:block text-white/60">|</span>
+                    <span className="flex items-center gap-1.5 bg-white/20 px-3 py-1 rounded-full text-xs font-bold">
+                        <span className="w-2 h-2 bg-yellow-400 rounded-full animate-pulse" />
+                        Only 17 spots left (I mentor each student personally)
+                    </span>
+                </div>
+            </div>
 
             {/* Trustpilot Widget */}
             <div className="bg-white py-2 border-b border-slate-100">
@@ -465,8 +484,8 @@ export default function FMMiniDiplomaPage() {
                             </Button>
                         </a>
                         <p className="text-sm text-slate-500">
-                            <span className="line-through text-slate-400">$197</span>
-                            <span className="text-burgundy-600 font-bold ml-2">86% OFF</span>
+                            <span className="line-through text-slate-400">$47</span>
+                            <span className="text-red-600 font-bold ml-2">🎄 Christmas: Save $20!</span>
                         </p>
                     </div>
 
@@ -963,10 +982,10 @@ export default function FMMiniDiplomaPage() {
                                 <span className="text-gold-400 font-semibold uppercase tracking-wide text-sm">Functional Medicine Mini Diploma</span>
                             </div>
                             <div className="flex items-center justify-center gap-4">
-                                <span className="text-white/60 line-through text-2xl">$197</span>
+                                <span className="text-white/60 line-through text-2xl">$47</span>
                                 <span className="text-5xl font-black text-white">$27</span>
                             </div>
-                            <p className="text-burgundy-200 text-sm mt-2">Save 86% — Limited time offer</p>
+                            <p className="text-yellow-300 text-sm mt-2 font-semibold">🎄 Christmas Discount: Save $20! Until 26 Dec</p>
                         </div>
 
                         {/* What's Included */}
