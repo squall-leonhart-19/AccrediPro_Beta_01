@@ -397,11 +397,27 @@ export default function FMMiniDiplomaPage() {
                     </h1>
 
                     {/* Subheadline */}
-                    <p className="text-xl sm:text-2xl text-center text-slate-600 mb-8 max-w-3xl mx-auto">
+                    <p className="text-xl sm:text-2xl text-center text-slate-600 mb-6 max-w-3xl mx-auto">
                         Start earning <span className="font-bold text-slate-800">$50-$150/hr</span> helping people fix what doctors miss.
                         <br />
                         <span className="text-lg text-slate-500">90 minutes. Internationally accredited certificate. Only $27.</span>
                     </p>
+
+                    {/* Accreditation Logos - Right after headline */}
+                    <div className="max-w-3xl mx-auto mb-8">
+                        <Image
+                            src="/all-logos.png"
+                            alt="Accredited by CMA, IPHM, CPD, IAOTH, ICAHP, IGCT, CTAA, IHTCP, IIOHT"
+                            width={800}
+                            height={100}
+                            className="w-full h-auto"
+                        />
+                    </div>
+
+                    {/* Certificate Preview - Inline */}
+                    <div className="max-w-md mx-auto mb-8">
+                        <CertificatePreview />
+                    </div>
 
                     {/* Social Proof */}
                     <div className="flex justify-center mb-8 sm:mb-10">
@@ -536,47 +552,6 @@ export default function FMMiniDiplomaPage() {
                                     <ArrowRight className="h-5 w-5 ml-2" />
                                 </Button>
                             </a>
-                        </div>
-                    </div>
-                </div>
-            </section>
-
-            {/* Accreditation Highlight Section */}
-            <section className="py-16 sm:py-20 bg-gradient-to-b from-white to-slate-50">
-                <div className="max-w-6xl mx-auto px-4">
-                    <div className="text-center mb-10">
-                        <p className="text-burgundy-600 font-semibold mb-2 uppercase tracking-wide">Why AccrediPro Academy?</p>
-                        <h2 className="text-3xl sm:text-4xl font-bold text-slate-900 mb-4">
-                            Recognized by 9 International Bodies
-                        </h2>
-                        <p className="text-xl text-slate-600 max-w-2xl mx-auto">
-                            AccrediPro Academy holds accreditation from 9 prestigious organizations — giving your credentials global recognition.
-                        </p>
-                    </div>
-
-                    {/* Accreditation Logos Image */}
-                    <div className="max-w-4xl mx-auto mb-10">
-                        <Image
-                            src="/all-logos.png"
-                            alt="Accreditation Logos - CMA, IPHM, CPD, IAOTH, ICAHP, IGCT, CTAA, IHTCP, IIOHT"
-                            width={1200}
-                            height={200}
-                            className="w-full h-auto"
-                        />
-                    </div>
-
-                    {/* Accreditation Grid */}
-                    <div className="max-w-4xl mx-auto">
-                        <div className="bg-gradient-to-br from-emerald-50 to-teal-50 rounded-3xl p-8 sm:p-10 border border-emerald-100">
-                            <div className="text-center">
-                                <p className="text-emerald-700 font-medium mb-4">Insurance eligibility in 30+ countries • CPD certified • Lifetime validity</p>
-                                <a href="https://sarah.accredipro.academy/fm-mini-diploma-access">
-                                    <Button className="bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-5 px-8 rounded-xl text-lg shadow-lg">
-                                        <Award className="h-5 w-5 mr-2" />
-                                        Get Your Accredited Certificate — $27
-                                    </Button>
-                                </a>
-                            </div>
                         </div>
                     </div>
                 </div>
