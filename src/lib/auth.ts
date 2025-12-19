@@ -112,6 +112,16 @@ export const authOptions: NextAuthOptions = {
           });
         }
 
+        // Check if user is Mini Diploma only (enrolled only in fm-mini-diploma, not completed)
+        const enrollments = await prisma.enrollment.findMany({
+          where: { userId: user.id },
+          include: { course: { select: { slug: true } } },
+        });
+        const isMiniDiplomaOnly =
+          enrollments.length === 1 &&
+          enrollments[0].course.slug === "fm-mini-diploma" &&
+          enrollments[0].status !== "COMPLETED";
+
         return {
           id: user.id,
           email: user.email,
@@ -122,6 +132,7 @@ export const authOptions: NextAuthOptions = {
           lastName: user.lastName,
           isFirstLogin,
           miniDiplomaCategory: user.miniDiplomaCategory,
+          isMiniDiplomaOnly,
         };
       },
     }),
@@ -139,6 +150,7 @@ export const authOptions: NextAuthOptions = {
         token.lastName = user.lastName;
         token.isFirstLogin = user.isFirstLogin;
         token.miniDiplomaCategory = user.miniDiplomaCategory;
+        token.isMiniDiplomaOnly = user.isMiniDiplomaOnly;
       }
       return token;
     },
@@ -150,6 +162,7 @@ export const authOptions: NextAuthOptions = {
         session.user.lastName = token.lastName as string;
         session.user.isFirstLogin = token.isFirstLogin as boolean;
         session.user.miniDiplomaCategory = token.miniDiplomaCategory as string | null;
+        session.user.isMiniDiplomaOnly = token.isMiniDiplomaOnly as boolean;
       }
       return session;
     },

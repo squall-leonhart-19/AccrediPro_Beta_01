@@ -52,17 +52,12 @@ const fullNavItems = [
   { href: "/profile", label: "My Account", icon: User, tourId: "profile" },
 ];
 
-// Simplified nav for mini-diploma-only users (no paid courses)
-// Hides: Programs, Career Center, Catalog, Roadmap - shows focused experience
+// Minimal nav for Mini Diploma users - maximum focus for completion
+// Only: Lessons, Introduce Yourself, Private Chat with Sarah
 const miniDiplomaNavItems = [
-  { href: "/dashboard", label: "Dashboard", icon: LayoutDashboard, tourId: "dashboard" },
-  { href: "/my-mini-diploma", label: "🎁 My Mini Diploma", icon: GraduationCap, tourId: "mini-diploma", highlight: true },
-  { href: "/start-here", label: "Start Here", icon: GraduationCap, tourId: "start-here" },
+  { href: "/mini-diploma", label: "My Lessons", icon: GraduationCap, tourId: "mini-diploma" },
+  { href: "/community/introduce-yourself", label: "Introduce Yourself", icon: Users, tourId: "community" },
   { href: "/messages", label: "Chat with Sarah", icon: MessageSquare, notificationKey: "messages" as const, tourId: "messages" },
-  { href: "/community", label: "Community", icon: Users, tourId: "community" },
-  { href: "/training", label: "Training", icon: GraduationCap, tourId: "training" },
-  { href: "/help", label: "Help & Support", icon: HelpCircle, tourId: "help" },
-  { href: "/profile", label: "My Account", icon: User, tourId: "profile" },
 ];
 
 
@@ -86,9 +81,8 @@ export function DashboardNav() {
   const initials = `${user?.firstName?.charAt(0) || ""}${user?.lastName?.charAt(0) || ""}`.toUpperCase() || "U";
   const isAdmin = user?.role === "ADMIN";
 
-  // Detect if user is mini-diploma-only (no paid enrollments)
-  // For now, check if they have miniDiplomaCategory but no role indicating advancement
-  const isMiniDiplomaOnly = user?.miniDiplomaCategory && !isAdmin && user?.role === "STUDENT";
+  // Use the session flag set during login - true if user only has uncompleted mini diploma enrollment
+  const isMiniDiplomaOnly = user?.isMiniDiplomaOnly === true;
 
   // Select nav items based on user type
   const navItems = isMiniDiplomaOnly ? miniDiplomaNavItems : fullNavItems;
@@ -156,24 +150,6 @@ export function DashboardNav() {
             );
           })}
 
-          {/* Mini Diploma link is now part of miniDiplomaNavItems for focused users */}
-          {/* Show separate mini diploma for PAID users who also have mini diploma */}
-          {user?.miniDiplomaCategory && !isMiniDiplomaOnly && (
-            <Link
-              href="/my-mini-diploma"
-              prefetch={true}
-              className={cn(
-                "w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-all duration-150 relative",
-                pathname === "/my-mini-diploma"
-                  ? "bg-gradient-to-r from-green-400/20 to-emerald-500/10 text-green-300 shadow-lg shadow-green-500/10 border border-green-400/20"
-                  : "text-green-200 hover:bg-green-600/30 hover:text-white bg-green-700/20 border border-green-500/20"
-              )}
-            >
-              <GraduationCap className={cn("w-5 h-5", pathname === "/my-mini-diploma" ? "text-green-400" : "text-green-300")} />
-              <span className="flex-1 text-left">🎁 My Mini Diploma</span>
-              <span className="text-[10px] bg-green-500 text-white px-1.5 py-0.5 rounded-full font-bold">FREE</span>
-            </Link>
-          )}
 
           {/* Coach Section - only for ADMIN, INSTRUCTOR, MENTOR */}
           {user && ["ADMIN", "INSTRUCTOR", "MENTOR"].includes(user.role) && (

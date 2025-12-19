@@ -18,26 +18,34 @@ async function getUserOnboardingData(userId: string) {
     },
   });
 
-  // Get coach name if user has enrollments
-  const enrollment = await prisma.enrollment.findFirst({
-    where: { userId, course: { coachId: { not: null } } },
+  // Get all enrollments to check Mini Diploma status
+  const enrollments = await prisma.enrollment.findMany({
+    where: { userId },
     include: {
       course: {
-        include: {
-          coach: { select: { firstName: true, lastName: true } },
-        },
+        select: { slug: true, coachId: true, coach: { select: { firstName: true, lastName: true } } },
       },
     },
   });
 
-  const coachName = enrollment?.course?.coach
-    ? `${enrollment.course.coach.firstName} ${enrollment.course.coach.lastName}`
+  // Check if user is mini-diploma-only (single fm-mini-diploma enrollment, not completed)
+  const isMiniDiplomaOnly =
+    enrollments.length === 1 &&
+    enrollments[0].course.slug === "fm-mini-diploma" &&
+    enrollments[0].status !== "COMPLETED";
+
+  // Get coach name from first enrollment with a coach
+  const enrollmentWithCoach = enrollments.find((e) => e.course.coachId);
+  const coachName = enrollmentWithCoach?.course?.coach
+    ? `${enrollmentWithCoach.course.coach.firstName} ${enrollmentWithCoach.course.coach.lastName}`
     : undefined;
 
   return {
-    hasCompletedOnboarding: user?.hasCompletedOnboarding ?? false,
+    // Mini Diploma users skip onboarding for max conversion
+    hasCompletedOnboarding: isMiniDiplomaOnly ? true : (user?.hasCompletedOnboarding ?? false),
     userName: user?.firstName || "Learner",
     coachName,
+    isMiniDiplomaOnly,
   };
 }
 

@@ -10,6 +10,7 @@ declare module "next-auth" {
       lastName: string | null;
       isFirstLogin?: boolean;
       miniDiplomaCategory?: string | null;
+      isMiniDiplomaOnly?: boolean;
     } & DefaultSession["user"];
   }
 
@@ -19,6 +20,7 @@ declare module "next-auth" {
     lastName: string | null;
     isFirstLogin?: boolean;
     miniDiplomaCategory?: string | null;
+    isMiniDiplomaOnly?: boolean;
   }
 }
 
@@ -30,5 +32,6 @@ declare module "next-auth/jwt" {
     lastName: string | null;
     isFirstLogin?: boolean;
     miniDiplomaCategory?: string | null;
+    isMiniDiplomaOnly?: boolean;
   }
 }
