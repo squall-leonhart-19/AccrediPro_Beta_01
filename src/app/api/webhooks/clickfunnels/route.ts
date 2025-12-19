@@ -24,9 +24,9 @@ import crypto from "crypto";
 // Product ID to Course slug mapping
 // Add your ClickFunnels product IDs here
 const PRODUCT_COURSE_MAP: Record<string, string> = {
-  // FM Mini Diploma ($7)
-  "fm-mini-diploma": "functional-medicine-certification",
-  "fm_mini_diploma": "functional-medicine-certification",
+  // FM Mini Diploma ($7) - maps to Mini Diploma course, NOT full certification
+  "fm-mini-diploma": "fm-mini-diploma",
+  "fm_mini_diploma": "fm-mini-diploma",
   // Add more mappings as needed
   // "cf-product-id": "course-slug",
 };
@@ -298,7 +298,7 @@ export async function POST(request: NextRequest) {
     }
 
     // 2. Determine which course to enroll
-    let courseSlug = "functional-medicine-certification"; // Default to FM cert
+    let courseSlug = "fm-mini-diploma"; // Default to Mini Diploma for $7 purchases
 
     if (productId && PRODUCT_COURSE_MAP[productId]) {
       courseSlug = PRODUCT_COURSE_MAP[productId];
@@ -306,7 +306,7 @@ export async function POST(request: NextRequest) {
       // Try to match by product name
       const lowerName = productName.toLowerCase();
       if (lowerName.includes("mini diploma") || lowerName.includes("mini-diploma")) {
-        courseSlug = "functional-medicine-certification";
+        courseSlug = "fm-mini-diploma";
       }
     }
 
@@ -315,8 +315,7 @@ export async function POST(request: NextRequest) {
       where: {
         OR: [
           { slug: courseSlug },
-          { slug: "functional-medicine-certification" },
-          { isPublished: true },
+          { slug: "fm-mini-diploma" },
         ],
       },
       orderBy: { createdAt: "asc" },
@@ -380,8 +379,8 @@ export async function POST(request: NextRequest) {
         await sendWelcomeEmail({
           to: user.email!,
           firstName: user.firstName || "Student",
-          courseName: course?.title || "Functional Medicine Certification",
-          courseSlug: course?.slug || "functional-medicine-certification",
+          courseName: course?.title || "Functional Medicine Mini Diploma",
+          courseSlug: course?.slug || "fm-mini-diploma",
         });
         console.log(`Sent welcome email to ${normalizedEmail}`);
       } catch (emailError) {

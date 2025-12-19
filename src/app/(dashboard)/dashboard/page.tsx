@@ -205,6 +205,17 @@ export default async function DashboardPage() {
     hasWatchedTraining,
   } = await getDashboardData(session.user.id);
 
+  // Check if user ONLY has Mini Diploma enrollment (redirect to Mini Diploma dashboard)
+  const hasMiniDiplomaOnly =
+    enrollments.length === 1 &&
+    enrollments[0].course.slug === "fm-mini-diploma" &&
+    enrollments[0].status !== "COMPLETED";
+
+  if (hasMiniDiplomaOnly) {
+    const { redirect } = await import("next/navigation");
+    redirect("/mini-diploma");
+  }
+
   const completedCourses = enrollments.filter((e) => e.status === "COMPLETED").length;
   const inProgressCourses = enrollments.filter((e) => e.status === "ACTIVE").length;
   const firstName = session.user.firstName || "Practitioner";

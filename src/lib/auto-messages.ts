@@ -939,28 +939,10 @@ async function sendFirstLoginWelcome(userId: string, firstName: string, coachId:
     const sarahId = sarahCoach?.id || coachId;
     console.log(`[AUTO-MESSAGE] Using Sarah coach ID: ${sarahId}`);
 
-    // STEP 1: Send immediate admin welcome message
-    const adminContent = getAdminWelcomeMessage(firstName);
-    const adminMessage = await prisma.message.create({
-      data: {
-        senderId: adminId,
-        receiverId: userId,
-        content: adminContent,
-        messageType: "DIRECT",
-      },
-    });
-    console.log(`[AUTO-MESSAGE] Created admin welcome message: ${adminMessage.id}`);
-
-    // Create notification for admin message
-    await prisma.notification.create({
-      data: {
-        userId,
-        type: "NEW_MESSAGE",
-        title: "Welcome to AccrediPro Academy!",
-        message: "Your account has been created successfully.",
-        data: { senderId: adminId },
-      },
-    });
+    // STEP 1: Admin welcome message DISABLED - only Sarah's personal message now
+    // const adminContent = getAdminWelcomeMessage(firstName);
+    // const adminMessage = await prisma.message.create({...});
+    console.log(`[AUTO-MESSAGE] Admin welcome message disabled, only sending Sarah's personal message`);
 
     // STEP 2: Schedule Sarah's personal message for 2-3 minutes later
     // Random delay between 2-3 minutes (120-180 seconds)
