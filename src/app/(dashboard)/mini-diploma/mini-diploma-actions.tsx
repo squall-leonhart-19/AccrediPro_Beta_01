@@ -30,12 +30,12 @@ export function MiniDiplomaActions({ userId }: MiniDiplomaActionsProps) {
       const data = await response.json();
 
       if (data.success) {
-        setMessage({ type: "success", text: "All lessons completed! Redirecting to certificates..." });
+        setMessage({ type: "success", text: "All lessons completed! Unlocking your Masterclass Bonus..." });
 
-        // Short delay to show success message, then redirect
+        // Short delay to show success message, then redirect to unlocked masterclass
         setTimeout(() => {
           // Force full page reload to refresh session (isMiniDiplomaOnly will now be false)
-          window.location.href = "/certificates";
+          window.location.href = "/masterclass";
         }, 1500);
       } else {
         setMessage({ type: "error", text: data.error || "Failed to complete lessons" });

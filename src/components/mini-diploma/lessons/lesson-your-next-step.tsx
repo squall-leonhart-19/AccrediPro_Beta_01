@@ -422,29 +422,18 @@ export function LessonYourNextStep({
                     <Button
                         onClick={() => {
                             onComplete?.();
-                            // Navigate to certificate generation
-                            window.location.href = "/dashboard/certificates";
+                            // Navigate to unlocked masterclass bonus
+                            window.location.href = "/masterclass";
                         }}
                         className="w-full bg-gradient-to-r from-amber-500 to-yellow-500 hover:from-amber-600 hover:to-yellow-600 text-white font-semibold py-4 px-6 rounded-xl mb-4"
                     >
                         <span className="flex items-center justify-center gap-2">
-                            <Award className="h-5 w-5" />
-                            Download Your Certificate
+                            <Sparkles className="h-5 w-5" />
+                            Unlock Your Masterclass Bonus
                         </span>
                     </Button>
 
-                    <p className="text-sm text-slate-500 mb-6">Your certificate is ready to download and share!</p>
-
-                    <div className="border-t border-slate-200 pt-6">
-                        <p className="text-slate-600 mb-4">Ready to become a Certified FM Health Coach?</p>
-                        <Button
-                            onClick={() => setShowCertificateOffer(true)}
-                            variant="outline"
-                            className="border-amber-400 text-amber-700 hover:bg-amber-50"
-                        >
-                            Learn About Full Certification →
-                        </Button>
-                    </div>
+                    <p className="text-sm text-slate-500 mb-6">You've earned access to exclusive bonus training!</p>
                 </div>
             </div>
         </div>

@@ -30,6 +30,7 @@ import {
   Trophy,
   Flame,
   ShoppingBag,
+  Lock,
 } from "lucide-react";
 import { useState } from "react";
 
@@ -53,11 +54,12 @@ const fullNavItems = [
 ];
 
 // Minimal nav for Mini Diploma users - maximum focus for completion
-// Only: Lessons, Introduce Yourself, Private Chat with Sarah
+// Shows: Lessons, Introduce Yourself, Chat, and LOCKED Masterclass (teaser)
 const miniDiplomaNavItems = [
   { href: "/mini-diploma", label: "My Lessons", icon: GraduationCap, tourId: "mini-diploma" },
   { href: "/community/cmj94foua0000736vfwdlheir", label: "Introduce Yourself", icon: Users, tourId: "community" },
   { href: "/messages", label: "Chat with Sarah", icon: MessageSquare, notificationKey: "messages" as const, tourId: "messages" },
+  { href: "/masterclass", label: "Masterclass Bonus", icon: Award, tourId: "masterclass", locked: true },
 ];
 
 
@@ -120,6 +122,30 @@ export function DashboardNav() {
           {navItems.map((item) => {
             const isActive = pathname === item.href || pathname.startsWith(item.href + "/");
             const notificationCount = getNotificationCount(item.notificationKey);
+            const isLocked = 'locked' in item && item.locked === true;
+
+            // Locked items render differently - not clickable, show lock icon
+            if (isLocked) {
+              return (
+                <div
+                  key={item.href}
+                  data-tour={item.tourId}
+                  className="w-full flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium relative bg-white/5 border border-dashed border-white/20 cursor-not-allowed group"
+                >
+                  <div className="relative">
+                    <item.icon className="w-5 h-5 text-amber-400/60" />
+                  </div>
+                  <span className="flex-1 text-left text-white/50">{item.label}</span>
+                  <div className="flex items-center gap-1.5">
+                    <Lock className="w-3.5 h-3.5 text-amber-400/80" />
+                  </div>
+                  {/* Tooltip on hover */}
+                  <div className="absolute left-full ml-2 px-3 py-2 bg-slate-900 text-white text-xs rounded-lg opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap z-50 shadow-xl border border-white/10">
+                    Complete Mini Diploma to unlock
+                  </div>
+                </div>
+              );
+            }
 
             return (
               <Link
@@ -278,6 +304,22 @@ export function DashboardNav() {
             {navItems.map((item) => {
               const isActive = pathname === item.href || pathname.startsWith(item.href + "/");
               const notificationCount = getNotificationCount(item.notificationKey);
+              const isLocked = 'locked' in item && item.locked === true;
+
+              // Locked items render differently on mobile
+              if (isLocked) {
+                return (
+                  <div
+                    key={item.href}
+                    data-tour={`mobile-${item.tourId}`}
+                    className="w-full flex items-center gap-3 px-4 py-3.5 rounded-xl text-base font-medium bg-white/5 border border-dashed border-white/20"
+                  >
+                    <item.icon className="w-5 h-5 text-amber-400/60" />
+                    <span className="flex-1 text-left text-white/50">{item.label}</span>
+                    <Lock className="w-4 h-4 text-amber-400/80" />
+                  </div>
+                );
+              }
 
               return (
                 <Link

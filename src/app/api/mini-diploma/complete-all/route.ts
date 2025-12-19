@@ -101,7 +101,7 @@ export async function POST(request: NextRequest) {
       success: true,
       lessonsCompleted: allLessons.length,
       message: "All lessons marked as completed",
-      redirect: "/certificates",
+      redirect: "/masterclass",
     });
 
   } catch (error) {
