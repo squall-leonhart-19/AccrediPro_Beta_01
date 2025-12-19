@@ -199,7 +199,7 @@ export function LessonYourNextStep({
         {
             id: 9,
             type: 'coach',
-            content: "I have something special for you, ${firstName}...",
+            content: `I have something special for you, ${firstName}...`,
             delay: 3000,
         },
         {

@@ -30,16 +30,19 @@ export function MiniDiplomaActions({ userId }: MiniDiplomaActionsProps) {
       const data = await response.json();
 
       if (data.success) {
-        setMessage({ type: "success", text: "All lessons completed! Triggering completion flow..." });
-        // Now trigger the mini diploma complete API
-        await fetch("/api/mini-diploma/complete", { method: "POST" });
-        router.refresh();
+        setMessage({ type: "success", text: "All lessons completed! Redirecting to certificates..." });
+
+        // Short delay to show success message, then redirect
+        setTimeout(() => {
+          // Force full page reload to refresh session (isMiniDiplomaOnly will now be false)
+          window.location.href = "/certificates";
+        }, 1500);
       } else {
         setMessage({ type: "error", text: data.error || "Failed to complete lessons" });
+        setIsCompleting(false);
       }
     } catch (error) {
       setMessage({ type: "error", text: "An error occurred" });
-    } finally {
       setIsCompleting(false);
     }
   };

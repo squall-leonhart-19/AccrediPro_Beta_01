@@ -79,12 +79,29 @@ export async function POST(request: NextRequest) {
       },
     });
 
+    // Update user completion timestamp
+    await prisma.user.update({
+      where: { id: userId },
+      data: {
+        miniDiplomaCompletedAt: now,
+        hasCertificateBadge: true,
+      },
+    });
+
+    // Add fm_mini_diploma_completed tag
+    await prisma.userTag.upsert({
+      where: { userId_tag: { userId, tag: "fm_mini_diploma_completed" } },
+      update: {},
+      create: { userId, tag: "fm_mini_diploma_completed" },
+    });
+
     console.log(`[TEST] All ${allLessons.length} lessons marked complete for test user`);
 
     return NextResponse.json({
       success: true,
       lessonsCompleted: allLessons.length,
       message: "All lessons marked as completed",
+      redirect: "/certificates",
     });
 
   } catch (error) {
