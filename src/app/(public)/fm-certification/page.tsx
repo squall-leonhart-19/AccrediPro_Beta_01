@@ -14,7 +14,7 @@ import {
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
-// All student avatars from WordPress
+// Fixed student avatars from CSV - professional headshots only
 const ALL_STUDENT_AVATARS = [
     "https://accredipro.academy/wp-content/uploads/2025/12/AI_Headshot_Generator-13.jpg",
     "https://accredipro.academy/wp-content/uploads/2025/12/LeezaRhttilthead.jpg",
@@ -28,9 +28,24 @@ const ALL_STUDENT_AVATARS = [
     "https://accredipro.academy/wp-content/uploads/2025/12/Headshot-Ines.jpg",
     "https://accredipro.academy/wp-content/uploads/2025/12/Shondra_Williams_Business_Headshot-scaled.jpg",
     "https://accredipro.academy/wp-content/uploads/2025/12/Tiffany-Nelson-MD.webp",
-    "https://accredipro.academy/wp-content/uploads/2025/12/profilepic.png",
-    "https://accredipro.academy/wp-content/uploads/2025/12/MARIANAPIC.jpg",
-    "https://accredipro.academy/wp-content/uploads/2025/12/headshot.jpg",
+    "https://accredipro.academy/wp-content/uploads/2025/11/Liz-Sept-2023-headshot.jpg",
+    "https://accredipro.academy/wp-content/uploads/2025/11/2023-Lambert-163.jpeg",
+    "https://accredipro.academy/wp-content/uploads/2025/11/Tammie-15.jpg",
+    "https://accredipro.academy/wp-content/uploads/2025/11/CraftRealty2024-6337-EditHiRes.jpeg",
+    "https://accredipro.academy/wp-content/uploads/2025/10/headshot-1.jpg",
+    "https://accredipro.academy/wp-content/uploads/2025/10/DSC_9240-2.jpg",
+    "https://accredipro.academy/wp-content/uploads/2025/09/headshot.jpg",
+    "https://accredipro.academy/wp-content/uploads/2025/08/Headshot-1.jpg",
+];
+
+// Fixed testimonial avatars - specific headshots for each testimonial
+const TESTIMONIAL_AVATARS = [
+    "https://accredipro.academy/wp-content/uploads/2025/12/AI_Headshot_Generator-13.jpg",
+    "https://accredipro.academy/wp-content/uploads/2025/12/MARIA-GARCIA-PIC-IMG_5435-1.jpg",
+    "https://accredipro.academy/wp-content/uploads/2025/12/AnneProfile2.jpg",
+    "https://accredipro.academy/wp-content/uploads/2025/12/LeezaRhttilthead.jpg",
+    "https://accredipro.academy/wp-content/uploads/2025/12/Profile-Pic.jpg",
+    "https://accredipro.academy/wp-content/uploads/2025/11/Liz-Sept-2023-headshot.jpg",
 ];
 
 // Function to get random avatars
@@ -272,12 +287,6 @@ const StickyCTA = () => {
 };
 
 export default function FMCertificationPage() {
-    // Generate random avatars for testimonials on mount
-    const [testimonialAvatars] = useState(() => {
-        const shuffled = [...ALL_STUDENT_AVATARS].sort(() => Math.random() - 0.5);
-        return shuffled;
-    });
-
     return (
         <div className="min-h-screen bg-gradient-to-b from-cream-100 via-cream-50 to-white pb-20 lg:pb-0">
             <StickyCTA />
@@ -645,11 +654,6 @@ export default function FMCertificationPage() {
                         })}
                     </div>
 
-                    <div className="text-center mt-6">
-                        <a href="https://learn.accredipro.academy/accreditation" target="_blank" rel="noopener noreferrer" className="text-burgundy-600 hover:text-burgundy-700 font-medium text-sm underline">
-                            View full accreditation details →
-                        </a>
-                    </div>
                 </div>
             </section>
 
@@ -790,7 +794,7 @@ export default function FMCertificationPage() {
                             after="Working 20 hrs/week from home"
                             timeframe="Certified in 4 months"
                             income="$6,200/month"
-                            avatarSrc={testimonialAvatars[0]}
+                            avatarSrc={TESTIMONIAL_AVATARS[0]}
                         />
                         <TestimonialCard
                             quote="The 21 specialty certificates are GOLD. When clients see I'm certified in thyroid, hormones, AND gut health — they trust me immediately."
@@ -800,7 +804,7 @@ export default function FMCertificationPage() {
                             after="21 specialty credentials"
                             timeframe="Completed in 5 months"
                             income="$8,400/month"
-                            avatarSrc={testimonialAvatars[1]}
+                            avatarSrc={TESTIMONIAL_AVATARS[1]}
                         />
                         <TestimonialCard
                             quote="I work with Hashimoto's clients exclusively now. My specialized certificates prove I actually know my stuff. Clients pay premium rates."
@@ -810,7 +814,7 @@ export default function FMCertificationPage() {
                             after="Thyroid specialist, $150/session"
                             timeframe="First client in 3 weeks"
                             income="$9,800/month"
-                            avatarSrc={testimonialAvatars[2]}
+                            avatarSrc={TESTIMONIAL_AVATARS[2]}
                         />
                         <TestimonialCard
                             quote="The Coach Workspace alone is worth it. I manage all clients, track progress, create protocols — everything in one place. So professional."
@@ -818,7 +822,7 @@ export default function FMCertificationPage() {
                             role="FM Practitioner, Texas"
                             timeframe="6 months to certification"
                             income="$5,100/month part-time"
-                            avatarSrc={testimonialAvatars[3]}
+                            avatarSrc={TESTIMONIAL_AVATARS[3]}
                         />
                         <TestimonialCard
                             quote="Other certifications hand you a PDF and disappear. Here, Sarah literally messages you, checks on you, celebrates wins. Like having a partner."
@@ -827,7 +831,7 @@ export default function FMCertificationPage() {
                             before="Stuck in 9-5, unfulfilled"
                             after="Own schedule, meaningful work"
                             timeframe="Career change in 5 months"
-                            avatarSrc={testimonialAvatars[4]}
+                            avatarSrc={TESTIMONIAL_AVATARS[4]}
                         />
                         <TestimonialCard
                             quote="I was skeptical — $197 seemed too good. But the content rivals $10K programs. The mentorship is what makes the difference."
@@ -835,7 +839,7 @@ export default function FMCertificationPage() {
                             role="Career Changer, Florida"
                             timeframe="Certified in 4 months"
                             income="First client at $125/hr"
-                            avatarSrc={testimonialAvatars[5]}
+                            avatarSrc={TESTIMONIAL_AVATARS[5]}
                         />
                     </div>
                 </div>
@@ -1041,6 +1045,14 @@ export default function FMCertificationPage() {
             <section className="py-12 sm:py-16">
                 <div className="max-w-3xl mx-auto px-4 text-center">
                     <div className="bg-gradient-to-br from-olive-50 to-white rounded-3xl p-8 border-2 border-olive-200">
+                        {/* Company Logo */}
+                        <Image
+                            src="https://coach.accredipro.academy/wp-content/uploads/2025/10/Senza-titolo-Logo-1.png"
+                            alt="AccrediPro Academy"
+                            width={80}
+                            height={80}
+                            className="mx-auto mb-4"
+                        />
                         <div className="w-16 h-16 rounded-full bg-olive-100 flex items-center justify-center mx-auto mb-4">
                             <Shield className="h-8 w-8 text-olive-600" />
                         </div>
@@ -1049,49 +1061,6 @@ export default function FMCertificationPage() {
                             Enroll today, explore the content, meet your coach. If it's not right for you, email us within 30 days for a full refund. No questions asked.
                         </p>
                         <p className="text-xl font-bold text-olive-700">Your investment is completely protected.</p>
-                    </div>
-                </div>
-            </section>
-
-            {/* Final CTA */}
-            <section className="py-16 sm:py-20 bg-gradient-to-b from-burgundy-900 to-burgundy-950 text-white">
-                <div className="max-w-4xl mx-auto px-4 text-center">
-                    <p className="text-gold-400 font-semibold mb-3 uppercase tracking-wide">Your Transformation Starts Now</p>
-                    <h2 className="text-3xl sm:text-4xl font-bold mb-4">Become a Certified Functional Medicine Practitioner</h2>
-                    <p className="text-lg text-slate-300 mb-3 max-w-2xl mx-auto">
-                        Add $4,000–$8,000/month helping patients actually heal — without quitting your job.
-                    </p>
-                    <div className="flex flex-wrap justify-center gap-3 mb-8">
-                        <span className="flex items-center gap-1 text-sm text-olive-300"><CheckCircle2 className="h-4 w-4" />21 specializations</span>
-                        <span className="flex items-center gap-1 text-sm text-olive-300"><CheckCircle2 className="h-4 w-4" />Personal mentorship</span>
-                        <span className="flex items-center gap-1 text-sm text-olive-300"><CheckCircle2 className="h-4 w-4" />Earning within 90 days</span>
-                    </div>
-
-                    <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-6 mb-8 max-w-xl mx-auto">
-                        <div className="grid grid-cols-2 gap-3 text-left text-sm">
-                            {["21 modules (168 lessons)", "21 specialty certificates", "Private 1:1 mentorship", "Coach Workspace access", "Career launch support", "Lifetime access"].map((item, i) => (
-                                <div key={i} className="flex items-center gap-2"><CheckCircle2 className="h-4 w-4 text-olive-400 shrink-0" /><span className="text-slate-200">{item}</span></div>
-                            ))}
-                        </div>
-                    </div>
-
-                    <div className="mb-6">
-                        <p className="text-slate-400 mb-1">Complete Investment</p>
-                        <p className="text-5xl font-black text-gold-400 mb-1">$197</p>
-                        <p className="text-slate-400 text-sm">or 2 × $109/month • Lifetime access • Self-paced</p>
-                    </div>
-
-                    <a href="https://sarah.accredipro.academy/fm-certification-access">
-                        <Button className="w-full sm:w-auto bg-gradient-to-r from-gold-400 to-gold-500 hover:from-gold-500 hover:to-gold-600 text-slate-900 font-black py-6 px-12 rounded-2xl text-xl shadow-2xl transition-all transform hover:scale-[1.02]">
-                            Start My Certification — $197
-                            <ArrowRight className="h-6 w-6 ml-3" />
-                        </Button>
-                    </a>
-
-                    <div className="flex flex-wrap justify-center gap-5 mt-6 text-slate-400 text-sm">
-                        <span className="flex items-center gap-2"><Shield className="h-4 w-4 text-olive-400" />30-day guarantee</span>
-                        <span className="flex items-center gap-2"><Zap className="h-4 w-4 text-gold-400" />Instant access</span>
-                        <span className="flex items-center gap-2"><Infinity className="h-4 w-4 text-olive-400" />Lifetime access</span>
                     </div>
                 </div>
             </section>
