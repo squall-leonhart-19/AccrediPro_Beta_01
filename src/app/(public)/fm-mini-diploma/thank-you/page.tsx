@@ -131,10 +131,10 @@ export default function ThankYouPage() {
                                     <p className="text-sm text-slate-500 mb-1">Your login portal:</p>
                                     <div className="flex items-center gap-2">
                                         <code className="text-burgundy-700 font-semibold bg-white px-3 py-1.5 rounded border border-slate-200 flex-1">
-                                            accredipro.academy/login
+                                            learn.accredipro.academy/login
                                         </code>
                                         <button
-                                            onClick={() => copyToClipboard('https://accredipro.academy/login')}
+                                            onClick={() => copyToClipboard('https://learn.accredipro.academy/login')}
                                             className="p-2 hover:bg-slate-100 rounded-lg transition-colors"
                                         >
                                             {copied ? (
@@ -227,7 +227,7 @@ export default function ThankYouPage() {
                     <p className="text-burgundy-100 mb-6">
                         Check your email for login credentials, then click below to access your training.
                     </p>
-                    <a href="https://accredipro.academy/login">
+                    <a href="https://learn.accredipro.academy/login">
                         <Button className="bg-gold-400 hover:bg-gold-500 text-slate-900 font-bold py-6 px-10 rounded-xl text-lg shadow-lg">
                             <Key className="h-5 w-5 mr-2" />
                             Go to Login Portal
@@ -267,7 +267,7 @@ export default function ThankYouPage() {
 
                 {/* Footer */}
                 <div className="text-center mt-12 text-slate-500 text-sm">
-                    <p>Questions? Email us at <a href="mailto:support@accredipro.academy" className="text-burgundy-600 hover:underline">support@accredipro.academy</a></p>
+                    <p>Questions? Email us at <a href="mailto:sarah@accredipro.academy" className="text-burgundy-600 hover:underline">sarah@accredipro.academy</a></p>
                     <p className="mt-2">© 2025 AccrediPro Academy. All rights reserved.</p>
                 </div>
             </div>
