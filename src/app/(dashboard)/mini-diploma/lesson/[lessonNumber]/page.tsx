@@ -95,8 +95,12 @@ export default async function MiniDiplomaLessonPage({ params }: PageProps) {
   const currentLesson = allLessons[lessonNumber - 1];
   const completedLessonIds = await getLessonProgress(session.user.id, enrollment.courseId);
 
+  // Test user bypasses sequential access requirement
+  const isTestUser = session.user.email === "at.seed019@gmail.com";
+
   // Check if previous lessons are completed (lesson 1 is always accessible)
-  if (lessonNumber > 1) {
+  // Test user can access any lesson
+  if (lessonNumber > 1 && !isTestUser) {
     const previousLesson = allLessons[lessonNumber - 2];
     if (!completedLessonIds.has(previousLesson.id)) {
       // Previous lesson not completed, redirect to it
