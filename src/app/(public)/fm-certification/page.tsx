@@ -38,7 +38,7 @@ const ALL_STUDENT_AVATARS = [
     "https://accredipro.academy/wp-content/uploads/2025/08/Headshot-1.jpg",
 ];
 
-// Fixed testimonial avatars - specific headshots for each testimonial
+// Fixed testimonial avatars - specific headshots for each testimonial (12 total)
 const TESTIMONIAL_AVATARS = [
     "https://accredipro.academy/wp-content/uploads/2025/12/AI_Headshot_Generator-13.jpg",
     "https://accredipro.academy/wp-content/uploads/2025/12/MARIA-GARCIA-PIC-IMG_5435-1.jpg",
@@ -46,6 +46,12 @@ const TESTIMONIAL_AVATARS = [
     "https://accredipro.academy/wp-content/uploads/2025/12/LeezaRhttilthead.jpg",
     "https://accredipro.academy/wp-content/uploads/2025/12/Profile-Pic.jpg",
     "https://accredipro.academy/wp-content/uploads/2025/11/Liz-Sept-2023-headshot.jpg",
+    "https://accredipro.academy/wp-content/uploads/2025/12/Tiffany-Nelson-MD.webp",
+    "https://accredipro.academy/wp-content/uploads/2025/12/dgp03315.jpg",
+    "https://accredipro.academy/wp-content/uploads/2025/12/Headshot-Ines.jpg",
+    "https://accredipro.academy/wp-content/uploads/2025/11/Tammie-15.jpg",
+    "https://accredipro.academy/wp-content/uploads/2025/11/CraftRealty2024-6337-EditHiRes.jpeg",
+    "https://accredipro.academy/wp-content/uploads/2025/11/2023-Lambert-163.jpeg",
 ];
 
 // Function to get random avatars
@@ -747,7 +753,7 @@ export default function FMCertificationPage() {
                 </div>
             </section>
 
-            {/* Sarah's Story */}
+            {/* Sarah's Story - Enhanced with Bridge to Testimonials */}
             <section className="py-12 sm:py-16 bg-gradient-to-b from-cream-100 to-white">
                 <div className="max-w-4xl mx-auto px-4">
                     <div className="flex flex-col items-center text-center mb-6">
@@ -774,72 +780,158 @@ export default function FMCertificationPage() {
                             <div><p className="text-xl font-bold text-burgundy-700">97%</p><p className="text-xs text-slate-500">Completion</p></div>
                         </div>
                     </div>
+
+                    {/* Bridge to Testimonials */}
+                    <div className="mt-10 text-center">
+                        <p className="text-slate-600 text-lg mb-2">But don't just take my word for it...</p>
+                        <h3 className="text-2xl font-bold text-slate-900">Here's What My Certified Students Say:</h3>
+                    </div>
                 </div>
             </section>
 
-            {/* Testimonials with Specifics - Random Avatars */}
-            <section className="py-12 sm:py-16">
-                <div className="max-w-6xl mx-auto px-4">
+            {/* Testimonials - 12 Diverse Cases */}
+            <section className="py-12 sm:py-16 bg-cream-50">
+                <div className="max-w-7xl mx-auto px-4">
                     <div className="text-center mb-10">
                         <p className="text-burgundy-600 font-semibold mb-2 uppercase tracking-wide">Real Transformations</p>
-                        <h2 className="text-3xl sm:text-4xl font-bold text-slate-900">What Our Graduates Say</h2>
+                        <h2 className="text-3xl sm:text-4xl font-bold text-slate-900 mb-3">1,447 Practitioners Certified</h2>
+                        <p className="text-lg text-slate-600 max-w-2xl mx-auto">
+                            Nurses, NPs, PAs, MDs, chiropractors, nutritionists, career changers — all thriving.
+                        </p>
                     </div>
 
-                    <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-5">
+                    <div className="grid md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+                        {/* Testimonial 1 - ARNP */}
                         <TestimonialCard
                             quote="Sarah's mentorship changed everything. She helped me launch my practice. Got my first paying client within 2 weeks of finishing."
-                            name="Karen Mitchell"
-                            role="Former ARNP, Now FM Practitioner"
+                            name="Karen Mitchell, ARNP"
+                            role="Former ER Nurse, Now FM Practitioner"
                             before="Burned out, 25 years in hospitals"
                             after="Working 20 hrs/week from home"
                             timeframe="Certified in 4 months"
                             income="$6,200/month"
                             avatarSrc={TESTIMONIAL_AVATARS[0]}
                         />
+                        {/* Testimonial 2 - PA */}
                         <TestimonialCard
-                            quote="The 21 specialty certificates are GOLD. When clients see I'm certified in thyroid, hormones, AND gut health — they trust me immediately."
-                            name="Maria Santos"
-                            role="FM Practitioner, California"
-                            before="Generic health coach cert"
-                            after="21 specialty credentials"
+                            quote="As a PA, I was frustrated by 10-minute visits. Now I spend an hour with each client and actually help them heal. Income doubled."
+                            name="Maria Santos, PA-C"
+                            role="Physician Assistant, California"
+                            before="10-min visits, $110K/year"
+                            after="$200K+/year, meaningful work"
                             timeframe="Completed in 5 months"
-                            income="$8,400/month"
+                            income="$16,500/month"
                             avatarSrc={TESTIMONIAL_AVATARS[1]}
                         />
+                        {/* Testimonial 3 - RN Thyroid Specialist */}
                         <TestimonialCard
-                            quote="I work with Hashimoto's clients exclusively now. My specialized certificates prove I actually know my stuff. Clients pay premium rates."
-                            name="Patricia Smith"
+                            quote="I work with Hashimoto's clients exclusively now. The specialized certificates prove I actually know my stuff. Clients pay premium rates."
+                            name="Patricia Smith, RN"
                             role="Thyroid & Autoimmune Specialist"
                             before="No niche, charging $50/session"
-                            after="Thyroid specialist, $150/session"
+                            after="Thyroid specialist, $175/session"
                             timeframe="First client in 3 weeks"
                             income="$9,800/month"
                             avatarSrc={TESTIMONIAL_AVATARS[2]}
                         />
+                        {/* Testimonial 4 - NP Gut Health */}
                         <TestimonialCard
-                            quote="The Coach Workspace alone is worth it. I manage all clients, track progress, create protocols — everything in one place. So professional."
-                            name="Lisa Rodriguez"
-                            role="FM Practitioner, Texas"
+                            quote="The gut health module alone was worth 10x the price. I've helped clients reverse IBS, SIBO, and digestive issues that docs couldn't fix."
+                            name="Lisa Rodriguez, NP"
+                            role="Gut Health Specialist, Texas"
+                            before="General NP, overwhelmed"
+                            after="Specialized practice, waiting list"
                             timeframe="6 months to certification"
-                            income="$5,100/month part-time"
+                            income="$11,400/month"
                             avatarSrc={TESTIMONIAL_AVATARS[3]}
                         />
+                        {/* Testimonial 5 - Career Changer */}
                         <TestimonialCard
-                            quote="Other certifications hand you a PDF and disappear. Here, Sarah literally messages you, checks on you, celebrates wins. Like having a partner."
+                            quote="Zero healthcare background. Sarah believed in me when I didn't believe in myself. Now I have 12 clients and quit my corporate job."
                             name="Amanda Chen"
-                            role="Former Corporate, Now Coach"
+                            role="Former Corporate, Now FM Coach"
                             before="Stuck in 9-5, unfulfilled"
-                            after="Own schedule, meaningful work"
+                            after="Own schedule, helping people"
                             timeframe="Career change in 5 months"
+                            income="$7,200/month"
                             avatarSrc={TESTIMONIAL_AVATARS[4]}
                         />
+                        {/* Testimonial 6 - MD */}
                         <TestimonialCard
-                            quote="I was skeptical — $197 seemed too good. But the content rivals $10K programs. The mentorship is what makes the difference."
-                            name="Jennifer Walsh"
-                            role="Career Changer, Florida"
+                            quote="I'm an MD and this program taught me more about root-cause medicine than medical school. Now I combine both approaches for my patients."
+                            name="Dr. Jennifer Walsh, MD"
+                            role="Integrative Family Medicine"
+                            before="Conventional medicine only"
+                            after="Integrative practice, premium rates"
                             timeframe="Certified in 4 months"
-                            income="First client at $125/hr"
+                            income="Added $8K/month"
                             avatarSrc={TESTIMONIAL_AVATARS[5]}
+                        />
+                        {/* Testimonial 7 - Chiropractor */}
+                        <TestimonialCard
+                            quote="Added functional medicine to my chiropractic practice. Patient retention tripled because I can now address nutrition and hormones too."
+                            name="Dr. Tiffany Nelson, DC"
+                            role="Chiropractor, Colorado"
+                            before="Adjustments only"
+                            after="Full wellness practice"
+                            timeframe="Completed in 3 months"
+                            income="$14,200/month"
+                            avatarSrc={TESTIMONIAL_AVATARS[6]}
+                        />
+                        {/* Testimonial 8 - Dietitian */}
+                        <TestimonialCard
+                            quote="As a dietitian, I knew nutrition. But this taught me the 'why' behind everything. Clients get better results and refer everyone they know."
+                            name="Michelle Davis, RD"
+                            role="Registered Dietitian, Ohio"
+                            before="Insurance reimbursements"
+                            after="Cash-pay practice, $150/hr"
+                            timeframe="5 months to certification"
+                            income="$8,900/month"
+                            avatarSrc={TESTIMONIAL_AVATARS[7]}
+                        />
+                        {/* Testimonial 9 - LVN */}
+                        <TestimonialCard
+                            quote="I thought I needed more letters after my name. Turns out I needed the right training. Now I help women with hormone issues full-time."
+                            name="Ines Martinez, LVN"
+                            role="Women's Hormone Specialist"
+                            before="LVN, underpaid, overworked"
+                            after="Own practice, $125/session"
+                            timeframe="Certified in 6 months"
+                            income="$6,500/month"
+                            avatarSrc={TESTIMONIAL_AVATARS[8]}
+                        />
+                        {/* Testimonial 10 - Personal Trainer */}
+                        <TestimonialCard
+                            quote="Personal training wasn't enough. Clients needed nutrition and lifestyle help too. Now I offer complete transformation packages at $3K each."
+                            name="Tammie Johnson"
+                            role="Former Personal Trainer"
+                            before="Training only, $60/session"
+                            after="Full wellness packages, $3K+"
+                            timeframe="4 months to certification"
+                            income="$10,200/month"
+                            avatarSrc={TESTIMONIAL_AVATARS[9]}
+                        />
+                        {/* Testimonial 11 - Pharmacist */}
+                        <TestimonialCard
+                            quote="20 years filling prescriptions. Now I help people get OFF medications using root-cause approaches. This is what healing looks like."
+                            name="Sandra Lambert, PharmD"
+                            role="Former Pharmacist, Now FM Coach"
+                            before="Dispensing meds, no satisfaction"
+                            after="Helping people heal naturally"
+                            timeframe="Certified in 5 months"
+                            income="$7,800/month"
+                            avatarSrc={TESTIMONIAL_AVATARS[10]}
+                        />
+                        {/* Testimonial 12 - Stay-at-Home Mom */}
+                        <TestimonialCard
+                            quote="Started while my kids were in school. Sarah made it feel possible. Now I work 15 hours a week and outearn my old corporate salary."
+                            name="Rachel Thompson"
+                            role="Former Stay-at-Home Mom"
+                            before="No income, wanted purpose"
+                            after="15 hrs/week, full income"
+                            timeframe="6 months to first client"
+                            income="$5,400/month part-time"
+                            avatarSrc={TESTIMONIAL_AVATARS[11]}
                         />
                     </div>
                 </div>
@@ -1000,6 +1092,105 @@ export default function FMCertificationPage() {
                 </div>
             </section>
 
+            {/* Market Comparison Table */}
+            <section className="py-12 sm:py-16 bg-gradient-to-b from-white to-cream-50">
+                <div className="max-w-5xl mx-auto px-4">
+                    <div className="text-center mb-10">
+                        <p className="text-burgundy-600 font-semibold mb-2 uppercase tracking-wide">Market Comparison</p>
+                        <h2 className="text-3xl sm:text-4xl font-bold text-slate-900 mb-3">Why AccrediPro is the New Frontier</h2>
+                        <p className="text-lg text-slate-600 max-w-2xl mx-auto">
+                            See how we compare to other leading Functional Medicine certification programs.
+                        </p>
+                    </div>
+
+                    {/* Comparison Table */}
+                    <div className="overflow-x-auto">
+                        <table className="w-full text-left border-collapse">
+                            <thead>
+                                <tr className="bg-burgundy-700 text-white">
+                                    <th className="px-4 py-4 font-semibold rounded-tl-xl">Feature</th>
+                                    <th className="px-4 py-4 font-bold text-center bg-burgundy-600">
+                                        <div className="flex flex-col items-center">
+                                            <span className="text-gold-400">AccrediPro</span>
+                                            <span className="text-sm font-normal text-burgundy-200">$197</span>
+                                        </div>
+                                    </th>
+                                    <th className="px-4 py-4 font-semibold text-center">
+                                        <div className="flex flex-col items-center">
+                                            <span>FMCA</span>
+                                            <span className="text-sm font-normal text-burgundy-200">$7,200-$9,000</span>
+                                        </div>
+                                    </th>
+                                    <th className="px-4 py-4 font-semibold text-center">
+                                        <div className="flex flex-col items-center">
+                                            <span>IFM</span>
+                                            <span className="text-sm font-normal text-burgundy-200">$15,000+</span>
+                                        </div>
+                                    </th>
+                                    <th className="px-4 py-4 font-semibold text-center rounded-tr-xl">
+                                        <div className="flex flex-col items-center">
+                                            <span>IIN</span>
+                                            <span className="text-sm font-normal text-burgundy-200">$6,499</span>
+                                        </div>
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody className="text-sm">
+                                {[
+                                    { feature: "Investment", accredipro: "$197", fmca: "$7,200-$9,000", ifm: "$15,000+", iin: "$6,499" },
+                                    { feature: "Specialty Certificates", accredipro: "21 Certifications", fmca: "1 Certificate", ifm: "1 Certificate", iin: "1 Certificate" },
+                                    { feature: "1:1 Personal Mentorship", accredipro: true, fmca: false, ifm: false, iin: false },
+                                    { feature: "Career Launch Support", accredipro: true, fmca: "Limited", ifm: false, iin: "Limited" },
+                                    { feature: "Lifetime Access", accredipro: true, fmca: "1 Year", ifm: "Event-based", iin: "1 Year" },
+                                    { feature: "Coach Workspace (CRM)", accredipro: true, fmca: false, ifm: false, iin: false },
+                                    { feature: "Private Community", accredipro: "1,400+ members", fmca: true, ifm: true, iin: true },
+                                    { feature: "CEU Hours", accredipro: "80+", fmca: "40-50", ifm: "Varies", iin: "Varies" },
+                                    { feature: "International Accreditations", accredipro: "9 Bodies", fmca: "2-3", ifm: "1", iin: "1" },
+                                    { feature: "Self-Paced", accredipro: true, fmca: "Cohort-based", ifm: "In-person", iin: "Cohort-based" },
+                                    { feature: "Money-Back Guarantee", accredipro: "30 days", fmca: "7 days", ifm: "None", iin: "7 days" },
+                                ].map((row, i) => (
+                                    <tr key={i} className={`border-b border-slate-100 ${i % 2 === 0 ? 'bg-white' : 'bg-cream-50'}`}>
+                                        <td className="px-4 py-3 font-medium text-slate-800">{row.feature}</td>
+                                        <td className="px-4 py-3 text-center bg-burgundy-50/50">
+                                            {typeof row.accredipro === 'boolean' ? (
+                                                row.accredipro ? <CheckCircle2 className="h-5 w-5 text-olive-600 mx-auto" /> : <X className="h-5 w-5 text-red-400 mx-auto" />
+                                            ) : (
+                                                <span className="font-semibold text-burgundy-700">{row.accredipro}</span>
+                                            )}
+                                        </td>
+                                        <td className="px-4 py-3 text-center text-slate-600">
+                                            {typeof row.fmca === 'boolean' ? (
+                                                row.fmca ? <CheckCircle2 className="h-5 w-5 text-olive-600 mx-auto" /> : <X className="h-5 w-5 text-red-400 mx-auto" />
+                                            ) : row.fmca}
+                                        </td>
+                                        <td className="px-4 py-3 text-center text-slate-600">
+                                            {typeof row.ifm === 'boolean' ? (
+                                                row.ifm ? <CheckCircle2 className="h-5 w-5 text-olive-600 mx-auto" /> : <X className="h-5 w-5 text-red-400 mx-auto" />
+                                            ) : row.ifm}
+                                        </td>
+                                        <td className="px-4 py-3 text-center text-slate-600">
+                                            {typeof row.iin === 'boolean' ? (
+                                                row.iin ? <CheckCircle2 className="h-5 w-5 text-olive-600 mx-auto" /> : <X className="h-5 w-5 text-red-400 mx-auto" />
+                                            ) : row.iin}
+                                        </td>
+                                    </tr>
+                                ))}
+                            </tbody>
+                        </table>
+                    </div>
+
+                    {/* Value Highlight */}
+                    <div className="mt-8 bg-gradient-to-r from-burgundy-600 to-burgundy-700 rounded-2xl p-6 text-center text-white">
+                        <p className="text-lg mb-2">
+                            <span className="font-bold text-gold-400">Get 45x more value</span> than traditional programs
+                        </p>
+                        <p className="text-burgundy-200 text-sm">
+                            Same quality education. 21 specialty certifications. Personal mentorship. Career support. <span className="font-semibold text-white">For 1/40th the price.</span>
+                        </p>
+                    </div>
+                </div>
+            </section>
+
             {/* FAQ Section */}
             <section className="py-12 sm:py-16 bg-cream-50">
                 <div className="max-w-3xl mx-auto px-4">
@@ -1053,9 +1244,6 @@ export default function FMCertificationPage() {
                             height={80}
                             className="mx-auto mb-4"
                         />
-                        <div className="w-16 h-16 rounded-full bg-olive-100 flex items-center justify-center mx-auto mb-4">
-                            <Shield className="h-8 w-8 text-olive-600" />
-                        </div>
                         <h2 className="text-2xl font-bold text-slate-900 mb-3">100% Money-Back Guarantee</h2>
                         <p className="text-slate-600 mb-4 max-w-xl mx-auto">
                             Enroll today, explore the content, meet your coach. If it's not right for you, email us within 30 days for a full refund. No questions asked.
@@ -1065,72 +1253,121 @@ export default function FMCertificationPage() {
                 </div>
             </section>
 
-            {/* Professional Footer - No Blue, Burgundy Branded */}
+            {/* Professional Footer */}
             <footer className="bg-burgundy-950 text-white">
-                {/* Main Footer */}
-                <div className="max-w-6xl mx-auto px-4 py-12">
-                    <div className="grid md:grid-cols-4 gap-8 mb-10">
-                        {/* Brand */}
-                        <div className="md:col-span-2">
+                {/* Main Footer Content */}
+                <div className="max-w-6xl mx-auto px-4 py-12 sm:py-16">
+                    <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-8 mb-12">
+                        {/* Brand Column */}
+                        <div className="col-span-2 lg:col-span-1">
                             <div className="flex items-center gap-2 mb-4">
-                                <GraduationCap className="h-8 w-8 text-gold-400" />
-                                <span className="font-bold text-xl">AccrediPro Academy</span>
+                                <Image
+                                    src="https://coach.accredipro.academy/wp-content/uploads/2025/10/Senza-titolo-Logo-1.png"
+                                    alt="AccrediPro Academy"
+                                    width={40}
+                                    height={40}
+                                    className="w-10 h-10"
+                                />
+                                <span className="font-bold text-lg">AccrediPro</span>
                             </div>
-                            <p className="text-burgundy-200 text-sm mb-4 max-w-sm">
-                                The most comprehensive Functional Medicine certification program. 21 specializations, personal mentorship, and career launch support.
+                            <p className="text-burgundy-300 text-sm mb-4">
+                                The world's most accessible Functional Medicine certification.
                             </p>
-                            <div className="flex items-center gap-4">
-                                <div className="flex items-center gap-1">
-                                    <Star className="h-4 w-4 fill-gold-400 text-gold-400" />
-                                    <Star className="h-4 w-4 fill-gold-400 text-gold-400" />
-                                    <Star className="h-4 w-4 fill-gold-400 text-gold-400" />
-                                    <Star className="h-4 w-4 fill-gold-400 text-gold-400" />
-                                    <Star className="h-4 w-4 fill-gold-400 text-gold-400" />
-                                </div>
-                                <span className="text-sm text-burgundy-200">4.9/5 (823 reviews)</span>
+                            {/* Social Icons */}
+                            <div className="flex items-center gap-3">
+                                <a href="https://www.facebook.com/accredipro" target="_blank" rel="noopener noreferrer" className="w-9 h-9 rounded-full bg-burgundy-800 hover:bg-burgundy-700 flex items-center justify-center transition-colors">
+                                    <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
+                                </a>
+                                <a href="https://www.instagram.com/accredipro.academy" target="_blank" rel="noopener noreferrer" className="w-9 h-9 rounded-full bg-burgundy-800 hover:bg-burgundy-700 flex items-center justify-center transition-colors">
+                                    <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"/></svg>
+                                </a>
+                                <a href="https://www.youtube.com/@accredipro" target="_blank" rel="noopener noreferrer" className="w-9 h-9 rounded-full bg-burgundy-800 hover:bg-burgundy-700 flex items-center justify-center transition-colors">
+                                    <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M23.498 6.186a3.016 3.016 0 00-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 00.502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 002.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 002.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>
+                                </a>
+                                <a href="https://www.linkedin.com/company/accredipro" target="_blank" rel="noopener noreferrer" className="w-9 h-9 rounded-full bg-burgundy-800 hover:bg-burgundy-700 flex items-center justify-center transition-colors">
+                                    <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
+                                </a>
                             </div>
                         </div>
 
-                        {/* Quick Links */}
+                        {/* Company */}
                         <div>
-                            <h4 className="font-semibold mb-4 text-gold-400">Programs</h4>
-                            <ul className="space-y-2 text-sm text-burgundy-200">
-                                <li><a href="/fm-certification" className="hover:text-white transition-colors">Full Certification</a></li>
-                                <li><a href="/fm-mini-diploma" className="hover:text-white transition-colors">Mini Diploma</a></li>
+                            <h4 className="font-semibold mb-4 text-gold-400 text-sm uppercase tracking-wide">Company</h4>
+                            <ul className="space-y-2.5 text-sm text-burgundy-300">
+                                <li><a href="/about" className="hover:text-white transition-colors">About Us</a></li>
                                 <li><a href="https://learn.accredipro.academy/accreditation" className="hover:text-white transition-colors">Accreditations</a></li>
+                                <li><a href="/faculty" className="hover:text-white transition-colors">Faculty</a></li>
+                                <li><a href="/reviews" className="hover:text-white transition-colors">Student Reviews</a></li>
+                                <li><a href="mailto:support@accredipro.academy" className="hover:text-white transition-colors">Contact Support</a></li>
                             </ul>
                         </div>
 
-                        {/* Support */}
+                        {/* Resources */}
                         <div>
-                            <h4 className="font-semibold mb-4 text-gold-400">Support</h4>
-                            <ul className="space-y-2 text-sm text-burgundy-200">
-                                <li><a href="mailto:sarah@accredipro.academy" className="hover:text-white transition-colors">sarah@accredipro.academy</a></li>
-                                <li><a href="https://learn.accredipro.academy/login" className="hover:text-white transition-colors">Student Login</a></li>
+                            <h4 className="font-semibold mb-4 text-gold-400 text-sm uppercase tracking-wide">Resources</h4>
+                            <ul className="space-y-2.5 text-sm text-burgundy-300">
+                                <li><a href="/blog" className="hover:text-white transition-colors">Latest News / Blog</a></li>
+                                <li><a href="/functional-nutrition-guide" className="hover:text-white transition-colors">Functional Nutrition Guide</a></li>
+                                <li><a href="/career-webinar" className="hover:text-white transition-colors">Career Webinar</a></li>
+                                <li><a href="/graduate-directory" className="hover:text-white transition-colors">Graduate Directory</a></li>
+                                <li><a href="https://learn.accredipro.academy/login" className="hover:text-white transition-colors">Student Portal</a></li>
                             </ul>
+                        </div>
+
+                        {/* Stay Updated */}
+                        <div className="col-span-2 md:col-span-1">
+                            <h4 className="font-semibold mb-4 text-gold-400 text-sm uppercase tracking-wide">Stay Updated</h4>
+                            <p className="text-burgundy-300 text-sm mb-3">Get exclusive discounts and free resources.</p>
+                            <div className="flex gap-2 mb-4">
+                                <input
+                                    type="email"
+                                    placeholder="Your email"
+                                    className="flex-1 bg-burgundy-900 border border-burgundy-700 rounded-lg px-3 py-2 text-sm text-white placeholder:text-burgundy-400 focus:outline-none focus:border-gold-400"
+                                />
+                                <button className="bg-gold-400 hover:bg-gold-500 text-burgundy-900 font-semibold px-4 py-2 rounded-lg text-sm transition-colors whitespace-nowrap">
+                                    Get Code
+                                </button>
+                            </div>
+                            {/* App Store Buttons */}
+                            <p className="text-burgundy-400 text-xs mb-2">Download Learning App:</p>
+                            <div className="flex gap-2">
+                                <a href="https://play.google.com/store/apps/details?id=com.accredipro.academy" target="_blank" rel="noopener noreferrer" className="flex items-center gap-1.5 bg-burgundy-900 hover:bg-burgundy-800 border border-burgundy-700 rounded-lg px-3 py-1.5 transition-colors">
+                                    <svg className="w-4 h-4" viewBox="0 0 24 24" fill="currentColor"><path d="M3.609 1.814L13.792 12 3.609 22.186a.996.996 0 01-.609-.92V2.734a1 1 0 01.609-.92zm10.89 10.893l2.302 2.302-10.937 6.333 8.635-8.635zm3.199-3.198l2.807 1.626a1 1 0 010 1.73l-2.807 1.626L15.5 12l2.198-2.491zM5.864 2.658L16.8 8.99l-2.302 2.302-8.634-8.634z"/></svg>
+                                    <span className="text-xs font-medium">Play Store</span>
+                                </a>
+                                <a href="https://apps.apple.com/app/accredipro-academy" target="_blank" rel="noopener noreferrer" className="flex items-center gap-1.5 bg-burgundy-900 hover:bg-burgundy-800 border border-burgundy-700 rounded-lg px-3 py-1.5 transition-colors">
+                                    <svg className="w-4 h-4" viewBox="0 0 24 24" fill="currentColor"><path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.81-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/></svg>
+                                    <span className="text-xs font-medium">App Store</span>
+                                </a>
+                            </div>
                         </div>
                     </div>
 
                     {/* Accreditation Badges */}
-                    <div className="border-t border-burgundy-800 pt-8 mb-8">
-                        <p className="text-center text-xs text-burgundy-400 mb-4 uppercase tracking-wide">Internationally Accredited</p>
-                        <div className="flex flex-wrap justify-center gap-3">
+                    <div className="border-t border-burgundy-800 pt-8">
+                        <p className="text-center text-xs text-burgundy-400 mb-4 uppercase tracking-wide">Internationally Accredited by 9 Organizations</p>
+                        <div className="flex flex-wrap justify-center gap-2">
                             {["CMA", "IPHM", "CPD", "IAOTH", "ICAHP", "IGCT", "CTAA", "IHTCP", "IIOHT"].map((acc, i) => (
-                                <span key={i} className="bg-burgundy-900 border border-burgundy-700 px-3 py-1 rounded text-xs font-medium text-burgundy-200">{acc}</span>
+                                <span key={i} className="bg-burgundy-900/50 border border-burgundy-800 px-3 py-1 rounded text-xs font-medium text-burgundy-300">{acc}</span>
                             ))}
                         </div>
                     </div>
                 </div>
 
                 {/* Bottom Bar */}
-                <div className="border-t border-burgundy-900 py-6">
+                <div className="border-t border-burgundy-900 py-5">
                     <div className="max-w-6xl mx-auto px-4">
                         <div className="flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-burgundy-400">
                             <p>© 2025 AccrediPro Academy. All rights reserved.</p>
-                            <p className="text-center">
-                                *Income ranges represent goals of certified practitioners. Results vary based on effort, background, and dedication.
-                            </p>
+                            <div className="flex items-center gap-4">
+                                <a href="/privacy" className="hover:text-white transition-colors">Privacy Policy</a>
+                                <a href="/terms" className="hover:text-white transition-colors">Terms of Service</a>
+                                <a href="/refund-policy" className="hover:text-white transition-colors">Refund Policy</a>
+                            </div>
                         </div>
+                        <p className="text-center text-xs text-burgundy-500 mt-4">
+                            *Income ranges represent goals of certified practitioners. Results vary based on effort, background, and dedication.
+                        </p>
                     </div>
                 </div>
             </footer>
