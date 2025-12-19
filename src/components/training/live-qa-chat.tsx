@@ -56,17 +56,32 @@ const OPENING_GREETINGS = [
   "Hi! My friend told me about this, she said it changed her life",
 ];
 
-// Natural, emotional Q&A conversations - varied styles, storytelling, pain points
-const QA_CONVERSATIONS = [
-  // PHASE 1: Opening - Understanding & Pain Points
+// Q&A conversations organized by VIDEO TIMELINE (36 min total)
+// Questions should appear AFTER the relevant section is discussed in the video
+
+// PHASE 1: EARLY (3-10 min) - During pain cycle section
+// Simple questions, relatable struggles, "what is FM"
+const PHASE1_QA = [
   {
     question: "ok so I've been watching for a few mins... can someone explain what functional medicine actually is?? I keep hearing about it everywhere",
     answer: "Great question! Functional medicine is a root-cause approach to health. Instead of just giving you a pill for symptoms, we look at WHY you're having those symptoms in the first place. Is it gut issues? Hormones? Stress? We treat the whole person, not just the symptom. It's healthcare that actually makes sense!",
   },
   {
+    question: "omg she's literally describing my life right now... the fatigue, the brain fog, doctors telling me I'm fine 😭",
+    answer: "You're not alone! So many women feel this way. That's exactly why this field is growing so fast - millions of people are looking for practitioners who actually LISTEN and look at the root cause instead of just prescribing pills.",
+  },
+  {
     question: "I'm a nurse and honestly... I'm SO burned out. 12 years in the system and I feel like I'm just putting bandaids on everything. Does this actually address things differently?",
     answer: "I hear you, and your nursing background is actually a HUGE asset here! Functional medicine fills all the gaps conventional medicine leaves - nutrition, lifestyle, the gut-hormone connection. Things doctors don't have TIME to address. You'll finally be able to HELP people the way you always wanted to. Many of our best practitioners are former nurses!",
   },
+  {
+    question: "wait do I need a medical degree for this?? I don't have any health background",
+    answer: "No medical degree needed! Many of our students come from completely different backgrounds - teachers, corporate professionals, stay-at-home moms. What matters is your passion for helping people and your commitment to learning. The certification teaches you everything from scratch.",
+  },
+];
+
+// PHASE 2: MID-EARLY (10-17 min) - After opportunity section, before case studies
+const PHASE2_QA = [
   {
     question: "this sounds interesting but how is it different from being a health coach",
     answer: "Great question! Health coaches focus mainly on lifestyle and accountability. Functional medicine practitioners go DEEPER - we understand lab work, root causes, complex protocols. It's a more comprehensive skill set that commands higher fees. You're not just motivating people, you're actually solving their health puzzles!",
@@ -75,84 +90,73 @@ const QA_CONVERSATIONS = [
     question: "I've been dealing with my own health issues for 6 years now. Doctors keep telling me my labs are 'normal' but I feel TERRIBLE every day. Brain fog, exhausted, can't lose weight no matter what I do... is this for people like me?",
     answer: "This is EXACTLY who this certification is for! Your personal health journey is your superpower. When you've lived it, you UNDERSTAND it. Some of our most successful practitioners came to this because they healed themselves first. Your story will connect deeply with clients who feel unheard by conventional medicine.",
   },
-
-  // PHASE 2: Who is it for?
   {
-    question: "wait do I need a medical degree for this?? I don't have any health background",
-    answer: "No medical degree needed! Many of our students come from completely different backgrounds - teachers, corporate professionals, stay-at-home moms. What matters is your passion for helping people and your commitment to learning. The certification teaches you everything from scratch.",
+    question: "$5.6 TRILLION industry?? I had no idea it was that big",
+    answer: "Yes! And it's growing 15%+ every year. The demand for functional medicine practitioners is HUGE - there simply aren't enough trained people to help everyone who needs it. That's why this is such a unique opportunity right now.",
   },
   {
     question: "I'm 54 and thinking about a career change... feeling like maybe it's too late for me to start something new 😔",
     answer: "Are you kidding?! Your life experience is your BIGGEST advantage! Clients want practitioners who've been through things - menopause, raising kids, career stress. They trust wisdom over youth. Some of our most successful graduates are in their 50s and 60s. It's never too late to start a meaningful career!",
   },
-  {
-    question: "I have 3 kids under 7 and work part time... is this even realistic for me rn",
-    answer: "Absolutely! The program is designed for busy people. Most students study 2-4 hours per week. You can go through lessons during nap time, on your lunch break, whenever works for you. And once certified, you set your OWN schedule. Many practitioners only work 15-20 hours a week and make great money!",
-  },
-  {
-    question: "I'm already a personal trainer but feel like I'm missing something... clients keep asking me nutrition questions I can't answer properly",
-    answer: "This would ELEVATE everything you're already doing! Adding functional medicine to your credentials lets you charge premium rates and attract clients who want a deeper approach. We have trainers and dietitians who doubled their income after certification. It's the missing piece that sets you apart!",
-  },
+];
 
-  // PHASE 3: Program Structure - emphasize 20-in-1
+// PHASE 3: MIDDLE (17-26 min) - During/after case studies
+// Questions about income, results, specific people mentioned
+const PHASE3_QA = [
   {
-    question: "how does the program actually work? is it all online",
-    answer: "Yes, 100% online and self-paced! Here's what makes us unique: you get 20 modules and EACH MODULE = 1 CERTIFICATE. That's 20 certifications in 1 program - first ever worldwide! You can specialize in gut health, hormones, autoimmune, weight loss... it's the most complete certification available. Plus lifetime access!",
+    question: "wait Jenny made $12,500 in her FIRST month?? is that actually real?",
+    answer: "100% real! Jenny's story is one of my favorites. She was burned out as a nurse practitioner, enrolled in our program, specialized in women's hormones, and launched within weeks. 5 clients at $2,500 each. She still messages me saying 'I finally remember why I got into healthcare.'",
   },
   {
-    question: "wait hold on... 20 certificates?? what do you mean exactly",
-    answer: "Yes! Each module gives you a SEPARATE certificate. So you graduate with certifications in gut health, hormone balancing, autoimmune protocols, weight management, lab interpretation, AND MORE. No other program offers this. You become a multi-specialist which means more clients and you can charge higher fees!",
+    question: "the Sarah story is hitting me hard rn... I'm also 'just a mom' with no qualifications 😅",
+    answer: "Sarah's story resonates with SO many women! She had zero clinical background - just her own gut health journey and a desire to help others. $6,200 in month two while her kids were at school. 'Just a mom' is actually your superpower - you understand real life, real struggles, real time constraints. Clients LOVE that.",
   },
-  {
-    question: "how long does it take to finish? I'm impatient lol",
-    answer: "Most students finish in 3-6 months depending on their schedule. Some power through it in 4-6 weeks! There's no deadline though - you have lifetime access. Life gets busy, you can pause and come back. The certification is waiting for you whenever you're ready.",
-  },
-  {
-    question: "is there actual hands-on stuff or just reading material",
-    answer: "Great question! Each module includes practical exercises, real case studies, and downloadable resources. You'll practice creating protocols, analyzing health histories, and developing client plans. By the time you're certified, you'll have worked through dozens of real scenarios. Plus our community lets you practice with other students!",
-  },
-  {
-    question: "what if I get stuck or have questions during the program? I hate feeling alone in online courses",
-    answer: "You're never alone! You get access to our private community where you can ask questions anytime, weekly Q&A calls with me, direct messaging support, and peer support from other students. This isn't a 'buy and disappear' program - we're invested in your success!",
-  },
-
-  // PHASE 4: Credibility & Legitimacy
-  {
-    question: "ok but is this certification actually legit? like recognized professionally?",
-    answer: "Yes! Our certification is accredited and recognized by functional medicine organizations. But here's what matters MORE - it's recognized by CLIENTS who are looking for help. We have graduates working alongside doctors, running thriving practices, and consulting for wellness brands. Your skills and results are what matter most.",
-  },
-  {
-    question: "I've looked at other certifications and they're like $8000-15000... how is yours so much less? what's the catch",
-    answer: "No catch! Most expensive programs teach the SAME foundational content with more fluff and longer timelines. We're different - you get 20 CERTIFICATES IN ONE, comprehensive clinical training PLUS business-building strategies for a fraction of the cost. It's the most complete certification on the market. No one else offers this!",
-  },
-  {
-    question: "can I legally call myself a practitioner after this? I don't want to get in trouble",
-    answer: "You can absolutely use the title 'Certified Functional Medicine Practitioner' or 'Certified Health Coach.' The key is understanding your scope of practice - you're not diagnosing or prescribing, you're coaching and supporting. We cover all the legalities so you feel confident and protected.",
-  },
-  {
-    question: "what makes this different from all the other health certifications out there honestly",
-    answer: "Four things: 1) 20 CERTIFICATES IN 1 - each module = 1 certificate. First ever worldwide! 2) We teach you to GET CLIENTS, not just theory. 3) Multiple specializations - gut health, hormones, autoimmune, weight loss. 4) It's priced for real people. Our graduates actually launch practices!",
-  },
-
-  // PHASE 5: Results & Success Stories
   {
     question: "do people who finish this actually make money? or is it one of those things where you get certified and then nothing happens",
-    answer: "So many success stories! Jennifer from Texas landed her first 5 clients within 60 days. Maria went from burned-out nurse to making $8K/month within 6 months. David built a virtual practice while keeping his day job. These aren't unicorns - they're normal people who followed the system. You can do this too!",
+    answer: "So many success stories! Jenny from Texas landed her first 5 clients within 60 days. Maria went from burned-out nurse to making $8K/month within 6 months. David built a virtual practice while keeping his day job. These aren't unicorns - they're normal people who followed the system. You can do this too!",
   },
   {
     question: "what kind of income can I realistically expect? I need real numbers not just 'you can make money'",
     answer: "Here's the math: Most practitioners charge $150-300 per session or $1,000-3,000 for program packages. Just 5 clients at $1,000 each = $5,000/month. Our serious graduates hit $5K-10K/month within their first year. Some go much higher. The demand is HUGE right now.",
   },
   {
-    question: "how fast can I actually start seeing clients after I'm certified",
-    answer: "Some students start taking discovery calls WHILE they're still in the program! We actually encourage it. By module 15 you have enough knowledge to help people. The business module teaches you exactly how to launch. Many graduates have their first paying client within 30-60 days of finishing.",
+    question: "I have 3 kids under 7 and work part time... is this even realistic for me rn",
+    answer: "Absolutely! The program is designed for busy people. Most students study 2-4 hours per week. You can go through lessons during nap time, on your lunch break, whenever works for you. And once certified, you set your OWN schedule. Many practitioners only work 15-20 hours a week and make great money!",
+  },
+];
+
+// PHASE 4: MID-LATE (26-35 min) - During certification details section
+// Questions about the program structure, accreditations, what's included
+const PHASE4_QA = [
+  {
+    question: "wait hold on... 20 certificates?? what do you mean exactly",
+    answer: "Yes! Each module gives you a SEPARATE certificate. So you graduate with certifications in gut health, hormone balancing, autoimmune protocols, weight management, lab interpretation, AND MORE. No other program offers this. You become a multi-specialist which means more clients and you can charge higher fees!",
   },
   {
-    question: "I'm scared I'll finish everything and still feel like I'm not ready... imposter syndrome is real 😬",
-    answer: "That fear is SO normal - we all feel it! That's exactly why we include ongoing support. You can ask questions in our community, join Q&A calls, get feedback on your first client cases. You're not alone in this. And honestly? Your first client will prove to you that YOU CAN DO THIS!",
+    question: "how does the program actually work? is it all online",
+    answer: "Yes, 100% online and self-paced! Here's what makes us unique: you get 20 modules and EACH MODULE = 1 CERTIFICATE. That's 20 certifications in 1 program - first ever worldwide! You can specialize in gut health, hormones, autoimmune, weight loss... it's the most complete certification available. Plus lifetime access!",
   },
+  {
+    question: "9 international accreditations sounds impressive but what does that actually mean for me?",
+    answer: "It means your credentials are recognized GLOBALLY. You can work with clients anywhere in the world. It means doctors and healthcare providers respect your training. It means when you put those logos on your website, potential clients see you're LEGIT. No other program has all 9 of these!",
+  },
+  {
+    question: "how long does it take to finish? I'm impatient lol",
+    answer: "Most students finish in 3-6 months depending on their schedule. Some power through it in 4-6 weeks! There's no deadline though - you have lifetime access. Life gets busy, you can pause and come back. The certification is waiting for you whenever you're ready.",
+  },
+  {
+    question: "what if I get stuck or have questions during the program? I hate feeling alone in online courses",
+    answer: "You're never alone! You get access to our private community where you can ask questions anytime, weekly Q&A calls with me, direct messaging support, and peer support from other students. This isn't a 'buy and disappear' program - we're invested in your success!",
+  },
+  {
+    question: "the business accelerator box thing sounds amazing... other programs definitely don't include that",
+    answer: "That's EXACTLY why we created it! I saw too many women get certified and then have no idea how to get clients. The business box has everything - client attraction, pricing, sales scripts, program templates, the whole thing. It's like getting a second certification in business-building, included free.",
+  },
+];
 
-  // PHASE 6: Price & Investment
+// PHASE 5: LATE (35-45 min) - After objection handling, around price reveal
+// Questions about price, guarantees, concerns, "should I do this"
+const PHASE5_QA = [
   {
     question: "ok so... what's the investment? I'm scared to ask lol",
     answer: "The full certification is $997. I know that's a real investment, but consider this: most practitioners make that back with just ONE client! Compare that to $5,000-15,000 programs that don't even teach you how to get clients. We believe life-changing education shouldn't require going into massive debt.",
@@ -163,116 +167,51 @@ const QA_CONVERSATIONS = [
   },
   {
     question: "I'm nervous about investing when I'm not sure I can actually build a practice... what if I fail",
-    answer: "I totally understand that fear! That's exactly why we include the business-building module. The certification alone won't change your life - combining it with client acquisition strategies is what makes the difference. 87% of graduates who follow the system land their first paying client within 60 days.",
+    answer: "I totally understand that fear! That's exactly why we include the business-building module AND have the 100% Certification Guarantee. If you do the work, you WILL get certified. And the business system shows you exactly how to get your first clients. 87% of graduates who follow the system land their first paying client within 60 days.",
   },
   {
-    question: "what if I can't finish the program? life happens... do I lose my money",
-    answer: "Absolutely not! You have lifetime access. Life happens - take a break, come back, finish at your own pace. We've had students complete it in 4 weeks, others in 6 months. Your access never expires, and neither does our support. Your investment is protected.",
-  },
-  {
-    question: "whats included exactly? I don't want any surprise fees later",
-    answer: "Everything is included - all 20 modules (each with its OWN certificate!), certification exam, business toolkit, client intake forms, marketing templates, AND lifetime access to our community. No hidden fees, no monthly subscriptions. One payment, 20 certifications, lifetime value!",
-  },
-
-  // PHASE 7: Urgency & Final Objections
-  {
-    question: "ugh I want to do this so bad but I keep putting it off... been watching for 20 mins now and still hesitating",
-    answer: "I'd say: what are you waiting FOR? Another year to pass feeling unfulfilled? More time watching others succeed? The perfect moment doesn't exist. What DOES exist is a proven path to a meaningful career that helps people AND pays well. The only thing standing between you and that life is a decision.",
-  },
-  {
-    question: "what's the worst that could happen if I try this",
-    answer: "Honestly? The worst case is you gain incredible knowledge about health that helps you and your family, even if you never take a single client. But realistically, if you put in the work, you'll have a new career that gives you freedom, purpose, and income. The bigger risk is NEVER trying.",
+    question: "is there a guarantee? what if I don't like it",
+    answer: "TWO guarantees actually! 30-day money-back if you don't love it. AND a 100% Certification Guarantee - if you do the work and don't pass, we work with you until you do. You literally cannot lose unless you quit. We don't let our students fail.",
   },
   {
     question: "I've bought online courses before and never finished them... have a whole graveyard of unfinished programs 😅",
     answer: "I hear you! The difference here is support and community. You're not doing this alone - you have me, the community, weekly calls. Plus, this isn't a boring textbook course. It's engaging, practical, and you see progress immediately. Our completion rate is over 85% because people actually ENJOY it!",
   },
   {
-    question: "when does enrollment close?",
-    answer: "We do periodic enrollment windows to ensure everyone gets proper support and attention. The current enrollment window closes soon - I'd recommend securing your spot now if you're feeling called to this. Once the door closes, you'll have to wait for the next opening. Don't let hesitation cost you months of progress!",
+    question: "ugh I want to do this so bad but I keep putting it off... been watching for 20 mins now and still hesitating",
+    answer: "I'd say: what are you waiting FOR? Another year to pass feeling unfulfilled? More time watching others succeed? The perfect moment doesn't exist. What DOES exist is a proven path to a meaningful career that helps people AND pays well. The only thing standing between you and that life is a decision.",
   },
+];
 
-  // ADDITIONAL: More varied questions for 45-min coverage
+// PHASE 6: FINAL (45-55 min) - During close, after price is revealed
+// Urgency, final questions, enrollments
+const PHASE6_QA = [
   {
-    question: "can I work with clients in other countries? I have family in the UK who want me to help them",
-    answer: "The beauty of this certification is it works GLOBALLY! Health coaching isn't regulated like medicine, so you can work with clients anywhere. Many of our graduates have clients across different countries. Virtual consultations make it easy - you can help someone in London while sitting in Texas!",
+    question: "ok I think I'm ready... any last words of encouragement? I'm still nervous 😬",
+    answer: "Here's the truth: EVERYONE is nervous at the beginning. Every successful practitioner started exactly where you are right now - scared but hopeful. The only difference between them and people who never try is that they took action despite the fear. Trust yourself. You can do this. We've got you!",
   },
   {
-    question: "I'm not very tech savvy... honestly I struggle with new platforms. is the tech part going to be hard?",
-    answer: "You don't need to be tech-savvy at all! Our platform is super simple - if you can use Facebook, you can do this. Plus, running your practice just needs Zoom and email. We even show you exactly how to set everything up step by step. Many of our most successful graduates started with zero tech skills!",
-  },
-  {
-    question: "is functional medicine just a trend? I don't want to invest in something that'll be gone in 5 years",
-    answer: "This is NOT a trend - it's the future of healthcare! Chronic disease is EXPLODING and conventional medicine can't keep up. People are desperate for root-cause solutions. The functional medicine market is growing 15%+ annually. Getting certified NOW puts you ahead of the curve. This field is just getting started!",
-  },
-  {
-    question: "how do practitioners actually find clients?? that's the part that scares me most",
-    answer: "So many ways! Social media, referrals, local wellness events, partnerships with gyms or yoga studios, online marketing. The business module covers ALL of this in detail. Our graduates who follow the strategies typically land their first 3-5 clients within 60-90 days. The demand is huge - people are actively LOOKING for practitioners!",
-  },
-  {
-    question: "can I focus on just one specialty like hormones? or do I have to do everything",
-    answer: "That's the BEST part of our 20-in-1 certification! You get a certificate for EACH module. So you can specialize in gut health AND hormones AND autoimmune AND weight loss - all with individual certifications to prove your expertise! No other program offers this. You become a multi-specialist, which means more clients and higher fees!",
-  },
-  {
-    question: "I work full time... like 50+ hours a week. can I really do this on the side",
-    answer: "Many of our graduates start exactly this way! Study the course evenings and weekends, then see clients a few hours per week. Once your practice income matches your job salary, you can make the transition. Some people keep both forever! Flexibility is the whole point of this career.",
-  },
-  {
-    question: "do you teach how to read lab work? I've always wanted to understand what all those numbers mean",
-    answer: "Yes! We cover functional blood chemistry, hormone panels, thyroid markers, gut tests like GI-MAP, and more. You'll learn to spot patterns that conventional doctors miss. This is one of our most popular modules - it's like getting superpowers to actually UNDERSTAND what's happening in someone's body!",
-  },
-  {
-    question: "is there a community? I learn better when I have people to talk to about this stuff",
-    answer: "YES! This is one of the best parts. You get lifetime access to our private community of practitioners. Share case studies, ask questions, get support, find accountability partners. Many graduates say the community alone is worth the investment. You're joining a tribe of like-minded people!",
-  },
-  {
-    question: "can I see the course content before I buy? I want to make sure it's legit",
-    answer: "That's exactly what the Mini Diploma is for! It gives you a taste of our teaching style, the platform, and core concepts. If you loved the Mini Diploma, you'll LOVE the full certification. It's the same quality, just 10x more comprehensive. The Mini Diploma is your risk-free preview!",
-  },
-  {
-    question: "aren't there already too many health coaches out there? worried about competition",
-    answer: "There are 1 BILLION people worldwide with chronic health issues. The market is massive and growing. What sets you apart isn't just the certification - it's YOUR unique story, approach, and niche. The world needs MORE practitioners, not fewer. There's room for everyone who's committed!",
-  },
-  {
-    question: "how many hours per week do I need to study? be honest",
-    answer: "Most students study 3-5 hours per week and finish in 3-4 months. Some binge it in 4-6 weeks! There's no deadline, so go at your pace. Even 1-2 hours per week works if that's all you have. Progress is progress. The key is consistency, not speed!",
-  },
-  {
-    question: "is there a guarantee? what if I don't like it",
-    answer: "We stand behind our program 100%! If you complete the modules and don't feel confident in your skills, we'll work with you until you do. That said, refunds are rarely requested because graduates genuinely love the program. Your success is our success!",
-  },
-  {
-    question: "what's in the business module? that's what I really need help with",
-    answer: "EVERYTHING! How to define your niche, price your services, create packages, set up your online presence, attract clients through social media, handle discovery calls, and close sales. It's basically a mini MBA for health practitioners. This module alone could be a separate course!",
-  },
-  {
-    question: "could I get a job with this or is it only for starting your own thing",
-    answer: "Both! Many graduates work for wellness clinics, functional medicine doctors, corporate wellness programs, or health tech companies. The certification opens doors everywhere. Self-employment is popular because of the freedom, but you have options. The skills are valuable in any health setting!",
-  },
-  {
-    question: "how do I know I'll actually finish? I have commitment issues with courses 😂",
-    answer: "Our completion rate is over 85% - way above industry average! Why? Because it's engaging, practical, and you see results fast. Plus the community keeps you accountable. We check in on students who fall behind. You're not alone in this journey. We genuinely care about your success!",
-  },
-  {
-    question: "is the exam hard? I get test anxiety",
-    answer: "It's an open-book assessment covering the key concepts from each module. It's challenging but fair - if you did the work, you'll pass. You can retake it if needed. The goal isn't to trick you, it's to ensure you're confident and competent. Most students pass on their first try!",
-  },
-  {
-    question: "do I get an actual certificate I can hang on my wall? lol I know that's silly but I want it",
-    answer: "Both! You get beautiful digital certificates immediately upon completion, plus we mail you physical framed certificates. They look amazing on your wall or in your office. Perfect for credibility when clients visit. Your hard work deserves to be displayed!",
+    question: "just enrolled!! so excited and terrified at the same time haha 🎉",
+    answer: "CONGRATULATIONS! 🎉 You just made one of the best decisions of your life! That mix of excitement and nervousness is completely normal. Check your email for login details and jump into the community to introduce yourself. Welcome to the family - I can't wait to see you inside!",
   },
   {
     question: "how do I know if this is really right for me... I keep going back and forth",
     answer: "Ask yourself: Do you genuinely want to help people with their health? Are you frustrated by conventional medicine's limitations? Do you want flexibility and meaningful work? If you said yes, this is probably your path. The fact that you're here, watching this, tells me something is calling you!",
   },
   {
-    question: "ok I think I'm ready... any last words of encouragement? I'm still nervous 😬",
-    answer: "Here's the truth: EVERYONE is nervous at the beginning. Every successful practitioner started exactly where you are right now - scared but hopeful. The only difference between them and people who never try is that they took action despite the fear. Trust yourself. You can do this. We've got you!",
+    question: "what's the worst that could happen if I try this",
+    answer: "Honestly? The worst case is you gain incredible knowledge about health that helps you and your family, even if you never take a single client. But realistically, if you put in the work, you'll have a new career that gives you freedom, purpose, and income. The bigger risk is NEVER trying.",
   },
-  {
-    question: "OMG just enrolled!! so excited and terrified at the same time haha",
-    answer: "CONGRATULATIONS! You just made one of the best decisions of your life! That mix of excitement and nervousness is completely normal. Check your email for login details and jump into the community to introduce yourself. We're all here to support you. Welcome to the family!",
-  },
+];
+
+// Combine all phases into timeline-aware structure
+const QA_CONVERSATIONS = [
+  ...PHASE1_QA,  // 3-10 min
+  ...PHASE2_QA,  // 10-17 min
+  ...PHASE3_QA,  // 17-26 min
+  ...PHASE4_QA,  // 26-35 min
+  ...PHASE5_QA,  // 35-45 min
+  ...PHASE6_QA,  // 45+ min
 ];
 
 // Enrollment notifications - more variety
