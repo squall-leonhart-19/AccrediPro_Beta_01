@@ -300,7 +300,7 @@ export function LiveQAChat() {
     const profiles = shuffledProfilesRef.current || QA_PROFILES;
     const timers: NodeJS.Timeout[] = [];
 
-    // Greeting 1: After 2 seconds
+    // Greeting 1: After 12 seconds (delayed to give video time to play)
     timers.push(setTimeout(() => {
       const greeting = OPENING_GREETINGS[Math.floor(Math.random() * OPENING_GREETINGS.length)];
       setMessages(prev => [...prev, {
@@ -310,9 +310,9 @@ export function LiveQAChat() {
         content: greeting,
         timestamp: new Date(),
       }]);
-    }, 2000));
+    }, 12000));
 
-    // Greeting 2: After 5 seconds
+    // Greeting 2: After 18 seconds
     timers.push(setTimeout(() => {
       const greeting = OPENING_GREETINGS[Math.floor(Math.random() * OPENING_GREETINGS.length)];
       setMessages(prev => [...prev, {
@@ -322,9 +322,9 @@ export function LiveQAChat() {
         content: greeting,
         timestamp: new Date(),
       }]);
-    }, 5000));
+    }, 18000));
 
-    // Greeting 3: After 9 seconds
+    // Greeting 3: After 25 seconds
     timers.push(setTimeout(() => {
       const greeting = OPENING_GREETINGS[Math.floor(Math.random() * OPENING_GREETINGS.length)];
       setMessages(prev => [...prev, {
@@ -334,23 +334,23 @@ export function LiveQAChat() {
         content: greeting,
         timestamp: new Date(),
       }]);
-    }, 9000));
+    }, 25000));
 
-    // Sarah's welcome after 12 seconds
+    // Rachel's welcome after 35 seconds
     timers.push(setTimeout(() => {
       setMessages(prev => [...prev, {
         id: `a-welcome`,
         type: "answer",
-        content: "Hey everyone! Welcome to the live training! 👋 So glad you're here. Feel free to drop your questions in the chat as we go - I'll be answering them throughout!",
+        content: "Hey everyone! Welcome to the live training! 👋 I'm Rachel - I went through this exact program 2 years ago and now I run my own practice! Happy to answer any questions as we go through this together.",
         timestamp: new Date(),
       }]);
       setIsStarted(true);
-    }, 12000));
+    }, 35000));
 
     return () => timers.forEach(t => clearTimeout(t));
   }, []);
 
-  // After Sarah's welcome, start the Q&A flow
+  // After Rachel's welcome, start the Q&A flow
   useEffect(() => {
     if (!isStarted) return;
 
@@ -358,7 +358,7 @@ export function LiveQAChat() {
     const profiles = shuffledProfilesRef.current || QA_PROFILES;
     const timers: NodeJS.Timeout[] = [];
 
-    // First real question after 25-30 seconds (giving video time to build context)
+    // First real question after 45-60 seconds (giving video more time)
     timers.push(setTimeout(() => {
       const qa = conversations[0];
       const profile = profiles[3]; // Use profile 3 since 0,1,2 were used for greetings
@@ -371,7 +371,7 @@ export function LiveQAChat() {
         timestamp: new Date(),
       }]);
 
-      // Sarah's answer after 12-18 seconds
+      // Rachel's answer after 20-30 seconds (realistic reading/typing time)
       setTimeout(() => {
         setMessages(prev => [...prev, {
           id: `a-${Date.now()}`,
@@ -380,13 +380,13 @@ export function LiveQAChat() {
           timestamp: new Date(),
         }]);
         conversationIndexRef.current = 1;
-      }, 12000 + Math.random() * 6000);
-    }, 25000 + Math.random() * 5000));
+      }, 20000 + Math.random() * 10000);
+    }, 45000 + Math.random() * 15000));
 
     return () => timers.forEach(t => clearTimeout(t));
   }, [isStarted]);
 
-  // Add new messages every 50-70 seconds (slower, more realistic webinar pace)
+  // Add new messages every 90-150 seconds (much slower, realistic webinar pace)
   useEffect(() => {
     // Don't start the interval until first Q&A is done (conversationIndexRef >= 1)
     if (!isStarted) return;
@@ -423,7 +423,7 @@ export function LiveQAChat() {
             },
           ]);
 
-          // Add answer after delay (12-20 seconds for realistic typing feel)
+          // Add answer after delay (25-40 seconds for realistic reading/typing time)
           setTimeout(() => {
             setMessages((prev) => [
               ...prev,
@@ -434,7 +434,7 @@ export function LiveQAChat() {
                 timestamp: new Date(),
               },
             ]);
-          }, 12000 + Math.random() * 8000);
+          }, 25000 + Math.random() * 15000);
 
           conversationIndexRef.current++;
         } else {
@@ -455,10 +455,10 @@ export function LiveQAChat() {
         }
       };
 
-      // Add new message every 50-70 seconds for slower, more realistic pace
-      const interval = setInterval(addMessage, 50000 + Math.random() * 20000);
+      // Add new message every 90-150 seconds (1.5-2.5 minutes) for realistic pace
+      const interval = setInterval(addMessage, 90000 + Math.random() * 60000);
       return () => clearInterval(interval);
-    }, 25000); // Wait 25 seconds after start before beginning the interval
+    }, 60000); // Wait 60 seconds after start before beginning the interval
 
     return () => clearTimeout(startDelay);
   }, [isStarted]);
@@ -497,10 +497,10 @@ export function LiveQAChat() {
             </div>
             <div>
               <h3 className="text-white font-bold text-sm flex items-center gap-2">
-                Live Q&A with Sarah
+                Live Q&A with Rachel
                 <span className="px-2 py-0.5 bg-red-500 rounded text-xs animate-pulse">LIVE</span>
               </h3>
-              <p className="text-burgundy-100 text-xs">Answering your certification questions</p>
+              <p className="text-burgundy-100 text-xs">Certified Practitioner & Graduate</p>
             </div>
           </div>
           <div className="flex items-center gap-2 text-white/80 text-xs">
@@ -522,7 +522,7 @@ export function LiveQAChat() {
               <MessageCircle className="w-8 h-8 text-burgundy-500" />
             </div>
             <h4 className="text-gray-900 font-semibold mb-2">Connecting to Live Session...</h4>
-            <p className="text-gray-500 text-sm">Sarah will be answering questions shortly</p>
+            <p className="text-gray-500 text-sm">Rachel will be answering questions shortly</p>
             <div className="flex gap-1 mt-4">
               <div className="w-2 h-2 bg-burgundy-400 rounded-full animate-bounce" style={{ animationDelay: "0ms" }} />
               <div className="w-2 h-2 bg-burgundy-400 rounded-full animate-bounce" style={{ animationDelay: "150ms" }} />
@@ -570,27 +570,27 @@ export function LiveQAChat() {
               <div className="flex gap-3 pl-8 animate-slide-up">
                 <div className="relative flex-shrink-0">
                   <Image
-                    src="/coaches/sarah-coach.webp"
-                    alt="Sarah M."
+                    src="https://accredipro.academy/wp-content/uploads/2025/12/IMG_1120.jpeg"
+                    alt="Rachel K."
                     width={36}
                     height={36}
-                    className="rounded-full object-cover ring-2 ring-gold-400"
+                    className="rounded-full object-cover ring-2 ring-emerald-400"
                     unoptimized
                   />
-                  <div className="absolute -bottom-1 -right-1 w-5 h-5 bg-gold-400 rounded-full flex items-center justify-center">
+                  <div className="absolute -bottom-1 -right-1 w-5 h-5 bg-emerald-500 rounded-full flex items-center justify-center">
                     <Crown className="w-3 h-3 text-white" />
                   </div>
                 </div>
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-2 mb-1">
-                    <span className="font-semibold text-sm text-burgundy-700">
-                      Sarah M.
+                    <span className="font-semibold text-sm text-emerald-700">
+                      Rachel K.
                     </span>
-                    <span className="px-1.5 py-0.5 bg-gold-100 text-gold-700 text-xs rounded font-medium">
-                      Instructor
+                    <span className="px-1.5 py-0.5 bg-emerald-100 text-emerald-700 text-xs rounded font-medium">
+                      Graduate
                     </span>
                   </div>
-                  <div className="bg-gradient-to-br from-burgundy-50 to-purple-50 border border-burgundy-100 rounded-2xl rounded-tl-sm px-4 py-2 shadow-sm">
+                  <div className="bg-gradient-to-br from-emerald-50 to-teal-50 border border-emerald-100 rounded-2xl rounded-tl-sm px-4 py-2 shadow-sm">
                     <p className="text-sm text-gray-700">{message.content}</p>
                   </div>
                 </div>
@@ -625,15 +625,14 @@ export function LiveQAChat() {
         ))}
       </div>
 
-      {/* Footer - typing indicator */}
-      <div className="px-4 py-3 bg-gradient-to-r from-burgundy-50 to-gold-50 border-t border-burgundy-100">
-        <div className="flex items-center gap-2 text-gray-500 text-xs">
-          <div className="flex gap-1">
-            <div className="w-2 h-2 bg-burgundy-400 rounded-full animate-bounce" style={{ animationDelay: "0ms" }} />
-            <div className="w-2 h-2 bg-burgundy-400 rounded-full animate-bounce" style={{ animationDelay: "150ms" }} />
-            <div className="w-2 h-2 bg-burgundy-400 rounded-full animate-bounce" style={{ animationDelay: "300ms" }} />
-          </div>
-          <span>Sarah is typing...</span>
+      {/* Footer - viewer info */}
+      <div className="px-4 py-3 bg-gradient-to-r from-emerald-50 to-teal-50 border-t border-emerald-100">
+        <div className="flex items-center justify-between text-gray-500 text-xs">
+          <span className="text-emerald-600 font-medium">Rachel is a certified graduate answering live</span>
+          <span className="flex items-center gap-1">
+            <span className="w-2 h-2 bg-red-500 rounded-full animate-pulse" />
+            LIVE
+          </span>
         </div>
       </div>
     </div>

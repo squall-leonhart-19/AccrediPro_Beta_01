@@ -26,6 +26,7 @@ import {
     ExternalLink,
 } from "lucide-react";
 import { LiveQAChat } from "@/components/training/live-qa-chat";
+import { trackCustomEvent, trackVideoWatch, trackInitiateCheckout } from "@/components/tracking/meta-pixel";
 
 interface TrainingContentProps {
     userName: string;
@@ -55,6 +56,21 @@ export function TrainingContent({
 
     // Should hide chat: enrolled in main cert OR completed video (70%+)
     const shouldHideChat = isEnrolledInMainCert || hasCompletedVideo;
+
+    // Track CTA click for Meta Ads
+    const handleCTAClick = () => {
+        trackInitiateCheckout({
+            content_name: "Full Certification",
+            value: 997,
+            currency: "USD",
+        });
+        trackCustomEvent("CTAClick", {
+            button_location: "training_page",
+            offer: "full_certification_997",
+            video_percent_watched: lastTrackedPercent.current,
+        });
+        console.log("📊 Meta: CTAClick tracked");
+    };
 
     // Track video progress via Wistia API
     useEffect(() => {
@@ -93,6 +109,16 @@ export function TrainingContent({
                                         setHasCompletedVideo(true);
                                     }
                                 }).catch(console.error);
+
+                                // Track to Meta Pixel at key milestones
+                                if ([25, 50, 70, 100].includes(milestone)) {
+                                    trackVideoWatch("masterclass-training", milestone, 36 * 60); // 36 min video
+                                    trackCustomEvent("VSLWatchMilestone", {
+                                        video_id: "masterclass-training",
+                                        percent_watched: milestone,
+                                        milestone: `${milestone}%`,
+                                    });
+                                }
                             }
                         }
                     });
@@ -156,7 +182,7 @@ export function TrainingContent({
                                             strategy="afterInteractive"
                                         />
                                         <div
-                                            className="wistia_embed wistia_async_3go641tx38 videoFoam=true"
+                                            className="wistia_embed wistia_async_3go641tx38 autoPlay=true videoFoam=true"
                                             style={{ width: "100%", height: "100%" }}
                                         />
                                     </>
@@ -231,6 +257,7 @@ export function TrainingContent({
                                         target="_blank"
                                         rel="noopener noreferrer"
                                         className="block"
+                                        onClick={handleCTAClick}
                                     >
                                         <Button size="lg" className="w-full bg-burgundy-600 hover:bg-burgundy-700 text-white font-bold shadow-lg">
                                             <Gift className="w-5 h-5 mr-2" />
@@ -313,6 +340,7 @@ export function TrainingContent({
                                                 href="https://www.fanbasis.com/agency-checkout/AccrediPro/XDNQW"
                                                 target="_blank"
                                                 rel="noopener noreferrer"
+                                                onClick={handleCTAClick}
                                             >
                                                 <Button size="lg" className="bg-burgundy-600 hover:bg-burgundy-700 text-white font-bold px-8 shadow-lg">
                                                     Enroll Now
@@ -355,6 +383,7 @@ export function TrainingContent({
                                         target="_blank"
                                         rel="noopener noreferrer"
                                         className="block"
+                                        onClick={handleCTAClick}
                                     >
                                         <Button size="lg" className="w-full bg-burgundy-600 hover:bg-burgundy-700 text-white font-bold shadow-lg">
                                             <Gift className="w-5 h-5 mr-2" />

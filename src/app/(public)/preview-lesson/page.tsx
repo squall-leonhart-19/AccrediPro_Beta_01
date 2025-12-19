@@ -8,7 +8,7 @@ export default function PreviewLessonPage() {
             lessonNumber={1}
             totalLessons={9}
             isPaid={false}
-            checkoutUrl="/checkout/mini-diploma"
+            checkoutUrl="https://sarah.accredipro.academy/fm-mini-diploma-access"
         />
     );
 }
