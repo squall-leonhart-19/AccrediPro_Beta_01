@@ -374,18 +374,19 @@ export default function FMMiniDiplomaPage() {
             `}</style>
 
             {/* Trustpilot Widget */}
-            <div className="bg-white py-3 border-b border-slate-100">
-                <div className="max-w-6xl mx-auto px-4 flex items-center justify-center gap-3">
-                    <div className="flex items-center gap-1">
-                        {[...Array(5)].map((_, i) => (
-                            <Star key={i} className="h-4 w-4 fill-emerald-500 text-emerald-500" />
-                        ))}
+            <div className="bg-white py-2 border-b border-slate-100">
+                <div className="max-w-6xl mx-auto px-4 flex items-center justify-center">
+                    <div
+                        className="trustpilot-widget"
+                        data-locale="en-US"
+                        data-template-id="5419b6ffb0d04a076446a9af"
+                        data-businessunit-id="68c1ac85e89f387ad19f7817"
+                        data-style-height="20px"
+                        data-style-width="100%"
+                        data-token="e33169fc-3158-4c67-94f8-c774e5035e30"
+                    >
+                        <a href="https://www.trustpilot.com/review/accredipro.academy" target="_blank" rel="noopener noreferrer">Trustpilot</a>
                     </div>
-                    <span className="text-sm text-slate-600">
-                        <strong className="text-slate-800">Excellent</strong> • 4.9/5 on Trustpilot
-                    </span>
-                    <span className="text-xs text-slate-400">|</span>
-                    <span className="text-sm text-slate-500">Based on 127 reviews</span>
                 </div>
             </div>
 
