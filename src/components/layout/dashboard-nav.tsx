@@ -86,12 +86,20 @@ export function DashboardNav() {
   const initials = `${user?.firstName?.charAt(0) || ""}${user?.lastName?.charAt(0) || ""}`.toUpperCase() || "U";
   const isAdmin = user?.role === "ADMIN";
 
-  // Use the session flag set during login - true if user only has uncompleted mini diploma enrollment
+  // isMiniDiplomaOnly = true means user has ONLY mini diploma enrollment AND it's not completed yet
+  // When completed, isMiniDiplomaOnly becomes false, but we still want to show mini diploma nav (just unlocked)
   const isMiniDiplomaOnly = user?.isMiniDiplomaOnly === true;
 
+  // Check if user has miniDiplomaCategory - this means they're a mini diploma user (regardless of completion)
+  // Mini diploma users should ALWAYS see the minimal nav, just locked/unlocked based on completion
+  const isMiniDiplomaUser = !!user?.miniDiplomaCategory;
+
   // Select nav items based on user type
-  // For mini diploma users, pass the locked state (locked if still isMiniDiplomaOnly)
-  const navItems = isMiniDiplomaOnly ? getMiniDiplomaNavItems(true) : fullNavItems;
+  // Mini diploma users: show minimal nav with locked/unlocked Masterclass based on completion
+  // Other users: show full nav
+  const navItems = isMiniDiplomaUser
+    ? getMiniDiplomaNavItems(isMiniDiplomaOnly) // locked if not completed yet
+    : fullNavItems;
 
   const getNotificationCount = (key?: "messages" | "certificates" | "announcements") => {
     if (!key) return 0;
@@ -127,6 +135,7 @@ export function DashboardNav() {
             const isActive = pathname === item.href || pathname.startsWith(item.href + "/");
             const notificationCount = getNotificationCount(item.notificationKey);
             const isLocked = 'locked' in item && item.locked === true;
+            const isUnlocked = 'unlocked' in item && item.unlocked === true;
 
             // Locked items render differently - not clickable, show lock icon
             if (isLocked) {
@@ -148,6 +157,32 @@ export function DashboardNav() {
                     Complete Mini Diploma to unlock
                   </div>
                 </div>
+              );
+            }
+
+            // Unlocked items - show with green highlight to celebrate the unlock!
+            if (isUnlocked) {
+              return (
+                <Link
+                  key={item.href}
+                  href={item.href}
+                  prefetch={true}
+                  data-tour={item.tourId}
+                  className={cn(
+                    "w-full flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition-all duration-150 relative",
+                    isActive
+                      ? "bg-gradient-to-r from-emerald-400/30 to-emerald-500/20 text-emerald-300 shadow-lg shadow-emerald-500/20 border border-emerald-400/30"
+                      : "bg-gradient-to-r from-emerald-500/10 to-emerald-600/5 text-emerald-300 hover:from-emerald-500/20 hover:to-emerald-600/10 border border-emerald-500/20"
+                  )}
+                >
+                  <div className="relative">
+                    <item.icon className="w-5 h-5 text-emerald-400" />
+                  </div>
+                  <span className="flex-1 text-left">{item.label}</span>
+                  <div className="flex items-center gap-1">
+                    <Sparkles className="w-3.5 h-3.5 text-emerald-400" />
+                  </div>
+                </Link>
               );
             }
 
@@ -309,6 +344,7 @@ export function DashboardNav() {
               const isActive = pathname === item.href || pathname.startsWith(item.href + "/");
               const notificationCount = getNotificationCount(item.notificationKey);
               const isLocked = 'locked' in item && item.locked === true;
+              const isUnlocked = 'unlocked' in item && item.unlocked === true;
 
               // Locked items render differently on mobile
               if (isLocked) {
@@ -322,6 +358,29 @@ export function DashboardNav() {
                     <span className="flex-1 text-left text-white/50">{item.label}</span>
                     <Lock className="w-4 h-4 text-amber-400/80" />
                   </div>
+                );
+              }
+
+              // Unlocked items - green highlight on mobile too
+              if (isUnlocked) {
+                return (
+                  <Link
+                    key={item.href}
+                    href={item.href}
+                    prefetch={true}
+                    onClick={() => setMobileMenuOpen(false)}
+                    data-tour={`mobile-${item.tourId}`}
+                    className={cn(
+                      "w-full flex items-center gap-3 px-4 py-3.5 rounded-xl text-base font-medium transition-all",
+                      isActive
+                        ? "bg-gradient-to-r from-emerald-400/30 to-emerald-500/20 text-emerald-300 border border-emerald-400/30"
+                        : "bg-gradient-to-r from-emerald-500/10 to-emerald-600/5 text-emerald-300 border border-emerald-500/20"
+                    )}
+                  >
+                    <item.icon className="w-5 h-5 text-emerald-400" />
+                    <span className="flex-1 text-left">{item.label}</span>
+                    <Sparkles className="w-4 h-4 text-emerald-400" />
+                  </Link>
                 );
               }
 
