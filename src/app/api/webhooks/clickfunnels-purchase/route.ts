@@ -1,10 +1,76 @@
 import { NextRequest, NextResponse } from "next/server";
 import crypto from "crypto";
 import prisma from "@/lib/prisma";
-import { sendPurchaseEvent } from "@/lib/meta-capi";
 
 // ClickFunnels webhook secret for purchase tracking (separate from other CF webhooks)
 const CF_WEBHOOK_SECRET = process.env.CLICKFUNNELS_PURCHASE_WEBHOOK_SECRET || "4f1d4d3794136660e793fb28cfaa22bec461ff3c3adbbedb66bb0eb10ed6ca02";
+
+// NEW Pixel for purchase tracking (separate from lead pixel)
+const PURCHASE_PIXEL_ID = process.env.META_PURCHASE_PIXEL_ID || "1287915349067829";
+const PURCHASE_ACCESS_TOKEN = process.env.META_PURCHASE_ACCESS_TOKEN || "EAAHMlaRKtUoBQBe0ZAFZBQPlRv3xujHeDw0y8kGmRewZA9jaqkbnZA5mJxndHZCNmalSrGmr9DlTbNewOdu4INw4xRRZCE4vC0mSvnWsV17sIvklD9X4PbttSgp2lVIOZBQxG9Uq8UVljCsqZA1LSqxlgjDQ1qIN6PctDh3M5LmJBKkqQa0FDQAIoBN1AAIVqwZDZD";
+
+// Hash PII for Meta
+function hashData(data: string): string {
+    return crypto.createHash("sha256").update(data.toLowerCase().trim()).digest("hex");
+}
+
+// Send Purchase event to Meta CAPI with specific pixel
+async function sendPurchaseToMeta(params: {
+    email: string;
+    value: number;
+    currency?: string;
+    contentName: string;
+    firstName?: string;
+    externalId?: string;
+}): Promise<{ success: boolean; eventId?: string; error?: string }> {
+    const { email, value, currency = "USD", contentName, firstName, externalId } = params;
+
+    const eventId = crypto.randomUUID();
+
+    const userData: Record<string, unknown> = {
+        em: [hashData(email)],
+    };
+    if (firstName) userData.fn = [hashData(firstName)];
+    if (externalId) userData.external_id = [hashData(externalId)];
+
+    const eventData = {
+        event_name: "Purchase",
+        event_time: Math.floor(Date.now() / 1000),
+        event_id: eventId,
+        event_source_url: "https://sarah.accredipro.academy/fm-mini-diploma-access",
+        action_source: "website",
+        user_data: userData,
+        custom_data: {
+            value,
+            currency,
+            content_name: contentName,
+        },
+    };
+
+    try {
+        const response = await fetch(
+            `https://graph.facebook.com/v18.0/${PURCHASE_PIXEL_ID}/events?access_token=${PURCHASE_ACCESS_TOKEN}`,
+            {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ data: [eventData] }),
+            }
+        );
+
+        const result = await response.json();
+
+        if (!response.ok) {
+            console.error("[Meta CAPI Purchase] Error:", result);
+            return { success: false, eventId, error: result.error?.message };
+        }
+
+        console.log(`[Meta CAPI Purchase] ✅ Sent: ${contentName} = $${value}`, { event_id: eventId });
+        return { success: true, eventId };
+    } catch (error) {
+        console.error("[Meta CAPI Purchase] Exception:", error);
+        return { success: false, error: String(error) };
+    }
+}
 
 /**
  * Verify ClickFunnels webhook signature
@@ -27,18 +93,20 @@ function verifySignature(payload: string, signature: string | null): boolean {
  * POST /api/webhooks/clickfunnels-purchase
  *
  * Webhook endpoint for ClickFunnels purchases.
- * When a user buys the $997 certification on ClickFunnels:
+ * Handles Mini Diploma ($27) and any bump/OTO purchases.
+ *
  * 1. Receives purchase data from CF webhook
  * 2. Finds user by email in our database
- * 3. Sends Purchase event to Meta CAPI (server-side tracking)
- * 4. Updates user status / enrolls them in the full course
+ * 3. Sends SEPARATE Purchase events for each product to Meta CAPI
+ * 4. Updates user status / adds tags
  *
  * ClickFunnels webhook payload typically includes:
  * - contact.email
  * - contact.first_name
  * - contact.last_name
- * - purchase.amount
+ * - purchase.amount (total)
  * - purchase.products[].name
+ * - purchase.products[].amount
  */
 export async function POST(request: NextRequest) {
     try {
@@ -61,12 +129,13 @@ export async function POST(request: NextRequest) {
         console.log("[CF Webhook] Received purchase webhook:", JSON.stringify(body, null, 2));
 
         // Extract data from ClickFunnels payload
-        // CF webhook structure can vary - handle common formats
         const email = body.contact?.email || body.email || body.purchase?.contact?.email;
         const firstName = body.contact?.first_name || body.first_name || body.contact?.firstName;
         const lastName = body.contact?.last_name || body.last_name || body.contact?.lastName;
-        const amount = body.purchase?.amount || body.amount || body.total || 997;
-        const productName = body.purchase?.products?.[0]?.name || body.product_name || "Full Certification";
+        const totalAmount = body.purchase?.amount || body.amount || body.total || 27;
+
+        // Get products array - may have multiple (main + bump + OTOs)
+        const products = body.purchase?.products || body.products || [];
 
         if (!email) {
             console.error("[CF Webhook] No email in payload");
@@ -76,7 +145,7 @@ export async function POST(request: NextRequest) {
             );
         }
 
-        console.log(`[CF Webhook] Processing purchase for: ${email}, amount: $${amount}`);
+        console.log(`[CF Webhook] Processing purchase for: ${email}, total: $${totalAmount}, products: ${products.length}`);
 
         // 1. Find user in our database
         const user = await prisma.user.findUnique({
@@ -86,77 +155,65 @@ export async function POST(request: NextRequest) {
                 email: true,
                 firstName: true,
                 lastName: true,
-                fbclid: true,
-                fbc: true,
-                fbp: true,
             },
         });
 
-        // 2. Send Purchase event to Meta CAPI
-        const metaResult = await sendPurchaseEvent({
-            email: email.toLowerCase().trim(),
-            value: parseFloat(amount) || 997,
-            currency: "USD",
-            contentName: productName,
-            firstName: firstName || user?.firstName || undefined,
-            externalId: user?.id,
-        });
+        // 2. Send Purchase events to Meta CAPI (one per product for better optimization)
+        const metaResults: Array<{ product: string; success: boolean; eventId?: string }> = [];
 
-        console.log("[CF Webhook] Meta CAPI result:", metaResult);
+        if (products.length > 0) {
+            // Fire separate event for each product
+            for (const product of products) {
+                const productName = product.name || product.title || "FM Mini Diploma";
+                const productAmount = parseFloat(product.amount || product.price) || 27;
+
+                const result = await sendPurchaseToMeta({
+                    email: email.toLowerCase().trim(),
+                    value: productAmount,
+                    contentName: productName,
+                    firstName: firstName || user?.firstName || undefined,
+                    externalId: user?.id,
+                });
+
+                metaResults.push({ product: productName, success: result.success, eventId: result.eventId });
+            }
+        } else {
+            // Fallback: single product purchase
+            const productName = body.product_name || "FM Mini Diploma";
+            const result = await sendPurchaseToMeta({
+                email: email.toLowerCase().trim(),
+                value: parseFloat(totalAmount) || 27,
+                contentName: productName,
+                firstName: firstName || user?.firstName || undefined,
+                externalId: user?.id,
+            });
+
+            metaResults.push({ product: productName, success: result.success, eventId: result.eventId });
+        }
+
+        console.log("[CF Webhook] Meta CAPI results:", metaResults);
 
         // 3. Update user status if user exists
         if (user) {
-            // Get the full certification course
-            const fullCertCourse = await prisma.course.findFirst({
-                where: {
-                    OR: [
-                        { slug: "functional-medicine-certification" },
-                        { slug: "fm-certification" },
-                        { title: { contains: "Functional Medicine Certification" } },
-                    ],
-                },
-            });
-
-            if (fullCertCourse) {
-                // Create enrollment in full certification
-                await prisma.enrollment.upsert({
-                    where: {
-                        userId_courseId: {
-                            userId: user.id,
-                            courseId: fullCertCourse.id,
-                        },
-                    },
-                    update: {
-                        status: "ACTIVE",
-                        lastAccessedAt: new Date(),
-                    },
-                    create: {
-                        userId: user.id,
-                        courseId: fullCertCourse.id,
-                        status: "ACTIVE",
-                        progress: 0,
-                    },
-                });
-
-                console.log(`[CF Webhook] Enrolled user ${email} in ${fullCertCourse.title}`);
-            }
-
-            // Add purchase tag
+            // Add purchase tag for mini diploma
             await prisma.userTag.upsert({
-                where: { userId_tag: { userId: user.id, tag: "fm_certification_purchased" } },
+                where: { userId_tag: { userId: user.id, tag: "fm_mini_diploma_purchased" } },
                 update: {},
-                create: { userId: user.id, tag: "fm_certification_purchased" },
+                create: { userId: user.id, tag: "fm_mini_diploma_purchased" },
             });
 
             // Add marketing tag for purchase tracking
             await prisma.userMarketingTag.create({
                 data: {
                     userId: user.id,
-                    tag: "purchase_997",
+                    tag: `purchase_${Math.round(totalAmount)}`,
                     source: "clickfunnels",
                     metadata: {
-                        amount: amount,
-                        productName: productName,
+                        amount: totalAmount,
+                        products: products.map((p: { name?: string; amount?: number }) => ({
+                            name: p.name,
+                            amount: p.amount,
+                        })),
                         purchasedAt: new Date().toISOString(),
                     },
                 },
@@ -166,16 +223,16 @@ export async function POST(request: NextRequest) {
 
             console.log(`[CF Webhook] ✅ User ${email} updated with purchase tags`);
         } else {
-            console.log(`[CF Webhook] User ${email} not found in database - Meta event still sent`);
+            console.log(`[CF Webhook] User ${email} not found in database - Meta events still sent`);
         }
 
         return NextResponse.json({
             success: true,
             message: "Purchase processed",
             email,
-            amount,
-            metaEventSent: metaResult.success,
-            metaEventId: metaResult.eventId,
+            totalAmount,
+            productsCount: products.length || 1,
+            metaEvents: metaResults,
             userFound: !!user,
         });
 

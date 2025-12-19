@@ -25,56 +25,81 @@ const STUDENT_AVATARS = [
     "https://accredipro.academy/wp-content/uploads/2025/12/dgp03315.jpg",
 ];
 
-// Certificate Component
+// 9 Accreditation bodies
+const ACCREDITATIONS = [
+    { abbr: "CMA", name: "Complementary Medical Association" },
+    { abbr: "IPHM", name: "International Practitioners of Holistic Medicine" },
+    { abbr: "CPD", name: "CPD Certification Service" },
+    { abbr: "IAOTH", name: "International Association of Therapists" },
+    { abbr: "ICAHP", name: "Int'l Community for Alternative & Holistic Professionals" },
+    { abbr: "IGCT", name: "International Guild of Complementary Therapists" },
+    { abbr: "CTAA", name: "Complementary Therapists Accredited Association" },
+    { abbr: "IHTCP", name: "Int'l Holistic Therapists & Course Providers" },
+    { abbr: "IIOHT", name: "International Institute of Holistic Therapists" },
+];
+
+// Certificate Component with Accreditations
 const CertificatePreview = ({ name = "Jennifer Martinez" }: { name?: string }) => (
     <div className="relative bg-white rounded-lg shadow-2xl overflow-hidden border-4 border-gold-300 max-w-lg mx-auto transform hover:scale-[1.02] transition-transform duration-300">
         {/* Certificate Border Design */}
         <div className="absolute inset-0 border-8 border-gold-100 m-2 pointer-events-none" />
 
         {/* Certificate Content */}
-        <div className="relative p-8 sm:p-10 text-center bg-gradient-to-b from-gold-50/50 to-white">
+        <div className="relative p-6 sm:p-8 text-center bg-gradient-to-b from-gold-50/50 to-white">
             {/* Header Ornament */}
-            <div className="flex justify-center mb-4">
-                <div className="w-20 h-20 rounded-full bg-gradient-to-br from-burgundy-600 to-burgundy-800 flex items-center justify-center shadow-lg ring-4 ring-gold-300">
-                    <GraduationCap className="h-10 w-10 text-gold-400" />
+            <div className="flex justify-center mb-3">
+                <div className="w-16 h-16 rounded-full bg-gradient-to-br from-burgundy-600 to-burgundy-800 flex items-center justify-center shadow-lg ring-4 ring-gold-300">
+                    <GraduationCap className="h-8 w-8 text-gold-400" />
                 </div>
             </div>
 
             {/* Title */}
             <p className="text-xs uppercase tracking-[0.3em] text-burgundy-600 font-medium mb-1">AccrediPro Academy</p>
-            <h3 className="text-3xl font-serif font-bold text-slate-800 mb-1">Mini Diploma</h3>
-            <p className="text-sm text-burgundy-600 font-medium mb-6">Functional Medicine Foundations</p>
+            <h3 className="text-2xl sm:text-3xl font-serif font-bold text-slate-800 mb-1">Mini Diploma</h3>
+            <p className="text-sm text-burgundy-600 font-medium mb-4">Functional Medicine Foundations</p>
 
             {/* Decorative Line */}
-            <div className="flex items-center justify-center gap-3 mb-6">
-                <div className="h-px w-20 bg-gradient-to-r from-transparent to-gold-400" />
-                <div className="w-3 h-3 rotate-45 bg-gold-400" />
-                <div className="h-px w-20 bg-gradient-to-l from-transparent to-gold-400" />
+            <div className="flex items-center justify-center gap-3 mb-4">
+                <div className="h-px w-16 bg-gradient-to-r from-transparent to-gold-400" />
+                <div className="w-2 h-2 rotate-45 bg-gold-400" />
+                <div className="h-px w-16 bg-gradient-to-l from-transparent to-gold-400" />
             </div>
 
             {/* Certifies */}
-            <p className="text-xs uppercase tracking-widest text-slate-500 mb-2">This certifies that</p>
-            <p className="text-3xl font-serif font-bold text-burgundy-700 mb-4">{name}</p>
+            <p className="text-xs uppercase tracking-widest text-slate-500 mb-1">This certifies that</p>
+            <p className="text-2xl sm:text-3xl font-serif font-bold text-burgundy-700 mb-3">{name}</p>
 
             {/* Description */}
-            <p className="text-sm text-slate-600 leading-relaxed mb-6 max-w-sm mx-auto">
+            <p className="text-xs sm:text-sm text-slate-600 leading-relaxed mb-4 max-w-sm mx-auto">
                 has successfully completed the Functional Medicine Mini Diploma program, demonstrating foundational knowledge in root-cause health principles.
             </p>
 
+            {/* Accreditation Badges */}
+            <div className="mb-4 p-3 bg-gradient-to-r from-emerald-50 to-teal-50 rounded-lg border border-emerald-100">
+                <p className="text-xs font-semibold text-emerald-700 mb-2 uppercase tracking-wide">Accredited by 9 International Bodies</p>
+                <div className="flex flex-wrap justify-center gap-1">
+                    {ACCREDITATIONS.map((acc) => (
+                        <span key={acc.abbr} className="px-2 py-0.5 bg-white border border-emerald-200 rounded text-xs font-bold text-emerald-700 shadow-sm">
+                            {acc.abbr}
+                        </span>
+                    ))}
+                </div>
+            </div>
+
             {/* Date & Signature */}
-            <div className="flex justify-between items-end px-6">
+            <div className="flex justify-between items-end px-4 mb-3">
                 <div className="text-left">
                     <p className="text-xs text-slate-500 mb-1">Date Issued</p>
-                    <p className="text-sm font-medium text-slate-700">December 18, 2025</p>
+                    <p className="text-sm font-medium text-slate-700">December 2025</p>
                 </div>
                 <div className="text-right">
                     <p className="text-xs text-slate-500 mb-1">Program Director</p>
-                    <p className="font-serif italic text-burgundy-700 text-lg">Sarah Mitchell</p>
+                    <p className="font-serif italic text-burgundy-700">Sarah Mitchell</p>
                 </div>
             </div>
 
             {/* Verification Badge */}
-            <div className="mt-6 pt-4 border-t border-gold-200">
+            <div className="pt-3 border-t border-gold-200">
                 <div className="flex items-center justify-center gap-2 text-xs text-slate-500">
                     <Shield className="h-4 w-4 text-emerald-600" />
                     <span>Credential ID: APR-FM-2025-84721 • Verify at accredipro.com/verify</span>
@@ -277,72 +302,38 @@ const StickyMobileCTA = () => {
         <div className="fixed bottom-0 left-0 right-0 z-50 lg:hidden bg-white border-t border-slate-200 shadow-2xl p-4 animate-slide-up">
             <div className="flex items-center justify-between gap-3 max-w-lg mx-auto">
                 <div>
-                    <p className="text-slate-500 text-xs line-through">$97</p>
-                    <p className="text-2xl font-black text-burgundy-700">$7</p>
+                    <p className="text-slate-500 text-xs line-through">$197</p>
+                    <p className="text-2xl font-black text-burgundy-700">$27</p>
                 </div>
-                <Link href="/preview-lesson" className="flex-1">
+                <a href="https://sarah.accredipro.academy/fm-mini-diploma-access" className="flex-1">
                     <Button className="w-full bg-gradient-to-r from-burgundy-600 to-burgundy-700 hover:from-burgundy-700 hover:to-burgundy-800 text-white font-bold py-4 rounded-xl">
-                        Start Now — $7
+                        Get Certified — $27
                         <ArrowRight className="h-4 w-4 ml-2" />
                     </Button>
-                </Link>
+                </a>
             </div>
         </div>
     );
 };
 
-// Live Viewers Component
-const LiveViewers = () => {
-    const [viewers, setViewers] = useState(17);
-
-    useEffect(() => {
-        // Randomize between 12-24 every 8-15 seconds
-        const interval = setInterval(() => {
-            setViewers(Math.floor(Math.random() * 13) + 12);
-        }, Math.random() * 7000 + 8000);
-        return () => clearInterval(interval);
-    }, []);
-
-    return (
-        <div className="flex items-center gap-1.5 text-sm">
-            <span className="relative flex h-2 w-2">
-                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-                <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
-            </span>
-            <span className="text-emerald-100 font-medium">{viewers} viewing now</span>
-        </div>
-    );
-};
-
-// Countdown Timer Component
-const CountdownBanner = () => {
-    const [timeLeft, setTimeLeft] = useState({ hours: 23, minutes: 47, seconds: 32 });
-
-    useEffect(() => {
-        const timer = setInterval(() => {
-            setTimeLeft(prev => {
-                if (prev.seconds > 0) return { ...prev, seconds: prev.seconds - 1 };
-                if (prev.minutes > 0) return { ...prev, minutes: prev.minutes - 1, seconds: 59 };
-                if (prev.hours > 0) return { hours: prev.hours - 1, minutes: 59, seconds: 59 };
-                return prev;
-            });
-        }, 1000);
-        return () => clearInterval(timer);
-    }, []);
-
+// Trust Banner Component (replaces countdown)
+const TrustBanner = () => {
     return (
         <div className="bg-gradient-to-r from-burgundy-700 to-burgundy-800 text-white py-3 px-4">
-            <div className="max-w-6xl mx-auto flex flex-col sm:flex-row items-center justify-center gap-2 sm:gap-4 text-sm">
-                <LiveViewers />
-                <span className="hidden sm:block text-burgundy-300">|</span>
+            <div className="max-w-6xl mx-auto flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-6 text-sm">
                 <span className="flex items-center gap-2">
-                    <Zap className="h-4 w-4 text-gold-400" />
-                    <span className="font-medium">Limited Time: $97 → $7</span>
+                    <Shield className="h-4 w-4 text-emerald-400" />
+                    <span className="font-medium">9 International Accreditations</span>
                 </span>
-                <span className="hidden sm:block text-burgundy-300">|</span>
-                <span className="flex items-center gap-2 font-mono bg-white/10 px-3 py-1 rounded-full">
-                    <Clock className="h-4 w-4" />
-                    {String(timeLeft.hours).padStart(2, '0')}:{String(timeLeft.minutes).padStart(2, '0')}:{String(timeLeft.seconds).padStart(2, '0')}
+                <span className="hidden sm:block text-burgundy-300">•</span>
+                <span className="flex items-center gap-2">
+                    <Award className="h-4 w-4 text-gold-400" />
+                    <span className="font-medium">Official Certificate Included</span>
+                </span>
+                <span className="hidden sm:block text-burgundy-300">•</span>
+                <span className="flex items-center gap-2">
+                    <Users className="h-4 w-4 text-burgundy-200" />
+                    <span className="font-medium">843+ Graduates</span>
                 </span>
             </div>
         </div>
@@ -375,8 +366,8 @@ export default function FMMiniDiplomaPage() {
                 }
             `}</style>
 
-            {/* Countdown Banner */}
-            <CountdownBanner />
+            {/* Trust Banner */}
+            <TrustBanner />
 
             {/* Hero Section */}
             <section className="relative overflow-hidden">
@@ -402,7 +393,7 @@ export default function FMMiniDiplomaPage() {
                     <p className="text-xl sm:text-2xl text-center text-slate-600 mb-8 max-w-3xl mx-auto">
                         Start earning <span className="font-bold text-slate-800">$50-$150/hr</span> helping people fix what doctors miss.
                         <br />
-                        <span className="text-lg text-slate-500">90 minutes. Just $7. Certificate included.</span>
+                        <span className="text-lg text-slate-500">90 minutes. Internationally accredited certificate. Only $27.</span>
                     </p>
 
                     {/* Social Proof */}
@@ -424,20 +415,19 @@ export default function FMMiniDiplomaPage() {
                         </div>
                     </div>
 
-                    {/* CTA Buttons */}
-                    <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-6">
-                        <Link href="/preview-lesson">
-                            <Button className="w-full sm:w-auto bg-gradient-to-r from-burgundy-600 to-burgundy-700 hover:from-burgundy-700 hover:to-burgundy-800 text-white font-bold py-7 px-10 rounded-xl text-lg shadow-xl hover:shadow-2xl transition-all transform hover:scale-[1.02]">
-                                <Play className="h-5 w-5 mr-2" />
-                                Start Free Preview
-                            </Button>
-                        </Link>
-                        <Link href="#pricing">
-                            <Button variant="outline" className="w-full sm:w-auto border-2 border-burgundy-200 text-burgundy-700 hover:bg-burgundy-50 font-semibold py-7 px-10 rounded-xl text-lg">
-                                Get Full Access — $7
+                    {/* CTA Button - Direct to checkout */}
+                    <div className="flex flex-col items-center justify-center gap-4 mb-6">
+                        <a href="https://sarah.accredipro.academy/fm-mini-diploma-access">
+                            <Button className="w-full sm:w-auto bg-gradient-to-r from-burgundy-600 to-burgundy-700 hover:from-burgundy-700 hover:to-burgundy-800 text-white font-bold py-7 px-12 rounded-xl text-lg shadow-xl hover:shadow-2xl transition-all transform hover:scale-[1.02]">
+                                <GraduationCap className="h-5 w-5 mr-2" />
+                                Get Certified Now — $27
                                 <ArrowRight className="h-5 w-5 ml-2" />
                             </Button>
-                        </Link>
+                        </a>
+                        <p className="text-sm text-slate-500">
+                            <span className="line-through text-slate-400">$197</span>
+                            <span className="text-burgundy-600 font-bold ml-2">86% OFF</span>
+                        </p>
                     </div>
 
                     <p className="text-center text-slate-500 flex items-center justify-center gap-2">
@@ -471,37 +461,37 @@ export default function FMMiniDiplomaPage() {
                 </div>
             </section>
 
-            {/* Video/Preview Section */}
+            {/* Accreditation Highlight Section */}
             <section className="py-16 sm:py-20 bg-gradient-to-b from-white to-slate-50">
                 <div className="max-w-6xl mx-auto px-4">
                     <div className="text-center mb-10">
-                        <p className="text-burgundy-600 font-semibold mb-2 uppercase tracking-wide">See How It Works</p>
+                        <p className="text-burgundy-600 font-semibold mb-2 uppercase tracking-wide">Internationally Recognized</p>
                         <h2 className="text-3xl sm:text-4xl font-bold text-slate-900 mb-4">
-                            Not a Video. A Real Conversation.
+                            Accredited by 9 Global Bodies
                         </h2>
                         <p className="text-xl text-slate-600 max-w-2xl mx-auto">
-                            Sarah guides you through each concept, asks questions, and responds to YOUR answers. It feels like a real 1:1 coaching session.
+                            Your Mini Diploma is recognized worldwide. Practice legally, get insured, and build instant credibility.
                         </p>
                     </div>
 
-                    {/* Preview Box */}
+                    {/* Accreditation Grid */}
                     <div className="max-w-4xl mx-auto">
-                        <div className="bg-gradient-to-br from-burgundy-900 to-slate-900 rounded-3xl p-8 sm:p-12 text-center relative overflow-hidden">
-                            <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-burgundy-800/50 to-transparent" />
-                            <div className="relative">
-                                <div className="w-20 h-20 rounded-full bg-white/10 backdrop-blur-sm flex items-center justify-center mx-auto mb-6 ring-4 ring-white/20">
-                                    <Play className="h-10 w-10 text-white ml-1" />
-                                </div>
-                                <h3 className="text-2xl font-bold text-white mb-3">Try the Interactive Preview</h3>
-                                <p className="text-slate-300 mb-6 max-w-lg mx-auto">
-                                    Experience the first part of the lesson free. Meet Sarah, hear her story, and see if this resonates with you.
-                                </p>
-                                <Link href="/preview-lesson">
-                                    <Button className="bg-white text-burgundy-700 hover:bg-gold-50 font-bold py-6 px-8 rounded-xl text-lg shadow-lg">
-                                        <MessageCircle className="h-5 w-5 mr-2" />
-                                        Start Free Preview
+                        <div className="bg-gradient-to-br from-emerald-50 to-teal-50 rounded-3xl p-8 sm:p-10 border border-emerald-100">
+                            <div className="grid grid-cols-3 sm:grid-cols-3 md:grid-cols-9 gap-4 mb-6">
+                                {ACCREDITATIONS.map((acc) => (
+                                    <div key={acc.abbr} className="bg-white rounded-xl p-3 shadow-sm border border-emerald-100 text-center hover:shadow-md transition-shadow">
+                                        <p className="font-bold text-emerald-700 text-sm">{acc.abbr}</p>
+                                    </div>
+                                ))}
+                            </div>
+                            <div className="text-center">
+                                <p className="text-emerald-700 font-medium mb-4">Insurance eligibility in 30+ countries • CPD certified • Lifetime validity</p>
+                                <a href="https://sarah.accredipro.academy/fm-mini-diploma-access">
+                                    <Button className="bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-5 px-8 rounded-xl text-lg shadow-lg">
+                                        <Award className="h-5 w-5 mr-2" />
+                                        Get Your Accredited Certificate — $27
                                     </Button>
-                                </Link>
+                                </a>
                             </div>
                         </div>
                     </div>
@@ -536,7 +526,7 @@ export default function FMMiniDiplomaPage() {
 
                             <div className="bg-gradient-to-r from-burgundy-50 to-gold-50 border-l-4 border-burgundy-600 p-5 rounded-r-xl mt-8">
                                 <p className="text-burgundy-800 font-semibold text-lg">
-                                    $7. 90 minutes. Personal support until you finish.
+                                    $27. 90 minutes. Personal support until you finish.
                                 </p>
                             </div>
                         </div>
@@ -788,12 +778,12 @@ export default function FMMiniDiplomaPage() {
                         <p className="text-slate-600 mb-6">
                             They didn't need another degree. They needed a different <span className="font-bold text-burgundy-700">FRAMEWORK</span>.
                         </p>
-                        <Link href="/preview-lesson">
+                        <a href="https://sarah.accredipro.academy/fm-mini-diploma-access">
                             <Button className="bg-gradient-to-r from-burgundy-600 to-burgundy-700 hover:from-burgundy-700 hover:to-burgundy-800 text-white font-bold py-6 px-10 rounded-xl text-lg shadow-lg">
-                                Start Your Transformation — $7
+                                Start Your Transformation — $27
                                 <ArrowRight className="h-5 w-5 ml-2" />
                             </Button>
-                        </Link>
+                        </a>
                     </div>
                 </div>
             </section>
@@ -805,7 +795,7 @@ export default function FMMiniDiplomaPage() {
                     <div className="text-center mb-10">
                         <p className="text-burgundy-600 font-semibold mb-2 uppercase tracking-wide">Complete Package</p>
                         <h2 className="text-3xl sm:text-4xl font-bold text-slate-900 mb-3">
-                            Everything You Get for $7
+                            Everything You Get for $27
                         </h2>
                         <p className="text-lg text-slate-600">
                             One payment. Lifetime access. Personal support until you finish.
@@ -821,10 +811,10 @@ export default function FMMiniDiplomaPage() {
                                 <span className="text-gold-400 font-semibold uppercase tracking-wide text-sm">Functional Medicine Mini Diploma</span>
                             </div>
                             <div className="flex items-center justify-center gap-4">
-                                <span className="text-white/60 line-through text-2xl">$97</span>
-                                <span className="text-5xl font-black text-white">$7</span>
+                                <span className="text-white/60 line-through text-2xl">$197</span>
+                                <span className="text-5xl font-black text-white">$27</span>
                             </div>
-                            <p className="text-burgundy-200 text-sm mt-2">Save 93% — Limited time offer</p>
+                            <p className="text-burgundy-200 text-sm mt-2">Save 86% — Limited time offer</p>
                         </div>
 
                         {/* What's Included */}
@@ -903,12 +893,12 @@ export default function FMMiniDiplomaPage() {
                             </div>
 
                             {/* CTA */}
-                            <Link href="/preview-lesson" className="block">
+                            <a href="https://sarah.accredipro.academy/fm-mini-diploma-access" className="block">
                                 <Button className="w-full bg-gradient-to-r from-burgundy-600 to-burgundy-700 hover:from-burgundy-700 hover:to-burgundy-800 text-white font-bold py-6 rounded-xl text-lg shadow-lg hover:shadow-xl transition-all">
-                                    <Lock className="h-5 w-5 mr-2" />
-                                    Start My Mini Diploma — $7
+                                    <GraduationCap className="h-5 w-5 mr-2" />
+                                    Start My Mini Diploma — $27
                                 </Button>
-                            </Link>
+                            </a>
 
                             {/* Trust */}
                             <div className="flex flex-wrap items-center justify-center gap-4 mt-4 text-xs text-slate-500">
@@ -998,7 +988,7 @@ export default function FMMiniDiplomaPage() {
                             quote="After 15 years in corporate, I wanted work that mattered. This mini diploma helped me see the path clearly."
                             name="Amanda Chen"
                             role="Career Changer"
-                            highlight="Best $7 I ever spent."
+                            highlight="Best $27 I ever spent."
                             avatarIndex={8}
                         />
                     </div>
@@ -1093,7 +1083,7 @@ export default function FMMiniDiplomaPage() {
                             answer="The Mini Diploma gives you a solid foundation in functional medicine principles. It's designed to help you understand the field, decide if it's right for you, and prepare for full certification. You'll learn the root-cause framework, understand the business opportunity, and get clarity on your path. To actually work with clients and earn income, you'll need to continue to full certification."
                         />
                         <FAQItem
-                            question="Do I really get all those bonuses for $7?"
+                            question="Do I really get all those bonuses for $27?"
                             answer="Yes! The Graduate Resource Library (worth $832) unlocks automatically when you complete your Mini Diploma. This includes the Practitioner Reality Playbook, Scope of Practice Guide, Your First Client Guide, the $5K/Month Roadmap, and more. It's our way of setting you up for success and giving you a real taste of what full certification offers."
                         />
                         <FAQItem
@@ -1101,7 +1091,7 @@ export default function FMMiniDiplomaPage() {
                             answer="The core Mini Diploma takes about 90 minutes—two 45-minute interactive modules. Most students complete it in one sitting, but you can go at your own pace. The bonus resources are additional (10+ hours of content) and available whenever you're ready."
                         />
                         <FAQItem
-                            question="Will I actually get personal support for $7?"
+                            question="Will I actually get personal support for $27?"
                             answer="Absolutely. Within 24 hours of enrolling, you'll be assigned a personal coach who will check in on you, answer your questions, and mentor you until you complete the program. We have a 97% completion rate because we don't leave anyone behind. This is what makes us different."
                         />
                         <FAQItem
@@ -1114,7 +1104,7 @@ export default function FMMiniDiplomaPage() {
                         />
                         <FAQItem
                             question="What's your refund policy?"
-                            answer="We offer a full 30-day money-back guarantee. If you're not satisfied for any reason, just email us and we'll refund your $7. No questions asked. We're confident you'll love it, but we want you to feel completely safe."
+                            answer="We offer a full 30-day money-back guarantee. If you're not satisfied for any reason, just email us and we'll refund your $27. No questions asked. We're confident you'll love it, but we want you to feel completely safe."
                         />
                     </div>
                 </div>
@@ -1153,7 +1143,7 @@ export default function FMMiniDiplomaPage() {
 
                     {/* Quick Summary */}
                     <div className="bg-white/10 backdrop-blur-sm rounded-3xl p-8 mb-10 max-w-2xl mx-auto">
-                        <p className="text-gold-400 font-semibold mb-6 text-lg">Everything you get for $7:</p>
+                        <p className="text-gold-400 font-semibold mb-6 text-lg">Everything you get for $27:</p>
                         <div className="grid grid-cols-2 gap-4 text-left">
                             {[
                                 "2 Interactive Modules (90 min)",
@@ -1174,16 +1164,16 @@ export default function FMMiniDiplomaPage() {
                     {/* Price & CTA */}
                     <div className="mb-8">
                         <p className="text-slate-400 mb-2">Total Value: $1,344</p>
-                        <p className="text-6xl font-black text-gold-400 mb-2">$7</p>
+                        <p className="text-6xl font-black text-gold-400 mb-2">$27</p>
                         <p className="text-slate-400">One-time payment • Lifetime access</p>
                     </div>
 
-                    <Link href="/preview-lesson">
+                    <a href="https://sarah.accredipro.academy/fm-mini-diploma-access">
                         <Button className="w-full sm:w-auto bg-gradient-to-r from-gold-400 to-gold-500 hover:from-gold-500 hover:to-gold-600 text-slate-900 font-black py-8 px-14 rounded-2xl text-xl shadow-2xl hover:shadow-3xl transition-all transform hover:scale-[1.02]">
-                            Start My Mini Diploma — $7
+                            Start My Mini Diploma — $27
                             <ArrowRight className="h-6 w-6 ml-3" />
                         </Button>
-                    </Link>
+                    </a>
 
                     <div className="flex flex-wrap justify-center gap-6 mt-8 text-slate-400">
                         <span className="flex items-center gap-2">
