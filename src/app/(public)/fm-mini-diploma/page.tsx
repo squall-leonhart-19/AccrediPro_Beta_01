@@ -76,7 +76,7 @@ const CertificatePreview = ({ name = "Jennifer Martinez" }: { name?: string }) =
 
             {/* Accreditation Badges */}
             <div className="mb-4 p-3 bg-gradient-to-r from-emerald-50 to-teal-50 rounded-lg border border-emerald-100">
-                <p className="text-xs font-semibold text-emerald-700 mb-2 uppercase tracking-wide">Accredited by 9 International Bodies</p>
+                <p className="text-xs font-semibold text-emerald-700 mb-2 uppercase tracking-wide">From AccrediPro Academy • Internationally Recognized</p>
                 <div className="flex flex-wrap justify-center gap-1">
                     {ACCREDITATIONS.map((acc) => (
                         <span key={acc.abbr} className="px-2 py-0.5 bg-white border border-emerald-200 rounded text-xs font-bold text-emerald-700 shadow-sm">
@@ -235,11 +235,14 @@ const RecentEnrollmentToast = () => {
     const [currentEnrollment, setCurrentEnrollment] = useState(0);
 
     const enrollments = [
-        { name: 'Sarah K.', location: 'Texas', time: '2 min ago' },
-        { name: 'Michelle R.', location: 'California', time: '5 min ago' },
-        { name: 'Jennifer L.', location: 'Florida', time: '8 min ago' },
-        { name: 'Amanda P.', location: 'New York', time: '12 min ago' },
-        { name: 'Lisa M.', location: 'Ohio', time: '15 min ago' },
+        { name: 'Sarah K.', location: 'Texas', time: '2 min ago', avatarIndex: 0 },
+        { name: 'Michelle R.', location: 'California', time: '5 min ago', avatarIndex: 4 },
+        { name: 'Jennifer L.', location: 'Florida', time: '8 min ago', avatarIndex: 7 },
+        { name: 'Amanda P.', location: 'New York', time: '12 min ago', avatarIndex: 5 },
+        { name: 'Lisa M.', location: 'Ohio', time: '15 min ago', avatarIndex: 1 },
+        { name: 'Maria G.', location: 'Arizona', time: '18 min ago', avatarIndex: 6 },
+        { name: 'Anne B.', location: 'Georgia', time: '22 min ago', avatarIndex: 5 },
+        { name: 'Rachel T.', location: 'Colorado', time: '25 min ago', avatarIndex: 3 },
     ];
 
     useEffect(() => {
@@ -270,9 +273,13 @@ const RecentEnrollmentToast = () => {
     return (
         <div className="fixed bottom-24 left-4 z-40 animate-slide-up lg:bottom-4">
             <div className="bg-white rounded-xl shadow-2xl border border-slate-200 p-3 sm:p-4 flex items-center gap-3 max-w-[280px] sm:max-w-sm">
-                <div className="w-10 h-10 rounded-full bg-gradient-to-br from-emerald-400 to-emerald-600 flex items-center justify-center text-white text-sm font-bold shrink-0">
-                    {enrollment.name.split(' ').map(n => n[0]).join('')}
-                </div>
+                <Image
+                    src={STUDENT_AVATARS[enrollment.avatarIndex]}
+                    alt={enrollment.name}
+                    width={40}
+                    height={40}
+                    className="w-10 h-10 rounded-full object-cover shadow-sm border-2 border-white shrink-0"
+                />
                 <div className="min-w-0">
                     <p className="text-sm font-semibold text-slate-800 truncate">{enrollment.name} from {enrollment.location}</p>
                     <p className="text-xs text-slate-500">Just enrolled • {enrollment.time}</p>
@@ -323,12 +330,12 @@ const TrustBanner = () => {
             <div className="max-w-6xl mx-auto flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-6 text-sm">
                 <span className="flex items-center gap-2">
                     <Shield className="h-4 w-4 text-emerald-400" />
-                    <span className="font-medium">9 International Accreditations</span>
+                    <span className="font-medium">From AccrediPro Academy</span>
                 </span>
                 <span className="hidden sm:block text-burgundy-300">•</span>
                 <span className="flex items-center gap-2">
                     <Award className="h-4 w-4 text-gold-400" />
-                    <span className="font-medium">Official Certificate Included</span>
+                    <span className="font-medium">Recognized by 9 International Bodies</span>
                 </span>
                 <span className="hidden sm:block text-burgundy-300">•</span>
                 <span className="flex items-center gap-2">
@@ -461,16 +468,87 @@ export default function FMMiniDiplomaPage() {
                 </div>
             </section>
 
+            {/* Sarah's Dramatic Story Section */}
+            <section className="py-16 sm:py-20 bg-gradient-to-b from-rose-50 to-white">
+                <div className="max-w-5xl mx-auto px-4">
+                    <div className="grid lg:grid-cols-2 gap-10 items-center">
+                        {/* Sarah's Image */}
+                        <div className="relative order-2 lg:order-1">
+                            <div className="relative rounded-3xl overflow-hidden shadow-2xl">
+                                <Image
+                                    src="/coaches/sarah-coach.webp"
+                                    alt="Sarah Mitchell - Your Functional Medicine Coach"
+                                    width={500}
+                                    height={600}
+                                    className="w-full object-cover"
+                                />
+                                <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/60 to-transparent p-6">
+                                    <p className="text-white font-bold text-xl">Sarah Mitchell</p>
+                                    <p className="text-white/80 text-sm">RN turned FM Practitioner • Single mum of 2</p>
+                                </div>
+                            </div>
+                            {/* Floating badge */}
+                            <div className="absolute -top-4 -right-4 bg-white rounded-2xl shadow-lg p-4 border border-slate-100">
+                                <p className="text-3xl font-black text-burgundy-600">843+</p>
+                                <p className="text-xs text-slate-500 uppercase tracking-wide">Students Mentored</p>
+                            </div>
+                        </div>
+
+                        {/* Story Content */}
+                        <div className="order-1 lg:order-2">
+                            <p className="text-burgundy-600 font-semibold mb-3 uppercase tracking-wide text-sm">My Story</p>
+                            <h2 className="text-3xl sm:text-4xl font-bold text-slate-900 mb-6 leading-tight">
+                                From Burnt-Out ER Nurse to <span className="text-burgundy-700">Thriving FM Practitioner</span>
+                            </h2>
+
+                            <div className="space-y-4 text-lg text-slate-600">
+                                <p>
+                                    <strong className="text-slate-800">I was drowning.</strong> 12-hour shifts in the ER, coming home exhausted to two kids who needed me. Bills piling up. Zero time for myself.
+                                </p>
+                                <p>
+                                    Then my own health crashed. <span className="text-burgundy-700 font-semibold">Thyroid. Gut issues. Brain fog so bad I thought I was losing my mind.</span> Doctors told me I was "fine."
+                                </p>
+                                <p>
+                                    Sound familiar?
+                                </p>
+                                <p>
+                                    Functional medicine changed everything. First, I healed myself. Then I realized: <strong className="text-slate-800">I could help other women do the same — on MY terms, from home, around MY kids.</strong>
+                                </p>
+                            </div>
+
+                            <div className="mt-8 p-5 bg-gradient-to-r from-burgundy-50 to-gold-50 rounded-2xl border-l-4 border-burgundy-600">
+                                <p className="text-burgundy-800 font-semibold text-lg mb-2">
+                                    "Now I earn more than I did as an RN — working 20 hours a week."
+                                </p>
+                                <p className="text-slate-600">
+                                    And I've helped 843+ students start their own journey. Let me show you how.
+                                </p>
+                            </div>
+
+                            <div className="mt-8">
+                                <a href="https://sarah.accredipro.academy/fm-mini-diploma-access">
+                                    <Button className="bg-gradient-to-r from-burgundy-600 to-burgundy-700 hover:from-burgundy-700 hover:to-burgundy-800 text-white font-bold py-5 px-8 rounded-xl text-lg shadow-lg">
+                                        <Heart className="h-5 w-5 mr-2" />
+                                        Learn From Sarah — $27
+                                        <ArrowRight className="h-5 w-5 ml-2" />
+                                    </Button>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
             {/* Accreditation Highlight Section */}
             <section className="py-16 sm:py-20 bg-gradient-to-b from-white to-slate-50">
                 <div className="max-w-6xl mx-auto px-4">
                     <div className="text-center mb-10">
-                        <p className="text-burgundy-600 font-semibold mb-2 uppercase tracking-wide">Internationally Recognized</p>
+                        <p className="text-burgundy-600 font-semibold mb-2 uppercase tracking-wide">Why AccrediPro Academy?</p>
                         <h2 className="text-3xl sm:text-4xl font-bold text-slate-900 mb-4">
-                            Accredited by 9 Global Bodies
+                            Recognized by 9 International Bodies
                         </h2>
                         <p className="text-xl text-slate-600 max-w-2xl mx-auto">
-                            Your Mini Diploma is recognized worldwide. Practice legally, get insured, and build instant credibility.
+                            AccrediPro Academy holds accreditation from 9 prestigious organizations — giving your credentials global recognition.
                         </p>
                     </div>
 
@@ -498,57 +576,41 @@ export default function FMMiniDiplomaPage() {
                 </div>
             </section>
 
-            {/* Sarah's Story Section */}
+            {/* Why Sarah Section - Stats Focus */}
             <section className="py-16 sm:py-20">
                 <div className="max-w-5xl mx-auto px-4">
-                    <div className="grid lg:grid-cols-2 gap-12 items-center">
-                        {/* Story Content */}
-                        <div>
-                            <p className="text-burgundy-600 font-semibold mb-2">Hi, I'm Sarah 💕</p>
-                            <h2 className="text-3xl sm:text-4xl font-bold text-slate-900 mb-6">
-                                I Know Exactly How You Feel
-                            </h2>
+                    <div className="text-center mb-10">
+                        <p className="text-burgundy-600 font-semibold mb-2 uppercase tracking-wide">Why Learn with Sarah?</p>
+                        <h2 className="text-3xl sm:text-4xl font-bold text-slate-900 mb-4">
+                            Personal Mentorship Included
+                        </h2>
+                        <p className="text-xl text-slate-600 max-w-2xl mx-auto">
+                            Unlike other courses where you're left on your own — here you get a real coach who cares.
+                        </p>
+                    </div>
 
-                            <div className="space-y-4 text-lg text-slate-600">
-                                <p>
-                                    7 years ago, doctors told me I was "fine" when I clearly wasn't.
-                                </p>
-                                <p>
-                                    <strong className="text-slate-800">Thyroid issues. Gut problems. Brain fog</strong> so bad I thought I was losing my mind.
-                                </p>
-                                <p>
-                                    Then I found functional medicine. <span className="text-burgundy-700 font-semibold">It changed my life.</span> Then it became my career.
-                                </p>
-                                <p>
-                                    Now I've helped <strong className="text-slate-800">843+ students</strong> start their journey—and I personally mentor every single one until they complete.
-                                </p>
-                            </div>
-
-                            <div className="bg-gradient-to-r from-burgundy-50 to-gold-50 border-l-4 border-burgundy-600 p-5 rounded-r-xl mt-8">
-                                <p className="text-burgundy-800 font-semibold text-lg">
-                                    $27. 90 minutes. Personal support until you finish.
-                                </p>
-                            </div>
-                        </div>
-
-                        {/* Stats/Highlights */}
-                        <div className="space-y-4">
-                            {[
-                                { number: "12+", label: "Years as an RN before discovering FM", icon: Heart },
-                                { number: "843+", label: "Students mentored personally", icon: Users },
-                                { number: "97%", label: "Completion rate with coach support", icon: Target },
-                                { number: "$50-150", label: "Hourly rate our graduates aim for", icon: DollarSign },
-                            ].map((stat, i) => (
-                                <div key={i} className="bg-white rounded-2xl p-5 shadow-sm border border-slate-100 flex items-center gap-4 hover:shadow-md transition-shadow">
-                                    <div className="w-14 h-14 rounded-xl bg-burgundy-100 flex items-center justify-center shrink-0">
-                                        <stat.icon className="h-7 w-7 text-burgundy-600" />
-                                    </div>
-                                    <div>
-                                        <p className="text-2xl font-bold text-burgundy-700">{stat.number}</p>
-                                        <p className="text-slate-600">{stat.label}</p>
-                                    </div>
+                    <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-5">
+                        {[
+                            { number: "12+", label: "Years as an RN before discovering FM", icon: Heart },
+                            { number: "843+", label: "Students mentored personally", icon: Users },
+                            { number: "97%", label: "Completion rate with coach support", icon: Target },
+                            { number: "$50-150", label: "Hourly rate our graduates aim for", icon: DollarSign },
+                        ].map((stat, i) => (
+                            <div key={i} className="bg-white rounded-2xl p-5 shadow-sm border border-slate-100 text-center hover:shadow-md transition-shadow">
+                                <div className="w-14 h-14 rounded-xl bg-burgundy-100 flex items-center justify-center mx-auto mb-3">
+                                    <stat.icon className="h-7 w-7 text-burgundy-600" />
                                 </div>
-                            ))}
+                                <p className="text-2xl font-bold text-burgundy-700">{stat.number}</p>
+                                <p className="text-slate-600 text-sm">{stat.label}</p>
+                            </div>
+                        ))}
+                    </div>
+
+                    <div className="text-center mt-10">
+                        <div className="bg-gradient-to-r from-burgundy-50 to-gold-50 border border-burgundy-100 rounded-2xl p-6 inline-block">
+                            <p className="text-burgundy-800 font-semibold text-lg">
+                                $27. 90 minutes. Personal support until you finish.
+                            </p>
                         </div>
                     </div>
                 </div>
@@ -750,7 +812,7 @@ export default function FMMiniDiplomaPage() {
                             after="Runs her own FM health coaching practice with a 3-week waitlist."
                             quote="I finally feel like I'm actually HELPING people heal."
                             income="$125/hr"
-                            avatarIndex={0}
+                            avatarIndex={4}
                         />
                         <SuccessStory
                             name="Maria Santos"
