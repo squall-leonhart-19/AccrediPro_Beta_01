@@ -34,6 +34,7 @@ import {
   Lock,
   Phone,
   UserCog,
+  RotateCcw,
 } from "lucide-react";
 import {
   DropdownMenu,
@@ -191,6 +192,9 @@ export function UsersClient({ users, courses }: UsersClientProps) {
   const [existingTags, setExistingTags] = useState<string[]>([]);
   const [loadingTags, setLoadingTags] = useState(false);
   const [tagSearch, setTagSearch] = useState("");
+
+  // Reset Mini Diploma state
+  const [resettingMiniDiploma, setResettingMiniDiploma] = useState(false);
 
   // Common tags for quick selection
   const COMMON_TAGS = [
@@ -622,6 +626,32 @@ export function UsersClient({ users, courses }: UsersClientProps) {
       alert("Failed to add tag");
     } finally {
       setAddingTag(false);
+    }
+  };
+
+  const handleResetMiniDiploma = async (user: User) => {
+    if (!confirm(`Reset Mini Diploma progress for ${user.firstName || user.email}? This will clear all lesson progress.`)) {
+      return;
+    }
+    setResettingMiniDiploma(true);
+    try {
+      const response = await fetch("/api/admin/users/reset-mini-diploma", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ userId: user.id }),
+      });
+      const data = await response.json();
+      if (response.ok) {
+        alert(`Mini Diploma progress reset! Cleared ${data.deleted.lessons} lessons.`);
+        router.refresh();
+      } else {
+        alert(data.error || "Failed to reset progress");
+      }
+    } catch (error) {
+      console.error("Failed to reset Mini Diploma:", error);
+      alert("Failed to reset progress");
+    } finally {
+      setResettingMiniDiploma(false);
     }
   };
 
@@ -1134,6 +1164,14 @@ export function UsersClient({ users, courses }: UsersClientProps) {
                               >
                                 <Bot className="w-4 h-4 mr-2 text-indigo-600" />
                                 Manage AI Knowledge
+                              </DropdownMenuItem>
+                              <DropdownMenuItem
+                                onClick={() => handleResetMiniDiploma(user)}
+                                disabled={resettingMiniDiploma}
+                                className="cursor-pointer text-amber-600 focus:text-amber-600 focus:bg-amber-50"
+                              >
+                                <RotateCcw className="w-4 h-4 mr-2" />
+                                Reset Mini Diploma
                               </DropdownMenuItem>
                               <DropdownMenuSeparator />
                               <DropdownMenuItem
