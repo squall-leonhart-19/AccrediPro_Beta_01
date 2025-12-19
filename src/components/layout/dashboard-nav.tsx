@@ -56,7 +56,7 @@ const fullNavItems = [
 // Only: Lessons, Introduce Yourself, Private Chat with Sarah
 const miniDiplomaNavItems = [
   { href: "/mini-diploma", label: "My Lessons", icon: GraduationCap, tourId: "mini-diploma" },
-  { href: "/community/introduce-yourself", label: "Introduce Yourself", icon: Users, tourId: "community" },
+  { href: "/community/cmj94foua0000736vfwdlheir", label: "Introduce Yourself", icon: Users, tourId: "community" },
   { href: "/messages", label: "Chat with Sarah", icon: MessageSquare, notificationKey: "messages" as const, tourId: "messages" },
 ];
 

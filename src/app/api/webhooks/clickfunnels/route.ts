@@ -344,6 +344,28 @@ export async function POST(request: NextRequest) {
 
         enrollmentId = enrollment.id;
 
+        // Auto-complete Lesson 1 since users already watched it in the preview
+        const lesson1 = await prisma.lesson.findFirst({
+          where: {
+            module: { courseId: course.id },
+            order: 0, // First lesson (0-indexed)
+          },
+        });
+
+        if (lesson1) {
+          await prisma.lessonProgress.upsert({
+            where: { userId_lessonId: { userId: user.id, lessonId: lesson1.id } },
+            update: { isCompleted: true, completedAt: new Date() },
+            create: {
+              userId: user.id,
+              lessonId: lesson1.id,
+              isCompleted: true,
+              completedAt: new Date(),
+            },
+          });
+          console.log(`Auto-completed Lesson 1 for ${normalizedEmail} (preview was watched)`);
+        }
+
         // Update course analytics
         await prisma.courseAnalytics.upsert({
           where: { courseId: course.id },
