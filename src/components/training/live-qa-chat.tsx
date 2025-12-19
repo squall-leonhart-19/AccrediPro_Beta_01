@@ -2,8 +2,7 @@
 
 import { useState, useEffect, useRef } from "react";
 import Image from "next/image";
-import { MessageCircle, CheckCircle, Users, Sparkles, Crown, ExternalLink } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { MessageCircle, CheckCircle, Users, Sparkles, Crown } from "lucide-react";
 
 // Real student profiles with verified avatars (removed duplicate Patricia Adams)
 const QA_PROFILES = [
@@ -41,6 +40,20 @@ const QA_PROFILES = [
   { name: "Amber Long", avatar: "https://accredipro.academy/wp-content/uploads/2025/12/IMG_4555.jpeg", location: "Santa Fe, NM" },
   { name: "Cynthia Powell", avatar: "https://accredipro.academy/wp-content/uploads/2025/12/Screenshot-2025-08-12-162412.jpg", location: "Sarasota, FL" },
   { name: "Victoria Ross", avatar: "https://accredipro.academy/wp-content/uploads/2025/12/1000086368.jpg", location: "San Jose, CA" },
+];
+
+// Opening greetings - casual hellos when people join
+const OPENING_GREETINGS = [
+  "Hey everyone! 👋 Just joined, excited to learn more about this",
+  "Hi! Coming in from Chicago, glad I made it on time",
+  "Hello! Been wanting to watch this for weeks, finally here 🙌",
+  "Hey! Anyone else here thinking about a career change?",
+  "Hi all! Nurse here, really curious about functional medicine",
+  "Just joined! 👋 Ready to learn",
+  "Hi everyone! So excited to be here live",
+  "Hello from Texas! 🤠 Let's do this",
+  "Hey! First time watching, hope I'm not too late",
+  "Hi! My friend told me about this, she said it changed her life",
 ];
 
 // Natural, emotional Q&A conversations - varied styles, storytelling, pain points
@@ -282,7 +295,7 @@ const ENROLLMENT_NOTIFICATIONS = [
 
 interface ChatMessage {
   id: string;
-  type: "question" | "answer" | "enrollment" | "system";
+  type: "question" | "answer" | "enrollment" | "system" | "greeting";
   profile?: (typeof QA_PROFILES)[0];
   content: string;
   timestamp: Date;
@@ -345,59 +358,93 @@ export function LiveQAChat() {
     setMessages([]);
     conversationIndexRef.current = 0;
 
-    // After 3 seconds, show "session starting" system message
-    const startTimer = setTimeout(() => {
-      setMessages([{
-        id: "system-start",
-        type: "system",
-        content: "Live Q&A session is starting...",
+    const profiles = shuffledProfilesRef.current || QA_PROFILES;
+    const timers: NodeJS.Timeout[] = [];
+
+    // Greeting 1: After 2 seconds
+    timers.push(setTimeout(() => {
+      const greeting = OPENING_GREETINGS[Math.floor(Math.random() * OPENING_GREETINGS.length)];
+      setMessages(prev => [...prev, {
+        id: `g-${Date.now()}`,
+        type: "greeting",
+        profile: profiles[0],
+        content: greeting,
+        timestamp: new Date(),
+      }]);
+    }, 2000));
+
+    // Greeting 2: After 5 seconds
+    timers.push(setTimeout(() => {
+      const greeting = OPENING_GREETINGS[Math.floor(Math.random() * OPENING_GREETINGS.length)];
+      setMessages(prev => [...prev, {
+        id: `g-${Date.now()}`,
+        type: "greeting",
+        profile: profiles[1],
+        content: greeting,
+        timestamp: new Date(),
+      }]);
+    }, 5000));
+
+    // Greeting 3: After 9 seconds
+    timers.push(setTimeout(() => {
+      const greeting = OPENING_GREETINGS[Math.floor(Math.random() * OPENING_GREETINGS.length)];
+      setMessages(prev => [...prev, {
+        id: `g-${Date.now()}`,
+        type: "greeting",
+        profile: profiles[2],
+        content: greeting,
+        timestamp: new Date(),
+      }]);
+    }, 9000));
+
+    // Sarah's welcome after 12 seconds
+    timers.push(setTimeout(() => {
+      setMessages(prev => [...prev, {
+        id: `a-welcome`,
+        type: "answer",
+        content: "Hey everyone! Welcome to the live training! 👋 So glad you're here. Feel free to drop your questions in the chat as we go - I'll be answering them throughout!",
         timestamp: new Date(),
       }]);
       setIsStarted(true);
-    }, 3000);
+    }, 12000));
 
-    return () => clearTimeout(startTimer);
+    return () => timers.forEach(t => clearTimeout(t));
   }, []);
 
-  // After chat starts, add first question naturally after 5 seconds
+  // After Sarah's welcome, start the Q&A flow
   useEffect(() => {
     if (!isStarted) return;
 
     const conversations = shuffledConversationsRef.current || QA_CONVERSATIONS;
     const profiles = shuffledProfilesRef.current || QA_PROFILES;
+    const timers: NodeJS.Timeout[] = [];
 
-    // First question after 5 seconds
-    const firstQuestionTimer = setTimeout(() => {
+    // First real question after 25-30 seconds (giving video time to build context)
+    timers.push(setTimeout(() => {
       const qa = conversations[0];
-      const profile = profiles[0];
+      const profile = profiles[3]; // Use profile 3 since 0,1,2 were used for greetings
 
-      setMessages(prev => [
-        ...prev.filter(m => m.id !== "system-start"), // Remove system message
-        {
-          id: `q-${Date.now()}`,
-          type: "question",
-          profile,
-          content: qa.question,
-          timestamp: new Date(),
-        },
-      ]);
+      setMessages(prev => [...prev, {
+        id: `q-${Date.now()}`,
+        type: "question",
+        profile,
+        content: qa.question,
+        timestamp: new Date(),
+      }]);
 
       // Sarah's answer after 12-18 seconds
       setTimeout(() => {
-        setMessages(prev => [
-          ...prev,
-          {
-            id: `a-${Date.now()}`,
-            type: "answer",
-            content: qa.answer,
-            timestamp: new Date(),
-          },
-        ]);
+        setMessages(prev => [...prev, {
+          id: `a-${Date.now()}`,
+          type: "answer",
+          content: qa.answer,
+          timestamp: new Date(),
+        }]);
         conversationIndexRef.current = 1;
       }, 12000 + Math.random() * 6000);
-    }, 5000);
+    }, 25000 + Math.random() * 5000));
 
-    return () => clearTimeout(firstQuestionTimer);
+    return () => timers.forEach(t => clearTimeout(t));
   }, [isStarted]);
 
   // Add new messages every 50-70 seconds (slower, more realistic webinar pace)
@@ -552,7 +599,7 @@ export function LiveQAChat() {
               message.type === "enrollment" ? "flex justify-center" : ""
             }`}
           >
-            {message.type === "question" && message.profile && (
+            {(message.type === "question" || message.type === "greeting") && message.profile && (
               <div className="flex gap-3 animate-slide-up">
                 <div className="relative flex-shrink-0">
                   <Image
@@ -639,30 +686,15 @@ export function LiveQAChat() {
         ))}
       </div>
 
-      {/* Footer with CTA */}
-      <div className="px-4 py-4 bg-gradient-to-r from-burgundy-50 to-gold-50 border-t border-burgundy-100">
-        <div className="flex items-center justify-between gap-4">
-          <div className="flex items-center gap-2 text-gray-500 text-xs">
-            <div className="flex gap-1">
-              <div className="w-2 h-2 bg-burgundy-400 rounded-full animate-bounce" style={{ animationDelay: "0ms" }} />
-              <div className="w-2 h-2 bg-burgundy-400 rounded-full animate-bounce" style={{ animationDelay: "150ms" }} />
-              <div className="w-2 h-2 bg-burgundy-400 rounded-full animate-bounce" style={{ animationDelay: "300ms" }} />
-            </div>
-            <span>Sarah is typing...</span>
+      {/* Footer - typing indicator */}
+      <div className="px-4 py-3 bg-gradient-to-r from-burgundy-50 to-gold-50 border-t border-burgundy-100">
+        <div className="flex items-center gap-2 text-gray-500 text-xs">
+          <div className="flex gap-1">
+            <div className="w-2 h-2 bg-burgundy-400 rounded-full animate-bounce" style={{ animationDelay: "0ms" }} />
+            <div className="w-2 h-2 bg-burgundy-400 rounded-full animate-bounce" style={{ animationDelay: "150ms" }} />
+            <div className="w-2 h-2 bg-burgundy-400 rounded-full animate-bounce" style={{ animationDelay: "300ms" }} />
           </div>
-          <a
-            href="https://www.fanbasis.com/agency-checkout/AccrediPro/XDNQW"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Button
-              size="sm"
-              className="bg-gradient-to-r from-burgundy-600 to-burgundy-700 hover:from-burgundy-700 hover:to-burgundy-800 text-white gap-2 shadow-lg"
-            >
-              Enroll Now - $997
-              <ExternalLink className="w-4 h-4" />
-            </Button>
-          </a>
+          <span>Sarah is typing...</span>
         </div>
       </div>
     </div>
