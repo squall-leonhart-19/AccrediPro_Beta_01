@@ -152,6 +152,19 @@ export const authOptions: NextAuthOptions = {
         token.miniDiplomaCategory = user.miniDiplomaCategory;
         token.isMiniDiplomaOnly = user.isMiniDiplomaOnly;
       }
+
+      // Always refresh isMiniDiplomaOnly from database to catch completion status changes
+      if (token.id) {
+        const enrollments = await prisma.enrollment.findMany({
+          where: { userId: token.id as string },
+          include: { course: { select: { slug: true } } },
+        });
+        token.isMiniDiplomaOnly =
+          enrollments.length === 1 &&
+          enrollments[0].course.slug === "fm-mini-diploma" &&
+          enrollments[0].status !== "COMPLETED";
+      }
+
       return token;
     },
     async session({ session, token }) {

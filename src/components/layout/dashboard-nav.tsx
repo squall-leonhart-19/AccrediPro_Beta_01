@@ -31,6 +31,8 @@ import {
   Flame,
   ShoppingBag,
   Lock,
+  Unlock,
+  Sparkles,
 } from "lucide-react";
 import { useState } from "react";
 
@@ -55,11 +57,12 @@ const fullNavItems = [
 
 // Minimal nav for Mini Diploma users - maximum focus for completion
 // Shows: Lessons, Introduce Yourself, Chat, and LOCKED Training (teaser)
-const miniDiplomaNavItems = [
+// Note: locked state is determined dynamically based on isMiniDiplomaOnly
+const getMiniDiplomaNavItems = (isLocked: boolean) => [
   { href: "/mini-diploma", label: "My Lessons", icon: GraduationCap, tourId: "mini-diploma" },
   { href: "/community/cmj94foua0000736vfwdlheir", label: "Introduce Yourself", icon: Users, tourId: "community" },
   { href: "/messages", label: "Chat with Sarah", icon: MessageSquare, notificationKey: "messages" as const, tourId: "messages" },
-  { href: "/training", label: "Masterclass Bonus", icon: Award, tourId: "training", locked: true },
+  { href: "/training", label: "Masterclass Bonus", icon: Award, tourId: "training", locked: isLocked, unlocked: !isLocked },
 ];
 
 
@@ -87,7 +90,8 @@ export function DashboardNav() {
   const isMiniDiplomaOnly = user?.isMiniDiplomaOnly === true;
 
   // Select nav items based on user type
-  const navItems = isMiniDiplomaOnly ? miniDiplomaNavItems : fullNavItems;
+  // For mini diploma users, pass the locked state (locked if still isMiniDiplomaOnly)
+  const navItems = isMiniDiplomaOnly ? getMiniDiplomaNavItems(true) : fullNavItems;
 
   const getNotificationCount = (key?: "messages" | "certificates" | "announcements") => {
     if (!key) return 0;

@@ -201,7 +201,7 @@ export function TrainingContent({
                             </div>
                         </div>
 
-                        {/* Mobile: Live Q&A Chat - Right after video */}
+                        {/* Mobile: Live Q&A Chat - Only show when video is playing */}
                         <div className="lg:hidden space-y-4">
                             {!isUnlocked ? (
                                 <Card className="relative overflow-hidden border border-gray-200">
@@ -218,9 +218,10 @@ export function TrainingContent({
                             ) : shouldHideChat ? (
                                 /* Show only CTA when video completed or enrolled */
                                 null
-                            ) : (
+                            ) : isPlaying ? (
+                                /* Only show chat when video is playing */
                                 <LiveQAChat />
-                            )}
+                            ) : null}
 
                             {/* Mobile CTA - Only show AFTER video watched */}
                             {hasCompletedVideo && (
@@ -255,46 +256,6 @@ export function TrainingContent({
                                     </div>
                                 </>
                             )}
-                        </div>
-
-                        {/* Key Benefits - Clean Cards */}
-                        <div className="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4">
-                            <Card className="border border-gray-200 hover:border-burgundy-300 transition-colors">
-                                <CardContent className="p-4">
-                                    <div className="w-10 h-10 bg-burgundy-100 rounded-lg flex items-center justify-center mb-3">
-                                        <Target className="w-5 h-5 text-burgundy-600" />
-                                    </div>
-                                    <p className="font-bold text-gray-900 text-sm">20-in-1 Certification</p>
-                                    <p className="text-xs text-gray-500">First ever worldwide</p>
-                                </CardContent>
-                            </Card>
-                            <Card className="border border-gray-200 hover:border-green-300 transition-colors">
-                                <CardContent className="p-4">
-                                    <div className="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center mb-3">
-                                        <DollarSign className="w-5 h-5 text-green-600" />
-                                    </div>
-                                    <p className="font-bold text-gray-900 text-sm">$5K-$10K/Month</p>
-                                    <p className="text-xs text-gray-500">Real income potential</p>
-                                </CardContent>
-                            </Card>
-                            <Card className="border border-gray-200 hover:border-blue-300 transition-colors">
-                                <CardContent className="p-4">
-                                    <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center mb-3">
-                                        <Briefcase className="w-5 h-5 text-blue-600" />
-                                    </div>
-                                    <p className="font-bold text-gray-900 text-sm">Start Your Career</p>
-                                    <p className="text-xs text-gray-500">Get clients from day 1</p>
-                                </CardContent>
-                            </Card>
-                            <Card className="border border-gray-200 hover:border-amber-300 transition-colors">
-                                <CardContent className="p-4">
-                                    <div className="w-10 h-10 bg-amber-100 rounded-lg flex items-center justify-center mb-3">
-                                        <Globe className="w-5 h-5 text-amber-600" />
-                                    </div>
-                                    <p className="font-bold text-gray-900 text-sm">9 Accreditations</p>
-                                    <p className="text-xs text-gray-500">Recognized worldwide</p>
-                                </CardContent>
-                            </Card>
                         </div>
 
                         {/* Income Stats - Only show after 70% video watched */}
@@ -365,7 +326,7 @@ export function TrainingContent({
                         )}
                     </div>
 
-                    {/* Right Column - Live Q&A Chat (Desktop only) */}
+                    {/* Right Column - Live Q&A Chat (Desktop only) - Only shows when playing */}
                     <div className="hidden lg:block lg:sticky lg:top-6 lg:self-start space-y-4">
                         {!isUnlocked ? (
                             <Card className="relative overflow-hidden border border-gray-200">
@@ -403,8 +364,20 @@ export function TrainingContent({
                                     </a>
                                 </CardContent>
                             </Card>
-                        ) : (
+                        ) : isPlaying ? (
+                            /* Only show chat when video is playing */
                             <LiveQAChat />
+                        ) : (
+                            /* Show placeholder when video not started */
+                            <Card className="border border-gray-200 bg-gray-50">
+                                <CardContent className="p-6 text-center">
+                                    <div className="w-16 h-16 bg-burgundy-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                                        <Play className="w-8 h-8 text-burgundy-600 ml-1" />
+                                    </div>
+                                    <h3 className="text-lg font-bold text-gray-900 mb-2">Live Q&A Chat</h3>
+                                    <p className="text-gray-500 text-sm">Press play to start the training and unlock the live chat</p>
+                                </CardContent>
+                            </Card>
                         )}
 
                         {/* Trust Badges */}
