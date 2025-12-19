@@ -282,7 +282,7 @@ const ENROLLMENT_NOTIFICATIONS = [
 
 interface ChatMessage {
   id: string;
-  type: "question" | "answer" | "enrollment";
+  type: "question" | "answer" | "enrollment" | "system";
   profile?: (typeof QA_PROFILES)[0];
   content: string;
   timestamp: Date;
@@ -326,12 +326,13 @@ function getSessionSeed(): number {
 export function LiveQAChat() {
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [viewerCount, setViewerCount] = useState(347);
+  const [isStarted, setIsStarted] = useState(false);
   const chatRef = useRef<HTMLDivElement>(null);
   const conversationIndexRef = useRef(0);
   const shuffledConversationsRef = useRef<typeof QA_CONVERSATIONS | null>(null);
   const shuffledProfilesRef = useRef<typeof QA_PROFILES | null>(null);
 
-  // Initialize with randomized Q&A pairs based on session
+  // Initialize shuffled arrays but DON'T add messages yet - wait for natural start
   useEffect(() => {
     // Get session seed for consistent randomization within this browser session
     const seed = getSessionSeed();
@@ -340,102 +341,141 @@ export function LiveQAChat() {
     shuffledConversationsRef.current = shuffleWithSeed(QA_CONVERSATIONS, seed);
     shuffledProfilesRef.current = shuffleWithSeed(QA_PROFILES as unknown as typeof QA_CONVERSATIONS, seed + 1) as unknown as typeof QA_PROFILES;
 
-    const shuffledConversations = shuffledConversationsRef.current;
-    const shuffledProfiles = shuffledProfilesRef.current;
+    // Start with empty chat - will populate naturally
+    setMessages([]);
+    conversationIndexRef.current = 0;
 
-    const initialMessages: ChatMessage[] = [];
+    // After 3 seconds, show "session starting" system message
+    const startTimer = setTimeout(() => {
+      setMessages([{
+        id: "system-start",
+        type: "system",
+        content: "Live Q&A session is starting...",
+        timestamp: new Date(),
+      }]);
+      setIsStarted(true);
+    }, 3000);
 
-    // Start with 3 randomized Q&A pairs
-    for (let i = 0; i < 3; i++) {
-      const profile = shuffledProfiles[i];
-      const qa = shuffledConversations[i];
-
-      initialMessages.push({
-        id: `q-${i}`,
-        type: "question",
-        profile,
-        content: qa.question,
-        timestamp: new Date(Date.now() - (3 - i) * 60000),
-      });
-
-      initialMessages.push({
-        id: `a-${i}`,
-        type: "answer",
-        content: qa.answer,
-        timestamp: new Date(Date.now() - (3 - i) * 60000 + 12000),
-      });
-    }
-
-    setMessages(initialMessages);
-    conversationIndexRef.current = 3;
+    return () => clearTimeout(startTimer);
   }, []);
 
-  // Add new messages every 45-60 seconds (realistic webinar pace)
+  // After chat starts, add first question naturally after 5 seconds
   useEffect(() => {
-    const addMessage = () => {
-      const rand = Math.random();
+    if (!isStarted) return;
 
-      // Use shuffled arrays or fallback to original
-      const conversations = shuffledConversationsRef.current || QA_CONVERSATIONS;
-      const profiles = shuffledProfilesRef.current || QA_PROFILES;
+    const conversations = shuffledConversationsRef.current || QA_CONVERSATIONS;
+    const profiles = shuffledProfilesRef.current || QA_PROFILES;
 
-      // 80% chance of Q&A, 20% chance of enrollment notification
-      if (rand < 0.80) {
-        // Add Q&A using shuffled arrays
-        const qaIndex = conversationIndexRef.current % conversations.length;
-        const profileIndex = (conversationIndexRef.current + 3) % profiles.length;
-        const qa = conversations[qaIndex];
-        const profile = profiles[profileIndex];
+    // First question after 5 seconds
+    const firstQuestionTimer = setTimeout(() => {
+      const qa = conversations[0];
+      const profile = profiles[0];
 
-        // Add question
-        const questionId = `q-${Date.now()}`;
-        setMessages((prev) => [
+      setMessages(prev => [
+        ...prev.filter(m => m.id !== "system-start"), // Remove system message
+        {
+          id: `q-${Date.now()}`,
+          type: "question",
+          profile,
+          content: qa.question,
+          timestamp: new Date(),
+        },
+      ]);
+
+      // Sarah's answer after 12-18 seconds
+      setTimeout(() => {
+        setMessages(prev => [
           ...prev,
           {
-            id: questionId,
-            type: "question",
-            profile,
-            content: qa.question,
+            id: `a-${Date.now()}`,
+            type: "answer",
+            content: qa.answer,
             timestamp: new Date(),
           },
         ]);
+        conversationIndexRef.current = 1;
+      }, 12000 + Math.random() * 6000);
+    }, 5000);
 
-        // Add answer after delay (10-15 seconds for realistic typing feel)
-        setTimeout(() => {
+    return () => clearTimeout(firstQuestionTimer);
+  }, [isStarted]);
+
+  // Add new messages every 50-70 seconds (slower, more realistic webinar pace)
+  useEffect(() => {
+    // Don't start the interval until first Q&A is done (conversationIndexRef >= 1)
+    if (!isStarted) return;
+
+    // Wait for first Q&A to complete before starting interval
+    const startDelay = setTimeout(() => {
+      const addMessage = () => {
+        // Only add if we've completed at least first Q&A
+        if (conversationIndexRef.current < 1) return;
+
+        const rand = Math.random();
+
+        // Use shuffled arrays or fallback to original
+        const conversations = shuffledConversationsRef.current || QA_CONVERSATIONS;
+        const profiles = shuffledProfilesRef.current || QA_PROFILES;
+
+        // 85% chance of Q&A, 15% chance of enrollment notification
+        if (rand < 0.85) {
+          // Add Q&A using shuffled arrays
+          const qaIndex = conversationIndexRef.current % conversations.length;
+          const profileIndex = (conversationIndexRef.current + 3) % profiles.length;
+          const qa = conversations[qaIndex];
+          const profile = profiles[profileIndex];
+
+          // Add question
           setMessages((prev) => [
             ...prev,
             {
-              id: `a-${Date.now()}`,
-              type: "answer",
-              content: qa.answer,
+              id: `q-${Date.now()}`,
+              type: "question",
+              profile,
+              content: qa.question,
               timestamp: new Date(),
             },
           ]);
-        }, 10000 + Math.random() * 5000);
 
-        conversationIndexRef.current++;
-      } else {
-        // Add enrollment notification
-        const enrollment = ENROLLMENT_NOTIFICATIONS[Math.floor(Math.random() * ENROLLMENT_NOTIFICATIONS.length)];
-        setMessages((prev) => [
-          ...prev,
-          {
-            id: `e-${Date.now()}`,
-            type: "enrollment",
-            content: `${enrollment.name} from ${enrollment.location} just enrolled!`,
-            timestamp: new Date(),
-          },
-        ]);
+          // Add answer after delay (12-20 seconds for realistic typing feel)
+          setTimeout(() => {
+            setMessages((prev) => [
+              ...prev,
+              {
+                id: `a-${Date.now()}`,
+                type: "answer",
+                content: qa.answer,
+                timestamp: new Date(),
+              },
+            ]);
+          }, 12000 + Math.random() * 8000);
 
-        // Update viewer count
-        setViewerCount((prev) => prev + Math.floor(Math.random() * 3) + 1);
-      }
-    };
+          conversationIndexRef.current++;
+        } else {
+          // Add enrollment notification
+          const enrollment = ENROLLMENT_NOTIFICATIONS[Math.floor(Math.random() * ENROLLMENT_NOTIFICATIONS.length)];
+          setMessages((prev) => [
+            ...prev,
+            {
+              id: `e-${Date.now()}`,
+              type: "enrollment",
+              content: `${enrollment.name} from ${enrollment.location} just enrolled!`,
+              timestamp: new Date(),
+            },
+          ]);
 
-    // Add new message every 45-60 seconds for realistic webinar pace
-    const interval = setInterval(addMessage, 45000 + Math.random() * 15000);
-    return () => clearInterval(interval);
-  }, []);
+          // Update viewer count
+          setViewerCount((prev) => prev + Math.floor(Math.random() * 3) + 1);
+        }
+      };
+
+      // Add new message every 50-70 seconds for slower, more realistic pace
+      const interval = setInterval(addMessage, 50000 + Math.random() * 20000);
+      return () => clearInterval(interval);
+    }, 25000); // Wait 25 seconds after start before beginning the interval
+
+    return () => clearTimeout(startDelay);
+  }, [isStarted]);
 
   // Auto-scroll to bottom
   useEffect(() => {
@@ -489,6 +529,22 @@ export function LiveQAChat() {
         ref={chatRef}
         className="h-[450px] overflow-y-auto p-4 space-y-3 bg-gradient-to-b from-gray-50 to-white scroll-smooth"
       >
+        {/* Empty state - waiting for session to start */}
+        {messages.length === 0 && (
+          <div className="h-full flex flex-col items-center justify-center text-center px-6">
+            <div className="w-16 h-16 bg-burgundy-100 rounded-full flex items-center justify-center mb-4">
+              <MessageCircle className="w-8 h-8 text-burgundy-500" />
+            </div>
+            <h4 className="text-gray-900 font-semibold mb-2">Connecting to Live Session...</h4>
+            <p className="text-gray-500 text-sm">Sarah will be answering questions shortly</p>
+            <div className="flex gap-1 mt-4">
+              <div className="w-2 h-2 bg-burgundy-400 rounded-full animate-bounce" style={{ animationDelay: "0ms" }} />
+              <div className="w-2 h-2 bg-burgundy-400 rounded-full animate-bounce" style={{ animationDelay: "150ms" }} />
+              <div className="w-2 h-2 bg-burgundy-400 rounded-full animate-bounce" style={{ animationDelay: "300ms" }} />
+            </div>
+          </div>
+        )}
+
         {messages.map((message) => (
           <div
             key={message.id}
@@ -562,6 +618,21 @@ export function LiveQAChat() {
                   {message.content}
                 </span>
                 <Sparkles className="w-4 h-4 text-green-500" />
+              </div>
+            )}
+
+            {message.type === "system" && (
+              <div className="flex justify-center">
+                <div className="inline-flex items-center gap-2 px-4 py-2 bg-burgundy-50 border border-burgundy-200 rounded-full">
+                  <div className="flex gap-1">
+                    <div className="w-2 h-2 bg-burgundy-400 rounded-full animate-bounce" style={{ animationDelay: "0ms" }} />
+                    <div className="w-2 h-2 bg-burgundy-400 rounded-full animate-bounce" style={{ animationDelay: "150ms" }} />
+                    <div className="w-2 h-2 bg-burgundy-400 rounded-full animate-bounce" style={{ animationDelay: "300ms" }} />
+                  </div>
+                  <span className="text-sm font-medium text-burgundy-600">
+                    {message.content}
+                  </span>
+                </div>
               </div>
             )}
           </div>
