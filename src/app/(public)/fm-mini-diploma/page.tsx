@@ -672,7 +672,37 @@ export default function FMMiniDiplomaPage() {
                         </p>
                     </div>
 
-                    <div className="grid md:grid-cols-2 gap-8">
+                    {/* Conversational Learning Feature */}
+                    <div className="bg-gradient-to-r from-burgundy-50 to-rose-50 rounded-3xl p-6 sm:p-8 mb-10 border border-burgundy-100">
+                        <div className="grid lg:grid-cols-2 gap-8 items-center">
+                            <div>
+                                <div className="inline-flex items-center gap-2 bg-burgundy-100 text-burgundy-700 px-4 py-2 rounded-full text-sm font-semibold mb-4">
+                                    <MessageCircle className="h-4 w-4" />
+                                    Conversational Learning
+                                </div>
+                                <h3 className="text-2xl font-bold text-slate-900 mb-3">
+                                    We Learn Together — Like a Real Conversation
+                                </h3>
+                                <p className="text-slate-600 mb-4">
+                                    This isn't a boring lecture. I'll guide you through each concept conversationally, checking in with you, answering your questions in real-time, and making sure you don't miss anything.
+                                </p>
+                                <p className="text-burgundy-700 font-semibold">
+                                    Any doubt? Just ask me. I want you to get 100% out of this training!
+                                </p>
+                            </div>
+                            <div className="relative">
+                                <Image
+                                    src="/conversational-learning.webp"
+                                    alt="Conversational learning experience"
+                                    width={500}
+                                    height={300}
+                                    className="rounded-2xl shadow-lg w-full"
+                                />
+                            </div>
+                        </div>
+                    </div>
+
+                    <div className="grid md:grid-cols-2 gap-8 mb-10">
                         {/* Module 1 */}
                         <div className="bg-white rounded-3xl p-8 shadow-sm border border-slate-100">
                             <div className="flex items-center gap-3 mb-6">
@@ -725,6 +755,56 @@ export default function FMMiniDiplomaPage() {
                                     </li>
                                 ))}
                             </ul>
+                        </div>
+                    </div>
+
+                    {/* Portal Access Feature */}
+                    <div className="bg-gradient-to-r from-slate-900 to-slate-800 rounded-3xl p-6 sm:p-8 text-white">
+                        <div className="grid lg:grid-cols-2 gap-8 items-center">
+                            <div className="order-2 lg:order-1">
+                                <Image
+                                    src="/portal-screenshot.webp"
+                                    alt="AccrediPro Portal - All in one space"
+                                    width={600}
+                                    height={400}
+                                    className="rounded-2xl shadow-2xl w-full"
+                                />
+                            </div>
+                            <div className="order-1 lg:order-2">
+                                <div className="inline-flex items-center gap-2 bg-white/10 text-white px-4 py-2 rounded-full text-sm font-semibold mb-4">
+                                    <Laptop className="h-4 w-4" />
+                                    All-In-One Portal
+                                </div>
+                                <h3 className="text-2xl font-bold mb-3">
+                                    Access the Most Complete Learning Portal
+                                </h3>
+                                <ul className="space-y-3 mb-6">
+                                    {[
+                                        "Community of 1,400+ students & graduates",
+                                        "Coach Workspace to manage your future clients",
+                                        "Listen to other students' stories & coaching tips",
+                                        "All your resources in one beautiful space",
+                                    ].map((item, i) => (
+                                        <li key={i} className="flex items-start gap-3">
+                                            <CheckCircle2 className="h-5 w-5 text-emerald-400 shrink-0 mt-0.5" />
+                                            <span className="text-slate-200">{item}</span>
+                                        </li>
+                                    ))}
+                                </ul>
+                                <div className="flex items-center gap-3 p-4 bg-white/10 rounded-xl">
+                                    <Image
+                                        src="/coaches/sarah-coach.webp"
+                                        alt="Sarah"
+                                        width={48}
+                                        height={48}
+                                        className="w-12 h-12 rounded-full object-cover border-2 border-white/30"
+                                    />
+                                    <div>
+                                        <p className="font-semibold">Private chat with me</p>
+                                        <p className="text-sm text-slate-300">Whenever you need — I'm here for you!</p>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
