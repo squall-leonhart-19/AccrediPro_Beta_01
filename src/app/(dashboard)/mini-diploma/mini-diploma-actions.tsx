@@ -32,10 +32,10 @@ export function MiniDiplomaActions({ userId }: MiniDiplomaActionsProps) {
       if (data.success) {
         setMessage({ type: "success", text: "All lessons completed! Unlocking your Masterclass Bonus..." });
 
-        // Short delay to show success message, then redirect to unlocked masterclass
+        // Short delay to show success message, then redirect to training page
         setTimeout(() => {
           // Force full page reload to refresh session (isMiniDiplomaOnly will now be false)
-          window.location.href = "/masterclass";
+          window.location.href = "/training";
         }, 1500);
       } else {
         setMessage({ type: "error", text: data.error || "Failed to complete lessons" });

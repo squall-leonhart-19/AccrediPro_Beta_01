@@ -422,8 +422,8 @@ export function LessonYourNextStep({
                     <Button
                         onClick={() => {
                             onComplete?.();
-                            // Navigate to unlocked masterclass bonus
-                            window.location.href = "/masterclass";
+                            // Navigate to training page (masterclass bonus)
+                            window.location.href = "/training";
                         }}
                         className="w-full bg-gradient-to-r from-amber-500 to-yellow-500 hover:from-amber-600 hover:to-yellow-600 text-white font-semibold py-4 px-6 rounded-xl mb-4"
                     >

@@ -297,31 +297,33 @@ export function TrainingContent({
                             </Card>
                         </div>
 
-                        {/* Income Stats */}
-                        <Card className="border border-emerald-200 bg-emerald-50">
-                            <CardContent className="p-5">
-                                <div className="flex items-center gap-3 mb-4">
-                                    <div className="w-10 h-10 bg-emerald-100 rounded-lg flex items-center justify-center">
-                                        <TrendingUp className="w-5 h-5 text-emerald-600" />
+                        {/* Income Stats - Only show after 70% video watched */}
+                        {hasCompletedVideo && (
+                            <Card className="border border-emerald-200 bg-emerald-50">
+                                <CardContent className="p-5">
+                                    <div className="flex items-center gap-3 mb-4">
+                                        <div className="w-10 h-10 bg-emerald-100 rounded-lg flex items-center justify-center">
+                                            <TrendingUp className="w-5 h-5 text-emerald-600" />
+                                        </div>
+                                        <span className="font-bold text-emerald-800">What Our Graduates Are Earning</span>
                                     </div>
-                                    <span className="font-bold text-emerald-800">What Our Graduates Are Earning</span>
-                                </div>
-                                <div className="grid grid-cols-3 gap-4 text-center">
-                                    <div>
-                                        <p className="text-2xl font-bold text-emerald-700">$5,000+</p>
-                                        <p className="text-xs text-emerald-600">First 3 Months</p>
+                                    <div className="grid grid-cols-3 gap-4 text-center">
+                                        <div>
+                                            <p className="text-2xl font-bold text-emerald-700">$5,000+</p>
+                                            <p className="text-xs text-emerald-600">First 3 Months</p>
+                                        </div>
+                                        <div>
+                                            <p className="text-2xl font-bold text-emerald-700">$8,000+</p>
+                                            <p className="text-xs text-emerald-600">After 6 Months</p>
+                                        </div>
+                                        <div>
+                                            <p className="text-2xl font-bold text-emerald-700">$120K+</p>
+                                            <p className="text-xs text-emerald-600">First Year Potential</p>
+                                        </div>
                                     </div>
-                                    <div>
-                                        <p className="text-2xl font-bold text-emerald-700">$8,000+</p>
-                                        <p className="text-xs text-emerald-600">After 6 Months</p>
-                                    </div>
-                                    <div>
-                                        <p className="text-2xl font-bold text-emerald-700">$120K+</p>
-                                        <p className="text-xs text-emerald-600">First Year Potential</p>
-                                    </div>
-                                </div>
-                            </CardContent>
-                        </Card>
+                                </CardContent>
+                            </Card>
+                        )}
 
                         {/* CTA - Desktop - Only show AFTER video watched */}
                         {hasCompletedVideo && (

@@ -54,12 +54,12 @@ const fullNavItems = [
 ];
 
 // Minimal nav for Mini Diploma users - maximum focus for completion
-// Shows: Lessons, Introduce Yourself, Chat, and LOCKED Masterclass (teaser)
+// Shows: Lessons, Introduce Yourself, Chat, and LOCKED Training (teaser)
 const miniDiplomaNavItems = [
   { href: "/mini-diploma", label: "My Lessons", icon: GraduationCap, tourId: "mini-diploma" },
   { href: "/community/cmj94foua0000736vfwdlheir", label: "Introduce Yourself", icon: Users, tourId: "community" },
   { href: "/messages", label: "Chat with Sarah", icon: MessageSquare, notificationKey: "messages" as const, tourId: "messages" },
-  { href: "/masterclass", label: "Masterclass Bonus", icon: Award, tourId: "masterclass", locked: true },
+  { href: "/training", label: "Masterclass Bonus", icon: Award, tourId: "training", locked: true },
 ];
 
 
