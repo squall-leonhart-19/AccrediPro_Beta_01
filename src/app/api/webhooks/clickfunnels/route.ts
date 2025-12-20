@@ -395,19 +395,12 @@ export async function POST(request: NextRequest) {
       }
     }
 
-    // 3. Send welcome email (only for new users)
-    if (isNewUser) {
-      try {
-        await sendWelcomeEmail({
-          to: user.email!,
-          firstName: user.firstName || "Student",
-          courseName: course?.title || "Functional Medicine Mini Diploma",
-          courseSlug: course?.slug || "fm-mini-diploma",
-        });
-        console.log(`Sent welcome email to ${normalizedEmail}`);
-      } catch (emailError) {
-        console.error("Failed to send welcome email:", emailError);
-      }
+    // 3. Send welcome email (for all purchases - new and existing users need login info)
+    try {
+      await sendWelcomeEmail(user.email!, user.firstName || "Student");
+      console.log(`Sent welcome email to ${normalizedEmail}`);
+    } catch (emailError) {
+      console.error("Failed to send welcome email:", emailError);
     }
 
     // 4. Log webhook event

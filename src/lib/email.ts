@@ -325,13 +325,12 @@ export async function sendWelcomeEmail(to: string, firstName: string) {
     ${highlightBox(`
       <p style="margin: 0 0 12px 0; font-size: 15px; color: #722F37; font-weight: bold;">Your Login Credentials:</p>
       <p style="margin: 0; font-size: 14px; color: #333;"><strong>Email:</strong> ${to}</p>
-      <p style="margin: 8px 0 0 0; font-size: 14px; color: #333;"><strong>Password:</strong> Accredipro1234</p>
+      <p style="margin: 8px 0 0 0; font-size: 14px; color: #333;"><strong>Password:</strong> Futurecoach2025</p>
       <p style="margin: 12px 0 0 0; font-size: 12px; color: #666; font-style: italic;">You can change your password anytime from your account settings.</p>
     `, 'cream')}
 
     <p style="color: #555; font-size: 16px;">Inside your dashboard, you'll find everything you need to get started:</p>
     <ul style="color: #555; font-size: 15px; padding-left: 20px;">
-      <li style="margin: 10px 0;">Your personalized learning path</li>
       <li style="margin: 10px 0;">Direct access to your dedicated coach</li>
       <li style="margin: 10px 0;">Resources to support you every step of the way</li>
     </ul>
