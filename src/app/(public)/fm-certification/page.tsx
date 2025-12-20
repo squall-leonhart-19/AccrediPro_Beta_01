@@ -10,7 +10,7 @@ import {
     HeartHandshake, Laptop, Quote, Calendar,
     Brain, Flame, Activity, Leaf, Sun, Moon, Dumbbell,
     Stethoscope, LayoutDashboard, Video, AlertCircle, Timer,
-    Gift, Infinity, DollarSign, Lock, BadgeCheck, Globe2
+    Gift, Infinity, DollarSign, Lock, BadgeCheck, Globe2, Linkedin
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
@@ -666,18 +666,18 @@ export default function FMCertificationPage() {
             </section>
 
             {/* Market Comparison Table - Moved here after 21 Certifications */}
-            <section className="py-12 sm:py-16 bg-gradient-to-b from-slate-900 to-burgundy-900">
+            <section className="py-12 sm:py-16 bg-white">
                 <div className="max-w-5xl mx-auto px-4">
                     <div className="text-center mb-10">
-                        <p className="text-gold-400 font-semibold mb-2 uppercase tracking-wide">Market Comparison</p>
-                        <h2 className="text-3xl sm:text-4xl font-bold text-white mb-3">Why AccrediPro is the New Frontier</h2>
-                        <p className="text-lg text-slate-300 max-w-2xl mx-auto">
+                        <p className="text-burgundy-600 font-semibold mb-2 uppercase tracking-wide">Market Comparison</p>
+                        <h2 className="text-3xl sm:text-4xl font-bold text-slate-900 mb-3">Why AccrediPro is the New Frontier</h2>
+                        <p className="text-lg text-slate-600 max-w-2xl mx-auto">
                             See how we compare to other leading Functional Medicine certification programs.
                         </p>
                     </div>
 
                     {/* Comparison Table */}
-                    <div className="overflow-x-auto bg-white rounded-2xl shadow-xl">
+                    <div className="overflow-x-auto bg-cream-50 rounded-2xl shadow-xl border border-slate-200">
                         <table className="w-full text-left border-collapse">
                             <thead>
                                 <tr className="bg-burgundy-700 text-white">
@@ -764,80 +764,168 @@ export default function FMCertificationPage() {
                 </div>
             </section>
 
-            {/* Master Certificate + Sample Certificates Section */}
-            <section className="py-12 sm:py-16">
+            {/* Master Certificate + Sample Certificates Section - ENHANCED */}
+            <section className="py-16 sm:py-24 bg-gradient-to-b from-cream-50 via-white to-cream-50">
                 <div className="max-w-6xl mx-auto px-4">
-                    <div className="text-center mb-10">
-                        <p className="text-burgundy-600 font-semibold mb-2 uppercase tracking-wide">Your Master Credential</p>
-                        <h2 className="text-3xl sm:text-4xl font-bold text-slate-900 mb-4">
-                            Certified Functional Medicine Practitioner
+                    {/* Header with Impact */}
+                    <div className="text-center mb-12">
+                        <div className="inline-flex items-center gap-2 bg-gold-100 border border-gold-300 rounded-full px-5 py-2 mb-4">
+                            <Award className="h-5 w-5 text-gold-600" />
+                            <span className="text-sm font-bold text-gold-800">YOUR MASTER CREDENTIAL</span>
+                        </div>
+                        <h2 className="text-4xl sm:text-5xl font-bold text-slate-900 mb-4">
+                            Become a <span className="text-burgundy-700">Certified Functional Medicine Practitioner</span>
                         </h2>
-                        <p className="text-lg text-slate-600 max-w-3xl mx-auto">
-                            Upon completion, earn the <strong className="text-slate-900">Certified FM Practitioner</strong> designation — plus 21 specialty certificates showcasing your complete expertise.
+                        <p className="text-xl text-slate-600 max-w-3xl mx-auto">
+                            Walk away with the most comprehensive credential portfolio in functional medicine — <strong className="text-slate-800">22 certifications total.</strong>
                         </p>
                     </div>
 
-                    {/* Master Certificate */}
-                    <div className="max-w-4xl mx-auto mb-10">
-                        <div className="relative">
-                            <Image
-                                src="/FUNCTIONAL_MEDICINE_CERTIFICATE.webp"
-                                alt="Certified Functional Medicine Practitioner Certificate"
-                                width={800}
-                                height={600}
-                                className="w-full rounded-2xl shadow-2xl border-4 border-gold-300"
-                            />
-                            <div className="absolute -bottom-4 left-1/2 transform -translate-x-1/2 bg-burgundy-600 text-white rounded-full px-6 py-2 shadow-lg">
-                                <p className="text-sm font-bold flex items-center gap-2">
-                                    <Award className="h-4 w-4 text-gold-400" />
-                                    + 21 Specialty Certificates Below
-                                </p>
+                    {/* Value Comparison Banner */}
+                    <div className="bg-gradient-to-r from-burgundy-700 to-burgundy-800 rounded-2xl p-6 mb-12 text-center text-white">
+                        <div className="flex flex-wrap justify-center gap-6 sm:gap-12">
+                            <div>
+                                <p className="text-3xl sm:text-4xl font-bold text-gold-400">22</p>
+                                <p className="text-sm text-burgundy-200">Total Certifications</p>
+                            </div>
+                            <div className="hidden sm:block w-px bg-burgundy-500" />
+                            <div>
+                                <p className="text-3xl sm:text-4xl font-bold text-gold-400">80+</p>
+                                <p className="text-sm text-burgundy-200">CEU Hours</p>
+                            </div>
+                            <div className="hidden sm:block w-px bg-burgundy-500" />
+                            <div>
+                                <p className="text-3xl sm:text-4xl font-bold text-gold-400">9</p>
+                                <p className="text-sm text-burgundy-200">Accreditation Bodies</p>
+                            </div>
+                            <div className="hidden sm:block w-px bg-burgundy-500" />
+                            <div>
+                                <p className="text-3xl sm:text-4xl font-bold text-gold-400">Lifetime</p>
+                                <p className="text-sm text-burgundy-200">Validity</p>
                             </div>
                         </div>
                     </div>
 
-                    {/* Sample Module Certificates Grid */}
-                    <div className="mt-12">
-                        <p className="text-center text-slate-600 mb-6 font-medium">Sample Specialty Certificates You'll Earn:</p>
-                        <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
-                            {[
-                                { name: "Gut Health Specialist", icon: Activity, color: "olive" },
-                                { name: "Thyroid Health Specialist", icon: Zap, color: "burgundy" },
-                                { name: "Women's Hormone Specialist", icon: Heart, color: "burgundy" },
-                                { name: "Autoimmune Specialist", icon: Flame, color: "olive" },
-                            ].map((cert, i) => (
-                                <div key={i} className="bg-gradient-to-br from-cream-50 to-white rounded-xl p-4 border-2 border-gold-200 shadow-md relative overflow-hidden">
-                                    <div className="absolute top-0 right-0 w-20 h-20 bg-gold-100/50 rounded-full -mr-10 -mt-10" />
-                                    <div className="relative">
-                                        <div className="flex items-center justify-between mb-3">
-                                            <div className="w-10 h-10 rounded-full bg-burgundy-100 flex items-center justify-center">
-                                                <cert.icon className="h-5 w-5 text-burgundy-600" />
-                                            </div>
-                                            <Award className="h-6 w-6 text-gold-500" />
+                    {/* Master Certificate - Larger, More Impactful */}
+                    <div className="max-w-5xl mx-auto mb-12">
+                        <div className="relative bg-gradient-to-br from-gold-100 via-cream-50 to-gold-50 rounded-3xl p-4 sm:p-8 border-2 border-gold-300 shadow-2xl">
+                            <div className="absolute -top-4 left-1/2 transform -translate-x-1/2 bg-burgundy-600 text-white rounded-full px-6 py-2 shadow-lg z-10">
+                                <p className="text-sm font-bold flex items-center gap-2">
+                                    <GraduationCap className="h-4 w-4 text-gold-400" />
+                                    Master Certification
+                                </p>
+                            </div>
+                            <Image
+                                src="/FUNCTIONAL_MEDICINE_CERTIFICATE.webp"
+                                alt="Certified Functional Medicine Practitioner Certificate"
+                                width={1000}
+                                height={750}
+                                className="w-full rounded-xl shadow-lg"
+                            />
+                            <div className="mt-6 flex flex-wrap justify-center gap-4">
+                                <div className="flex items-center gap-2 bg-white rounded-full px-4 py-2 shadow-sm border border-gold-200">
+                                    <Shield className="h-4 w-4 text-olive-600" />
+                                    <span className="text-sm font-medium text-slate-700">Unique verification ID</span>
+                                </div>
+                                <div className="flex items-center gap-2 bg-white rounded-full px-4 py-2 shadow-sm border border-gold-200">
+                                    <BadgeCheck className="h-4 w-4 text-olive-600" />
+                                    <span className="text-sm font-medium text-slate-700">9 accreditation logos</span>
+                                </div>
+                                <div className="flex items-center gap-2 bg-white rounded-full px-4 py-2 shadow-sm border border-gold-200">
+                                    <Linkedin className="h-4 w-4 text-olive-600" />
+                                    <span className="text-sm font-medium text-slate-700">LinkedIn verifiable</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* Plus 21 Specialty Certs - Bigger Impact */}
+                    <div className="text-center mb-8">
+                        <div className="inline-flex items-center gap-3 bg-burgundy-100 border border-burgundy-200 rounded-full px-6 py-3 mb-6">
+                            <span className="text-2xl font-bold text-burgundy-700">+</span>
+                            <span className="text-lg font-bold text-burgundy-800">21 Specialty Certificates</span>
+                        </div>
+                        <p className="text-slate-600 max-w-2xl mx-auto">
+                            One certificate for each clinical module you complete. Display your expertise in specific conditions and health areas.
+                        </p>
+                    </div>
+
+                    {/* Sample Module Certificates Grid - Enhanced */}
+                    <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-5 mb-8">
+                        {[
+                            { name: "Gut Health Specialist", icon: Activity, students: "847 certified" },
+                            { name: "Thyroid Health Specialist", icon: Zap, students: "923 certified" },
+                            { name: "Women's Hormone Specialist", icon: Heart, students: "756 certified" },
+                            { name: "Autoimmune Specialist", icon: Flame, students: "612 certified" },
+                        ].map((cert, i) => (
+                            <div key={i} className="bg-white rounded-2xl p-5 border-2 border-gold-200 shadow-lg hover:shadow-xl transition-all hover:-translate-y-1 relative overflow-hidden group">
+                                <div className="absolute top-0 right-0 w-24 h-24 bg-gradient-to-br from-gold-100 to-gold-50 rounded-full -mr-12 -mt-12 group-hover:scale-110 transition-transform" />
+                                <div className="relative">
+                                    <div className="flex items-center justify-between mb-4">
+                                        <div className="w-12 h-12 rounded-xl bg-burgundy-100 flex items-center justify-center">
+                                            <cert.icon className="h-6 w-6 text-burgundy-600" />
                                         </div>
-                                        <p className="text-xs text-slate-500 uppercase tracking-wide mb-1">Certificate of Completion</p>
-                                        <p className="font-bold text-slate-900 text-sm">{cert.name}</p>
-                                        <div className="mt-2 pt-2 border-t border-gold-100 flex items-center gap-1 text-xs text-slate-500">
-                                            <Shield className="h-3 w-3" />
+                                        <Award className="h-8 w-8 text-gold-500" />
+                                    </div>
+                                    <p className="text-xs text-burgundy-600 uppercase tracking-wide font-semibold mb-1">Certificate of Completion</p>
+                                    <p className="font-bold text-slate-900 text-lg mb-3">{cert.name}</p>
+                                    <div className="pt-3 border-t border-gold-100 flex items-center justify-between">
+                                        <div className="flex items-center gap-1 text-xs text-slate-500">
+                                            <Shield className="h-3.5 w-3.5 text-olive-600" />
                                             <span>Verified Credential</span>
                                         </div>
+                                        <span className="text-xs text-olive-600 font-medium">{cert.students}</span>
+                                    </div>
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+
+                    <p className="text-center text-slate-600 font-medium mb-10">
+                        ...plus <span className="text-burgundy-700 font-bold">17 more specialty certificates</span>, one for each module!
+                    </p>
+
+                    {/* What Your Credentials Include - Detailed */}
+                    <div className="bg-gradient-to-br from-slate-900 to-burgundy-900 rounded-3xl p-8 sm:p-10 text-white">
+                        <h3 className="text-2xl font-bold text-center mb-8">What Your Credentials Include</h3>
+                        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                            {[
+                                { icon: Award, title: "Master Certification", desc: "Certified Functional Medicine Practitioner designation with unique ID" },
+                                { icon: BookOpen, title: "21 Specialty Certificates", desc: "One for each clinical module — Thyroid, Gut, Hormones, Autoimmune & more" },
+                                { icon: Clock, title: "80+ CEU Hours", desc: "Meets continuing education requirements for nurses, NPs, and health professionals" },
+                                { icon: Globe2, title: "9 Accreditation Logos", desc: "CMA, IPHM, CPD, IAOTH, ICAHP, IGCT, CTAA, IHTCP, IIOHT" },
+                                { icon: Linkedin, title: "LinkedIn Verification", desc: "Digital badges and verification page to share with potential clients" },
+                                { icon: Infinity, title: "Lifetime Validity", desc: "Your certifications never expire — no renewal fees, ever" },
+                            ].map((item, i) => (
+                                <div key={i} className="flex gap-4">
+                                    <div className="w-12 h-12 rounded-xl bg-burgundy-700/50 flex items-center justify-center shrink-0">
+                                        <item.icon className="h-6 w-6 text-gold-400" />
+                                    </div>
+                                    <div>
+                                        <p className="font-bold text-white mb-1">{item.title}</p>
+                                        <p className="text-sm text-burgundy-200">{item.desc}</p>
                                     </div>
                                 </div>
                             ))}
                         </div>
-                        <p className="text-center text-slate-500 text-sm mt-4">
-                            ...and 17 more specialty certificates, one for each module completed!
-                        </p>
-                    </div>
 
-                    {/* Benefits list */}
-                    <div className="mt-10 grid sm:grid-cols-2 lg:grid-cols-5 gap-4 max-w-5xl mx-auto">
-                        {["Master certification with unique ID", "21 specialty certificates", "80+ CEU hours", "Verifiable on LinkedIn", "Lifetime validity"].map((item, i) => (
-                            <div key={i} className="flex items-center gap-2 bg-cream-50 rounded-lg px-4 py-3 border border-cream-200">
-                                <CheckCircle2 className="h-4 w-4 text-olive-600 shrink-0" />
-                                <span className="text-sm text-slate-700">{item}</span>
+                        {/* Social Proof */}
+                        <div className="mt-10 pt-8 border-t border-burgundy-700 flex flex-col sm:flex-row items-center justify-center gap-4">
+                            <div className="flex -space-x-2">
+                                {[
+                                    "https://accredipro.academy/wp-content/uploads/2025/12/Peak-Health-VIP-087.jpg",
+                                    "https://accredipro.academy/wp-content/uploads/2025/12/Head-shot-dark-background-1.jpg",
+                                    "https://accredipro.academy/wp-content/uploads/2025/12/LeezaRhttilthead.jpg",
+                                    "https://accredipro.academy/wp-content/uploads/2025/12/Headshot_Mirjana-1.jpg",
+                                    "https://accredipro.academy/wp-content/uploads/2025/12/1-1.jpg",
+                                ].map((src, i) => (
+                                    <Image key={i} src={src} alt="" width={40} height={40} className="w-10 h-10 rounded-full border-2 border-burgundy-800 object-cover" />
+                                ))}
                             </div>
-                        ))}
+                            <p className="text-burgundy-200">
+                                <span className="font-bold text-white">1,447 practitioners</span> already certified
+                            </p>
+                        </div>
                     </div>
                 </div>
             </section>
