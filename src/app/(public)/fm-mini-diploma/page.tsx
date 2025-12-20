@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
+import Script from "next/script";
 import {
     GraduationCap, CheckCircle2, Clock, Users, Award,
     Shield, MessageCircle, BookOpen, DollarSign, ArrowRight,
@@ -350,6 +351,17 @@ const TrustBanner = () => {
 export default function FMMiniDiplomaPage() {
     return (
         <div className="min-h-screen bg-gradient-to-b from-cream-100 via-cream-50 to-white pb-20 lg:pb-0">
+            {/* Microsoft Clarity Analytics */}
+            <Script id="clarity-script" strategy="afterInteractive">
+                {`
+                    (function(c,l,a,r,i,t,y){
+                        c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
+                        t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
+                        y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
+                    })(window, document, "clarity", "script", "u0udelia1o");
+                `}
+            </Script>
+
             {/* Sticky Mobile CTA */}
             <StickyMobileCTA />
 
