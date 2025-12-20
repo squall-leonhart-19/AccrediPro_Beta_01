@@ -453,7 +453,7 @@ const StickyCTA = () => {
                         <p className="text-slate-400 text-xs line-through">$497</p>
                         <p className="text-xl font-black text-burgundy-700">$197</p>
                     </div>
-                    <a href="https://sarah.accredipro.academy/fm-certification-access" className="flex-1">
+                    <a href="https://sarah.accredipro.academy/checkout-fm-certification" className="flex-1">
                         <Button className="w-full bg-gradient-to-r from-burgundy-600 to-burgundy-700 text-white font-bold py-3 rounded-lg text-sm">
                             Get Certified Now <ArrowRight className="h-4 w-4 ml-1" />
                         </Button>
@@ -462,7 +462,7 @@ const StickyCTA = () => {
             </div>
             {/* Desktop Floating Button */}
             <div className="hidden lg:block fixed bottom-6 right-6 z-50 animate-slide-up">
-                <a href="https://sarah.accredipro.academy/fm-certification-access">
+                <a href="https://sarah.accredipro.academy/checkout-fm-certification">
                     <Button className="bg-gradient-to-r from-burgundy-600 to-burgundy-700 hover:from-burgundy-700 hover:to-burgundy-800 text-white font-bold py-4 px-6 rounded-xl shadow-2xl text-base">
                         <GraduationCap className="h-5 w-5 mr-2" />
                         Get Certified — $197
@@ -603,7 +603,7 @@ export default function FMCertificationPage() {
 
                     {/* CTA with Payment Plan */}
                     <div className="flex flex-col items-center justify-center gap-4 mb-6">
-                        <a href="https://sarah.accredipro.academy/fm-certification-access">
+                        <a href="https://sarah.accredipro.academy/checkout-fm-certification">
                             <Button className="w-full sm:w-auto bg-gradient-to-r from-burgundy-600 to-burgundy-700 hover:from-burgundy-700 hover:to-burgundy-800 text-white font-bold py-6 px-10 rounded-xl text-lg shadow-xl hover:shadow-2xl transition-all transform hover:scale-[1.02]">
                                 <GraduationCap className="h-5 w-5 mr-2" />
                                 Start Your Certification Now
@@ -1542,7 +1542,7 @@ export default function FMCertificationPage() {
                                 </ul>
                             </div>
 
-                            <a href="https://sarah.accredipro.academy/fm-certification-access" className="block">
+                            <a href="https://sarah.accredipro.academy/checkout-fm-certification" className="block">
                                 <Button className="w-full bg-gradient-to-r from-burgundy-600 to-burgundy-700 hover:from-burgundy-700 hover:to-burgundy-800 text-white font-bold py-6 rounded-xl text-lg shadow-lg">
                                     <GraduationCap className="h-5 w-5 mr-2" />
                                     Start My Certification — $197
