@@ -3,358 +3,436 @@
 import { useState } from 'react';
 import Link from 'next/link';
 
-// STYLE 5: Quiz-First / Assessment Style
-// Duolingo-inspired with interactive questions, celebrations, streaks
+// STYLE 5: Clean White with Quiz Integration
+// Reading content combined with inline quizzes for engagement
 
 export default function Style5Page() {
-    const [currentQuestion, setCurrentQuestion] = useState(0);
-    const [score, setScore] = useState(0);
-    const [selectedAnswer, setSelectedAnswer] = useState<string | null>(null);
-    const [showResult, setShowResult] = useState(false);
-    const [streak, setStreak] = useState(0);
+    const [quizAnswers, setQuizAnswers] = useState<{ [key: number]: string }>({});
+    const [showExplanations, setShowExplanations] = useState<number[]>([]);
 
-    const questions = [
+    const quizzes = [
         {
-            question: "How many Americans suffer from digestive issues?",
-            options: ["10 Million", "35 Million", "70 Million", "100 Million"],
-            correct: "70 Million",
-            explanation: "Over 70 million Americans—more than California and Texas combined—struggle with gut issues daily.",
+            id: 1,
+            question: 'How many Americans suffer from digestive issues?',
+            options: ['10 Million', '35 Million', '70 Million', '100 Million'],
+            correct: '70 Million',
+            explanation: 'Over 70 million Americans—more than California and Texas combined—suffer from gut issues.',
         },
         {
-            question: "What percentage of serotonin (the 'happiness hormone') is made in your gut?",
-            options: ["50%", "75%", "85%", "95%"],
-            correct: "95%",
-            explanation: "95% of your serotonin is produced in your gut—that's why gut health directly affects mood and mental health!",
+            id: 2,
+            question: 'What percentage of serotonin is made in your gut?',
+            options: ['50%', '75%', '85%', '95%'],
+            correct: '95%',
+            explanation: '95% of serotonin is produced in your gut, directly affecting your mood and mental health!',
         },
         {
-            question: "What percentage of your immune system is located in your gut?",
-            options: ["40%", "60%", "80%", "100%"],
-            correct: "80%",
-            explanation: "80% of your immune system lives in your gut. A healthy gut = a strong immune system!",
-        },
-        {
-            question: "How much can certified gut health practitioners earn monthly?",
-            options: ["$1K-$2K", "$2K-$4K", "$5K-$15K", "$20K-$30K"],
-            correct: "$5K-$15K",
-            explanation: "Our certified practitioners typically earn $5K-$15K/month working from home with flexible hours!",
-        },
-        {
-            question: "Approximately how many neurons are in your gut?",
-            options: ["1 Million", "100 Million", "500 Million", "1 Billion"],
-            correct: "500 Million",
-            explanation: "Your gut contains 500 million neurons—more than your spinal cord! That's why it's called the 'second brain.'",
+            id: 3,
+            question: 'How much can certified gut health practitioners earn monthly?',
+            options: ['$1K-$2K', '$2K-$4K', '$5K-$15K', '$20K-$30K'],
+            correct: '$5K-$15K',
+            explanation: 'Our certified practitioners typically earn $5K-$15K/month working from home!',
         },
     ];
 
-    const handleAnswer = (answer: string) => {
-        setSelectedAnswer(answer);
-        setTimeout(() => {
-            if (answer === questions[currentQuestion].correct) {
-                setScore(s => s + 1);
-                setStreak(s => s + 1);
-            } else {
-                setStreak(0);
-            }
-            setShowResult(true);
-        }, 300);
-    };
-
-    const nextQuestion = () => {
-        if (currentQuestion < questions.length - 1) {
-            setCurrentQuestion(c => c + 1);
-            setSelectedAnswer(null);
-            setShowResult(false);
+    const handleAnswer = (quizId: number, answer: string) => {
+        setQuizAnswers({ ...quizAnswers, [quizId]: answer });
+        if (!showExplanations.includes(quizId)) {
+            setShowExplanations([...showExplanations, quizId]);
         }
     };
 
-    const isComplete = currentQuestion === questions.length - 1 && showResult;
-    const progress = ((currentQuestion + (showResult ? 1 : 0)) / questions.length) * 100;
+    const correctCount = quizzes.filter(q => quizAnswers[q.id] === q.correct).length;
+    const answeredCount = Object.keys(quizAnswers).length;
+    const progress = (answeredCount / quizzes.length) * 100;
 
     return (
         <div style={{
             minHeight: '100vh',
-            background: '#111827',
-            fontFamily: 'system-ui, -apple-system, sans-serif',
-            color: 'white',
+            background: '#ffffff',
+            fontFamily: 'Georgia, "Times New Roman", serif',
+            color: '#2d2d2d',
         }}>
             {/* Header */}
             <header style={{
-                display: 'flex',
-                justifyContent: 'space-between',
-                alignItems: 'center',
+                background: '#fff',
+                borderBottom: '1px solid #e5e5e5',
                 padding: '16px 24px',
-                borderBottom: '1px solid #374151',
+                position: 'sticky',
+                top: 0,
+                zIndex: 100,
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'space-between',
             }}>
-                <Link href="/gut-health-mini-diploma/style-4" style={{
-                    color: '#9CA3AF',
-                    textDecoration: 'none',
-                    fontSize: 24,
-                }}>
-                    ←
-                </Link>
-                <img src="/newlogo.webp" alt="AccrediPro" style={{ height: 32 }} />
-                <div style={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: 8,
-                    color: '#F59E0B',
-                }}>
-                    <span style={{ fontSize: 20 }}>🔥</span>
-                    <span style={{ fontWeight: 'bold' }}>{streak}</span>
+                <img src="/newlogo.webp" alt="AccrediPro" style={{ height: 36 }} />
+
+                <div style={{ flex: 1, maxWidth: 400, margin: '0 24px' }}>
+                    <div style={{
+                        height: 8,
+                        background: '#f0f0f0',
+                        borderRadius: 4,
+                        overflow: 'hidden',
+                    }}>
+                        <div style={{
+                            height: '100%',
+                            width: `${progress}%`,
+                            background: 'linear-gradient(90deg, #722F37, #8B4049)',
+                            borderRadius: 4,
+                            transition: 'width 0.5s ease',
+                        }} />
+                    </div>
+                    <div style={{ fontSize: 12, color: '#888', marginTop: 4, textAlign: 'center' }}>
+                        {answeredCount} of {quizzes.length} knowledge checks completed
+                    </div>
                 </div>
+
+                <Link href="/gut-health-mini-diploma/style-1" style={{
+                    padding: '10px 20px',
+                    background: '#722F37',
+                    color: 'white',
+                    borderRadius: 6,
+                    textDecoration: 'none',
+                    fontSize: 14,
+                }}>
+                    ← Back to Style 1
+                </Link>
             </header>
 
-            {/* Progress Bar */}
-            <div style={{ padding: '16px 24px 0' }}>
-                <div style={{
-                    height: 8,
-                    background: '#374151',
-                    borderRadius: 4,
-                    overflow: 'hidden',
-                }}>
-                    <div style={{
-                        height: '100%',
-                        width: `${progress}%`,
-                        background: 'linear-gradient(90deg, #10B981, #34D399)',
-                        borderRadius: 4,
-                        transition: 'width 0.5s ease-out',
-                    }} />
+            {/* Main Content */}
+            <main style={{ maxWidth: 720, margin: '0 auto', padding: '48px 24px' }}>
+
+                {/* Lesson Title */}
+                <div style={{ marginBottom: 40 }}>
+                    <span style={{
+                        display: 'inline-block',
+                        background: '#f8f4f0',
+                        color: '#722F37',
+                        padding: '6px 16px',
+                        borderRadius: 20,
+                        fontSize: 13,
+                        fontWeight: 600,
+                        marginBottom: 16,
+                    }}>
+                        MODULE 1 • LESSON 1
+                    </span>
+                    <h1 style={{ fontSize: 36, lineHeight: 1.3, marginBottom: 16, color: '#1a1a1a' }}>
+                        Welcome to Your Gut Health Journey
+                    </h1>
                 </div>
+
+                {/* Coach Welcome */}
                 <div style={{
                     display: 'flex',
-                    justifyContent: 'space-between',
-                    marginTop: 8,
-                    fontSize: 14,
-                    color: '#9CA3AF',
+                    gap: 16,
+                    padding: 24,
+                    background: '#fdfbf7',
+                    borderLeft: '4px solid #722F37',
+                    borderRadius: '0 12px 12px 0',
+                    marginBottom: 40,
                 }}>
-                    <span>Question {currentQuestion + 1} of {questions.length}</span>
-                    <span>Score: {score}/{questions.length}</span>
+                    <div style={{
+                        width: 56,
+                        height: 56,
+                        borderRadius: '50%',
+                        background: 'linear-gradient(135deg, #722F37, #8B4049)',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        color: 'white',
+                        fontSize: 24,
+                        flexShrink: 0,
+                    }}>S</div>
+                    <div>
+                        <p style={{ fontSize: 16, lineHeight: 1.7, margin: 0 }}>
+                            <strong style={{ color: '#722F37' }}>Hey there! 👋</strong> I'm Sarah, and I'm SO excited
+                            you're here. Let's learn some key facts about gut health together—with quick knowledge
+                            checks to make sure you're absorbing everything!
+                        </p>
+                    </div>
                 </div>
-            </div>
 
-            {/* Main Content */}
-            <main style={{
-                maxWidth: 600,
-                margin: '0 auto',
-                padding: '40px 24px',
-            }}>
-                {!isComplete ? (
-                    <>
-                        {/* Question */}
-                        <div style={{
-                            background: '#1F2937',
-                            borderRadius: 20,
-                            padding: 32,
-                            marginBottom: 24,
-                            textAlign: 'center',
-                        }}>
-                            <div style={{ fontSize: 48, marginBottom: 16 }}>🤔</div>
-                            <h2 style={{ fontSize: 24, lineHeight: 1.4 }}>
-                                {questions[currentQuestion].question}
-                            </h2>
+                {/* Content Section 1 */}
+                <section style={{ marginBottom: 40 }}>
+                    <h2 style={{ fontSize: 24, marginBottom: 16, color: '#1a1a1a' }}>
+                        The Gut Health Crisis
+                    </h2>
+                    <p style={{ fontSize: 17, lineHeight: 1.8, marginBottom: 16 }}>
+                        Here's a reality that might surprise you: A massive number of Americans are silently
+                        suffering from digestive issues. Many have been told their symptoms are "normal" or
+                        even "all in their head."
+                    </p>
+                    <p style={{ fontSize: 17, lineHeight: 1.8, marginBottom: 24 }}>
+                        This creates a tremendous opportunity for educated practitioners who understand
+                        the gut and can actually help people find solutions.
+                    </p>
+
+                    {/* Quiz 1 */}
+                    <div style={{
+                        background: '#f9f9f9',
+                        border: '1px solid #e8e8e8',
+                        borderRadius: 12,
+                        padding: 24,
+                    }}>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 16 }}>
+                            <span style={{
+                                background: '#722F37',
+                                color: 'white',
+                                padding: '4px 10px',
+                                borderRadius: 4,
+                                fontSize: 12,
+                                fontWeight: 'bold',
+                            }}>KNOWLEDGE CHECK</span>
                         </div>
-
-                        {/* Options */}
-                        <div style={{ display: 'grid', gap: 12 }}>
-                            {questions[currentQuestion].options.map((option) => {
-                                const isSelected = selectedAnswer === option;
-                                const isCorrect = option === questions[currentQuestion].correct;
-                                const showState = showResult && (isSelected || isCorrect);
+                        <p style={{ fontSize: 17, fontWeight: 600, marginBottom: 16 }}>
+                            {quizzes[0].question}
+                        </p>
+                        <div style={{ display: 'grid', gap: 8 }}>
+                            {quizzes[0].options.map((option) => {
+                                const isSelected = quizAnswers[1] === option;
+                                const isCorrect = option === quizzes[0].correct;
+                                const showResult = showExplanations.includes(1);
 
                                 return (
                                     <button
                                         key={option}
-                                        onClick={() => !showResult && handleAnswer(option)}
+                                        onClick={() => !showResult && handleAnswer(1, option)}
                                         disabled={showResult}
                                         style={{
-                                            padding: '20px 24px',
-                                            fontSize: 18,
-                                            fontWeight: 600,
-                                            border: '3px solid',
-                                            borderColor: showState
-                                                ? isCorrect
-                                                    ? '#10B981'
-                                                    : isSelected
-                                                        ? '#EF4444'
-                                                        : '#374151'
-                                                : isSelected
-                                                    ? '#3B82F6'
-                                                    : '#374151',
-                                            background: showState
-                                                ? isCorrect
-                                                    ? '#10B98120'
-                                                    : isSelected
-                                                        ? '#EF444420'
-                                                        : '#1F2937'
-                                                : isSelected
-                                                    ? '#3B82F620'
-                                                    : '#1F2937',
-                                            color: 'white',
-                                            borderRadius: 16,
+                                            padding: '14px 20px',
+                                            border: '2px solid',
+                                            borderColor: showResult
+                                                ? isCorrect ? '#10B981' : isSelected ? '#EF4444' : '#e8e8e8'
+                                                : isSelected ? '#722F37' : '#e8e8e8',
+                                            background: showResult
+                                                ? isCorrect ? '#D1FAE5' : isSelected ? '#FEE2E2' : '#fff'
+                                                : isSelected ? '#f8f4f0' : '#fff',
+                                            borderRadius: 8,
                                             cursor: showResult ? 'default' : 'pointer',
-                                            transition: 'all 0.3s',
                                             textAlign: 'left',
-                                            display: 'flex',
-                                            alignItems: 'center',
-                                            justifyContent: 'space-between',
+                                            fontSize: 16,
                                         }}
                                     >
-                                        <span>{option}</span>
-                                        {showState && (
-                                            <span style={{ fontSize: 24 }}>
-                                                {isCorrect ? '✓' : isSelected ? '✗' : ''}
-                                            </span>
-                                        )}
+                                        {option}
+                                        {showResult && isCorrect && <span style={{ float: 'right', color: '#10B981' }}>✓</span>}
+                                        {showResult && isSelected && !isCorrect && <span style={{ float: 'right', color: '#EF4444' }}>✗</span>}
                                     </button>
                                 );
                             })}
                         </div>
-
-                        {/* Result & Explanation */}
-                        {showResult && (
+                        {showExplanations.includes(1) && (
                             <div style={{
-                                marginTop: 24,
-                                padding: 24,
-                                background: selectedAnswer === questions[currentQuestion].correct
-                                    ? '#10B98120'
-                                    : '#EF444420',
-                                borderRadius: 16,
-                                border: `2px solid ${selectedAnswer === questions[currentQuestion].correct
-                                        ? '#10B981'
-                                        : '#EF4444'
-                                    }`,
+                                marginTop: 16,
+                                padding: 16,
+                                background: quizAnswers[1] === quizzes[0].correct ? '#D1FAE5' : '#FEF3C7',
+                                borderRadius: 8,
                             }}>
-                                <div style={{
-                                    display: 'flex',
-                                    alignItems: 'center',
-                                    gap: 12,
-                                    marginBottom: 12,
-                                }}>
-                                    <span style={{ fontSize: 32 }}>
-                                        {selectedAnswer === questions[currentQuestion].correct ? '🎉' : '💡'}
-                                    </span>
-                                    <span style={{
-                                        fontSize: 20,
-                                        fontWeight: 'bold',
-                                        color: selectedAnswer === questions[currentQuestion].correct
-                                            ? '#10B981'
-                                            : '#EF4444',
-                                    }}>
-                                        {selectedAnswer === questions[currentQuestion].correct
-                                            ? 'Correct!'
-                                            : 'Not quite!'}
-                                    </span>
-                                </div>
-                                <p style={{ color: '#D1D5DB', lineHeight: 1.6 }}>
-                                    {questions[currentQuestion].explanation}
-                                </p>
-                                <button
-                                    onClick={nextQuestion}
-                                    style={{
-                                        marginTop: 20,
-                                        width: '100%',
-                                        padding: '16px',
-                                        background: '#10B981',
-                                        color: 'white',
-                                        border: 'none',
-                                        borderRadius: 12,
-                                        fontSize: 18,
-                                        fontWeight: 'bold',
-                                        cursor: 'pointer',
-                                    }}
-                                >
-                                    Continue →
-                                </button>
+                                <strong>{quizAnswers[1] === quizzes[0].correct ? '✓ Correct!' : '💡 Good try!'}</strong>
+                                <p style={{ margin: '8px 0 0', fontSize: 15 }}>{quizzes[0].explanation}</p>
                             </div>
                         )}
-                    </>
-                ) : (
-                    /* Completion Screen */
+                    </div>
+                </section>
+
+                {/* Content Section 2 */}
+                <section style={{ marginBottom: 40 }}>
+                    <h2 style={{ fontSize: 24, marginBottom: 16, color: '#1a1a1a' }}>
+                        Your "Second Brain"
+                    </h2>
+                    <p style={{ fontSize: 17, lineHeight: 1.8, marginBottom: 16 }}>
+                        Scientists call the gut the "second brain" for good reason. Your gut contains over
+                        500 million neurons and has its own nervous system. But here's what really blew my
+                        mind when I first learned about gut health...
+                    </p>
+                    <div style={{
+                        background: '#722F37',
+                        color: 'white',
+                        padding: 24,
+                        borderRadius: 12,
+                        marginBottom: 24,
+                    }}>
+                        <p style={{ margin: 0, fontSize: 16, lineHeight: 1.7 }}>
+                            💡 <strong>Key Insight:</strong> Your gut doesn't just affect digestion—it
+                            affects your mood, energy, immunity, and mental clarity.
+                        </p>
+                    </div>
+
+                    {/* Quiz 2 */}
+                    <div style={{
+                        background: '#f9f9f9',
+                        border: '1px solid #e8e8e8',
+                        borderRadius: 12,
+                        padding: 24,
+                    }}>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 16 }}>
+                            <span style={{
+                                background: '#722F37',
+                                color: 'white',
+                                padding: '4px 10px',
+                                borderRadius: 4,
+                                fontSize: 12,
+                                fontWeight: 'bold',
+                            }}>KNOWLEDGE CHECK</span>
+                        </div>
+                        <p style={{ fontSize: 17, fontWeight: 600, marginBottom: 16 }}>
+                            {quizzes[1].question}
+                        </p>
+                        <div style={{ display: 'grid', gap: 8 }}>
+                            {quizzes[1].options.map((option) => {
+                                const isSelected = quizAnswers[2] === option;
+                                const isCorrect = option === quizzes[1].correct;
+                                const showResult = showExplanations.includes(2);
+
+                                return (
+                                    <button
+                                        key={option}
+                                        onClick={() => !showResult && handleAnswer(2, option)}
+                                        disabled={showResult}
+                                        style={{
+                                            padding: '14px 20px',
+                                            border: '2px solid',
+                                            borderColor: showResult
+                                                ? isCorrect ? '#10B981' : isSelected ? '#EF4444' : '#e8e8e8'
+                                                : isSelected ? '#722F37' : '#e8e8e8',
+                                            background: showResult
+                                                ? isCorrect ? '#D1FAE5' : isSelected ? '#FEE2E2' : '#fff'
+                                                : isSelected ? '#f8f4f0' : '#fff',
+                                            borderRadius: 8,
+                                            cursor: showResult ? 'default' : 'pointer',
+                                            textAlign: 'left',
+                                            fontSize: 16,
+                                        }}
+                                    >
+                                        {option}
+                                        {showResult && isCorrect && <span style={{ float: 'right', color: '#10B981' }}>✓</span>}
+                                        {showResult && isSelected && !isCorrect && <span style={{ float: 'right', color: '#EF4444' }}>✗</span>}
+                                    </button>
+                                );
+                            })}
+                        </div>
+                        {showExplanations.includes(2) && (
+                            <div style={{
+                                marginTop: 16,
+                                padding: 16,
+                                background: quizAnswers[2] === quizzes[1].correct ? '#D1FAE5' : '#FEF3C7',
+                                borderRadius: 8,
+                            }}>
+                                <strong>{quizAnswers[2] === quizzes[1].correct ? '✓ Correct!' : '💡 Good try!'}</strong>
+                                <p style={{ margin: '8px 0 0', fontSize: 15 }}>{quizzes[1].explanation}</p>
+                            </div>
+                        )}
+                    </div>
+                </section>
+
+                {/* Content Section 3 */}
+                <section style={{ marginBottom: 40 }}>
+                    <h2 style={{ fontSize: 24, marginBottom: 16, color: '#1a1a1a' }}>
+                        The Practitioner Opportunity
+                    </h2>
+                    <p style={{ fontSize: 17, lineHeight: 1.8, marginBottom: 16 }}>
+                        You don't need a medical degree to make a profound difference. What you DO need
+                        is the right training—and that's exactly what this certification provides.
+                    </p>
+                    <p style={{ fontSize: 17, lineHeight: 1.8, marginBottom: 24 }}>
+                        Our certified practitioners work from home with flexible hours, doing work they
+                        love while earning a great income.
+                    </p>
+
+                    {/* Quiz 3 */}
+                    <div style={{
+                        background: '#f9f9f9',
+                        border: '1px solid #e8e8e8',
+                        borderRadius: 12,
+                        padding: 24,
+                    }}>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 16 }}>
+                            <span style={{
+                                background: '#722F37',
+                                color: 'white',
+                                padding: '4px 10px',
+                                borderRadius: 4,
+                                fontSize: 12,
+                                fontWeight: 'bold',
+                            }}>KNOWLEDGE CHECK</span>
+                        </div>
+                        <p style={{ fontSize: 17, fontWeight: 600, marginBottom: 16 }}>
+                            {quizzes[2].question}
+                        </p>
+                        <div style={{ display: 'grid', gap: 8 }}>
+                            {quizzes[2].options.map((option) => {
+                                const isSelected = quizAnswers[3] === option;
+                                const isCorrect = option === quizzes[2].correct;
+                                const showResult = showExplanations.includes(3);
+
+                                return (
+                                    <button
+                                        key={option}
+                                        onClick={() => !showResult && handleAnswer(3, option)}
+                                        disabled={showResult}
+                                        style={{
+                                            padding: '14px 20px',
+                                            border: '2px solid',
+                                            borderColor: showResult
+                                                ? isCorrect ? '#10B981' : isSelected ? '#EF4444' : '#e8e8e8'
+                                                : isSelected ? '#722F37' : '#e8e8e8',
+                                            background: showResult
+                                                ? isCorrect ? '#D1FAE5' : isSelected ? '#FEE2E2' : '#fff'
+                                                : isSelected ? '#f8f4f0' : '#fff',
+                                            borderRadius: 8,
+                                            cursor: showResult ? 'default' : 'pointer',
+                                            textAlign: 'left',
+                                            fontSize: 16,
+                                        }}
+                                    >
+                                        {option}
+                                        {showResult && isCorrect && <span style={{ float: 'right', color: '#10B981' }}>✓</span>}
+                                        {showResult && isSelected && !isCorrect && <span style={{ float: 'right', color: '#EF4444' }}>✗</span>}
+                                    </button>
+                                );
+                            })}
+                        </div>
+                        {showExplanations.includes(3) && (
+                            <div style={{
+                                marginTop: 16,
+                                padding: 16,
+                                background: quizAnswers[3] === quizzes[2].correct ? '#D1FAE5' : '#FEF3C7',
+                                borderRadius: 8,
+                            }}>
+                                <strong>{quizAnswers[3] === quizzes[2].correct ? '✓ Correct!' : '💡 Good try!'}</strong>
+                                <p style={{ margin: '8px 0 0', fontSize: 15 }}>{quizzes[2].explanation}</p>
+                            </div>
+                        )}
+                    </div>
+                </section>
+
+                {/* Results */}
+                {answeredCount === quizzes.length && (
                     <div style={{
                         textAlign: 'center',
-                        padding: 32,
+                        padding: 40,
+                        background: '#fdfbf7',
+                        borderRadius: 16,
+                        border: '2px solid #722F37',
                     }}>
-                        <div style={{
-                            fontSize: 80,
-                            marginBottom: 24,
-                            animation: 'bounce 1s ease-in-out',
-                        }}>
-                            🏆
-                        </div>
-                        <h2 style={{ fontSize: 32, marginBottom: 16 }}>Lesson Complete!</h2>
-                        <p style={{ fontSize: 20, color: '#9CA3AF', marginBottom: 32 }}>
-                            You scored {score} out of {questions.length}
+                        <div style={{ fontSize: 48, marginBottom: 16 }}>🎉</div>
+                        <h2 style={{ marginBottom: 8, color: '#1a1a1a' }}>Lesson Complete!</h2>
+                        <p style={{ fontSize: 18, color: '#666', marginBottom: 24 }}>
+                            You scored <strong style={{ color: '#722F37' }}>{correctCount}</strong> out of {quizzes.length}
                         </p>
-
-                        {/* Stats */}
-                        <div style={{
-                            display: 'grid',
-                            gridTemplateColumns: 'repeat(3, 1fr)',
-                            gap: 16,
-                            marginBottom: 40,
-                        }}>
-                            <div style={{
-                                background: '#1F2937',
-                                padding: 20,
-                                borderRadius: 16,
-                            }}>
-                                <div style={{ fontSize: 32, color: '#10B981' }}>{score}</div>
-                                <div style={{ color: '#9CA3AF', fontSize: 14 }}>Correct</div>
-                            </div>
-                            <div style={{
-                                background: '#1F2937',
-                                padding: 20,
-                                borderRadius: 16,
-                            }}>
-                                <div style={{ fontSize: 32, color: '#F59E0B' }}>{streak}</div>
-                                <div style={{ color: '#9CA3AF', fontSize: 14 }}>Best Streak</div>
-                            </div>
-                            <div style={{
-                                background: '#1F2937',
-                                padding: 20,
-                                borderRadius: 16,
-                            }}>
-                                <div style={{ fontSize: 32, color: '#3B82F6' }}>+50</div>
-                                <div style={{ color: '#9CA3AF', fontSize: 14 }}>XP Earned</div>
-                            </div>
-                        </div>
-
-                        <p style={{ color: '#9CA3AF', marginBottom: 24 }}>
-                            You now understand the fundamentals of gut health!<br />
-                            Ready to learn more?
-                        </p>
-
-                        <Link href="/gut-health-mini-diploma/lesson-2" style={{
+                        <Link href="/gut-health-mini-diploma/style-1" style={{
                             display: 'inline-block',
-                            padding: '18px 48px',
-                            background: 'linear-gradient(90deg, #722F37, #8B4049)',
+                            padding: '16px 40px',
+                            background: '#722F37',
                             color: 'white',
-                            borderRadius: 50,
+                            borderRadius: 8,
                             textDecoration: 'none',
-                            fontSize: 18,
-                            fontWeight: 'bold',
+                            fontSize: 17,
+                            fontWeight: 600,
                         }}>
-                            Continue to Lesson 2 →
+                            Continue to Next Lesson →
                         </Link>
-
-                        <div style={{ marginTop: 24 }}>
-                            <Link href="/gut-health-mini-diploma/style-1" style={{
-                                color: '#9CA3AF',
-                                textDecoration: 'underline',
-                            }}>
-                                ← Review all styles again
-                            </Link>
-                        </div>
                     </div>
                 )}
             </main>
-
-            <style jsx global>{`
-        @keyframes bounce {
-          0%, 100% { transform: scale(1); }
-          50% { transform: scale(1.1); }
-        }
-      `}</style>
         </div>
     );
 }

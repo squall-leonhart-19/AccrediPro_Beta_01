@@ -67,29 +67,113 @@ const getRandomAvatarIndex = (exclude: number[] = []) => {
     return available[Math.floor(Math.random() * available.length)];
 };
 
-// Complete curriculum with 21 modules (0-20)
+// Complete curriculum with 21 modules (0-20) - with lesson titles
 const CURRICULUM_MODULES = [
-    { number: 0, title: "Welcome & Orientation", certificate: "Certified FM Practitioner (Foundation)", lessons: 5, description: "Get oriented and ready for your transformation journey", icon: GraduationCap },
-    { number: 1, title: "Functional Medicine Foundations", certificate: "Certified in FM Foundations", lessons: 8, description: "Core principles that set functional medicine apart", icon: BookOpen },
-    { number: 2, title: "Health Coaching Mastery", certificate: "Certified Health Coach", lessons: 10, description: "Communication skills that transform client outcomes", icon: MessageCircle },
-    { number: 3, title: "Clinical Assessment", certificate: "Certified Clinical Assessor", lessons: 8, description: "Properly evaluate clients and understand root causes", icon: Stethoscope },
-    { number: 4, title: "Ethics & Scope of Practice", certificate: "Certified in Professional Ethics", lessons: 6, description: "Protect yourself and clients with proper boundaries", icon: Shield },
-    { number: 5, title: "Functional Nutrition", certificate: "Certified Functional Nutritionist", lessons: 12, description: "Use food as powerful medicine to transform lives", icon: Leaf, highlight: true },
-    { number: 6, title: "Gut Health & Microbiome", certificate: "Certified Gut Health Specialist", lessons: 10, description: "Where 80% of health issues begin — and healing happens", icon: Activity, highlight: true },
-    { number: 7, title: "Stress, Adrenals & Nervous System", certificate: "Certified Stress & Adrenal Specialist", lessons: 8, description: "The stress connection most practitioners miss", icon: Brain },
-    { number: 8, title: "Blood Sugar & Insulin", certificate: "Certified Metabolic Health Coach", lessons: 8, description: "Break clients free from the blood sugar rollercoaster", icon: Activity },
-    { number: 9, title: "Women's Hormone Health", certificate: "Certified Women's Hormone Specialist", lessons: 10, description: "Support women's unique hormonal journeys", icon: Heart, highlight: true },
-    { number: 10, title: "Perimenopause & Menopause", certificate: "Certified Menopause Specialist", lessons: 8, description: "Guide women through life's most challenging transition", icon: Moon, highlight: true },
-    { number: 11, title: "Thyroid Health", certificate: "Certified Thyroid Health Specialist", lessons: 8, description: "Address the most underdiagnosed condition in healthcare", icon: Zap, highlight: true },
-    { number: 12, title: "Metabolic Health & Weight", certificate: "Certified Weight Management Specialist", lessons: 8, description: "Why traditional weight loss fails and what actually works", icon: Dumbbell },
-    { number: 13, title: "Autoimmunity & Inflammation", certificate: "Certified Autoimmune Specialist", lessons: 10, description: "Cutting-edge knowledge most providers don't have", icon: Flame, highlight: true },
-    { number: 14, title: "Mental Health & Brain Function", certificate: "Certified Brain Health Specialist", lessons: 8, description: "The gut-brain connection and mental wellness", icon: Brain },
-    { number: 15, title: "Cardiometabolic Health", certificate: "Certified Heart Health Specialist", lessons: 8, description: "Life-saving knowledge to protect and heal hearts", icon: Heart },
-    { number: 16, title: "Energy & Mitochondrial Health", certificate: "Certified Energy & Fatigue Specialist", lessons: 8, description: "Address the root causes of chronic fatigue", icon: Sun },
-    { number: 17, title: "Detox & Environmental Health", certificate: "Certified Detox Specialist", lessons: 8, description: "Reduce toxic burden in today's toxic world", icon: Leaf },
-    { number: 18, title: "Immune Health", certificate: "Certified Immune Health Specialist", lessons: 8, description: "Build resilient immune systems that protect", icon: Shield },
-    { number: 19, title: "Protocol Building & Program Design", certificate: "Certified Protocol Designer", lessons: 10, description: "Put it ALL together into custom client protocols", icon: Target },
-    { number: 20, title: "Building Your Coaching Practice", certificate: "Certified FM Practitioner (Complete)", lessons: 12, description: "Launch and grow your successful practice", icon: TrendingUp, highlight: true },
+    {
+        number: 0, title: "Welcome & Orientation", certificate: "Certified FM Practitioner (Foundation)",
+        lessons: ["Welcome to Your Certification Journey", "How to Navigate This Course", "Meet Your Community", "Setting Yourself Up for Success"],
+        description: "Get oriented and ready for your transformation journey", icon: GraduationCap
+    },
+    {
+        number: 1, title: "Functional Medicine Foundations", certificate: "Certified in FM Foundations",
+        lessons: ["Introduction to Functional Medicine", "What Is Functional Medicine and Why It Matters", "Systems Biology and Root-Cause Thinking", "The Functional Medicine Timeline", "The Functional Medicine Matrix", "The Power of the Patient Story", "Conventional vs Functional Approach", "Case Studies: Seeing the Whole Picture"],
+        description: "Core principles that set functional medicine apart", icon: BookOpen
+    },
+    {
+        number: 2, title: "Health Coaching Mastery", certificate: "Certified Health Coach",
+        lessons: ["The Art and Science of Health Coaching", "Building Therapeutic Rapport", "Motivational Interviewing Fundamentals", "Powerful Questioning Techniques", "Active Listening and Reflection", "Navigating Resistance and Barriers", "Creating Accountability Systems", "Facilitating Lasting Behavior Change"],
+        description: "Communication skills that transform client outcomes", icon: MessageCircle
+    },
+    {
+        number: 3, title: "Clinical Assessment", certificate: "Certified Clinical Assessor",
+        lessons: ["The Comprehensive Health History", "Symptom Questionnaires and Scoring", "The 90-Minute Intake Session", "Timeline and Antecedents", "Identifying Triggers and Mediators", "Physical Signs and Observations", "Prioritizing Client Concerns", "Creating the Clinical Picture"],
+        description: "Properly evaluate clients and understand root causes", icon: Stethoscope
+    },
+    {
+        number: 4, title: "Ethics & Scope of Practice", certificate: "Certified in Professional Ethics",
+        lessons: ["Understanding Scope of Practice", "What Health Coaches Can and Cannot Do", "Legal Considerations by Region", "When to Refer to Medical Professionals", "Red Flags and Warning Signs", "Documentation and Record Keeping", "Professional Ethics and Boundaries", "Building Referral Networks"],
+        description: "Protect yourself and clients with proper boundaries", icon: Shield
+    },
+    {
+        number: 5, title: "Functional Nutrition", certificate: "Certified Functional Nutritionist",
+        lessons: ["Foundations of Functional Nutrition", "The Elimination Diet Protocol", "Anti-Inflammatory Nutrition", "Blood Sugar Balance and Glycemic Control", "Therapeutic Diets Overview", "Nutrient Density and Food Quality", "Personalized Nutrition Strategies", "Meal Planning and Implementation"],
+        description: "Use food as powerful medicine to transform lives", icon: Leaf, highlight: true
+    },
+    {
+        number: 6, title: "Gut Health & Microbiome", certificate: "Certified Gut Health Specialist",
+        lessons: ["Digestive System Anatomy and Function", "The Microbiome and Its Impact", "Intestinal Permeability (Leaky Gut)", "SIBO: Small Intestinal Bacterial Overgrowth", "The 5R Gut Healing Protocol", "Gut-Brain Connection", "Digestive Support Strategies", "Gut Health Protocols and Case Studies"],
+        description: "Where 80% of health issues begin — and healing happens", icon: Activity, highlight: true
+    },
+    {
+        number: 7, title: "Stress, Adrenals & Nervous System", certificate: "Certified Stress & Adrenal Specialist",
+        lessons: ["The Stress Response System", "HPA Axis Dysfunction", "Cortisol Patterns and Testing", "Adrenal Fatigue vs Adrenal Dysfunction", "Nervous System Regulation", "Vagus Nerve and Parasympathetic Tone", "Stress Resilience Building", "Adrenal Support Protocols"],
+        description: "The stress connection most practitioners miss", icon: Brain
+    },
+    {
+        number: 8, title: "Sleep & Circadian Health", certificate: "Certified Sleep & Circadian Specialist",
+        lessons: ["Sleep Architecture and Stages", "Circadian Rhythm Biology", "Common Sleep Disorders", "Insomnia Assessment and Approaches", "Light Exposure and Melatonin", "Sleep Hygiene Optimization", "Sleep and Hormone Connections", "Sleep Improvement Protocols"],
+        description: "Master the foundation of all health and healing", icon: Moon
+    },
+    {
+        number: 9, title: "Women's Hormone Health", certificate: "Certified Women's Hormone Specialist",
+        lessons: ["Female Hormone Fundamentals", "The Menstrual Cycle Phases", "Estrogen Dominance", "Progesterone and Its Importance", "PMS and PMDD", "Cycle Syncing Strategies", "Hormone Testing for Women", "Women's Hormone Protocols"],
+        description: "Support women's unique hormonal journeys", icon: Heart, highlight: true
+    },
+    {
+        number: 10, title: "Perimenopause & Menopause", certificate: "Certified Menopause Specialist",
+        lessons: ["Understanding Perimenopause", "The Menopause Transition", "Common Menopause Symptoms", "Hot Flashes and Night Sweats", "Bone Health and Osteoporosis Prevention", "HRT: Risks and Benefits", "Natural Approaches to Menopause", "Menopause Support Protocols"],
+        description: "Guide women through life's most challenging transition", icon: Flame, highlight: true
+    },
+    {
+        number: 11, title: "Thyroid Health", certificate: "Certified Thyroid Health Specialist",
+        lessons: ["Thyroid Anatomy and Function", "Thyroid Hormone Production and Conversion", "Hypothyroidism: Causes and Symptoms", "Hashimoto's Thyroiditis", "Comprehensive Thyroid Testing", "Functional vs Conventional Thyroid Ranges", "Thyroid and Other Systems", "Thyroid Support Protocols"],
+        description: "Address the most underdiagnosed condition in healthcare", icon: Zap, highlight: true
+    },
+    {
+        number: 12, title: "Metabolic Health & Weight", certificate: "Certified Weight Management Specialist",
+        lessons: ["Metabolic Health Fundamentals", "Insulin Resistance and Sensitivity", "Metabolic Syndrome", "Weight Loss Resistance", "Leptin and Hunger Hormones", "Metabolic Flexibility", "Body Composition vs Scale Weight", "Metabolic Health Protocols"],
+        description: "Why traditional weight loss fails and what actually works", icon: Dumbbell
+    },
+    {
+        number: 13, title: "Autoimmunity & Inflammation", certificate: "Certified Autoimmune Specialist",
+        lessons: ["The Immune System Overview", "Autoimmune Disease Mechanisms", "Chronic Inflammation Pathways", "Common Autoimmune Conditions", "Triggers of Autoimmunity", "The Autoimmune-Gut Connection", "Anti-Inflammatory Strategies", "Autoimmune Support Protocols"],
+        description: "Cutting-edge knowledge most providers don't have", icon: Activity, highlight: true
+    },
+    {
+        number: 14, title: "Mental Health & Brain Function", certificate: "Certified Brain Health Specialist",
+        lessons: ["Brain Health Fundamentals", "Neurotransmitter Basics", "The Gut-Brain Axis", "Anxiety from a Functional Perspective", "Depression and Mood Support", "Cognitive Function and Brain Fog", "Neuroinflammation", "Brain Health Protocols"],
+        description: "The gut-brain connection and mental wellness", icon: Brain
+    },
+    {
+        number: 15, title: "Cardiometabolic Health", certificate: "Certified Heart Health Specialist",
+        lessons: ["Cardiovascular System Overview", "Understanding Lipid Panels", "Beyond LDL: Advanced Lipid Markers", "Blood Pressure Regulation", "Inflammation and Heart Disease", "Insulin Resistance and Cardiovascular Risk", "Heart-Healthy Nutrition", "Cardiometabolic Protocols"],
+        description: "Life-saving knowledge to protect and heal hearts", icon: Heart
+    },
+    {
+        number: 16, title: "Energy & Mitochondrial Health", certificate: "Certified Energy & Fatigue Specialist",
+        lessons: ["Cellular Energy Production", "Mitochondrial Function", "Root Causes of Fatigue", "Chronic Fatigue Syndrome", "Nutrient Cofactors for Energy", "Oxidative Stress and Antioxidants", "Exercise and Mitochondrial Health", "Energy Optimization Protocols"],
+        description: "Address the root causes of chronic fatigue", icon: Sun
+    },
+    {
+        number: 17, title: "Detox & Environmental Health", certificate: "Certified Detox Specialist",
+        lessons: ["Detoxification Fundamentals", "Phase 1 and Phase 2 Liver Detox", "Environmental Toxins and Exposures", "Heavy Metals and Testing", "Mold and Mycotoxins", "Reducing Toxic Load", "Supporting Detox Pathways", "Safe Detox Protocols"],
+        description: "Reduce toxic burden in today's toxic world", icon: Leaf
+    },
+    {
+        number: 18, title: "Functional Lab Interpretation", certificate: "Certified Lab Interpretation Specialist",
+        lessons: ["Introduction to Lab Interpretation", "CBC: Complete Blood Count", "CMP: Comprehensive Metabolic Panel", "Lipid Panel Deep Dive", "Thyroid Panel Interpretation", "Hormone Testing", "Functional Ranges vs Conventional Ranges", "Creating Lab-Based Protocols"],
+        description: "Read labs like a functional medicine expert", icon: Shield
+    },
+    {
+        number: 19, title: "Protocol Building & Program Design", certificate: "Certified Protocol Designer",
+        lessons: ["Principles of Protocol Design", "Prioritizing Interventions", "Supplement Recommendations Within Scope", "Creating Nutrition Protocols", "Lifestyle Intervention Design", "Program Structure and Phases", "Tracking Progress and Adjustments", "Protocol Templates and Examples"],
+        description: "Put it ALL together into custom client protocols", icon: Target
+    },
+    {
+        number: 20, title: "Building Your Coaching Practice", certificate: "Certified FM Practitioner (Complete)",
+        lessons: ["Starting Your Practice", "Defining Your Niche", "Pricing Your Services", "Creating Packages and Programs", "Marketing Fundamentals", "Social Media and Content Strategy", "Discovery Calls and Enrollment", "Building a Sustainable Practice"],
+        description: "Launch and grow your successful practice", icon: TrendingUp, highlight: true
+    },
 ];
 
 // Accreditation data
@@ -165,30 +249,85 @@ const TestimonialCard = ({ quote, name, role, before, after, timeframe, income, 
     </div>
 );
 
-// Module Certificate Card - compact
-const ModuleCertCard = ({ module }: { module: typeof CURRICULUM_MODULES[0] }) => {
+// Module Accordion Card with Lessons and Certificate Preview
+const ModuleAccordion = ({ module }: { module: typeof CURRICULUM_MODULES[0] }) => {
+    const [isOpen, setIsOpen] = useState(false);
     const Icon = module.icon;
+
     return (
-        <div className={`relative bg-white rounded-2xl p-4 border transition-all hover:shadow-lg ${module.highlight ? 'border-burgundy-200 ring-1 ring-burgundy-100' : 'border-slate-100'}`}>
+        <div className={`relative bg-white rounded-2xl border transition-all ${isOpen ? 'shadow-lg ring-2 ring-burgundy-100' : 'hover:shadow-md'} ${module.highlight ? 'border-burgundy-200' : 'border-slate-100'}`}>
             {module.highlight && (
-                <div className="absolute -top-2 -right-2 bg-burgundy-600 text-white text-xs font-bold px-2 py-0.5 rounded-full">Popular</div>
+                <div className="absolute -top-2 -right-2 bg-burgundy-600 text-white text-xs font-bold px-2 py-0.5 rounded-full z-10">Popular</div>
             )}
-            <div className="flex items-start gap-3">
+
+            {/* Header - Always visible */}
+            <button
+                onClick={() => setIsOpen(!isOpen)}
+                className="w-full p-4 flex items-start gap-3 text-left"
+            >
                 <div className={`w-10 h-10 rounded-lg flex items-center justify-center shrink-0 ${module.highlight ? 'bg-burgundy-100' : 'bg-cream-100'}`}>
                     <Icon className={`h-5 w-5 ${module.highlight ? 'text-burgundy-600' : 'text-burgundy-500'}`} />
                 </div>
                 <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-2 mb-0.5">
-                        <span className="text-xs font-bold text-burgundy-600">M{module.number}</span>
-                        <span className="text-xs text-slate-400">{module.lessons} lessons</span>
+                        <span className="text-xs font-bold text-burgundy-600">Module {module.number}</span>
+                        <span className="text-xs text-slate-400">{module.lessons.length} lessons</span>
                     </div>
                     <h4 className="font-semibold text-slate-900 text-sm mb-1">{module.title}</h4>
-                    <div className="flex items-center gap-1 text-xs">
-                        <Award className="h-3 w-3 text-gold-500" />
-                        <span className="text-gold-700 font-medium truncate">{module.certificate}</span>
+                    <p className="text-xs text-slate-500">{module.description}</p>
+                </div>
+                <div className="shrink-0 mt-1">
+                    {isOpen ? (
+                        <ChevronUp className="h-5 w-5 text-burgundy-600" />
+                    ) : (
+                        <ChevronDown className="h-5 w-5 text-slate-400" />
+                    )}
+                </div>
+            </button>
+
+            {/* Expanded Content */}
+            {isOpen && (
+                <div className="px-4 pb-4 border-t border-slate-100">
+                    {/* Lessons List */}
+                    <div className="mt-3 mb-4">
+                        <p className="text-xs font-semibold text-slate-500 uppercase tracking-wide mb-2">Lessons Included:</p>
+                        <div className="space-y-1.5">
+                            {module.lessons.map((lesson, i) => (
+                                <div key={i} className="flex items-center gap-2 text-sm text-slate-600">
+                                    <div className="w-5 h-5 rounded-full bg-cream-100 flex items-center justify-center shrink-0">
+                                        <span className="text-[10px] font-bold text-burgundy-600">{i + 1}</span>
+                                    </div>
+                                    <span className="truncate">{lesson}</span>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+
+                    {/* Certificate Preview */}
+                    <div className="bg-gradient-to-br from-cream-50 to-gold-50 rounded-xl p-3 border border-gold-200">
+                        <p className="text-xs font-semibold text-slate-500 uppercase tracking-wide mb-2 flex items-center gap-1">
+                            <Award className="h-3 w-3 text-gold-500" />
+                            Certificate You'll Earn:
+                        </p>
+                        <div className="bg-white rounded-lg p-3 border-2 border-gold-300 shadow-sm relative overflow-hidden">
+                            <div className="absolute top-0 right-0 w-16 h-16 bg-gold-100/50 rounded-full -mr-8 -mt-8" />
+                            <div className="relative flex items-center gap-3">
+                                <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-burgundy-600 to-burgundy-700 flex items-center justify-center shrink-0">
+                                    <span className="text-gold-400 font-bold text-xs">AP</span>
+                                </div>
+                                <div>
+                                    <p className="text-[10px] text-slate-400 uppercase tracking-wide">Certificate of Completion</p>
+                                    <p className="font-bold text-burgundy-700 text-sm">{module.certificate}</p>
+                                    <p className="text-[10px] text-slate-500 mt-0.5 flex items-center gap-1">
+                                        <Shield className="h-2.5 w-2.5" />
+                                        Verifiable credential with unique ID
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
-            </div>
+            )}
         </div>
     );
 };
@@ -510,6 +649,105 @@ export default function FMCertificationPage() {
                 </div>
             </section>
 
+            {/* Market Comparison Table - Moved here after 21 Certifications */}
+            <section className="py-12 sm:py-16 bg-gradient-to-b from-slate-900 to-burgundy-900">
+                <div className="max-w-5xl mx-auto px-4">
+                    <div className="text-center mb-10">
+                        <p className="text-gold-400 font-semibold mb-2 uppercase tracking-wide">Market Comparison</p>
+                        <h2 className="text-3xl sm:text-4xl font-bold text-white mb-3">Why AccrediPro is the New Frontier</h2>
+                        <p className="text-lg text-slate-300 max-w-2xl mx-auto">
+                            See how we compare to other leading Functional Medicine certification programs.
+                        </p>
+                    </div>
+
+                    {/* Comparison Table */}
+                    <div className="overflow-x-auto bg-white rounded-2xl shadow-xl">
+                        <table className="w-full text-left border-collapse">
+                            <thead>
+                                <tr className="bg-burgundy-700 text-white">
+                                    <th className="px-4 py-4 font-semibold rounded-tl-xl">Feature</th>
+                                    <th className="px-4 py-4 font-bold text-center bg-burgundy-600">
+                                        <div className="flex flex-col items-center">
+                                            <span className="text-gold-400">AccrediPro</span>
+                                            <span className="text-sm font-normal text-burgundy-200">$197</span>
+                                        </div>
+                                    </th>
+                                    <th className="px-4 py-4 font-semibold text-center">
+                                        <div className="flex flex-col items-center">
+                                            <span>FMCA</span>
+                                            <span className="text-sm font-normal text-burgundy-200">$7,200-$9,000</span>
+                                        </div>
+                                    </th>
+                                    <th className="px-4 py-4 font-semibold text-center">
+                                        <div className="flex flex-col items-center">
+                                            <span>IFM</span>
+                                            <span className="text-sm font-normal text-burgundy-200">$15,000+</span>
+                                        </div>
+                                    </th>
+                                    <th className="px-4 py-4 font-semibold text-center rounded-tr-xl">
+                                        <div className="flex flex-col items-center">
+                                            <span>IIN</span>
+                                            <span className="text-sm font-normal text-burgundy-200">$6,499</span>
+                                        </div>
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody className="text-sm">
+                                {[
+                                    { feature: "Investment", accredipro: "$197", fmca: "$7,200-$9,000", ifm: "$15,000+", iin: "$6,499" },
+                                    { feature: "Specialty Certificates", accredipro: "21 Certifications", fmca: "1 Certificate", ifm: "1 Certificate", iin: "1 Certificate" },
+                                    { feature: "1:1 Personal Mentorship", accredipro: true, fmca: false, ifm: false, iin: false },
+                                    { feature: "Career Launch Support", accredipro: true, fmca: "Limited", ifm: false, iin: "Limited" },
+                                    { feature: "Lifetime Access", accredipro: true, fmca: "1 Year", ifm: "Event-based", iin: "1 Year" },
+                                    { feature: "Coach Workspace (CRM)", accredipro: true, fmca: false, ifm: false, iin: false },
+                                    { feature: "Private Community", accredipro: "1,400+ members", fmca: true, ifm: true, iin: true },
+                                    { feature: "CEU Hours", accredipro: "80+", fmca: "40-50", ifm: "Varies", iin: "Varies" },
+                                    { feature: "International Accreditations", accredipro: "9 Bodies", fmca: "2-3", ifm: "1", iin: "1" },
+                                    { feature: "Self-Paced", accredipro: true, fmca: "Cohort-based", ifm: "In-person", iin: "Cohort-based" },
+                                    { feature: "Money-Back Guarantee", accredipro: "30 days", fmca: "7 days", ifm: "None", iin: "7 days" },
+                                ].map((row, i) => (
+                                    <tr key={i} className={`border-b border-slate-100 ${i % 2 === 0 ? 'bg-white' : 'bg-cream-50'}`}>
+                                        <td className="px-4 py-3 font-medium text-slate-800">{row.feature}</td>
+                                        <td className="px-4 py-3 text-center bg-burgundy-50/50">
+                                            {typeof row.accredipro === 'boolean' ? (
+                                                row.accredipro ? <CheckCircle2 className="h-5 w-5 text-olive-600 mx-auto" /> : <X className="h-5 w-5 text-red-400 mx-auto" />
+                                            ) : (
+                                                <span className="font-semibold text-burgundy-700">{row.accredipro}</span>
+                                            )}
+                                        </td>
+                                        <td className="px-4 py-3 text-center text-slate-600">
+                                            {typeof row.fmca === 'boolean' ? (
+                                                row.fmca ? <CheckCircle2 className="h-5 w-5 text-olive-600 mx-auto" /> : <X className="h-5 w-5 text-red-400 mx-auto" />
+                                            ) : row.fmca}
+                                        </td>
+                                        <td className="px-4 py-3 text-center text-slate-600">
+                                            {typeof row.ifm === 'boolean' ? (
+                                                row.ifm ? <CheckCircle2 className="h-5 w-5 text-olive-600 mx-auto" /> : <X className="h-5 w-5 text-red-400 mx-auto" />
+                                            ) : row.ifm}
+                                        </td>
+                                        <td className="px-4 py-3 text-center text-slate-600">
+                                            {typeof row.iin === 'boolean' ? (
+                                                row.iin ? <CheckCircle2 className="h-5 w-5 text-olive-600 mx-auto" /> : <X className="h-5 w-5 text-red-400 mx-auto" />
+                                            ) : row.iin}
+                                        </td>
+                                    </tr>
+                                ))}
+                            </tbody>
+                        </table>
+                    </div>
+
+                    {/* Value Highlight */}
+                    <div className="mt-8 bg-gradient-to-r from-gold-400 to-gold-500 rounded-2xl p-6 text-center">
+                        <p className="text-lg mb-2 text-burgundy-900">
+                            <span className="font-bold">Get 45x more value</span> than traditional programs
+                        </p>
+                        <p className="text-burgundy-800 text-sm">
+                            Same quality education. 21 specialty certifications. Personal mentorship. Career support. <span className="font-bold">For 1/40th the price.</span>
+                        </p>
+                    </div>
+                </div>
+            </section>
+
             {/* Master Certificate + Sample Certificates Section */}
             <section className="py-12 sm:py-16">
                 <div className="max-w-6xl mx-auto px-4">
@@ -588,20 +826,20 @@ export default function FMCertificationPage() {
                 </div>
             </section>
 
-            {/* Complete Curriculum Grid */}
+            {/* Complete Curriculum Accordion */}
             <section className="py-12 sm:py-16 bg-gradient-to-b from-cream-50 to-white">
                 <div className="max-w-6xl mx-auto px-4">
                     <div className="text-center mb-10">
                         <p className="text-burgundy-600 font-semibold mb-2 uppercase tracking-wide">Complete Curriculum</p>
                         <h2 className="text-3xl sm:text-4xl font-bold text-slate-900 mb-4">21 Modules. 21 Certifications.</h2>
                         <p className="text-lg text-slate-600 max-w-3xl mx-auto">
-                            Each module = 1 certificate. Graduate as a <span className="font-semibold text-burgundy-700">multi-certified specialist</span>.
+                            Each module = 1 certificate. Click to see lessons and the certificate you'll earn.
                         </p>
                     </div>
 
-                    <div className="grid md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3">
+                    <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
                         {CURRICULUM_MODULES.map((module) => (
-                            <ModuleCertCard key={module.number} module={module} />
+                            <ModuleAccordion key={module.number} module={module} />
                         ))}
                     </div>
 
@@ -1092,105 +1330,6 @@ export default function FMCertificationPage() {
                 </div>
             </section>
 
-            {/* Market Comparison Table */}
-            <section className="py-12 sm:py-16 bg-gradient-to-b from-white to-cream-50">
-                <div className="max-w-5xl mx-auto px-4">
-                    <div className="text-center mb-10">
-                        <p className="text-burgundy-600 font-semibold mb-2 uppercase tracking-wide">Market Comparison</p>
-                        <h2 className="text-3xl sm:text-4xl font-bold text-slate-900 mb-3">Why AccrediPro is the New Frontier</h2>
-                        <p className="text-lg text-slate-600 max-w-2xl mx-auto">
-                            See how we compare to other leading Functional Medicine certification programs.
-                        </p>
-                    </div>
-
-                    {/* Comparison Table */}
-                    <div className="overflow-x-auto">
-                        <table className="w-full text-left border-collapse">
-                            <thead>
-                                <tr className="bg-burgundy-700 text-white">
-                                    <th className="px-4 py-4 font-semibold rounded-tl-xl">Feature</th>
-                                    <th className="px-4 py-4 font-bold text-center bg-burgundy-600">
-                                        <div className="flex flex-col items-center">
-                                            <span className="text-gold-400">AccrediPro</span>
-                                            <span className="text-sm font-normal text-burgundy-200">$197</span>
-                                        </div>
-                                    </th>
-                                    <th className="px-4 py-4 font-semibold text-center">
-                                        <div className="flex flex-col items-center">
-                                            <span>FMCA</span>
-                                            <span className="text-sm font-normal text-burgundy-200">$7,200-$9,000</span>
-                                        </div>
-                                    </th>
-                                    <th className="px-4 py-4 font-semibold text-center">
-                                        <div className="flex flex-col items-center">
-                                            <span>IFM</span>
-                                            <span className="text-sm font-normal text-burgundy-200">$15,000+</span>
-                                        </div>
-                                    </th>
-                                    <th className="px-4 py-4 font-semibold text-center rounded-tr-xl">
-                                        <div className="flex flex-col items-center">
-                                            <span>IIN</span>
-                                            <span className="text-sm font-normal text-burgundy-200">$6,499</span>
-                                        </div>
-                                    </th>
-                                </tr>
-                            </thead>
-                            <tbody className="text-sm">
-                                {[
-                                    { feature: "Investment", accredipro: "$197", fmca: "$7,200-$9,000", ifm: "$15,000+", iin: "$6,499" },
-                                    { feature: "Specialty Certificates", accredipro: "21 Certifications", fmca: "1 Certificate", ifm: "1 Certificate", iin: "1 Certificate" },
-                                    { feature: "1:1 Personal Mentorship", accredipro: true, fmca: false, ifm: false, iin: false },
-                                    { feature: "Career Launch Support", accredipro: true, fmca: "Limited", ifm: false, iin: "Limited" },
-                                    { feature: "Lifetime Access", accredipro: true, fmca: "1 Year", ifm: "Event-based", iin: "1 Year" },
-                                    { feature: "Coach Workspace (CRM)", accredipro: true, fmca: false, ifm: false, iin: false },
-                                    { feature: "Private Community", accredipro: "1,400+ members", fmca: true, ifm: true, iin: true },
-                                    { feature: "CEU Hours", accredipro: "80+", fmca: "40-50", ifm: "Varies", iin: "Varies" },
-                                    { feature: "International Accreditations", accredipro: "9 Bodies", fmca: "2-3", ifm: "1", iin: "1" },
-                                    { feature: "Self-Paced", accredipro: true, fmca: "Cohort-based", ifm: "In-person", iin: "Cohort-based" },
-                                    { feature: "Money-Back Guarantee", accredipro: "30 days", fmca: "7 days", ifm: "None", iin: "7 days" },
-                                ].map((row, i) => (
-                                    <tr key={i} className={`border-b border-slate-100 ${i % 2 === 0 ? 'bg-white' : 'bg-cream-50'}`}>
-                                        <td className="px-4 py-3 font-medium text-slate-800">{row.feature}</td>
-                                        <td className="px-4 py-3 text-center bg-burgundy-50/50">
-                                            {typeof row.accredipro === 'boolean' ? (
-                                                row.accredipro ? <CheckCircle2 className="h-5 w-5 text-olive-600 mx-auto" /> : <X className="h-5 w-5 text-red-400 mx-auto" />
-                                            ) : (
-                                                <span className="font-semibold text-burgundy-700">{row.accredipro}</span>
-                                            )}
-                                        </td>
-                                        <td className="px-4 py-3 text-center text-slate-600">
-                                            {typeof row.fmca === 'boolean' ? (
-                                                row.fmca ? <CheckCircle2 className="h-5 w-5 text-olive-600 mx-auto" /> : <X className="h-5 w-5 text-red-400 mx-auto" />
-                                            ) : row.fmca}
-                                        </td>
-                                        <td className="px-4 py-3 text-center text-slate-600">
-                                            {typeof row.ifm === 'boolean' ? (
-                                                row.ifm ? <CheckCircle2 className="h-5 w-5 text-olive-600 mx-auto" /> : <X className="h-5 w-5 text-red-400 mx-auto" />
-                                            ) : row.ifm}
-                                        </td>
-                                        <td className="px-4 py-3 text-center text-slate-600">
-                                            {typeof row.iin === 'boolean' ? (
-                                                row.iin ? <CheckCircle2 className="h-5 w-5 text-olive-600 mx-auto" /> : <X className="h-5 w-5 text-red-400 mx-auto" />
-                                            ) : row.iin}
-                                        </td>
-                                    </tr>
-                                ))}
-                            </tbody>
-                        </table>
-                    </div>
-
-                    {/* Value Highlight */}
-                    <div className="mt-8 bg-gradient-to-r from-burgundy-600 to-burgundy-700 rounded-2xl p-6 text-center text-white">
-                        <p className="text-lg mb-2">
-                            <span className="font-bold text-gold-400">Get 45x more value</span> than traditional programs
-                        </p>
-                        <p className="text-burgundy-200 text-sm">
-                            Same quality education. 21 specialty certifications. Personal mentorship. Career support. <span className="font-semibold text-white">For 1/40th the price.</span>
-                        </p>
-                    </div>
-                </div>
-            </section>
-
             {/* FAQ Section */}
             <section className="py-12 sm:py-16 bg-cream-50">
                 <div className="max-w-3xl mx-auto px-4">
@@ -1253,38 +1392,40 @@ export default function FMCertificationPage() {
                 </div>
             </section>
 
-            {/* Professional Footer */}
-            <footer className="bg-burgundy-950 text-white">
+            {/* Professional Footer - Brand Colors */}
+            <footer className="bg-gradient-to-b from-burgundy-900 to-burgundy-950 text-white">
+                {/* Gold Accent Strip */}
+                <div className="h-1 bg-gradient-to-r from-gold-400 via-gold-500 to-gold-400" />
+
                 {/* Main Footer Content */}
                 <div className="max-w-6xl mx-auto px-4 py-12 sm:py-16">
                     <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-8 mb-12">
                         {/* Brand Column */}
                         <div className="col-span-2 lg:col-span-1">
-                            <div className="flex items-center gap-2 mb-4">
-                                <Image
-                                    src="https://coach.accredipro.academy/wp-content/uploads/2025/10/Senza-titolo-Logo-1.png"
-                                    alt="AccrediPro Academy"
-                                    width={40}
-                                    height={40}
-                                    className="w-10 h-10"
-                                />
-                                <span className="font-bold text-lg">AccrediPro</span>
+                            <div className="flex items-center gap-3 mb-4">
+                                <div className="w-12 h-12 bg-gradient-to-br from-burgundy-700 to-burgundy-800 rounded-xl flex items-center justify-center border border-gold-400/30">
+                                    <span className="text-gold-400 font-bold text-lg">AP</span>
+                                </div>
+                                <div>
+                                    <span className="font-bold text-lg block">AccrediPro</span>
+                                    <span className="text-gold-400 text-xs font-medium">ACADEMY</span>
+                                </div>
                             </div>
-                            <p className="text-burgundy-300 text-sm mb-4">
+                            <p className="text-cream-200 text-sm mb-4">
                                 The world's most accessible Functional Medicine certification.
                             </p>
                             {/* Social Icons */}
                             <div className="flex items-center gap-3">
-                                <a href="https://www.facebook.com/accredipro" target="_blank" rel="noopener noreferrer" className="w-9 h-9 rounded-full bg-burgundy-800 hover:bg-burgundy-700 flex items-center justify-center transition-colors">
+                                <a href="https://www.facebook.com/accredipro" target="_blank" rel="noopener noreferrer" className="w-9 h-9 rounded-full bg-burgundy-800/50 hover:bg-gold-400 hover:text-burgundy-900 border border-burgundy-700 flex items-center justify-center transition-all">
                                     <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
                                 </a>
-                                <a href="https://www.instagram.com/accredipro.academy" target="_blank" rel="noopener noreferrer" className="w-9 h-9 rounded-full bg-burgundy-800 hover:bg-burgundy-700 flex items-center justify-center transition-colors">
+                                <a href="https://www.instagram.com/accredipro.academy" target="_blank" rel="noopener noreferrer" className="w-9 h-9 rounded-full bg-burgundy-800/50 hover:bg-gold-400 hover:text-burgundy-900 border border-burgundy-700 flex items-center justify-center transition-all">
                                     <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"/></svg>
                                 </a>
-                                <a href="https://www.youtube.com/@accredipro" target="_blank" rel="noopener noreferrer" className="w-9 h-9 rounded-full bg-burgundy-800 hover:bg-burgundy-700 flex items-center justify-center transition-colors">
+                                <a href="https://www.youtube.com/@accredipro" target="_blank" rel="noopener noreferrer" className="w-9 h-9 rounded-full bg-burgundy-800/50 hover:bg-gold-400 hover:text-burgundy-900 border border-burgundy-700 flex items-center justify-center transition-all">
                                     <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M23.498 6.186a3.016 3.016 0 00-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 00.502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 002.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 002.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>
                                 </a>
-                                <a href="https://www.linkedin.com/company/accredipro" target="_blank" rel="noopener noreferrer" className="w-9 h-9 rounded-full bg-burgundy-800 hover:bg-burgundy-700 flex items-center justify-center transition-colors">
+                                <a href="https://www.linkedin.com/company/accredipro" target="_blank" rel="noopener noreferrer" className="w-9 h-9 rounded-full bg-burgundy-800/50 hover:bg-gold-400 hover:text-burgundy-900 border border-burgundy-700 flex items-center justify-center transition-all">
                                     <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
                                 </a>
                             </div>
@@ -1292,50 +1433,50 @@ export default function FMCertificationPage() {
 
                         {/* Company */}
                         <div>
-                            <h4 className="font-semibold mb-4 text-gold-400 text-sm uppercase tracking-wide">Company</h4>
-                            <ul className="space-y-2.5 text-sm text-burgundy-300">
-                                <li><a href="/about" className="hover:text-white transition-colors">About Us</a></li>
-                                <li><a href="https://learn.accredipro.academy/accreditation" className="hover:text-white transition-colors">Accreditations</a></li>
-                                <li><a href="/faculty" className="hover:text-white transition-colors">Faculty</a></li>
-                                <li><a href="/reviews" className="hover:text-white transition-colors">Student Reviews</a></li>
-                                <li><a href="mailto:support@accredipro.academy" className="hover:text-white transition-colors">Contact Support</a></li>
+                            <h4 className="font-bold mb-4 text-gold-400 text-sm uppercase tracking-wide">Company</h4>
+                            <ul className="space-y-2.5 text-sm text-cream-200">
+                                <li><a href="/about" className="hover:text-gold-400 transition-colors">About Us</a></li>
+                                <li><a href="https://learn.accredipro.academy/accreditation" className="hover:text-gold-400 transition-colors">Accreditations</a></li>
+                                <li><a href="/faculty" className="hover:text-gold-400 transition-colors">Faculty</a></li>
+                                <li><a href="/reviews" className="hover:text-gold-400 transition-colors">Student Reviews</a></li>
+                                <li><a href="mailto:support@accredipro.academy" className="hover:text-gold-400 transition-colors">Contact Support</a></li>
                             </ul>
                         </div>
 
                         {/* Resources */}
                         <div>
-                            <h4 className="font-semibold mb-4 text-gold-400 text-sm uppercase tracking-wide">Resources</h4>
-                            <ul className="space-y-2.5 text-sm text-burgundy-300">
-                                <li><a href="/blog" className="hover:text-white transition-colors">Latest News / Blog</a></li>
-                                <li><a href="/functional-nutrition-guide" className="hover:text-white transition-colors">Functional Nutrition Guide</a></li>
-                                <li><a href="/career-webinar" className="hover:text-white transition-colors">Career Webinar</a></li>
-                                <li><a href="/graduate-directory" className="hover:text-white transition-colors">Graduate Directory</a></li>
-                                <li><a href="https://learn.accredipro.academy/login" className="hover:text-white transition-colors">Student Portal</a></li>
+                            <h4 className="font-bold mb-4 text-gold-400 text-sm uppercase tracking-wide">Resources</h4>
+                            <ul className="space-y-2.5 text-sm text-cream-200">
+                                <li><a href="/blog" className="hover:text-gold-400 transition-colors">Latest News / Blog</a></li>
+                                <li><a href="/functional-nutrition-guide" className="hover:text-gold-400 transition-colors">Functional Nutrition Guide</a></li>
+                                <li><a href="/career-webinar" className="hover:text-gold-400 transition-colors">Career Webinar</a></li>
+                                <li><a href="/graduate-directory" className="hover:text-gold-400 transition-colors">Graduate Directory</a></li>
+                                <li><a href="https://learn.accredipro.academy/login" className="hover:text-gold-400 transition-colors">Student Portal</a></li>
                             </ul>
                         </div>
 
                         {/* Stay Updated */}
                         <div className="col-span-2 md:col-span-1">
-                            <h4 className="font-semibold mb-4 text-gold-400 text-sm uppercase tracking-wide">Stay Updated</h4>
-                            <p className="text-burgundy-300 text-sm mb-3">Get exclusive discounts and free resources.</p>
+                            <h4 className="font-bold mb-4 text-gold-400 text-sm uppercase tracking-wide">Stay Updated</h4>
+                            <p className="text-cream-200 text-sm mb-3">Get exclusive discounts and free resources.</p>
                             <div className="flex gap-2 mb-4">
                                 <input
                                     type="email"
                                     placeholder="Your email"
-                                    className="flex-1 bg-burgundy-900 border border-burgundy-700 rounded-lg px-3 py-2 text-sm text-white placeholder:text-burgundy-400 focus:outline-none focus:border-gold-400"
+                                    className="flex-1 bg-burgundy-800/50 border border-burgundy-700 rounded-lg px-3 py-2 text-sm text-white placeholder:text-cream-400 focus:outline-none focus:border-gold-400 focus:ring-1 focus:ring-gold-400"
                                 />
-                                <button className="bg-gold-400 hover:bg-gold-500 text-burgundy-900 font-semibold px-4 py-2 rounded-lg text-sm transition-colors whitespace-nowrap">
-                                    Get Code
+                                <button className="bg-gold-400 hover:bg-gold-500 text-burgundy-900 font-bold px-4 py-2 rounded-lg text-sm transition-colors whitespace-nowrap">
+                                    Subscribe
                                 </button>
                             </div>
                             {/* App Store Buttons */}
-                            <p className="text-burgundy-400 text-xs mb-2">Download Learning App:</p>
+                            <p className="text-cream-400 text-xs mb-2">Download Learning App:</p>
                             <div className="flex gap-2">
-                                <a href="https://play.google.com/store/apps/details?id=com.accredipro.academy" target="_blank" rel="noopener noreferrer" className="flex items-center gap-1.5 bg-burgundy-900 hover:bg-burgundy-800 border border-burgundy-700 rounded-lg px-3 py-1.5 transition-colors">
+                                <a href="https://play.google.com/store/apps/details?id=com.accredipro.academy" target="_blank" rel="noopener noreferrer" className="flex items-center gap-1.5 bg-burgundy-800/50 hover:bg-burgundy-700 border border-burgundy-700 rounded-lg px-3 py-1.5 transition-colors">
                                     <svg className="w-4 h-4" viewBox="0 0 24 24" fill="currentColor"><path d="M3.609 1.814L13.792 12 3.609 22.186a.996.996 0 01-.609-.92V2.734a1 1 0 01.609-.92zm10.89 10.893l2.302 2.302-10.937 6.333 8.635-8.635zm3.199-3.198l2.807 1.626a1 1 0 010 1.73l-2.807 1.626L15.5 12l2.198-2.491zM5.864 2.658L16.8 8.99l-2.302 2.302-8.634-8.634z"/></svg>
                                     <span className="text-xs font-medium">Play Store</span>
                                 </a>
-                                <a href="https://apps.apple.com/app/accredipro-academy" target="_blank" rel="noopener noreferrer" className="flex items-center gap-1.5 bg-burgundy-900 hover:bg-burgundy-800 border border-burgundy-700 rounded-lg px-3 py-1.5 transition-colors">
+                                <a href="https://apps.apple.com/app/accredipro-academy" target="_blank" rel="noopener noreferrer" className="flex items-center gap-1.5 bg-burgundy-800/50 hover:bg-burgundy-700 border border-burgundy-700 rounded-lg px-3 py-1.5 transition-colors">
                                     <svg className="w-4 h-4" viewBox="0 0 24 24" fill="currentColor"><path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.81-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/></svg>
                                     <span className="text-xs font-medium">App Store</span>
                                 </a>
@@ -1344,28 +1485,28 @@ export default function FMCertificationPage() {
                     </div>
 
                     {/* Accreditation Badges */}
-                    <div className="border-t border-burgundy-800 pt-8">
-                        <p className="text-center text-xs text-burgundy-400 mb-4 uppercase tracking-wide">Internationally Accredited by 9 Organizations</p>
+                    <div className="border-t border-burgundy-800/50 pt-8">
+                        <p className="text-center text-xs text-gold-400/80 mb-4 uppercase tracking-wide font-medium">Internationally Accredited by 9 Organizations</p>
                         <div className="flex flex-wrap justify-center gap-2">
                             {["CMA", "IPHM", "CPD", "IAOTH", "ICAHP", "IGCT", "CTAA", "IHTCP", "IIOHT"].map((acc, i) => (
-                                <span key={i} className="bg-burgundy-900/50 border border-burgundy-800 px-3 py-1 rounded text-xs font-medium text-burgundy-300">{acc}</span>
+                                <span key={i} className="bg-burgundy-800/30 border border-gold-400/20 px-3 py-1.5 rounded-lg text-xs font-medium text-cream-200">{acc}</span>
                             ))}
                         </div>
                     </div>
                 </div>
 
                 {/* Bottom Bar */}
-                <div className="border-t border-burgundy-900 py-5">
+                <div className="border-t border-burgundy-800/50 bg-burgundy-950 py-5">
                     <div className="max-w-6xl mx-auto px-4">
-                        <div className="flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-burgundy-400">
+                        <div className="flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-cream-300">
                             <p>© 2025 AccrediPro Academy. All rights reserved.</p>
                             <div className="flex items-center gap-4">
-                                <a href="/privacy" className="hover:text-white transition-colors">Privacy Policy</a>
-                                <a href="/terms" className="hover:text-white transition-colors">Terms of Service</a>
-                                <a href="/refund-policy" className="hover:text-white transition-colors">Refund Policy</a>
+                                <a href="/privacy" className="hover:text-gold-400 transition-colors">Privacy Policy</a>
+                                <a href="/terms" className="hover:text-gold-400 transition-colors">Terms of Service</a>
+                                <a href="/refund-policy" className="hover:text-gold-400 transition-colors">Refund Policy</a>
                             </div>
                         </div>
-                        <p className="text-center text-xs text-burgundy-500 mt-4">
+                        <p className="text-center text-xs text-cream-500 mt-4">
                             *Income ranges represent goals of certified practitioners. Results vary based on effort, background, and dedication.
                         </p>
                     </div>

@@ -279,7 +279,7 @@ export default function ThankYouPage() {
                 </div>
             </div>
 
-            {/* Meta Pixel Code - ROYAL CERTIFIED */}
+            {/* Meta Pixel Code - ROYAL CERTIFIED with Advanced Matching */}
             <Script
                 id="meta-pixel"
                 strategy="afterInteractive"
