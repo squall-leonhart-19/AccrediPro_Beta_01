@@ -15,9 +15,13 @@ import {
 import { Button } from "@/components/ui/button";
 
 // Fixed student avatars from CSV - professional headshots only (replaced empty/broken ones)
+// Verified working student avatars
 const ALL_STUDENT_AVATARS = [
-    "https://accredipro.academy/wp-content/uploads/2025/12/LeezaRhttilthead.jpg",
+    "https://accredipro.academy/wp-content/uploads/2025/12/Peak-Health-VIP-087.jpg",
     "https://accredipro.academy/wp-content/uploads/2025/12/Head-shot-dark-background-1.jpg",
+    "https://accredipro.academy/wp-content/uploads/2025/12/LeezaRhttilthead.jpg",
+    "https://accredipro.academy/wp-content/uploads/2025/12/Headshot_Mirjana-1.jpg",
+    "https://accredipro.academy/wp-content/uploads/2025/12/1-1.jpg",
     "https://accredipro.academy/wp-content/uploads/2025/12/Profile-Pic.jpg",
     "https://accredipro.academy/wp-content/uploads/2025/12/MICHELLEM047.jpg",
     "https://accredipro.academy/wp-content/uploads/2025/12/AnneProfile2.jpg",
@@ -25,33 +29,22 @@ const ALL_STUDENT_AVATARS = [
     "https://accredipro.academy/wp-content/uploads/2025/12/IMG_3542-Profile-Picture-Updated.jpg",
     "https://accredipro.academy/wp-content/uploads/2025/12/dgp03315.jpg",
     "https://accredipro.academy/wp-content/uploads/2025/12/Headshot-Ines.jpg",
-    "https://accredipro.academy/wp-content/uploads/2025/12/Shondra_Williams_Business_Headshot-scaled.jpg",
-    "https://accredipro.academy/wp-content/uploads/2025/12/Tiffany-Nelson-MD.webp",
-    "https://accredipro.academy/wp-content/uploads/2025/11/Liz-Sept-2023-headshot.jpg",
-    "https://accredipro.academy/wp-content/uploads/2025/11/2023-Lambert-163.jpeg",
-    "https://accredipro.academy/wp-content/uploads/2025/11/Tammie-15.jpg",
-    "https://accredipro.academy/wp-content/uploads/2025/11/CraftRealty2024-6337-EditHiRes.jpeg",
-    "https://accredipro.academy/wp-content/uploads/2025/10/headshot-1.jpg",
-    "https://accredipro.academy/wp-content/uploads/2025/10/DSC_9240-2.jpg",
-    "https://accredipro.academy/wp-content/uploads/2025/09/headshot.jpg",
-    "https://accredipro.academy/wp-content/uploads/2025/08/Headshot-1.jpg",
-    "https://accredipro.academy/wp-content/uploads/2025/11/Peak-Health-VIP-087.jpg",
 ];
 
-// Fixed testimonial avatars - specific headshots for each testimonial (12 total) - replaced broken AI image
+// Fixed testimonial avatars - verified working headshots for each testimonial (12 total)
 const TESTIMONIAL_AVATARS = [
-    "https://accredipro.academy/wp-content/uploads/2025/12/LeezaRhttilthead.jpg",
+    "https://accredipro.academy/wp-content/uploads/2025/12/Peak-Health-VIP-087.jpg",
     "https://accredipro.academy/wp-content/uploads/2025/12/MARIA-GARCIA-PIC-IMG_5435-1.jpg",
     "https://accredipro.academy/wp-content/uploads/2025/12/AnneProfile2.jpg",
     "https://accredipro.academy/wp-content/uploads/2025/12/Profile-Pic.jpg",
     "https://accredipro.academy/wp-content/uploads/2025/12/Head-shot-dark-background-1.jpg",
-    "https://accredipro.academy/wp-content/uploads/2025/11/Liz-Sept-2023-headshot.jpg",
-    "https://accredipro.academy/wp-content/uploads/2025/12/Tiffany-Nelson-MD.webp",
+    "https://accredipro.academy/wp-content/uploads/2025/12/LeezaRhttilthead.jpg",
+    "https://accredipro.academy/wp-content/uploads/2025/12/Headshot_Mirjana-1.jpg",
     "https://accredipro.academy/wp-content/uploads/2025/12/dgp03315.jpg",
     "https://accredipro.academy/wp-content/uploads/2025/12/Headshot-Ines.jpg",
-    "https://accredipro.academy/wp-content/uploads/2025/11/Tammie-15.jpg",
-    "https://accredipro.academy/wp-content/uploads/2025/11/CraftRealty2024-6337-EditHiRes.jpeg",
-    "https://accredipro.academy/wp-content/uploads/2025/11/2023-Lambert-163.jpeg",
+    "https://accredipro.academy/wp-content/uploads/2025/12/1-1.jpg",
+    "https://accredipro.academy/wp-content/uploads/2025/12/MICHELLEM047.jpg",
+    "https://accredipro.academy/wp-content/uploads/2025/12/IMG_3542-Profile-Picture-Updated.jpg",
 ];
 
 // Function to get random avatars
