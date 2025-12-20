@@ -22,8 +22,8 @@ export default function Style3Page() {
     const messages: Message[] = [
         { id: 1, type: 'sarah', text: "Hey there! 👋 I'm Sarah, your gut health coach.", delay: 0 },
         { id: 2, type: 'sarah', text: "I'm SO excited you're here! Ready to start your gut health journey?", delay: 1500 },
-        { id: 3, type: 'system', text: '🎓 You've joined the Gut Health Mini- Diploma', delay: 3000 },
-    { id: 4, type: 'sarah', text: "Let me share something that might surprise you...", delay: 4500 },
+        { id: 3, type: 'system', text: `🎓 You've joined the Gut Health Mini-Diploma`, delay: 3000 },
+        { id: 4, type: 'sarah', text: "Let me share something that might surprise you...", delay: 4500 },
         { id: 5, type: 'sarah', text: "70 MILLION Americans suffer from digestive issues. That's more than the population of California AND Texas combined! 🤯", delay: 6000 },
         { id: 6, type: 'sarah', text: "And here's the thing - most of them have been told it's 'normal' or 'all in their head'", delay: 8000 },
         { id: 7, type: 'sarah', text: "But YOU are going to learn how to actually help them 💪", delay: 10000 },
