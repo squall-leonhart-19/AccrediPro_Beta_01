@@ -1,14 +1,18 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import Image from "next/image";
 import Link from "next/link";
+import Script from "next/script";
 import {
     CheckCircle2, Mail, MessageCircle, GraduationCap,
     ArrowRight, Clock, Users, Heart, Sparkles,
     BookOpen, Lock, Key, Copy, Check
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
+
+// Meta Pixel ID for ROYAL CERTIFIED
+const META_PIXEL_ID = "1287915349067829";
 
 // Confetti effect component
 const Confetti = () => {
@@ -46,10 +50,34 @@ const Confetti = () => {
 export default function ThankYouPage() {
     const [copied, setCopied] = useState(false);
     const [showConfetti, setShowConfetti] = useState(true);
+    const purchaseTracked = useRef(false);
 
     useEffect(() => {
         // Hide confetti after 5 seconds
         const timer = setTimeout(() => setShowConfetti(false), 5000);
+        return () => clearTimeout(timer);
+    }, []);
+
+    // Track Purchase event with Meta Pixel
+    useEffect(() => {
+        if (purchaseTracked.current) return;
+        purchaseTracked.current = true;
+
+        // Fire Purchase event when pixel is ready
+        const trackPurchase = () => {
+            if (typeof window !== 'undefined' && (window as any).fbq) {
+                (window as any).fbq('track', 'Purchase', {
+                    value: 27.00,
+                    currency: 'USD',
+                    content_name: 'FM Mini Diploma'
+                });
+                console.log('[Meta Pixel] Purchase event fired');
+            }
+        };
+
+        // Try immediately, then retry after pixel loads
+        trackPurchase();
+        const timer = setTimeout(trackPurchase, 1000);
         return () => clearTimeout(timer);
     }, []);
 
@@ -271,6 +299,35 @@ export default function ThankYouPage() {
                     <p className="mt-2">© 2025 AccrediPro Academy. All rights reserved.</p>
                 </div>
             </div>
+
+            {/* Meta Pixel Code - ROYAL CERTIFIED */}
+            <Script
+                id="meta-pixel"
+                strategy="afterInteractive"
+                dangerouslySetInnerHTML={{
+                    __html: `
+                        !function(f,b,e,v,n,t,s)
+                        {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+                        n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+                        if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+                        n.queue=[];t=b.createElement(e);t.async=!0;
+                        t.src=v;s=b.getElementsByTagName(e)[0];
+                        s.parentNode.insertBefore(t,s)}(window, document,'script',
+                        'https://connect.facebook.net/en_US/fbevents.js');
+                        fbq('init', '${META_PIXEL_ID}');
+                        fbq('track', 'PageView');
+                    `
+                }}
+            />
+            <noscript>
+                <img
+                    height="1"
+                    width="1"
+                    style={{ display: 'none' }}
+                    src={`https://www.facebook.com/tr?id=${META_PIXEL_ID}&ev=PageView&noscript=1`}
+                    alt=""
+                />
+            </noscript>
         </div>
     );
 }

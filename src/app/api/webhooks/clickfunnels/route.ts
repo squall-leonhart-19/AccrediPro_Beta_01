@@ -26,8 +26,8 @@ import crypto from "crypto";
 const META_PIXEL_ID = process.env.META_PURCHASE_PIXEL_ID || "1287915349067829";
 const META_ACCESS_TOKEN = process.env.META_PURCHASE_ACCESS_TOKEN || "EAAHMlaRKtUoBQBe0ZAFZBQPlRv3xujHeDw0y8kGmRewZA9jaqkbnZA5mJxndHZCNmalSrGmr9DlTbNewOdu4INw4xRRZCE4vC0mSvnWsV17sIvklD9X4PbttSgp2lVIOZBQxG9Uq8UVljCsqZA1LSqxlgjDQ1qIN6PctDh3M5LmJBKkqQa0FDQAIoBN1AAIVqwZDZD";
 // Test event code - set in env to route events to Test Events tab in Meta Events Manager
-// Remove or set to empty string for production
-const META_TEST_EVENT_CODE = process.env.META_TEST_EVENT_CODE || "TEST26530";
+// Set to empty string for production
+const META_TEST_EVENT_CODE = process.env.META_TEST_EVENT_CODE || "";
 
 // Hash PII for Meta CAPI (required for user data)
 function hashForMeta(data: string): string {

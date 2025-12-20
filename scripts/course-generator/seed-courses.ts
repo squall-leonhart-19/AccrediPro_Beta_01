@@ -1,13 +1,9 @@
-/**
- * Seed Courses to Database
- * Takes generated course JSON files and creates database entries
- */
-
 import { PrismaClient, Difficulty, CertificateType, LessonType } from '@prisma/client';
 import { PrismaPg } from '@prisma/adapter-pg';
 import * as fs from 'fs/promises';
 import * as path from 'path';
 import 'dotenv/config';
+import { generateEnhancedLessonContent } from './lesson-content-generator';
 
 const adapter = new PrismaPg({ connectionString: process.env.DATABASE_URL });
 const prisma = new PrismaClient({ adapter });
@@ -38,6 +34,9 @@ interface GeneratedCourse {
         slug: string;
         category: string;
         categorySlug: string;
+        targetAudience?: string;
+        keyBenefit?: string;
+        primaryProblem?: string;
     };
 }
 
@@ -63,7 +62,25 @@ function getLessonType(type?: string): LessonType {
     return LessonType.TEXT;
 }
 
-async function seedCourse(courseData: GeneratedCourse): Promise<void> {
+async function deleteCourseIfExists(slug: string): Promise<void> {
+    const existingCourse = await prisma.course.findUnique({
+        where: { slug },
+        include: { modules: { include: { lessons: true } } }
+    });
+
+    if (existingCourse) {
+        console.log(`   🗑️ Deleting existing course: ${slug}`);
+        // Delete in order: lessons -> modules -> analytics -> course
+        for (const module of existingCourse.modules) {
+            await prisma.lesson.deleteMany({ where: { moduleId: module.id } });
+        }
+        await prisma.module.deleteMany({ where: { courseId: existingCourse.id } });
+        await prisma.courseAnalytics.deleteMany({ where: { courseId: existingCourse.id } });
+        await prisma.course.delete({ where: { id: existingCourse.id } });
+    }
+}
+
+async function seedCourse(courseData: GeneratedCourse, forceRecreate = false): Promise<void> {
     const { course, modules, niche, level } = courseData;
 
     console.log(`\n📚 Seeding: ${course.title}`);
@@ -90,14 +107,17 @@ async function seedCourse(courseData: GeneratedCourse): Promise<void> {
         where: { email: 'coach@accredipro-certificate.com' },
     });
 
-    // Check if course exists
-    const existingCourse = await prisma.course.findUnique({
-        where: { slug: course.slug },
-    });
-
-    if (existingCourse) {
-        console.log(`   ⚠️ Course "${course.slug}" already exists. Skipping...`);
-        return;
+    // Handle existing course
+    if (forceRecreate) {
+        await deleteCourseIfExists(course.slug);
+    } else {
+        const existingCourse = await prisma.course.findUnique({
+            where: { slug: course.slug },
+        });
+        if (existingCourse) {
+            console.log(`   ⚠️ Course "${course.slug}" already exists. Use --force to recreate.`);
+            return;
+        }
     }
 
     // Create course
@@ -112,7 +132,7 @@ async function seedCourse(courseData: GeneratedCourse): Promise<void> {
             isPublished: true,
             isFeatured: level === 'foundation',
             difficulty: getDifficulty(level),
-            duration: Math.floor(course.duration / 60), // Convert to minutes
+            duration: Math.floor(course.duration / 60),
             certificateType: getCertificateType(level),
             categoryId: category.id,
             coachId: coach?.id,
@@ -121,6 +141,11 @@ async function seedCourse(courseData: GeneratedCourse): Promise<void> {
     });
 
     console.log(`   ✅ Created course: ${createdCourse.title}`);
+
+    // Niche defaults for content generation
+    const targetAudience = niche.targetAudience || 'women seeking transformation';
+    const keyBenefit = niche.keyBenefit || 'improved health and wellbeing';
+    const primaryProblem = niche.primaryProblem || 'health challenges';
 
     // Create modules and lessons
     let totalLessons = 0;
@@ -137,15 +162,31 @@ async function seedCourse(courseData: GeneratedCourse): Promise<void> {
             },
         });
 
-        // Create lessons
+        // Create lessons with enhanced content
         for (let j = 0; j < moduleData.lessons.length; j++) {
             const lessonData = moduleData.lessons[j];
+            const isFirstLesson = i === 0 && j === 0;
+            const isQuiz = lessonData.lessonType === 'QUIZ';
+
+            // Generate enhanced content
+            const content = generateEnhancedLessonContent({
+                lessonTitle: lessonData.title,
+                lessonDescription: lessonData.description,
+                nicheName: niche.name,
+                moduleNumber: i + 1,
+                lessonNumber: j + 1,
+                targetAudience,
+                keyBenefit,
+                primaryProblem,
+                isFirstLesson,
+                isQuiz,
+            });
 
             await prisma.lesson.create({
                 data: {
                     title: lessonData.title,
                     description: lessonData.description,
-                    content: generateLessonContent(lessonData.title, lessonData.description, niche.name),
+                    content,
                     order: j + 1,
                     isPublished: true,
                     isFreePreview: lessonData.isFreePreview || false,
@@ -174,42 +215,14 @@ async function seedCourse(courseData: GeneratedCourse): Promise<void> {
     console.log(`   ✅ Total lessons: ${totalLessons}`);
 }
 
-function generateLessonContent(title: string, description: string, nicheName: string): string {
-    // Generate basic placeholder HTML content
-    // In production, this could be enhanced with AI-generated content
-    return `
-<div class="lesson-content" style="font-family: Georgia, serif; max-width: 800px; margin: 0 auto; padding: 40px 20px; line-height: 1.8; color: #333;">
-  <h1 style="color: #722F37; font-size: 2.5em; margin-bottom: 10px;">${title}</h1>
-  <p style="color: #666; font-size: 1.1em; margin-bottom: 30px; border-left: 4px solid #722F37; padding-left: 15px;">${description}</p>
-  
-  <div style="background: linear-gradient(135deg, #f8f4f0 0%, #fff 100%); padding: 30px; border-radius: 12px; margin-bottom: 30px;">
-    <h2 style="color: #722F37; margin-top: 0;">Welcome to This Lesson</h2>
-    <p>In this lesson, you'll learn about ${title.toLowerCase()} and how it applies to your ${nicheName} practice.</p>
-    <p>By the end of this lesson, you'll have a solid understanding of the key concepts and be able to apply them with your clients.</p>
-  </div>
-
-  <h2 style="color: #722F37;">Key Learning Objectives</h2>
-  <ul style="list-style-type: none; padding: 0;">
-    <li style="padding: 10px 0; border-bottom: 1px solid #eee;">✅ Understand the core principles of ${title.toLowerCase()}</li>
-    <li style="padding: 10px 0; border-bottom: 1px solid #eee;">✅ Learn practical applications for your ${nicheName} practice</li>
-    <li style="padding: 10px 0; border-bottom: 1px solid #eee;">✅ Gain confidence in explaining these concepts to clients</li>
-  </ul>
-
-  <div style="background: #722F37; color: white; padding: 20px 30px; border-radius: 8px; margin-top: 40px;">
-    <h3 style="margin: 0 0 10px 0; color: white;">📝 Key Takeaway</h3>
-    <p style="margin: 0; opacity: 0.95;">${description}</p>
-  </div>
-</div>
-  `.trim();
-}
-
 async function main() {
     const args = process.argv.slice(2);
     const inputArg = args.find(a => a.startsWith('--input='))?.split('=')[1];
+    const forceRecreate = args.includes('--force');
 
     if (!inputArg) {
-        console.log('Usage: npx tsx seed-courses.ts --input=./output/gut-health-mini-diploma.json');
-        console.log('       npx tsx seed-courses.ts --input=./output  (seeds all JSON files in directory)');
+        console.log('Usage: npx tsx seed-courses.ts --input=./output/gut-health-mini-diploma.json [--force]');
+        console.log('       npx tsx seed-courses.ts --input=./output --force  (recreate all courses)');
         process.exit(1);
     }
 
@@ -225,13 +238,13 @@ async function main() {
         files = [inputPath];
     }
 
-    console.log(`\n🌱 Seeding ${files.length} course(s) to database...\n`);
+    console.log(`\n🌱 Seeding ${files.length} course(s) to database...${forceRecreate ? ' (force recreate)' : ''}\n`);
 
     for (const file of files) {
         try {
             const content = await fs.readFile(file, 'utf-8');
             const courseData: GeneratedCourse = JSON.parse(content);
-            await seedCourse(courseData);
+            await seedCourse(courseData, forceRecreate);
         } catch (error) {
             console.error(`Error seeding ${file}:`, error);
         }
