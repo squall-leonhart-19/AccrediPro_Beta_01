@@ -533,10 +533,10 @@ export default function FMCertificationPage() {
                 </div>
             </div>
 
-            {/* Trustpilot Widget */}
+            {/* Trustpilot Widget - Micro TrustScore */}
             <div className="bg-white py-2 border-b border-slate-100">
                 <div className="max-w-6xl mx-auto px-4 flex items-center justify-center">
-                    <div className="trustpilot-widget" data-locale="en-US" data-template-id="5419b6ffb0d04a076446a9af" data-businessunit-id="68c1ac85e89f387ad19f7817" data-style-height="20px" data-style-width="100%" data-token="73ab2ab9-e3e9-4746-b2df-4f148e213f2c">
+                    <div className="trustpilot-widget" data-locale="en-US" data-template-id="5419b637fa0340045cd0c936" data-businessunit-id="68c1ac85e89f387ad19f7817" data-style-height="20px" data-style-width="100%" data-token="66069971-71d2-430e-acc1-df3b8551b8da">
                         <a href="https://www.trustpilot.com/review/accredipro.academy" target="_blank" rel="noopener noreferrer">Trustpilot</a>
                     </div>
                 </div>
@@ -557,7 +557,7 @@ export default function FMCertificationPage() {
 
                     {/* Main Headline */}
                     <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold text-center text-slate-900 mb-4 leading-tight">
-                        Become a <span className="text-burgundy-700">Certified<br className="sm:hidden" /> Functional Medicine Practitioner</span>
+                        Become a <span className="text-burgundy-700">Certified<br className="sm:hidden" /> Functional Medicine Practitioner</span> in 4-8 Weeks
                     </h1>
 
                     {/* Value Proposition */}
