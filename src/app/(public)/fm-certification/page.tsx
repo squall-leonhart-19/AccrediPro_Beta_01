@@ -14,9 +14,8 @@ import {
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
-// Fixed student avatars from CSV - professional headshots only
+// Fixed student avatars from CSV - professional headshots only (replaced empty/broken ones)
 const ALL_STUDENT_AVATARS = [
-    "https://accredipro.academy/wp-content/uploads/2025/12/AI_Headshot_Generator-13.jpg",
     "https://accredipro.academy/wp-content/uploads/2025/12/LeezaRhttilthead.jpg",
     "https://accredipro.academy/wp-content/uploads/2025/12/Head-shot-dark-background-1.jpg",
     "https://accredipro.academy/wp-content/uploads/2025/12/Profile-Pic.jpg",
@@ -36,15 +35,16 @@ const ALL_STUDENT_AVATARS = [
     "https://accredipro.academy/wp-content/uploads/2025/10/DSC_9240-2.jpg",
     "https://accredipro.academy/wp-content/uploads/2025/09/headshot.jpg",
     "https://accredipro.academy/wp-content/uploads/2025/08/Headshot-1.jpg",
+    "https://accredipro.academy/wp-content/uploads/2025/11/Peak-Health-VIP-087.jpg",
 ];
 
-// Fixed testimonial avatars - specific headshots for each testimonial (12 total)
+// Fixed testimonial avatars - specific headshots for each testimonial (12 total) - replaced broken AI image
 const TESTIMONIAL_AVATARS = [
-    "https://accredipro.academy/wp-content/uploads/2025/12/AI_Headshot_Generator-13.jpg",
+    "https://accredipro.academy/wp-content/uploads/2025/12/LeezaRhttilthead.jpg",
     "https://accredipro.academy/wp-content/uploads/2025/12/MARIA-GARCIA-PIC-IMG_5435-1.jpg",
     "https://accredipro.academy/wp-content/uploads/2025/12/AnneProfile2.jpg",
-    "https://accredipro.academy/wp-content/uploads/2025/12/LeezaRhttilthead.jpg",
     "https://accredipro.academy/wp-content/uploads/2025/12/Profile-Pic.jpg",
+    "https://accredipro.academy/wp-content/uploads/2025/12/Head-shot-dark-background-1.jpg",
     "https://accredipro.academy/wp-content/uploads/2025/11/Liz-Sept-2023-headshot.jpg",
     "https://accredipro.academy/wp-content/uploads/2025/12/Tiffany-Nelson-MD.webp",
     "https://accredipro.academy/wp-content/uploads/2025/12/dgp03315.jpg",
@@ -511,18 +511,18 @@ export default function FMCertificationPage() {
                     </p>
 
                     {/* Key Benefits */}
-                    <div className="flex flex-wrap justify-center gap-3 sm:gap-4 mb-6">
-                        <div className="flex items-center gap-2 bg-white/80 backdrop-blur-sm rounded-full px-4 py-2 shadow-sm border border-olive-100">
-                            <CheckCircle2 className="h-4 w-4 text-olive-600" />
-                            <span className="font-medium text-slate-800 text-sm">21 clinical specializations</span>
+                    <div className="flex flex-col sm:flex-row sm:flex-wrap justify-center gap-2 sm:gap-4 mb-6">
+                        <div className="flex items-center justify-center gap-2 bg-white/80 backdrop-blur-sm rounded-full px-4 py-2 shadow-sm border border-olive-100">
+                            <CheckCircle2 className="h-4 w-4 text-olive-600 shrink-0" />
+                            <span className="font-medium text-slate-800 text-sm whitespace-nowrap">21 clinical specializations</span>
                         </div>
-                        <div className="flex items-center gap-2 bg-white/80 backdrop-blur-sm rounded-full px-4 py-2 shadow-sm border border-olive-100">
-                            <CheckCircle2 className="h-4 w-4 text-olive-600" />
-                            <span className="font-medium text-slate-800 text-sm">Personal mentorship until certified</span>
+                        <div className="flex items-center justify-center gap-2 bg-white/80 backdrop-blur-sm rounded-full px-4 py-2 shadow-sm border border-olive-100">
+                            <CheckCircle2 className="h-4 w-4 text-olive-600 shrink-0" />
+                            <span className="font-medium text-slate-800 text-sm whitespace-nowrap">Personal mentorship until certified</span>
                         </div>
-                        <div className="flex items-center gap-2 bg-white/80 backdrop-blur-sm rounded-full px-4 py-2 shadow-sm border border-olive-100">
-                            <CheckCircle2 className="h-4 w-4 text-olive-600" />
-                            <span className="font-medium text-slate-800 text-sm">Most graduates earning within 90 days</span>
+                        <div className="flex items-center justify-center gap-2 bg-white/80 backdrop-blur-sm rounded-full px-4 py-2 shadow-sm border border-olive-100">
+                            <CheckCircle2 className="h-4 w-4 text-olive-600 shrink-0" />
+                            <span className="font-medium text-slate-800 text-sm whitespace-nowrap">Most graduates earning within 90 days</span>
                         </div>
                     </div>
 
@@ -561,6 +561,22 @@ export default function FMCertificationPage() {
                                 title="Certification Overview"
                             />
                         </div>
+                    </div>
+
+                    {/* Social Proof before CTA */}
+                    <div className="flex items-center justify-center gap-2 mb-4">
+                        <div className="flex -space-x-2">
+                            {[
+                                "https://accredipro.academy/wp-content/uploads/2025/12/Peak-Health-VIP-087.jpg",
+                                "https://accredipro.academy/wp-content/uploads/2025/12/Head-shot-dark-background-1.jpg",
+                                "https://accredipro.academy/wp-content/uploads/2025/12/LeezaRhttilthead.jpg",
+                                "https://accredipro.academy/wp-content/uploads/2025/12/Headshot_Mirjana-1.jpg",
+                                "https://accredipro.academy/wp-content/uploads/2025/12/1-1.jpg",
+                            ].map((src, i) => (
+                                <Image key={i} src={src} alt="" width={32} height={32} className="w-8 h-8 rounded-full border-2 border-white object-cover" />
+                            ))}
+                        </div>
+                        <span className="text-sm text-slate-600 font-medium">+1,447 enrolled</span>
                     </div>
 
                     {/* CTA with Payment Plan */}
@@ -604,7 +620,7 @@ export default function FMCertificationPage() {
             </section>
 
             {/* 21 Certifications Showcase */}
-            <section className="py-12 sm:py-16 bg-gradient-to-b from-burgundy-900 to-slate-900 text-white">
+            <section className="py-12 sm:py-16 bg-burgundy-900 text-white">
                 <div className="max-w-6xl mx-auto px-4">
                     <div className="text-center mb-10">
                         <p className="text-gold-400 font-semibold mb-2 uppercase tracking-wide">What Makes Us Different</p>
@@ -930,36 +946,24 @@ export default function FMCertificationPage() {
                     </div>
 
                     {/* Portal Screenshot */}
-                    <div className="mt-10 bg-gradient-to-r from-burgundy-50 to-gold-50 rounded-2xl p-6 sm:p-8 border border-burgundy-100">
-                        <div className="grid lg:grid-cols-2 gap-6 items-center">
-                            <div>
-                                <h3 className="text-2xl font-bold text-slate-900 mb-3">Your Learning Portal</h3>
-                                <p className="text-slate-600 mb-4">Everything in one place: courses, community, private chat with Sarah, coaching tips, and your Coach Workspace.</p>
-                                <div className="flex flex-wrap gap-2">
-                                    {["1,400+ Community", "Coach Workspace", "Private Chat", "Coaching Tips"].map((f, i) => (
-                                        <span key={i} className="bg-white px-3 py-1 rounded-full text-sm text-burgundy-700 font-medium border border-burgundy-100">{f}</span>
-                                    ))}
-                                </div>
-                            </div>
-                            <Image src="/portal.webp" alt="AccrediPro Learning Portal" width={600} height={400} className="w-full rounded-xl shadow-lg border border-slate-200" />
-                        </div>
+                    <div className="mt-10 text-center">
+                        <h3 className="text-2xl font-bold text-slate-900 mb-3">Your Learning Portal</h3>
+                        <p className="text-slate-600 mb-6 max-w-2xl mx-auto">Everything in one place.</p>
+                        <Image src="/portal.webp" alt="AccrediPro Learning Portal" width={1200} height={700} className="w-full rounded-2xl shadow-2xl border border-slate-200" />
                     </div>
                 </div>
             </section>
 
-            {/* Bonus Section - Similar to Mini Diploma */}
+            {/* Bonus Section - Personal from Sarah */}
             <section className="py-12 sm:py-16 bg-gradient-to-b from-burgundy-900 to-burgundy-800">
                 <div className="max-w-5xl mx-auto px-4">
                     <div className="text-center mb-10">
-                        <div className="inline-flex items-center gap-2 bg-gold-400/20 border border-gold-400/30 rounded-full px-4 py-2 mb-4">
-                            <Gift className="h-4 w-4 text-gold-400" />
-                            <span className="text-sm font-semibold text-gold-400">BONUSES INCLUDED</span>
-                        </div>
+                        <Image src="/coaches/sarah-coach.webp" alt="Sarah Mitchell" width={80} height={80} className="w-20 h-20 rounded-full object-cover mx-auto mb-4 border-4 border-white shadow-lg" />
                         <h2 className="text-3xl sm:text-4xl font-bold text-white mb-4">
-                            6 Exclusive Bonuses Worth $497
+                            Today, I'm Giving You These 6 Bonuses
                         </h2>
-                        <p className="text-lg text-burgundy-200">
-                            Included FREE when you enroll today
+                        <p className="text-lg text-burgundy-200 max-w-2xl mx-auto">
+                            I created these specifically for my students — because I know exactly what you'll need to succeed.
                         </p>
                     </div>
 
