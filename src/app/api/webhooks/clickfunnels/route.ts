@@ -25,6 +25,9 @@ import crypto from "crypto";
 // Meta CAPI Configuration
 const META_PIXEL_ID = process.env.META_PURCHASE_PIXEL_ID || "1287915349067829";
 const META_ACCESS_TOKEN = process.env.META_PURCHASE_ACCESS_TOKEN || "EAAHMlaRKtUoBQBe0ZAFZBQPlRv3xujHeDw0y8kGmRewZA9jaqkbnZA5mJxndHZCNmalSrGmr9DlTbNewOdu4INw4xRRZCE4vC0mSvnWsV17sIvklD9X4PbttSgp2lVIOZBQxG9Uq8UVljCsqZA1LSqxlgjDQ1qIN6PctDh3M5LmJBKkqQa0FDQAIoBN1AAIVqwZDZD";
+// Test event code - set in env to route events to Test Events tab in Meta Events Manager
+// Remove or set to empty string for production
+const META_TEST_EVENT_CODE = process.env.META_TEST_EVENT_CODE || "TEST26530";
 
 // Hash PII for Meta CAPI (required for user data)
 function hashForMeta(data: string): string {
@@ -54,7 +57,7 @@ async function sendPurchaseToMeta(params: {
     event_name: "Purchase",
     event_time: Math.floor(Date.now() / 1000),
     event_id: eventId,
-    event_source_url: "https://sarah.accredipro.academy/fm-mini-diploma-access",
+    event_source_url: "https://learn.accredipro.academy/fm-mini-diploma/thank-you",
     action_source: "website",
     user_data: userData,
     custom_data: {
@@ -65,12 +68,21 @@ async function sendPurchaseToMeta(params: {
   };
 
   try {
+    // Build request body - include test_event_code if set for debugging
+    const requestBody: { data: typeof eventData[]; test_event_code?: string } = {
+      data: [eventData]
+    };
+    if (META_TEST_EVENT_CODE) {
+      requestBody.test_event_code = META_TEST_EVENT_CODE;
+      console.log(`[Meta CAPI] Using test event code: ${META_TEST_EVENT_CODE}`);
+    }
+
     const response = await fetch(
       `https://graph.facebook.com/v18.0/${META_PIXEL_ID}/events?access_token=${META_ACCESS_TOKEN}`,
       {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ data: [eventData] }),
+        body: JSON.stringify(requestBody),
       }
     );
 
