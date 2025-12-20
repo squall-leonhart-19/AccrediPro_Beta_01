@@ -67,112 +67,133 @@ const getRandomAvatarIndex = (exclude: number[] = []) => {
     return available[Math.floor(Math.random() * available.length)];
 };
 
-// Complete curriculum with 21 modules (0-20) - with lesson titles
+// Complete curriculum with 21 modules (0-20) - with lesson titles and proprietary methods
 const CURRICULUM_MODULES = [
     {
         number: 0, title: "Welcome & Orientation", certificate: "Certified FM Practitioner (Foundation)",
         lessons: ["Welcome to Your Certification Journey", "How to Navigate This Course", "Meet Your Community", "Setting Yourself Up for Success"],
-        description: "Get oriented and ready for your transformation journey", icon: GraduationCap
+        description: "Get oriented and ready for your transformation journey", icon: GraduationCap,
+        method: null
     },
     {
         number: 1, title: "Functional Medicine Foundations", certificate: "Certified in FM Foundations",
         lessons: ["Introduction to Functional Medicine", "What Is Functional Medicine and Why It Matters", "Systems Biology and Root-Cause Thinking", "The Functional Medicine Timeline", "The Functional Medicine Matrix", "The Power of the Patient Story", "Conventional vs Functional Approach", "Case Studies: Seeing the Whole Picture"],
-        description: "Core principles that set functional medicine apart", icon: BookOpen
+        description: "Core principles that set functional medicine apart", icon: BookOpen,
+        method: "R.O.O.T.S. Method™", methodMeaning: "Recognize, Origin, Optimize, Transform, Scale"
     },
     {
         number: 2, title: "Health Coaching Mastery", certificate: "Certified Health Coach",
         lessons: ["The Art and Science of Health Coaching", "Building Therapeutic Rapport", "Motivational Interviewing Fundamentals", "Powerful Questioning Techniques", "Active Listening and Reflection", "Navigating Resistance and Barriers", "Creating Accountability Systems", "Facilitating Lasting Behavior Change"],
-        description: "Communication skills that transform client outcomes", icon: MessageCircle
+        description: "Communication skills that transform client outcomes", icon: MessageCircle,
+        method: "C.O.A.C.H. Method™", methodMeaning: "Connect, Outcomes, Accountability, Change, Hold"
     },
     {
         number: 3, title: "Clinical Assessment", certificate: "Certified Clinical Assessor",
         lessons: ["The Comprehensive Health History", "Symptom Questionnaires and Scoring", "The 90-Minute Intake Session", "Timeline and Antecedents", "Identifying Triggers and Mediators", "Physical Signs and Observations", "Prioritizing Client Concerns", "Creating the Clinical Picture"],
-        description: "Properly evaluate clients and understand root causes", icon: Stethoscope
+        description: "Properly evaluate clients and understand root causes", icon: Stethoscope,
+        method: "Covered by R.O.O.T.S.", methodMeaning: "Integrated framework"
     },
     {
         number: 4, title: "Ethics & Scope of Practice", certificate: "Certified in Professional Ethics",
         lessons: ["Understanding Scope of Practice", "What Health Coaches Can and Cannot Do", "Legal Considerations by Region", "When to Refer to Medical Professionals", "Red Flags and Warning Signs", "Documentation and Record Keeping", "Professional Ethics and Boundaries", "Building Referral Networks"],
-        description: "Protect yourself and clients with proper boundaries", icon: Shield
+        description: "Protect yourself and clients with proper boundaries", icon: Shield,
+        method: null
     },
     {
         number: 5, title: "Functional Nutrition", certificate: "Certified Functional Nutritionist",
         lessons: ["Foundations of Functional Nutrition", "The Elimination Diet Protocol", "Anti-Inflammatory Nutrition", "Blood Sugar Balance and Glycemic Control", "Therapeutic Diets Overview", "Nutrient Density and Food Quality", "Personalized Nutrition Strategies", "Meal Planning and Implementation"],
-        description: "Use food as powerful medicine to transform lives", icon: Leaf, highlight: true
+        description: "Use food as powerful medicine to transform lives", icon: Leaf, highlight: true,
+        method: "F.U.E.L. Protocol™", methodMeaning: "Foundations, Unique needs, Eliminate triggers, Layer therapeutics"
     },
     {
         number: 6, title: "Gut Health & Microbiome", certificate: "Certified Gut Health Specialist",
         lessons: ["Digestive System Anatomy and Function", "The Microbiome and Its Impact", "Intestinal Permeability (Leaky Gut)", "SIBO: Small Intestinal Bacterial Overgrowth", "The 5R Gut Healing Protocol", "Gut-Brain Connection", "Digestive Support Strategies", "Gut Health Protocols and Case Studies"],
-        description: "Where 80% of health issues begin — and healing happens", icon: Activity, highlight: true
+        description: "Where 80% of health issues begin — and healing happens", icon: Activity, highlight: true,
+        method: "G.U.T.S. Protocol™", methodMeaning: "Gather history, Uncover causes, Treat (4R), Sustain"
     },
     {
         number: 7, title: "Stress, Adrenals & Nervous System", certificate: "Certified Stress & Adrenal Specialist",
         lessons: ["The Stress Response System", "HPA Axis Dysfunction", "Cortisol Patterns and Testing", "Adrenal Fatigue vs Adrenal Dysfunction", "Nervous System Regulation", "Vagus Nerve and Parasympathetic Tone", "Stress Resilience Building", "Adrenal Support Protocols"],
-        description: "The stress connection most practitioners miss", icon: Brain
+        description: "The stress connection most practitioners miss", icon: Brain,
+        method: "C.A.L.M. Protocol™", methodMeaning: "Cortisol, Adrenal assessment, Lifestyle, Mind-body"
     },
     {
         number: 8, title: "Sleep & Circadian Health", certificate: "Certified Sleep & Circadian Specialist",
         lessons: ["Sleep Architecture and Stages", "Circadian Rhythm Biology", "Common Sleep Disorders", "Insomnia Assessment and Approaches", "Light Exposure and Melatonin", "Sleep Hygiene Optimization", "Sleep and Hormone Connections", "Sleep Improvement Protocols"],
-        description: "Master the foundation of all health and healing", icon: Moon
+        description: "Master the foundation of all health and healing", icon: Moon,
+        method: "R.E.S.T. Protocol™", methodMeaning: "Rhythm, Environment, Support, Track"
     },
     {
         number: 9, title: "Women's Hormone Health", certificate: "Certified Women's Hormone Specialist",
         lessons: ["Female Hormone Fundamentals", "The Menstrual Cycle Phases", "Estrogen Dominance", "Progesterone and Its Importance", "PMS and PMDD", "Cycle Syncing Strategies", "Hormone Testing for Women", "Women's Hormone Protocols"],
-        description: "Support women's unique hormonal journeys", icon: Heart, highlight: true
+        description: "Support women's unique hormonal journeys", icon: Heart, highlight: true,
+        method: "C.Y.C.L.E. Method™", methodMeaning: "Cycle map, Your hormones, Correct, Lifestyle, Evaluate"
     },
     {
         number: 10, title: "Perimenopause & Menopause", certificate: "Certified Menopause Specialist",
         lessons: ["Understanding Perimenopause", "The Menopause Transition", "Common Menopause Symptoms", "Hot Flashes and Night Sweats", "Bone Health and Osteoporosis Prevention", "HRT: Risks and Benefits", "Natural Approaches to Menopause", "Menopause Support Protocols"],
-        description: "Guide women through life's most challenging transition", icon: Flame, highlight: true
+        description: "Guide women through life's most challenging transition", icon: Flame, highlight: true,
+        method: "T.H.R.I.V.E. Protocol™", methodMeaning: "Transition, Hormones, Restore, Implement, Vitality, Evolve"
     },
     {
         number: 11, title: "Thyroid Health", certificate: "Certified Thyroid Health Specialist",
         lessons: ["Thyroid Anatomy and Function", "Thyroid Hormone Production and Conversion", "Hypothyroidism: Causes and Symptoms", "Hashimoto's Thyroiditis", "Comprehensive Thyroid Testing", "Functional vs Conventional Thyroid Ranges", "Thyroid and Other Systems", "Thyroid Support Protocols"],
-        description: "Address the most underdiagnosed condition in healthcare", icon: Zap, highlight: true
+        description: "Address the most underdiagnosed condition in healthcare", icon: Zap, highlight: true,
+        method: "S.H.I.F.T. Protocol™", methodMeaning: "Screen, Hidden triggers, Inflammation, Fix foundations, Track"
     },
     {
         number: 12, title: "Metabolic Health & Weight", certificate: "Certified Weight Management Specialist",
         lessons: ["Metabolic Health Fundamentals", "Insulin Resistance and Sensitivity", "Metabolic Syndrome", "Weight Loss Resistance", "Leptin and Hunger Hormones", "Metabolic Flexibility", "Body Composition vs Scale Weight", "Metabolic Health Protocols"],
-        description: "Why traditional weight loss fails and what actually works", icon: Dumbbell
+        description: "Why traditional weight loss fails and what actually works", icon: Dumbbell,
+        method: "B.U.R.N. Protocol™", methodMeaning: "Baseline, Underlying drivers, Reset, Nourish"
     },
     {
         number: 13, title: "Autoimmunity & Inflammation", certificate: "Certified Autoimmune Specialist",
         lessons: ["The Immune System Overview", "Autoimmune Disease Mechanisms", "Chronic Inflammation Pathways", "Common Autoimmune Conditions", "Triggers of Autoimmunity", "The Autoimmune-Gut Connection", "Anti-Inflammatory Strategies", "Autoimmune Support Protocols"],
-        description: "Cutting-edge knowledge most providers don't have", icon: Activity, highlight: true
+        description: "Cutting-edge knowledge most providers don't have", icon: Activity, highlight: true,
+        method: "F.L.A.R.E. Protocol™", methodMeaning: "Find triggers, Lower inflammation, Address gut, Restore tolerance, Evolve"
     },
     {
         number: 14, title: "Mental Health & Brain Function", certificate: "Certified Brain Health Specialist",
         lessons: ["Brain Health Fundamentals", "Neurotransmitter Basics", "The Gut-Brain Axis", "Anxiety from a Functional Perspective", "Depression and Mood Support", "Cognitive Function and Brain Fog", "Neuroinflammation", "Brain Health Protocols"],
-        description: "The gut-brain connection and mental wellness", icon: Brain
+        description: "The gut-brain connection and mental wellness", icon: Brain,
+        method: "M.I.N.D. Method™", methodMeaning: "Map symptoms, Inflammation, Nutrients, Daily practices"
     },
     {
         number: 15, title: "Cardiometabolic Health", certificate: "Certified Heart Health Specialist",
         lessons: ["Cardiovascular System Overview", "Understanding Lipid Panels", "Beyond LDL: Advanced Lipid Markers", "Blood Pressure Regulation", "Inflammation and Heart Disease", "Insulin Resistance and Cardiovascular Risk", "Heart-Healthy Nutrition", "Cardiometabolic Protocols"],
-        description: "Life-saving knowledge to protect and heal hearts", icon: Heart
+        description: "Life-saving knowledge to protect and heal hearts", icon: Heart,
+        method: "H.E.A.R.T. Protocol™", methodMeaning: "History, Evaluate markers, Address causes, Restore, Track"
     },
     {
         number: 16, title: "Energy & Mitochondrial Health", certificate: "Certified Energy & Fatigue Specialist",
         lessons: ["Cellular Energy Production", "Mitochondrial Function", "Root Causes of Fatigue", "Chronic Fatigue Syndrome", "Nutrient Cofactors for Energy", "Oxidative Stress and Antioxidants", "Exercise and Mitochondrial Health", "Energy Optimization Protocols"],
-        description: "Address the root causes of chronic fatigue", icon: Sun
+        description: "Address the root causes of chronic fatigue", icon: Sun,
+        method: "S.P.A.R.K. Protocol™", methodMeaning: "Source drain, Power up, Address oxidation, Restore, Keep monitoring"
     },
     {
         number: 17, title: "Detox & Environmental Health", certificate: "Certified Detox Specialist",
         lessons: ["Detoxification Fundamentals", "Phase 1 and Phase 2 Liver Detox", "Environmental Toxins and Exposures", "Heavy Metals and Testing", "Mold and Mycotoxins", "Reducing Toxic Load", "Supporting Detox Pathways", "Safe Detox Protocols"],
-        description: "Reduce toxic burden in today's toxic world", icon: Leaf
+        description: "Reduce toxic burden in today's toxic world", icon: Leaf,
+        method: "C.L.E.A.N. Protocol™", methodMeaning: "Capacity, Lighten load, Enhance pathways, Add support, Nourish"
     },
     {
         number: 18, title: "Functional Lab Interpretation", certificate: "Certified Lab Interpretation Specialist",
         lessons: ["Introduction to Lab Interpretation", "CBC: Complete Blood Count", "CMP: Comprehensive Metabolic Panel", "Lipid Panel Deep Dive", "Thyroid Panel Interpretation", "Hormone Testing", "Functional Ranges vs Conventional Ranges", "Creating Lab-Based Protocols"],
-        description: "Read labs like a functional medicine expert", icon: Shield
+        description: "Read labs like a functional medicine expert", icon: Shield,
+        method: "D.E.C.O.D.E. Method™", methodMeaning: "Deep dive, Evaluate, Connect symptoms, Optimal ranges, Design intervention, Evaluate progress"
     },
     {
         number: 19, title: "Protocol Building & Program Design", certificate: "Certified Protocol Designer",
         lessons: ["Principles of Protocol Design", "Prioritizing Interventions", "Supplement Recommendations Within Scope", "Creating Nutrition Protocols", "Lifestyle Intervention Design", "Program Structure and Phases", "Tracking Progress and Adjustments", "Protocol Templates and Examples"],
-        description: "Put it ALL together into custom client protocols", icon: Target
+        description: "Put it ALL together into custom client protocols", icon: Target,
+        method: "C.R.E.A.T.E. Method™", methodMeaning: "Compile, Rank priorities, Establish timeline, Action steps, Track, Evolve"
     },
     {
         number: 20, title: "Building Your Coaching Practice", certificate: "Certified FM Practitioner (Complete)",
         lessons: ["Starting Your Practice", "Defining Your Niche", "Pricing Your Services", "Creating Packages and Programs", "Marketing Fundamentals", "Social Media and Content Strategy", "Discovery Calls and Enrollment", "Building a Sustainable Practice"],
-        description: "Launch and grow your successful practice", icon: TrendingUp, highlight: true
+        description: "Launch and grow your successful practice", icon: TrendingUp, highlight: true,
+        method: "S.C.A.L.E. Method™", methodMeaning: "Structure, Clients, Automation, Leverage, Expand"
     },
 ];
 
@@ -249,7 +270,7 @@ const TestimonialCard = ({ quote, name, role, before, after, timeframe, income, 
     </div>
 );
 
-// Module Accordion Card with Lessons and Certificate Preview
+// Module Accordion Card with Lessons, Method, and Certificate Preview
 const ModuleAccordion = ({ module }: { module: typeof CURRICULUM_MODULES[0] }) => {
     const [isOpen, setIsOpen] = useState(false);
     const Icon = module.icon;
@@ -269,9 +290,12 @@ const ModuleAccordion = ({ module }: { module: typeof CURRICULUM_MODULES[0] }) =
                     <Icon className={`h-5 w-5 ${module.highlight ? 'text-burgundy-600' : 'text-burgundy-500'}`} />
                 </div>
                 <div className="flex-1 min-w-0">
-                    <div className="flex items-center gap-2 mb-0.5">
+                    <div className="flex items-center gap-2 mb-0.5 flex-wrap">
                         <span className="text-xs font-bold text-burgundy-600">Module {module.number}</span>
                         <span className="text-xs text-slate-400">{module.lessons.length} lessons</span>
+                        {module.method && (
+                            <span className="text-[10px] font-bold bg-gold-100 text-gold-700 px-1.5 py-0.5 rounded">{module.method}</span>
+                        )}
                     </div>
                     <h4 className="font-semibold text-slate-900 text-sm mb-1">{module.title}</h4>
                     <p className="text-xs text-slate-500">{module.description}</p>
@@ -288,6 +312,18 @@ const ModuleAccordion = ({ module }: { module: typeof CURRICULUM_MODULES[0] }) =
             {/* Expanded Content */}
             {isOpen && (
                 <div className="px-4 pb-4 border-t border-slate-100">
+                    {/* Method Badge */}
+                    {module.method && module.methodMeaning && (
+                        <div className="mt-3 mb-3 bg-gradient-to-r from-burgundy-50 to-gold-50 rounded-lg p-3 border border-burgundy-100">
+                            <p className="text-xs font-semibold text-burgundy-700 uppercase tracking-wide mb-1 flex items-center gap-1">
+                                <Sparkles className="h-3 w-3 text-gold-500" />
+                                Proprietary Method:
+                            </p>
+                            <p className="font-bold text-burgundy-800 text-sm">{module.method}</p>
+                            <p className="text-xs text-slate-600 mt-0.5">{module.methodMeaning}</p>
+                        </div>
+                    )}
+
                     {/* Lessons List */}
                     <div className="mt-3 mb-4">
                         <p className="text-xs font-semibold text-slate-500 uppercase tracking-wide mb-2">Lessons Included:</p>
@@ -476,7 +512,7 @@ export default function FMCertificationPage() {
                     <div className="flex justify-center mb-4">
                         <div className="inline-flex items-center gap-2 bg-burgundy-50 border border-burgundy-200 rounded-full px-4 py-2 shadow-sm">
                             <Stethoscope className="h-4 w-4 text-burgundy-600" />
-                            <span className="text-sm font-semibold text-burgundy-700">For Nurses, NPs, PAs & Licensed Clinicians</span>
+                            <span className="text-sm font-semibold text-burgundy-700">For Nurses, NPs, PAs, MDs & Licensed Healthcare Professionals</span>
                         </div>
                     </div>
 
@@ -487,14 +523,14 @@ export default function FMCertificationPage() {
 
                     {/* Value Proposition */}
                     <p className="text-lg sm:text-xl text-center text-slate-700 mb-6 max-w-3xl mx-auto">
-                        Add <span className="font-bold text-olive-700">$4,000–$8,000/month</span> helping patients actually heal — <span className="font-semibold">without quitting your job.</span>
+                        Add <span className="font-bold text-olive-700">$10,000–$15,000+/month</span> helping patients actually heal — <span className="font-semibold">without quitting your job.</span>
                     </p>
 
                     {/* Key Benefits */}
                     <div className="flex flex-col sm:flex-row sm:flex-wrap justify-center gap-2 sm:gap-4 mb-6">
                         <div className="flex items-center justify-center gap-2 bg-white/80 backdrop-blur-sm rounded-full px-4 py-2 shadow-sm border border-olive-100">
                             <CheckCircle2 className="h-4 w-4 text-olive-600 shrink-0" />
-                            <span className="font-medium text-slate-800 text-sm whitespace-nowrap">21 clinical specializations</span>
+                            <span className="font-medium text-slate-800 text-sm whitespace-nowrap">21 specializations + 18 proprietary methods</span>
                         </div>
                         <div className="flex items-center justify-center gap-2 bg-white/80 backdrop-blur-sm rounded-full px-4 py-2 shadow-sm border border-olive-100">
                             <CheckCircle2 className="h-4 w-4 text-olive-600 shrink-0" />
@@ -1375,15 +1411,15 @@ export default function FMCertificationPage() {
                         <p className="text-olive-600 font-semibold mb-2 uppercase tracking-wide">The Opportunity</p>
                         <h2 className="text-3xl sm:text-4xl font-bold text-slate-900 mb-4">Your New Career Awaits</h2>
                         <p className="text-lg text-slate-600 max-w-2xl mx-auto">
-                            Our certified practitioners are building practices from $3K to $20K+ per month.
+                            Our certified practitioners are building practices from $5K to $25K+ per month.
                         </p>
                     </div>
 
                     <div className="grid sm:grid-cols-3 gap-5 mb-6">
                         {[
-                            { range: "$3K – $5K", period: "/month", desc: "Part-time practice", detail: "5-10 clients • 10-15 hrs/week" },
-                            { range: "$6K – $10K", period: "/month", desc: "Full-time practice", detail: "15-25 clients • Replace job income", highlight: true },
-                            { range: "$15K – $20K+", period: "/month", desc: "Premium practice", detail: "Group programs • Scaled business" },
+                            { range: "$5K – $8K", period: "/month", desc: "Part-time practice", detail: "8-12 clients • 12-18 hrs/week" },
+                            { range: "$10K – $15K", period: "/month", desc: "Full-time practice", detail: "18-30 clients • Replace job income", highlight: true },
+                            { range: "$20K – $25K+", period: "/month", desc: "Premium practice", detail: "Group programs • Scaled business" },
                         ].map((tier, i) => (
                             <div key={i} className={`rounded-2xl p-5 text-center ${tier.highlight ? 'bg-olive-600 text-white ring-4 ring-olive-300 shadow-xl' : 'bg-white shadow-sm border border-olive-200'}`}>
                                 <p className={`text-3xl font-black ${tier.highlight ? 'text-white' : 'text-olive-600'}`}>{tier.range}<span className="text-base font-medium">{tier.period}</span></p>
@@ -1554,7 +1590,7 @@ export default function FMCertificationPage() {
                         />
                         <FAQItem
                             question="How much can I earn as a certified practitioner?"
-                            answer={<>Our graduates are earning <strong>$3K-$5K/month part-time</strong> (5-10 clients), <strong>$6K-$10K/month full-time</strong> (15-25 clients), and <strong>$15K-$20K+/month</strong> with group programs. Session rates range from $75-$200+. The field is growing 15%+ annually — there's high demand.</>}
+                            answer={<>Our graduates are earning <strong>$5K-$8K/month part-time</strong> (8-12 clients), <strong>$10K-$15K/month full-time</strong> (18-30 clients), and <strong>$20K-$25K+/month</strong> with group programs. Session rates range from $125-$250+. The field is growing 15%+ annually — there's high demand.</>}
                         />
                         <FAQItem
                             question="What's the Coach Workspace?"
