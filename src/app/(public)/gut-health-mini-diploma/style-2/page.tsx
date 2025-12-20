@@ -3,286 +3,360 @@
 import { useState } from 'react';
 import Link from 'next/link';
 
-// STYLE 2: Full-Screen Slides with Smooth Transitions
-// Netflix-style immersive experience with horizontal navigation
+// STYLE 2: Clean White with Tabs Navigation
+// Professional tabs interface with smooth transitions
 
 export default function Style2Page() {
-    const [currentSlide, setCurrentSlide] = useState(0);
+    const [activeTab, setActiveTab] = useState(0);
+    const [visitedTabs, setVisitedTabs] = useState<number[]>([0]);
 
-    const slides = [
-        {
-            id: 0,
-            bg: 'linear-gradient(135deg, #722F37 0%, #4a1f24 100%)',
-            emoji: '👋',
-            title: 'Welcome, Future Healer',
-            content: "I'm Sarah, and I've helped over 500 practitioners transform their careers through gut health coaching. Your journey starts RIGHT NOW.",
-            button: 'Meet Your Coach',
-        },
-        {
-            id: 1,
-            bg: 'linear-gradient(135deg, #0f3460 0%, #1a1a2e 100%)',
-            emoji: '🌍',
-            title: '70 Million People Need You',
-            content: "That's how many Americans suffer from digestive issues. They're searching for answers—and you're about to become the solution.",
-            stats: [
-                { label: 'Affected Americans', value: '70M+' },
-                { label: 'Market Growth', value: '12%/yr' },
-            ],
-            button: 'See the Opportunity',
-        },
-        {
-            id: 2,
-            bg: 'linear-gradient(135deg, #134e5e 0%, #71b280 100%)',
-            emoji: '🧠',
-            title: 'Your Gut is Your Second Brain',
-            content: '95% of serotonin is made in your gut. 80% of your immune system lives there. When you heal the gut, you heal EVERYTHING.',
-            highlights: ['95% Serotonin', '80% Immunity', '500M Neurons'],
-            button: 'Understand the Science',
-        },
-        {
-            id: 3,
-            bg: 'linear-gradient(135deg, #D4AF37 0%, #B8860B 100%)',
-            emoji: '💰',
-            title: '$5K - $15K Monthly',
-            content: "That's what our certified practitioners earn working from home, choosing their own hours, doing work they LOVE.",
-            stats: [
-                { label: 'Per Session', value: '$100-200' },
-                { label: 'Per Program', value: '$500-2.5K' },
-            ],
-            button: 'Start Earning',
-        },
-        {
-            id: 4,
-            bg: 'linear-gradient(135deg, #722F37 0%, #0f3460 100%)',
-            emoji: '🚀',
-            title: 'Your Transformation Begins',
-            content: "Complete this mini-diploma and you'll have the foundation to start helping real clients. Let's make it happen.",
-            button: 'Begin Lesson 2 →',
-        },
+    const tabs = [
+        { title: 'Welcome', icon: '👋' },
+        { title: 'The Problem', icon: '🎯' },
+        { title: 'The Science', icon: '🧬' },
+        { title: 'Your Opportunity', icon: '💰' },
     ];
 
-    const slide = slides[currentSlide];
+    const handleTabChange = (index: number) => {
+        setActiveTab(index);
+        if (!visitedTabs.includes(index)) {
+            setVisitedTabs([...visitedTabs, index]);
+        }
+    };
+
+    const progress = (visitedTabs.length / tabs.length) * 100;
+
+    const tabContents = [
+        // Welcome
+        (
+            <div key="0">
+                <h2 style={{ fontSize: 28, marginBottom: 20, color: '#1a1a1a' }}>
+                    Welcome to Your Gut Health Journey
+                </h2>
+                <div style={{
+                    display: 'flex',
+                    gap: 16,
+                    padding: 24,
+                    background: '#fdfbf7',
+                    borderLeft: '4px solid #722F37',
+                    borderRadius: '0 12px 12px 0',
+                    marginBottom: 24,
+                }}>
+                    <div style={{
+                        width: 56,
+                        height: 56,
+                        borderRadius: '50%',
+                        background: 'linear-gradient(135deg, #722F37, #8B4049)',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        color: 'white',
+                        fontSize: 24,
+                        flexShrink: 0,
+                    }}>S</div>
+                    <div>
+                        <p style={{ fontSize: 16, lineHeight: 1.7, margin: 0 }}>
+                            <strong style={{ color: '#722F37' }}>Hey there, beautiful! 👋</strong> I'm Sarah,
+                            and I'm SO excited you're here. You've made an amazing decision to start this journey.
+                        </p>
+                    </div>
+                </div>
+                <p style={{ fontSize: 17, lineHeight: 1.8, color: '#444' }}>
+                    Whether you're looking to help others, start a new career, or deepen your own understanding
+                    of gut health—you're in exactly the right place. I've helped hundreds of practitioners
+                    build thriving practices, and I can't wait to help you too.
+                </p>
+            </div>
+        ),
+        // The Problem
+        (
+            <div key="1">
+                <h2 style={{ fontSize: 28, marginBottom: 20, color: '#1a1a1a' }}>
+                    The Gut Health Crisis
+                </h2>
+                <p style={{ fontSize: 17, lineHeight: 1.8, color: '#444', marginBottom: 24 }}>
+                    Here's the reality that most people don't know about:
+                </p>
+                <div style={{
+                    display: 'grid',
+                    gridTemplateColumns: 'repeat(3, 1fr)',
+                    gap: 16,
+                    marginBottom: 24,
+                }}>
+                    {[
+                        { value: '70M+', label: 'Americans with gut issues', desc: 'More than CA + TX combined' },
+                        { value: '80%', label: 'Immune system in gut', desc: 'Your body\'s first defense' },
+                        { value: '95%', label: 'Serotonin production', desc: 'The happiness hormone' },
+                    ].map((stat, i) => (
+                        <div key={i} style={{
+                            background: '#f9f9f9',
+                            border: '1px solid #e8e8e8',
+                            borderRadius: 12,
+                            padding: 20,
+                            textAlign: 'center',
+                        }}>
+                            <div style={{ fontSize: 32, fontWeight: 'bold', color: '#722F37' }}>{stat.value}</div>
+                            <div style={{ fontSize: 14, fontWeight: 600, marginTop: 8 }}>{stat.label}</div>
+                            <div style={{ fontSize: 12, color: '#888', marginTop: 4 }}>{stat.desc}</div>
+                        </div>
+                    ))}
+                </div>
+                <p style={{ fontSize: 17, lineHeight: 1.8, color: '#444' }}>
+                    Many people have been told their symptoms are "normal" or "all in their head."
+                    They've been dismissed and left feeling hopeless. <strong style={{ color: '#722F37' }}>
+                        This is exactly why there's such a tremendous need for educated practitioners.</strong>
+                </p>
+            </div>
+        ),
+        // The Science
+        (
+            <div key="2">
+                <h2 style={{ fontSize: 28, marginBottom: 20, color: '#1a1a1a' }}>
+                    Your Gut: The "Second Brain"
+                </h2>
+                <p style={{ fontSize: 17, lineHeight: 1.8, color: '#444', marginBottom: 24 }}>
+                    Scientists call the gut the "second brain" for good reason. Your gut contains
+                    <strong> over 500 million neurons</strong>—more than your spinal cord—and has its own
+                    nervous system that can function independently.
+                </p>
+                <div style={{
+                    background: '#722F37',
+                    color: 'white',
+                    padding: 24,
+                    borderRadius: 12,
+                    marginBottom: 24,
+                }}>
+                    <h3 style={{ margin: '0 0 12px 0', fontSize: 18 }}>💡 Key Insight</h3>
+                    <p style={{ margin: 0, fontSize: 16, lineHeight: 1.7, opacity: 0.95 }}>
+                        When your microbiome is balanced, you experience: boundless energy, stable mood,
+                        strong immunity, and clear skin. When it's imbalanced, everything suffers.
+                    </p>
+                </div>
+                <ul style={{ fontSize: 17, lineHeight: 2, color: '#444', paddingLeft: 20 }}>
+                    <li>Bloating, gas, constipation, or diarrhea</li>
+                    <li>Brain fog, anxiety, and mood swings</li>
+                    <li>Skin issues like acne, eczema, rosacea</li>
+                    <li>Fatigue that sleep doesn't fix</li>
+                    <li>Autoimmune conditions and inflammation</li>
+                </ul>
+            </div>
+        ),
+        // Your Opportunity
+        (
+            <div key="3">
+                <h2 style={{ fontSize: 28, marginBottom: 20, color: '#1a1a1a' }}>
+                    The Practitioner Opportunity
+                </h2>
+                <p style={{ fontSize: 17, lineHeight: 1.8, color: '#444', marginBottom: 24 }}>
+                    You don't need a medical degree to make a profound difference. What you DO need is
+                    the right training—and that's exactly what this certification provides.
+                </p>
+                <div style={{
+                    background: 'linear-gradient(135deg, #fdfbf7 0%, #fff 100%)',
+                    border: '2px solid #722F37',
+                    borderRadius: 12,
+                    padding: 24,
+                    marginBottom: 24,
+                    textAlign: 'center',
+                }}>
+                    <div style={{ fontSize: 42, fontWeight: 'bold', color: '#722F37' }}>$5K - $15K</div>
+                    <div style={{ fontSize: 18, color: '#666', marginTop: 8 }}>Monthly Earning Potential</div>
+                    <div style={{ fontSize: 14, color: '#888', marginTop: 8 }}>
+                        Working from home with flexible hours
+                    </div>
+                </div>
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
+                    {[
+                        { label: 'Per Session', value: '$100-200' },
+                        { label: 'Per Program', value: '$500-2,500' },
+                        { label: 'Clients/Month', value: '5-15' },
+                        { label: 'Work Hours', value: 'Flexible' },
+                    ].map((item, i) => (
+                        <div key={i} style={{
+                            background: '#f9f9f9',
+                            padding: 16,
+                            borderRadius: 8,
+                            display: 'flex',
+                            justifyContent: 'space-between',
+                        }}>
+                            <span style={{ color: '#666' }}>{item.label}</span>
+                            <strong style={{ color: '#722F37' }}>{item.value}</strong>
+                        </div>
+                    ))}
+                </div>
+            </div>
+        ),
+    ];
 
     return (
         <div style={{
             minHeight: '100vh',
-            background: slide.bg,
-            transition: 'background 0.8s ease-in-out',
-            color: 'white',
-            fontFamily: 'system-ui, -apple-system, sans-serif',
-            display: 'flex',
-            flexDirection: 'column',
+            background: '#ffffff',
+            fontFamily: 'Georgia, "Times New Roman", serif',
+            color: '#2d2d2d',
         }}>
-            {/* Top Bar */}
-            <nav style={{
+            {/* Header */}
+            <header style={{
+                background: '#fff',
+                borderBottom: '1px solid #e5e5e5',
+                padding: '16px 24px',
+                position: 'sticky',
+                top: 0,
+                zIndex: 100,
                 display: 'flex',
+                alignItems: 'center',
                 justifyContent: 'space-between',
-                alignItems: 'center',
-                padding: '20px 32px',
             }}>
-                <img src="/newlogo.webp" alt="AccrediPro" style={{ height: 40 }} />
-                <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
-                    <span style={{ opacity: 0.7 }}>{currentSlide + 1} / {slides.length}</span>
-                    <Link href="/gut-health-mini-diploma/style-3" style={{
-                        padding: '10px 20px',
-                        background: 'rgba(255,255,255,0.2)',
-                        borderRadius: 8,
-                        color: 'white',
-                        textDecoration: 'none',
-                        fontSize: 14,
-                    }}>
-                        Try Style 3 →
-                    </Link>
-                </div>
-            </nav>
+                <img src="/newlogo.webp" alt="AccrediPro" style={{ height: 36 }} />
 
-            {/* Main Slide Content */}
-            <main style={{
-                flex: 1,
-                display: 'flex',
-                flexDirection: 'column',
-                alignItems: 'center',
-                justifyContent: 'center',
-                textAlign: 'center',
-                padding: '0 24px',
-                maxWidth: 800,
-                margin: '0 auto',
-            }}>
-                <div style={{
-                    fontSize: 80,
-                    marginBottom: 24,
-                    animation: 'bounce 1s ease-in-out',
-                }}>
-                    {slide.emoji}
+                <div style={{ flex: 1, maxWidth: 400, margin: '0 24px' }}>
+                    <div style={{
+                        height: 8,
+                        background: '#f0f0f0',
+                        borderRadius: 4,
+                        overflow: 'hidden',
+                    }}>
+                        <div style={{
+                            height: '100%',
+                            width: `${progress}%`,
+                            background: 'linear-gradient(90deg, #722F37, #8B4049)',
+                            borderRadius: 4,
+                            transition: 'width 0.5s ease',
+                        }} />
+                    </div>
+                    <div style={{ fontSize: 12, color: '#888', marginTop: 4, textAlign: 'center' }}>
+                        {visitedTabs.length} of {tabs.length} sections viewed
+                    </div>
                 </div>
 
-                <h1 style={{
-                    fontSize: 'clamp(32px, 6vw, 56px)',
-                    fontWeight: 'bold',
-                    marginBottom: 24,
-                    lineHeight: 1.1,
+                <Link href="/gut-health-mini-diploma/style-3" style={{
+                    padding: '10px 20px',
+                    background: '#722F37',
+                    color: 'white',
+                    borderRadius: 6,
+                    textDecoration: 'none',
+                    fontSize: 14,
                 }}>
-                    {slide.title}
-                </h1>
+                    Try Style 3 →
+                </Link>
+            </header>
 
-                <p style={{
-                    fontSize: 'clamp(18px, 3vw, 24px)',
-                    opacity: 0.9,
-                    marginBottom: 32,
-                    lineHeight: 1.6,
-                }}>
-                    {slide.content}
-                </p>
+            {/* Main Content */}
+            <main style={{ maxWidth: 800, margin: '0 auto', padding: '32px 24px' }}>
 
-                {/* Stats Grid */}
-                {slide.stats && (
-                    <div style={{
-                        display: 'flex',
-                        gap: 32,
-                        marginBottom: 32,
-                    }}>
-                        {slide.stats.map((stat, i) => (
-                            <div key={i} style={{
-                                background: 'rgba(255,255,255,0.15)',
-                                backdropFilter: 'blur(10px)',
-                                padding: '20px 32px',
-                                borderRadius: 16,
-                            }}>
-                                <div style={{ fontSize: 36, fontWeight: 'bold' }}>{stat.value}</div>
-                                <div style={{ opacity: 0.8, fontSize: 14 }}>{stat.label}</div>
-                            </div>
-                        ))}
-                    </div>
-                )}
-
-                {/* Highlights */}
-                {slide.highlights && (
-                    <div style={{
-                        display: 'flex',
-                        gap: 16,
-                        marginBottom: 32,
-                        flexWrap: 'wrap',
-                        justifyContent: 'center',
-                    }}>
-                        {slide.highlights.map((h, i) => (
-                            <div key={i} style={{
-                                background: 'rgba(0,0,0,0.3)',
-                                padding: '12px 24px',
-                                borderRadius: 50,
-                                fontSize: 18,
-                                fontWeight: 'bold',
-                            }}>
-                                {h}
-                            </div>
-                        ))}
-                    </div>
-                )}
-
-                {/* Navigation Button */}
-                <button
-                    onClick={() => setCurrentSlide(Math.min(currentSlide + 1, slides.length - 1))}
-                    disabled={currentSlide === slides.length - 1}
-                    style={{
-                        padding: '18px 48px',
-                        fontSize: 18,
-                        fontWeight: 'bold',
-                        background: 'white',
+                {/* Lesson Title */}
+                <div style={{ marginBottom: 32, textAlign: 'center' }}>
+                    <span style={{
+                        display: 'inline-block',
+                        background: '#f8f4f0',
                         color: '#722F37',
-                        border: 'none',
-                        borderRadius: 50,
-                        cursor: 'pointer',
-                        boxShadow: '0 10px 40px rgba(0,0,0,0.2)',
-                        transition: 'transform 0.2s',
-                        opacity: currentSlide === slides.length - 1 ? 0.5 : 1,
-                    }}
-                    onMouseEnter={(e) => e.currentTarget.style.transform = 'scale(1.05)'}
-                    onMouseLeave={(e) => e.currentTarget.style.transform = 'scale(1)'}
-                >
-                    {slide.button}
-                </button>
-            </main>
+                        padding: '6px 16px',
+                        borderRadius: 20,
+                        fontSize: 13,
+                        fontWeight: 600,
+                    }}>
+                        MODULE 1 • LESSON 1
+                    </span>
+                </div>
 
-            {/* Bottom Navigation Dots */}
-            <div style={{
-                display: 'flex',
-                justifyContent: 'center',
-                gap: 12,
-                padding: 32,
-            }}>
-                {slides.map((_, i) => (
+                {/* Tabs */}
+                <div style={{
+                    display: 'flex',
+                    gap: 8,
+                    marginBottom: 32,
+                    borderBottom: '2px solid #f0f0f0',
+                    paddingBottom: 0,
+                }}>
+                    {tabs.map((tab, i) => (
+                        <button
+                            key={i}
+                            onClick={() => handleTabChange(i)}
+                            style={{
+                                flex: 1,
+                                padding: '16px 12px',
+                                background: 'none',
+                                border: 'none',
+                                borderBottom: activeTab === i ? '3px solid #722F37' : '3px solid transparent',
+                                cursor: 'pointer',
+                                fontSize: 15,
+                                fontWeight: activeTab === i ? 600 : 400,
+                                color: activeTab === i ? '#722F37' : '#888',
+                                transition: 'all 0.2s',
+                                display: 'flex',
+                                flexDirection: 'column',
+                                alignItems: 'center',
+                                gap: 6,
+                            }}
+                        >
+                            <span style={{ fontSize: 24 }}>{tab.icon}</span>
+                            <span>{tab.title}</span>
+                            {visitedTabs.includes(i) && i !== activeTab && (
+                                <span style={{ color: '#4ade80', fontSize: 12 }}>✓</span>
+                            )}
+                        </button>
+                    ))}
+                </div>
+
+                {/* Tab Content */}
+                <div style={{
+                    background: '#fff',
+                    minHeight: 400,
+                }}>
+                    {tabContents[activeTab]}
+                </div>
+
+                {/* Navigation */}
+                <div style={{
+                    display: 'flex',
+                    justifyContent: 'space-between',
+                    marginTop: 40,
+                    paddingTop: 24,
+                    borderTop: '1px solid #e8e8e8',
+                }}>
                     <button
-                        key={i}
-                        onClick={() => setCurrentSlide(i)}
+                        onClick={() => activeTab > 0 && handleTabChange(activeTab - 1)}
+                        disabled={activeTab === 0}
                         style={{
-                            width: currentSlide === i ? 40 : 12,
-                            height: 12,
-                            borderRadius: 6,
-                            border: 'none',
-                            background: currentSlide === i ? 'white' : 'rgba(255,255,255,0.3)',
-                            cursor: 'pointer',
-                            transition: 'all 0.3s',
+                            padding: '12px 24px',
+                            background: activeTab === 0 ? '#f0f0f0' : '#fff',
+                            border: '1px solid #ddd',
+                            borderRadius: 8,
+                            cursor: activeTab === 0 ? 'default' : 'pointer',
+                            color: activeTab === 0 ? '#aaa' : '#333',
                         }}
-                    />
-                ))}
-            </div>
+                    >
+                        ← Previous
+                    </button>
 
-            {/* Keyboard Hint */}
-            <div style={{
-                position: 'fixed',
-                bottom: 20,
-                left: 20,
-                background: 'rgba(0,0,0,0.3)',
-                padding: '8px 16px',
-                borderRadius: 8,
-                fontSize: 13,
-                opacity: 0.7,
-            }}>
-                ← → or click dots to navigate
-            </div>
-
-            {/* Side Arrows */}
-            {currentSlide > 0 && (
-                <button
-                    onClick={() => setCurrentSlide(currentSlide - 1)}
-                    style={{
-                        position: 'fixed',
-                        left: 20,
-                        top: '50%',
-                        transform: 'translateY(-50%)',
-                        width: 50,
-                        height: 50,
-                        borderRadius: '50%',
-                        border: '2px solid rgba(255,255,255,0.3)',
-                        background: 'rgba(0,0,0,0.2)',
-                        color: 'white',
-                        fontSize: 24,
-                        cursor: 'pointer',
-                    }}
-                >
-                    ←
-                </button>
-            )}
-            {currentSlide < slides.length - 1 && (
-                <button
-                    onClick={() => setCurrentSlide(currentSlide + 1)}
-                    style={{
-                        position: 'fixed',
-                        right: 20,
-                        top: '50%',
-                        transform: 'translateY(-50%)',
-                        width: 50,
-                        height: 50,
-                        borderRadius: '50%',
-                        border: '2px solid rgba(255,255,255,0.3)',
-                        background: 'rgba(0,0,0,0.2)',
-                        color: 'white',
-                        fontSize: 24,
-                        cursor: 'pointer',
-                    }}
-                >
-                    →
-                </button>
-            )}
+                    {activeTab < tabs.length - 1 ? (
+                        <button
+                            onClick={() => handleTabChange(activeTab + 1)}
+                            style={{
+                                padding: '12px 32px',
+                                background: '#722F37',
+                                border: 'none',
+                                borderRadius: 8,
+                                cursor: 'pointer',
+                                color: 'white',
+                                fontWeight: 600,
+                            }}
+                        >
+                            Next →
+                        </button>
+                    ) : (
+                        <Link href="/gut-health-mini-diploma/style-3" style={{
+                            padding: '12px 32px',
+                            background: '#722F37',
+                            borderRadius: 8,
+                            color: 'white',
+                            fontWeight: 600,
+                            textDecoration: 'none',
+                        }}>
+                            Complete Lesson →
+                        </Link>
+                    )}
+                </div>
+            </main>
         </div>
     );
 }

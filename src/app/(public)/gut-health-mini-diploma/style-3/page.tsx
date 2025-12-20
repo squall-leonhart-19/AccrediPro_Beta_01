@@ -1,289 +1,306 @@
 'use client';
 
-import { useState, useRef, useEffect } from 'react';
+import { useState } from 'react';
 import Link from 'next/link';
 
-// STYLE 3: Chat/Messenger Interface
-// WhatsApp-style conversation with Sarah, typing indicators, quick replies
-
-interface Message {
-    id: number;
-    type: 'sarah' | 'system' | 'user';
-    text: string;
-    delay: number;
-}
+// STYLE 3: Clean White with Step-by-Step Cards
+// Vertical card layout with checkmarks and smooth progression
 
 export default function Style3Page() {
-    const [visibleMessages, setVisibleMessages] = useState<number[]>([]);
-    const [isTyping, setIsTyping] = useState(false);
-    const [selectedReplies, setSelectedReplies] = useState<string[]>([]);
-    const messagesEndRef = useRef<HTMLDivElement>(null);
+    const [completedSteps, setCompletedSteps] = useState<number[]>([]);
+    const [currentStep, setCurrentStep] = useState(0);
 
-    const messages: Message[] = [
-        { id: 1, type: 'sarah', text: "Hey there! 👋 I'm Sarah, your gut health coach.", delay: 0 },
-        { id: 2, type: 'sarah', text: "I'm SO excited you're here! Ready to start your gut health journey?", delay: 1500 },
-        { id: 3, type: 'system', text: `🎓 You've joined the Gut Health Mini-Diploma`, delay: 3000 },
-        { id: 4, type: 'sarah', text: "Let me share something that might surprise you...", delay: 4500 },
-        { id: 5, type: 'sarah', text: "70 MILLION Americans suffer from digestive issues. That's more than the population of California AND Texas combined! 🤯", delay: 6000 },
-        { id: 6, type: 'sarah', text: "And here's the thing - most of them have been told it's 'normal' or 'all in their head'", delay: 8000 },
-        { id: 7, type: 'sarah', text: "But YOU are going to learn how to actually help them 💪", delay: 10000 },
-        { id: 8, type: 'system', text: '📊 Key Stat: 80% of your immune system is in your gut', delay: 12000 },
-        { id: 9, type: 'sarah', text: "Want to know what really blew my mind when I first learned about gut health?", delay: 14000 },
-        { id: 10, type: 'sarah', text: "Your gut produces 95% of your body's serotonin - the 'happiness hormone'! 🧠", delay: 16000 },
-        { id: 11, type: 'sarah', text: "This means when you heal someone's gut, you're also helping their mood, energy, and mental clarity", delay: 18000 },
-        { id: 12, type: 'sarah', text: "Our certified practitioners earn $5K-$15K/month doing this work from home 💰", delay: 20000 },
-        { id: 13, type: 'sarah', text: "Ready to continue to the next lesson?", delay: 22000 },
+    const steps = [
+        {
+            title: 'Welcome to Your Journey',
+            content: (
+                <>
+                    <div style={{
+                        display: 'flex',
+                        gap: 16,
+                        padding: 20,
+                        background: '#fdfbf7',
+                        borderRadius: 12,
+                        marginBottom: 20,
+                    }}>
+                        <div style={{
+                            width: 48,
+                            height: 48,
+                            borderRadius: '50%',
+                            background: 'linear-gradient(135deg, #722F37, #8B4049)',
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            color: 'white',
+                            fontSize: 20,
+                            flexShrink: 0,
+                        }}>S</div>
+                        <p style={{ margin: 0, fontSize: 16, lineHeight: 1.7 }}>
+                            <strong style={{ color: '#722F37' }}>Hey there! 👋</strong> I'm Sarah, and I'm so excited
+                            you're starting this journey. You've made an amazing decision!
+                        </p>
+                    </div>
+                    <p style={{ fontSize: 16, lineHeight: 1.8, color: '#444' }}>
+                        Whether you're here to help others, start a new career, or deepen your own understanding
+                        of gut health—you're in exactly the right place.
+                    </p>
+                </>
+            ),
+        },
+        {
+            title: 'The Gut Health Crisis',
+            content: (
+                <>
+                    <p style={{ fontSize: 16, lineHeight: 1.8, color: '#444', marginBottom: 20 }}>
+                        <strong>Over 70 million Americans</strong> suffer from digestive issues—that's more than
+                        California and Texas combined!
+                    </p>
+                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 12 }}>
+                        {[
+                            { value: '70M+', label: 'Affected' },
+                            { value: '80%', label: 'Immunity' },
+                            { value: '95%', label: 'Serotonin' },
+                        ].map((s, i) => (
+                            <div key={i} style={{
+                                background: '#f9f9f9',
+                                border: '1px solid #e8e8e8',
+                                borderRadius: 8,
+                                padding: 16,
+                                textAlign: 'center',
+                            }}>
+                                <div style={{ fontSize: 24, fontWeight: 'bold', color: '#722F37' }}>{s.value}</div>
+                                <div style={{ fontSize: 12, color: '#888' }}>{s.label}</div>
+                            </div>
+                        ))}
+                    </div>
+                </>
+            ),
+        },
+        {
+            title: 'Your Second Brain',
+            content: (
+                <>
+                    <p style={{ fontSize: 16, lineHeight: 1.8, color: '#444', marginBottom: 16 }}>
+                        Your gut contains <strong>500 million neurons</strong>—more than your spinal cord!
+                        It produces 95% of your serotonin and houses 80% of your immune system.
+                    </p>
+                    <div style={{
+                        background: '#722F37',
+                        color: 'white',
+                        padding: 20,
+                        borderRadius: 12,
+                    }}>
+                        <p style={{ margin: 0, fontSize: 15, lineHeight: 1.7 }}>
+                            💡 <strong>Key Insight:</strong> When you heal the gut, you heal mood, energy,
+                            immunity, and mental clarity.
+                        </p>
+                    </div>
+                </>
+            ),
+        },
+        {
+            title: 'The Practitioner Opportunity',
+            content: (
+                <>
+                    <p style={{ fontSize: 16, lineHeight: 1.8, color: '#444', marginBottom: 16 }}>
+                        Certified practitioners earn <strong style={{ color: '#722F37' }}>$5K-$15K/month</strong> working
+                        from home with flexible hours.
+                    </p>
+                    <ul style={{ fontSize: 16, lineHeight: 2, color: '#444', paddingLeft: 20 }}>
+                        <li>No medical degree required</li>
+                        <li>$100-200 per session</li>
+                        <li>$500-2,500 per program</li>
+                        <li>Work from anywhere</li>
+                    </ul>
+                </>
+            ),
+        },
+        {
+            title: 'Your Journey Ahead',
+            content: (
+                <>
+                    <p style={{ fontSize: 16, lineHeight: 1.8, color: '#444', marginBottom: 16 }}>
+                        In this mini-diploma, you'll learn the foundations of gut health and practical
+                        strategies you can apply immediately.
+                    </p>
+                    <div style={{
+                        background: '#fdfbf7',
+                        padding: 20,
+                        borderRadius: 12,
+                        borderLeft: '4px solid #722F37',
+                    }}>
+                        <p style={{ margin: 0, fontSize: 15, color: '#722F37', fontStyle: 'italic' }}>
+                            "By investing in this knowledge, you're preparing to change countless lives." — Sarah
+                        </p>
+                    </div>
+                </>
+            ),
+        },
     ];
 
-    useEffect(() => {
-        messages.forEach((msg) => {
-            setTimeout(() => {
-                setIsTyping(true);
-                setTimeout(() => {
-                    setVisibleMessages(prev => [...prev, msg.id]);
-                    setIsTyping(false);
-                }, 800);
-            }, msg.delay);
-        });
-    }, []);
-
-    useEffect(() => {
-        messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
-    }, [visibleMessages, isTyping]);
-
-    const quickReplies = [
-        { text: "That's amazing! 🤩", selected: false },
-        { text: "Tell me more", selected: false },
-        { text: "How do I get started?", selected: false },
-    ];
-
-    const handleQuickReply = (reply: string) => {
-        if (!selectedReplies.includes(reply)) {
-            setSelectedReplies([...selectedReplies, reply]);
+    const markComplete = (index: number) => {
+        if (!completedSteps.includes(index)) {
+            setCompletedSteps([...completedSteps, index]);
+        }
+        if (index < steps.length - 1) {
+            setCurrentStep(index + 1);
         }
     };
+
+    const progress = (completedSteps.length / steps.length) * 100;
 
     return (
         <div style={{
             minHeight: '100vh',
-            background: '#0b141a',
-            fontFamily: 'system-ui, -apple-system, sans-serif',
-            display: 'flex',
-            flexDirection: 'column',
+            background: '#f8f8f8',
+            fontFamily: 'Georgia, "Times New Roman", serif',
+            color: '#2d2d2d',
         }}>
-            {/* Chat Header */}
+            {/* Header */}
             <header style={{
-                background: '#1f2c34',
-                padding: '12px 16px',
+                background: '#fff',
+                borderBottom: '1px solid #e5e5e5',
+                padding: '16px 24px',
+                position: 'sticky',
+                top: 0,
+                zIndex: 100,
                 display: 'flex',
                 alignItems: 'center',
-                gap: 12,
-                borderBottom: '1px solid #2a3942',
+                justifyContent: 'space-between',
             }}>
-                <Link href="/gut-health-mini-diploma/style-2" style={{
-                    color: '#00a884',
-                    textDecoration: 'none',
-                    fontSize: 24,
-                }}>
-                    ←
-                </Link>
-                <div style={{
-                    width: 40,
-                    height: 40,
-                    borderRadius: '50%',
-                    background: 'linear-gradient(135deg, #722F37, #D4AF37)',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    color: 'white',
-                    fontWeight: 'bold',
-                }}>S</div>
-                <div style={{ flex: 1 }}>
-                    <div style={{ color: 'white', fontWeight: 'bold' }}>Sarah - Your Coach</div>
-                    <div style={{ color: '#8696a0', fontSize: 13 }}>
-                        {isTyping ? 'typing...' : 'online'}
+                <img src="/newlogo.webp" alt="AccrediPro" style={{ height: 36 }} />
+
+                <div style={{ flex: 1, maxWidth: 400, margin: '0 24px' }}>
+                    <div style={{
+                        height: 8,
+                        background: '#f0f0f0',
+                        borderRadius: 4,
+                        overflow: 'hidden',
+                    }}>
+                        <div style={{
+                            height: '100%',
+                            width: `${progress}%`,
+                            background: 'linear-gradient(90deg, #722F37, #8B4049)',
+                            borderRadius: 4,
+                            transition: 'width 0.5s ease',
+                        }} />
+                    </div>
+                    <div style={{ fontSize: 12, color: '#888', marginTop: 4, textAlign: 'center' }}>
+                        {completedSteps.length} of {steps.length} steps completed
                     </div>
                 </div>
-                <img src="/newlogo.webp" alt="AccrediPro" style={{ height: 28, opacity: 0.8 }} />
+
+                <Link href="/gut-health-mini-diploma/style-4" style={{
+                    padding: '10px 20px',
+                    background: '#722F37',
+                    color: 'white',
+                    borderRadius: 6,
+                    textDecoration: 'none',
+                    fontSize: 14,
+                }}>
+                    Try Style 4 →
+                </Link>
             </header>
 
-            {/* Messages Container */}
-            <main style={{
-                flex: 1,
-                overflowY: 'auto',
-                padding: '16px',
-                background: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.02'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")`,
-            }}>
-                <div style={{ maxWidth: 600, margin: '0 auto' }}>
-                    {/* Date Separator */}
-                    <div style={{
-                        textAlign: 'center',
-                        marginBottom: 16,
-                    }}>
-                        <span style={{
-                            background: '#1d282f',
-                            color: '#8696a0',
-                            padding: '6px 12px',
-                            borderRadius: 8,
-                            fontSize: 12,
-                        }}>
-                            TODAY
-                        </span>
-                    </div>
+            {/* Main Content */}
+            <main style={{ maxWidth: 700, margin: '0 auto', padding: '32px 24px' }}>
 
-                    {/* Messages */}
-                    {messages.filter(m => visibleMessages.includes(m.id)).map((msg) => (
-                        <div
-                            key={msg.id}
-                            style={{
-                                display: 'flex',
-                                justifyContent: msg.type === 'user' ? 'flex-end' : msg.type === 'system' ? 'center' : 'flex-start',
-                                marginBottom: 8,
-                                animation: 'slideUp 0.3s ease-out',
-                            }}
-                        >
-                            {msg.type === 'system' ? (
-                                <div style={{
-                                    background: '#1d282f',
-                                    color: '#8696a0',
-                                    padding: '8px 16px',
-                                    borderRadius: 8,
-                                    fontSize: 13,
-                                }}>
-                                    {msg.text}
-                                </div>
-                            ) : (
-                                <div style={{
-                                    maxWidth: '80%',
-                                    background: msg.type === 'sarah' ? '#1f2c34' : '#005c4b',
-                                    color: 'white',
-                                    padding: '10px 14px',
-                                    borderRadius: msg.type === 'sarah' ? '0 12px 12px 12px' : '12px 0 12px 12px',
-                                    fontSize: 15,
-                                    lineHeight: 1.5,
-                                    boxShadow: '0 1px 2px rgba(0,0,0,0.2)',
-                                }}>
-                                    {msg.text}
-                                    <div style={{
-                                        fontSize: 11,
-                                        color: '#8696a0',
-                                        marginTop: 4,
-                                        textAlign: 'right',
-                                    }}>
-                                        {new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
-                                    </div>
-                                </div>
-                            )}
-                        </div>
-                    ))}
-
-                    {/* User Replies */}
-                    {selectedReplies.map((reply, i) => (
-                        <div key={i} style={{
-                            display: 'flex',
-                            justifyContent: 'flex-end',
-                            marginBottom: 8,
-                        }}>
-                            <div style={{
-                                background: '#005c4b',
-                                color: 'white',
-                                padding: '10px 14px',
-                                borderRadius: '12px 0 12px 12px',
-                                fontSize: 15,
-                            }}>
-                                {reply}
-                            </div>
-                        </div>
-                    ))}
-
-                    {/* Typing Indicator */}
-                    {isTyping && (
-                        <div style={{
-                            display: 'flex',
-                            gap: 4,
-                            padding: '12px 16px',
-                            background: '#1f2c34',
-                            borderRadius: '0 12px 12px 12px',
-                            width: 'fit-content',
-                        }}>
-                            <span style={{ width: 8, height: 8, borderRadius: '50%', background: '#8696a0', animation: 'pulse 1s infinite' }} />
-                            <span style={{ width: 8, height: 8, borderRadius: '50%', background: '#8696a0', animation: 'pulse 1s infinite 0.2s' }} />
-                            <span style={{ width: 8, height: 8, borderRadius: '50%', background: '#8696a0', animation: 'pulse 1s infinite 0.4s' }} />
-                        </div>
-                    )}
-
-                    <div ref={messagesEndRef} />
-                </div>
-            </main>
-
-            {/* Quick Replies */}
-            {visibleMessages.length >= 5 && (
-                <div style={{
-                    padding: '12px 16px',
-                    background: '#1f2c34',
-                    borderTop: '1px solid #2a3942',
-                }}>
-                    <div style={{
-                        display: 'flex',
-                        gap: 8,
-                        overflowX: 'auto',
-                        paddingBottom: 4,
-                    }}>
-                        {quickReplies.map((reply) => (
-                            <button
-                                key={reply.text}
-                                onClick={() => handleQuickReply(reply.text)}
-                                disabled={selectedReplies.includes(reply.text)}
-                                style={{
-                                    padding: '10px 16px',
-                                    border: '1px solid #00a884',
-                                    borderRadius: 20,
-                                    background: selectedReplies.includes(reply.text) ? '#005c4b' : 'transparent',
-                                    color: '#00a884',
-                                    whiteSpace: 'nowrap',
-                                    cursor: 'pointer',
-                                    fontSize: 14,
-                                }}
-                            >
-                                {reply.text}
-                            </button>
-                        ))}
-                    </div>
-                </div>
-            )}
-
-            {/* Bottom Action */}
-            {visibleMessages.length >= 10 && (
-                <div style={{
-                    padding: '16px',
-                    background: '#0b141a',
-                    borderTop: '1px solid #2a3942',
-                    textAlign: 'center',
-                }}>
-                    <Link href="/gut-health-mini-diploma/style-4" style={{
+                {/* Lesson Title */}
+                <div style={{ marginBottom: 32, textAlign: 'center' }}>
+                    <span style={{
                         display: 'inline-block',
-                        padding: '14px 32px',
-                        background: '#00a884',
-                        color: 'white',
-                        borderRadius: 8,
-                        textDecoration: 'none',
-                        fontWeight: 'bold',
+                        background: '#fff',
+                        color: '#722F37',
+                        padding: '6px 16px',
+                        borderRadius: 20,
+                        fontSize: 13,
+                        fontWeight: 600,
+                        border: '1px solid #e8e8e8',
                     }}>
-                        Continue to Style 4 →
-                    </Link>
+                        MODULE 1 • LESSON 1
+                    </span>
+                    <h1 style={{ fontSize: 32, marginTop: 16, color: '#1a1a1a' }}>
+                        Welcome to Your Gut Health Journey
+                    </h1>
                 </div>
-            )}
 
-            <style jsx global>{`
-        @keyframes slideUp {
-          from { opacity: 0; transform: translateY(20px); }
-          to { opacity: 1; transform: translateY(0); }
-        }
-        @keyframes pulse {
-          0%, 100% { opacity: 0.4; }
-          50% { opacity: 1; }
-        }
-      `}</style>
+                {/* Steps */}
+                {steps.map((step, i) => (
+                    <div
+                        key={i}
+                        style={{
+                            background: '#fff',
+                            borderRadius: 16,
+                            padding: 24,
+                            marginBottom: 16,
+                            border: currentStep === i ? '2px solid #722F37' : '1px solid #e8e8e8',
+                            boxShadow: currentStep === i ? '0 4px 20px rgba(114, 47, 55, 0.1)' : 'none',
+                        }}
+                    >
+                        <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 16 }}>
+                            <div style={{
+                                width: 32,
+                                height: 32,
+                                borderRadius: '50%',
+                                background: completedSteps.includes(i) ? '#722F37' : '#f0f0f0',
+                                color: completedSteps.includes(i) ? 'white' : '#888',
+                                display: 'flex',
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                                fontSize: 14,
+                                fontWeight: 'bold',
+                            }}>
+                                {completedSteps.includes(i) ? '✓' : i + 1}
+                            </div>
+                            <h3 style={{ margin: 0, fontSize: 18, color: '#1a1a1a' }}>{step.title}</h3>
+                        </div>
+
+                        {(currentStep === i || completedSteps.includes(i)) && (
+                            <>
+                                {step.content}
+                                {!completedSteps.includes(i) && (
+                                    <button
+                                        onClick={() => markComplete(i)}
+                                        style={{
+                                            marginTop: 20,
+                                            padding: '12px 24px',
+                                            background: '#722F37',
+                                            color: 'white',
+                                            border: 'none',
+                                            borderRadius: 8,
+                                            cursor: 'pointer',
+                                            fontSize: 15,
+                                            fontWeight: 600,
+                                        }}
+                                    >
+                                        Mark Complete & Continue →
+                                    </button>
+                                )}
+                            </>
+                        )}
+                    </div>
+                ))}
+
+                {/* Complete Lesson */}
+                {completedSteps.length === steps.length && (
+                    <div style={{ textAlign: 'center', padding: '24px 0' }}>
+                        <div style={{ fontSize: 48, marginBottom: 16 }}>🎉</div>
+                        <h2 style={{ marginBottom: 16 }}>Lesson Complete!</h2>
+                        <Link href="/gut-health-mini-diploma/style-4" style={{
+                            display: 'inline-block',
+                            padding: '16px 40px',
+                            background: '#722F37',
+                            color: 'white',
+                            borderRadius: 8,
+                            textDecoration: 'none',
+                            fontSize: 17,
+                            fontWeight: 600,
+                        }}>
+                            Continue to Style 4 →
+                        </Link>
+                    </div>
+                )}
+            </main>
         </div>
     );
 }
