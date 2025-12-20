@@ -168,7 +168,7 @@ export default function Lesson4Page() {
                         margin: '24px 0',
                     }}>
                         {[
-                            { condition: 'Hashimoto's Thyroiditis', connection: 'Strong gut- thyroid link' },
+                            { condition: "Hashimoto's Thyroiditis", connection: 'Strong gut-thyroid link' },
               { condition: 'Rheumatoid Arthritis', connection: 'Gut bacteria influence joint inflammation' },
                             { condition: 'Type 1 Diabetes', connection: 'Gut permeability precedes onset' },
                             { condition: 'Multiple Sclerosis', connection: 'Microbiome differences observed' },
