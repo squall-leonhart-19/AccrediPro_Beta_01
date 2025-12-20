@@ -532,6 +532,17 @@ export default function FMCertificationPage() {
                         Add <span className="font-bold text-olive-700">$10,000–$15,000+/month</span> helping patients actually heal — <span className="font-semibold">without quitting your job.</span>
                     </p>
 
+                    {/* Bundle Image */}
+                    <div className="max-w-2xl mx-auto mb-8">
+                        <Image
+                            src="https://coach.accredipro.academy/wp-content/uploads/2025/12/FunctionalMedicinePractictioner.jpeg"
+                            alt="Functional Medicine Practitioner Certification Bundle"
+                            width={800}
+                            height={500}
+                            className="w-full h-auto rounded-2xl shadow-2xl border-4 border-white"
+                        />
+                    </div>
+
                     {/* Key Benefits */}
                     <div className="flex flex-col sm:flex-row sm:flex-wrap justify-center gap-2 sm:gap-4 mb-6">
                         <div className="flex items-center justify-center gap-2 bg-white/80 backdrop-blur-sm rounded-full px-4 py-2 shadow-sm border border-olive-100">
