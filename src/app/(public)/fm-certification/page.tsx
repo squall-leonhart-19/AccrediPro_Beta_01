@@ -518,7 +518,7 @@ export default function FMCertificationPage() {
                     <div className="flex justify-center mb-4">
                         <div className="inline-flex items-center gap-2 bg-burgundy-50 border border-burgundy-200 rounded-full px-4 py-2 shadow-sm">
                             <Stethoscope className="h-4 w-4 text-burgundy-600" />
-                            <span className="text-sm font-semibold text-burgundy-700">For Nurses, NPs, PAs, MDs & Licensed Healthcare Professionals</span>
+                            <span className="text-sm font-semibold text-burgundy-700">For Nurses, NPs, PAs, MDs & Licensed Healthcare Professionals Who Are Done With "Sick Care"</span>
                         </div>
                     </div>
 
@@ -529,7 +529,7 @@ export default function FMCertificationPage() {
 
                     {/* Value Proposition */}
                     <p className="text-lg sm:text-xl text-center text-slate-700 mb-6 max-w-3xl mx-auto">
-                        Add <span className="font-bold text-olive-700">$10,000–$15,000+/month</span> helping patients actually heal — <span className="font-semibold">without quitting your job.</span>
+                        Add <span className="font-bold text-olive-700">$10,000–$15,000+/month</span> helping patients actually heal — <span className="font-semibold">without quitting your job, going back to school, or spending $15,000 on traditional certifications.</span>
                     </p>
 
                     {/* Bundle Image */}
