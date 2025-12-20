@@ -458,30 +458,10 @@ export default function FMCertificationPage() {
                 </div>
             </div>
 
-            {/* Trust Banner */}
-            <div className="bg-gradient-to-r from-burgundy-800 to-burgundy-900 text-white py-2.5 px-4">
-                <div className="max-w-6xl mx-auto flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-6 text-sm">
-                    <span className="flex items-center gap-2">
-                        <Award className="h-4 w-4 text-gold-400" />
-                        <span className="font-medium">21 Specialized Certifications</span>
-                    </span>
-                    <span className="hidden sm:block text-burgundy-400">•</span>
-                    <span className="flex items-center gap-2">
-                        <Clock className="h-4 w-4 text-burgundy-300" />
-                        <span className="font-medium">60+ Hours • 168 Lessons</span>
-                    </span>
-                    <span className="hidden sm:block text-burgundy-400">•</span>
-                    <span className="flex items-center gap-2">
-                        <Users className="h-4 w-4 text-burgundy-300" />
-                        <span className="font-medium">1,447 Practitioners Enrolled</span>
-                    </span>
-                </div>
-            </div>
-
             {/* Trustpilot Widget */}
             <div className="bg-white py-2 border-b border-slate-100">
                 <div className="max-w-6xl mx-auto px-4 flex items-center justify-center">
-                    <div className="trustpilot-widget" data-locale="en-US" data-template-id="5419b6ffb0d04a076446a9af" data-businessunit-id="68c1ac85e89f387ad19f7817" data-style-height="20px" data-style-width="100%" data-token="e33169fc-3158-4c67-94f8-c774e5035e30">
+                    <div className="trustpilot-widget" data-locale="en-US" data-template-id="5419b6ffb0d04a076446a9af" data-businessunit-id="68c1ac85e89f387ad19f7817" data-style-height="20px" data-style-width="100%" data-token="73ab2ab9-e3e9-4746-b2df-4f148e213f2c">
                         <a href="https://www.trustpilot.com/review/accredipro.academy" target="_blank" rel="noopener noreferrer">Trustpilot</a>
                     </div>
                 </div>
