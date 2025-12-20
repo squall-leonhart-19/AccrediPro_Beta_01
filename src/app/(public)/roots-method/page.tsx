@@ -218,6 +218,53 @@ const ROOTSStep = ({ letter, title, description, example, icon: Icon }: {
     </div>
 );
 
+// Curriculum Module Accordion Component
+const CurriculumModule = ({ title, lessons, defaultOpen = false }: {
+    title: string;
+    lessons: { number: number; title: string; description: string }[];
+    defaultOpen?: boolean;
+}) => {
+    const [isOpen, setIsOpen] = useState(defaultOpen);
+    return (
+        <div className="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
+            <button
+                onClick={() => setIsOpen(!isOpen)}
+                className="w-full px-5 sm:px-6 py-4 sm:py-5 flex items-center justify-between text-left hover:bg-slate-50 transition-colors"
+            >
+                <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-burgundy-600 to-burgundy-700 flex items-center justify-center shrink-0">
+                        <BookOpen className="h-5 w-5 text-white" />
+                    </div>
+                    <div>
+                        <h3 className="font-bold text-slate-900 text-base sm:text-lg">{title}</h3>
+                        <p className="text-sm text-slate-500">{lessons.length} lesson{lessons.length > 1 ? 's' : ''}</p>
+                    </div>
+                </div>
+                <div className={`w-8 h-8 rounded-full flex items-center justify-center transition-all ${isOpen ? 'bg-burgundy-100 rotate-180' : 'bg-slate-100'}`}>
+                    <ChevronDown className={`h-5 w-5 ${isOpen ? 'text-burgundy-600' : 'text-slate-400'}`} />
+                </div>
+            </button>
+            {isOpen && (
+                <div className="px-5 sm:px-6 pb-5 sm:pb-6 border-t border-slate-100">
+                    <div className="space-y-3 mt-4">
+                        {lessons.map((lesson) => (
+                            <div key={lesson.number} className="flex gap-3 sm:gap-4 p-3 sm:p-4 bg-cream-50 rounded-xl border border-cream-200">
+                                <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-lg bg-burgundy-100 flex items-center justify-center shrink-0">
+                                    <span className="text-sm sm:text-base font-bold text-burgundy-700">{lesson.number}</span>
+                                </div>
+                                <div className="flex-1 min-w-0">
+                                    <h4 className="font-semibold text-slate-900 text-sm sm:text-base">{lesson.title}</h4>
+                                    <p className="text-xs sm:text-sm text-slate-600 mt-1">{lesson.description}</p>
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+                </div>
+            )}
+        </div>
+    );
+};
+
 export default function ROOTSMethodPage() {
     return (
         <div className="min-h-screen bg-gradient-to-b from-cream-100 via-cream-50 to-white pb-20 lg:pb-0">
@@ -297,7 +344,13 @@ export default function ROOTSMethodPage() {
                     </div>
 
                     <div className="flex justify-center mb-6">
-                        <Image src="/cma-logo.webp" alt="CMA Accreditation" width={120} height={60} className="h-12 w-auto opacity-80" />
+                        <Image
+                            src="https://coach.accredipro.academy/wp-content/uploads/2025/12/CMA-Accredited-course.jpeg"
+                            alt="CMA Accredited Course"
+                            width={140}
+                            height={70}
+                            className="h-10 sm:h-12 md:h-14 w-auto opacity-90"
+                        />
                     </div>
 
                     <div className="flex justify-center mb-6">
@@ -464,6 +517,57 @@ export default function ROOTSMethodPage() {
                         <a href="https://sarah.accredipro.academy/fm-mini-diploma-access">
                             <Button className="bg-gradient-to-r from-burgundy-600 to-burgundy-700 hover:from-burgundy-700 hover:to-burgundy-800 text-white font-bold py-6 px-10 rounded-xl text-lg shadow-lg">
                                 Get R.O.O.T.S. Certified — $27
+                                <ArrowRight className="h-5 w-5 ml-2" />
+                            </Button>
+                        </a>
+                    </div>
+                </div>
+            </section>
+
+            {/* Curriculum Section */}
+            <section className="py-12 sm:py-16 bg-gradient-to-b from-slate-50 to-white">
+                <div className="max-w-4xl mx-auto px-4">
+                    <div className="text-center mb-10">
+                        <div className="inline-flex items-center gap-2 bg-burgundy-100 border border-burgundy-200 rounded-full px-5 py-2 mb-4">
+                            <BookOpen className="h-4 w-4 text-burgundy-600" />
+                            <span className="text-sm font-bold text-burgundy-700">COMPLETE CURRICULUM</span>
+                        </div>
+                        <h2 className="text-3xl sm:text-4xl font-bold text-slate-900 mb-4">What You'll Learn Inside</h2>
+                        <p className="text-lg text-slate-600 max-w-2xl mx-auto">9 comprehensive lessons covering the foundations, the R.O.O.T.S. Method™ framework, and how to build your practice.</p>
+                    </div>
+
+                    <div className="space-y-4">
+                        <CurriculumModule
+                            title="Foundation"
+                            defaultOpen={true}
+                            lessons={[
+                                { number: 1, title: "From Burnout to Purpose", description: "Why healthcare is broken for practitioners AND patients — and how integrative health coaching gives you a way out that actually aligns with why you became a nurse in the first place." },
+                                { number: 2, title: "Your Clinical Advantage Assessment", description: "What you already know that most coaches don't. The skills that transfer directly. What (minimal) gaps you need to fill. And why your background is your biggest competitive advantage." },
+                            ]}
+                        />
+                        <CurriculumModule
+                            title="The R.O.O.T.S. Method™"
+                            lessons={[
+                                { number: 3, title: "The R.O.O.T.S. Framework Overview", description: "The complete 5-step system for getting root-cause results. How each step builds on the previous. Why this method works when symptom-chasing fails." },
+                                { number: 4, title: "R — Recognize the Pattern", description: "Stop seeing symptoms in isolation. Learn to connect the dots that doctors miss. Intake questions that reveal the real story. Pattern recognition that changes outcomes." },
+                                { number: 5, title: "O — Find the Origin", description: "Go upstream. The timeline technique that reveals when health broke down — and why. Finding the triggers that started the cascade. Identifying what's keeping them stuck." },
+                                { number: 6, title: "O — Optimize the Foundations", description: "The 5 pillars that control everything: Nutrition, Movement, Sleep, Stress, Environment. Practical interventions for each. Why foundations trump supplements every time." },
+                                { number: 7, title: "T — Transform with Coaching", description: "Be the accountability they've never had. Session structure that gets results. Progress tracking that proves your value. Why coaches succeed where doctors fail — you have TIME." },
+                            ]}
+                        />
+                        <CurriculumModule
+                            title="Build Your Practice"
+                            lessons={[
+                                { number: 8, title: "S — Scale Your Practice (The Money Lesson)", description: "Get paid. Get clients. Build income. What to charge ($75-150/hr is normal). The exact math for $5K/month. How to get your first 5 clients while still employed. Packages that sell." },
+                                { number: 9, title: "Case Study + Your 90-Day Roadmap", description: "Real case study: From intake to transformation using R.O.O.T.S. Your personal 90-day action plan. What to do in weeks 1-4, 5-8, 9-12. The path from certification to first paying clients." },
+                            ]}
+                        />
+                    </div>
+
+                    <div className="mt-10 text-center">
+                        <a href="https://sarah.accredipro.academy/fm-mini-diploma-access">
+                            <Button className="bg-gradient-to-r from-burgundy-600 to-burgundy-700 hover:from-burgundy-700 hover:to-burgundy-800 text-white font-bold py-6 px-10 rounded-xl text-lg shadow-lg">
+                                Start Learning Today — $27
                                 <ArrowRight className="h-5 w-5 ml-2" />
                             </Button>
                         </a>
@@ -713,7 +817,13 @@ export default function ROOTSMethodPage() {
                     <p className="text-slate-500 mt-8">Join 843+ healthcare professionals who stopped waiting and started building.</p>
 
                     <div className="mt-8">
-                        <Image src="/cma-logo.webp" alt="CMA Accreditation" width={100} height={50} className="h-10 w-auto mx-auto opacity-60" />
+                        <Image
+                            src="https://coach.accredipro.academy/wp-content/uploads/2025/12/CMA-Accredited-course.jpeg"
+                            alt="CMA Accredited Course"
+                            width={120}
+                            height={60}
+                            className="h-8 sm:h-10 w-auto mx-auto opacity-70"
+                        />
                     </div>
                 </div>
             </section>

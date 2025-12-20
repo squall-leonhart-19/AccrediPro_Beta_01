@@ -188,7 +188,7 @@ export default function Lesson1Page() {
             <header style={{ background: 'linear-gradient(135deg, #1a1a2e 0%, #16213e 100%)', padding: '16px 24px', position: 'sticky', top: 0, zIndex: 100 }}>
                 <div style={{ maxWidth: 640, margin: '0 auto' }}>
                     <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 12 }}>
-                        <div style={{ fontSize: 18 }}>🌱</div>
+                        <Image src="/accredipro-logo-full.jpg" alt="AccrediPro" width={32} height={32} style={{ borderRadius: 6 }} />
                         <div style={{ fontSize: 14, color: 'white', fontWeight: 600 }}>R.O.O.T.S. Method™</div>
                         <div style={{ flex: 1, height: 6, background: 'rgba(255,255,255,0.2)', borderRadius: 3, marginLeft: 12 }}><div style={{ height: '100%', width: `${moduleProgress}%`, background: accentColor, borderRadius: 3 }} /></div>
                         <div style={{ fontSize: 12, color: 'rgba(255,255,255,0.7)' }}>{lessonData.lessonNumber}/{lessonData.totalLessons}</div>

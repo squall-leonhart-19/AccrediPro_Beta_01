@@ -2,11 +2,10 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
+
 export default function Lesson9Page() {
   const [currentSection, setCurrentSection] = useState(0);
   const [completedSections, setCompletedSections] = useState<number[]>([]);
-  const [quickCheckAnswers, setQuickCheckAnswers] = useState<{ [key: number]: string | null }>({});
-  const [showAnswers, setShowAnswers] = useState<number[]>([]);
   const [notes, setNotes] = useState('');
   const [showNotes, setShowNotes] = useState(false);
   const [showChat, setShowChat] = useState(false);
@@ -14,64 +13,211 @@ export default function Lesson9Page() {
   const lessonNumber = 9;
   const brandColor = '#2D5A4A';
   const accentColor = '#D4AF37';
-  const titles: Record<number, string> = { 4: 'R — Recognize the Pattern', 5: 'O — Find the Origin', 6: 'O — Optimize the Foundations', 7: 'T — Transform with Coaching', 8: 'S — Scale Your Practice (The Money Lesson)', 9: 'Case Study + Your 90-Day Roadmap' };
-  const title = titles[9];
+  const title = "Maria's Story + Your 90-Day Roadmap";
+
   useEffect(() => { const n = localStorage.getItem('roots-lesson-9-notes'); if (n) setNotes(n); }, []);
   const handleNotesChange = (v: string) => { setNotes(v); localStorage.setItem('roots-lesson-9-notes', v); };
-  const contentMap: Record<number, Array<{ id: number; type: string; title: string; question?: string; options?: string[]; correct?: string; explanation?: string; content?: React.ReactNode }>> = {
-    4: [
-      { id: 0, type: 'content', title: 'Pattern Recognition', content: (<><h3 style={{ fontSize: 20, marginBottom: 16, fontWeight: 600 }}>R — Recognize the Pattern</h3><p>Most practitioners jump straight to protocols. R.O.O.T.S. practitioners <strong style={{ color: brandColor }}>start by seeing the whole picture</strong>.</p><p>Pattern recognition means identifying:</p><ul style={{ paddingLeft: 20, margin: '16px 0' }}><li>Symptom clusters that point to underlying issues</li><li>Timeline connections between events and symptoms</li><li>Lifestyle factors others miss</li><li>Red flags requiring referral</li></ul></>) },
-      { id: 1, type: 'content', title: 'The Matrix', content: (<><h3 style={{ fontSize: 20, marginBottom: 16, fontWeight: 600 }}>The Symptom-System Matrix</h3><p>We organize symptoms across <strong style={{ color: brandColor }}>7 core systems</strong>:</p><div style={{ display: 'grid', gap: 8, margin: '20px 0' }}>{['Assimilation (Gut)', 'Defense & Repair (Immune)', 'Energy (Mitochondria)', 'Biotransformation (Detox)', 'Transport (Cardiovascular)', 'Communication (Hormones)', 'Structural (Musculoskeletal)'].map((s, i) => (<div key={i} style={{ padding: 12, background: '#f8f9fa', borderRadius: 8, display: 'flex', gap: 8, alignItems: 'center' }}><span style={{ color: accentColor, fontWeight: 'bold' }}>{i+1}.</span>{s}</div>))}</div><p>When you see patterns across multiple systems, you have found your target.</p></>) },
-      { id: 2, type: 'quickcheck', title: 'Quick Check', question: 'How many core systems does the R.O.O.T.S. matrix address?', options: ['3', '5', '7', '10'], correct: '7', explanation: 'The R.O.O.T.S. matrix organizes symptoms across 7 core physiological systems.' },
-      { id: 3, type: 'content', title: 'Practice', content: (<><h3 style={{ fontSize: 20, marginBottom: 16, fontWeight: 600 }}>Pattern Recognition in Practice</h3><p>Example: Client presents with fatigue, brain fog, and skin issues.</p><div style={{ background: '#f8f9fa', padding: 20, borderRadius: 12, margin: '20px 0' }}><p><strong>Systems involved:</strong> Energy, Communication, Defense</p><p><strong>Pattern recognized:</strong> Likely gut-driven inflammation affecting multiple systems</p><p style={{ margin: 0 }}><strong>Next step:</strong> Move to "O" — Find the Origin</p></div><div style={{ background: brandColor, color: 'white', padding: 24, borderRadius: 12 }}><p style={{ margin: 0, fontStyle: 'italic' }}>"Once I learned to see patterns, I stopped chasing individual symptoms. Everything clicked."</p><p style={{ margin: '12px 0 0', fontSize: 14, opacity: 0.9 }}>— R.O.O.T.S. Graduate</p></div></>) },
-    ],
-    5: [
-      { id: 0, type: 'content', title: 'Finding Origins', content: (<><h3 style={{ fontSize: 20, marginBottom: 16, fontWeight: 600 }}>O — Find the Origin</h3><p>Once you've recognized the pattern, it's time to <strong style={{ color: brandColor }}>trace back to the source</strong>.</p><p>The "5 Whys" technique is your primary tool:</p><div style={{ background: '#f8f9fa', padding: 20, borderRadius: 12, margin: '20px 0' }}><div style={{ padding: 8, marginBottom: 8 }}><strong>Why</strong> the fatigue? → Poor sleep quality</div><div style={{ padding: 8, marginBottom: 8 }}><strong>Why</strong> poor sleep? → Cortisol dysregulation</div><div style={{ padding: 8, marginBottom: 8 }}><strong>Why</strong> cortisol issues? → Chronic work stress</div><div style={{ padding: 8, marginBottom: 8 }}><strong>Why</strong> unable to manage stress? → No recovery practices</div><div style={{ padding: 8 }}><strong>Why</strong> no recovery? → Belief that "pushing through" is strength</div></div><p>Now we know: <strong style={{ color: brandColor }}>mindset + stress management</strong> is the origin.</p></>) },
-      { id: 1, type: 'content', title: 'Timeline Method', content: (<><h3 style={{ fontSize: 20, marginBottom: 16, fontWeight: 600 }}>The Patient Timeline</h3><p>Every client gets a detailed timeline tracking:</p><ul style={{ paddingLeft: 20, margin: '16px 0' }}><li><strong>Antecedents:</strong> Early life and genetic factors</li><li><strong>Triggers:</strong> Events that initiated symptoms</li><li><strong>Mediators:</strong> What keeps symptoms active</li><li>Major life events, medications, exposures</li></ul><p>Often, patterns emerge that <strong style={{ color: brandColor }}>no one has ever connected</strong>.</p></>) },
-      { id: 2, type: 'quickcheck', title: 'Quick Check', question: 'What does the "5 Whys" technique help practitioners do?', options: ['Diagnose diseases', 'Trace symptoms to their origin', 'Prescribe treatments', 'Market services'], correct: 'Trace symptoms to their origin', explanation: 'The 5 Whys technique traces symptoms back to their true origin by asking "why" repeatedly.' },
-    ],
-    6: [
-      { id: 0, type: 'content', title: 'The 5 Pillars', content: (<><h3 style={{ fontSize: 20, marginBottom: 16, fontWeight: 600 }}>O — Optimize the Foundations</h3><p>Every successful intervention addresses <strong style={{ color: brandColor }}>the 5 foundational pillars</strong>:</p><div style={{ display: 'grid', gap: 12, margin: '20px 0' }}>{[{ icon: '🥗', name: 'Nutrition', desc: 'Food as medicine, elimination diets, nutrient density' }, { icon: '🏃', name: 'Movement', desc: 'Appropriate exercise, not over-training' }, { icon: '��', name: 'Sleep', desc: 'Quality, quantity, circadian rhythm' }, { icon: '🧘', name: 'Stress', desc: 'HPA axis, nervous system regulation' }, { icon: '🌿', name: 'Environment', desc: 'Toxins, EMFs, mold, water quality' }].map((p, i) => (<div key={i} style={{ display: 'flex', gap: 16, padding: 16, background: '#f8f9fa', borderRadius: 12 }}><span style={{ fontSize: 28 }}>{p.icon}</span><div><strong style={{ color: brandColor }}>{p.name}</strong><div style={{ fontSize: 14, color: '#666' }}>{p.desc}</div></div></div>))}</div></>) },
-      { id: 1, type: 'content', title: 'Why All 5 Matter', content: (<><h3 style={{ fontSize: 20, marginBottom: 16, fontWeight: 600 }}>You Cannot Out-Supplement a Bad Foundation</h3><p>Many practitioners focus only on nutrition or supplements. But:</p><ul style={{ paddingLeft: 20, margin: '16px 0' }}><li>Best diet won't work with chronic sleep deprivation</li><li>Exercise becomes harmful under extreme stress</li><li>Supplements fail if environment is toxic</li></ul><p>R.O.O.T.S. practitioners <strong style={{ color: brandColor }}>address all 5 pillars systematically</strong>.</p></>) },
-      { id: 2, type: 'quickcheck', title: 'Quick Check', question: 'How many foundational pillars does the second O in R.O.O.T.S. address?', options: ['3', '4', '5', '7'], correct: '5', explanation: 'The 5 pillars are: Nutrition, Movement, Sleep, Stress, and Environment.' },
-    ],
-    7: [
-      { id: 0, type: 'content', title: 'Transformation', content: (<><h3 style={{ fontSize: 20, marginBottom: 16, fontWeight: 600 }}>T — Transform with Coaching</h3><p>Knowledge alone doesn't create change. <strong style={{ color: brandColor }}>Coaching does.</strong></p><p>The T in R.O.O.T.S. focuses on:</p><ul style={{ paddingLeft: 20, margin: '16px 0' }}><li>Behavior change psychology</li><li>Motivational interviewing</li><li>Habit formation science</li><li>Accountability structures</li><li>Overcoming resistance</li></ul><p>Your healthcare background + these coaching skills = <strong style={{ color: brandColor }}>powerful transformation</strong>.</p></>) },
-      { id: 1, type: 'content', title: 'Coaching Framework', content: (<><h3 style={{ fontSize: 20, marginBottom: 16, fontWeight: 600 }}>The COACH Model</h3><div style={{ display: 'grid', gap: 12, margin: '20px 0' }}>{[{ letter: 'C', name: 'Clarify goals' }, { letter: 'O', name: 'Obstacles identify' }, { letter: 'A', name: 'Action plan' }, { letter: 'C', name: 'Commitment secure' }, { letter: 'H', name: 'Hold accountable' }].map((item, i) => (<div key={i} style={{ display: 'flex', gap: 12, padding: 12, background: '#f8f9fa', borderRadius: 8 }}><span style={{ width: 32, height: 32, borderRadius: 8, background: brandColor, color: 'white', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 'bold' }}>{item.letter}</span><span>{item.name}</span></div>))}</div><p>This framework ensures clients actually <strong>implement</strong> what they learn.</p></>) },
-      { id: 2, type: 'quickcheck', title: 'Quick Check', question: 'What does the T in R.O.O.T.S. focus on?', options: ['Testing protocols', 'Transform with Coaching', 'Treatment plans', 'Technical skills'], correct: 'Transform with Coaching', explanation: 'T stands for Transform with Coaching — using behavior change psychology to create lasting results.' },
-    ],
-    8: [
-      { id: 0, type: 'content', title: 'The Money Lesson', content: (<><h3 style={{ fontSize: 20, marginBottom: 16, fontWeight: 600 }}>S — Scale Your Practice 💰</h3><p>This is <strong style={{ color: brandColor }}>the lesson most certifications skip</strong>. But it's the most important.</p><p>What good is knowledge if you can't build a sustainable practice?</p><div style={{ background: 'linear-gradient(135deg, #f8f9fa, white)', border: '2px solid ' + accentColor, padding: 24, borderRadius: 16, textAlign: 'center', margin: '24px 0' }}><div style={{ fontSize: 14, color: '#888', marginBottom: 8 }}>R.O.O.T.S. Practitioners Earn</div><div style={{ fontSize: 36, fontWeight: 'bold', color: brandColor }}>,000 - ,000/mo</div><div style={{ fontSize: 14, color: '#666', marginTop: 8 }}>Working 15-25 hours per week</div></div></>) },
-      { id: 1, type: 'content', title: 'Business Models', content: (<><h3 style={{ fontSize: 20, marginBottom: 16, fontWeight: 600 }}>Proven Business Models</h3><p>Choose the model that fits your life:</p><div style={{ display: 'grid', gap: 12, margin: '20px 0' }}>{[{ name: '1:1 Coaching', price: '-300/session', time: '4-6 clients/week = -6K/mo' }, { name: 'Group Programs', price: '-1500/program', time: '10-20 clients/round = -30K' }, { name: 'Hybrid Model', price: 'Both combined', time: '-15K/mo typical' }].map((m, i) => (<div key={i} style={{ padding: 16, background: '#f8f9fa', borderRadius: 12, borderLeft: '4px solid ' + accentColor }}><div style={{ fontWeight: 600, color: brandColor }}>{m.name}</div><div style={{ fontSize: 14, color: '#666' }}>{m.price} — {m.time}</div></div>))}</div></>) },
-      { id: 2, type: 'quickcheck', title: 'Quick Check', question: 'What do R.O.O.T.S. practitioners typically earn working 15-25 hours/week?', options: ['-2K/month', '-5K/month', '-15K/month', 'K+/month'], correct: '-15K/month', explanation: 'R.O.O.T.S. practitioners typically earn ,000-,000/month working part-time hours.' },
-      { id: 3, type: 'content', title: 'Getting Clients', content: (<><h3 style={{ fontSize: 20, marginBottom: 16, fontWeight: 600 }}>The Client Acquisition System</h3><p>The full certification includes our complete marketing system:</p><ul style={{ paddingLeft: 20, margin: '16px 0' }}><li>Social media content templates</li><li>Email sequences that convert</li><li>Referral system setup</li><li>Pricing psychology</li><li>Sales conversation scripts</li></ul><div style={{ background: brandColor, color: 'white', padding: 24, borderRadius: 12, marginTop: 20 }}><p style={{ margin: 0, fontStyle: 'italic' }}>"The business training was worth the entire certification price alone. I had my first paying client within 2 weeks."</p><p style={{ margin: '12px 0 0', fontSize: 14, opacity: 0.9 }}>— Recent R.O.O.T.S. Graduate</p></div></>) },
-    ],
-    9: [
-      { id: 0, type: 'content', title: 'Case Study: Jennifer', content: (<><h3 style={{ fontSize: 20, marginBottom: 16, fontWeight: 600 }}>Case Study: ICU Nurse to R.O.O.T.S. Practitioner</h3><div style={{ background: '#f8f9fa', padding: 24, borderRadius: 12, margin: '20px 0' }}><p><strong>Background:</strong> Jennifer, 42. ICU nurse for 15 years. Severe burnout, considering leaving healthcare entirely.</p><p><strong>Discovery:</strong> Found R.O.O.T.S. while searching for alternatives to bedside nursing.</p><p><strong>Journey:</strong></p><ul><li>Month 1-3: Completed certification while still working</li><li>Month 4-6: Started seeing clients on weekends</li><li>Month 7-9: Reduced nursing to part-time</li><li>Month 10: Left hospital completely</li></ul><p style={{ margin: 0 }}><strong>Today:</strong> Full practice, 20 clients/month, works from home, earns more than nursing salary, no burnout.</p></div></>) },
-      { id: 1, type: 'content', title: 'Your 90-Day Roadmap', content: (<><h3 style={{ fontSize: 20, marginBottom: 16, fontWeight: 600 }}>Your Personal 90-Day Roadmap</h3><p>Here is your path forward:</p><div style={{ display: 'grid', gap: 12, margin: '20px 0' }}>{[{ phase: 'Days 1-30', title: 'Foundation', items: 'Complete full certification, set up basic systems' }, { phase: 'Days 31-60', title: 'Launch', items: 'First 3-5 clients (can be free/discounted), refine your approach' }, { phase: 'Days 61-90', title: 'Scale', items: 'Transition to paid clients, establish referral systems' }].map((p, i) => (<div key={i} style={{ padding: 20, background: '#f8f9fa', borderRadius: 12 }}><div style={{ display: 'flex', gap: 12, alignItems: 'center', marginBottom: 8 }}><span style={{ padding: '4px 12px', background: brandColor, color: 'white', borderRadius: 20, fontSize: 12, fontWeight: 600 }}>{p.phase}</span><span style={{ fontWeight: 600, color: brandColor }}>{p.title}</span></div><div style={{ fontSize: 14, color: '#666' }}>{p.items}</div></div>))}</div></>) },
-      { id: 2, type: 'content', title: 'Congratulations', content: (<><h3 style={{ fontSize: 20, marginBottom: 16, fontWeight: 600 }}>🎉 Congratulations!</h3><p>You have completed the <strong style={{ color: brandColor }}>R.O.O.T.S. Method™ Foundation Training</strong>!</p><div style={{ background: 'linear-gradient(135deg, #f8f9fa, white)', border: '2px solid ' + accentColor, borderRadius: 16, padding: 32, textAlign: 'center', margin: '24px 0' }}><div style={{ fontSize: 24, marginBottom: 8 }}>🌱</div><div style={{ fontSize: 20, fontWeight: 'bold', color: brandColor }}>R.O.O.T.S. Method™ Foundation Certificate</div><div style={{ fontSize: 14, color: '#666', marginTop: 8 }}>You are ready for the full certification</div></div><p style={{ textAlign: 'center' }}>Ready to become a <strong>Certified R.O.O.T.S. Practitioner</strong>?</p><div style={{ background: brandColor, color: 'white', padding: 24, borderRadius: 12, textAlign: 'center', marginTop: 20 }}><div style={{ fontSize: 14, opacity: 0.9, marginBottom: 8, textDecoration: 'line-through' }}>Regular Price: </div><div style={{ fontSize: 28, fontWeight: 'bold' }}>🎄 Christmas Special: </div><div style={{ fontSize: 14, marginTop: 8 }}>Offer ends Dec 26</div></div></>) },
-    ],
-  };
-  const sections = contentMap[9] || [];
+
+  const sections = [
+    {
+      id: 0, type: 'content', title: 'The Breaking Point', content: (
+        <>
+          <div style={{ background: '#f8f9fa', padding: 20, borderRadius: 12, marginBottom: 24 }}>
+            <p style={{ fontStyle: 'italic', color: '#666', margin: 0 }}>"I sat in my car after a 14-hour shift and just... cried. I couldn't go home. I couldn't go back in. I was completely empty."</p>
+          </div>
+          <h3 style={{ fontSize: 20, marginBottom: 16, fontWeight: 600 }}>Maria's Breaking Point</h3>
+          <p>Maria was 47. Med-Surg nurse for 18 years. <strong style={{ color: '#EF4444' }}>Completely broken.</strong></p>
+          <p>She'd gained 35 pounds. Her own Hashimoto's was out of control. She'd started snapping at her kids. Her husband said she wasn't "herself" anymore.</p>
+          <p>But the worst part?</p>
+          <div style={{ background: '#fee2e2', padding: 20, borderRadius: 12, margin: '20px 0', borderLeft: '4px solid #EF4444' }}>
+            <p style={{ margin: 0, fontWeight: 600 }}>She'd become the kind of nurse she swore she'd never be.</p>
+            <p style={{ margin: '12px 0 0', fontSize: 15 }}>Rushing through patient conversations. Too tired to really listen. Just trying to survive until the end of shift.</p>
+          </div>
+          <p>One night, she Googled: <em>"Can nurses do something else besides bedside?"</em></p>
+          <p>That search changed everything.</p>
+        </>
+      )
+    },
+    {
+      id: 1, type: 'content', title: 'The Discovery', content: (
+        <>
+          <h3 style={{ fontSize: 20, marginBottom: 16, fontWeight: 600 }}>She Found a Different Path</h3>
+          <p>Maria discovered functional medicine coaches were earning <strong style={{ color: brandColor }}>$75-150/hour</strong> helping people solve the exact health problems doctors couldn't figure out.</p>
+          <p>The same problems <em>she</em> had. The same frustrations she felt watching patients leave with pills that wouldn't help.</p>
+          <div style={{ background: '#f8f9fa', padding: 20, borderRadius: 12, margin: '20px 0' }}>
+            <p style={{ margin: 0, fontWeight: 600, color: brandColor }}>But she almost didn't do it.</p>
+            <p style={{ margin: '12px 0 0' }}>She thought: "I'm just a nurse. Who would pay ME for health coaching?"</p>
+          </div>
+          <p>Sound familiar?</p>
+          <p>Then she realized something that changed her mindset forever:</p>
+          <div style={{ background: brandColor, color: 'white', padding: 24, borderRadius: 12, margin: '20px 0' }}>
+            <p style={{ margin: 0, fontSize: 18, fontWeight: 600 }}>"Wait. People are paying $150/hour to coaches with NO clinical background. And I have 18 years of patient care experience?"</p>
+          </div>
+          <p>She enrolled in R.O.O.T.S. that night.</p>
+        </>
+      )
+    },
+    {
+      id: 2, type: 'content', title: 'The Transformation', content: (
+        <>
+          <h3 style={{ fontSize: 20, marginBottom: 16, fontWeight: 600 }}>60 Days Later</h3>
+          <p>Maria didn't quit her job overnight. She was smart about it.</p>
+          <div style={{ display: 'grid', gap: 12, margin: '20px 0' }}>
+            <div style={{ padding: 16, background: '#f8f9fa', borderRadius: 12, display: 'flex', gap: 12, alignItems: 'center' }}>
+              <span style={{ fontSize: 24 }}>📅</span>
+              <div>
+                <strong>Week 1-4:</strong> Completed R.O.O.T.S. certification (while still working)
+              </div>
+            </div>
+            <div style={{ padding: 16, background: '#f8f9fa', borderRadius: 12, display: 'flex', gap: 12, alignItems: 'center' }}>
+              <span style={{ fontSize: 24 }}>👤</span>
+              <div>
+                <strong>Week 5-6:</strong> Got her first 3 clients (friends with thyroid issues, just like her)
+              </div>
+            </div>
+            <div style={{ padding: 16, background: '#d1fae5', borderRadius: 12, display: 'flex', gap: 12, alignItems: 'center', border: '2px solid #10B981' }}>
+              <span style={{ fontSize: 24 }}>💰</span>
+              <div>
+                <strong>Week 8:</strong> First $1,200 month — working just 6 hours on weekends
+              </div>
+            </div>
+          </div>
+          <p>Today, 8 months later, Maria works <strong style={{ color: brandColor }}>from home</strong>. She sees 12 clients/week at $125/hour. She makes <strong style={{ color: brandColor }}>$6,500/month</strong> working half the hours she did as a nurse.</p>
+          <p>And her Hashimoto's? Under control — because she finally had time to take care of <em>herself</em>.</p>
+        </>
+      )
+    },
+    {
+      id: 3, type: 'content', title: 'Your Roadmap', content: (
+        <>
+          <h3 style={{ fontSize: 20, marginBottom: 16, fontWeight: 600 }}>Your 90-Day Roadmap</h3>
+          <p>Here's your path — the same one Maria followed:</p>
+          <div style={{ display: 'grid', gap: 16, margin: '20px 0' }}>
+            <div style={{ padding: 20, background: `linear-gradient(135deg, ${brandColor}10, ${brandColor}05)`, borderRadius: 12, borderLeft: `4px solid ${brandColor}` }}>
+              <div style={{ display: 'flex', gap: 12, alignItems: 'center', marginBottom: 8 }}>
+                <span style={{ padding: '6px 14px', background: brandColor, color: 'white', borderRadius: 20, fontSize: 13, fontWeight: 600 }}>Days 1-30</span>
+                <span style={{ fontWeight: 700, fontSize: 18, color: brandColor }}>FOUNDATION</span>
+              </div>
+              <p style={{ margin: 0, color: '#555' }}>Complete full certification. Set up your simple systems. Keep your job — zero risk.</p>
+            </div>
+            <div style={{ padding: 20, background: `linear-gradient(135deg, ${accentColor}15, ${accentColor}05)`, borderRadius: 12, borderLeft: `4px solid ${accentColor}` }}>
+              <div style={{ display: 'flex', gap: 12, alignItems: 'center', marginBottom: 8 }}>
+                <span style={{ padding: '6px 14px', background: accentColor, color: '#1a1a1a', borderRadius: 20, fontSize: 13, fontWeight: 600 }}>Days 31-60</span>
+                <span style={{ fontWeight: 700, fontSize: 18, color: '#1a1a1a' }}>FIRST CLIENTS</span>
+              </div>
+              <p style={{ margin: 0, color: '#555' }}>Your first 3-5 clients. Friends, coworkers with health struggles. Free or discounted. Build confidence.</p>
+            </div>
+            <div style={{ padding: 20, background: `linear-gradient(135deg, #10B98115, #10B98105)`, borderRadius: 12, borderLeft: '4px solid #10B981' }}>
+              <div style={{ display: 'flex', gap: 12, alignItems: 'center', marginBottom: 8 }}>
+                <span style={{ padding: '6px 14px', background: '#10B981', color: 'white', borderRadius: 20, fontSize: 13, fontWeight: 600 }}>Days 61-90</span>
+                <span style={{ fontWeight: 700, fontSize: 18, color: '#10B981' }}>PAID PRACTICE</span>
+              </div>
+              <p style={{ margin: 0, color: '#555' }}>Transition to paid clients. $75-150/session. Referrals start coming. Your exit strategy takes shape.</p>
+            </div>
+          </div>
+        </>
+      )
+    },
+    {
+      id: 4, type: 'content', title: 'Congratulations', content: (
+        <>
+          <h3 style={{ fontSize: 20, marginBottom: 16, fontWeight: 600 }}>🎉 You Did It.</h3>
+          <p>You just completed the <strong style={{ color: brandColor }}>R.O.O.T.S. Method™ Foundation Training</strong>.</p>
+          <p>You now know more about root-cause health coaching than 99% of people who call themselves "health coaches."</p>
+
+          <div style={{ background: 'linear-gradient(135deg, #f8f9fa, white)', border: `3px solid ${accentColor}`, borderRadius: 20, padding: 32, textAlign: 'center', margin: '28px 0' }}>
+            <Image src="/accredipro-logo-full.jpg" alt="AccrediPro" width={80} height={80} style={{ borderRadius: 12, marginBottom: 16 }} />
+            <div style={{ fontSize: 22, fontWeight: 'bold', color: brandColor }}>R.O.O.T.S. Method™</div>
+            <div style={{ fontSize: 16, color: '#666', marginTop: 4 }}>Foundation Certificate</div>
+            <div style={{ fontSize: 13, color: '#888', marginTop: 12 }}>Internationally Accredited • CMA Recognized</div>
+          </div>
+
+          <p style={{ textAlign: 'center', fontSize: 17 }}>But here's the truth...</p>
+          <p style={{ textAlign: 'center', color: '#666' }}>This foundation is just the beginning. The full R.O.O.T.S. Certification includes everything you need to build a <strong>$5K-15K/month practice</strong> — client acquisition, pricing, scripts, and ongoing mentorship.</p>
+
+          <div style={{ background: brandColor, color: 'white', padding: 28, borderRadius: 16, textAlign: 'center', marginTop: 24 }}>
+            <div style={{ fontSize: 15, opacity: 0.9, marginBottom: 8 }}>
+              <span style={{ textDecoration: 'line-through' }}>Regular: $997</span>
+            </div>
+            <div style={{ fontSize: 32, fontWeight: 'bold' }}>🎄 $497</div>
+            <div style={{ fontSize: 14, marginTop: 4, opacity: 0.9 }}>Christmas Special — Ends Dec 26</div>
+            <a href="https://sarah.accredipro.academy/fm-certification" style={{ display: 'inline-block', marginTop: 20, padding: '14px 32px', background: accentColor, color: '#1a1a1a', borderRadius: 10, fontSize: 16, fontWeight: 700, textDecoration: 'none' }}>
+              Get Full Certification →
+            </a>
+          </div>
+        </>
+      )
+    },
+  ];
+
   const totalSections = sections.length;
-  const progress = Math.round((completedSections.length / totalSections) * 100);
   const moduleProgress = Math.round((lessonNumber / 9) * 100);
   const handleContinue = () => { if (!completedSections.includes(currentSection)) setCompletedSections([...completedSections, currentSection]); if (currentSection < totalSections - 1) { setCurrentSection(currentSection + 1); window.scrollTo({ top: 0, behavior: 'smooth' }); } };
-  const handleQuickCheck = (id: number, a: string) => setQuickCheckAnswers({ ...quickCheckAnswers, [id]: a });
-  const handleCheckAnswer = (id: number) => { if (!showAnswers.includes(id)) setShowAnswers([...showAnswers, id]); };
-  const currentSectionData = sections[currentSection] || { id: 0, type: 'content', title: '', content: null };
+  const currentSectionData = sections[currentSection];
   const isLastSection = currentSection === totalSections - 1;
-  const isQuickCheck = currentSectionData.type === 'quickcheck';
-  const canContinue = isQuickCheck ? showAnswers.includes(currentSectionData.id) : true;
-  const nextLesson = lessonNumber < 9 ? '/roots-method/lesson-' + (lessonNumber + 1) : '/roots-method';
-  const nextTitles: Record<number, string> = { 4: 'O — Find the Origin', 5: 'O — Optimize the Foundations', 6: 'T — Transform with Coaching', 7: 'S — Scale Your Practice', 8: 'Case Study + 90-Day Roadmap', 9: 'Complete' };
+
   return (
     <div style={{ minHeight: '100vh', background: '#fff', fontFamily: 'Georgia, serif' }}>
-      <header style={{ background: 'linear-gradient(135deg, #1a1a2e, #16213e)', padding: '16px 24px', position: 'sticky', top: 0, zIndex: 100 }}><div style={{ maxWidth: 640, margin: '0 auto' }}><div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 12 }}><span style={{ fontSize: 18 }}>🌱</span><span style={{ fontSize: 14, color: 'white', fontWeight: 600 }}>R.O.O.T.S. Method™</span><div style={{ flex: 1, height: 6, background: 'rgba(255,255,255,0.2)', borderRadius: 3, marginLeft: 12 }}><div style={{ height: '100%', width: moduleProgress + '%', background: accentColor, borderRadius: 3 }} /></div><span style={{ fontSize: 12, color: 'rgba(255,255,255,0.7)' }}>{lessonNumber}/9</span></div><div style={{ display: 'flex', justifyContent: 'space-between', color: 'white' }}><span style={{ fontSize: 14 }}>Lesson {lessonNumber}</span><span style={{ fontSize: 12, opacity: 0.7 }}>6 min</span></div></div></header>
-      <main style={{ maxWidth: 640, margin: '0 auto', padding: '32px 24px 140px' }}><h1 style={{ fontSize: 26, lineHeight: 1.3, marginBottom: 32, fontWeight: 600 }}>{title}</h1>{currentSectionData.type === 'content' ? (<div style={{ fontSize: 17, lineHeight: 1.9 }}>{currentSectionData.content}</div>) : (<div style={{ background: '#f8f9fa', border: '1px solid #e9ecef', borderRadius: 16, padding: 28 }}><p style={{ fontSize: 18, fontWeight: 500, marginBottom: 24 }}>{currentSectionData.question}</p><div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>{currentSectionData.options?.map((o: string) => { const sel = quickCheckAnswers[currentSectionData.id] === o; const cor = o === currentSectionData.correct; const show = showAnswers.includes(currentSectionData.id); return (<button key={o} onClick={() => !show && handleQuickCheck(currentSectionData.id, o)} style={{ padding: '16px', border: '2px solid', borderColor: show ? (cor ? '#10B981' : sel ? '#EF4444' : '#ddd') : (sel ? brandColor : '#ddd'), background: show && cor ? '#D1FAE5' : show && sel && !cor ? '#FEE2E2' : 'white', borderRadius: 10, textAlign: 'left', fontSize: 16 }}>{o}</button>); })}</div>{quickCheckAnswers[currentSectionData.id] && !showAnswers.includes(currentSectionData.id) && (<button onClick={() => handleCheckAnswer(currentSectionData.id)} style={{ marginTop: 20, padding: '16px', background: brandColor, color: 'white', border: 'none', borderRadius: 10, fontSize: 16, fontWeight: 600, width: '100%', cursor: 'pointer' }}>Check Answer</button>)}{showAnswers.includes(currentSectionData.id) && (<div style={{ marginTop: 20, padding: 16, background: '#D1FAE5', borderRadius: 10 }}><p style={{ margin: 0 }}>{currentSectionData.explanation}</p></div>)}</div>)}<div style={{ marginTop: 40 }}>{!canContinue ? (<p style={{ color: '#888', textAlign: 'center' }}>Answer to continue</p>) : isLastSection ? (<Link href={nextLesson} style={{ display: 'block', padding: '18px', background: 'linear-gradient(135deg, ' + brandColor + ', #1a3a2e)', color: 'white', borderRadius: 10, fontSize: 16, fontWeight: 600, textAlign: 'center', textDecoration: 'none' }}>{lessonNumber === 9 ? '🎉 Claim Your Certificate' : 'Continue to ' + nextTitles[lessonNumber] + ' →'}</Link>) : (<button onClick={handleContinue} style={{ width: '100%', padding: '18px', background: 'linear-gradient(135deg, ' + brandColor + ', #1a3a2e)', color: 'white', border: 'none', borderRadius: 10, fontSize: 16, fontWeight: 600, cursor: 'pointer' }}>Continue →</button>)}</div></main>
-      <div style={{ position: 'fixed', bottom: 24, right: 24, display: 'flex', flexDirection: 'column', gap: 12, zIndex: 100 }}><button onClick={() => setShowNotes(!showNotes)} style={{ width: 56, height: 56, borderRadius: '50%', background: showNotes ? brandColor : 'white', color: showNotes ? 'white' : brandColor, border: '2px solid ' + brandColor, cursor: 'pointer', fontSize: 20 }}>📝</button><button onClick={() => setShowChat(!showChat)} style={{ width: 56, height: 56, borderRadius: '50%', background: showChat ? brandColor : 'white', color: showChat ? 'white' : brandColor, border: '2px solid ' + brandColor, cursor: 'pointer', fontSize: 20 }}>💬</button></div>
-      {showNotes && (<div style={{ position: 'fixed', bottom: 100, right: 24, width: 320, background: 'white', borderRadius: 16, boxShadow: '0 4px 20px rgba(0,0,0,0.15)', zIndex: 100 }}><div style={{ padding: 16, background: brandColor, color: 'white', borderRadius: '16px 16px 0 0' }}>📝 Notes</div><div style={{ padding: 16 }}><textarea value={notes} onChange={(e) => handleNotesChange(e.target.value)} style={{ width: '100%', height: 200, border: '1px solid #ddd', borderRadius: 8, padding: 12 }} /></div></div>)}
-      {showChat && (<div style={{ position: 'fixed', bottom: 100, right: 24, width: 340, height: 400, background: 'white', borderRadius: 16, boxShadow: '0 4px 20px rgba(0,0,0,0.15)', zIndex: 100, display: 'flex', flexDirection: 'column' }}><div style={{ padding: 16, background: brandColor, color: 'white', borderRadius: '16px 16px 0 0', display: 'flex', alignItems: 'center', gap: 10 }}><Image src="/coaches/sarah-coach.webp" alt="Sarah" width={32} height={32} style={{ borderRadius: '50%' }} /><span>Chat with Sarah</span></div><div style={{ flex: 1, padding: 16, textAlign: 'center', color: '#888' }}>🌱 Ask me anything!</div><div style={{ padding: 12, borderTop: '1px solid #eee' }}><input value={newMessage} onChange={(e) => setNewMessage(e.target.value)} placeholder="Type..." style={{ width: '100%', padding: 12, border: '1px solid #ddd', borderRadius: 20 }} /></div></div>)}
+      {/* Header with AccrediPro branding */}
+      <header style={{ background: 'linear-gradient(135deg, #1a1a2e, #16213e)', padding: '16px 24px', position: 'sticky', top: 0, zIndex: 100 }}>
+        <div style={{ maxWidth: 640, margin: '0 auto' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 12 }}>
+            <Image src="/accredipro-logo-full.jpg" alt="AccrediPro" width={32} height={32} style={{ borderRadius: 6 }} />
+            <span style={{ fontSize: 14, color: 'white', fontWeight: 600 }}>R.O.O.T.S. Method™</span>
+            <div style={{ flex: 1, height: 6, background: 'rgba(255,255,255,0.2)', borderRadius: 3, marginLeft: 12 }}>
+              <div style={{ height: '100%', width: `${moduleProgress}%`, background: accentColor, borderRadius: 3 }} />
+            </div>
+            <span style={{ fontSize: 12, color: 'rgba(255,255,255,0.7)' }}>{lessonNumber}/9</span>
+          </div>
+          <div style={{ display: 'flex', justifyContent: 'space-between', color: 'white' }}>
+            <span style={{ fontSize: 14 }}>Lesson {lessonNumber}</span>
+            <span style={{ fontSize: 12, opacity: 0.7 }}>5 min</span>
+          </div>
+        </div>
+      </header>
+
+      <main style={{ maxWidth: 640, margin: '0 auto', padding: '32px 24px 140px' }}>
+        <h1 style={{ fontSize: 26, lineHeight: 1.3, marginBottom: 32, fontWeight: 600 }}>{title}</h1>
+        <div style={{ fontSize: 17, lineHeight: 1.9 }}>{currentSectionData.content}</div>
+
+        <div style={{ marginTop: 40 }}>
+          {isLastSection ? (
+            <Link href="/roots-method" style={{ display: 'block', padding: '18px', background: `linear-gradient(135deg, ${brandColor}, #1a3a2e)`, color: 'white', borderRadius: 10, fontSize: 16, fontWeight: 600, textAlign: 'center', textDecoration: 'none' }}>🎉 Complete Training</Link>
+          ) : (
+            <button onClick={handleContinue} style={{ width: '100%', padding: '18px', background: `linear-gradient(135deg, ${brandColor}, #1a3a2e)`, color: 'white', border: 'none', borderRadius: 10, fontSize: 16, fontWeight: 600, cursor: 'pointer' }}>Continue →</button>
+          )}
+        </div>
+      </main>
+
+      {/* Floating buttons */}
+      <div style={{ position: 'fixed', bottom: 24, right: 24, display: 'flex', flexDirection: 'column', gap: 12, zIndex: 100 }}>
+        <button onClick={() => setShowNotes(!showNotes)} style={{ width: 56, height: 56, borderRadius: '50%', background: showNotes ? brandColor : 'white', color: showNotes ? 'white' : brandColor, border: `2px solid ${brandColor}`, cursor: 'pointer', fontSize: 20 }}>📝</button>
+        <button onClick={() => setShowChat(!showChat)} style={{ width: 56, height: 56, borderRadius: '50%', background: showChat ? brandColor : 'white', color: showChat ? 'white' : brandColor, border: `2px solid ${brandColor}`, cursor: 'pointer', fontSize: 20 }}>💬</button>
+      </div>
+
+      {/* Notes panel */}
+      {showNotes && (
+        <div style={{ position: 'fixed', bottom: 100, right: 24, width: 320, background: 'white', borderRadius: 16, boxShadow: '0 4px 20px rgba(0,0,0,0.15)', zIndex: 100 }}>
+          <div style={{ padding: 16, background: brandColor, color: 'white', borderRadius: '16px 16px 0 0' }}>📝 Notes</div>
+          <div style={{ padding: 16 }}>
+            <textarea value={notes} onChange={(e) => handleNotesChange(e.target.value)} placeholder="Take notes..." style={{ width: '100%', height: 200, border: '1px solid #ddd', borderRadius: 8, padding: 12, fontFamily: 'inherit' }} />
+          </div>
+        </div>
+      )}
+
+      {/* Chat panel */}
+      {showChat && (
+        <div style={{ position: 'fixed', bottom: 100, right: 24, width: 340, height: 400, background: 'white', borderRadius: 16, boxShadow: '0 4px 20px rgba(0,0,0,0.15)', zIndex: 100, display: 'flex', flexDirection: 'column' }}>
+          <div style={{ padding: 16, background: brandColor, color: 'white', borderRadius: '16px 16px 0 0', display: 'flex', alignItems: 'center', gap: 10 }}>
+            <Image src="/coaches/sarah-coach.webp" alt="Sarah" width={32} height={32} style={{ borderRadius: '50%' }} />
+            <span>Chat with Sarah</span>
+          </div>
+          <div style={{ flex: 1, padding: 16, textAlign: 'center', color: '#888' }}>🌱 Ask me anything!</div>
+          <div style={{ padding: 12, borderTop: '1px solid #eee' }}>
+            <input value={newMessage} onChange={(e) => setNewMessage(e.target.value)} placeholder="Type..." style={{ width: '100%', padding: 12, border: '1px solid #ddd', borderRadius: 20 }} />
+          </div>
+        </div>
+      )}
     </div>
   );
 }
