@@ -617,17 +617,49 @@ export default function FMCertificationPage() {
                 </div>
             </section>
 
-            {/* Accreditation Logos */}
-            <section className="py-6 bg-white border-y border-slate-100">
+            {/* Quick Fit Check - MUST BE EARLY */}
+            <section className="py-8 bg-white border-b border-slate-100">
+                <div className="max-w-4xl mx-auto px-4">
+                    <div className="grid md:grid-cols-2 gap-6">
+                        <div className="bg-olive-50 rounded-2xl p-6 border border-olive-200">
+                            <h3 className="font-bold text-slate-900 mb-4 flex items-center gap-2">
+                                <CheckCircle2 className="h-5 w-5 text-olive-600" />
+                                This Certification Is a Great Fit If You Are:
+                            </h3>
+                            <ul className="space-y-2 text-slate-700 text-sm">
+                                <li className="flex items-start gap-2"><CheckCircle2 className="h-4 w-4 text-olive-600 shrink-0 mt-0.5" />Licensed healthcare professional (RN, NP, PA, MD, DC, RD, etc.)</li>
+                                <li className="flex items-start gap-2"><CheckCircle2 className="h-4 w-4 text-olive-600 shrink-0 mt-0.5" />Already seeing patients or planning to start a practice</li>
+                                <li className="flex items-start gap-2"><CheckCircle2 className="h-4 w-4 text-olive-600 shrink-0 mt-0.5" />Ready to apply what you learn 3–5 hrs/week</li>
+                                <li className="flex items-start gap-2"><CheckCircle2 className="h-4 w-4 text-olive-600 shrink-0 mt-0.5" />Want evidence-based methods, not guesswork</li>
+                            </ul>
+                        </div>
+                        <div className="bg-red-50 rounded-2xl p-6 border border-red-200">
+                            <h3 className="font-bold text-slate-900 mb-4 flex items-center gap-2">
+                                <X className="h-5 w-5 text-red-500" />
+                                This Is NOT For You If:
+                            </h3>
+                            <ul className="space-y-2 text-slate-700 text-sm">
+                                <li className="flex items-start gap-2"><X className="h-4 w-4 text-red-500 shrink-0 mt-0.5" />You want passive income without working with clients</li>
+                                <li className="flex items-start gap-2"><X className="h-4 w-4 text-red-500 shrink-0 mt-0.5" />You're looking for a medical degree replacement</li>
+                                <li className="flex items-start gap-2"><X className="h-4 w-4 text-red-500 shrink-0 mt-0.5" />You don't plan to actually help people get results</li>
+                                <li className="flex items-start gap-2"><X className="h-4 w-4 text-red-500 shrink-0 mt-0.5" />You expect instant results without effort</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            {/* Accreditation Logos - MOVED UP FOR LEGITIMACY */}
+            <section className="py-6 bg-slate-50 border-b border-slate-100">
                 <div className="max-w-5xl mx-auto px-4">
                     <p className="text-center text-xs text-slate-500 mb-3 uppercase tracking-wide font-medium">
-                        Recognized by 9 International Accreditation Bodies
+                        Recognized by 9 International Accreditation Bodies • 80+ CEU • Insurance Eligible
                     </p>
                     <Image src="/all-logos.png" alt="Accredited by CMA, IPHM, CPD, IAOTH, ICAHP, IGCT, CTAA, IHTCP, IIOHT" width={900} height={100} className="w-full max-w-4xl mx-auto h-auto" />
                 </div>
             </section>
 
-            {/* 21 Certifications Showcase */}
+            {/* What Makes AccrediPro Different */}
             <section className="py-12 sm:py-16 bg-burgundy-900 text-white">
                 <div className="max-w-6xl mx-auto px-4">
                     <div className="text-center mb-10">
@@ -768,6 +800,60 @@ export default function FMCertificationPage() {
                         <p className="text-burgundy-800 text-sm">
                             Same quality education. 21 specialty certifications. Personal mentorship. Career support. <span className="font-bold">For 1/40th the price.</span>
                         </p>
+                    </div>
+                </div>
+            </section>
+
+            {/* Fast Proof Strip - MOVED UP for fast trust */}
+            <section className="py-6 bg-slate-900">
+                <div className="max-w-6xl mx-auto px-4">
+                    <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4 text-center">
+                        {[
+                            { emoji: "🩺", role: "RN", result: "$6.2K/mo", time: "in 4 months" },
+                            { emoji: "🩺", role: "PA", result: "$16.5K/mo", time: "hybrid practice" },
+                            { emoji: "🩺", role: "MD", result: "+$8K/mo", time: "integrative add-on" },
+                            { emoji: "🩺", role: "RD", result: "$150/hr", time: "cash-pay clients" },
+                        ].map((proof, i) => (
+                            <div key={i} className="flex items-center justify-center gap-2 text-white">
+                                <span className="text-lg">{proof.emoji}</span>
+                                <span className="font-bold text-burgundy-300">{proof.role}</span>
+                                <span className="text-white">→</span>
+                                <span className="font-bold text-gold-400">{proof.result}</span>
+                                <span className="text-slate-400 text-sm">{proof.time}</span>
+                            </div>
+                        ))}
+                    </div>
+                </div>
+            </section>
+
+            {/* Outcome Math - MOVED UP */}
+            <section className="py-10 bg-white">
+                <div className="max-w-4xl mx-auto px-4">
+                    <div className="text-center mb-6">
+                        <h2 className="text-2xl sm:text-3xl font-bold text-slate-900 mb-2">How Practitioners Reach $10K/Month</h2>
+                        <p className="text-slate-600">This isn't hype — it's simple math.</p>
+                    </div>
+                    <div className="grid sm:grid-cols-3 gap-4">
+                        {[
+                            { formula: "10 clients", multiplier: "× $1,000 programs", result: "= $10K/mo", desc: "3-month transformation packages" },
+                            { formula: "20 sessions", multiplier: "× $125/week each", result: "= $10K/mo", desc: "Weekly 1:1 coaching clients" },
+                            { formula: "15 clients", multiplier: "× $750 group program", result: "= $11.25K/mo", desc: "One group launch per month" },
+                        ].map((path, i) => (
+                            <div key={i} className="bg-olive-50 rounded-xl p-4 text-center border border-olive-100">
+                                <p className="text-olive-700 font-bold">{path.formula}</p>
+                                <p className="text-slate-600 text-sm">{path.multiplier}</p>
+                                <p className="text-2xl font-black text-olive-600 my-2">{path.result}</p>
+                                <p className="text-xs text-slate-500">{path.desc}</p>
+                            </div>
+                        ))}
+                    </div>
+                    <div className="text-center mt-6">
+                        <a href="#pricing">
+                            <Button variant="outline" className="border-burgundy-200 text-burgundy-700 hover:bg-burgundy-50 font-semibold">
+                                👉 Get Started — $197
+                                <ArrowRight className="h-4 w-4 ml-2" />
+                            </Button>
+                        </a>
                     </div>
                 </div>
             </section>
@@ -934,28 +1020,6 @@ export default function FMCertificationPage() {
                                 <span className="font-bold text-white">1,447 practitioners</span> already certified
                             </p>
                         </div>
-                    </div>
-                </div>
-            </section>
-
-            {/* Fast Proof Strip - Compressed Testimonials */}
-            <section className="py-6 bg-slate-900">
-                <div className="max-w-6xl mx-auto px-4">
-                    <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4 text-center">
-                        {[
-                            { emoji: "🩺", role: "RN", result: "$6.2K/mo", time: "in 4 months" },
-                            { emoji: "🩺", role: "PA", result: "$16.5K/mo", time: "hybrid practice" },
-                            { emoji: "🩺", role: "MD", result: "+$8K/mo", time: "integrative add-on" },
-                            { emoji: "🩺", role: "RD", result: "$150/hr", time: "cash-pay clients" },
-                        ].map((proof, i) => (
-                            <div key={i} className="flex items-center justify-center gap-2 text-white">
-                                <span className="text-lg">{proof.emoji}</span>
-                                <span className="font-bold text-burgundy-300">{proof.role}</span>
-                                <span className="text-white">→</span>
-                                <span className="font-bold text-gold-400">{proof.result}</span>
-                                <span className="text-slate-400 text-sm">{proof.time}</span>
-                            </div>
-                        ))}
                     </div>
                 </div>
             </section>
@@ -1325,63 +1389,45 @@ export default function FMCertificationPage() {
                 </div>
             </section>
 
-            {/* Income Potential - With Outcome Math */}
-            <section className="py-12 sm:py-16 bg-gradient-to-b from-olive-50 to-white">
-                <div className="max-w-5xl mx-auto px-4">
-                    <div className="text-center mb-10">
-                        <p className="text-olive-600 font-semibold mb-2 uppercase tracking-wide">The Opportunity</p>
-                        <h2 className="text-3xl sm:text-4xl font-bold text-slate-900 mb-4">How Practitioners Reach $10K/Month</h2>
-                        <p className="text-lg text-slate-600 max-w-2xl mx-auto">
-                            This isn't hype — it's simple math. Here's how our graduates build real income.
-                        </p>
-                    </div>
-
-                    {/* Outcome Math - Simple Paths */}
-                    <div className="bg-white rounded-2xl p-6 border border-olive-200 shadow-sm mb-8">
-                        <h3 className="font-bold text-slate-900 text-center mb-6">3 Paths to $10K/Month</h3>
-                        <div className="grid sm:grid-cols-3 gap-4">
-                            {[
-                                { formula: "10 clients", multiplier: "× $1,000 programs", result: "= $10K/mo", desc: "3-month transformation packages" },
-                                { formula: "20 sessions", multiplier: "× $125/week each", result: "= $10K/mo", desc: "Weekly 1:1 coaching clients" },
-                                { formula: "15 clients", multiplier: "× $750 group program", result: "= $11.25K/mo", desc: "One group launch per month" },
-                            ].map((path, i) => (
-                                <div key={i} className="bg-olive-50 rounded-xl p-4 text-center border border-olive-100">
-                                    <p className="text-olive-700 font-bold">{path.formula}</p>
-                                    <p className="text-slate-600 text-sm">{path.multiplier}</p>
-                                    <p className="text-2xl font-black text-olive-600 my-2">{path.result}</p>
-                                    <p className="text-xs text-slate-500">{path.desc}</p>
-                                </div>
-                            ))}
+            {/* First 7 Days Section - MOVED BEFORE PRICING */}
+            <section className="py-12 sm:py-16 bg-white">
+                <div className="max-w-4xl mx-auto px-4">
+                    <div className="text-center mb-8">
+                        <div className="inline-flex items-center gap-2 bg-olive-50 border border-olive-200 rounded-full px-4 py-2 mb-4">
+                            <Calendar className="h-4 w-4 text-olive-600" />
+                            <span className="text-sm font-semibold text-olive-700">Your Quick Start</span>
                         </div>
+                        <h2 className="text-3xl sm:text-4xl font-bold text-slate-900 mb-3">What Your First 7 Days Look Like</h2>
+                        <p className="text-lg text-slate-600">You won't be left wondering "now what?" — here's exactly what happens.</p>
                     </div>
 
-                    <div className="grid sm:grid-cols-3 gap-5 mb-6">
+                    <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
                         {[
-                            { range: "$5K – $8K", period: "/month", desc: "Part-time practice", detail: "8-12 clients • 12-18 hrs/week" },
-                            { range: "$10K – $15K", period: "/month", desc: "Full-time practice", detail: "18-30 clients • Replace job income", highlight: true },
-                            { range: "$20K – $25K+", period: "/month", desc: "Premium practice", detail: "Group programs • Scaled business" },
-                        ].map((tier, i) => (
-                            <div key={i} className={`rounded-2xl p-5 text-center ${tier.highlight ? 'bg-olive-600 text-white ring-4 ring-olive-300 shadow-xl' : 'bg-white shadow-sm border border-olive-200'}`}>
-                                <p className={`text-3xl font-black ${tier.highlight ? 'text-white' : 'text-olive-600'}`}>{tier.range}<span className="text-base font-medium">{tier.period}</span></p>
-                                <p className={`font-semibold mt-1 ${tier.highlight ? 'text-olive-100' : 'text-slate-800'}`}>{tier.desc}</p>
-                                <p className={`text-sm ${tier.highlight ? 'text-olive-200' : 'text-slate-500'}`}>{tier.detail}</p>
+                            { day: "Day 1", title: "Portal Access + Coach Intro", desc: "Login, meet your mentor, get your personalized study plan", icon: Laptop },
+                            { day: "Day 2-3", title: "Complete FM Foundations", desc: "Finish your first module + earn your first certificate", icon: BookOpen },
+                            { day: "Day 4-5", title: "Apply to a Real Case", desc: "Practice protocols on a mock client or real friend/family", icon: Users },
+                            { day: "Day 6-7", title: "Map Your First Offer", desc: "Draft your service package with coach guidance", icon: Target },
+                        ].map((step, i) => (
+                            <div key={i} className="bg-gradient-to-br from-cream-50 to-white rounded-2xl p-5 border border-cream-200 hover:shadow-lg transition-all">
+                                <div className="flex items-center gap-2 mb-3">
+                                    <div className="w-8 h-8 rounded-lg bg-burgundy-100 flex items-center justify-center">
+                                        <step.icon className="h-4 w-4 text-burgundy-600" />
+                                    </div>
+                                    <span className="text-xs font-bold text-burgundy-600 uppercase tracking-wide">{step.day}</span>
+                                </div>
+                                <h3 className="font-bold text-slate-900 text-sm mb-1">{step.title}</h3>
+                                <p className="text-xs text-slate-600">{step.desc}</p>
                             </div>
                         ))}
                     </div>
 
-                    {/* Micro CTA */}
-                    <div className="text-center">
-                        <a href="#pricing">
-                            <Button variant="outline" className="border-olive-300 text-olive-700 hover:bg-olive-50 font-semibold">
-                                Start Building Your Practice — $197
-                                <ArrowRight className="h-4 w-4 ml-2" />
-                            </Button>
-                        </a>
+                    <div className="mt-8 text-center">
+                        <p className="text-slate-500 text-sm mb-4">By day 7, you'll have your first certificate AND a draft service offer. Most students are ahead of 95% of "certified coaches" before the first week ends.</p>
                     </div>
                 </div>
             </section>
 
-            {/* If You Don't Add FM - Comparison to Inaction */}
+            {/* If You Don't Act - Loss Aversion (KEPT - just before pricing) */}
             <section className="py-10 bg-slate-100">
                 <div className="max-w-4xl mx-auto px-4">
                     <div className="bg-white rounded-2xl p-6 border border-slate-200 shadow-sm">
@@ -1401,30 +1447,6 @@ export default function FMCertificationPage() {
                         <p className="text-center text-slate-500 text-sm mt-4 pt-4 border-t border-slate-100">
                             The cost of waiting isn't $197 — it's the clients and income you lose every month you delay.
                         </p>
-                    </div>
-                </div>
-            </section>
-
-            {/* This is NOT for you */}
-            <section className="py-12 sm:py-16">
-                <div className="max-w-3xl mx-auto px-4">
-                    <div className="bg-gradient-to-br from-slate-50 to-slate-100 rounded-2xl p-6 sm:p-8 border border-slate-200">
-                        <div className="flex items-center gap-3 mb-4">
-                            <AlertCircle className="h-6 w-6 text-burgundy-600" />
-                            <h3 className="text-xl font-bold text-slate-900">This Certification is NOT For You If:</h3>
-                        </div>
-                        <ul className="space-y-3 text-slate-700">
-                            <li className="flex items-start gap-3"><X className="h-5 w-5 text-red-500 shrink-0 mt-0.5" /><span>You're looking for "get rich quick" — this requires real work and commitment</span></li>
-                            <li className="flex items-start gap-3"><X className="h-5 w-5 text-red-500 shrink-0 mt-0.5" /><span>You're not willing to study 3-5 hours per week for 3-6 months</span></li>
-                            <li className="flex items-start gap-3"><X className="h-5 w-5 text-red-500 shrink-0 mt-0.5" /><span>You don't genuinely care about helping people transform their health</span></li>
-                            <li className="flex items-start gap-3"><X className="h-5 w-5 text-red-500 shrink-0 mt-0.5" /><span>You expect clients to magically appear without marketing effort</span></li>
-                        </ul>
-                        <div className="mt-5 pt-5 border-t border-slate-200">
-                            <p className="font-semibold text-olive-700 flex items-center gap-2">
-                                <CheckCircle2 className="h-5 w-5" />
-                                This IS for you if you're ready to invest in yourself and build a meaningful career helping others.
-                            </p>
-                        </div>
                     </div>
                 </div>
             </section>
@@ -1512,6 +1534,13 @@ export default function FMCertificationPage() {
                                 </Button>
                             </a>
 
+                            {/* Killer Lines - Remove hidden funnel fear */}
+                            <div className="bg-olive-50 rounded-lg p-3 mt-4 border border-olive-100">
+                                <p className="text-olive-800 text-xs text-center font-medium">
+                                    ✔️ $197 is the full certification price • ✔️ No upsells required to get certified
+                                </p>
+                            </div>
+
                             <div className="flex flex-wrap items-center justify-center gap-3 mt-4 text-xs text-slate-500">
                                 <span className="flex items-center gap-1"><Shield className="h-3.5 w-3.5 text-olive-600" />30-day money-back guarantee</span>
                                 <span>•</span>
@@ -1532,50 +1561,6 @@ export default function FMCertificationPage() {
                             </div>
                             <p className="text-slate-600 text-sm"><strong className="text-slate-800">1,447</strong> practitioners certified</p>
                         </div>
-                    </div>
-                </div>
-            </section>
-
-            {/* First 7 Days Section - Activation Unlock */}
-            <section className="py-12 sm:py-16 bg-white">
-                <div className="max-w-4xl mx-auto px-4">
-                    <div className="text-center mb-8">
-                        <div className="inline-flex items-center gap-2 bg-olive-50 border border-olive-200 rounded-full px-4 py-2 mb-4">
-                            <Calendar className="h-4 w-4 text-olive-600" />
-                            <span className="text-sm font-semibold text-olive-700">Your Quick Start</span>
-                        </div>
-                        <h2 className="text-3xl sm:text-4xl font-bold text-slate-900 mb-3">What Your First 7 Days Look Like</h2>
-                        <p className="text-lg text-slate-600">You won't be left wondering "now what?" — here's exactly what happens.</p>
-                    </div>
-
-                    <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
-                        {[
-                            { day: "Day 1", title: "Portal Access + Coach Intro", desc: "Login, meet your mentor, get your personalized study plan", icon: Laptop },
-                            { day: "Day 2-3", title: "Complete FM Foundations", desc: "Finish your first module + earn your first certificate", icon: BookOpen },
-                            { day: "Day 4-5", title: "Apply to a Real Case", desc: "Practice protocols on a mock client or real friend/family", icon: Users },
-                            { day: "Day 6-7", title: "Map Your First Offer", desc: "Draft your service package with coach guidance", icon: Target },
-                        ].map((step, i) => (
-                            <div key={i} className="bg-gradient-to-br from-cream-50 to-white rounded-2xl p-5 border border-cream-200 hover:shadow-lg transition-all">
-                                <div className="flex items-center gap-2 mb-3">
-                                    <div className="w-8 h-8 rounded-lg bg-burgundy-100 flex items-center justify-center">
-                                        <step.icon className="h-4 w-4 text-burgundy-600" />
-                                    </div>
-                                    <span className="text-xs font-bold text-burgundy-600 uppercase tracking-wide">{step.day}</span>
-                                </div>
-                                <h3 className="font-bold text-slate-900 text-sm mb-1">{step.title}</h3>
-                                <p className="text-xs text-slate-600">{step.desc}</p>
-                            </div>
-                        ))}
-                    </div>
-
-                    <div className="mt-8 text-center">
-                        <p className="text-slate-500 text-sm mb-4">By day 7, you'll have your first certificate AND a draft service offer. Most students are ahead of 95% of "certified coaches" before the first week ends.</p>
-                        <a href="#pricing">
-                            <Button variant="outline" className="border-burgundy-200 text-burgundy-700 hover:bg-burgundy-50 font-semibold">
-                                Start Your 7-Day Sprint — $197
-                                <ArrowRight className="h-4 w-4 ml-2" />
-                            </Button>
-                        </a>
                     </div>
                 </div>
             </section>
