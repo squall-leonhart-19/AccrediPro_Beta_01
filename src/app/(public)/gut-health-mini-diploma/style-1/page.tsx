@@ -1,291 +1,403 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import Link from 'next/link';
 
-// STYLE 1: Interactive Cards with Reveals + Video Player Simulation
-// Modern, gamified learning experience with progress animations
+// STYLE 1: Clean Classic White with Progress + Interactive Elements
+// Professional, readable, with subtle interactivity
 
 export default function Style1Page() {
-    const [currentSection, setCurrentSection] = useState(0);
-    const [revealedCards, setRevealedCards] = useState<number[]>([]);
-    const [isPlaying, setIsPlaying] = useState(false);
-    const [progress, setProgress] = useState(0);
-    const [showQuiz, setShowQuiz] = useState(false);
+    const [expandedSections, setExpandedSections] = useState<number[]>([]);
+    const [completedSections, setCompletedSections] = useState<number[]>([]);
 
-    const sections = [
-        { id: 0, title: 'Welcome', icon: '👋' },
-        { id: 1, title: 'Why It Matters', icon: '🎯' },
-        { id: 2, title: 'The Science', icon: '🧬' },
-        { id: 3, title: 'Your Opportunity', icon: '💰' },
-        { id: 4, title: 'Take Action', icon: '🚀' },
-    ];
-
-    const cards = [
-        { stat: '70M+', label: 'Americans with gut issues', color: '#722F37' },
-        { stat: '80%', label: 'Immune system in gut', color: '#8B4049' },
-        { stat: '95%', label: 'Serotonin made in gut', color: '#A05060' },
-        { stat: '$15K', label: 'Monthly earning potential', color: '#B86070' },
-    ];
-
-    useEffect(() => {
-        if (isPlaying && progress < 100) {
-            const timer = setInterval(() => {
-                setProgress(p => Math.min(p + 1, 100));
-            }, 50);
-            return () => clearInterval(timer);
+    const toggleSection = (id: number) => {
+        if (expandedSections.includes(id)) {
+            setExpandedSections(expandedSections.filter(s => s !== id));
+        } else {
+            setExpandedSections([...expandedSections, id]);
+            if (!completedSections.includes(id)) {
+                setCompletedSections([...completedSections, id]);
+            }
         }
-    }, [isPlaying, progress]);
-
-    const toggleCard = (index: number) => {
-        if (revealedCards.includes(index)) return;
-        setRevealedCards([...revealedCards, index]);
     };
+
+    const totalSections = 4;
+    const progress = (completedSections.length / totalSections) * 100;
 
     return (
         <div style={{
             minHeight: '100vh',
-            background: 'linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%)',
-            color: 'white',
-            fontFamily: 'system-ui, -apple-system, sans-serif',
+            background: '#ffffff',
+            fontFamily: 'Georgia, "Times New Roman", serif',
+            color: '#2d2d2d',
         }}>
-            {/* Top Navigation */}
-            <nav style={{
-                display: 'flex',
-                justifyContent: 'space-between',
-                alignItems: 'center',
+            {/* Header */}
+            <header style={{
+                background: '#fff',
+                borderBottom: '1px solid #e5e5e5',
                 padding: '16px 24px',
-                background: 'rgba(0,0,0,0.3)',
-                backdropFilter: 'blur(10px)',
                 position: 'sticky',
                 top: 0,
                 zIndex: 100,
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'space-between',
             }}>
                 <img src="/newlogo.webp" alt="AccrediPro" style={{ height: 36 }} />
-                <div style={{ display: 'flex', gap: 8 }}>
-                    {sections.map((s, i) => (
-                        <button
-                            key={s.id}
-                            onClick={() => setCurrentSection(i)}
-                            style={{
-                                width: 40,
-                                height: 40,
-                                borderRadius: '50%',
-                                border: 'none',
-                                background: currentSection === i ? '#722F37' : 'rgba(255,255,255,0.1)',
-                                color: 'white',
-                                cursor: 'pointer',
-                                transition: 'all 0.3s',
-                                fontSize: 18,
-                            }}
-                        >
-                            {s.icon}
-                        </button>
-                    ))}
+
+                <div style={{ flex: 1, maxWidth: 400, margin: '0 24px' }}>
+                    <div style={{
+                        height: 8,
+                        background: '#f0f0f0',
+                        borderRadius: 4,
+                        overflow: 'hidden',
+                    }}>
+                        <div style={{
+                            height: '100%',
+                            width: `${progress}%`,
+                            background: 'linear-gradient(90deg, #722F37, #8B4049)',
+                            borderRadius: 4,
+                            transition: 'width 0.5s ease',
+                        }} />
+                    </div>
+                    <div style={{ fontSize: 12, color: '#888', marginTop: 4, textAlign: 'center' }}>
+                        Lesson 1 • {completedSections.length} of {totalSections} sections completed
+                    </div>
                 </div>
-                <Link href="/dashboard" style={{
+
+                <Link href="/gut-health-mini-diploma/style-2" style={{
                     padding: '10px 20px',
-                    background: 'rgba(255,255,255,0.1)',
-                    border: '1px solid rgba(255,255,255,0.2)',
-                    borderRadius: 8,
+                    background: '#722F37',
                     color: 'white',
+                    borderRadius: 6,
                     textDecoration: 'none',
                     fontSize: 14,
                 }}>
-                    Save Progress
+                    Try Style 2 →
                 </Link>
-            </nav>
+            </header>
 
             {/* Main Content */}
-            <main style={{ maxWidth: 1000, margin: '0 auto', padding: '40px 24px' }}>
+            <main style={{ maxWidth: 720, margin: '0 auto', padding: '48px 24px' }}>
 
-                {/* Video Section */}
+                {/* Lesson Title */}
+                <div style={{ marginBottom: 40 }}>
+                    <span style={{
+                        display: 'inline-block',
+                        background: '#f8f4f0',
+                        color: '#722F37',
+                        padding: '6px 16px',
+                        borderRadius: 20,
+                        fontSize: 13,
+                        fontWeight: 600,
+                        marginBottom: 16,
+                    }}>
+                        MODULE 1 • LESSON 1
+                    </span>
+                    <h1 style={{ fontSize: 36, lineHeight: 1.3, marginBottom: 16, color: '#1a1a1a' }}>
+                        Welcome to Your Gut Health Journey
+                    </h1>
+                    <p style={{ fontSize: 18, color: '#666', lineHeight: 1.6 }}>
+                        Your path to becoming a certified Gut Health practitioner starts right here.
+                    </p>
+                </div>
+
+                {/* Coach Welcome */}
                 <div style={{
-                    background: 'rgba(0,0,0,0.4)',
-                    borderRadius: 20,
-                    overflow: 'hidden',
+                    display: 'flex',
+                    gap: 16,
+                    padding: 24,
+                    background: '#fdfbf7',
+                    borderLeft: '4px solid #722F37',
+                    borderRadius: '0 12px 12px 0',
                     marginBottom: 40,
                 }}>
                     <div style={{
-                        aspectRatio: '16/9',
-                        background: 'linear-gradient(135deg, #722F37, #0f3460)',
+                        width: 56,
+                        height: 56,
+                        borderRadius: '50%',
+                        background: 'linear-gradient(135deg, #722F37, #8B4049)',
                         display: 'flex',
-                        flexDirection: 'column',
                         alignItems: 'center',
                         justifyContent: 'center',
-                        position: 'relative',
-                    }}>
-                        {!isPlaying ? (
-                            <>
-                                <button
-                                    onClick={() => setIsPlaying(true)}
-                                    style={{
-                                        width: 80,
-                                        height: 80,
-                                        borderRadius: '50%',
-                                        border: 'none',
-                                        background: 'white',
-                                        color: '#722F37',
-                                        fontSize: 32,
-                                        cursor: 'pointer',
-                                        boxShadow: '0 10px 40px rgba(0,0,0,0.3)',
-                                        transition: 'transform 0.2s',
-                                    }}
-                                    onMouseEnter={(e) => e.currentTarget.style.transform = 'scale(1.1)'}
-                                    onMouseLeave={(e) => e.currentTarget.style.transform = 'scale(1)'}
-                                >
-                                    ▶
-                                </button>
-                                <p style={{ marginTop: 20, opacity: 0.9, fontSize: 18 }}>
-                                    Watch: Welcome to Your Gut Health Journey
-                                </p>
-                            </>
-                        ) : (
-                            <div style={{ textAlign: 'center' }}>
-                                <div style={{ fontSize: 64, marginBottom: 16 }}>👩‍🏫</div>
-                                <p style={{ fontSize: 24, marginBottom: 8 }}>Sarah is speaking...</p>
-                                <p style={{ opacity: 0.8 }}>"Welcome to your certification journey!"</p>
-                            </div>
-                        )}
+                        color: 'white',
+                        fontSize: 24,
+                        flexShrink: 0,
+                    }}>S</div>
+                    <div>
+                        <p style={{ fontSize: 16, lineHeight: 1.7 }}>
+                            <strong style={{ color: '#722F37' }}>Hey there! 👋</strong> I'm Sarah, and I'm SO excited you're here.
+                            Whether you're looking to help others, start a new career, or deepen your own understanding
+                            of gut health—you've made an amazing decision.
+                        </p>
+                    </div>
+                </div>
+
+                {/* Section 1 */}
+                <section style={{ marginBottom: 32 }}>
+                    <h2 style={{ fontSize: 24, marginBottom: 16, color: '#1a1a1a' }}>
+                        Why You're Here Matters
+                    </h2>
+                    <p style={{ fontSize: 17, lineHeight: 1.8, marginBottom: 16 }}>
+                        The fact that you're here says something beautiful about you. It tells me you care.
+                        You care about your own health, about helping others, and about making a real difference in this world.
+                    </p>
+                    <p style={{ fontSize: 17, lineHeight: 1.8 }}>
+                        Maybe you've struggled with digestive issues yourself and finally found answers. Maybe you've
+                        watched someone you love suffer and wished you could help. Whatever brought you here—
+                        <strong style={{ color: '#722F37' }}>you're in exactly the right place.</strong>
+                    </p>
+                </section>
+
+                {/* Interactive Expandable - Section 2 */}
+                <div
+                    onClick={() => toggleSection(1)}
+                    style={{
+                        background: '#f9f9f9',
+                        border: '1px solid #e8e8e8',
+                        borderRadius: 12,
+                        padding: 20,
+                        marginBottom: 16,
+                        cursor: 'pointer',
+                        transition: 'all 0.2s',
+                    }}
+                >
+                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+                            <span style={{
+                                width: 28,
+                                height: 28,
+                                borderRadius: '50%',
+                                background: completedSections.includes(1) ? '#722F37' : '#ddd',
+                                color: 'white',
+                                display: 'flex',
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                                fontSize: 14,
+                            }}>
+                                {completedSections.includes(1) ? '✓' : '1'}
+                            </span>
+                            <span style={{ fontWeight: 600, fontSize: 17 }}>The Gut Health Crisis</span>
+                        </div>
+                        <span style={{ fontSize: 20, color: '#888' }}>
+                            {expandedSections.includes(1) ? '−' : '+'}
+                        </span>
                     </div>
 
-                    {/* Progress Bar */}
-                    <div style={{ padding: '16px 20px', background: 'rgba(0,0,0,0.2)' }}>
-                        <div style={{
-                            height: 6,
-                            background: 'rgba(255,255,255,0.2)',
-                            borderRadius: 3,
-                            overflow: 'hidden',
-                        }}>
+                    {expandedSections.includes(1) && (
+                        <div style={{ marginTop: 16, paddingTop: 16, borderTop: '1px solid #e8e8e8' }}>
+                            <p style={{ fontSize: 16, lineHeight: 1.8, marginBottom: 12 }}>
+                                <strong>Over 70 million Americans</strong> suffer from digestive issues. That's more than
+                                California and Texas combined. Many have been told their symptoms are "normal" or "just stress."
+                            </p>
                             <div style={{
-                                height: '100%',
-                                width: `${progress}%`,
-                                background: 'linear-gradient(90deg, #722F37, #D4AF37)',
-                                borderRadius: 3,
-                                transition: 'width 0.1s',
-                            }} />
+                                display: 'grid',
+                                gridTemplateColumns: 'repeat(3, 1fr)',
+                                gap: 12,
+                                marginTop: 16,
+                            }}>
+                                {[
+                                    { value: '70M+', label: 'Affected' },
+                                    { value: '80%', label: 'Immunity in Gut' },
+                                    { value: '95%', label: 'Serotonin Made' },
+                                ].map((stat) => (
+                                    <div key={stat.label} style={{
+                                        background: '#fff',
+                                        border: '1px solid #e8e8e8',
+                                        borderRadius: 8,
+                                        padding: 16,
+                                        textAlign: 'center',
+                                    }}>
+                                        <div style={{ fontSize: 24, fontWeight: 'bold', color: '#722F37' }}>{stat.value}</div>
+                                        <div style={{ fontSize: 12, color: '#888' }}>{stat.label}</div>
+                                    </div>
+                                ))}
+                            </div>
                         </div>
-                        <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: 8, fontSize: 12, opacity: 0.7 }}>
-                            <span>{Math.floor(progress * 0.1)}:00</span>
-                            <span>10:00</span>
-                        </div>
-                    </div>
-                </div>
-
-                {/* Interactive Stats Cards */}
-                <h2 style={{ fontSize: 28, marginBottom: 24, textAlign: 'center' }}>
-                    🔓 Tap to Reveal Key Statistics
-                </h2>
-                <div style={{
-                    display: 'grid',
-                    gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
-                    gap: 16,
-                    marginBottom: 40,
-                }}>
-                    {cards.map((card, i) => (
-                        <div
-                            key={i}
-                            onClick={() => toggleCard(i)}
-                            style={{
-                                background: revealedCards.includes(i) ? card.color : 'rgba(255,255,255,0.1)',
-                                border: '2px solid rgba(255,255,255,0.2)',
-                                borderRadius: 16,
-                                padding: 24,
-                                textAlign: 'center',
-                                cursor: revealedCards.includes(i) ? 'default' : 'pointer',
-                                transition: 'all 0.5s cubic-bezier(0.4, 0, 0.2, 1)',
-                                transform: revealedCards.includes(i) ? 'rotateY(0)' : 'rotateY(0)',
-                            }}
-                        >
-                            {revealedCards.includes(i) ? (
-                                <>
-                                    <div style={{ fontSize: 42, fontWeight: 'bold', marginBottom: 8 }}>{card.stat}</div>
-                                    <div style={{ opacity: 0.9 }}>{card.label}</div>
-                                </>
-                            ) : (
-                                <>
-                                    <div style={{ fontSize: 42, marginBottom: 8 }}>❓</div>
-                                    <div style={{ opacity: 0.7 }}>Tap to reveal</div>
-                                </>
-                            )}
-                        </div>
-                    ))}
-                </div>
-
-                {/* Progress Counter */}
-                <div style={{
-                    textAlign: 'center',
-                    padding: 24,
-                    background: 'rgba(255,255,255,0.05)',
-                    borderRadius: 16,
-                    marginBottom: 40,
-                }}>
-                    <div style={{ fontSize: 14, opacity: 0.7, marginBottom: 8 }}>CARDS REVEALED</div>
-                    <div style={{ fontSize: 48, fontWeight: 'bold', color: '#D4AF37' }}>
-                        {revealedCards.length} / {cards.length}
-                    </div>
-                    {revealedCards.length === cards.length && (
-                        <p style={{ marginTop: 16, color: '#4ade80' }}>✅ All stats unlocked! Continue to quiz →</p>
                     )}
                 </div>
 
-                {/* Quick Quiz */}
-                {revealedCards.length >= 2 && (
-                    <div style={{
-                        background: 'linear-gradient(135deg, #722F37, #8B4049)',
-                        borderRadius: 20,
-                        padding: 32,
-                        textAlign: 'center',
-                    }}>
-                        <h3 style={{ fontSize: 24, marginBottom: 16 }}>🎯 Quick Check</h3>
-                        <p style={{ marginBottom: 24, opacity: 0.9 }}>What percentage of your immune system is located in your gut?</p>
-                        <div style={{ display: 'flex', gap: 12, justifyContent: 'center', flexWrap: 'wrap' }}>
-                            {['50%', '80%', '65%', '90%'].map((opt) => (
-                                <button
-                                    key={opt}
-                                    onClick={() => setShowQuiz(true)}
-                                    style={{
-                                        padding: '16px 32px',
-                                        borderRadius: 12,
-                                        border: '2px solid white',
-                                        background: showQuiz && opt === '80%' ? '#4ade80' : 'transparent',
-                                        color: 'white',
-                                        fontSize: 18,
-                                        fontWeight: 'bold',
-                                        cursor: 'pointer',
-                                        transition: 'all 0.2s',
-                                    }}
-                                >
-                                    {opt}
-                                </button>
-                            ))}
+                {/* Interactive Expandable - Section 3 */}
+                <div
+                    onClick={() => toggleSection(2)}
+                    style={{
+                        background: '#f9f9f9',
+                        border: '1px solid #e8e8e8',
+                        borderRadius: 12,
+                        padding: 20,
+                        marginBottom: 16,
+                        cursor: 'pointer',
+                    }}
+                >
+                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+                            <span style={{
+                                width: 28,
+                                height: 28,
+                                borderRadius: '50%',
+                                background: completedSections.includes(2) ? '#722F37' : '#ddd',
+                                color: 'white',
+                                display: 'flex',
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                                fontSize: 14,
+                            }}>
+                                {completedSections.includes(2) ? '✓' : '2'}
+                            </span>
+                            <span style={{ fontWeight: 600, fontSize: 17 }}>Your "Second Brain"</span>
                         </div>
-                        {showQuiz && (
-                            <p style={{ marginTop: 20, color: '#4ade80', fontSize: 18 }}>
-                                ✅ Correct! 80% of your immune system lives in your gut!
-                            </p>
-                        )}
+                        <span style={{ fontSize: 20, color: '#888' }}>
+                            {expandedSections.includes(2) ? '−' : '+'}
+                        </span>
                     </div>
-                )}
+
+                    {expandedSections.includes(2) && (
+                        <div style={{ marginTop: 16, paddingTop: 16, borderTop: '1px solid #e8e8e8' }}>
+                            <p style={{ fontSize: 16, lineHeight: 1.8, marginBottom: 12 }}>
+                                Your gut contains <strong>500 million neurons</strong>—more than your spinal cord!
+                                It produces 95% of your serotonin and houses 80% of your immune system.
+                            </p>
+                            <div style={{
+                                background: '#722F37',
+                                color: 'white',
+                                padding: 20,
+                                borderRadius: 8,
+                                marginTop: 12,
+                            }}>
+                                <p style={{ margin: 0, fontSize: 15, lineHeight: 1.6 }}>
+                                    💡 <strong>Key Insight:</strong> When you heal the gut, you're also healing mood,
+                                    energy, immunity, and mental clarity.
+                                </p>
+                            </div>
+                        </div>
+                    )}
+                </div>
+
+                {/* Interactive Expandable - Section 4 */}
+                <div
+                    onClick={() => toggleSection(3)}
+                    style={{
+                        background: '#f9f9f9',
+                        border: '1px solid #e8e8e8',
+                        borderRadius: 12,
+                        padding: 20,
+                        marginBottom: 16,
+                        cursor: 'pointer',
+                    }}
+                >
+                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+                            <span style={{
+                                width: 28,
+                                height: 28,
+                                borderRadius: '50%',
+                                background: completedSections.includes(3) ? '#722F37' : '#ddd',
+                                color: 'white',
+                                display: 'flex',
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                                fontSize: 14,
+                            }}>
+                                {completedSections.includes(3) ? '✓' : '3'}
+                            </span>
+                            <span style={{ fontWeight: 600, fontSize: 17 }}>The Practitioner Opportunity</span>
+                        </div>
+                        <span style={{ fontSize: 20, color: '#888' }}>
+                            {expandedSections.includes(3) ? '−' : '+'}
+                        </span>
+                    </div>
+
+                    {expandedSections.includes(3) && (
+                        <div style={{ marginTop: 16, paddingTop: 16, borderTop: '1px solid #e8e8e8' }}>
+                            <p style={{ fontSize: 16, lineHeight: 1.8, marginBottom: 12 }}>
+                                Certified gut health practitioners earn <strong>$5K-$15K/month</strong> working from home,
+                                with flexible hours, doing work they love.
+                            </p>
+                            <ul style={{ margin: '16px 0', paddingLeft: 20, fontSize: 16, lineHeight: 2 }}>
+                                <li>No medical degree required</li>
+                                <li>$100-200 per session</li>
+                                <li>$500-2,500 per program</li>
+                                <li>Work from anywhere</li>
+                            </ul>
+                        </div>
+                    )}
+                </div>
+
+                {/* Interactive Expandable - Section 5 */}
+                <div
+                    onClick={() => toggleSection(4)}
+                    style={{
+                        background: '#f9f9f9',
+                        border: '1px solid #e8e8e8',
+                        borderRadius: 12,
+                        padding: 20,
+                        marginBottom: 40,
+                        cursor: 'pointer',
+                    }}
+                >
+                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+                            <span style={{
+                                width: 28,
+                                height: 28,
+                                borderRadius: '50%',
+                                background: completedSections.includes(4) ? '#722F37' : '#ddd',
+                                color: 'white',
+                                display: 'flex',
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                                fontSize: 14,
+                            }}>
+                                {completedSections.includes(4) ? '✓' : '4'}
+                            </span>
+                            <span style={{ fontWeight: 600, fontSize: 17 }}>Your Journey Ahead</span>
+                        </div>
+                        <span style={{ fontSize: 20, color: '#888' }}>
+                            {expandedSections.includes(4) ? '−' : '+'}
+                        </span>
+                    </div>
+
+                    {expandedSections.includes(4) && (
+                        <div style={{ marginTop: 16, paddingTop: 16, borderTop: '1px solid #e8e8e8' }}>
+                            <p style={{ fontSize: 16, lineHeight: 1.8, marginBottom: 12 }}>
+                                In this mini-diploma, you'll learn the foundations of gut health, core healing principles,
+                                and practical strategies you can apply immediately.
+                            </p>
+                            <div style={{
+                                background: '#fdfbf7',
+                                padding: 16,
+                                borderRadius: 8,
+                                marginTop: 12,
+                            }}>
+                                <p style={{ margin: 0, fontSize: 15, color: '#722F37', fontStyle: 'italic' }}>
+                                    "By investing in this knowledge, you're not just changing your own life—you're preparing
+                                    to change countless others." — Sarah
+                                </p>
+                            </div>
+                        </div>
+                    )}
+                </div>
 
                 {/* Continue Button */}
-                <div style={{ textAlign: 'center', marginTop: 40 }}>
-                    <Link
-                        href="/gut-health-mini-diploma/style-2"
-                        style={{
+                <div style={{ textAlign: 'center', padding: '20px 0 40px' }}>
+                    {completedSections.length >= 3 ? (
+                        <Link href="/gut-health-mini-diploma/style-2" style={{
                             display: 'inline-block',
-                            padding: '20px 48px',
-                            background: 'linear-gradient(135deg, #D4AF37, #B8860B)',
-                            color: '#1a1a2e',
-                            borderRadius: 12,
-                            fontSize: 18,
-                            fontWeight: 'bold',
+                            padding: '16px 40px',
+                            background: '#722F37',
+                            color: 'white',
+                            borderRadius: 8,
                             textDecoration: 'none',
-                            boxShadow: '0 10px 30px rgba(212, 175, 55, 0.3)',
-                        }}
-                    >
-                        Continue to Style 2 →
-                    </Link>
+                            fontSize: 17,
+                            fontWeight: 600,
+                        }}>
+                            Continue to Next Lesson →
+                        </Link>
+                    ) : (
+                        <p style={{ color: '#888', fontSize: 15 }}>
+                            👆 Complete at least 3 sections above to continue
+                        </p>
+                    )}
                 </div>
             </main>
         </div>

@@ -289,7 +289,29 @@ export async function POST(request: NextRequest) {
     const { email, firstName, lastName, phone, productId, productName, transactionId, amount, eventType } = parsed;
     const normalizedEmail = email.toLowerCase().trim();
 
-    console.log(`ClickFunnels webhook received: ${eventType} for ${normalizedEmail}`);
+    console.log(`ClickFunnels webhook received: ${eventType} for ${normalizedEmail}, txn: ${transactionId}`);
+
+    // DEDUPLICATION: Check if we already processed this transaction
+    if (transactionId) {
+      const existingEvent = await prisma.webhookEvent.findFirst({
+        where: {
+          eventType: "clickfunnels.purchase",
+          payload: {
+            path: ["transactionId"],
+            equals: transactionId,
+          },
+        },
+      });
+
+      if (existingEvent) {
+        console.log(`[Dedup] Transaction ${transactionId} already processed, skipping`);
+        return NextResponse.json({
+          success: true,
+          message: "Duplicate transaction, already processed",
+          transactionId,
+        });
+      }
+    }
 
     // Handle refunds - deactivate enrollment
     if (eventType === "refund" || eventType === "refunded" || eventType === "charge.refunded") {
