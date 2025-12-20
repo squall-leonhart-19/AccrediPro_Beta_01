@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import Script from "next/script";
@@ -50,7 +50,6 @@ const Confetti = () => {
 export default function ThankYouPage() {
     const [copied, setCopied] = useState(false);
     const [showConfetti, setShowConfetti] = useState(true);
-    const purchaseTracked = useRef(false);
 
     useEffect(() => {
         // Hide confetti after 5 seconds
@@ -58,28 +57,8 @@ export default function ThankYouPage() {
         return () => clearTimeout(timer);
     }, []);
 
-    // Track Purchase event with Meta Pixel
-    useEffect(() => {
-        if (purchaseTracked.current) return;
-        purchaseTracked.current = true;
-
-        // Fire Purchase event when pixel is ready
-        const trackPurchase = () => {
-            if (typeof window !== 'undefined' && (window as any).fbq) {
-                (window as any).fbq('track', 'Purchase', {
-                    value: 27.00,
-                    currency: 'USD',
-                    content_name: 'FM Mini Diploma'
-                });
-                console.log('[Meta Pixel] Purchase event fired');
-            }
-        };
-
-        // Try immediately, then retry after pixel loads
-        trackPurchase();
-        const timer = setTimeout(trackPurchase, 1000);
-        return () => clearTimeout(timer);
-    }, []);
+    // NOTE: Purchase event is fired server-side via CAPI webhook (more reliable)
+    // Browser pixel only tracks PageView for attribution
 
     const copyToClipboard = (text: string) => {
         navigator.clipboard.writeText(text);
