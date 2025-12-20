@@ -10,7 +10,8 @@ import {
     HeartHandshake, Laptop, Quote, Calendar,
     Brain, Flame, Activity, Leaf, Sun, Moon, Dumbbell,
     Stethoscope, LayoutDashboard, Video, AlertCircle, Timer,
-    Gift, Infinity, DollarSign, Lock, BadgeCheck, Globe2, Linkedin
+    Gift, Infinity, DollarSign, Lock, BadgeCheck, Globe2, Linkedin,
+    Menu
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
@@ -473,6 +474,78 @@ const StickyCTA = () => {
     );
 };
 
+// Navigation Header with Mobile Hamburger Menu
+const NavHeader = () => {
+    const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+
+    return (
+        <nav className="bg-white border-b border-slate-100 sticky top-0 z-50">
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div className="flex items-center justify-between h-16">
+                    <a href="/" className="flex items-center gap-2">
+                        <Image src="/newlogo.webp" alt="AccrediPro" width={40} height={40} className="rounded-lg" />
+                        <span className="text-lg font-bold text-burgundy-700">AccrediPro</span>
+                    </a>
+
+                    {/* Desktop Navigation */}
+                    <div className="hidden md:flex items-center gap-6">
+                        <a href="/certifications" className="text-slate-600 hover:text-burgundy-600 text-sm font-medium transition-colors">Certifications</a>
+                        <a href="/accreditation" className="text-slate-600 hover:text-burgundy-600 text-sm font-medium transition-colors">Accreditations</a>
+                        <a href="/testimonials" className="text-slate-600 hover:text-burgundy-600 text-sm font-medium transition-colors">Testimonials</a>
+                        <a href="/about" className="text-slate-600 hover:text-burgundy-600 text-sm font-medium transition-colors">About</a>
+                        <a href="/blog" className="text-slate-600 hover:text-burgundy-600 text-sm font-medium transition-colors">Blog</a>
+                    </div>
+
+                    <div className="flex items-center gap-3">
+                        {/* Desktop Buttons */}
+                        <a href="/login" className="hidden sm:block">
+                            <Button variant="ghost" size="sm" className="text-slate-600 hover:text-burgundy-600">
+                                Sign In
+                            </Button>
+                        </a>
+                        <a href="https://sarah.accredipro.academy/checkout-fm-certification" className="hidden sm:block">
+                            <Button size="sm" className="bg-burgundy-600 hover:bg-burgundy-700 text-white">
+                                Enroll Now
+                            </Button>
+                        </a>
+
+                        {/* Mobile Hamburger Button */}
+                        <button
+                            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+                            className="md:hidden p-2 rounded-lg hover:bg-slate-100 transition-colors"
+                        >
+                            {mobileMenuOpen ? (
+                                <X className="h-6 w-6 text-slate-600" />
+                            ) : (
+                                <Menu className="h-6 w-6 text-slate-600" />
+                            )}
+                        </button>
+                    </div>
+                </div>
+
+                {/* Mobile Menu Dropdown */}
+                {mobileMenuOpen && (
+                    <div className="md:hidden border-t border-slate-100 py-4 space-y-1 bg-white">
+                        <a href="/certifications" className="block px-4 py-3 text-slate-600 hover:text-burgundy-600 hover:bg-burgundy-50 rounded-lg font-medium transition-colors">Certifications</a>
+                        <a href="/accreditation" className="block px-4 py-3 text-slate-600 hover:text-burgundy-600 hover:bg-burgundy-50 rounded-lg font-medium transition-colors">Accreditations</a>
+                        <a href="/testimonials" className="block px-4 py-3 text-slate-600 hover:text-burgundy-600 hover:bg-burgundy-50 rounded-lg font-medium transition-colors">Testimonials</a>
+                        <a href="/about" className="block px-4 py-3 text-slate-600 hover:text-burgundy-600 hover:bg-burgundy-50 rounded-lg font-medium transition-colors">About</a>
+                        <a href="/blog" className="block px-4 py-3 text-slate-600 hover:text-burgundy-600 hover:bg-burgundy-50 rounded-lg font-medium transition-colors">Blog</a>
+                        <div className="border-t border-slate-100 mt-3 pt-3 px-4 space-y-2">
+                            <a href="/login" className="block">
+                                <Button variant="outline" className="w-full justify-center">Sign In</Button>
+                            </a>
+                            <a href="https://sarah.accredipro.academy/checkout-fm-certification" className="block">
+                                <Button className="w-full justify-center bg-burgundy-600 hover:bg-burgundy-700 text-white">Enroll Now</Button>
+                            </a>
+                        </div>
+                    </div>
+                )}
+            </div>
+        </nav>
+    );
+};
+
 export default function FMCertificationPage() {
     return (
         <div className="min-h-screen bg-gradient-to-b from-cream-100 via-cream-50 to-white pb-20 lg:pb-0">
@@ -485,37 +558,7 @@ export default function FMCertificationPage() {
             `}</style>
 
             {/* Navigation Header */}
-            <nav className="bg-white border-b border-slate-100 sticky top-0 z-50">
-                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                    <div className="flex items-center justify-between h-16">
-                        <a href="/" className="flex items-center gap-2">
-                            <Image src="/newlogo.webp" alt="AccrediPro" width={40} height={40} className="rounded-lg" />
-                            <span className="text-lg font-bold text-burgundy-700">AccrediPro</span>
-                        </a>
-
-                        <div className="hidden md:flex items-center gap-6">
-                            <a href="/certifications" className="text-slate-600 hover:text-burgundy-600 text-sm font-medium transition-colors">Certifications</a>
-                            <a href="/accreditation" className="text-slate-600 hover:text-burgundy-600 text-sm font-medium transition-colors">Accreditations</a>
-                            <a href="/testimonials" className="text-slate-600 hover:text-burgundy-600 text-sm font-medium transition-colors">Testimonials</a>
-                            <a href="/about" className="text-slate-600 hover:text-burgundy-600 text-sm font-medium transition-colors">About</a>
-                            <a href="/blog" className="text-slate-600 hover:text-burgundy-600 text-sm font-medium transition-colors">Blog</a>
-                        </div>
-
-                        <div className="flex items-center gap-3">
-                            <a href="/login">
-                                <Button variant="ghost" size="sm" className="text-slate-600 hover:text-burgundy-600">
-                                    Sign In
-                                </Button>
-                            </a>
-                            <a href="https://sarah.accredipro.academy/checkout-fm-certification">
-                                <Button size="sm" className="bg-burgundy-600 hover:bg-burgundy-700 text-white">
-                                    Enroll Now
-                                </Button>
-                            </a>
-                        </div>
-                    </div>
-                </div>
-            </nav>
+            <NavHeader />
 
             {/* Christmas Urgency Banner */}
             <div className="bg-gradient-to-r from-red-600 to-red-700 text-white py-3 px-4">
