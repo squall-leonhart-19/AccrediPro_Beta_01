@@ -64,30 +64,62 @@ export default function TestimonialsPage() {
   ];
 
   const quickReviews = [
-    {
-      quote: "The curriculum is incredibly comprehensive. I compared 5 different programs and AccrediPro had the most depth for the best price.",
-      author: "Lisa K., USA",
-    },
-    {
-      quote: "Got my insurance approval within 2 weeks of graduating. The IPHM accreditation made the process seamless.",
-      author: "Mark T., UK",
-    },
-    {
-      quote: "The business module alone was worth the investment. I launched my practice with clients before I even graduated!",
-      author: "Anna S., Germany",
-    },
-    {
-      quote: "Daily mentorship is incredible. Whenever I had questions, the coaches responded within hours. True support.",
-      author: "David M., New Zealand",
-    },
-    {
-      quote: "I can finally use MCMA after my name. It adds so much credibility when marketing to potential clients.",
-      author: "Rachel P., Ireland",
-    },
-    {
-      quote: "The 14 individual certificates are genius. I can specialize in hormones AND gut health with proof.",
-      author: "Chen W., Singapore",
-    },
+    { quote: "The curriculum is incredibly comprehensive. I compared 5 different programs and AccrediPro had the most depth for the best price.", author: "Lisa K., USA" },
+    { quote: "Got my insurance approval within 2 weeks of graduating. The IPHM accreditation made the process seamless.", author: "Mark T., UK" },
+    { quote: "The business module alone was worth the investment. I launched my practice with clients before I even graduated!", author: "Anna S., Germany" },
+    { quote: "Daily mentorship is incredible. Whenever I had questions, the coaches responded within hours. True support.", author: "David M., New Zealand" },
+    { quote: "I can finally use MCMA after my name. It adds so much credibility when marketing to potential clients.", author: "Rachel P., Ireland" },
+    { quote: "The 14 individual certificates are genius. I can specialize in hormones AND gut health with proof.", author: "Chen W., Singapore" },
+    { quote: "Left my hospital job after 20 years. Best decision ever. Now I help thyroid patients full-time from home.", author: "Patricia S., RN, Florida" },
+    { quote: "The gut health module helped me reverse my own IBS. Now I help others do the same. Incredible program!", author: "Michelle D., California" },
+    { quote: "Sarah's mentorship was game-changing. She answered every question and helped me price my services.", author: "Jennifer W., Texas" },
+    { quote: "From burned out ER nurse to thriving FM practitioner in 5 months. Never looked back.", author: "Karen M., ARNP, Ohio" },
+    { quote: "The hormone module alone was worth 10x the price. My clients see real results.", author: "Stephanie L., Colorado" },
+    { quote: "I now charge $200/session and have a 3-month waiting list. AccrediPro changed my life.", author: "Amanda C., New York" },
+    { quote: "Finally understand the root cause approach. Medical school never taught me this.", author: "Dr. Jennifer W., MD, Virginia" },
+    { quote: "Added FM to my chiropractic practice. Patient retention tripled.", author: "Dr. Tiffany N., DC, Arizona" },
+    { quote: "Zero healthcare background. Now I help women with hormones and make more than my corporate salary.", author: "Rachel T., Illinois" },
+    { quote: "The autoimmune module helped me understand my own Hashimoto's. Now I specialize in it.", author: "Patricia S., RN, Michigan" },
+    { quote: "Got my first 5 clients before even finishing the program. The business training works!", author: "Maria S., PA-C, California" },
+    { quote: "My pharmacist colleagues are jealous. I work 20 hours a week from home now.", author: "Sandra L., PharmD, Nevada" },
+    { quote: "The R.O.O.T.S. protocol is genius. My clients finally get to the bottom of their issues.", author: "Lisa R., NP, Georgia" },
+    { quote: "9 international accreditations. That's what sold me. No other program comes close.", author: "David K., UK" },
+    { quote: "Finished while working full-time and raising 3 kids. Self-paced format was perfect.", author: "Ines M., LVN, Texas" },
+    { quote: "The Coach Workspace alone saves me $100/month in software fees. Everything included.", author: "Tammie J., North Carolina" },
+    { quote: "My clients call me a miracle worker. It's just functional medicine done right.", author: "Angela P., Florida" },
+    { quote: "Left my $150K/year corporate job. Now I make more helping people actually heal.", author: "Christine B., Washington" },
+    { quote: "The weight management protocol helped my client lose 47 lbs. She referred 8 more clients.", author: "Nancy G., RD, Oregon" },
+    { quote: "Finally practicing medicine the way it should be practiced. Root cause, not band-aids.", author: "Dr. Michael R., MD, Canada" },
+    { quote: "The stress and adrenal module was exactly what I needed. HPA axis finally makes sense.", author: "Julie H., NP, Massachusetts" },
+    { quote: "Went from $0 to $8K/month in my first 90 days. Sarah's launch strategy works.", author: "Kimberly W., Tennessee" },
+    { quote: "My patients ask why their doctor never taught them this. I just smile.", author: "Rebecca M., RN, Pennsylvania" },
+    { quote: "The liver detox protocol is science-based and effective. Not like other programs.", author: "Cynthia D., Arizona" },
+    { quote: "Charging $3K for 3-month packages. Clients happily pay because they get results.", author: "Deborah A., New Jersey" },
+    { quote: "The private community is incredible. Real practitioners helping each other succeed.", author: "Theresa K., Wisconsin" },
+    { quote: "My husband thought I was crazy to invest $197. Now he's proud of my $12K months.", author: "Sharon L., Indiana" },
+    { quote: "The blood sugar module helped me reverse my own prediabetes. Now I help clients do the same.", author: "Donna C., RN, Missouri" },
+    { quote: "Finally understand why conventional medicine kept failing my patients.", author: "Dr. Barbara H., NP, Connecticut" },
+    { quote: "The skin health connection to gut was mind-blowing. My aesthetics clients love it.", author: "Carol M., Minnesota" },
+    { quote: "Got featured in local news as a functional medicine expert. Thanks AccrediPro!", author: "Diane S., Virginia" },
+    { quote: "The brain health module helped my mom with early dementia. Personal and professional win.", author: "Laura B., RN, Maryland" },
+    { quote: "Quit nursing. Now I work 15 hours a week and outearn my old salary.", author: "Susan P., Kansas" },
+    { quote: "The fertility module helped 3 of my clients get pregnant after years of trying.", author: "Elizabeth R., NP, Utah" },
+    { quote: "My clients fly in from other states to see me. That's the power of specialization.", author: "Margaret T., Colorado" },
+    { quote: "The meal planning templates save me hours every week. So practical!", author: "Dorothy W., Ohio" },
+    { quote: "Finally feel like a real health professional. The credentials opened so many doors.", author: "Betty J., New York" },
+    { quote: "The cardiovascular module changed how I think about heart health. Prevention focused.", author: "Linda F., RN, Florida" },
+    { quote: "My chiropractor husband now refers all his nutrition cases to me. Team approach works.", author: "Helen K., Alabama" },
+    { quote: "The menopause protocol gave me my life back. Now I help other women through it.", author: "Ruth A., 52, California" },
+    { quote: "Insurance companies accept my credentials. That was the game-changer.", author: "Sandra M., NP, Texas" },
+    { quote: "The pediatric nutrition module helped my grandson. Now I specialize in kids.", author: "Martha W., Tennessee" },
+    { quote: "Replaced my teaching salary in 4 months. Education background actually helped!", author: "Catherine P., Former Teacher, Georgia" },
+    { quote: "The joint and bone health module helped my arthritis clients ditch their meds.", author: "Frances C., RN, Virginia" },
+    { quote: "My Instagram following went from 200 to 15,000 after sharing my certification journey.", author: "Evelyn R., Florida" },
+    { quote: "The sleep optimization protocol works. My insomnia clients finally rest.", author: "Jean H., NP, Arizona" },
+    { quote: "Charging premium rates because I have premium credentials. Simple math.", author: "Alice B., Washington" },
+    { quote: "The immune system module during COVID was perfectly timed. Helped so many.", author: "Marie S., RN, New York" },
+    { quote: "My corporate wellness contracts pay $5K/month. B2B is where the money is.", author: "Joyce T., Illinois" },
+    { quote: "The digestive enzyme protocols changed everything for my SIBO clients.", author: "Ann M., NP, California" },
   ];
 
   return (
@@ -104,7 +136,6 @@ export default function TestimonialsPage() {
             </Link>
 
             <div className="hidden md:flex items-center gap-8">
-              <Link href="/certifications" className="text-gray-600 hover:text-burgundy-600">Certifications</Link>
               <Link href="/accreditation" className="text-gray-600 hover:text-burgundy-600">Accreditations</Link>
               <Link href="/testimonials" className="text-burgundy-600 font-semibold">Testimonials</Link>
               <Link href="/about" className="text-gray-600 hover:text-burgundy-600">About</Link>
@@ -227,22 +258,6 @@ export default function TestimonialsPage() {
         </div>
       </section>
 
-      {/* Video Testimonial Placeholder */}
-      <section className="py-20 bg-burgundy-600 text-white">
-        <div className="max-w-4xl mx-auto px-4 text-center">
-          <span className="text-gold-400 font-bold uppercase tracking-wider text-sm block mb-4">
-            Video Testimonials
-          </span>
-          <h2 className="text-3xl md:text-4xl font-bold mb-6">Hear From Our Graduates</h2>
-          <p className="text-burgundy-100 mb-8">Watch real students share their AccrediPro experience.</p>
-          <div className="aspect-video bg-white/10 rounded-2xl flex items-center justify-center border border-white/20">
-            <div className="text-center">
-              <Play className="w-16 h-16 text-gold-400 mx-auto mb-4" />
-              <p className="text-burgundy-200">Video testimonials coming soon</p>
-            </div>
-          </div>
-        </div>
-      </section>
 
       {/* CTA */}
       <section className="py-20 bg-burgundy-50">

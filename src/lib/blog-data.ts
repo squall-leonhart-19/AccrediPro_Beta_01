@@ -898,11 +898,84 @@ export const blogPosts: BlogPost[] = [
   },
 ];
 
+// Additional functional medicine articles
+const additionalPosts: BlogPost[] = [
+  {
+    slug: "thyroid-connection-fatigue-weight-gain",
+    image: "https://images.unsplash.com/photo-1559757175-5700dde675bc?ixlib=rb-1.2.1&auto=format&fit=crop&w=600&q=80",
+    category: "Hormones",
+    readTime: "7 min read",
+    title: "The Thyroid Connection: Why You're Fatigued and Gaining Weight",
+    excerpt: "Your thyroid controls your metabolism. Learn how to identify subclinical thyroid dysfunction and support optimal thyroid function naturally.",
+    date: "Dec 10, 2025",
+    author: defaultAuthor,
+    content: `<p>Thyroid dysfunction affects millions of women, yet most are told their labs are "normal." Learn why conventional testing misses subclinical hypothyroidism and what you can do about it.</p><h2>The Missing Piece</h2><p>Standard TSH testing only tells part of the story. A complete thyroid panel includes Free T4, Free T3, Reverse T3, and thyroid antibodies. Without these markers, subclinical dysfunction goes undetected.</p><h2>Signs Your Thyroid Needs Support</h2><ul><li>Unexplained fatigue despite adequate sleep</li><li>Weight gain or inability to lose weight</li><li>Cold hands and feet</li><li>Hair loss or thinning</li><li>Brain fog and memory issues</li><li>Constipation</li><li>Depression or low mood</li></ul><h2>Natural Thyroid Support</h2><p>Key nutrients for thyroid function include selenium, zinc, iodine, iron, and vitamin D. Addressing inflammation, supporting gut health, and managing stress are equally important for optimal thyroid function.</p>`,
+  },
+  {
+    slug: "autoimmune-triggers-root-cause",
+    image: "https://images.unsplash.com/photo-1576091160550-2173dba999ef?ixlib=rb-1.2.1&auto=format&fit=crop&w=600&q=80",
+    category: "Autoimmune",
+    readTime: "9 min read",
+    title: "Autoimmune Triggers: Finding the Root Cause of Your Inflammation",
+    excerpt: "Autoimmune diseases have tripled in recent decades. Discover the common triggers and how functional medicine addresses the underlying causes.",
+    date: "Dec 8, 2025",
+    author: defaultAuthor,
+    content: `<p>Autoimmune conditions like Hashimoto's, rheumatoid arthritis, and lupus share common underlying triggers. Understanding these triggers is key to healing.</p><h2>The Three-Legged Stool</h2><p>Autoimmunity requires three factors: genetic predisposition, environmental triggers, and intestinal permeability (leaky gut). Address the triggers and heal the gut, and remission becomes possible.</p><h2>Common Triggers</h2><ul><li>Gluten and inflammatory foods</li><li>Chronic infections (EBV, mycotoxins)</li><li>Toxin exposure (heavy metals, chemicals)</li><li>Chronic stress and HPA dysfunction</li><li>Nutrient deficiencies (Vitamin D, omega-3s)</li></ul><h2>The Functional Approach</h2><p>Rather than suppressing the immune system with medications, functional medicine removes triggers, heals the gut, and restores immune balance naturally.</p>`,
+  },
+  {
+    slug: "hormone-balance-women-over-40",
+    image: "https://images.unsplash.com/photo-1559839914-17aae19cec71?ixlib=rb-1.2.1&auto=format&fit=crop&w=600&q=80",
+    category: "Hormones",
+    readTime: "8 min read",
+    title: "Hormone Balance for Women Over 40: Beyond HRT",
+    excerpt: "Hot flashes, weight gain, mood swings—perimenopause symptoms don't have to rule your life. Learn natural strategies for hormonal harmony.",
+    date: "Dec 6, 2025",
+    author: defaultAuthor,
+    content: `<p>The hormonal shifts of perimenopause and menopause affect every system in the body. But symptoms aren't inevitable—they're signs of imbalance that can be addressed.</p><h2>Understanding the Transition</h2><p>Estrogen, progesterone, and testosterone decline at different rates, creating imbalances. Supporting the body through this transition requires a multi-faceted approach.</p><h2>Key Strategies</h2><ul><li>Blood sugar stabilization (critical for hormone balance)</li><li>Liver support for estrogen metabolism</li><li>Adrenal support as adrenals become primary hormone producers</li><li>Targeted nutrients: magnesium, B6, DIM, vitex</li><li>Stress management and sleep optimization</li></ul><h2>Beyond Symptom Management</h2><p>The goal isn't just surviving menopause—it's thriving through it and beyond. Many women report feeling better in their 50s than they did in their 30s.</p>`,
+  },
+  {
+    slug: "sibo-small-intestinal-bacterial-overgrowth",
+    image: "https://images.unsplash.com/photo-1505576399279-565b52d4ac71?ixlib=rb-1.2.1&auto=format&fit=crop&w=600&q=80",
+    category: "Gut Health",
+    readTime: "8 min read",
+    title: "SIBO: The Hidden Cause of Your Bloating and Digestive Issues",
+    excerpt: "Small Intestinal Bacterial Overgrowth affects up to 80% of IBS patients. Learn how to identify it and restore gut balance.",
+    date: "Nov 30, 2025",
+    author: defaultAuthor,
+    content: `<p>If you bloat after eating, experience unpredictable bowel habits, and react to "healthy" foods like garlic and onions, SIBO may be the culprit.</p><h2>What is SIBO?</h2><p>Bacteria that should live in the large intestine migrate upward into the small intestine, where they ferment carbohydrates and produce hydrogen or methane gas—causing bloating, pain, and altered motility.</p><h2>Testing for SIBO</h2><p>A lactulose breath test measures hydrogen and methane gas production over 2-3 hours. Different gas patterns indicate different bacterial overgrowth types and guide treatment.</p><h2>The Treatment Approach</h2><p>Successful SIBO treatment addresses the overgrowth (antimicrobial herbs or antibiotics), restores motility, heals the gut lining, and prevents recurrence by addressing root causes.</p>`,
+  },
+  {
+    slug: "mitochondria-energy-fatigue",
+    image: "https://images.unsplash.com/photo-1518611012118-696072aa579a?ixlib=rb-1.2.1&auto=format&fit=crop&w=600&q=80",
+    category: "Energy",
+    readTime: "7 min read",
+    title: "Mitochondria: The Cellular Key to Unlimited Energy",
+    excerpt: "Your cells contain tiny power plants called mitochondria. When they dysfunction, fatigue follows. Learn how to optimize cellular energy production.",
+    date: "Nov 25, 2025",
+    author: defaultAuthor,
+    content: `<p>Chronic fatigue often has its roots at the cellular level. Mitochondria—the powerhouses in every cell—produce ATP, the energy currency of life. When they're compromised, everything suffers.</p><h2>Signs of Mitochondrial Dysfunction</h2><ul><li>Crushing fatigue not relieved by rest</li><li>Exercise intolerance and slow recovery</li><li>Brain fog and cognitive decline</li><li>Muscle weakness and pain</li><li>Sensitivity to environmental factors</li></ul><h2>Supporting Mitochondrial Health</h2><p>Key nutrients include CoQ10, PQQ, NAD+ precursors, magnesium, and B vitamins. Reducing oxidative stress, supporting detoxification, and addressing chronic infections also optimize mitochondrial function.</p>`,
+  },
+  {
+    slug: "blood-sugar-weight-loss-plateau",
+    image: "https://images.unsplash.com/photo-1559757148-5c350d0d3c56?ixlib=rb-1.2.1&auto=format&fit=crop&w=600&q=80",
+    category: "Nutrition",
+    readTime: "6 min read",
+    title: "Blood Sugar Secrets: Break Through Your Weight Loss Plateau",
+    excerpt: "Insulin resistance is the hidden barrier to weight loss. Discover how to stabilize blood sugar and finally see results.",
+    date: "Nov 20, 2025",
+    author: defaultAuthor,
+    content: `<p>You're eating less, exercising more, but the scale won't budge. The problem isn't calories—it's likely insulin resistance preventing your body from accessing stored fat.</p><h2>The Insulin Connection</h2><p>When blood sugar spikes, insulin stores excess glucose as fat—particularly around the midsection. High insulin also locks fat in storage, making it nearly impossible to burn.</p><h2>Blood Sugar Stabilization Strategies</h2><ul><li>Protein and fat at every meal</li><li>Eat meals in proper order: vegetables first, proteins and fats, carbs last</li><li>Post-meal movement (even a 10-minute walk)</li><li>Avoid grazing and frequent snacking</li><li>Targeted supplements: berberine, chromium, cinnamon</li></ul><h2>Beyond the Scale</h2><p>Stable blood sugar means stable energy, clearer thinking, better mood, and—finally—sustainable weight loss.</p>`,
+  },
+];
+
+// Combine all posts
+const allBlogPosts = [...blogPosts, ...additionalPosts];
+
 export function getPostBySlug(slug: string): BlogPost | undefined {
   if (featuredPost.slug === slug) return featuredPost;
-  return blogPosts.find(post => post.slug === slug);
+  return allBlogPosts.find(post => post.slug === slug);
 }
 
 export function getAllPosts(): BlogPost[] {
-  return [featuredPost, ...blogPosts];
+  return [featuredPost, ...allBlogPosts];
 }

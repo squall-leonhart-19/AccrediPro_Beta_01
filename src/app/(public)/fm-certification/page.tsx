@@ -489,11 +489,11 @@ const NavHeader = () => {
 
                     {/* Desktop Navigation */}
                     <div className="hidden md:flex items-center gap-6">
-                        <a href="/certifications" className="text-slate-600 hover:text-burgundy-600 text-sm font-medium transition-colors">Certifications</a>
                         <a href="/accreditation" className="text-slate-600 hover:text-burgundy-600 text-sm font-medium transition-colors">Accreditations</a>
                         <a href="/testimonials" className="text-slate-600 hover:text-burgundy-600 text-sm font-medium transition-colors">Testimonials</a>
                         <a href="/about" className="text-slate-600 hover:text-burgundy-600 text-sm font-medium transition-colors">About</a>
                         <a href="/blog" className="text-slate-600 hover:text-burgundy-600 text-sm font-medium transition-colors">Blog</a>
+                        <a href="/contact" className="text-slate-600 hover:text-burgundy-600 text-sm font-medium transition-colors">Contact</a>
                     </div>
 
                     <div className="flex items-center gap-3">
@@ -526,11 +526,11 @@ const NavHeader = () => {
                 {/* Mobile Menu Dropdown */}
                 {mobileMenuOpen && (
                     <div className="md:hidden border-t border-slate-100 py-4 space-y-1 bg-white">
-                        <a href="/certifications" className="block px-4 py-3 text-slate-600 hover:text-burgundy-600 hover:bg-burgundy-50 rounded-lg font-medium transition-colors">Certifications</a>
                         <a href="/accreditation" className="block px-4 py-3 text-slate-600 hover:text-burgundy-600 hover:bg-burgundy-50 rounded-lg font-medium transition-colors">Accreditations</a>
                         <a href="/testimonials" className="block px-4 py-3 text-slate-600 hover:text-burgundy-600 hover:bg-burgundy-50 rounded-lg font-medium transition-colors">Testimonials</a>
                         <a href="/about" className="block px-4 py-3 text-slate-600 hover:text-burgundy-600 hover:bg-burgundy-50 rounded-lg font-medium transition-colors">About</a>
                         <a href="/blog" className="block px-4 py-3 text-slate-600 hover:text-burgundy-600 hover:bg-burgundy-50 rounded-lg font-medium transition-colors">Blog</a>
+                        <a href="/contact" className="block px-4 py-3 text-slate-600 hover:text-burgundy-600 hover:bg-burgundy-50 rounded-lg font-medium transition-colors">Contact</a>
                         <div className="border-t border-slate-100 mt-3 pt-3 px-4 space-y-2">
                             <a href="/login" className="block">
                                 <Button variant="outline" className="w-full justify-center">Sign In</Button>
@@ -604,9 +604,20 @@ export default function FMCertificationPage() {
                     </h1>
 
                     {/* Value Proposition */}
-                    <p className="text-lg sm:text-xl text-center text-slate-700 mb-6 max-w-3xl mx-auto">
+                    <p className="text-lg sm:text-xl text-center text-slate-700 mb-4 max-w-3xl mx-auto">
                         Add <span className="font-bold text-olive-700">$10,000–$15,000+/month</span> helping patients actually heal — <span className="font-semibold">without quitting your job, going back to school, or spending $15,000 on traditional certifications.</span>
                     </p>
+
+                    {/* Accreditation Logos */}
+                    <div className="flex justify-center mb-6">
+                        <Image
+                            src="/all-logos.png"
+                            alt="Accredited by 9 International Organizations"
+                            width={600}
+                            height={60}
+                            className="h-10 sm:h-12 w-auto opacity-80"
+                        />
+                    </div>
 
                     {/* Bundle Image */}
                     <div className="max-w-2xl mx-auto mb-8">
