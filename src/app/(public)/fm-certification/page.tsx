@@ -645,6 +645,127 @@ export default function FMCertificationPage() {
                 </div>
             </section>
 
+            {/* Complete Method Library Section */}
+            <section className="py-12 sm:py-16 bg-gradient-to-b from-cream-50 to-white">
+                <div className="max-w-6xl mx-auto px-4">
+                    <div className="text-center mb-10">
+                        <div className="inline-flex items-center gap-2 bg-burgundy-100 border border-burgundy-200 rounded-full px-5 py-2 mb-4">
+                            <BookOpen className="h-4 w-4 text-burgundy-600" />
+                            <span className="text-sm font-bold text-burgundy-700">PROPRIETARY FRAMEWORKS</span>
+                        </div>
+                        <h2 className="text-3xl sm:text-4xl font-bold text-slate-900 mb-4">The Complete Method Library</h2>
+                        <p className="text-lg text-slate-600 max-w-3xl mx-auto">
+                            Master <span className="font-bold text-burgundy-700">18 proprietary methods</span> — clinical frameworks you can use with every client. Each module teaches you a step-by-step system, not just theory.
+                        </p>
+                    </div>
+
+                    {/* Foundation Methods */}
+                    <div className="mb-8">
+                        <div className="flex items-center gap-3 mb-4">
+                            <div className="w-10 h-10 rounded-xl bg-burgundy-600 flex items-center justify-center">
+                                <BookOpen className="h-5 w-5 text-white" />
+                            </div>
+                            <h3 className="text-xl font-bold text-slate-900">Foundation (R.O.O.T.S. Applied)</h3>
+                        </div>
+                        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-4">
+                            {[
+                                { module: "FM Foundations", method: "R.O.O.T.S. Method™", meaning: "Recognize, Origin, Optimize, Transform, Scale", icon: Brain },
+                                { module: "Health Coaching", method: "C.O.A.C.H. Method™", meaning: "Connect, Outcomes, Accountability, Change, Hold", icon: MessageCircle },
+                                { module: "Clinical Assessment", method: "Covered by R.O.O.T.S.", meaning: "Integrated framework", icon: Stethoscope },
+                                { module: "Ethics & Scope", method: "No method needed", meaning: "Guidelines & boundaries", icon: Shield },
+                            ].map((item, i) => (
+                                <div key={i} className="bg-white rounded-xl p-4 border border-slate-200 shadow-sm hover:shadow-md transition-all">
+                                    <div className="flex items-center gap-2 mb-2">
+                                        <item.icon className="h-4 w-4 text-burgundy-600" />
+                                        <p className="text-xs font-semibold text-burgundy-600 uppercase tracking-wide">{item.module}</p>
+                                    </div>
+                                    <p className="font-bold text-slate-900 text-sm mb-1">{item.method}</p>
+                                    <p className="text-xs text-slate-500">{item.meaning}</p>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+
+                    {/* Specialization Methods */}
+                    <div className="mb-8">
+                        <div className="flex items-center gap-3 mb-4">
+                            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-burgundy-600 to-burgundy-700 flex items-center justify-center">
+                                <Sparkles className="h-5 w-5 text-gold-400" />
+                            </div>
+                            <h3 className="text-xl font-bold text-slate-900">Specializations — Each Gets Its Own Method</h3>
+                        </div>
+                        <div className="grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3">
+                            {[
+                                { module: "Functional Nutrition", method: "F.U.E.L. Protocol™", meaning: "Foundations, Unique needs, Eliminate triggers, Layer therapeutics", icon: Leaf, highlight: true },
+                                { module: "Gut Health", method: "G.U.T.S. Protocol™", meaning: "Gather history, Uncover causes, Treat (4R), Sustain", icon: Activity, highlight: true },
+                                { module: "Stress & Adrenals", method: "C.A.L.M. Protocol™", meaning: "Cortisol, Adrenal assessment, Lifestyle, Mind-body", icon: Brain },
+                                { module: "Sleep & Circadian", method: "R.E.S.T. Protocol™", meaning: "Rhythm, Environment, Support, Track", icon: Moon },
+                                { module: "Women's Hormones", method: "C.Y.C.L.E. Method™", meaning: "Cycle map, Your hormones, Correct, Lifestyle, Evaluate", icon: Heart, highlight: true },
+                                { module: "Perimenopause/Menopause", method: "T.H.R.I.V.E. Protocol™", meaning: "Transition, Hormones, Restore, Implement, Vitality, Evolve", icon: Flame, highlight: true },
+                                { module: "Thyroid", method: "S.H.I.F.T. Protocol™", meaning: "Screen, Hidden triggers, Inflammation, Fix foundations, Track", icon: Zap, highlight: true },
+                                { module: "Metabolic & Weight", method: "B.U.R.N. Protocol™", meaning: "Baseline, Underlying drivers, Reset, Nourish", icon: Dumbbell },
+                                { module: "Autoimmunity", method: "F.L.A.R.E. Protocol™", meaning: "Find triggers, Lower inflammation, Address gut, Restore tolerance, Evolve", icon: Activity, highlight: true },
+                                { module: "Mental Health & Brain", method: "M.I.N.D. Method™", meaning: "Map symptoms, Inflammation, Nutrients, Daily practices", icon: Brain },
+                                { module: "Cardiometabolic", method: "H.E.A.R.T. Protocol™", meaning: "History, Evaluate markers, Address causes, Restore, Track", icon: Heart },
+                                { module: "Energy & Mitochondria", method: "S.P.A.R.K. Protocol™", meaning: "Source drain, Power up, Address oxidation, Restore, Keep monitoring", icon: Sun },
+                                { module: "Detox & Environmental", method: "C.L.E.A.N. Protocol™", meaning: "Capacity, Lighten load, Enhance pathways, Add support, Nourish", icon: Leaf },
+                            ].map((item, i) => (
+                                <div key={i} className={`bg-white rounded-xl p-4 border shadow-sm hover:shadow-md transition-all ${item.highlight ? 'border-burgundy-200 ring-1 ring-burgundy-100' : 'border-slate-200'}`}>
+                                    {item.highlight && (
+                                        <span className="inline-block bg-burgundy-100 text-burgundy-700 text-[10px] font-bold px-2 py-0.5 rounded-full mb-2">POPULAR</span>
+                                    )}
+                                    <div className="flex items-center gap-2 mb-2">
+                                        <item.icon className="h-4 w-4 text-burgundy-600" />
+                                        <p className="text-xs font-semibold text-burgundy-600 uppercase tracking-wide truncate">{item.module}</p>
+                                    </div>
+                                    <p className="font-bold text-slate-900 text-sm mb-1">{item.method}</p>
+                                    <p className="text-xs text-slate-500 leading-relaxed">{item.meaning}</p>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+
+                    {/* Advanced Application Methods */}
+                    <div className="mb-8">
+                        <div className="flex items-center gap-3 mb-4">
+                            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-gold-400 to-gold-500 flex items-center justify-center">
+                                <Target className="h-5 w-5 text-burgundy-900" />
+                            </div>
+                            <h3 className="text-xl font-bold text-slate-900">Advanced Application</h3>
+                        </div>
+                        <div className="grid md:grid-cols-3 gap-4">
+                            {[
+                                { module: "Functional Labs", method: "D.E.C.O.D.E. Method™", meaning: "Deep dive, Evaluate, Connect symptoms, Optimal ranges, Design intervention, Evaluate progress", icon: Shield },
+                                { module: "Protocol Building", method: "C.R.E.A.T.E. Method™", meaning: "Compile, Rank priorities, Establish timeline, Action steps, Track, Evolve", icon: Target },
+                                { module: "Building Practice", method: "S.C.A.L.E. Method™", meaning: "Structure, Clients, Automation, Leverage, Expand", icon: TrendingUp, highlight: true },
+                            ].map((item, i) => (
+                                <div key={i} className={`bg-gradient-to-br from-slate-900 to-burgundy-900 rounded-xl p-5 border border-slate-700 ${item.highlight ? 'ring-2 ring-gold-400' : ''}`}>
+                                    {item.highlight && (
+                                        <span className="inline-block bg-gold-400 text-burgundy-900 text-[10px] font-bold px-2 py-0.5 rounded-full mb-2">BUSINESS</span>
+                                    )}
+                                    <div className="flex items-center gap-2 mb-2">
+                                        <item.icon className="h-4 w-4 text-gold-400" />
+                                        <p className="text-xs font-semibold text-gold-400 uppercase tracking-wide">{item.module}</p>
+                                    </div>
+                                    <p className="font-bold text-white text-base mb-2">{item.method}</p>
+                                    <p className="text-sm text-slate-300 leading-relaxed">{item.meaning}</p>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+
+                    {/* Method Library Summary */}
+                    <div className="bg-gradient-to-r from-burgundy-50 to-gold-50 rounded-2xl p-6 border border-burgundy-200 text-center">
+                        <p className="text-lg font-bold text-slate-900 mb-2">
+                            <span className="text-burgundy-700">18 Proprietary Methods</span> — Frameworks You Can Use Immediately
+                        </p>
+                        <p className="text-slate-600 text-sm max-w-2xl mx-auto">
+                            These aren't just concepts. Each method is a <strong>step-by-step clinical framework</strong> you'll apply with every client. No more guessing — you'll have a system for every condition.
+                        </p>
+                    </div>
+                </div>
+            </section>
+
             {/* Market Comparison Table - Moved here after 21 Certifications */}
             <section className="py-12 sm:py-16 bg-white">
                 <div className="max-w-5xl mx-auto px-4">
