@@ -15,10 +15,10 @@ export async function GET(request: NextRequest) {
             );
         }
 
-        // First try to get the user's niche-matched coach
+        // First try to get the user's assigned coach
         const user = await prisma.user.findUnique({
             where: { id: session.user.id },
-            select: { niche: true },
+            select: { assignedCoachId: true, miniDiplomaCategory: true },
         });
 
         // For now, return Sarah as the default coach for all mini-diploma users

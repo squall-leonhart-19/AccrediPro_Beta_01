@@ -16,8 +16,9 @@ export default function Lesson9Page() {
   const [examScore, setExamScore] = useState(0);
   const [showExamResults, setShowExamResults] = useState(false);
   const lessonNumber = 9;
-  const brandColor = '#2D5A4A';
+  const brandColor = '#722F37';
   const accentColor = '#D4AF37';
+  const courseName = 'R.O.O.T.S. Method™ — Clinical Foundations Mini Course';
   const title = "Maria's Story + Final Certification Exam";
 
   useEffect(() => { const n = localStorage.getItem('roots-lesson-9-notes'); if (n) setNotes(n); }, []);
@@ -162,19 +163,23 @@ export default function Lesson9Page() {
   return (
     <div style={{ minHeight: '100vh', background: '#fff', fontFamily: 'Georgia, serif' }}>
       {/* Header */}
-      <header style={{ background: 'linear-gradient(135deg, #1a1a2e, #16213e)', padding: '16px 24px', position: 'sticky', top: 0, zIndex: 100 }}>
+      <header style={{ background: `linear-gradient(135deg, ${brandColor} 0%, #4a1c22 100%)`, padding: '16px 24px', position: 'sticky', top: 0, zIndex: 100 }}>
         <div style={{ maxWidth: 640, margin: '0 auto' }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 12 }}>
-            <Image src="/accredipro-logo-full.jpg" alt="AccrediPro" width={32} height={32} style={{ borderRadius: 6 }} />
-            <span style={{ fontSize: 14, color: 'white', fontWeight: 600 }}>R.O.O.T.S. Method™</span>
-            <div style={{ flex: 1, height: 6, background: 'rgba(255,255,255,0.2)', borderRadius: 3, marginLeft: 12 }}>
-              <div style={{ height: '100%', width: `${moduleProgress}%`, background: accentColor, borderRadius: 3 }} />
+          <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 8 }}>
+            <Image src="/newlogo.webp" alt="AccrediPro" width={44} height={44} style={{ borderRadius: 8 }} />
+            <div style={{ flex: 1 }}>
+              <div style={{ fontSize: 13, color: 'white', fontWeight: 600, marginBottom: 4 }}>{courseName}</div>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                <div style={{ flex: 1, height: 6, background: 'rgba(255,255,255,0.2)', borderRadius: 3 }}>
+                  <div style={{ height: '100%', width: `${moduleProgress}%`, background: accentColor, borderRadius: 3, transition: 'width 0.3s ease' }} />
+                </div>
+                <span style={{ fontSize: 12, color: 'rgba(255,255,255,0.7)' }}>{lessonNumber}/9</span>
+              </div>
             </div>
-            <span style={{ fontSize: 12, color: 'rgba(255,255,255,0.7)' }}>{lessonNumber}/9</span>
           </div>
           <div style={{ display: 'flex', justifyContent: 'space-between', color: 'white' }}>
             <span style={{ fontSize: 14 }}>Lesson {lessonNumber} — Final Exam</span>
-            <span style={{ fontSize: 12, opacity: 0.7 }}>8 min</span>
+            <span style={{ fontSize: 12, opacity: 0.7 }}>10 min</span>
           </div>
         </div>
       </header>
@@ -244,7 +249,7 @@ export default function Lesson9Page() {
                     <p style={{ color: '#666', marginBottom: 32 }}>You have passed the R.O.O.T.S. Method™ Final Exam!</p>
 
                     <div style={{ background: 'linear-gradient(135deg, #f8f9fa, white)', border: `3px solid ${accentColor}`, borderRadius: 20, padding: 32, margin: '0 auto 32px', maxWidth: 360 }}>
-                      <Image src="/accredipro-logo-full.jpg" alt="AccrediPro" width={80} height={80} style={{ borderRadius: 12, marginBottom: 16 }} />
+                      <Image src="/newlogo.webp" alt="AccrediPro" width={80} height={80} style={{ borderRadius: 12, marginBottom: 16 }} />
                       <div style={{ fontSize: 20, fontWeight: 'bold', color: brandColor }}>R.O.O.T.S. Method™</div>
                       <div style={{ fontSize: 16, color: '#666', marginTop: 4 }}>Foundation Certificate</div>
                       <div style={{ fontSize: 13, color: '#888', marginTop: 12 }}>Internationally Accredited</div>

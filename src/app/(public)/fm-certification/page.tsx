@@ -642,20 +642,141 @@ export default function FMCertificationPage() {
                 </div>
             </section>
 
-            {/* Quick Fit Check - MUST BE EARLY */}
-            <section className="py-8 bg-white border-b border-slate-100">
+            {/* The Pain Cycle - What You're Experiencing Now */}
+            <section className="py-12 sm:py-16 bg-slate-50">
+                <div className="max-w-5xl mx-auto px-4">
+                    <div className="text-center mb-10">
+                        <p className="text-red-600 font-semibold mb-2 uppercase tracking-wide">Sound Familiar?</p>
+                        <h2 className="text-3xl sm:text-4xl font-bold text-slate-900 mb-4">
+                            The Pain Cycle You're Stuck In
+                        </h2>
+                        <p className="text-lg text-slate-600 max-w-2xl mx-auto">
+                            You became a healthcare provider to help people heal. But somewhere along the way, the system broke your spirit.
+                        </p>
+                    </div>
+
+                    <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-4 mb-10">
+                        {[
+                            { emoji: "😓", pain: "10-minute visits", desc: "Rushed. No time to actually listen or understand the root cause." },
+                            { emoji: "📋", pain: "Symptom chasing", desc: "Prescribe, refer, repeat. Never addressing what's really wrong." },
+                            { emoji: "💸", pain: "Insurance handcuffs", desc: "Reimbursements dictate care. You can't practice the way you know works." },
+                            { emoji: "🔥", pain: "Burnout", desc: "Exhausted, undervalued, and wondering if this is all there is." },
+                        ].map((item, i) => (
+                            <div key={i} className="bg-white rounded-xl p-5 border border-slate-200 text-center">
+                                <span className="text-4xl block mb-3">{item.emoji}</span>
+                                <h3 className="font-bold text-slate-900 mb-2">{item.pain}</h3>
+                                <p className="text-sm text-slate-600">{item.desc}</p>
+                            </div>
+                        ))}
+                    </div>
+
+                    {/* Real Quotes from Before */}
+                    <div className="bg-gradient-to-r from-red-50 to-slate-50 rounded-2xl p-6 border border-red-100">
+                        <p className="text-red-700 font-semibold mb-4 text-center flex items-center justify-center gap-2">
+                            <Quote className="h-4 w-4" />
+                            What Our Students Said BEFORE They Found Functional Medicine:
+                        </p>
+                        <div className="grid md:grid-cols-3 gap-4">
+                            {[
+                                { quote: "I was so burned out after 25 years in hospitals. I knew there had to be a better way to actually help people.", name: "Karen M., ARNP" },
+                                { quote: "I watched my patients leave with prescriptions that would never fix their problems. It broke my heart.", name: "Sarah M., RN" },
+                                { quote: "10-minute visits. No time to listen. I felt like a prescription machine, not a healer.", name: "Maria S., PA-C" },
+                            ].map((item, i) => (
+                                <div key={i} className="bg-white rounded-lg p-4 border border-slate-100">
+                                    <p className="text-slate-700 text-sm italic mb-2">"{item.quote}"</p>
+                                    <p className="text-slate-500 text-xs font-medium">— {item.name}</p>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            {/* The 3-Pillar Solution */}
+            <section className="py-12 sm:py-16 bg-white">
+                <div className="max-w-6xl mx-auto px-4">
+                    <div className="text-center mb-10">
+                        <p className="text-olive-600 font-semibold mb-2 uppercase tracking-wide">The Solution</p>
+                        <h2 className="text-3xl sm:text-4xl font-bold text-slate-900 mb-4">
+                            3 Pillars That Transform Your Career
+                        </h2>
+                        <p className="text-lg text-slate-600 max-w-2xl mx-auto">
+                            AccrediPro isn't just education — it's a complete system for becoming a successful functional medicine practitioner.
+                        </p>
+                    </div>
+
+                    <div className="grid md:grid-cols-3 gap-6">
+                        <div className="bg-gradient-to-br from-burgundy-50 to-cream-50 rounded-2xl p-6 border border-burgundy-100 hover:shadow-lg transition-all">
+                            <div className="w-14 h-14 rounded-xl bg-burgundy-100 flex items-center justify-center mb-4">
+                                <Brain className="h-7 w-7 text-burgundy-600" />
+                            </div>
+                            <div className="inline-flex items-center gap-1 bg-burgundy-100 text-burgundy-700 px-2 py-1 rounded text-xs font-bold mb-3">
+                                PILLAR 1
+                            </div>
+                            <h3 className="text-xl font-bold text-slate-900 mb-3">Clinical Mastery</h3>
+                            <p className="text-slate-600 text-sm mb-4">
+                                21 modules covering every major health condition. Proprietary protocols. Evidence-based methods you can apply immediately.
+                            </p>
+                            <ul className="space-y-2 text-sm">
+                                <li className="flex items-center gap-2 text-slate-700"><CheckCircle2 className="h-4 w-4 text-olive-600" />Thyroid, Gut, Hormones, Autoimmune</li>
+                                <li className="flex items-center gap-2 text-slate-700"><CheckCircle2 className="h-4 w-4 text-olive-600" />18 proprietary frameworks</li>
+                                <li className="flex items-center gap-2 text-slate-700"><CheckCircle2 className="h-4 w-4 text-olive-600" />Real case studies included</li>
+                            </ul>
+                        </div>
+
+                        <div className="bg-gradient-to-br from-gold-50 to-cream-50 rounded-2xl p-6 border border-gold-200 hover:shadow-lg transition-all ring-2 ring-gold-300">
+                            <div className="w-14 h-14 rounded-xl bg-gold-100 flex items-center justify-center mb-4">
+                                <Award className="h-7 w-7 text-gold-600" />
+                            </div>
+                            <div className="inline-flex items-center gap-1 bg-gold-200 text-gold-800 px-2 py-1 rounded text-xs font-bold mb-3">
+                                PILLAR 2
+                            </div>
+                            <h3 className="text-xl font-bold text-slate-900 mb-3">Premium Credentials</h3>
+                            <p className="text-slate-600 text-sm mb-4">
+                                22 verifiable certificates. 9 international accreditations. Credentials that command respect and premium rates.
+                            </p>
+                            <ul className="space-y-2 text-sm">
+                                <li className="flex items-center gap-2 text-slate-700"><CheckCircle2 className="h-4 w-4 text-olive-600" />Master FM Practitioner cert</li>
+                                <li className="flex items-center gap-2 text-slate-700"><CheckCircle2 className="h-4 w-4 text-olive-600" />21 specialty certificates</li>
+                                <li className="flex items-center gap-2 text-slate-700"><CheckCircle2 className="h-4 w-4 text-olive-600" />80+ CEU hours included</li>
+                            </ul>
+                        </div>
+
+                        <div className="bg-gradient-to-br from-olive-50 to-cream-50 rounded-2xl p-6 border border-olive-200 hover:shadow-lg transition-all">
+                            <div className="w-14 h-14 rounded-xl bg-olive-100 flex items-center justify-center mb-4">
+                                <TrendingUp className="h-7 w-7 text-olive-600" />
+                            </div>
+                            <div className="inline-flex items-center gap-1 bg-olive-100 text-olive-700 px-2 py-1 rounded text-xs font-bold mb-3">
+                                PILLAR 3
+                            </div>
+                            <h3 className="text-xl font-bold text-slate-900 mb-3">Business Launch</h3>
+                            <p className="text-slate-600 text-sm mb-4">
+                                Personal mentorship. Coach Workspace CRM. Marketing templates. Everything to get your first paying clients.
+                            </p>
+                            <ul className="space-y-2 text-sm">
+                                <li className="flex items-center gap-2 text-slate-700"><CheckCircle2 className="h-4 w-4 text-olive-600" />1:1 mentor until certified</li>
+                                <li className="flex items-center gap-2 text-slate-700"><CheckCircle2 className="h-4 w-4 text-olive-600" />Built-in practice tools</li>
+                                <li className="flex items-center gap-2 text-slate-700"><CheckCircle2 className="h-4 w-4 text-olive-600" />Pricing & marketing help</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            {/* Quick Fit Check */}
+            <section className="py-8 bg-cream-50 border-y border-slate-100">
                 <div className="max-w-4xl mx-auto px-4">
                     <div className="grid md:grid-cols-2 gap-6">
                         <div className="bg-olive-50 rounded-2xl p-6 border border-olive-200">
                             <h3 className="font-bold text-slate-900 mb-4 flex items-center gap-2">
                                 <CheckCircle2 className="h-5 w-5 text-olive-600" />
-                                This Certification Is a Great Fit If You Are:
+                                This Certification Is Perfect If You:
                             </h3>
                             <ul className="space-y-2 text-slate-700 text-sm">
-                                <li className="flex items-start gap-2"><CheckCircle2 className="h-4 w-4 text-olive-600 shrink-0 mt-0.5" />Licensed healthcare professional (RN, NP, PA, MD, DC, RD, etc.)</li>
-                                <li className="flex items-start gap-2"><CheckCircle2 className="h-4 w-4 text-olive-600 shrink-0 mt-0.5" />Ready to start earning $10–15K+ monthly helping clients</li>
-                                <li className="flex items-start gap-2"><CheckCircle2 className="h-4 w-4 text-olive-600 shrink-0 mt-0.5" />Tired of watching patients leave with prescriptions that never fix the problem</li>
-                                <li className="flex items-start gap-2"><CheckCircle2 className="h-4 w-4 text-olive-600 shrink-0 mt-0.5" />Ready to apply what you learn 3–5 hrs/week</li>
+                                <li className="flex items-start gap-2"><CheckCircle2 className="h-4 w-4 text-olive-600 shrink-0 mt-0.5" />Are a licensed healthcare professional (RN, NP, PA, MD, DC, RD, etc.)</li>
+                                <li className="flex items-start gap-2"><CheckCircle2 className="h-4 w-4 text-olive-600 shrink-0 mt-0.5" />Want to earn $10–15K+/month helping clients actually heal</li>
+                                <li className="flex items-start gap-2"><CheckCircle2 className="h-4 w-4 text-olive-600 shrink-0 mt-0.5" />Are tired of symptom-chasing and want root-cause solutions</li>
+                                <li className="flex items-start gap-2"><CheckCircle2 className="h-4 w-4 text-olive-600 shrink-0 mt-0.5" />Can commit 3–5 hours/week to learning and applying</li>
                                 <li className="flex items-start gap-2"><CheckCircle2 className="h-4 w-4 text-olive-600 shrink-0 mt-0.5" />Want evidence-based methods, not guesswork</li>
                             </ul>
                         </div>
@@ -1180,6 +1301,70 @@ export default function FMCertificationPage() {
                 </div>
             </section>
 
+            {/* Coach Workspace Deep Dive */}
+            <section className="py-12 sm:py-16 bg-white">
+                <div className="max-w-6xl mx-auto px-4">
+                    <div className="grid lg:grid-cols-2 gap-10 items-center">
+                        <div>
+                            <div className="inline-flex items-center gap-2 bg-burgundy-50 border border-burgundy-200 rounded-full px-4 py-2 mb-4">
+                                <Laptop className="h-4 w-4 text-burgundy-600" />
+                                <span className="text-sm font-semibold text-burgundy-700">Included: Coach Workspace</span>
+                            </div>
+                            <h2 className="text-3xl sm:text-4xl font-bold text-slate-900 mb-4">
+                                Run Your Entire Practice From One Dashboard
+                            </h2>
+                            <p className="text-lg text-slate-600 mb-6">
+                                Most coaches pay $50-$200/month for separate CRM tools. Yours is built-in — professional from day one.
+                            </p>
+
+                            <div className="space-y-4">
+                                {[
+                                    { icon: Users, title: "Client Management", desc: "Track all clients, their progress, notes, and history in one place" },
+                                    { icon: BookOpen, title: "Protocol Builder", desc: "Create custom nutrition, supplement, and lifestyle protocols" },
+                                    { icon: Calendar, title: "Session Scheduling", desc: "Built-in calendar with automatic reminders" },
+                                    { icon: MessageCircle, title: "Secure Messaging", desc: "HIPAA-friendly communication with clients" },
+                                    { icon: Target, title: "Progress Tracking", desc: "Visual dashboards showing client outcomes" },
+                                    { icon: DollarSign, title: "Invoice & Payments", desc: "Send invoices, accept payments, track revenue" },
+                                ].map((item, i) => (
+                                    <div key={i} className="flex items-start gap-3">
+                                        <div className="w-10 h-10 rounded-lg bg-olive-100 flex items-center justify-center shrink-0">
+                                            <item.icon className="h-5 w-5 text-olive-600" />
+                                        </div>
+                                        <div>
+                                            <h4 className="font-bold text-slate-900">{item.title}</h4>
+                                            <p className="text-sm text-slate-600">{item.desc}</p>
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
+
+                            <div className="mt-6 bg-gold-50 rounded-xl p-4 border border-gold-200">
+                                <p className="text-gold-800 font-semibold text-sm flex items-center gap-2">
+                                    <DollarSign className="h-4 w-4" />
+                                    Value: $1,200+/year in software costs — included FREE
+                                </p>
+                            </div>
+                        </div>
+
+                        <div className="relative">
+                            <div className="bg-gradient-to-br from-burgundy-100 to-gold-50 rounded-3xl p-4">
+                                <Image
+                                    src="/portal.webp"
+                                    alt="Coach Workspace Dashboard"
+                                    width={600}
+                                    height={400}
+                                    className="w-full rounded-2xl shadow-lg"
+                                />
+                            </div>
+                            <div className="absolute -bottom-4 -right-4 bg-white rounded-xl p-3 shadow-lg border border-slate-200">
+                                <p className="text-xs text-slate-500 mb-1">Practitioners using Workspace:</p>
+                                <p className="text-xl font-bold text-burgundy-700">1,200+</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
             {/* Bonus Section - Personal from Sarah */}
             <section className="py-12 sm:py-16 bg-gradient-to-b from-burgundy-900 to-burgundy-800">
                 <div className="max-w-5xl mx-auto px-4">
@@ -1477,15 +1662,67 @@ export default function FMCertificationPage() {
                 </div>
             </section>
 
-            {/* Improved Pricing Section */}
-            <section id="pricing" className="py-12 sm:py-16 bg-gradient-to-b from-cream-50 to-white">
+            {/* Complete Offer Stack */}
+            <section className="py-12 sm:py-16 bg-cream-50">
+                <div className="max-w-4xl mx-auto px-4">
+                    <div className="text-center mb-10">
+                        <p className="text-burgundy-600 font-semibold mb-2 uppercase tracking-wide">Complete Offer Stack</p>
+                        <h2 className="text-3xl sm:text-4xl font-bold text-slate-900 mb-4">Everything You Get Today</h2>
+                        <p className="text-lg text-slate-600">Here's the full breakdown of what's included in your certification.</p>
+                    </div>
+
+                    <div className="bg-white rounded-2xl shadow-lg border border-slate-200 overflow-hidden">
+                        <div className="divide-y divide-slate-100">
+                            {[
+                                { item: "21-Module Clinical Training (168 Lessons)", value: "$2,497", desc: "Complete functional medicine education covering thyroid, gut, hormones, autoimmune, and more" },
+                                { item: "22 Verifiable Certificates", value: "$1,100", desc: "Master FM Practitioner cert + 21 specialty certificates — one per module" },
+                                { item: "80+ CEU Hours", value: "$400", desc: "Meets continuing education requirements for nurses, NPs, and health professionals" },
+                                { item: "Personal 1:1 Mentorship", value: "$997", desc: "Sarah guides you personally until certified — questions, feedback, career support" },
+                                { item: "Coach Workspace (Practice CRM)", value: "$1,200/yr", desc: "Client management, protocol builder, scheduling, invoicing — all built-in" },
+                                { item: "18 Proprietary Protocols", value: "$497", desc: "Ready-to-use clinical frameworks: R.O.O.T.S.™, G.U.T.S.™, C.Y.C.L.E.™, and more" },
+                                { item: "Career Launch Toolkit", value: "$297", desc: "Pricing guides, marketing templates, first client scripts" },
+                                { item: "Private Community Access", value: "$197/yr", desc: "1,400+ practitioners — get answers, referrals, and support" },
+                                { item: "6 Bonus Resources", value: "$497", desc: "Client intake templates, protocol builder, marketing kit, and more" },
+                            ].map((row, i) => (
+                                <div key={i} className="flex items-center justify-between p-4 hover:bg-cream-50 transition-colors">
+                                    <div className="flex-1">
+                                        <p className="font-semibold text-slate-900">{row.item}</p>
+                                        <p className="text-sm text-slate-500">{row.desc}</p>
+                                    </div>
+                                    <div className="text-right shrink-0 ml-4">
+                                        <p className="font-bold text-burgundy-600">{row.value}</p>
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                        <div className="bg-slate-50 p-4 border-t-2 border-slate-200">
+                            <div className="flex items-center justify-between">
+                                <p className="font-bold text-slate-900 text-lg">Total Value:</p>
+                                <p className="text-2xl font-black text-burgundy-700">$7,682+</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div className="text-center mt-6">
+                        <p className="text-slate-600 mb-2">Your investment today:</p>
+                        <div className="flex items-center justify-center gap-3">
+                            <span className="text-3xl text-slate-400 line-through">$497</span>
+                            <span className="text-5xl font-black text-burgundy-700">$197</span>
+                        </div>
+                        <p className="text-olive-600 font-semibold mt-2">Save $300 — Christmas Special</p>
+                    </div>
+                </div>
+            </section>
+
+            {/* Pricing Section */}
+            <section id="pricing" className="py-12 sm:py-16 bg-gradient-to-b from-white to-cream-50">
                 <div className="max-w-4xl mx-auto px-4">
                     <div className="text-center mb-8">
                         <div className="inline-flex items-center gap-2 bg-burgundy-50 border border-burgundy-200 rounded-full px-4 py-2 mb-4">
                             <Users className="h-4 w-4 text-burgundy-600" />
                             <span className="text-sm font-semibold text-burgundy-700">Limited Enrollment — Only 23 Mentorship Spots Available</span>
                         </div>
-                        <h2 className="text-3xl sm:text-4xl font-bold text-slate-900 mb-3">Start Your Certification Now</h2>
+                        <h2 className="text-3xl sm:text-4xl font-bold text-slate-900 mb-3">Secure Your Spot Now</h2>
                     </div>
 
                     {/* Pricing Card */}

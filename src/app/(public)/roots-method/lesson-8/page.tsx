@@ -13,8 +13,9 @@ export default function Lesson8Page() {
   const [showChat, setShowChat] = useState(false);
   const [newMessage, setNewMessage] = useState('');
   const lessonNumber = 8;
-  const brandColor = '#2D5A4A';
+  const brandColor = '#722F37';
   const accentColor = '#D4AF37';
+  const courseName = 'R.O.O.T.S. Method™ — Clinical Foundations Mini Course';
   const title = 'S — Scale Your Practice (The Money Lesson)';
 
   useEffect(() => { const n = localStorage.getItem('roots-lesson-8-notes'); if (n) setNotes(n); }, []);
@@ -90,19 +91,23 @@ export default function Lesson8Page() {
   return (
     <div style={{ minHeight: '100vh', background: '#fff', fontFamily: 'Georgia, serif' }}>
       {/* Header with AccrediPro branding */}
-      <header style={{ background: 'linear-gradient(135deg, #1a1a2e, #16213e)', padding: '16px 24px', position: 'sticky', top: 0, zIndex: 100 }}>
+      <header style={{ background: `linear-gradient(135deg, ${brandColor} 0%, #4a1c22 100%)`, padding: '16px 24px', position: 'sticky', top: 0, zIndex: 100 }}>
         <div style={{ maxWidth: 640, margin: '0 auto' }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 12 }}>
-            <Image src="/accredipro-logo-full.jpg" alt="AccrediPro" width={32} height={32} style={{ borderRadius: 6 }} />
-            <span style={{ fontSize: 14, color: 'white', fontWeight: 600 }}>R.O.O.T.S. Method™</span>
-            <div style={{ flex: 1, height: 6, background: 'rgba(255,255,255,0.2)', borderRadius: 3, marginLeft: 12 }}>
-              <div style={{ height: '100%', width: `${moduleProgress}%`, background: accentColor, borderRadius: 3 }} />
+          <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 8 }}>
+            <Image src="/newlogo.webp" alt="AccrediPro" width={44} height={44} style={{ borderRadius: 8 }} />
+            <div style={{ flex: 1 }}>
+              <div style={{ fontSize: 13, color: 'white', fontWeight: 600, marginBottom: 4 }}>{courseName}</div>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                <div style={{ flex: 1, height: 6, background: 'rgba(255,255,255,0.2)', borderRadius: 3 }}>
+                  <div style={{ height: '100%', width: `${moduleProgress}%`, background: accentColor, borderRadius: 3, transition: 'width 0.3s ease' }} />
+                </div>
+                <span style={{ fontSize: 12, color: 'rgba(255,255,255,0.7)' }}>{lessonNumber}/9</span>
+              </div>
             </div>
-            <span style={{ fontSize: 12, color: 'rgba(255,255,255,0.7)' }}>{lessonNumber}/9</span>
           </div>
           <div style={{ display: 'flex', justifyContent: 'space-between', color: 'white' }}>
             <span style={{ fontSize: 14 }}>Lesson {lessonNumber}</span>
-            <span style={{ fontSize: 12, opacity: 0.7 }}>6 min</span>
+            <span style={{ fontSize: 12, opacity: 0.7 }}>8 min</span>
           </div>
         </div>
       </header>
