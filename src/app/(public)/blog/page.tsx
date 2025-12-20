@@ -4,7 +4,7 @@ import {
   ArrowRight,
   Mail,
 } from "lucide-react";
-import { featuredPost, blogPosts } from "@/lib/blog-data";
+import { featuredPost, allBlogPosts } from "@/lib/blog-data";
 
 export const metadata = {
   title: "Blog | Functional Medicine Insights | AccrediPro Academy",
@@ -156,7 +156,7 @@ export default function BlogPage() {
           </div>
 
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {blogPosts.map((article, index) => (
+            {allBlogPosts.map((article, index) => (
               <Link key={index} href={`/blog/${article.slug}`}>
                 <article className="bg-burgundy-50/50 rounded-xl overflow-hidden shadow-sm hover:shadow-xl hover:-translate-y-2 transition duration-300 h-full">
                   <div className="h-48 overflow-hidden">

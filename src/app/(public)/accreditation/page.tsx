@@ -242,7 +242,6 @@ export default function AccreditationPage() {
             </Link>
 
             <div className="hidden md:flex items-center gap-8">
-              <Link href="/certifications" className="text-gray-600 hover:text-burgundy-600">Certifications</Link>
               <Link href="/accreditation" className="text-burgundy-600 font-semibold">Accreditations</Link>
               <Link href="/testimonials" className="text-gray-600 hover:text-burgundy-600">Testimonials</Link>
               <Link href="/about" className="text-gray-600 hover:text-burgundy-600">About</Link>

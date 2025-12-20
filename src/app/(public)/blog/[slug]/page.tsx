@@ -83,7 +83,6 @@ export default async function BlogArticlePage({ params }: Props) {
             </Link>
 
             <div className="hidden md:flex items-center gap-8">
-              <Link href="/certifications" className="text-gray-600 hover:text-burgundy-600 transition">Certifications</Link>
               <Link href="/accreditation" className="text-gray-600 hover:text-burgundy-600 transition">Accreditations</Link>
               <Link href="/testimonials" className="text-gray-600 hover:text-burgundy-600 transition">Testimonials</Link>
               <Link href="/about" className="text-gray-600 hover:text-burgundy-600 transition">About</Link>

@@ -969,7 +969,7 @@ const additionalPosts: BlogPost[] = [
 ];
 
 // Combine all posts
-const allBlogPosts = [...blogPosts, ...additionalPosts];
+export const allBlogPosts = [...blogPosts, ...additionalPosts];
 
 export function getPostBySlug(slug: string): BlogPost | undefined {
   if (featuredPost.slug === slug) return featuredPost;
