@@ -11,7 +11,8 @@ import crypto from "crypto";
  * 1. Creates or finds user account
  * 2. Enrolls them in the appropriate course
  * 3. Sends welcome email
- * 4. Logs the webhook event
+ * 4. Sends Purchase event to Meta CAPI
+ * 5. Logs the webhook event
  *
  * URL: /api/webhooks/clickfunnels
  * Method: POST
@@ -20,6 +21,73 @@ import crypto from "crypto";
  * - ClickFunnels 2.0 format
  * - Legacy ClickFunnels format
  */
+
+// Meta CAPI Configuration
+const META_PIXEL_ID = process.env.META_PURCHASE_PIXEL_ID || "1287915349067829";
+const META_ACCESS_TOKEN = process.env.META_PURCHASE_ACCESS_TOKEN || "EAAHMlaRKtUoBQBe0ZAFZBQPlRv3xujHeDw0y8kGmRewZA9jaqkbnZA5mJxndHZCNmalSrGmr9DlTbNewOdu4INw4xRRZCE4vC0mSvnWsV17sIvklD9X4PbttSgp2lVIOZBQxG9Uq8UVljCsqZA1LSqxlgjDQ1qIN6PctDh3M5LmJBKkqQa0FDQAIoBN1AAIVqwZDZD";
+
+// Hash PII for Meta CAPI (required for user data)
+function hashForMeta(data: string): string {
+  return crypto.createHash("sha256").update(data.toLowerCase().trim()).digest("hex");
+}
+
+// Send Purchase event to Meta Conversions API
+async function sendPurchaseToMeta(params: {
+  email: string;
+  value: number;
+  currency?: string;
+  contentName: string;
+  firstName?: string;
+  externalId?: string;
+}): Promise<{ success: boolean; eventId?: string; error?: string }> {
+  const { email, value, currency = "USD", contentName, firstName, externalId } = params;
+
+  const eventId = crypto.randomUUID();
+
+  const userData: Record<string, unknown> = {
+    em: [hashForMeta(email)],
+  };
+  if (firstName) userData.fn = [hashForMeta(firstName)];
+  if (externalId) userData.external_id = [hashForMeta(externalId)];
+
+  const eventData = {
+    event_name: "Purchase",
+    event_time: Math.floor(Date.now() / 1000),
+    event_id: eventId,
+    event_source_url: "https://sarah.accredipro.academy/fm-mini-diploma-access",
+    action_source: "website",
+    user_data: userData,
+    custom_data: {
+      value,
+      currency,
+      content_name: contentName,
+    },
+  };
+
+  try {
+    const response = await fetch(
+      `https://graph.facebook.com/v18.0/${META_PIXEL_ID}/events?access_token=${META_ACCESS_TOKEN}`,
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ data: [eventData] }),
+      }
+    );
+
+    const result = await response.json();
+
+    if (!response.ok) {
+      console.error("[Meta CAPI] Error:", result);
+      return { success: false, eventId, error: result.error?.message };
+    }
+
+    console.log(`[Meta CAPI] ✅ Purchase sent: ${contentName} = $${value}`, { event_id: eventId });
+    return { success: true, eventId };
+  } catch (error) {
+    console.error("[Meta CAPI] Exception:", error);
+    return { success: false, error: String(error) };
+  }
+}
 
 // Product ID to Course slug mapping
 // Add your ClickFunnels product IDs here
@@ -403,7 +471,22 @@ export async function POST(request: NextRequest) {
       console.error("Failed to send welcome email:", emailError);
     }
 
-    // 4. Log webhook event
+    // 4. Send Purchase event to Meta CAPI
+    let metaResult: { success: boolean; eventId?: string; error?: string } = { success: false };
+    try {
+      const purchaseValue = amount || 27; // Default to $27 for Mini Diploma
+      metaResult = await sendPurchaseToMeta({
+        email: normalizedEmail,
+        value: purchaseValue,
+        contentName: productName || "FM Mini Diploma",
+        firstName: user.firstName || firstName,
+        externalId: user.id,
+      });
+    } catch (metaError) {
+      console.error("Failed to send Meta CAPI event:", metaError);
+    }
+
+    // 5. Log webhook event
     await prisma.webhookEvent.create({
       data: {
         eventType: "clickfunnels.purchase",
@@ -417,6 +500,8 @@ export async function POST(request: NextRequest) {
           amount,
           isNewUser,
           courseSlug: course?.slug,
+          metaEventId: metaResult.eventId,
+          metaSuccess: metaResult.success,
           processingTime: Date.now() - startTime,
         },
         status: "sent",
@@ -456,6 +541,8 @@ export async function POST(request: NextRequest) {
         enrollmentId,
         courseSlug: course?.slug,
         transactionId,
+        metaEventSent: metaResult.success,
+        metaEventId: metaResult.eventId,
         processingTime: Date.now() - startTime,
       },
     });
