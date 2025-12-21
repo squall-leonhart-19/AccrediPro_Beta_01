@@ -1,20 +1,71 @@
 import { NextRequest, NextResponse } from "next/server";
 import crypto from "crypto";
+import bcrypt from "bcryptjs";
 import prisma from "@/lib/prisma";
+import { sendWelcomeEmail } from "@/lib/email";
 
-// ClickFunnels webhook secret for purchase tracking (separate from other CF webhooks)
-const CF_WEBHOOK_SECRET = process.env.CLICKFUNNELS_PURCHASE_WEBHOOK_SECRET || "4f1d4d3794136660e793fb28cfaa22bec461ff3c3adbbedb66bb0eb10ed6ca02";
+/**
+ * ClickFunnels Purchase Webhook
+ *
+ * Complete purchase processing:
+ * 1. Creates user account (if new)
+ * 2. Enrolls in appropriate course
+ * 3. Sends welcome email
+ * 4. Sends Purchase event to Meta CAPI
+ * 5. Adds product-specific tags
+ *
+ * Supports: FM Mini Diploma, FM Certification, Pro Accelerator, Client Guarantee
+ */
 
-// NEW Pixel for purchase tracking (separate from lead pixel)
+// Meta CAPI Configuration
 const PURCHASE_PIXEL_ID = process.env.META_PURCHASE_PIXEL_ID || "1287915349067829";
 const PURCHASE_ACCESS_TOKEN = process.env.META_PURCHASE_ACCESS_TOKEN || "EAAHMlaRKtUoBQBe0ZAFZBQPlRv3xujHeDw0y8kGmRewZA9jaqkbnZA5mJxndHZCNmalSrGmr9DlTbNewOdu4INw4xRRZCE4vC0mSvnWsV17sIvklD9X4PbttSgp2lVIOZBQxG9Uq8UVljCsqZA1LSqxlgjDQ1qIN6PctDh3M5LmJBKkqQa0FDQAIoBN1AAIVqwZDZD";
+
+// Product mappings
+const PRODUCT_COURSE_MAP: Record<string, string> = {
+    // FM Mini Diploma ($27)
+    "fm-mini-diploma": "fm-mini-diploma",
+    "fm_mini_diploma": "fm-mini-diploma",
+    "mini diploma": "fm-mini-diploma",
+    "mini-diploma": "fm-mini-diploma",
+
+    // FM Certification ($197)
+    "fm-certification": "fm-certification",
+    "fm_certification": "fm-certification",
+    "certification": "fm-certification",
+    "fm cert": "fm-certification",
+
+    // Pro Accelerator ($397)
+    "fm-pro-accelerator": "fm-pro-accelerator",
+    "pro accelerator": "fm-pro-accelerator",
+    "accelerator": "fm-pro-accelerator",
+
+    // Client Guarantee ($297)
+    "fm-client-guarantee": "fm-client-guarantee",
+    "client guarantee": "fm-client-guarantee",
+    "10-client": "fm-client-guarantee",
+};
+
+const PRODUCT_PRICES: Record<string, number> = {
+    "fm-mini-diploma": 27,
+    "fm-certification": 197,
+    "fm-pro-accelerator": 397,
+    "fm-client-guarantee": 297,
+};
+
+const PRODUCT_NAMES: Record<string, string> = {
+    "fm-mini-diploma": "FM Mini Diploma",
+    "fm-certification": "FM Certification",
+    "fm-pro-accelerator": "FM Pro Accelerator",
+    "fm-client-guarantee": "FM 10-Client Guarantee",
+};
 
 // Hash PII for Meta
 function hashData(data: string): string {
     return crypto.createHash("sha256").update(data.toLowerCase().trim()).digest("hex");
 }
 
-// Send Purchase event to Meta CAPI with specific pixel
+// Send Purchase event to Meta CAPI
 async function sendPurchaseToMeta(params: {
     email: string;
     value: number;
@@ -37,7 +88,7 @@ async function sendPurchaseToMeta(params: {
         event_name: "Purchase",
         event_time: Math.floor(Date.now() / 1000),
         event_id: eventId,
-        event_source_url: "https://sarah.accredipro.academy/fm-mini-diploma-access",
+        event_source_url: "https://sarah.accredipro.academy/checkout",
         action_source: "website",
         user_data: userData,
         custom_data: {
@@ -60,196 +111,289 @@ async function sendPurchaseToMeta(params: {
         const result = await response.json();
 
         if (!response.ok) {
-            console.error("[Meta CAPI Purchase] Error:", result);
+            console.error("[Meta CAPI] Error:", result);
             return { success: false, eventId, error: result.error?.message };
         }
 
-        console.log(`[Meta CAPI Purchase] ✅ Sent: ${contentName} = $${value}`, { event_id: eventId });
+        console.log(`[Meta CAPI] ✅ Purchase sent: ${contentName} = $${value}`, { event_id: eventId });
         return { success: true, eventId };
     } catch (error) {
-        console.error("[Meta CAPI Purchase] Exception:", error);
+        console.error("[Meta CAPI] Exception:", error);
         return { success: false, error: String(error) };
     }
 }
 
-/**
- * Verify ClickFunnels webhook signature
- */
-function verifySignature(payload: string, signature: string | null): boolean {
-    if (!signature) return false;
+// Determine course slug from product name
+function getCourseSlug(productName: string): string {
+    const lowerName = productName.toLowerCase();
 
-    const expectedSignature = crypto
-        .createHmac("sha256", CF_WEBHOOK_SECRET)
-        .update(payload)
-        .digest("hex");
+    // Check direct mappings first
+    for (const [key, slug] of Object.entries(PRODUCT_COURSE_MAP)) {
+        if (lowerName.includes(key)) {
+            return slug;
+        }
+    }
 
-    return crypto.timingSafeEqual(
-        Buffer.from(signature),
-        Buffer.from(expectedSignature)
-    );
+    // Default to mini diploma
+    return "fm-mini-diploma";
 }
 
-/**
- * POST /api/webhooks/clickfunnels-purchase
- *
- * Webhook endpoint for ClickFunnels purchases.
- * Handles Mini Diploma ($27) and any bump/OTO purchases.
- *
- * 1. Receives purchase data from CF webhook
- * 2. Finds user by email in our database
- * 3. Sends SEPARATE Purchase events for each product to Meta CAPI
- * 4. Updates user status / adds tags
- *
- * ClickFunnels webhook payload typically includes:
- * - contact.email
- * - contact.first_name
- * - contact.last_name
- * - purchase.amount (total)
- * - purchase.products[].name
- * - purchase.products[].amount
- */
+// Generate random password
+function generatePassword(): string {
+    return crypto.randomBytes(12).toString("base64").slice(0, 16);
+}
+
 export async function POST(request: NextRequest) {
+    const startTime = Date.now();
+
     try {
-        // Get raw body for signature verification
         const rawBody = await request.text();
-        const signature = request.headers.get("x-clickfunnels-webhook-signature")
-            || request.headers.get("x-cf-signature");
-
-        // Verify signature if provided (ClickFunnels sends this header)
-        if (signature && !verifySignature(rawBody, signature)) {
-            console.error("[CF Webhook] Invalid signature");
-            return NextResponse.json(
-                { error: "Invalid webhook signature" },
-                { status: 401 }
-            );
-        }
-
         const body = JSON.parse(rawBody);
 
-        console.log("[CF Webhook] Received purchase webhook:", JSON.stringify(body, null, 2));
+        console.log("[CF Purchase] Received webhook:", JSON.stringify(body, null, 2).substring(0, 2000));
 
-        // Extract data from ClickFunnels payload
-        const email = body.contact?.email || body.email || body.purchase?.contact?.email;
-        const firstName = body.contact?.first_name || body.first_name || body.contact?.firstName;
-        const lastName = body.contact?.last_name || body.last_name || body.contact?.lastName;
-        const totalAmount = body.purchase?.amount || body.amount || body.total || 27;
+        // =====================================================
+        // PARSE CLICKFUNNELS 2.0 PAYLOAD
+        // =====================================================
 
-        // Get products array - may have multiple (main + bump + OTOs)
-        const products = body.purchase?.products || body.products || [];
+        // CF 2.0 structure: { data: { contact: {...}, line_items: [...] }, event_type: "..." }
+        const data = body.data || body;
+        const contact = data.contact || {};
+        const lineItems = data.line_items || data.products || [];
+        const firstLineItem = lineItems[0] || {};
+        const productsVariant = firstLineItem.products_variant || {};
+        const originalProduct = firstLineItem.original_product || {};
+
+        // Extract email (CF 2.0 uses email_address)
+        const email = contact.email_address || contact.email || data.email_address || data.email || body.email;
+        const firstName = contact.first_name || data.first_name || body.first_name || "";
+        const lastName = contact.last_name || data.last_name || body.last_name || "";
+        const phone = contact.phone_number || data.phone_number || body.phone || "";
+
+        // Extract product info
+        const productSku = productsVariant.sku || originalProduct.sku || "";
+        const productName = productsVariant.name || originalProduct.name || firstLineItem.name || body.product_name || "FM Mini Diploma";
+        const productAmount = parseFloat(firstLineItem.amount || firstLineItem.price || productsVariant.amount || body.amount) || 27;
 
         if (!email) {
-            console.error("[CF Webhook] No email in payload");
-            return NextResponse.json(
-                { error: "No email provided in webhook payload" },
-                { status: 400 }
-            );
+            console.error("[CF Purchase] No email in payload");
+            return NextResponse.json({ error: "No email provided" }, { status: 400 });
         }
 
-        console.log(`[CF Webhook] Processing purchase for: ${email}, total: $${totalAmount}, products: ${products.length}`);
+        const normalizedEmail = email.toLowerCase().trim();
+        console.log(`[CF Purchase] Processing: ${normalizedEmail}, product: ${productName}, amount: $${productAmount}`);
 
-        // 1. Find user in our database
-        const user = await prisma.user.findUnique({
-            where: { email: email.toLowerCase().trim() },
-            select: {
-                id: true,
-                email: true,
-                firstName: true,
-                lastName: true,
+        // =====================================================
+        // 1. CREATE OR FIND USER
+        // =====================================================
+
+        let user = await prisma.user.findUnique({
+            where: { email: normalizedEmail },
+        });
+
+        let isNewUser = false;
+        let tempPassword: string | null = null;
+
+        if (!user) {
+            // Create new user
+            tempPassword = generatePassword();
+            const hashedPassword = await bcrypt.hash(tempPassword, 12);
+
+            user = await prisma.user.create({
+                data: {
+                    email: normalizedEmail,
+                    password: hashedPassword,
+                    firstName: firstName || null,
+                    lastName: lastName || null,
+                    phone: phone || null,
+                    role: "STUDENT",
+                    isVerified: true,
+                    isFirstLogin: true,
+                },
+            });
+
+            isNewUser = true;
+            console.log(`[CF Purchase] ✅ Created new user: ${normalizedEmail}`);
+        } else {
+            // Update existing user if needed
+            const updates: Record<string, string> = {};
+            if (!user.firstName && firstName) updates.firstName = firstName;
+            if (!user.lastName && lastName) updates.lastName = lastName;
+            if (!user.phone && phone) updates.phone = phone;
+
+            if (Object.keys(updates).length > 0) {
+                user = await prisma.user.update({
+                    where: { id: user.id },
+                    data: updates,
+                });
+            }
+            console.log(`[CF Purchase] Found existing user: ${normalizedEmail}`);
+        }
+
+        // =====================================================
+        // 2. DETERMINE COURSE AND ENROLL
+        // =====================================================
+
+        const courseSlug = getCourseSlug(productName);
+        const course = await prisma.course.findFirst({
+            where: { slug: courseSlug },
+        });
+
+        let enrollmentId: string | null = null;
+
+        if (course) {
+            // Check for existing enrollment
+            const existingEnrollment = await prisma.enrollment.findUnique({
+                where: {
+                    userId_courseId: { userId: user.id, courseId: course.id },
+                },
+            });
+
+            if (!existingEnrollment) {
+                const enrollment = await prisma.enrollment.create({
+                    data: {
+                        userId: user.id,
+                        courseId: course.id,
+                        status: "ACTIVE",
+                        progress: 0,
+                    },
+                });
+                enrollmentId = enrollment.id;
+                console.log(`[CF Purchase] ✅ Enrolled in: ${courseSlug}`);
+            } else {
+                enrollmentId = existingEnrollment.id;
+                console.log(`[CF Purchase] Already enrolled in: ${courseSlug}`);
+            }
+
+            // If FM Certification, mark any FM Preview as completed (upgrade)
+            if (courseSlug === "fm-certification") {
+                const previewEnrollment = await prisma.enrollment.findFirst({
+                    where: {
+                        userId: user.id,
+                        course: { slug: "fm-preview" },
+                    },
+                });
+
+                if (previewEnrollment) {
+                    await prisma.enrollment.update({
+                        where: { id: previewEnrollment.id },
+                        data: { status: "COMPLETED" },
+                    });
+                    console.log(`[CF Purchase] Upgraded from FM Preview`);
+                }
+            }
+        } else {
+            console.error(`[CF Purchase] Course not found: ${courseSlug}`);
+        }
+
+        // =====================================================
+        // 3. SEND WELCOME EMAIL (only for new users)
+        // =====================================================
+
+        if (isNewUser) {
+            try {
+                await sendWelcomeEmail(normalizedEmail, firstName || "Student");
+                console.log(`[CF Purchase] ✅ Welcome email sent`);
+            } catch (emailError) {
+                console.error("[CF Purchase] Failed to send welcome email:", emailError);
+            }
+        }
+
+        // =====================================================
+        // 4. SEND PURCHASE TO META CAPI
+        // =====================================================
+
+        const purchaseValue = productAmount || PRODUCT_PRICES[courseSlug] || 27;
+        const contentName = PRODUCT_NAMES[courseSlug] || productName;
+
+        const metaResult = await sendPurchaseToMeta({
+            email: normalizedEmail,
+            value: purchaseValue,
+            contentName,
+            firstName: user.firstName || firstName,
+            externalId: user.id,
+        });
+
+        // =====================================================
+        // 5. ADD PRODUCT-SPECIFIC TAGS
+        // =====================================================
+
+        try {
+            // Product-specific tag (e.g., fm_certification_purchased)
+            const productTagSlug = `${courseSlug.replace(/-/g, "_")}_purchased`;
+
+            await prisma.userTag.upsert({
+                where: { userId_tag: { userId: user.id, tag: productTagSlug } },
+                update: {},
+                create: { userId: user.id, tag: productTagSlug },
+            });
+
+            // General purchase tag
+            await prisma.userTag.upsert({
+                where: { userId_tag: { userId: user.id, tag: "clickfunnels_purchase" } },
+                update: {},
+                create: { userId: user.id, tag: "clickfunnels_purchase" },
+            });
+
+            console.log(`[CF Purchase] ✅ Added tag: ${productTagSlug}`);
+        } catch (tagError) {
+            console.error("[CF Purchase] Failed to add tags:", tagError);
+        }
+
+        // =====================================================
+        // 6. LOG WEBHOOK EVENT
+        // =====================================================
+
+        await prisma.webhookEvent.create({
+            data: {
+                eventType: "clickfunnels.purchase",
+                payload: body,
+                metadata: {
+                    email: normalizedEmail,
+                    product: productName,
+                    courseSlug,
+                    amount: purchaseValue,
+                    isNewUser,
+                    enrollmentId,
+                    metaSuccess: metaResult.success,
+                    metaEventId: metaResult.eventId,
+                    processingTime: Date.now() - startTime,
+                },
+                status: "sent",
+                processedAt: new Date(),
             },
         });
 
-        // 2. Send Purchase events to Meta CAPI (one per product for better optimization)
-        const metaResults: Array<{ product: string; success: boolean; eventId?: string }> = [];
-
-        if (products.length > 0) {
-            // Fire separate event for each product
-            for (const product of products) {
-                const productName = product.name || product.title || "FM Mini Diploma";
-                const productAmount = parseFloat(product.amount || product.price) || 27;
-
-                const result = await sendPurchaseToMeta({
-                    email: email.toLowerCase().trim(),
-                    value: productAmount,
-                    contentName: productName,
-                    firstName: firstName || user?.firstName || undefined,
-                    externalId: user?.id,
-                });
-
-                metaResults.push({ product: productName, success: result.success, eventId: result.eventId });
-            }
-        } else {
-            // Fallback: single product purchase
-            const productName = body.product_name || "FM Mini Diploma";
-            const result = await sendPurchaseToMeta({
-                email: email.toLowerCase().trim(),
-                value: parseFloat(totalAmount) || 27,
-                contentName: productName,
-                firstName: firstName || user?.firstName || undefined,
-                externalId: user?.id,
-            });
-
-            metaResults.push({ product: productName, success: result.success, eventId: result.eventId });
-        }
-
-        console.log("[CF Webhook] Meta CAPI results:", metaResults);
-
-        // 3. Update user status if user exists
-        if (user) {
-            // Add purchase tag for mini diploma
-            await prisma.userTag.upsert({
-                where: { userId_tag: { userId: user.id, tag: "fm_mini_diploma_purchased" } },
-                update: {},
-                create: { userId: user.id, tag: "fm_mini_diploma_purchased" },
-            });
-
-            // Add marketing tag for purchase tracking
-            await prisma.userMarketingTag.create({
-                data: {
-                    userId: user.id,
-                    tag: `purchase_${Math.round(totalAmount)}`,
-                    source: "clickfunnels",
-                    metadata: {
-                        amount: totalAmount,
-                        products: products.map((p: { name?: string; amount?: number }) => ({
-                            name: p.name,
-                            amount: p.amount,
-                        })),
-                        purchasedAt: new Date().toISOString(),
-                    },
-                },
-            }).catch(() => {
-                // Ignore if duplicate
-            });
-
-            console.log(`[CF Webhook] ✅ User ${email} updated with purchase tags`);
-        } else {
-            console.log(`[CF Webhook] User ${email} not found in database - Meta events still sent`);
-        }
+        console.log(`[CF Purchase] ✅ Complete! User: ${normalizedEmail}, Course: ${courseSlug}, Meta: ${metaResult.success ? "✅" : "❌"}`);
 
         return NextResponse.json({
             success: true,
-            message: "Purchase processed",
-            email,
-            totalAmount,
-            productsCount: products.length || 1,
-            metaEvents: metaResults,
-            userFound: !!user,
+            data: {
+                userId: user.id,
+                email: normalizedEmail,
+                isNewUser,
+                courseSlug,
+                enrollmentId,
+                metaEventSent: metaResult.success,
+                processingTime: Date.now() - startTime,
+            },
         });
 
     } catch (error) {
-        console.error("[CF Webhook] Error processing purchase:", error);
+        console.error("[CF Purchase] Error:", error);
         return NextResponse.json(
-            { error: "Failed to process purchase webhook" },
+            { error: "Failed to process purchase webhook", details: String(error) },
             { status: 500 }
         );
     }
 }
 
-// Also support GET for webhook verification (some platforms ping the URL first)
+// GET for webhook verification
 export async function GET() {
     return NextResponse.json({
         status: "ok",
         endpoint: "clickfunnels-purchase",
         message: "Webhook endpoint is active",
+        supports: ["fm-mini-diploma", "fm-certification", "fm-pro-accelerator", "fm-client-guarantee"],
     });
 }
