@@ -46,20 +46,16 @@ export async function POST(request: NextRequest) {
     }
 
     // Log the chat message for admin review (NO AUTO AI REPLY - manual responses only)
-    try {
-      await prisma.salesChat.create({
-        data: {
-          visitorId: finalVisitorId,
-          page: page || "fm-certification",
-          message,
-          isFromVisitor: true,
-          visitorName: userName || undefined,
-          visitorEmail: userEmail || undefined,
-        },
-      });
-    } catch (e) {
-      console.log("Sales chat logging skipped:", e);
-    }
+    await prisma.salesChat.create({
+      data: {
+        visitorId: finalVisitorId,
+        page: page || "fm-certification",
+        message,
+        isFromVisitor: true,
+        visitorName: userName || null,
+        visitorEmail: userEmail || null,
+      },
+    });
 
     // Return acknowledgment - Sarah will respond manually from admin panel
     return NextResponse.json({
