@@ -24,6 +24,7 @@ import {
   Tag,
   Target,
   Heart,
+  Ticket,
 } from "lucide-react";
 import { useState } from "react";
 
@@ -33,6 +34,7 @@ const navItems = [
   { href: "/admin/users", label: "Users", icon: Users },
   { href: "/admin/community", label: "Community", icon: Heart },
   { href: "/admin/live-chat", label: "Live Chat", icon: MessageSquare },
+  { href: "/admin/tickets", label: "Support Tickets", icon: Ticket },
   { href: "/admin/chat-optins", label: "Chat Leads", icon: Target },
   { href: "/admin/marketing", label: "Email Marketing", icon: Mail },
   { href: "/admin/auto-dms", label: "Auto DMs", icon: Zap },

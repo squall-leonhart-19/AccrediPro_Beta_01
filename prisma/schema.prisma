@@ -109,6 +109,9 @@ model User {
   quizAttempts      QuizAttempt[]
   quizProgress      QuizProgress[]
   salesChatReplies  SalesChat[]       @relation("SalesChatReplies")
+  submittedTickets  SupportTicket[]   @relation("UserTickets")
+  assignedTickets   SupportTicket[]   @relation("AssignedTickets")
+  sentTicketMessages TicketMessage[]  @relation("SentTicketMessages")
 
   @@index([email])
   @@index([role])
@@ -2126,6 +2129,95 @@ model ChatOptin {
   updatedAt   DateTime  @updatedAt
 
   @@index([email])
+  @@index([createdAt])
+}
+
+// ==========================================
+// SUPPORT TICKET SYSTEM
+// ==========================================
+
+enum TicketStatus {
+  NEW
+  OPEN
+  PENDING
+  RESOLVED
+  CLOSED
+}
+
+enum TicketPriority {
+  LOW
+  MEDIUM
+  HIGH
+  URGENT
+}
+
+enum TicketCategory {
+  BILLING
+  TECHNICAL
+  ACCESS
+  CERTIFICATES
+  COURSE_CONTENT
+  REFUND
+  GENERAL
+}
+
+model SupportTicket {
+  id              String          @id @default(cuid())
+  ticketNumber    Int             @unique @default(autoincrement())
+  subject         String
+  status          TicketStatus    @default(NEW)
+  priority        TicketPriority  @default(MEDIUM)
+  category        TicketCategory  @default(GENERAL)
+
+  // Customer info
+  customerName    String
+  customerEmail   String
+  userId          String?         // Link to User if they have an account
+  user            User?           @relation("UserTickets", fields: [userId], references: [id])
+
+  // Assignment
+  assignedToId    String?
+  assignedTo      User?           @relation("AssignedTickets", fields: [assignedToId], references: [id])
+
+  // Timestamps
+  createdAt       DateTime        @default(now())
+  updatedAt       DateTime        @updatedAt
+  firstResponseAt DateTime?       // When staff first replied
+  resolvedAt      DateTime?
+  closedAt        DateTime?
+
+  // Messages
+  messages        TicketMessage[]
+
+  @@index([status])
+  @@index([priority])
+  @@index([category])
+  @@index([customerEmail])
+  @@index([userId])
+  @@index([assignedToId])
+  @@index([createdAt])
+}
+
+model TicketMessage {
+  id              String        @id @default(cuid())
+  ticketId        String
+  ticket          SupportTicket @relation(fields: [ticketId], references: [id], onDelete: Cascade)
+
+  content         String        @db.Text
+  isFromCustomer  Boolean       @default(true)
+  isInternal      Boolean       @default(false)  // Internal notes, not sent to customer
+
+  // If from staff
+  sentById        String?
+  sentBy          User?         @relation("SentTicketMessages", fields: [sentById], references: [id])
+
+  // Email tracking
+  emailMessageId  String?       // Resend message ID for threading
+  emailSentAt     DateTime?     // When email was sent to customer
+
+  createdAt       DateTime      @default(now())
+
+  @@index([ticketId])
   @@index([createdAt])
 }
 
