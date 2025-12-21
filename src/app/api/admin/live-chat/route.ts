@@ -29,6 +29,10 @@ export async function GET() {
       take: 500,
     });
 
+    // Get all optins for visitor names/emails
+    const optins = await prisma.chatOptin.findMany();
+    const optinMap = new Map(optins.map((o) => [o.visitorId, o]));
+
     // Group messages by visitorId
     const conversationsMap = new Map<string, {
       visitorId: string;
@@ -42,11 +46,14 @@ export async function GET() {
     }>();
 
     messages.forEach((msg) => {
+      // Try to get optin data for this visitor
+      const optin = optinMap.get(msg.visitorId);
+
       if (!conversationsMap.has(msg.visitorId)) {
         conversationsMap.set(msg.visitorId, {
           visitorId: msg.visitorId,
-          visitorName: msg.visitorName,
-          visitorEmail: msg.visitorEmail,
+          visitorName: optin?.name || msg.visitorName,
+          visitorEmail: optin?.email || msg.visitorEmail,
           page: msg.page,
           messages: [],
           lastMessage: msg.message,
@@ -58,12 +65,12 @@ export async function GET() {
       const conv = conversationsMap.get(msg.visitorId)!;
       conv.messages.push(msg);
 
-      // Update visitor info if we have it
-      if (msg.visitorName && !conv.visitorName) {
-        conv.visitorName = msg.visitorName;
+      // Update visitor info if we have it (from optin or message)
+      if (!conv.visitorName) {
+        conv.visitorName = optin?.name || msg.visitorName || null;
       }
-      if (msg.visitorEmail && !conv.visitorEmail) {
-        conv.visitorEmail = msg.visitorEmail;
+      if (!conv.visitorEmail) {
+        conv.visitorEmail = optin?.email || msg.visitorEmail || null;
       }
 
       if (msg.isFromVisitor && !msg.isRead) {

@@ -31,6 +31,8 @@ interface ChatMessage {
 
 interface Conversation {
   visitorId: string;
+  visitorName: string | null;
+  visitorEmail: string | null;
   page: string;
   messages: ChatMessage[];
   lastMessage: string;
@@ -162,7 +164,7 @@ export default function LiveChatAdminPage() {
                       <div className="flex-1 min-w-0">
                         <div className="flex items-center justify-between">
                           <span className="font-medium text-sm truncate">
-                            Visitor {conv.visitorId.slice(0, 8)}
+                            {conv.visitorName || `Visitor ${conv.visitorId.slice(0, 8)}`}
                           </span>
                           {conv.unreadCount > 0 && (
                             <Badge variant="destructive" className="text-xs">
@@ -170,6 +172,9 @@ export default function LiveChatAdminPage() {
                             </Badge>
                           )}
                         </div>
+                        {conv.visitorEmail && (
+                          <p className="text-xs text-blue-600 truncate">{conv.visitorEmail}</p>
+                        )}
                         <p className="text-sm text-gray-500 truncate">
                           {conv.lastMessage}
                         </p>
@@ -202,7 +207,10 @@ export default function LiveChatAdminPage() {
                       <User className="w-4 h-4 text-gray-500" />
                     </AvatarFallback>
                   </Avatar>
-                  <span>Visitor {selectedConversation.visitorId.slice(0, 8)}</span>
+                  <span>{selectedConversation.visitorName || `Visitor ${selectedConversation.visitorId.slice(0, 8)}`}</span>
+                  {selectedConversation.visitorEmail && (
+                    <span className="text-sm text-blue-600">({selectedConversation.visitorEmail})</span>
+                  )}
                   <Badge variant="outline" className="ml-2">
                     {selectedConversation.page}
                   </Badge>

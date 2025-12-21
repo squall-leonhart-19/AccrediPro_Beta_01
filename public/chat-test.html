@@ -244,7 +244,7 @@
     }
   }
 
-  function startChat() {
+  async function startChat() {
     const nameInput = document.getElementById('chatUserName');
     const emailInput = document.getElementById('chatUserEmail');
     const name = nameInput.value.trim();
@@ -260,6 +260,33 @@
     chatUserEmail = email;
     localStorage.setItem('chatUserName', name);
     if (email) localStorage.setItem('chatUserEmail', email);
+
+    debugLog('info', 'Saving optin to database...');
+
+    // Save optin to database immediately
+    const apiBase = window.location.hostname === 'localhost' ? '' : 'https://learn.accredipro.academy';
+    const optinUrl = apiBase + '/api/chat/optin';
+
+    try {
+      const response = await fetch(optinUrl, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          visitorId: chatVisitorId,
+          name: name,
+          email: email || null,
+          page: 'chat-test'
+        })
+      });
+      const data = await response.json();
+      if (data.success) {
+        debugLog('success', 'Optin saved to DB! ID: ' + (data.optinId || 'skipped'));
+      } else {
+        debugLog('error', 'Optin save failed: ' + (data.error || 'Unknown error'));
+      }
+    } catch (err) {
+      debugLog('error', 'Optin API error: ' + err.message);
+    }
 
     debugLog('success', 'User opted in: ' + name + (email ? ' (' + email + ')' : ''));
 
