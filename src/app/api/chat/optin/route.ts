@@ -43,13 +43,13 @@ export async function POST(request: NextRequest) {
       where: { visitorId },
       update: {
         name,
-        email: email || undefined,
+        ...(email ? { email } : {}),
         updatedAt: new Date(),
       },
       create: {
         visitorId,
         name,
-        email: email || undefined,
+        email: email || null,
         page: page || "unknown",
         ipAddress,
         userAgent,
@@ -62,8 +62,9 @@ export async function POST(request: NextRequest) {
     );
   } catch (error) {
     console.error("Chat optin error:", error);
+    const errorMessage = error instanceof Error ? error.message : "Unknown error";
     return NextResponse.json(
-      { error: "Failed to save optin" },
+      { error: "Failed to save optin", details: errorMessage },
       { status: 500, headers: corsHeaders }
     );
   }
