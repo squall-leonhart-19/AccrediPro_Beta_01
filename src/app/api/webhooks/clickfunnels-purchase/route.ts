@@ -195,9 +195,9 @@ export async function POST(request: NextRequest) {
         let tempPassword: string | null = null;
 
         if (!user) {
-            // Create new user
-            tempPassword = generatePassword();
-            const hashedPassword = await bcrypt.hash(tempPassword, 12);
+            // Create new user with standard password
+            const standardPassword = "Futurecoach2025";
+            const hashedPassword = await bcrypt.hash(standardPassword, 12);
 
             user = await prisma.user.create({
                 data: {
