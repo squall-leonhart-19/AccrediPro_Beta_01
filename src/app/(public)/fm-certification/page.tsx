@@ -701,18 +701,6 @@ export default function FMCertificationPage() {
                         </div>
                     </div>
 
-                    {/* VSL Video */}
-                    <div className="max-w-4xl mx-auto mb-8">
-                        <div className="relative rounded-2xl overflow-hidden shadow-2xl border-4 border-white bg-slate-900" style={{ padding: '56.25% 0 0 0', position: 'relative' }}>
-                            <iframe
-                                src="https://player.vimeo.com/video/1134216854?badge=0&autopause=0&player_id=0&app_id=58479"
-                                frameBorder="0"
-                                allow="autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media"
-                                style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%' }}
-                                title="Certification Overview"
-                            />
-                        </div>
-                    </div>
 
                     {/* Social Proof before CTA */}
                     <div className="flex items-center justify-center gap-3 mb-4">
@@ -760,13 +748,361 @@ export default function FMCertificationPage() {
                 </div>
             </section>
 
+            {/* Sarah's Story Section */}
+            <section className="py-16 sm:py-20 bg-gradient-to-b from-cream-50 to-white">
+                <div className="max-w-3xl mx-auto px-4">
+                    {/* Section Header */}
+                    <div className="text-center mb-10">
+                        <p className="text-burgundy-600 font-semibold mb-2 uppercase tracking-wide">My Story</p>
+                        <h2 className="text-3xl sm:text-4xl font-bold text-slate-900 mb-4">
+                            7 Years Ago, I Was a Complete Mess
+                        </h2>
+                    </div>
+
+                    {/* Sarah's Photo */}
+                    <div className="flex justify-center mb-10">
+                        <div className="relative">
+                            <Image
+                                src="https://coach.accredipro.academy/wp-content/uploads/2025/12/Sarah-Mitchell-founder-1.jpg"
+                                alt="Sarah Mitchell - Founder"
+                                width={200}
+                                height={200}
+                                className="w-40 h-40 sm:w-48 sm:h-48 rounded-full object-cover border-4 border-white shadow-2xl"
+                            />
+                            <div className="absolute -bottom-2 -right-2 bg-burgundy-600 text-white text-xs font-bold px-3 py-1 rounded-full shadow-lg">
+                                Founder
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* The Story - Dramatic Opening */}
+                    <div className="prose prose-lg max-w-none text-slate-700 space-y-6">
+                        <p className="text-xl font-medium text-slate-900 leading-relaxed">
+                            My name is Sarah Mitchell. And 7 years ago, I was a complete mess.
+                        </p>
+
+                        <p className="leading-relaxed">
+                            <span className="font-bold text-slate-900">Single mom. Two kids under 5.</span> Working a job I hated just to keep the lights on.
+                        </p>
+
+                        <p className="leading-relaxed">
+                            And my health was falling apart.
+                        </p>
+
+                        <p className="leading-relaxed">
+                            Thyroid issues. Gut problems. Brain fog so bad I&apos;d forget what I walked into a room for. Exhaustion that no amount of sleep could fix.
+                        </p>
+
+                        <p className="leading-relaxed">
+                            <span className="font-bold text-slate-900">I gained 40 pounds in a year.</span> My hair was falling out. I&apos;d cry in my car before walking into work because I didn&apos;t have the energy to face another day.
+                        </p>
+
+                        {/* Divider */}
+                        <div className="flex items-center justify-center py-4">
+                            <div className="w-16 h-0.5 bg-burgundy-200"></div>
+                        </div>
+
+                        {/* The Medical Gaslighting */}
+                        <p className="leading-relaxed">
+                            I went to doctor after doctor.
+                        </p>
+
+                        <p className="leading-relaxed">
+                            They ran tests. Everything came back &quot;normal.&quot;
+                        </p>
+
+                        <div className="bg-slate-100 border-l-4 border-burgundy-600 p-6 rounded-r-lg my-8">
+                            <p className="text-lg italic text-slate-800 mb-2">
+                                &quot;Everything&apos;s fine. Maybe you&apos;re just stressed. Have you considered antidepressants?&quot;
+                            </p>
+                            <p className="text-sm text-slate-500">— One doctor I&apos;ll never forget</p>
+                        </div>
+
+                        <p className="leading-relaxed">
+                            <span className="font-bold text-slate-900">I wasn&apos;t depressed. I was SICK.</span> And no one could tell me why.
+                        </p>
+
+                        {/* Divider */}
+                        <div className="flex items-center justify-center py-4">
+                            <div className="w-16 h-0.5 bg-burgundy-200"></div>
+                        </div>
+
+                        {/* The Discovery */}
+                        <p className="leading-relaxed">
+                            I started researching on my own. Late nights after the kids went to bed. Googling symptoms. Reading studies. Desperate for answers.
+                        </p>
+
+                        <p className="text-xl font-bold text-burgundy-700 text-center py-4">
+                            That&apos;s when I found functional medicine.
+                        </p>
+
+                        <p className="leading-relaxed">
+                            I found a practitioner who actually <span className="font-bold">LISTENED</span>. Who ran <span className="font-bold">REAL</span> tests. A full thyroid panel — not just TSH. Gut testing. Hormone testing.
+                        </p>
+
+                        <p className="leading-relaxed font-medium text-slate-900">
+                            She found what was actually wrong.
+                        </p>
+
+                        {/* Diagnosis Callout */}
+                        <div className="bg-burgundy-50 border border-burgundy-200 rounded-xl p-6 my-8">
+                            <div className="grid sm:grid-cols-3 gap-4 text-center">
+                                <div>
+                                    <p className="font-bold text-burgundy-800">Hashimoto&apos;s</p>
+                                    <p className="text-sm text-burgundy-600">Autoimmune thyroiditis</p>
+                                </div>
+                                <div>
+                                    <p className="font-bold text-burgundy-800">Gut Dysbiosis</p>
+                                    <p className="text-sm text-burgundy-600">Intestinal permeability</p>
+                                </div>
+                                <div>
+                                    <p className="font-bold text-burgundy-800">Tanked Progesterone</p>
+                                    <p className="text-sm text-burgundy-600">Hormone imbalance</p>
+                                </div>
+                            </div>
+                            <p className="text-center text-slate-600 mt-4 text-sm">
+                                The basic panels had missed it completely.
+                            </p>
+                        </div>
+
+                        <p className="leading-relaxed">
+                            No wonder I felt like I was dying.
+                        </p>
+
+                        {/* Divider */}
+                        <div className="flex items-center justify-center py-4">
+                            <div className="w-16 h-0.5 bg-burgundy-200"></div>
+                        </div>
+
+                        {/* The Transformation */}
+                        <p className="leading-relaxed">
+                            Within six months of addressing the <span className="font-bold">ROOT CAUSES</span> — not just the symptoms — I felt like a different person.
+                        </p>
+
+                        <div className="grid sm:grid-cols-2 gap-4 my-8">
+                            <div className="bg-olive-50 rounded-xl p-4 flex items-center gap-3">
+                                <CheckCircle2 className="h-6 w-6 text-olive-600 shrink-0" />
+                                <span className="font-medium text-slate-800">Energy back</span>
+                            </div>
+                            <div className="bg-olive-50 rounded-xl p-4 flex items-center gap-3">
+                                <CheckCircle2 className="h-6 w-6 text-olive-600 shrink-0" />
+                                <span className="font-medium text-slate-800">Brain fog gone</span>
+                            </div>
+                            <div className="bg-olive-50 rounded-xl p-4 flex items-center gap-3">
+                                <CheckCircle2 className="h-6 w-6 text-olive-600 shrink-0" />
+                                <span className="font-medium text-slate-800">Weight coming off</span>
+                            </div>
+                            <div className="bg-olive-50 rounded-xl p-4 flex items-center gap-3">
+                                <CheckCircle2 className="h-6 w-6 text-olive-600 shrink-0" />
+                                <span className="font-medium text-slate-800">Hair growing again</span>
+                            </div>
+                        </div>
+
+                        <p className="text-xl font-bold text-slate-900 text-center py-4">
+                            For the first time in years, I felt like ME again.
+                        </p>
+
+                        {/* Divider */}
+                        <div className="flex items-center justify-center py-4">
+                            <div className="w-16 h-0.5 bg-burgundy-200"></div>
+                        </div>
+
+                        {/* The Mission */}
+                        <p className="leading-relaxed">
+                            And I became obsessed.
+                        </p>
+
+                        <p className="leading-relaxed text-lg font-medium text-slate-900">
+                            I thought: If this worked for me, how many other women are out there suffering — being told &quot;everything&apos;s normal&quot; — when they&apos;re NOT normal?
+                        </p>
+
+                        <p className="leading-relaxed">
+                            I had to learn this. I had to understand how she did this.
+                        </p>
+
+                        <p className="leading-relaxed">
+                            So I got certified in functional medicine. <span className="font-bold">While working. While raising two kids alone.</span> Studying at night. Weekends. Every spare moment.
+                        </p>
+
+                        <p className="leading-relaxed">
+                            And I started helping people.
+                        </p>
+
+                        <p className="leading-relaxed">
+                            Friends first. Then friends of friends. Word spread.
+                        </p>
+
+                        <p className="leading-relaxed">
+                            I was terrified to charge money at first. Who was I? I didn&apos;t have fancy credentials. I wasn&apos;t a doctor or a nurse.
+                        </p>
+
+                        <p className="leading-relaxed">
+                            <span className="font-bold">But people kept getting better.</span> And they kept referring others.
+                        </p>
+
+                        {/* Income Callout */}
+                        <div className="bg-gradient-to-r from-olive-100 to-olive-50 rounded-xl p-6 my-8 text-center">
+                            <p className="text-2xl font-bold text-olive-800 mb-2">$12,000/month</p>
+                            <p className="text-slate-600">Within 18 months — as a single mom, working from my kitchen table, helping people actually HEAL.</p>
+                        </div>
+
+                        {/* Divider */}
+                        <div className="flex items-center justify-center py-4">
+                            <div className="w-16 h-0.5 bg-burgundy-200"></div>
+                        </div>
+
+                        {/* The Realization About Credentials */}
+                        <p className="text-lg font-medium text-slate-900 leading-relaxed">
+                            Here&apos;s what I realized along the way:
+                        </p>
+
+                        <p className="leading-relaxed">
+                            I had to work HARD to build credibility. Every client, I had to prove myself. Every conversation, I had to overcome the &quot;who are you to help me?&quot; objection.
+                        </p>
+
+                        <p className="leading-relaxed">
+                            And I watched something that frustrated me.
+                        </p>
+
+                        <p className="leading-relaxed">
+                            <span className="font-bold text-slate-900">Licensed healthcare professionals — nurses, PAs, pharmacists, physical therapists</span> — people with REAL credentials...
+                        </p>
+
+                        <p className="leading-relaxed">
+                            They were <span className="font-bold">stuck.</span>
+                        </p>
+
+                        <p className="leading-relaxed">
+                            Stuck in 15-minute appointments. Stuck fighting insurance companies. Stuck in a system that didn&apos;t let them actually HELP people.
+                        </p>
+
+                        <div className="bg-burgundy-50 border-l-4 border-burgundy-600 p-6 rounded-r-lg my-8">
+                            <p className="text-lg font-medium text-slate-800">
+                                They had something I didn&apos;t have: <span className="font-bold text-burgundy-700">INSTANT CREDIBILITY.</span>
+                            </p>
+                            <p className="text-slate-600 mt-2">
+                                When a PA says &quot;I can help you balance your hormones,&quot; people believe her. She has the letters. The clinical training. The trust.
+                            </p>
+                            <p className="text-slate-600 mt-2">
+                                I had to earn that trust from scratch. They already HAVE it.
+                            </p>
+                            <p className="text-lg font-bold text-burgundy-700 mt-4">
+                                But they didn&apos;t know how to USE it.
+                            </p>
+                        </div>
+
+                        <p className="leading-relaxed">
+                            They didn&apos;t have the functional medicine framework. They didn&apos;t have the business model. They didn&apos;t know they could build something on the SIDE.
+                        </p>
+
+                        <p className="text-lg font-bold text-slate-900">
+                            So I started teaching them.
+                        </p>
+
+                        {/* Divider */}
+                        <div className="flex items-center justify-center py-4">
+                            <div className="w-16 h-0.5 bg-burgundy-200"></div>
+                        </div>
+
+                        {/* The Results */}
+                        <p className="text-xl font-bold text-slate-900 text-center mb-6">
+                            And here&apos;s what happened:
+                        </p>
+
+                        <p className="leading-relaxed text-center text-lg mb-8">
+                            The licensed clinicians I trained got results <span className="font-bold text-burgundy-700">FASTER</span> than I did. Way faster.
+                        </p>
+
+                        {/* Case Studies */}
+                        <div className="space-y-4 my-8">
+                            <div className="bg-white border border-slate-200 rounded-xl p-5 shadow-sm">
+                                <div className="flex items-start gap-4">
+                                    <div className="w-12 h-12 rounded-full bg-burgundy-100 flex items-center justify-center shrink-0">
+                                        <span className="text-xl">👩‍⚕️</span>
+                                    </div>
+                                    <div>
+                                        <p className="font-bold text-slate-900">Jennifer — PA</p>
+                                        <p className="text-slate-600">Went from zero to <span className="font-bold text-olive-700">$6,200/month in 6 months</span>. It took me 18 months to hit that.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div className="bg-white border border-slate-200 rounded-xl p-5 shadow-sm">
+                                <div className="flex items-start gap-4">
+                                    <div className="w-12 h-12 rounded-full bg-burgundy-100 flex items-center justify-center shrink-0">
+                                        <span className="text-xl">💊</span>
+                                    </div>
+                                    <div>
+                                        <p className="font-bold text-slate-900">Michael — Pharmacist</p>
+                                        <p className="text-slate-600">Built a <span className="font-bold text-olive-700">$4,800/month practice working 16 hours/MONTH</span>. He had instant credibility I had to fight for.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div className="bg-white border border-slate-200 rounded-xl p-5 shadow-sm">
+                                <div className="flex items-start gap-4">
+                                    <div className="w-12 h-12 rounded-full bg-burgundy-100 flex items-center justify-center shrink-0">
+                                        <span className="text-xl">🩺</span>
+                                    </div>
+                                    <div>
+                                        <p className="font-bold text-slate-900">Rachel — Nurse Practitioner</p>
+                                        <p className="text-slate-600">Charges <span className="font-bold text-olive-700">$275/session with a waiting list</span>. Because when an NP talks about hormones, people LISTEN.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* Key Insight */}
+                        <div className="bg-gradient-to-r from-burgundy-600 to-burgundy-700 rounded-2xl p-8 text-white text-center my-10">
+                            <p className="text-xl sm:text-2xl font-bold mb-2">
+                                If I could build this without credentials...
+                            </p>
+                            <p className="text-lg sm:text-xl">
+                                imagine what licensed clinicians could do <span className="text-gold-300 font-bold">WITH them.</span>
+                            </p>
+                        </div>
+
+                        {/* Final Statement */}
+                        <p className="text-xl font-bold text-slate-900 text-center">
+                            Your credentials are an unfair advantage.
+                        </p>
+                        <p className="text-xl text-slate-700 text-center">
+                            You just don&apos;t know how to use them yet.
+                        </p>
+                        <p className="text-xl font-bold text-burgundy-700 text-center mt-4">
+                            That&apos;s what I&apos;m going to show you.
+                        </p>
+
+                        {/* Stats */}
+                        <div className="bg-slate-50 rounded-xl p-6 mt-10 text-center">
+                            <p className="text-slate-600 mb-4">Today, I&apos;ve helped over</p>
+                            <p className="text-4xl font-bold text-burgundy-700 mb-2">1,800+</p>
+                            <p className="text-slate-600">healthcare professionals add functional medicine to their skillset.</p>
+                            <p className="text-sm text-slate-500 mt-4">PAs. NPs. Pharmacists. Physical therapists. Dietitians. Even MDs and DOs.</p>
+                        </div>
+                    </div>
+
+                    {/* CTA */}
+                    <div className="text-center mt-12">
+                        <a href="https://sarah.accredipro.academy/checkout-fm-certification">
+                            <Button className="bg-gradient-to-r from-burgundy-600 to-burgundy-700 hover:from-burgundy-700 hover:to-burgundy-800 text-white font-bold py-6 px-10 rounded-xl text-lg shadow-xl hover:shadow-2xl transition-all transform hover:scale-[1.02]">
+                                <GraduationCap className="h-5 w-5 mr-2" />
+                                Join 1,800+ Certified Practitioners
+                                <ArrowRight className="h-5 w-5 ml-2" />
+                            </Button>
+                        </a>
+                        <p className="text-slate-500 text-sm mt-4">
+                            <span className="line-through">$497</span> <span className="font-bold text-burgundy-700">$197</span> — Christmas Special
+                        </p>
+                    </div>
+                </div>
+            </section>
+
             {/* The Pain Cycle - What You're Experiencing Now */}
             <section className="py-12 sm:py-16 bg-slate-50">
                 <div className="max-w-5xl mx-auto px-4">
                     <div className="text-center mb-10">
                         <p className="text-red-600 font-semibold mb-2 uppercase tracking-wide">Sound Familiar?</p>
                         <h2 className="text-3xl sm:text-4xl font-bold text-slate-900 mb-4">
-                            The Pain Cycle You're Stuck In
+                            The Pain Cycle You&apos;re Stuck In
                         </h2>
                         <p className="text-lg text-slate-600 max-w-2xl mx-auto">
                             You became a healthcare provider to help people heal. But somewhere along the way, the system broke your spirit.
