@@ -27,11 +27,6 @@ export async function GET() {
     const messages = await prisma.salesChat.findMany({
       orderBy: { createdAt: "desc" },
       take: 500,
-      include: {
-        repliedByUser: {
-          select: { name: true },
-        },
-      },
     });
 
     // Get all optins for visitor names/emails
@@ -96,10 +91,7 @@ export async function GET() {
           .sort((a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime())
           .map((msg) => ({
             ...msg,
-            // Format repliedBy to show user name instead of ID
-            repliedBy: msg.isFromVisitor
-              ? null
-              : (msg as unknown as { repliedByUser?: { name: string | null } }).repliedByUser?.name || "Sarah (AI)",
+            repliedBy: msg.isFromVisitor ? null : (msg.repliedBy || "Sarah"),
           })),
       }))
       .sort((a, b) => b.lastMessageAt.getTime() - a.lastMessageAt.getTime());
