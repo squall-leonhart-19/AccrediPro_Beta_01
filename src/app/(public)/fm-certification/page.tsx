@@ -650,15 +650,18 @@ export default function FMCertificationPage() {
                         />
                     </div>
 
-                    {/* Bundle Image */}
-                    <div className="max-w-2xl mx-auto mb-6">
-                        <Image
-                            src="https://coach.accredipro.academy/wp-content/uploads/2025/12/FunctionalMedicinePractictioner.jpeg"
-                            alt="Functional Medicine Practitioner Certification Bundle"
-                            width={800}
-                            height={500}
-                            className="w-full h-auto rounded-2xl shadow-2xl border-4 border-white"
-                        />
+                    {/* VSL Video */}
+                    <div className="max-w-3xl mx-auto mb-6">
+                        <div className="rounded-2xl overflow-hidden shadow-2xl border-4 border-white" style={{ padding: "56.25% 0 0 0", position: "relative" }}>
+                            <iframe
+                                src="https://player.vimeo.com/video/1134216854?badge=0&autopause=0&player_id=0&app_id=58479"
+                                frameBorder="0"
+                                allow="autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media"
+                                referrerPolicy="strict-origin-when-cross-origin"
+                                style={{ position: "absolute", top: 0, left: 0, width: "100%", height: "100%" }}
+                                title="VSL"
+                            />
+                        </div>
                     </div>
 
                     {/* Key Benefits */}
