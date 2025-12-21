@@ -47,7 +47,7 @@ export async function POST(request: NextRequest) {
       await resend.emails.send({
         from: "AccrediPro Support <support@accredipro-certificate.com>",
         to: customerEmail,
-        replyTo: `ticket-${ticket.ticketNumber}@accredipro-certificate.com`,
+        replyTo: `ticket-${ticket.ticketNumber}@tickets.accredipro-certificate.com`,
         subject: `[Ticket #${ticket.ticketNumber}] ${subject} - We've received your request`,
         html: `
           <!DOCTYPE html>

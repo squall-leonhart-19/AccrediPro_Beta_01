@@ -146,7 +146,7 @@ export async function POST(
         const emailResult = await resend.emails.send({
           from: "AccrediPro Support <support@accredipro-certificate.com>",
           to: ticket.customerEmail,
-          replyTo: `ticket-${ticket.ticketNumber}@accredipro-certificate.com`,
+          replyTo: `ticket-${ticket.ticketNumber}@tickets.accredipro-certificate.com`,
           subject: `Re: [Ticket #${ticket.ticketNumber}] ${ticket.subject}`,
           html: `
             <!DOCTYPE html>
