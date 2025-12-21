@@ -346,17 +346,19 @@ export async function POST(request: NextRequest) {
         await prisma.webhookEvent.create({
             data: {
                 eventType: "clickfunnels.purchase",
-                payload: body,
-                metadata: {
-                    email: normalizedEmail,
-                    product: productName,
-                    courseSlug,
-                    amount: purchaseValue,
-                    isNewUser,
-                    enrollmentId,
-                    metaSuccess: metaResult.success,
-                    metaEventId: metaResult.eventId,
-                    processingTime: Date.now() - startTime,
+                payload: {
+                    ...body,
+                    _processed: {
+                        email: normalizedEmail,
+                        product: productName,
+                        courseSlug,
+                        amount: purchaseValue,
+                        isNewUser,
+                        enrollmentId,
+                        metaSuccess: metaResult.success,
+                        metaEventId: metaResult.eventId,
+                        processingTime: Date.now() - startTime,
+                    },
                 },
                 status: "sent",
                 processedAt: new Date(),
