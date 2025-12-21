@@ -8,7 +8,7 @@ import {
     CheckCircle2, Mail, MessageCircle, GraduationCap,
     ArrowRight, Clock, Users, Heart, Sparkles,
     BookOpen, Key, Copy, Check, Award, Star,
-    Play, Calendar, Shield
+    Play, Shield
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
@@ -252,21 +252,6 @@ export default function FMCertificationThankYouPage() {
                             </div>
                         </div>
 
-                        {/* Step 5: Book Onboarding Call */}
-                        <div className="flex gap-4">
-                            <div className="w-12 h-12 rounded-full bg-gold-500 text-white flex items-center justify-center font-bold text-lg shrink-0">
-                                5
-                            </div>
-                            <div className="flex-1">
-                                <h3 className="font-bold text-slate-900 text-lg flex items-center gap-2">
-                                    <Calendar className="h-5 w-5 text-gold-600" />
-                                    Book Your Onboarding Call (Optional)
-                                </h3>
-                                <p className="text-slate-600 mt-1">
-                                    Want a personalized roadmap? Book a <strong>free 15-minute onboarding call</strong> with our team to create your custom certification timeline.
-                                </p>
-                            </div>
-                        </div>
                     </div>
                 </div>
 
