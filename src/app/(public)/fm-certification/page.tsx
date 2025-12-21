@@ -479,10 +479,46 @@ export default function FMCertificationPage() {
     const { showPopup, closePopup } = useExitIntent(3000); // 3 second delay before enabling
     const { trackPageView, trackAddToCart } = useMetaTracking();
 
-    // Track PageView on mount
+    // Track PageView on mount (CAPI)
     useEffect(() => {
         trackPageView("FM Certification");
     }, [trackPageView]);
+
+    // Load Meta Pixel (browser-side) for PageView + AddToCart events
+    // This works alongside CAPI for proper deduplication and attribution
+    useEffect(() => {
+        if (typeof window !== "undefined" && !(window as unknown as { fbq?: unknown }).fbq) {
+            const PIXEL_ID = "1287915349067829";
+
+            // Initialize fbq
+            const fbq = function(...args: unknown[]) {
+                if ((fbq as { callMethod?: (...a: unknown[]) => void }).callMethod) {
+                    (fbq as { callMethod: (...a: unknown[]) => void }).callMethod(...args);
+                } else {
+                    ((fbq as { queue?: unknown[] }).queue = (fbq as { queue?: unknown[] }).queue || []).push(args);
+                }
+            };
+            (fbq as { push: typeof fbq }).push = fbq;
+            (fbq as { loaded: boolean }).loaded = true;
+            (fbq as { version: string }).version = "2.0";
+            (fbq as { queue: unknown[] }).queue = [];
+            (window as unknown as Record<string, unknown>).fbq = fbq;
+            (window as unknown as Record<string, unknown>)._fbq = fbq;
+
+            // Load pixel script
+            const script = document.createElement("script");
+            script.async = true;
+            script.src = "https://connect.facebook.net/en_US/fbevents.js";
+            document.head.appendChild(script);
+
+            // Initialize and fire PageView
+            fbq("init", PIXEL_ID);
+            fbq("track", "PageView");
+        } else if ((window as unknown as { fbq?: (...args: unknown[]) => void }).fbq) {
+            // Pixel already loaded, just fire PageView
+            (window as unknown as { fbq: (...args: unknown[]) => void }).fbq("track", "PageView");
+        }
+    }, []);
 
     // Load Microsoft Clarity tracking
     useEffect(() => {
@@ -500,13 +536,25 @@ export default function FMCertificationPage() {
         }
     }, []);
 
-    // Track AddToCart when clicking any checkout CTA link
+    // Track AddToCart when clicking any checkout CTA link (CAPI + Browser Pixel)
     useEffect(() => {
         const handleClick = (e: MouseEvent) => {
             const target = e.target as HTMLElement;
             const link = target.closest('a[href*="checkout-fm-certification"]');
             if (link) {
+                // Server-side CAPI
                 trackAddToCart("FM Certification", 197, "fm-certification");
+
+                // Browser-side Pixel for AddToCart
+                const fbq = (window as unknown as { fbq?: (...args: unknown[]) => void }).fbq;
+                if (fbq) {
+                    fbq("track", "AddToCart", {
+                        value: 197,
+                        currency: "USD",
+                        content_name: "FM Certification",
+                        content_ids: ["fm-certification"],
+                    });
+                }
             }
         };
 
