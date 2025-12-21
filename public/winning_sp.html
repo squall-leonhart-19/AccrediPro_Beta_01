@@ -3751,7 +3751,8 @@ function sendChatMessage() {
   messagesDiv.scrollTop = messagesDiv.scrollHeight;
 
   // Send to AI and get response
-  fetch('/api/chat/sales', {
+  const apiBase = window.location.hostname === 'localhost' ? '' : 'https://learn.accredipro.academy';
+  fetch(apiBase + '/api/chat/sales', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({
@@ -3918,10 +3919,11 @@ if (viewersBadge) viewersBadge.style.bottom = '100px';
 let adminIsAuthenticated = false;
 let adminConversations = [];
 let adminSelectedVisitor = null;
+const adminApiBase = window.location.hostname === 'localhost' ? '' : 'https://learn.accredipro.academy';
 
 async function checkAdminAuth() {
   try {
-    const res = await fetch('/api/auth/session');
+    const res = await fetch(adminApiBase + '/api/auth/session', { credentials: 'include' });
     const session = await res.json();
     if (session?.user && ['ADMIN', 'INSTRUCTOR'].includes(session.user.role)) {
       adminIsAuthenticated = true;
@@ -3952,7 +3954,7 @@ async function loadAdminConversations() {
   if (!adminIsAuthenticated) return;
 
   try {
-    const res = await fetch('/api/admin/live-chat');
+    const res = await fetch(adminApiBase + '/api/admin/live-chat', { credentials: 'include' });
     const data = await res.json();
     adminConversations = data.conversations || [];
 
@@ -4043,9 +4045,10 @@ async function sendAdminReply() {
   input.disabled = true;
 
   try {
-    await fetch('/api/admin/live-chat/reply', {
+    await fetch(adminApiBase + '/api/admin/live-chat/reply', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
+      credentials: 'include',
       body: JSON.stringify({ visitorId: adminSelectedVisitor, message })
     });
     await loadAdminConversations();
@@ -4061,9 +4064,10 @@ async function sendAdminAIReply() {
   if (!adminSelectedVisitor) return;
 
   try {
-    await fetch('/api/admin/live-chat/reply', {
+    await fetch(adminApiBase + '/api/admin/live-chat/reply', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
+      credentials: 'include',
       body: JSON.stringify({ visitorId: adminSelectedVisitor, useAI: true })
     });
     await loadAdminConversations();

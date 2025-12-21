@@ -8,6 +8,18 @@ const anthropic = new Anthropic({
   apiKey: process.env.ANTHROPIC_API_KEY,
 });
 
+// CORS headers for cross-origin requests
+const corsHeaders = {
+  "Access-Control-Allow-Origin": "https://sarah.accredipro.academy",
+  "Access-Control-Allow-Methods": "POST, OPTIONS",
+  "Access-Control-Allow-Headers": "Content-Type",
+  "Access-Control-Allow-Credentials": "true",
+};
+
+export async function OPTIONS() {
+  return NextResponse.json({}, { headers: corsHeaders });
+}
+
 const SALES_SYSTEM_PROMPT = `You are Sarah, the lead instructor and mentor at AccrediPro Academy. You're having a live chat with a potential student on the FM Certification sales page.
 
 Your personality:
@@ -34,13 +46,13 @@ export async function POST(request: NextRequest) {
     const session = await getServerSession(authOptions);
 
     if (!session?.user || !["ADMIN", "INSTRUCTOR"].includes(session.user.role as string)) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401, headers: corsHeaders });
     }
 
     const { visitorId, message, useAI } = await request.json();
 
     if (!visitorId) {
-      return NextResponse.json({ error: "Visitor ID is required" }, { status: 400 });
+      return NextResponse.json({ error: "Visitor ID is required" }, { status: 400, headers: corsHeaders });
     }
 
     let replyMessage = message;
@@ -77,7 +89,7 @@ export async function POST(request: NextRequest) {
     }
 
     if (!replyMessage) {
-      return NextResponse.json({ error: "Message is required" }, { status: 400 });
+      return NextResponse.json({ error: "Message is required" }, { status: 400, headers: corsHeaders });
     }
 
     // Save the reply
@@ -103,9 +115,9 @@ export async function POST(request: NextRequest) {
       },
     });
 
-    return NextResponse.json({ success: true, message: replyMessage });
+    return NextResponse.json({ success: true, message: replyMessage }, { headers: corsHeaders });
   } catch (error) {
     console.error("Failed to send reply:", error);
-    return NextResponse.json({ error: "Failed to send reply" }, { status: 500 });
+    return NextResponse.json({ error: "Failed to send reply" }, { status: 500, headers: corsHeaders });
   }
 }

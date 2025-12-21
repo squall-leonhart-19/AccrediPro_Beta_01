@@ -3,12 +3,24 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 
+// CORS headers for cross-origin requests
+const corsHeaders = {
+  "Access-Control-Allow-Origin": "https://sarah.accredipro.academy",
+  "Access-Control-Allow-Methods": "GET, OPTIONS",
+  "Access-Control-Allow-Headers": "Content-Type",
+  "Access-Control-Allow-Credentials": "true",
+};
+
+export async function OPTIONS() {
+  return NextResponse.json({}, { headers: corsHeaders });
+}
+
 export async function GET() {
   try {
     const session = await getServerSession(authOptions);
 
     if (!session?.user || !["ADMIN", "INSTRUCTOR"].includes(session.user.role as string)) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401, headers: corsHeaders });
     }
 
     // Get all sales chat messages grouped by visitor
@@ -74,9 +86,9 @@ export async function GET() {
       }))
       .sort((a, b) => b.lastMessageAt.getTime() - a.lastMessageAt.getTime());
 
-    return NextResponse.json({ conversations });
+    return NextResponse.json({ conversations }, { headers: corsHeaders });
   } catch (error) {
     console.error("Failed to fetch live chat:", error);
-    return NextResponse.json({ error: "Failed to fetch conversations" }, { status: 500 });
+    return NextResponse.json({ error: "Failed to fetch conversations" }, { status: 500, headers: corsHeaders });
   }
 }

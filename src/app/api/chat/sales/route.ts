@@ -6,6 +6,17 @@ const anthropic = new Anthropic({
   apiKey: process.env.ANTHROPIC_API_KEY,
 });
 
+// CORS headers for cross-origin requests from sales pages
+const corsHeaders = {
+  "Access-Control-Allow-Origin": "*",
+  "Access-Control-Allow-Methods": "POST, OPTIONS",
+  "Access-Control-Allow-Headers": "Content-Type",
+};
+
+export async function OPTIONS() {
+  return NextResponse.json({}, { headers: corsHeaders });
+}
+
 const SALES_SYSTEM_PROMPT = `You are Sarah, the lead instructor and mentor at AccrediPro Academy. You're having a live chat with a potential student on the FM Certification sales page.
 
 Your personality:
@@ -48,7 +59,7 @@ export async function POST(request: NextRequest) {
     const { message, page, visitorId, userName, userEmail } = body;
 
     if (!message) {
-      return NextResponse.json({ error: "Message is required" }, { status: 400 });
+      return NextResponse.json({ error: "Message is required" }, { status: 400, headers: corsHeaders });
     }
 
     const finalVisitorId = visitorId || "anonymous_" + Date.now();
@@ -122,13 +133,14 @@ export async function POST(request: NextRequest) {
       console.log("AI response logging skipped:", e);
     }
 
-    return NextResponse.json({ reply });
+    return NextResponse.json({ reply }, { headers: corsHeaders });
   } catch (error) {
     console.error("Sales chat error:", error);
     return NextResponse.json(
       {
         reply: "Thanks for reaching out! The FM Certification gives you everything you need to become a certified functional medicine coach in 30 days. It includes 9 international certifications, daily mentorship with me, and lifetime access to our community. Today's special is just $97 (80% off!). What questions can I answer for you?"
-      }
+      },
+      { headers: corsHeaders }
     );
   }
 }
