@@ -14,6 +14,7 @@ import {
     Menu
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { FMExitPopup, useExitIntent } from "@/components/fm-certification/exit-popup";
 
 // Verified working student profile images from accredipro.academy
 const ALL_STUDENT_AVATARS = [
@@ -547,10 +548,13 @@ const NavHeader = () => {
 };
 
 export default function FMCertificationPage() {
+    const { showPopup, closePopup } = useExitIntent(3000); // 3 second delay before enabling
+
     return (
         <div className="min-h-screen bg-gradient-to-b from-cream-100 via-cream-50 to-white pb-20 lg:pb-0">
             <StickyCTA />
             <RecentEnrollmentToast />
+            <FMExitPopup isOpen={showPopup} onClose={closePopup} />
 
             <style jsx global>{`
                 @keyframes slide-up { from { transform: translateY(100%); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
