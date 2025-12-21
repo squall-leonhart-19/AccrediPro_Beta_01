@@ -770,10 +770,10 @@ export default function FMCertificationPage() {
                     {/* Certificate Bundle Image */}
                     <div className="max-w-2xl mx-auto mb-10">
                         <Image
-                            src="https://coach.accredipro.academy/wp-content/uploads/2025/12/FunctionalMedicinePractictioner.jpeg"
+                            src="/FUNCTIONAL_MEDICINE_CERTIFICATE.webp"
                             alt="Functional Medicine Practitioner Certification Bundle"
-                            width={800}
-                            height={500}
+                            width={1080}
+                            height={700}
                             className="w-full h-auto rounded-2xl shadow-2xl border-4 border-white"
                         />
                     </div>
