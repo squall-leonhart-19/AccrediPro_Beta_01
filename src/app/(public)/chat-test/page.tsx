@@ -21,6 +21,22 @@ export default function ChatTestPage() {
     setDebugLogs((prev) => [{ type, message, time }, ...prev]);
   };
 
+  const resetChat = () => {
+    localStorage.removeItem("chatVisitorId");
+    localStorage.removeItem("chatUserName");
+    localStorage.removeItem("chatUserEmail");
+    const newVid = "visitor_" + Math.random().toString(36).substr(2, 9);
+    localStorage.setItem("chatVisitorId", newVid);
+    setVisitorId(newVid);
+    setUserName("");
+    setUserEmail("");
+    setShowOptin(true);
+    setMessages([{ role: "bot", text: "Hey there! I'm Sarah. Ask me anything about the FM Certification!" }]);
+    setChatOpen(false);
+    setDebugLogs([]);
+    debugLog("info", "Chat reset! New Visitor ID: " + newVid);
+  };
+
   useEffect(() => {
     let vid = localStorage.getItem("chatVisitorId");
     if (!vid) {
@@ -139,7 +155,15 @@ export default function ChatTestPage() {
       </div>
 
       <div className="bg-[#1a1a1a] text-green-400 rounded-xl p-5 max-w-md w-full font-mono text-xs max-h-72 overflow-y-auto">
-        <h3 className="text-white text-sm mb-3">Debug Log</h3>
+        <div className="flex justify-between items-center mb-3">
+          <h3 className="text-white text-sm">Debug Log</h3>
+          <button
+            onClick={resetChat}
+            className="bg-red-600 text-white px-3 py-1 rounded text-xs hover:bg-red-700"
+          >
+            Reset Chat
+          </button>
+        </div>
         {debugLogs.map((log, i) => (
           <div key={i} className="mb-2 pb-2 border-b border-gray-700">
             <span className="text-gray-500">[{log.time}]</span>{" "}
