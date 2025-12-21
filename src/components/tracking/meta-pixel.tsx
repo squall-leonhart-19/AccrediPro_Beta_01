@@ -4,7 +4,7 @@ import Script from 'next/script';
 import { useEffect, useRef } from 'react';
 import { usePathname, useSearchParams } from 'next/navigation';
 
-const META_PIXEL_ID = '1829815637745689';
+const META_PIXEL_ID = '1287915349067829';
 
 // Extend window type for Facebook Pixel
 declare global {
