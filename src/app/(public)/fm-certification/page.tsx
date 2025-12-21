@@ -661,25 +661,6 @@ export default function FMCertificationPage() {
                         />
                     </div>
 
-                    {/* Mini VSL */}
-                    <div className="max-w-3xl mx-auto mb-8">
-                        <div className="relative rounded-2xl overflow-hidden shadow-2xl border-4 border-white bg-black">
-                            <div style={{ padding: "56.25% 0 0 0", position: "relative" }}>
-                                <iframe
-                                    src="https://player.vimeo.com/video/1042173657?badge=0&autopause=0&player_id=0&app_id=58479&autoplay=0"
-                                    style={{ position: "absolute", top: 0, left: 0, width: "100%", height: "100%" }}
-                                    frameBorder="0"
-                                    allow="autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media"
-                                    title="FM Certification Overview"
-                                ></iframe>
-                            </div>
-                        </div>
-                        <p className="text-center text-sm text-slate-500 mt-3">
-                            <Play className="inline h-3 w-3 mr-1" />
-                            Watch: How licensed professionals are building $10K+/month practices
-                        </p>
-                    </div>
-
                     {/* Key Benefits */}
                     <div className="flex flex-col sm:flex-row sm:flex-wrap justify-center gap-2 sm:gap-4 mb-6">
                         <div className="flex items-center justify-center gap-2 bg-white/80 backdrop-blur-sm rounded-full px-4 py-2 shadow-sm border border-olive-100">
