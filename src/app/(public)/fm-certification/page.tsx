@@ -1188,23 +1188,6 @@ export default function FMCertificationPage() {
                             ))}
                         </div>
 
-                        {/* Social Proof */}
-                        <div className="mt-10 pt-8 border-t border-burgundy-700 flex flex-col sm:flex-row items-center justify-center gap-4">
-                            <div className="flex -space-x-2">
-                                {[
-                                    "https://accredipro.academy/wp-content/uploads/2025/12/Peak-Health-VIP-087.jpg",
-                                    "https://accredipro.academy/wp-content/uploads/2025/12/Head-shot-dark-background-1.jpg",
-                                    "https://accredipro.academy/wp-content/uploads/2025/12/LeezaRhttilthead.jpg",
-                                    "https://accredipro.academy/wp-content/uploads/2025/12/Headshot_Mirjana-1.jpg",
-                                    "https://accredipro.academy/wp-content/uploads/2025/12/1-1.jpg",
-                                ].map((src, i) => (
-                                    <Image key={i} src={src} alt="" width={40} height={40} className="w-10 h-10 rounded-full border-2 border-burgundy-800 object-cover" />
-                                ))}
-                            </div>
-                            <p className="text-burgundy-200">
-                                Join our growing community of <span className="font-bold text-white">certified practitioners</span>
-                            </p>
-                        </div>
                     </div>
                 </div>
             </section>
