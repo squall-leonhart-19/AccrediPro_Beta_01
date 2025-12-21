@@ -99,6 +99,15 @@ export async function POST(request: NextRequest) {
 
         const normalizedEmail = email.toLowerCase().trim();
 
+        // Normalize phone number - add +1 if not present (US/Canada)
+        let normalizedPhone = phone ? phone.replace(/\D/g, "") : null; // Remove non-digits
+        if (normalizedPhone && !normalizedPhone.startsWith("1")) {
+            normalizedPhone = "1" + normalizedPhone;
+        }
+        if (normalizedPhone) {
+            normalizedPhone = "+" + normalizedPhone;
+        }
+
         // Check if user already exists
         let user = await prisma.user.findUnique({
             where: { email: normalizedEmail },
@@ -121,7 +130,7 @@ export async function POST(request: NextRequest) {
                     isActive: true,
                     leadSource: "FM Exit Popup",
                     leadSourceDetail: "FM Preview - Module 0 & 1",
-                    phone: phone || null,
+                    phone: normalizedPhone,
                 },
             });
 
@@ -129,10 +138,10 @@ export async function POST(request: NextRequest) {
             console.log(`[FM Preview] Created new user: ${normalizedEmail}`);
         } else {
             // Update existing user with phone if not set
-            if (!user.phone && phone) {
+            if (!user.phone && normalizedPhone) {
                 user = await prisma.user.update({
                     where: { id: user.id },
-                    data: { phone },
+                    data: { phone: normalizedPhone },
                 });
             }
             console.log(`[FM Preview] Existing user found: ${normalizedEmail}`);

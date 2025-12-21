@@ -133,17 +133,22 @@ export function FMExitPopup({ onClose, isOpen }: ExitPopupProps) {
                         </div>
                         <div>
                             <label htmlFor="phone" className="block text-sm font-medium text-slate-700 mb-1">
-                                Phone Number
+                                Phone Number (US/Canada)
                             </label>
-                            <input
-                                type="tel"
-                                id="phone"
-                                required
-                                value={formData.phone}
-                                onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-                                className="w-full px-4 py-3 rounded-xl border border-slate-200 focus:border-burgundy-500 focus:ring-2 focus:ring-burgundy-100 outline-none transition-all"
-                                placeholder="Enter your phone number"
-                            />
+                            <div className="flex">
+                                <span className="inline-flex items-center px-4 py-3 rounded-l-xl border border-r-0 border-slate-200 bg-slate-50 text-slate-600 font-medium">
+                                    +1
+                                </span>
+                                <input
+                                    type="tel"
+                                    id="phone"
+                                    required
+                                    value={formData.phone}
+                                    onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+                                    className="flex-1 px-4 py-3 rounded-r-xl border border-slate-200 focus:border-burgundy-500 focus:ring-2 focus:ring-burgundy-100 outline-none transition-all"
+                                    placeholder="(555) 123-4567"
+                                />
+                            </div>
                         </div>
                     </div>
 
