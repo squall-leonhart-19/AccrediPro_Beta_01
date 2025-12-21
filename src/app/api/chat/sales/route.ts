@@ -111,15 +111,15 @@ export async function POST(request: NextRequest) {
         },
       });
 
-      // Send email notification for new conversations
-      if (isNewConversation) {
-        sendNewChatNotificationEmail(
-          userName || "Anonymous Visitor",
-          userEmail || null,
-          message,
-          page || "fm-certification"
-        ).catch((err) => console.log("Email notification failed:", err));
-      }
+      // Email notification disabled - too many notifications
+      // if (isNewConversation) {
+      //   sendNewChatNotificationEmail(
+      //     userName || "Anonymous Visitor",
+      //     userEmail || null,
+      //     message,
+      //     page || "fm-certification"
+      //   ).catch((err) => console.log("Email notification failed:", err));
+      // }
     } catch (e) {
       // Table might not exist yet, continue anyway
       console.log("Sales chat logging skipped:", e);

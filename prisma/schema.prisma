@@ -108,6 +108,7 @@ model User {
   lessonNotes       LessonNote[]
   quizAttempts      QuizAttempt[]
   quizProgress      QuizProgress[]
+  salesChatReplies  SalesChat[]       @relation("SalesChatReplies")
 
   @@index([email])
   @@index([role])
@@ -2102,6 +2103,7 @@ model SalesChat {
   isFromVisitor Boolean   @default(true)
   isRead        Boolean   @default(false)
   repliedBy     String?   // Admin user ID if human replied
+  repliedByUser User?     @relation("SalesChatReplies", fields: [repliedBy], references: [id])
   visitorName   String?   // Name if they opted in
   visitorEmail  String?   // Email if they opted in
   createdAt     DateTime  @default(now())

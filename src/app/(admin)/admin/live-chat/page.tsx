@@ -5,7 +5,8 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Textarea } from "@/components/ui/textarea";
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import {
   MessageSquare,
@@ -13,12 +14,17 @@ import {
   Bot,
   User,
   Clock,
-  CheckCircle,
-  XCircle,
   RefreshCw,
   Sparkles,
   Volume2,
   VolumeX,
+  Search,
+  Filter,
+  StickyNote,
+  Zap,
+  Mail,
+  Phone,
+  UserCheck,
 } from "lucide-react";
 
 interface ChatMessage {
@@ -29,6 +35,7 @@ interface ChatMessage {
   isFromVisitor: boolean;
   isRead: boolean;
   createdAt: string;
+  repliedBy?: string | null;
 }
 
 interface Conversation {
@@ -40,13 +47,25 @@ interface Conversation {
   lastMessage: string;
   lastMessageAt: string;
   unreadCount: number;
+  notes?: string;
 }
+
+// Quick reply templates
+const QUICK_REPLIES = [
+  { label: "Greeting", text: "Hey! Thanks for reaching out. How can I help you today?" },
+  { label: "Price", text: "The FM Certification is just $97 right now (80% off the regular $497 price). It includes 9 international certifications, 30-day mentorship with me, and lifetime access!" },
+  { label: "Timeline", text: "You can complete the certification in 30 days, but you have lifetime access so you can go at your own pace. Most students finish in 4-6 weeks." },
+  { label: "No Medical Needed", text: "No medical background required! The DEPTH Method teaches everything from scratch. Many of our best practitioners came from completely different careers." },
+  { label: "Guarantee", text: "We have a 30-Day Certification Guarantee. Complete the program, pass the exam (you get 3 attempts), and if you don't feel confident, we'll refund you 100%." },
+  { label: "Income", text: "Our graduates typically charge $75-200/hour. With just 4-5 clients a week, that's $5,000-10,000/month working from home!" },
+  { label: "Follow Up", text: "Just checking in! Did you have any other questions about the certification? I'm here to help." },
+];
 
 // Check if visitor is "online" (active in last 5 minutes)
 const isOnline = (lastMessageAt: string) => {
   const lastActive = new Date(lastMessageAt).getTime();
   const now = Date.now();
-  return now - lastActive < 5 * 60 * 1000; // 5 minutes
+  return now - lastActive < 5 * 60 * 1000;
 };
 
 export default function LiveChatAdminPage() {
@@ -57,14 +76,15 @@ export default function LiveChatAdminPage() {
   const [sending, setSending] = useState(false);
   const [soundEnabled, setSoundEnabled] = useState(true);
   const [lastUnreadCount, setLastUnreadCount] = useState(0);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [filterMode, setFilterMode] = useState<"all" | "unread" | "read">("all");
+  const [visitorNotes, setVisitorNotes] = useState("");
+  const [showQuickReplies, setShowQuickReplies] = useState(false);
+  const [savingNotes, setSavingNotes] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
-  const audioRef = useRef<HTMLAudioElement | null>(null);
-
-  // Initialize audio context for notification sound
   const audioContextRef = useRef<AudioContext | null>(null);
 
   useEffect(() => {
-    // Load sound preference from localStorage
     const savedSoundPref = localStorage.getItem("liveChatSoundEnabled");
     if (savedSoundPref !== null) {
       setSoundEnabled(savedSoundPref === "true");
@@ -73,45 +93,35 @@ export default function LiveChatAdminPage() {
 
   const playNotificationSound = useCallback(() => {
     if (!soundEnabled) return;
-
     try {
-      // Create audio context on demand (to avoid autoplay restrictions)
       if (!audioContextRef.current) {
         audioContextRef.current = new (window.AudioContext || (window as unknown as { webkitAudioContext: typeof AudioContext }).webkitAudioContext)();
       }
-
       const ctx = audioContextRef.current;
       const oscillator = ctx.createOscillator();
       const gainNode = ctx.createGain();
-
       oscillator.connect(gainNode);
       gainNode.connect(ctx.destination);
-
-      // Pleasant notification sound - two quick beeps
-      oscillator.frequency.setValueAtTime(880, ctx.currentTime); // A5
+      oscillator.frequency.setValueAtTime(880, ctx.currentTime);
       oscillator.type = "sine";
-
       gainNode.gain.setValueAtTime(0.3, ctx.currentTime);
       gainNode.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.1);
-
       oscillator.start(ctx.currentTime);
       oscillator.stop(ctx.currentTime + 0.1);
-
-      // Second beep
       setTimeout(() => {
         if (!audioContextRef.current) return;
         const osc2 = audioContextRef.current.createOscillator();
         const gain2 = audioContextRef.current.createGain();
         osc2.connect(gain2);
         gain2.connect(audioContextRef.current.destination);
-        osc2.frequency.setValueAtTime(1046.5, audioContextRef.current.currentTime); // C6
+        osc2.frequency.setValueAtTime(1046.5, audioContextRef.current.currentTime);
         osc2.type = "sine";
         gain2.gain.setValueAtTime(0.3, audioContextRef.current.currentTime);
         gain2.gain.exponentialRampToValueAtTime(0.01, audioContextRef.current.currentTime + 0.15);
         osc2.start(audioContextRef.current.currentTime);
         osc2.stop(audioContextRef.current.currentTime + 0.15);
       }, 120);
-    } catch (e) {
+    } catch {
       console.log("Audio not available");
     }
   }, [soundEnabled]);
@@ -128,19 +138,21 @@ export default function LiveChatAdminPage() {
       const data = await res.json();
       const newConversations = data.conversations || [];
 
-      // Check for new unread messages
       const newUnreadCount = newConversations.reduce((acc: number, c: Conversation) => acc + c.unreadCount, 0);
       if (newUnreadCount > lastUnreadCount && lastUnreadCount > 0) {
         playNotificationSound();
       }
       setLastUnreadCount(newUnreadCount);
-
       setConversations(newConversations);
 
-      // Update selected conversation if it exists
       if (selectedConversation) {
         const updated = newConversations.find((c: Conversation) => c.visitorId === selectedConversation.visitorId);
-        if (updated) setSelectedConversation(updated);
+        if (updated) {
+          setSelectedConversation(updated);
+          if (!visitorNotes && updated.notes) {
+            setVisitorNotes(updated.notes);
+          }
+        }
       }
     } catch (error) {
       console.error("Failed to fetch conversations:", error);
@@ -151,7 +163,6 @@ export default function LiveChatAdminPage() {
 
   useEffect(() => {
     fetchConversations();
-    // Poll for new messages every 5 seconds (faster for better UX)
     const interval = setInterval(fetchConversations, 5000);
     return () => clearInterval(interval);
   }, [lastUnreadCount, playNotificationSound]);
@@ -160,8 +171,18 @@ export default function LiveChatAdminPage() {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [selectedConversation?.messages]);
 
-  const sendReply = async (useAI = false) => {
-    if (!selectedConversation || (!replyMessage.trim() && !useAI)) return;
+  // Load notes when conversation is selected
+  useEffect(() => {
+    if (selectedConversation) {
+      const savedNotes = localStorage.getItem(`chat_notes_${selectedConversation.visitorId}`);
+      setVisitorNotes(savedNotes || "");
+    }
+  }, [selectedConversation?.visitorId]);
+
+  const sendReply = async (useAI = false, quickReplyText?: string) => {
+    if (!selectedConversation) return;
+    const messageToSend = quickReplyText || replyMessage;
+    if (!messageToSend.trim() && !useAI) return;
 
     setSending(true);
     try {
@@ -170,22 +191,39 @@ export default function LiveChatAdminPage() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           visitorId: selectedConversation.visitorId,
-          message: useAI ? null : replyMessage,
+          message: useAI ? null : messageToSend,
           useAI,
         }),
       });
 
       if (res.ok) {
         setReplyMessage("");
+        setShowQuickReplies(false);
         await fetchConversations();
-        // Update selected conversation
-        const updated = conversations.find(c => c.visitorId === selectedConversation.visitorId);
-        if (updated) setSelectedConversation(updated);
       }
     } catch (error) {
       console.error("Failed to send reply:", error);
     } finally {
       setSending(false);
+    }
+  };
+
+  const saveNotes = async () => {
+    if (!selectedConversation) return;
+    setSavingNotes(true);
+    try {
+      localStorage.setItem(`chat_notes_${selectedConversation.visitorId}`, visitorNotes);
+      // Also save to server if API exists
+      await fetch("/api/admin/live-chat/notes", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          visitorId: selectedConversation.visitorId,
+          notes: visitorNotes,
+        }),
+      }).catch(() => {}); // Silently fail if API doesn't exist
+    } finally {
+      setSavingNotes(false);
     }
   };
 
@@ -199,6 +237,25 @@ export default function LiveChatAdminPage() {
     if (diffMinutes < 1440) return `${Math.floor(diffMinutes / 60)}h ago`;
     return date.toLocaleDateString();
   };
+
+  // Filter and search conversations
+  const filteredConversations = conversations.filter((conv) => {
+    // Filter by read/unread
+    if (filterMode === "unread" && conv.unreadCount === 0) return false;
+    if (filterMode === "read" && conv.unreadCount > 0) return false;
+
+    // Search by name, email, or message
+    if (searchTerm) {
+      const search = searchTerm.toLowerCase();
+      const nameMatch = conv.visitorName?.toLowerCase().includes(search);
+      const emailMatch = conv.visitorEmail?.toLowerCase().includes(search);
+      const messageMatch = conv.lastMessage.toLowerCase().includes(search);
+      return nameMatch || emailMatch || messageMatch;
+    }
+    return true;
+  });
+
+  const totalUnread = conversations.reduce((acc, c) => acc + c.unreadCount, 0);
 
   return (
     <div className="p-6">
@@ -234,23 +291,62 @@ export default function LiveChatAdminPage() {
             <CardTitle className="text-lg flex items-center gap-2">
               <MessageSquare className="w-5 h-5" />
               Conversations
-              {conversations.reduce((acc, c) => acc + c.unreadCount, 0) > 0 && (
+              {totalUnread > 0 && (
                 <Badge variant="destructive" className="ml-auto">
-                  {conversations.reduce((acc, c) => acc + c.unreadCount, 0)} new
+                  {totalUnread} new
                 </Badge>
               )}
             </CardTitle>
+            {/* Search and Filter */}
+            <div className="mt-3 space-y-2">
+              <div className="relative">
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+                <Input
+                  placeholder="Search name, email, message..."
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                  className="pl-9 text-sm"
+                />
+              </div>
+              <div className="flex gap-1">
+                <Button
+                  variant={filterMode === "all" ? "default" : "outline"}
+                  size="sm"
+                  onClick={() => setFilterMode("all")}
+                  className="flex-1 text-xs"
+                >
+                  All
+                </Button>
+                <Button
+                  variant={filterMode === "unread" ? "default" : "outline"}
+                  size="sm"
+                  onClick={() => setFilterMode("unread")}
+                  className="flex-1 text-xs"
+                >
+                  <Filter className="w-3 h-3 mr-1" />
+                  Unread
+                </Button>
+                <Button
+                  variant={filterMode === "read" ? "default" : "outline"}
+                  size="sm"
+                  onClick={() => setFilterMode("read")}
+                  className="flex-1 text-xs"
+                >
+                  Read
+                </Button>
+              </div>
+            </div>
           </CardHeader>
           <CardContent className="p-0">
-            <ScrollArea className="h-[calc(100vh-320px)]">
+            <ScrollArea className="h-[calc(100vh-420px)]">
               {loading ? (
                 <div className="p-4 text-center text-gray-500">Loading...</div>
-              ) : conversations.length === 0 ? (
+              ) : filteredConversations.length === 0 ? (
                 <div className="p-4 text-center text-gray-500">
-                  No conversations yet
+                  {searchTerm || filterMode !== "all" ? "No matching conversations" : "No conversations yet"}
                 </div>
               ) : (
-                conversations.map((conv) => (
+                filteredConversations.map((conv) => (
                   <div
                     key={conv.visitorId}
                     onClick={() => setSelectedConversation(conv)}
@@ -283,17 +379,11 @@ export default function LiveChatAdminPage() {
                         {conv.visitorEmail && (
                           <p className="text-xs text-blue-600 truncate">{conv.visitorEmail}</p>
                         )}
-                        <p className="text-sm text-gray-500 truncate">
-                          {conv.lastMessage}
-                        </p>
+                        <p className="text-sm text-gray-500 truncate">{conv.lastMessage}</p>
                         <div className="flex items-center gap-2 mt-1">
                           <Clock className="w-3 h-3 text-gray-400" />
-                          <span className="text-xs text-gray-400">
-                            {formatTime(conv.lastMessageAt)}
-                          </span>
-                          <Badge variant="outline" className="text-xs">
-                            {conv.page}
-                          </Badge>
+                          <span className="text-xs text-gray-400">{formatTime(conv.lastMessageAt)}</span>
+                          <Badge variant="outline" className="text-xs">{conv.page}</Badge>
                         </div>
                       </div>
                     </div>
@@ -307,7 +397,7 @@ export default function LiveChatAdminPage() {
         {/* Chat Window */}
         <Card className="lg:col-span-2">
           <CardHeader className="pb-3 border-b">
-            <CardTitle className="text-lg flex items-center gap-2">
+            <CardTitle className="text-lg flex items-center gap-2 flex-wrap">
               {selectedConversation ? (
                 <>
                   <div className="relative">
@@ -327,11 +417,12 @@ export default function LiveChatAdminPage() {
                     <Badge variant="outline" className="text-gray-400">Offline</Badge>
                   )}
                   {selectedConversation.visitorEmail && (
-                    <span className="text-sm text-blue-600">({selectedConversation.visitorEmail})</span>
+                    <a href={`mailto:${selectedConversation.visitorEmail}`} className="text-sm text-blue-600 hover:underline flex items-center gap-1">
+                      <Mail className="w-3 h-3" />
+                      {selectedConversation.visitorEmail}
+                    </a>
                   )}
-                  <Badge variant="outline" className="ml-2">
-                    {selectedConversation.page}
-                  </Badge>
+                  <Badge variant="outline" className="ml-auto">{selectedConversation.page}</Badge>
                 </>
               ) : (
                 <span className="text-gray-500">Select a conversation</span>
@@ -362,10 +453,10 @@ export default function LiveChatAdminPage() {
                               <Bot className="w-3 h-3" />
                             )}
                             <span className="text-xs opacity-70">
-                              {msg.isFromVisitor ? "Visitor" : "Sarah (AI)"}
+                              {msg.isFromVisitor ? "Visitor" : (msg.repliedBy || "Sarah (AI)")}
                             </span>
                           </div>
-                          <p className="text-sm">{msg.message}</p>
+                          <p className="text-sm whitespace-pre-wrap">{msg.message}</p>
                           <span className="text-xs opacity-50 mt-1 block">
                             {formatTime(msg.createdAt)}
                           </span>
@@ -375,6 +466,61 @@ export default function LiveChatAdminPage() {
                     <div ref={messagesEndRef} />
                   </div>
                 </ScrollArea>
+
+                {/* Visitor Notes Section */}
+                <div className="px-4 py-2 border-t bg-yellow-50">
+                  <div className="flex items-center gap-2 mb-2">
+                    <StickyNote className="w-4 h-4 text-yellow-600" />
+                    <span className="text-sm font-medium text-yellow-800">Internal Notes</span>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={saveNotes}
+                      disabled={savingNotes}
+                      className="ml-auto text-xs h-6"
+                    >
+                      {savingNotes ? "Saving..." : "Save"}
+                    </Button>
+                  </div>
+                  <Textarea
+                    placeholder="Add notes about this visitor (only visible to team)..."
+                    value={visitorNotes}
+                    onChange={(e) => setVisitorNotes(e.target.value)}
+                    className="text-sm h-16 resize-none bg-white"
+                  />
+                </div>
+
+                {/* Quick Replies */}
+                {showQuickReplies && (
+                  <div className="px-4 py-2 border-t bg-purple-50">
+                    <div className="flex items-center gap-2 mb-2">
+                      <Zap className="w-4 h-4 text-purple-600" />
+                      <span className="text-sm font-medium text-purple-800">Quick Replies</span>
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => setShowQuickReplies(false)}
+                        className="ml-auto text-xs h-6"
+                      >
+                        Close
+                      </Button>
+                    </div>
+                    <div className="flex flex-wrap gap-2">
+                      {QUICK_REPLIES.map((qr, i) => (
+                        <Button
+                          key={i}
+                          variant="outline"
+                          size="sm"
+                          onClick={() => sendReply(false, qr.text)}
+                          disabled={sending}
+                          className="text-xs bg-white hover:bg-purple-100"
+                        >
+                          {qr.label}
+                        </Button>
+                      ))}
+                    </div>
+                  </div>
+                )}
 
                 {/* Reply Input */}
                 <div className="p-4 border-t bg-gray-50">
@@ -388,6 +534,15 @@ export default function LiveChatAdminPage() {
                     >
                       <Sparkles className="w-4 h-4 mr-1" />
                       AI Reply
+                    </Button>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => setShowQuickReplies(!showQuickReplies)}
+                      className="text-orange-600 border-orange-200 hover:bg-orange-50"
+                    >
+                      <Zap className="w-4 h-4 mr-1" />
+                      Quick Replies
                     </Button>
                   </div>
                   <div className="flex gap-2">
