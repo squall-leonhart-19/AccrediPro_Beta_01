@@ -3794,6 +3794,307 @@ const viewersBadge = document.querySelector('.viewers-badge');
 if (viewersBadge) viewersBadge.style.bottom = '100px';
 </script>
 
+<!-- Admin Live Support Panel (Only visible to Admin/Instructor) -->
+<style>
+.admin-support-panel{display:none;position:fixed;top:80px;left:20px;width:380px;max-height:calc(100vh - 120px);background:#fff;border-radius:16px;box-shadow:0 20px 60px rgba(0,0,0,.2);z-index:9999;overflow:hidden;border:2px solid var(--accredipro-gold)}
+.admin-support-panel.show{display:flex;flex-direction:column}
+.admin-support-header{background:linear-gradient(135deg,var(--accredipro-burgundy),#5A2435);color:#fff;padding:15px 20px;display:flex;align-items:center;gap:12px}
+.admin-support-header img{width:45px;height:45px;border-radius:50%;border:2px solid var(--accredipro-gold)}
+.admin-support-header-info{flex:1}
+.admin-support-header-info h4{margin:0;font-size:1rem}
+.admin-support-header-info p{margin:2px 0 0;font-size:.75rem;opacity:.9}
+.admin-support-toggle{background:rgba(255,255,255,.2);border:none;color:#fff;width:28px;height:28px;border-radius:50%;cursor:pointer;font-size:14px}
+.admin-support-toggle:hover{background:rgba(255,255,255,.3)}
+.admin-support-stats{display:flex;gap:10px;padding:12px 15px;background:#f8f9fa;border-bottom:1px solid #eee;font-size:.75rem}
+.admin-stat{flex:1;text-align:center;padding:8px;background:#fff;border-radius:8px;box-shadow:0 2px 4px rgba(0,0,0,.05)}
+.admin-stat-num{font-size:1.2rem;font-weight:800;color:var(--accredipro-burgundy)}
+.admin-stat-label{color:var(--muted);margin-top:2px}
+.admin-conversations{flex:1;overflow-y:auto;max-height:300px}
+.admin-conv-item{padding:12px 15px;border-bottom:1px solid #eee;cursor:pointer;transition:background .2s}
+.admin-conv-item:hover{background:#f8f9fa}
+.admin-conv-item.active{background:#fef3f5}
+.admin-conv-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:4px}
+.admin-conv-visitor{font-weight:600;font-size:.85rem;color:var(--ink)}
+.admin-conv-time{font-size:.7rem;color:var(--muted)}
+.admin-conv-msg{font-size:.8rem;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.admin-conv-unread{background:#ef4444;color:#fff;font-size:.65rem;padding:2px 6px;border-radius:10px;font-weight:700}
+.admin-chat-view{display:none;flex-direction:column;flex:1}
+.admin-chat-view.show{display:flex}
+.admin-chat-back{background:none;border:none;color:var(--accredipro-burgundy);font-size:.85rem;padding:10px 15px;cursor:pointer;display:flex;align-items:center;gap:5px;border-bottom:1px solid #eee}
+.admin-chat-back:hover{background:#f8f9fa}
+.admin-chat-messages{flex:1;overflow-y:auto;padding:15px;background:#f9f9f9;max-height:250px}
+.admin-msg{margin-bottom:10px;display:flex;gap:8px}
+.admin-msg.visitor .msg-content{background:#fff;border:1px solid #e5e5e5;border-radius:12px 12px 12px 4px}
+.admin-msg.sarah{justify-content:flex-end}
+.admin-msg.sarah .msg-content{background:var(--accredipro-burgundy);color:#fff;border-radius:12px 12px 4px 12px}
+.admin-msg .msg-content{padding:8px 12px;max-width:80%;font-size:.85rem}
+.admin-msg .msg-time{font-size:.65rem;opacity:.6;margin-top:3px}
+.admin-reply-area{padding:12px;background:#fff;border-top:1px solid #eee}
+.admin-reply-btns{display:flex;gap:8px;margin-bottom:8px}
+.admin-reply-btns button{flex:1;padding:8px;border-radius:8px;font-size:.75rem;font-weight:600;cursor:pointer;border:none;transition:all .2s}
+.admin-ai-btn{background:#f3e8ff;color:#7c3aed}
+.admin-ai-btn:hover{background:#ede9fe}
+.admin-quick-btn{background:#ecfdf5;color:#059669}
+.admin-quick-btn:hover{background:#d1fae5}
+.admin-reply-input{display:flex;gap:8px}
+.admin-reply-input input{flex:1;border:1px solid #ddd;border-radius:8px;padding:10px 12px;font-size:.85rem}
+.admin-reply-input input:focus{outline:none;border-color:var(--accredipro-burgundy)}
+.admin-reply-input button{background:var(--accredipro-burgundy);color:#fff;border:none;padding:10px 16px;border-radius:8px;cursor:pointer;font-weight:600}
+.admin-reply-input button:hover{background:var(--accredipro-dark)}
+.admin-login-prompt{padding:30px 20px;text-align:center}
+.admin-login-prompt p{color:var(--muted);font-size:.9rem;margin-bottom:15px}
+.admin-login-btn{display:inline-block;background:var(--accredipro-burgundy);color:#fff;padding:10px 20px;border-radius:8px;text-decoration:none;font-weight:600;font-size:.9rem}
+.admin-login-btn:hover{background:var(--accredipro-dark)}
+.admin-fab{position:fixed;top:80px;left:20px;width:50px;height:50px;background:linear-gradient(135deg,var(--accredipro-burgundy),#5A2435);border-radius:50%;display:none;align-items:center;justify-content:center;cursor:pointer;box-shadow:0 4px 15px rgba(107,44,64,.4);z-index:9998;border:2px solid var(--accredipro-gold)}
+.admin-fab:hover{transform:scale(1.05)}
+.admin-fab-icon{color:#fff;font-size:20px}
+.admin-fab-badge{position:absolute;top:-5px;right:-5px;background:#ef4444;color:#fff;font-size:.65rem;padding:2px 6px;border-radius:10px;font-weight:700}
+@media(max-width:768px){.admin-support-panel{left:10px;right:10px;width:auto;top:70px}.admin-fab{top:70px;left:10px}}
+</style>
+
+<div class="admin-fab" id="adminFab" onclick="toggleAdminPanel()">
+  <span class="admin-fab-icon">💬</span>
+  <span class="admin-fab-badge" id="adminFabBadge" style="display:none">0</span>
+</div>
+
+<div class="admin-support-panel" id="adminSupportPanel">
+  <div class="admin-support-header">
+    <img src="https://coach.accredipro.academy/wp-content/uploads/2025/10/Sarah-M.webp" alt="Sarah">
+    <div class="admin-support-header-info">
+      <h4>Live Support Panel</h4>
+      <p>sarah@accredipro-certificate.com</p>
+    </div>
+    <button class="admin-support-toggle" onclick="toggleAdminPanel()">−</button>
+  </div>
+
+  <div id="adminConvList">
+    <div class="admin-support-stats">
+      <div class="admin-stat">
+        <div class="admin-stat-num" id="adminActiveCount">0</div>
+        <div class="admin-stat-label">Active Chats</div>
+      </div>
+      <div class="admin-stat">
+        <div class="admin-stat-num" id="adminUnreadCount">0</div>
+        <div class="admin-stat-label">Unread</div>
+      </div>
+      <div class="admin-stat">
+        <div class="admin-stat-num" id="adminTodayCount">0</div>
+        <div class="admin-stat-label">Today</div>
+      </div>
+    </div>
+    <div class="admin-conversations" id="adminConversations">
+      <div style="padding:30px;text-align:center;color:var(--muted)">
+        <p>Loading conversations...</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="admin-chat-view" id="adminChatView">
+    <button class="admin-chat-back" onclick="backToConvList()">← Back to conversations</button>
+    <div class="admin-chat-messages" id="adminChatMessages"></div>
+    <div class="admin-reply-area">
+      <div class="admin-reply-btns">
+        <button class="admin-ai-btn" onclick="sendAdminAIReply()">✨ AI Reply</button>
+        <button class="admin-quick-btn" onclick="sendQuickReply()">⚡ Quick: "Hi! How can I help?"</button>
+      </div>
+      <div class="admin-reply-input">
+        <input type="text" id="adminReplyInput" placeholder="Type as Sarah..." onkeypress="if(event.key==='Enter')sendAdminReply()">
+        <button onclick="sendAdminReply()">Send</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="admin-login-prompt" id="adminLoginPrompt" style="display:none">
+    <p>🔐 Admin access required</p>
+    <a href="https://learn.accredipro.academy/login" class="admin-login-btn">Login as Sarah</a>
+  </div>
+</div>
+
+<script>
+// Admin Support Panel
+let adminIsAuthenticated = false;
+let adminConversations = [];
+let adminSelectedVisitor = null;
+
+async function checkAdminAuth() {
+  try {
+    const res = await fetch('/api/auth/session');
+    const session = await res.json();
+    if (session?.user && ['ADMIN', 'INSTRUCTOR'].includes(session.user.role)) {
+      adminIsAuthenticated = true;
+      document.getElementById('adminFab').style.display = 'flex';
+      loadAdminConversations();
+      // Poll for new messages every 5 seconds
+      setInterval(loadAdminConversations, 5000);
+    }
+  } catch (e) {
+    console.log('Admin auth check failed');
+  }
+}
+
+function toggleAdminPanel() {
+  const panel = document.getElementById('adminSupportPanel');
+  const fab = document.getElementById('adminFab');
+  if (panel.classList.contains('show')) {
+    panel.classList.remove('show');
+    fab.style.display = 'flex';
+  } else {
+    panel.classList.add('show');
+    fab.style.display = 'none';
+    loadAdminConversations();
+  }
+}
+
+async function loadAdminConversations() {
+  if (!adminIsAuthenticated) return;
+
+  try {
+    const res = await fetch('/api/admin/live-chat');
+    const data = await res.json();
+    adminConversations = data.conversations || [];
+
+    // Update stats
+    const unreadTotal = adminConversations.reduce((acc, c) => acc + c.unreadCount, 0);
+    document.getElementById('adminActiveCount').textContent = adminConversations.length;
+    document.getElementById('adminUnreadCount').textContent = unreadTotal;
+    document.getElementById('adminTodayCount').textContent = adminConversations.filter(c => {
+      const msgDate = new Date(c.lastMessageAt);
+      const today = new Date();
+      return msgDate.toDateString() === today.toDateString();
+    }).length;
+
+    // Update fab badge
+    const fabBadge = document.getElementById('adminFabBadge');
+    if (unreadTotal > 0) {
+      fabBadge.textContent = unreadTotal;
+      fabBadge.style.display = 'block';
+    } else {
+      fabBadge.style.display = 'none';
+    }
+
+    // Render conversations
+    const container = document.getElementById('adminConversations');
+    if (adminConversations.length === 0) {
+      container.innerHTML = '<div style="padding:30px;text-align:center;color:var(--muted)"><p>No conversations yet</p></div>';
+      return;
+    }
+
+    container.innerHTML = adminConversations.map(conv => `
+      <div class="admin-conv-item ${adminSelectedVisitor === conv.visitorId ? 'active' : ''}" onclick="selectConversation('${conv.visitorId}')">
+        <div class="admin-conv-header">
+          <span class="admin-conv-visitor">Visitor ${conv.visitorId.slice(0, 8)}</span>
+          <span class="admin-conv-time">${formatAdminTime(conv.lastMessageAt)}</span>
+        </div>
+        <div style="display:flex;justify-content:space-between;align-items:center">
+          <span class="admin-conv-msg">${escapeHtml(conv.lastMessage)}</span>
+          ${conv.unreadCount > 0 ? `<span class="admin-conv-unread">${conv.unreadCount}</span>` : ''}
+        </div>
+      </div>
+    `).join('');
+
+    // If viewing a conversation, update it
+    if (adminSelectedVisitor) {
+      const conv = adminConversations.find(c => c.visitorId === adminSelectedVisitor);
+      if (conv) renderAdminChat(conv);
+    }
+  } catch (e) {
+    console.error('Failed to load conversations:', e);
+  }
+}
+
+function selectConversation(visitorId) {
+  adminSelectedVisitor = visitorId;
+  const conv = adminConversations.find(c => c.visitorId === visitorId);
+  if (conv) {
+    document.getElementById('adminConvList').style.display = 'none';
+    document.getElementById('adminChatView').classList.add('show');
+    renderAdminChat(conv);
+  }
+}
+
+function backToConvList() {
+  adminSelectedVisitor = null;
+  document.getElementById('adminConvList').style.display = 'block';
+  document.getElementById('adminChatView').classList.remove('show');
+}
+
+function renderAdminChat(conv) {
+  const container = document.getElementById('adminChatMessages');
+  container.innerHTML = conv.messages.map(msg => `
+    <div class="admin-msg ${msg.isFromVisitor ? 'visitor' : 'sarah'}">
+      <div class="msg-content">
+        ${escapeHtml(msg.message)}
+        <div class="msg-time">${formatAdminTime(msg.createdAt)}</div>
+      </div>
+    </div>
+  `).join('');
+  container.scrollTop = container.scrollHeight;
+}
+
+async function sendAdminReply() {
+  const input = document.getElementById('adminReplyInput');
+  const message = input.value.trim();
+  if (!message || !adminSelectedVisitor) return;
+
+  input.value = '';
+  input.disabled = true;
+
+  try {
+    await fetch('/api/admin/live-chat/reply', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ visitorId: adminSelectedVisitor, message })
+    });
+    await loadAdminConversations();
+  } catch (e) {
+    console.error('Failed to send reply:', e);
+  } finally {
+    input.disabled = false;
+    input.focus();
+  }
+}
+
+async function sendAdminAIReply() {
+  if (!adminSelectedVisitor) return;
+
+  try {
+    await fetch('/api/admin/live-chat/reply', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ visitorId: adminSelectedVisitor, useAI: true })
+    });
+    await loadAdminConversations();
+  } catch (e) {
+    console.error('Failed to send AI reply:', e);
+  }
+}
+
+function sendQuickReply() {
+  document.getElementById('adminReplyInput').value = "Hi! Thanks for reaching out. How can I help you today? 😊";
+  sendAdminReply();
+}
+
+function formatAdminTime(dateString) {
+  const date = new Date(dateString);
+  const now = new Date();
+  const diffMinutes = Math.floor((now.getTime() - date.getTime()) / 60000);
+
+  if (diffMinutes < 1) return 'Just now';
+  if (diffMinutes < 60) return `${diffMinutes}m ago`;
+  if (diffMinutes < 1440) return `${Math.floor(diffMinutes / 60)}h ago`;
+  return date.toLocaleDateString();
+}
+
+function escapeHtml(text) {
+  const div = document.createElement('div');
+  div.textContent = text;
+  return div.innerHTML;
+}
+
+// Check auth on page load
+checkAdminAuth();
+</script>
+
 </body>
 
 </html>
