@@ -23,6 +23,7 @@ import {
   Mail,
   Phone,
   UserCheck,
+  Trash2,
 } from "lucide-react";
 
 interface ChatMessage {
@@ -77,6 +78,7 @@ export default function LiveChatAdminPage() {
   const [visitorNotes, setVisitorNotes] = useState("");
   const [showQuickReplies, setShowQuickReplies] = useState(false);
   const [savingNotes, setSavingNotes] = useState(false);
+  const [deleting, setDeleting] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   const fetchConversations = async () => {
@@ -165,6 +167,30 @@ export default function LiveChatAdminPage() {
       }).catch(() => {}); // Silently fail if API doesn't exist
     } finally {
       setSavingNotes(false);
+    }
+  };
+
+  const deleteConversation = async () => {
+    if (!selectedConversation) return;
+    if (!confirm(`Delete all messages from ${selectedConversation.visitorName || "this visitor"}? This cannot be undone.`)) return;
+
+    setDeleting(true);
+    try {
+      const res = await fetch("/api/admin/live-chat/delete", {
+        method: "DELETE",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ visitorId: selectedConversation.visitorId }),
+      });
+      if (res.ok) {
+        localStorage.removeItem(`chat_notes_${selectedConversation.visitorId}`);
+        setSelectedConversation(null);
+        setVisitorNotes("");
+        await fetchConversations();
+      }
+    } catch (error) {
+      console.error("Failed to delete conversation:", error);
+    } finally {
+      setDeleting(false);
     }
   };
 
@@ -350,6 +376,15 @@ export default function LiveChatAdminPage() {
                     </a>
                   )}
                   <Badge variant="outline" className="ml-auto">{selectedConversation.page}</Badge>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={deleteConversation}
+                    disabled={deleting}
+                    className="text-red-600 hover:text-red-700 hover:bg-red-50"
+                  >
+                    <Trash2 className="w-4 h-4" />
+                  </Button>
                 </>
               ) : (
                 <span className="text-gray-500">Select a conversation</span>
