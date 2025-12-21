@@ -2102,11 +2102,28 @@ model SalesChat {
   isFromVisitor Boolean   @default(true)
   isRead        Boolean   @default(false)
   repliedBy     String?   // Admin user ID if human replied
+  visitorName   String?   // Name if they opted in
+  visitorEmail  String?   // Email if they opted in
   createdAt     DateTime  @default(now())
 
   @@index([visitorId])
   @@index([page])
   @@index([isRead])
+  @@index([createdAt])
+}
+
+model ChatOptin {
+  id          String    @id @default(cuid())
+  visitorId   String    @unique
+  name        String
+  email       String?
+  page        String    // Which page they opted in on
+  ipAddress   String?
+  userAgent   String?   @db.Text
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  @@index([email])
   @@index([createdAt])
 }
 

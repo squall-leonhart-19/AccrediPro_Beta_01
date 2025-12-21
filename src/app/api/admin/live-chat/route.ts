@@ -20,6 +20,8 @@ export async function GET() {
     // Group messages by visitorId
     const conversationsMap = new Map<string, {
       visitorId: string;
+      visitorName: string | null;
+      visitorEmail: string | null;
       page: string;
       messages: typeof messages;
       lastMessage: string;
@@ -31,6 +33,8 @@ export async function GET() {
       if (!conversationsMap.has(msg.visitorId)) {
         conversationsMap.set(msg.visitorId, {
           visitorId: msg.visitorId,
+          visitorName: msg.visitorName,
+          visitorEmail: msg.visitorEmail,
           page: msg.page,
           messages: [],
           lastMessage: msg.message,
@@ -41,6 +45,14 @@ export async function GET() {
 
       const conv = conversationsMap.get(msg.visitorId)!;
       conv.messages.push(msg);
+
+      // Update visitor info if we have it
+      if (msg.visitorName && !conv.visitorName) {
+        conv.visitorName = msg.visitorName;
+      }
+      if (msg.visitorEmail && !conv.visitorEmail) {
+        conv.visitorEmail = msg.visitorEmail;
+      }
 
       if (msg.isFromVisitor && !msg.isRead) {
         conv.unreadCount++;

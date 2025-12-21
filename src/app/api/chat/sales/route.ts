@@ -45,25 +45,51 @@ Keep responses conversational, 2-4 sentences max. Use emojis sparingly (1-2 max)
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
-    const { message, page, visitorId } = body;
+    const { message, page, visitorId, userName, userEmail } = body;
 
     if (!message) {
       return NextResponse.json({ error: "Message is required" }, { status: 400 });
+    }
+
+    const finalVisitorId = visitorId || "anonymous_" + Date.now();
+
+    // Save chat optin if we have a name
+    if (userName && userName !== "Friend") {
+      try {
+        await prisma.chatOptin.upsert({
+          where: { visitorId: finalVisitorId },
+          update: {
+            name: userName,
+            email: userEmail || undefined,
+            updatedAt: new Date(),
+          },
+          create: {
+            visitorId: finalVisitorId,
+            name: userName,
+            email: userEmail || undefined,
+            page: page || "fm-certification",
+          },
+        });
+      } catch (e) {
+        console.log("Chat optin save skipped:", e);
+      }
     }
 
     // Log the chat message for admin review
     try {
       await prisma.salesChat.create({
         data: {
-          visitorId: visitorId || "anonymous",
+          visitorId: finalVisitorId,
           page: page || "fm-certification",
           message,
           isFromVisitor: true,
+          visitorName: userName || undefined,
+          visitorEmail: userEmail || undefined,
         },
       });
-    } catch {
+    } catch (e) {
       // Table might not exist yet, continue anyway
-      console.log("Sales chat logging skipped - table may not exist");
+      console.log("Sales chat logging skipped:", e);
     }
 
     const response = await anthropic.messages.create({
@@ -85,14 +111,15 @@ export async function POST(request: NextRequest) {
     try {
       await prisma.salesChat.create({
         data: {
-          visitorId: visitorId || "anonymous",
+          visitorId: finalVisitorId,
           page: page || "fm-certification",
           message: reply,
           isFromVisitor: false,
         },
       });
-    } catch {
+    } catch (e) {
       // Table might not exist yet
+      console.log("AI response logging skipped:", e);
     }
 
     return NextResponse.json({ reply });

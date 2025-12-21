@@ -33,6 +33,7 @@ const navItems = [
   { href: "/admin/users", label: "Users", icon: Users },
   { href: "/admin/community", label: "Community", icon: Heart },
   { href: "/admin/live-chat", label: "Live Chat", icon: MessageSquare },
+  { href: "/admin/chat-optins", label: "Chat Leads", icon: Target },
   { href: "/admin/marketing", label: "Email Marketing", icon: Mail },
   { href: "/admin/auto-dms", label: "Auto DMs", icon: Zap },
   { href: "/admin/communications", label: "Communications", icon: Bell },
