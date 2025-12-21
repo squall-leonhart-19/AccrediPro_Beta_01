@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import Image from "next/image";
 import { X, CheckCircle2, ArrowRight, Loader2, GraduationCap, Users, Clock } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { useMetaTracking } from "@/hooks/useMetaTracking";
 
 interface ExitPopupProps {
     onClose: () => void;
@@ -18,6 +19,7 @@ export function FMExitPopup({ onClose, isOpen }: ExitPopupProps) {
     });
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [error, setError] = useState("");
+    const { trackLead } = useMetaTracking();
 
     // Prevent body scroll when popup is open
     useEffect(() => {
@@ -50,6 +52,9 @@ export function FMExitPopup({ onClose, isOpen }: ExitPopupProps) {
             if (!response.ok) {
                 throw new Error(data.error || "Something went wrong");
             }
+
+            // Track Lead event to Meta CAPI
+            trackLead("FM Preview Optin", formData.email, formData.firstName);
 
             // Show success message then redirect
             setShowSuccess(true);

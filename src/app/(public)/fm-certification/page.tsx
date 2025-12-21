@@ -14,6 +14,7 @@ import {
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { FMExitPopup, useExitIntent } from "@/components/fm-certification/exit-popup";
+import { useMetaTracking } from "@/hooks/useMetaTracking";
 
 // Verified working student profile images from accredipro.academy
 const ALL_STUDENT_AVATARS = [
@@ -476,6 +477,26 @@ const StickyCTA = () => {
 
 export default function FMCertificationPage() {
     const { showPopup, closePopup } = useExitIntent(3000); // 3 second delay before enabling
+    const { trackPageView, trackAddToCart } = useMetaTracking();
+
+    // Track PageView on mount
+    useEffect(() => {
+        trackPageView("FM Certification");
+    }, [trackPageView]);
+
+    // Track AddToCart when clicking any checkout CTA link
+    useEffect(() => {
+        const handleClick = (e: MouseEvent) => {
+            const target = e.target as HTMLElement;
+            const link = target.closest('a[href*="checkout-fm-certification"]');
+            if (link) {
+                trackAddToCart("FM Certification", 197, "fm-certification");
+            }
+        };
+
+        document.addEventListener("click", handleClick);
+        return () => document.removeEventListener("click", handleClick);
+    }, [trackAddToCart]);
 
     return (
         <div className="min-h-screen bg-gradient-to-b from-cream-100 via-cream-50 to-white pb-20 lg:pb-0">
