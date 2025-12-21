@@ -255,6 +255,7 @@ export function FMExitPopup({ onClose, isOpen }: ExitPopupProps) {
 export function useExitIntent(delay: number = 2000) {
     const [showPopup, setShowPopup] = useState(false);
     const [hasShown, setHasShown] = useState(false);
+    const [isEnabled, setIsEnabled] = useState(false);
 
     useEffect(() => {
         // Check if popup was already shown in this session
@@ -266,28 +267,51 @@ export function useExitIntent(delay: number = 2000) {
 
         // Wait for delay before enabling exit intent
         const timeout = setTimeout(() => {
-            const handleMouseLeave = (e: MouseEvent) => {
-                // Only trigger if mouse leaves from the top of the page
-                if (e.clientY <= 0 && !hasShown) {
-                    setShowPopup(true);
-                    setHasShown(true);
-                    sessionStorage.setItem("fm_exit_popup_shown", "true");
-                    document.removeEventListener("mouseleave", handleMouseLeave);
-                }
-            };
-
-            document.addEventListener("mouseleave", handleMouseLeave);
-
-            return () => {
-                document.removeEventListener("mouseleave", handleMouseLeave);
-            };
+            setIsEnabled(true);
         }, delay);
 
         return () => clearTimeout(timeout);
-    }, [delay, hasShown]);
+    }, [delay]);
+
+    useEffect(() => {
+        if (!isEnabled || hasShown) return;
+
+        const handleMouseLeave = (e: MouseEvent) => {
+            // Only trigger if mouse leaves from the top of the page (exit intent)
+            if (e.clientY <= 5) {
+                setShowPopup(true);
+                setHasShown(true);
+                sessionStorage.setItem("fm_exit_popup_shown", "true");
+            }
+        };
+
+        // Also trigger on mobile when user scrolls up quickly (back gesture)
+        let lastScrollY = window.scrollY;
+        const handleScroll = () => {
+            const currentScrollY = window.scrollY;
+            // If user scrolls up more than 100px quickly from the top area
+            if (currentScrollY < 100 && lastScrollY - currentScrollY > 50) {
+                setShowPopup(true);
+                setHasShown(true);
+                sessionStorage.setItem("fm_exit_popup_shown", "true");
+            }
+            lastScrollY = currentScrollY;
+        };
+
+        document.addEventListener("mouseleave", handleMouseLeave);
+        window.addEventListener("scroll", handleScroll, { passive: true });
+
+        return () => {
+            document.removeEventListener("mouseleave", handleMouseLeave);
+            window.removeEventListener("scroll", handleScroll);
+        };
+    }, [isEnabled, hasShown]);
 
     const closePopup = () => setShowPopup(false);
-    const openPopup = () => setShowPopup(true);
+    const openPopup = () => {
+        setShowPopup(true);
+        setHasShown(true);
+    };
 
     return { showPopup, closePopup, openPopup, hasShown };
 }
