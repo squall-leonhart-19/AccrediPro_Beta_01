@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, useRef, useCallback } from "react";
+import { useEffect, useState, useRef } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -16,8 +16,6 @@ import {
   Clock,
   RefreshCw,
   Sparkles,
-  Volume2,
-  VolumeX,
   Search,
   Filter,
   StickyNote,
@@ -74,75 +72,18 @@ export default function LiveChatAdminPage() {
   const [replyMessage, setReplyMessage] = useState("");
   const [loading, setLoading] = useState(true);
   const [sending, setSending] = useState(false);
-  const [soundEnabled, setSoundEnabled] = useState(true);
-  const [lastUnreadCount, setLastUnreadCount] = useState(0);
   const [searchTerm, setSearchTerm] = useState("");
   const [filterMode, setFilterMode] = useState<"all" | "unread" | "read">("all");
   const [visitorNotes, setVisitorNotes] = useState("");
   const [showQuickReplies, setShowQuickReplies] = useState(false);
   const [savingNotes, setSavingNotes] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
-  const audioContextRef = useRef<AudioContext | null>(null);
-
-  useEffect(() => {
-    const savedSoundPref = localStorage.getItem("liveChatSoundEnabled");
-    if (savedSoundPref !== null) {
-      setSoundEnabled(savedSoundPref === "true");
-    }
-  }, []);
-
-  const playNotificationSound = useCallback(() => {
-    if (!soundEnabled) return;
-    try {
-      if (!audioContextRef.current) {
-        audioContextRef.current = new (window.AudioContext || (window as unknown as { webkitAudioContext: typeof AudioContext }).webkitAudioContext)();
-      }
-      const ctx = audioContextRef.current;
-      const oscillator = ctx.createOscillator();
-      const gainNode = ctx.createGain();
-      oscillator.connect(gainNode);
-      gainNode.connect(ctx.destination);
-      oscillator.frequency.setValueAtTime(880, ctx.currentTime);
-      oscillator.type = "sine";
-      gainNode.gain.setValueAtTime(0.3, ctx.currentTime);
-      gainNode.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.1);
-      oscillator.start(ctx.currentTime);
-      oscillator.stop(ctx.currentTime + 0.1);
-      setTimeout(() => {
-        if (!audioContextRef.current) return;
-        const osc2 = audioContextRef.current.createOscillator();
-        const gain2 = audioContextRef.current.createGain();
-        osc2.connect(gain2);
-        gain2.connect(audioContextRef.current.destination);
-        osc2.frequency.setValueAtTime(1046.5, audioContextRef.current.currentTime);
-        osc2.type = "sine";
-        gain2.gain.setValueAtTime(0.3, audioContextRef.current.currentTime);
-        gain2.gain.exponentialRampToValueAtTime(0.01, audioContextRef.current.currentTime + 0.15);
-        osc2.start(audioContextRef.current.currentTime);
-        osc2.stop(audioContextRef.current.currentTime + 0.15);
-      }, 120);
-    } catch {
-      console.log("Audio not available");
-    }
-  }, [soundEnabled]);
-
-  const toggleSound = () => {
-    const newValue = !soundEnabled;
-    setSoundEnabled(newValue);
-    localStorage.setItem("liveChatSoundEnabled", String(newValue));
-  };
 
   const fetchConversations = async () => {
     try {
       const res = await fetch("/api/admin/live-chat");
       const data = await res.json();
       const newConversations = data.conversations || [];
-
-      const newUnreadCount = newConversations.reduce((acc: number, c: Conversation) => acc + c.unreadCount, 0);
-      if (newUnreadCount > lastUnreadCount && lastUnreadCount > 0) {
-        playNotificationSound();
-      }
-      setLastUnreadCount(newUnreadCount);
       setConversations(newConversations);
 
       if (selectedConversation) {
@@ -165,7 +106,7 @@ export default function LiveChatAdminPage() {
     fetchConversations();
     const interval = setInterval(fetchConversations, 5000);
     return () => clearInterval(interval);
-  }, [lastUnreadCount, playNotificationSound]);
+  }, []);
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -264,24 +205,10 @@ export default function LiveChatAdminPage() {
           <h1 className="text-2xl font-bold text-gray-900">Live Chat</h1>
           <p className="text-gray-500">Manage sales page conversations</p>
         </div>
-        <div className="flex gap-2">
-          <Button
-            variant="outline"
-            size="icon"
-            onClick={toggleSound}
-            title={soundEnabled ? "Mute notifications" : "Enable notifications"}
-          >
-            {soundEnabled ? (
-              <Volume2 className="w-4 h-4 text-green-600" />
-            ) : (
-              <VolumeX className="w-4 h-4 text-gray-400" />
-            )}
-          </Button>
-          <Button variant="outline" onClick={fetchConversations}>
-            <RefreshCw className="w-4 h-4 mr-2" />
-            Refresh
-          </Button>
-        </div>
+        <Button variant="outline" onClick={fetchConversations}>
+          <RefreshCw className="w-4 h-4 mr-2" />
+          Refresh
+        </Button>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 h-[calc(100vh-200px)]">
