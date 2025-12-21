@@ -651,7 +651,7 @@ export default function FMCertificationPage() {
                     </div>
 
                     {/* Bundle Image */}
-                    <div className="max-w-2xl mx-auto mb-8">
+                    <div className="max-w-2xl mx-auto mb-6">
                         <Image
                             src="https://coach.accredipro.academy/wp-content/uploads/2025/12/FunctionalMedicinePractictioner.jpeg"
                             alt="Functional Medicine Practitioner Certification Bundle"
@@ -659,6 +659,25 @@ export default function FMCertificationPage() {
                             height={500}
                             className="w-full h-auto rounded-2xl shadow-2xl border-4 border-white"
                         />
+                    </div>
+
+                    {/* Mini VSL */}
+                    <div className="max-w-3xl mx-auto mb-8">
+                        <div className="relative rounded-2xl overflow-hidden shadow-2xl border-4 border-white bg-black">
+                            <div style={{ padding: "56.25% 0 0 0", position: "relative" }}>
+                                <iframe
+                                    src="https://player.vimeo.com/video/1042173657?badge=0&autopause=0&player_id=0&app_id=58479&autoplay=0"
+                                    style={{ position: "absolute", top: 0, left: 0, width: "100%", height: "100%" }}
+                                    frameBorder="0"
+                                    allow="autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media"
+                                    title="FM Certification Overview"
+                                ></iframe>
+                            </div>
+                        </div>
+                        <p className="text-center text-sm text-slate-500 mt-3">
+                            <Play className="inline h-3 w-3 mr-1" />
+                            Watch: How licensed professionals are building $10K+/month practices
+                        </p>
                     </div>
 
                     {/* Key Benefits */}
@@ -744,6 +763,122 @@ export default function FMCertificationPage() {
                         <span className="flex items-center gap-1"><Infinity className="h-4 w-4 text-olive-600" />Lifetime access</span>
                         <span className="flex items-center gap-1"><Clock className="h-4 w-4 text-olive-600" />Self-paced</span>
                         <span className="flex items-center gap-1"><Zap className="h-4 w-4 text-olive-600" />Start today</span>
+                    </div>
+                </div>
+            </section>
+
+            {/* ============================================ */}
+            {/* CREDENTIALS SECTION - CONDENSED */}
+            {/* ============================================ */}
+            <section className="py-12 sm:py-16 bg-gradient-to-b from-white to-cream-50">
+                <div className="max-w-6xl mx-auto px-4">
+                    {/* Section Header */}
+                    <div className="text-center mb-10">
+                        <h2 className="text-3xl sm:text-4xl font-bold text-slate-900 mb-3">
+                            Walk Away With <span className="text-burgundy-700">22 Certifications</span>
+                        </h2>
+                        <p className="text-lg text-slate-600 max-w-2xl mx-auto">
+                            The most comprehensive credential portfolio in functional medicine
+                        </p>
+                    </div>
+
+                    {/* Stats Row */}
+                    <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-10">
+                        <div className="bg-white rounded-xl p-4 text-center shadow-sm border border-slate-100">
+                            <p className="text-3xl font-bold text-burgundy-700">22</p>
+                            <p className="text-sm text-slate-600">Total Certifications</p>
+                        </div>
+                        <div className="bg-white rounded-xl p-4 text-center shadow-sm border border-slate-100">
+                            <p className="text-3xl font-bold text-burgundy-700">80+</p>
+                            <p className="text-sm text-slate-600">CEU Hours</p>
+                        </div>
+                        <div className="bg-white rounded-xl p-4 text-center shadow-sm border border-slate-100">
+                            <p className="text-3xl font-bold text-burgundy-700">9</p>
+                            <p className="text-sm text-slate-600">Accreditation Bodies</p>
+                        </div>
+                        <div className="bg-white rounded-xl p-4 text-center shadow-sm border border-slate-100">
+                            <p className="text-3xl font-bold text-burgundy-700">Lifetime</p>
+                            <p className="text-sm text-slate-600">Validity</p>
+                        </div>
+                    </div>
+
+                    {/* Two Column: Master Cert + Specialty Certs */}
+                    <div className="grid md:grid-cols-2 gap-6 mb-10">
+                        {/* Master Certification */}
+                        <div className="bg-gradient-to-br from-burgundy-600 to-burgundy-700 rounded-2xl p-6 text-white">
+                            <div className="flex items-center gap-2 mb-4">
+                                <Award className="h-6 w-6 text-gold-300" />
+                                <h3 className="text-xl font-bold">Master Certification</h3>
+                            </div>
+                            <p className="font-semibold text-lg mb-3">Certified Functional Medicine Practitioner</p>
+                            <ul className="space-y-2 text-sm text-burgundy-100">
+                                <li className="flex items-center gap-2"><CheckCircle2 className="h-4 w-4 text-gold-300" />Unique verification ID</li>
+                                <li className="flex items-center gap-2"><CheckCircle2 className="h-4 w-4 text-gold-300" />9 accreditation logos</li>
+                                <li className="flex items-center gap-2"><CheckCircle2 className="h-4 w-4 text-gold-300" />LinkedIn verifiable</li>
+                            </ul>
+                        </div>
+
+                        {/* Specialty Certificates */}
+                        <div className="bg-white rounded-2xl p-6 border border-slate-200 shadow-sm">
+                            <div className="flex items-center gap-2 mb-4">
+                                <BadgeCheck className="h-6 w-6 text-olive-600" />
+                                <h3 className="text-xl font-bold text-slate-900">21 Specialty Certificates</h3>
+                            </div>
+                            <p className="text-slate-600 text-sm mb-4">One for each clinical module you complete:</p>
+                            <div className="grid grid-cols-2 gap-2 text-sm">
+                                <div className="flex items-center gap-2 text-slate-700"><CheckCircle2 className="h-3 w-3 text-olive-600" />Gut Health Specialist</div>
+                                <div className="flex items-center gap-2 text-slate-700"><CheckCircle2 className="h-3 w-3 text-olive-600" />Thyroid Specialist</div>
+                                <div className="flex items-center gap-2 text-slate-700"><CheckCircle2 className="h-3 w-3 text-olive-600" />Hormone Specialist</div>
+                                <div className="flex items-center gap-2 text-slate-700"><CheckCircle2 className="h-3 w-3 text-olive-600" />Autoimmune Specialist</div>
+                            </div>
+                            <p className="text-slate-500 text-xs mt-3">...plus 17 more specialty certificates</p>
+                        </div>
+                    </div>
+
+                    {/* What's Included Grid */}
+                    <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                        <div className="flex items-start gap-3 bg-white rounded-xl p-4 border border-slate-100">
+                            <Award className="h-5 w-5 text-burgundy-600 shrink-0 mt-0.5" />
+                            <div>
+                                <p className="font-semibold text-slate-900 text-sm">Master Certification</p>
+                                <p className="text-xs text-slate-500">CFMP designation with unique ID</p>
+                            </div>
+                        </div>
+                        <div className="flex items-start gap-3 bg-white rounded-xl p-4 border border-slate-100">
+                            <BookOpen className="h-5 w-5 text-burgundy-600 shrink-0 mt-0.5" />
+                            <div>
+                                <p className="font-semibold text-slate-900 text-sm">80+ CEU Hours</p>
+                                <p className="text-xs text-slate-500">For nurses, NPs, health pros</p>
+                            </div>
+                        </div>
+                        <div className="flex items-start gap-3 bg-white rounded-xl p-4 border border-slate-100">
+                            <Globe2 className="h-5 w-5 text-burgundy-600 shrink-0 mt-0.5" />
+                            <div>
+                                <p className="font-semibold text-slate-900 text-sm">9 Accreditation Logos</p>
+                                <p className="text-xs text-slate-500">CMA, IPHM, CPD, IAOTH & more</p>
+                            </div>
+                        </div>
+                        <div className="flex items-start gap-3 bg-white rounded-xl p-4 border border-slate-100">
+                            <Linkedin className="h-5 w-5 text-burgundy-600 shrink-0 mt-0.5" />
+                            <div>
+                                <p className="font-semibold text-slate-900 text-sm">LinkedIn Verification</p>
+                                <p className="text-xs text-slate-500">Digital badges to share</p>
+                            </div>
+                        </div>
+                        <div className="flex items-start gap-3 bg-white rounded-xl p-4 border border-slate-100">
+                            <Infinity className="h-5 w-5 text-burgundy-600 shrink-0 mt-0.5" />
+                            <div>
+                                <p className="font-semibold text-slate-900 text-sm">Lifetime Validity</p>
+                                <p className="text-xs text-slate-500">No renewal fees, ever</p>
+                            </div>
+                        </div>
+                        <div className="flex items-start gap-3 bg-white rounded-xl p-4 border border-slate-100">
+                            <BadgeCheck className="h-5 w-5 text-burgundy-600 shrink-0 mt-0.5" />
+                            <div>
+                                <p className="font-semibold text-slate-900 text-sm">21 Specialty Certs</p>
+                                <p className="text-xs text-slate-500">Thyroid, Gut, Hormones & more</p>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </section>
