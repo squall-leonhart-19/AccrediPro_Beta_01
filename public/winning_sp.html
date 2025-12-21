@@ -3553,8 +3553,8 @@ window.addEventListener('DOMContentLoaded', () => {
 }
 </style>
 
-<!-- Chat widget hidden for now - testing on dedicated page -->
-<div class="chat-widget" id="chatWidget" style="display:none">
+<!-- Live Chat Widget - Sarah AI -->
+<div class="chat-widget" id="chatWidget">
   <div class="chat-window" id="chatWindow">
     <div class="chat-header">
       <img src="https://coach.accredipro.academy/wp-content/uploads/2025/10/Sarah-M.webp" alt="Sarah" class="chat-header-avatar">
@@ -3695,6 +3695,19 @@ function startChat() {
   chatUserEmail = email;
   localStorage.setItem('chatUserName', name);
   if (email) localStorage.setItem('chatUserEmail', email);
+
+  // Save optin to database
+  const apiBase = window.location.hostname === 'localhost' ? '' : 'https://learn.accredipro.academy';
+  fetch(apiBase + '/api/chat/optin', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      visitorId: chatVisitorId,
+      name: name,
+      email: email || null,
+      page: 'fm-certification'
+    })
+  }).catch(err => console.log('Optin save skipped:', err));
 
   // Hide optin, show chat
   document.getElementById('chatOptin').style.display = 'none';
