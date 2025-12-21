@@ -6,14 +6,6 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
-import {
   MessageSquare,
   Mail,
   User,
@@ -97,7 +89,7 @@ export default function ChatOptinsPage() {
     <div className="p-6">
       <div className="flex items-center justify-between mb-6">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">Chat Optins</h1>
+          <h1 className="text-2xl font-bold text-gray-900">Chat Leads</h1>
           <p className="text-gray-500">Leads captured from sales page live chat</p>
         </div>
         <div className="flex gap-2">
@@ -122,7 +114,7 @@ export default function ChatOptinsPage() {
               </div>
               <div>
                 <p className="text-2xl font-bold">{optins.length}</p>
-                <p className="text-gray-500 text-sm">Total Optins</p>
+                <p className="text-gray-500 text-sm">Total Leads</p>
               </div>
             </div>
           </CardContent>
@@ -175,84 +167,67 @@ export default function ChatOptinsPage() {
         </CardContent>
       </Card>
 
-      {/* Table */}
+      {/* Leads List */}
       <Card>
         <CardHeader>
-          <CardTitle className="text-lg">All Chat Optins</CardTitle>
+          <CardTitle className="text-lg">All Chat Leads</CardTitle>
         </CardHeader>
         <CardContent>
           {loading ? (
             <div className="text-center py-8 text-gray-500">Loading...</div>
           ) : filteredOptins.length === 0 ? (
             <div className="text-center py-8 text-gray-500">
-              {searchTerm ? "No results found" : "No chat optins yet"}
+              {searchTerm ? "No results found" : "No chat leads yet"}
             </div>
           ) : (
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead>Name</TableHead>
-                  <TableHead>Email</TableHead>
-                  <TableHead>Page</TableHead>
-                  <TableHead>Messages</TableHead>
-                  <TableHead>Date</TableHead>
-                  <TableHead>Actions</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {filteredOptins.map((optin) => (
-                  <TableRow key={optin.id}>
-                    <TableCell>
-                      <div className="flex items-center gap-2">
-                        <div className="w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center">
-                          <User className="w-4 h-4 text-gray-500" />
-                        </div>
-                        <span className="font-medium">{optin.name}</span>
-                      </div>
-                    </TableCell>
-                    <TableCell>
+            <div className="space-y-3">
+              {filteredOptins.map((optin) => (
+                <div
+                  key={optin.id}
+                  className="flex items-center justify-between p-4 bg-gray-50 rounded-xl hover:bg-gray-100 transition-colors"
+                >
+                  <div className="flex items-center gap-4">
+                    <div className="w-10 h-10 rounded-full bg-white flex items-center justify-center shadow-sm">
+                      <User className="w-5 h-5 text-gray-500" />
+                    </div>
+                    <div>
+                      <p className="font-semibold text-gray-900">{optin.name}</p>
                       {optin.email ? (
                         <a
                           href={`mailto:${optin.email}`}
-                          className="text-blue-600 hover:underline flex items-center gap-1"
+                          className="text-sm text-blue-600 hover:underline flex items-center gap-1"
                         >
                           <Mail className="w-3 h-3" />
                           {optin.email}
                         </a>
                       ) : (
-                        <span className="text-gray-400">—</span>
+                        <span className="text-sm text-gray-400">No email provided</span>
                       )}
-                    </TableCell>
-                    <TableCell>
-                      <Badge variant="outline">{optin.page}</Badge>
-                    </TableCell>
-                    <TableCell>
-                      <div className="flex items-center gap-1">
-                        <MessageSquare className="w-3 h-3 text-gray-400" />
-                        {optin.messageCount || 0}
-                      </div>
-                    </TableCell>
-                    <TableCell>
-                      <div className="flex items-center gap-1 text-gray-500 text-sm">
-                        <Clock className="w-3 h-3" />
-                        {formatDate(optin.createdAt)}
-                      </div>
-                    </TableCell>
-                    <TableCell>
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        onClick={() =>
-                          (window.location.href = `/admin/live-chat?visitor=${optin.visitorId}`)
-                        }
-                      >
-                        <ExternalLink className="w-4 h-4" />
-                      </Button>
-                    </TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-4">
+                    <Badge variant="outline">{optin.page}</Badge>
+                    <div className="flex items-center gap-1 text-gray-500 text-sm">
+                      <MessageSquare className="w-3 h-3" />
+                      {optin.messageCount || 0}
+                    </div>
+                    <div className="flex items-center gap-1 text-gray-500 text-sm">
+                      <Clock className="w-3 h-3" />
+                      {formatDate(optin.createdAt)}
+                    </div>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={() =>
+                        (window.location.href = `/admin/live-chat?visitor=${optin.visitorId}`)
+                      }
+                    >
+                      <ExternalLink className="w-4 h-4" />
+                    </Button>
+                  </div>
+                </div>
+              ))}
+            </div>
           )}
         </CardContent>
       </Card>
