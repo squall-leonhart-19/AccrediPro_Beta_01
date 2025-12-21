@@ -104,11 +104,37 @@ async function sendPurchaseToMeta(params: {
 // Product ID to Course slug mapping
 // Add your ClickFunnels product IDs here
 const PRODUCT_COURSE_MAP: Record<string, string> = {
-  // FM Mini Diploma ($7) - maps to Mini Diploma course, NOT full certification
+  // FM Mini Diploma ($27)
   "fm-mini-diploma": "fm-mini-diploma",
   "fm_mini_diploma": "fm-mini-diploma",
-  // Add more mappings as needed
-  // "cf-product-id": "course-slug",
+
+  // FM Certification ($197 - Christmas offer)
+  "fm-certification": "fm-certification",
+  "fm_certification": "fm-certification",
+
+  // OTO1: Pro Accelerator ($397)
+  "fm-pro-accelerator": "fm-pro-accelerator",
+  "fm_pro_accelerator": "fm-pro-accelerator",
+
+  // OTO2: 10-Client Guarantee ($297)
+  "fm-client-guarantee": "fm-client-guarantee",
+  "fm_client_guarantee": "fm-client-guarantee",
+};
+
+// Product prices for Meta CAPI (fallback if not in payload)
+const PRODUCT_PRICES: Record<string, number> = {
+  "fm-mini-diploma": 27,
+  "fm-certification": 197,
+  "fm-pro-accelerator": 397,
+  "fm-client-guarantee": 297,
+};
+
+// Product display names for Meta CAPI
+const PRODUCT_NAMES: Record<string, string> = {
+  "fm-mini-diploma": "FM Mini Diploma",
+  "fm-certification": "FM Certification",
+  "fm-pro-accelerator": "FM Pro Accelerator",
+  "fm-client-guarantee": "FM 10-Client Guarantee",
 };
 
 // Verify ClickFunnels webhook signature (if they provide one)
@@ -400,7 +426,7 @@ export async function POST(request: NextRequest) {
     }
 
     // 2. Determine which course to enroll
-    let courseSlug = "fm-mini-diploma"; // Default to Mini Diploma for $7 purchases
+    let courseSlug = "fm-mini-diploma"; // Default to Mini Diploma
 
     if (productId && PRODUCT_COURSE_MAP[productId]) {
       courseSlug = PRODUCT_COURSE_MAP[productId];
@@ -409,19 +435,42 @@ export async function POST(request: NextRequest) {
       const lowerName = productName.toLowerCase();
       if (lowerName.includes("mini diploma") || lowerName.includes("mini-diploma")) {
         courseSlug = "fm-mini-diploma";
+      } else if (lowerName.includes("certification") || lowerName.includes("fm cert")) {
+        courseSlug = "fm-certification";
+      } else if (lowerName.includes("accelerator") || lowerName.includes("pro acc")) {
+        courseSlug = "fm-pro-accelerator";
+      } else if (lowerName.includes("guarantee") || lowerName.includes("client")) {
+        courseSlug = "fm-client-guarantee";
       }
     }
 
     // Find the course
     const course = await prisma.course.findFirst({
-      where: {
-        OR: [
-          { slug: courseSlug },
-          { slug: "fm-mini-diploma" },
-        ],
-      },
-      orderBy: { createdAt: "asc" },
+      where: { slug: courseSlug },
     });
+
+    // If FM Certification purchase, check if user was in FM Preview and migrate progress
+    if (courseSlug === "fm-certification" && user) {
+      const previewEnrollment = await prisma.enrollment.findFirst({
+        where: {
+          userId: user.id,
+          course: { slug: "fm-preview" },
+        },
+        include: {
+          course: true,
+        },
+      });
+
+      if (previewEnrollment) {
+        // Mark preview enrollment as COMPLETED (they upgraded)
+        await prisma.enrollment.update({
+          where: { id: previewEnrollment.id },
+          data: { status: "COMPLETED" },
+        });
+
+        console.log(`[Upgrade] User ${normalizedEmail} upgraded from FM Preview to FM Certification`);
+      }
+    }
 
     let enrollmentId: string | null = null;
 
@@ -506,16 +555,22 @@ export async function POST(request: NextRequest) {
     }
 
     // 4. Send Purchase event to Meta CAPI
+    // Each product gets its own Purchase event with correct value for optimization
     let metaResult: { success: boolean; eventId?: string; error?: string } = { success: false };
     try {
-      const purchaseValue = amount || 27; // Default to $27 for Mini Diploma
+      // Use product-specific price, fallback to amount from payload, then default
+      const purchaseValue = amount || (productId ? PRODUCT_PRICES[productId] : undefined) || 27;
+      const contentName = (productId ? PRODUCT_NAMES[productId] : undefined) || productName || "FM Mini Diploma";
+
       metaResult = await sendPurchaseToMeta({
         email: normalizedEmail,
         value: purchaseValue,
-        contentName: productName || "FM Mini Diploma",
+        contentName,
         firstName: user.firstName || firstName,
         externalId: user.id,
       });
+
+      console.log(`[Meta CAPI] Purchase event sent: ${contentName} = $${purchaseValue}`);
     } catch (metaError) {
       console.error("Failed to send Meta CAPI event:", metaError);
     }
@@ -543,14 +598,15 @@ export async function POST(request: NextRequest) {
       },
     });
 
-    // 5. Add marketing tag for tracking
+    // 6. Add marketing tags for tracking
     try {
+      // General CF purchase tag
       const purchaseTag = await prisma.marketingTag.findFirst({
         where: { slug: "clickfunnels_purchase" },
       });
 
       if (purchaseTag) {
-        await prisma.userTag.upsert({
+        await prisma.userMarketingTag.upsert({
           where: {
             userId_tagId: { userId: user.id, tagId: purchaseTag.id },
           },
@@ -562,8 +618,29 @@ export async function POST(request: NextRequest) {
           },
         });
       }
-    } catch {
-      // Tag doesn't exist, skip
+
+      // Product-specific tag (e.g., fm_certification_purchased)
+      const productTagSlug = `${courseSlug.replace(/-/g, "_")}_purchased`;
+      const productTag = await prisma.marketingTag.findFirst({
+        where: { slug: productTagSlug },
+      });
+
+      if (productTag) {
+        await prisma.userMarketingTag.upsert({
+          where: {
+            userId_tagId: { userId: user.id, tagId: productTag.id },
+          },
+          update: {},
+          create: {
+            userId: user.id,
+            tagId: productTag.id,
+            source: "ClickFunnels",
+          },
+        });
+        console.log(`[Tag] Added ${productTagSlug} to user ${normalizedEmail}`);
+      }
+    } catch (tagError) {
+      console.error("Failed to add marketing tags:", tagError);
     }
 
     return NextResponse.json({
