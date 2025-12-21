@@ -202,13 +202,12 @@ export async function POST(request: NextRequest) {
             user = await prisma.user.create({
                 data: {
                     email: normalizedEmail,
-                    password: hashedPassword,
+                    passwordHash: hashedPassword,
                     firstName: firstName || null,
                     lastName: lastName || null,
                     phone: phone || null,
                     role: "STUDENT",
-                    isVerified: true,
-                    isFirstLogin: true,
+                    emailVerified: new Date(),
                 },
             });
 
