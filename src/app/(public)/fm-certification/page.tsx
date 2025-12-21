@@ -764,6 +764,17 @@ export default function FMCertificationPage() {
                         </p>
                     </div>
 
+                    {/* Certificate Bundle Image */}
+                    <div className="max-w-2xl mx-auto mb-10">
+                        <Image
+                            src="https://coach.accredipro.academy/wp-content/uploads/2025/12/FunctionalMedicinePractictioner.jpeg"
+                            alt="Functional Medicine Practitioner Certification Bundle"
+                            width={800}
+                            height={500}
+                            className="w-full h-auto rounded-2xl shadow-2xl border-4 border-white"
+                        />
+                    </div>
+
                     {/* Stats Row */}
                     <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-10">
                         <div className="bg-white rounded-xl p-4 text-center shadow-sm border border-slate-100">
