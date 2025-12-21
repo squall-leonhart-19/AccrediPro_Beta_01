@@ -484,6 +484,22 @@ export default function FMCertificationPage() {
         trackPageView("FM Certification");
     }, [trackPageView]);
 
+    // Load Microsoft Clarity tracking
+    useEffect(() => {
+        if (typeof window !== "undefined" && !(window as unknown as { clarity?: unknown }).clarity) {
+            (function(c: Window, l: Document, a: string, r: string, i: string) {
+                (c as unknown as Record<string, unknown>)[a] = (c as unknown as Record<string, unknown>)[a] || function(...args: unknown[]) {
+                    (((c as unknown as Record<string, unknown>)[a] as { q?: unknown[] }).q = ((c as unknown as Record<string, unknown>)[a] as { q?: unknown[] }).q || []).push(args);
+                };
+                const t = l.createElement(r) as HTMLScriptElement;
+                t.async = true;
+                t.src = "https://www.clarity.ms/tag/" + i;
+                const y = l.getElementsByTagName(r)[0];
+                y.parentNode?.insertBefore(t, y);
+            })(window, document, "clarity", "script", "u0udelia1o");
+        }
+    }, []);
+
     // Track AddToCart when clicking any checkout CTA link
     useEffect(() => {
         const handleClick = (e: MouseEvent) => {
