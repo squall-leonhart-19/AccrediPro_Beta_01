@@ -65,6 +65,14 @@ const getMiniDiplomaNavItems = (isLocked: boolean) => [
   { href: "/training", label: "Masterclass Bonus", icon: Award, tourId: "training", locked: isLocked, unlocked: !isLocked },
 ];
 
+// Minimal nav for FM Preview users - Module 0 & 1 only
+// Shows: Lessons, Chat, and locked full certification CTA
+const getFMPreviewNavItems = () => [
+  { href: "/fm-preview", label: "My Lessons", icon: GraduationCap, tourId: "fm-preview" },
+  { href: "/messages", label: "Chat with Sarah", icon: MessageSquare, notificationKey: "messages" as const, tourId: "messages" },
+  { href: "/fm-certification", label: "Full Certification", icon: Award, tourId: "certification", locked: true, external: true },
+];
+
 
 const coachNavItems = [
   { href: "/coach/workspace", label: "Coach Workspace", icon: Briefcase },
@@ -94,10 +102,16 @@ export function DashboardNav() {
   // Mini diploma users should ALWAYS see the minimal nav, just locked/unlocked based on completion
   const isMiniDiplomaUser = !!user?.miniDiplomaCategory;
 
+  // Check if user is FM Preview only (enrolled only in fm-preview course)
+  const isFMPreviewOnly = user?.isFMPreviewOnly === true;
+
   // Select nav items based on user type
+  // FM Preview users: show minimal nav with locked full certification CTA
   // Mini diploma users: show minimal nav with locked/unlocked Masterclass based on completion
   // Other users: show full nav
-  const navItems = isMiniDiplomaUser
+  const navItems = isFMPreviewOnly
+    ? getFMPreviewNavItems()
+    : isMiniDiplomaUser
     ? getMiniDiplomaNavItems(isMiniDiplomaOnly) // locked if not completed yet
     : fullNavItems;
 
@@ -138,7 +152,27 @@ export function DashboardNav() {
             const isUnlocked = 'unlocked' in item && item.unlocked === true;
 
             // Locked items render differently - not clickable, show lock icon
+            // External locked items (like Full Certification CTA) link to external page
+            const isExternal = 'external' in item && item.external === true;
             if (isLocked) {
+              if (isExternal) {
+                return (
+                  <Link
+                    key={item.href}
+                    href={item.href}
+                    data-tour={item.tourId}
+                    className="w-full flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium relative bg-gradient-to-r from-gold-400/10 to-gold-500/5 border border-gold-400/30 hover:from-gold-400/20 hover:to-gold-500/10 transition-all group"
+                  >
+                    <div className="relative">
+                      <item.icon className="w-5 h-5 text-gold-400" />
+                    </div>
+                    <span className="flex-1 text-left text-gold-300">{item.label}</span>
+                    <div className="flex items-center gap-1.5">
+                      <Unlock className="w-3.5 h-3.5 text-gold-400" />
+                    </div>
+                  </Link>
+                );
+              }
               return (
                 <div
                   key={item.href}
@@ -347,7 +381,24 @@ export function DashboardNav() {
               const isUnlocked = 'unlocked' in item && item.unlocked === true;
 
               // Locked items render differently on mobile
+              // External locked items (like Full Certification CTA) link to external page
+              const isExternalMobile = 'external' in item && item.external === true;
               if (isLocked) {
+                if (isExternalMobile) {
+                  return (
+                    <Link
+                      key={item.href}
+                      href={item.href}
+                      onClick={() => setMobileMenuOpen(false)}
+                      data-tour={`mobile-${item.tourId}`}
+                      className="w-full flex items-center gap-3 px-4 py-3.5 rounded-xl text-base font-medium bg-gradient-to-r from-gold-400/10 to-gold-500/5 border border-gold-400/30"
+                    >
+                      <item.icon className="w-5 h-5 text-gold-400" />
+                      <span className="flex-1 text-left text-gold-300">{item.label}</span>
+                      <Unlock className="w-4 h-4 text-gold-400" />
+                    </Link>
+                  );
+                }
                 return (
                   <div
                     key={item.href}

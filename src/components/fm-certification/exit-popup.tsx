@@ -31,6 +31,8 @@ export function FMExitPopup({ onClose, isOpen }: ExitPopupProps) {
         };
     }, [isOpen]);
 
+    const [showSuccess, setShowSuccess] = useState(false);
+
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         setError("");
@@ -49,8 +51,11 @@ export function FMExitPopup({ onClose, isOpen }: ExitPopupProps) {
                 throw new Error(data.error || "Something went wrong");
             }
 
-            // Redirect to dashboard on success
-            window.location.href = "/dashboard";
+            // Show success message then redirect
+            setShowSuccess(true);
+            setTimeout(() => {
+                window.location.href = "/fm-preview/thank-you";
+            }, 2000);
         } catch (err) {
             setError(err instanceof Error ? err.message : "Something went wrong. Please try again.");
             setIsSubmitting(false);
@@ -58,6 +63,32 @@ export function FMExitPopup({ onClose, isOpen }: ExitPopupProps) {
     };
 
     if (!isOpen) return null;
+
+    // Success state UI
+    if (showSuccess) {
+        return (
+            <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
+                <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" />
+                <div className="relative w-full max-w-lg bg-white rounded-3xl shadow-2xl overflow-hidden animate-in fade-in zoom-in duration-300">
+                    <div className="p-8 text-center">
+                        <div className="w-20 h-20 mx-auto mb-6 rounded-full bg-olive-100 flex items-center justify-center">
+                            <CheckCircle2 className="h-10 w-10 text-olive-600" />
+                        </div>
+                        <h2 className="text-2xl font-bold text-slate-900 mb-2">
+                            You&apos;re In!
+                        </h2>
+                        <p className="text-slate-600 mb-4">
+                            Your free access to Module 0 & 1 is ready.
+                        </p>
+                        <div className="flex items-center justify-center gap-2 text-burgundy-600">
+                            <Loader2 className="h-4 w-4 animate-spin" />
+                            <span className="text-sm">Taking you to your modules...</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        );
+    }
 
     return (
         <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">

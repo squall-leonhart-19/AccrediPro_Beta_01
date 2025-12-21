@@ -122,6 +122,12 @@ export const authOptions: NextAuthOptions = {
           enrollments[0].course.slug === "fm-mini-diploma" &&
           enrollments[0].status !== "COMPLETED";
 
+        // Check if user is FM Preview only (enrolled only in fm-preview, not completed)
+        const isFMPreviewOnly =
+          enrollments.length === 1 &&
+          enrollments[0].course.slug === "fm-preview" &&
+          enrollments[0].status !== "COMPLETED";
+
         return {
           id: user.id,
           email: user.email,
@@ -133,6 +139,7 @@ export const authOptions: NextAuthOptions = {
           isFirstLogin,
           miniDiplomaCategory: user.miniDiplomaCategory,
           isMiniDiplomaOnly,
+          isFMPreviewOnly,
         };
       },
     }),
@@ -151,9 +158,10 @@ export const authOptions: NextAuthOptions = {
         token.isFirstLogin = user.isFirstLogin;
         token.miniDiplomaCategory = user.miniDiplomaCategory;
         token.isMiniDiplomaOnly = user.isMiniDiplomaOnly;
+        token.isFMPreviewOnly = user.isFMPreviewOnly;
       }
 
-      // Always refresh isMiniDiplomaOnly from database to catch completion status changes
+      // Always refresh enrollment status from database to catch completion status changes
       if (token.id) {
         const enrollments = await prisma.enrollment.findMany({
           where: { userId: token.id as string },
@@ -162,6 +170,10 @@ export const authOptions: NextAuthOptions = {
         token.isMiniDiplomaOnly =
           enrollments.length === 1 &&
           enrollments[0].course.slug === "fm-mini-diploma" &&
+          enrollments[0].status !== "COMPLETED";
+        token.isFMPreviewOnly =
+          enrollments.length === 1 &&
+          enrollments[0].course.slug === "fm-preview" &&
           enrollments[0].status !== "COMPLETED";
       }
 
@@ -176,6 +188,7 @@ export const authOptions: NextAuthOptions = {
         session.user.isFirstLogin = token.isFirstLogin as boolean;
         session.user.miniDiplomaCategory = token.miniDiplomaCategory as string | null;
         session.user.isMiniDiplomaOnly = token.isMiniDiplomaOnly as boolean;
+        session.user.isFMPreviewOnly = token.isFMPreviewOnly as boolean;
       }
       return session;
     },
