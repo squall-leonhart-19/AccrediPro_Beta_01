@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState, useRef, useCallback } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -17,6 +17,8 @@ import {
   XCircle,
   RefreshCw,
   Sparkles,
+  Volume2,
+  VolumeX,
 } from "lucide-react";
 
 interface ChatMessage {
@@ -40,19 +42,106 @@ interface Conversation {
   unreadCount: number;
 }
 
+// Check if visitor is "online" (active in last 5 minutes)
+const isOnline = (lastMessageAt: string) => {
+  const lastActive = new Date(lastMessageAt).getTime();
+  const now = Date.now();
+  return now - lastActive < 5 * 60 * 1000; // 5 minutes
+};
+
 export default function LiveChatAdminPage() {
   const [conversations, setConversations] = useState<Conversation[]>([]);
   const [selectedConversation, setSelectedConversation] = useState<Conversation | null>(null);
   const [replyMessage, setReplyMessage] = useState("");
   const [loading, setLoading] = useState(true);
   const [sending, setSending] = useState(false);
+  const [soundEnabled, setSoundEnabled] = useState(true);
+  const [lastUnreadCount, setLastUnreadCount] = useState(0);
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  const audioRef = useRef<HTMLAudioElement | null>(null);
+
+  // Initialize audio context for notification sound
+  const audioContextRef = useRef<AudioContext | null>(null);
+
+  useEffect(() => {
+    // Load sound preference from localStorage
+    const savedSoundPref = localStorage.getItem("liveChatSoundEnabled");
+    if (savedSoundPref !== null) {
+      setSoundEnabled(savedSoundPref === "true");
+    }
+  }, []);
+
+  const playNotificationSound = useCallback(() => {
+    if (!soundEnabled) return;
+
+    try {
+      // Create audio context on demand (to avoid autoplay restrictions)
+      if (!audioContextRef.current) {
+        audioContextRef.current = new (window.AudioContext || (window as unknown as { webkitAudioContext: typeof AudioContext }).webkitAudioContext)();
+      }
+
+      const ctx = audioContextRef.current;
+      const oscillator = ctx.createOscillator();
+      const gainNode = ctx.createGain();
+
+      oscillator.connect(gainNode);
+      gainNode.connect(ctx.destination);
+
+      // Pleasant notification sound - two quick beeps
+      oscillator.frequency.setValueAtTime(880, ctx.currentTime); // A5
+      oscillator.type = "sine";
+
+      gainNode.gain.setValueAtTime(0.3, ctx.currentTime);
+      gainNode.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.1);
+
+      oscillator.start(ctx.currentTime);
+      oscillator.stop(ctx.currentTime + 0.1);
+
+      // Second beep
+      setTimeout(() => {
+        if (!audioContextRef.current) return;
+        const osc2 = audioContextRef.current.createOscillator();
+        const gain2 = audioContextRef.current.createGain();
+        osc2.connect(gain2);
+        gain2.connect(audioContextRef.current.destination);
+        osc2.frequency.setValueAtTime(1046.5, audioContextRef.current.currentTime); // C6
+        osc2.type = "sine";
+        gain2.gain.setValueAtTime(0.3, audioContextRef.current.currentTime);
+        gain2.gain.exponentialRampToValueAtTime(0.01, audioContextRef.current.currentTime + 0.15);
+        osc2.start(audioContextRef.current.currentTime);
+        osc2.stop(audioContextRef.current.currentTime + 0.15);
+      }, 120);
+    } catch (e) {
+      console.log("Audio not available");
+    }
+  }, [soundEnabled]);
+
+  const toggleSound = () => {
+    const newValue = !soundEnabled;
+    setSoundEnabled(newValue);
+    localStorage.setItem("liveChatSoundEnabled", String(newValue));
+  };
 
   const fetchConversations = async () => {
     try {
       const res = await fetch("/api/admin/live-chat");
       const data = await res.json();
-      setConversations(data.conversations || []);
+      const newConversations = data.conversations || [];
+
+      // Check for new unread messages
+      const newUnreadCount = newConversations.reduce((acc: number, c: Conversation) => acc + c.unreadCount, 0);
+      if (newUnreadCount > lastUnreadCount && lastUnreadCount > 0) {
+        playNotificationSound();
+      }
+      setLastUnreadCount(newUnreadCount);
+
+      setConversations(newConversations);
+
+      // Update selected conversation if it exists
+      if (selectedConversation) {
+        const updated = newConversations.find((c: Conversation) => c.visitorId === selectedConversation.visitorId);
+        if (updated) setSelectedConversation(updated);
+      }
     } catch (error) {
       console.error("Failed to fetch conversations:", error);
     } finally {
@@ -62,10 +151,10 @@ export default function LiveChatAdminPage() {
 
   useEffect(() => {
     fetchConversations();
-    // Poll for new messages every 10 seconds
-    const interval = setInterval(fetchConversations, 10000);
+    // Poll for new messages every 5 seconds (faster for better UX)
+    const interval = setInterval(fetchConversations, 5000);
     return () => clearInterval(interval);
-  }, []);
+  }, [lastUnreadCount, playNotificationSound]);
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -118,10 +207,24 @@ export default function LiveChatAdminPage() {
           <h1 className="text-2xl font-bold text-gray-900">Live Chat</h1>
           <p className="text-gray-500">Manage sales page conversations</p>
         </div>
-        <Button variant="outline" onClick={fetchConversations}>
-          <RefreshCw className="w-4 h-4 mr-2" />
-          Refresh
-        </Button>
+        <div className="flex gap-2">
+          <Button
+            variant="outline"
+            size="icon"
+            onClick={toggleSound}
+            title={soundEnabled ? "Mute notifications" : "Enable notifications"}
+          >
+            {soundEnabled ? (
+              <Volume2 className="w-4 h-4 text-green-600" />
+            ) : (
+              <VolumeX className="w-4 h-4 text-gray-400" />
+            )}
+          </Button>
+          <Button variant="outline" onClick={fetchConversations}>
+            <RefreshCw className="w-4 h-4 mr-2" />
+            Refresh
+          </Button>
+        </div>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 h-[calc(100vh-200px)]">
@@ -156,11 +259,16 @@ export default function LiveChatAdminPage() {
                     }`}
                   >
                     <div className="flex items-start gap-3">
-                      <Avatar className="w-10 h-10">
-                        <AvatarFallback className="bg-gray-200">
-                          <User className="w-5 h-5 text-gray-500" />
-                        </AvatarFallback>
-                      </Avatar>
+                      <div className="relative">
+                        <Avatar className="w-10 h-10">
+                          <AvatarFallback className="bg-gray-200">
+                            <User className="w-5 h-5 text-gray-500" />
+                          </AvatarFallback>
+                        </Avatar>
+                        {isOnline(conv.lastMessageAt) && (
+                          <span className="absolute bottom-0 right-0 w-3 h-3 bg-green-500 border-2 border-white rounded-full" />
+                        )}
+                      </div>
                       <div className="flex-1 min-w-0">
                         <div className="flex items-center justify-between">
                           <span className="font-medium text-sm truncate">
@@ -202,12 +310,22 @@ export default function LiveChatAdminPage() {
             <CardTitle className="text-lg flex items-center gap-2">
               {selectedConversation ? (
                 <>
-                  <Avatar className="w-8 h-8">
-                    <AvatarFallback className="bg-gray-200">
-                      <User className="w-4 h-4 text-gray-500" />
-                    </AvatarFallback>
-                  </Avatar>
+                  <div className="relative">
+                    <Avatar className="w-8 h-8">
+                      <AvatarFallback className="bg-gray-200">
+                        <User className="w-4 h-4 text-gray-500" />
+                      </AvatarFallback>
+                    </Avatar>
+                    {isOnline(selectedConversation.lastMessageAt) && (
+                      <span className="absolute bottom-0 right-0 w-2.5 h-2.5 bg-green-500 border-2 border-white rounded-full" />
+                    )}
+                  </div>
                   <span>{selectedConversation.visitorName || `Visitor ${selectedConversation.visitorId.slice(0, 8)}`}</span>
+                  {isOnline(selectedConversation.lastMessageAt) ? (
+                    <Badge variant="outline" className="text-green-600 border-green-200 bg-green-50">Online</Badge>
+                  ) : (
+                    <Badge variant="outline" className="text-gray-400">Offline</Badge>
+                  )}
                   {selectedConversation.visitorEmail && (
                     <span className="text-sm text-blue-600">({selectedConversation.visitorEmail})</span>
                   )}

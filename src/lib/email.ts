@@ -1068,6 +1068,50 @@ export async function sendFreebieWelcomeEmail({ to, firstName, isExistingUser }:
 }
 
 // ============================================
+// LIVE CHAT NOTIFICATIONS (for instructor/admin)
+// ============================================
+
+export async function sendNewChatNotificationEmail(
+  visitorName: string,
+  visitorEmail: string | null,
+  firstMessage: string,
+  page: string
+) {
+  const BASE_URL = process.env.NEXTAUTH_URL || "https://learn.accredipro.academy";
+  const INSTRUCTOR_EMAIL = process.env.INSTRUCTOR_EMAIL || "sarah@accredipro-certificate.com";
+
+  const content = `
+    <h2 style="color: #722F37; margin-top: 0; font-size: 24px;">New Live Chat Started!</h2>
+
+    <p style="color: #555; font-size: 16px;">A potential student just started a conversation on the sales page.</p>
+
+    ${highlightBox(`
+      <p style="margin: 0 0 12px 0; font-size: 15px; color: #722F37; font-weight: bold;">Visitor Details:</p>
+      <p style="margin: 0; font-size: 14px; color: #333;"><strong>Name:</strong> ${visitorName}</p>
+      ${visitorEmail ? `<p style="margin: 8px 0 0 0; font-size: 14px; color: #333;"><strong>Email:</strong> ${visitorEmail}</p>` : ''}
+      <p style="margin: 8px 0 0 0; font-size: 14px; color: #333;"><strong>Page:</strong> ${page}</p>
+    `, 'cream')}
+
+    <div style="background: #f8f9fa; border-left: 4px solid #722F37; padding: 15px 20px; margin: 20px 0; border-radius: 0 8px 8px 0;">
+      <p style="margin: 0 0 8px 0; font-size: 12px; color: #666; text-transform: uppercase;">First Message:</p>
+      <p style="margin: 0; color: #333; font-style: italic;">"${firstMessage.substring(0, 300)}${firstMessage.length > 300 ? '...' : ''}"</p>
+    </div>
+
+    ${primaryButton('View Conversation', `${BASE_URL}/admin/live-chat`)}
+
+    <div style="background: #f8f9fa; border-radius: 8px; padding: 20px; margin-top: 20px;">
+      <p style="margin: 0; font-size: 14px; color: #666; text-align: center;">The AI is handling the conversation. Check the admin panel to monitor and respond if needed.</p>
+    </div>
+  `;
+
+  return sendEmail({
+    to: INSTRUCTOR_EMAIL,
+    subject: `New Chat: ${visitorName} started a conversation`,
+    html: emailWrapper(content, `${visitorName} started a live chat on ${page}`),
+  });
+}
+
+// ============================================
 // LEAD CAPTURE & MARKETING (kept for backwards compatibility)
 // ============================================
 

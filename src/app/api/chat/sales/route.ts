@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import Anthropic from "@anthropic-ai/sdk";
 import { prisma } from "@/lib/prisma";
+import { sendNewChatNotificationEmail } from "@/lib/email";
 
 const anthropic = new Anthropic({
   apiKey: process.env.ANTHROPIC_API_KEY,
@@ -86,6 +87,17 @@ export async function POST(request: NextRequest) {
       }
     }
 
+    // Check if this is a new conversation (first message from this visitor)
+    let isNewConversation = false;
+    try {
+      const existingMessages = await prisma.salesChat.count({
+        where: { visitorId: finalVisitorId, isFromVisitor: true },
+      });
+      isNewConversation = existingMessages === 0;
+    } catch (e) {
+      console.log("Could not check existing messages:", e);
+    }
+
     // Log the chat message for admin review
     try {
       await prisma.salesChat.create({
@@ -98,6 +110,16 @@ export async function POST(request: NextRequest) {
           visitorEmail: userEmail || undefined,
         },
       });
+
+      // Send email notification for new conversations
+      if (isNewConversation) {
+        sendNewChatNotificationEmail(
+          userName || "Anonymous Visitor",
+          userEmail || null,
+          message,
+          page || "fm-certification"
+        ).catch((err) => console.log("Email notification failed:", err));
+      }
     } catch (e) {
       // Table might not exist yet, continue anyway
       console.log("Sales chat logging skipped:", e);
