@@ -1,8 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
-import { Resend } from "resend";
-
-const resend = new Resend(process.env.RESEND_API_KEY);
 
 // Resend Inbound Webhook - receives email.received events
 export async function POST(request: NextRequest) {
@@ -14,9 +11,12 @@ export async function POST(request: NextRequest) {
     // Check if this is a Resend webhook event
     if (body.type === "email.received") {
       const { data } = body;
-      const { email_id, from, to, subject } = data;
 
-      console.log("[INBOUND] Email received event:", { email_id, from, to, subject });
+      // Resend email.received payload structure:
+      // data.from, data.to, data.subject, data.text, data.html
+      const { from, to, subject, text, html } = data;
+
+      console.log("[INBOUND] Email received event:", { from, to, subject, hasText: !!text, hasHtml: !!html });
 
       // Get the "to" address to extract ticket number
       const toAddresses = Array.isArray(to) ? to : [to];
@@ -32,7 +32,6 @@ export async function POST(request: NextRequest) {
 
       if (!ticketNumber) {
         console.log("[INBOUND] No ticket number found in addresses:", toAddresses);
-        // Return 200 to acknowledge webhook (don't want Resend to retry)
         return NextResponse.json({ success: false, reason: "No ticket number in address" });
       }
 
@@ -46,64 +45,62 @@ export async function POST(request: NextRequest) {
         return NextResponse.json({ success: false, reason: "Ticket not found" });
       }
 
-      // Fetch the full email content from Resend API
-      let emailContent = "";
-      try {
-        const emailResponse = await fetch(`https://api.resend.com/emails/${email_id}`, {
-          headers: {
-            Authorization: `Bearer ${process.env.RESEND_API_KEY}`,
-          },
-        });
+      // Get email content from the webhook payload directly
+      let emailContent = text || "";
 
-        if (emailResponse.ok) {
-          const emailData = await emailResponse.json();
-          emailContent = emailData.text || emailData.html?.replace(/<[^>]*>/g, "") || "";
-          console.log("[INBOUND] Fetched email content:", emailContent.substring(0, 200));
-        } else {
-          console.log("[INBOUND] Failed to fetch email:", emailResponse.status);
-          // Use subject as fallback
-          emailContent = `[Email reply - content unavailable]\n\nSubject: ${subject}`;
-        }
-      } catch (fetchError) {
-        console.error("[INBOUND] Error fetching email content:", fetchError);
-        emailContent = `[Email reply]\n\nSubject: ${subject}`;
+      // If no text, try to extract from HTML
+      if (!emailContent && html) {
+        emailContent = html
+          .replace(/<br\s*\/?>/gi, "\n")
+          .replace(/<\/p>/gi, "\n\n")
+          .replace(/<[^>]*>/g, "")
+          .replace(/&nbsp;/g, " ")
+          .replace(/&amp;/g, "&")
+          .replace(/&lt;/g, "<")
+          .replace(/&gt;/g, ">")
+          .replace(/&quot;/g, '"')
+          .trim();
       }
+
+      console.log("[INBOUND] Raw email content:", emailContent?.substring(0, 500));
 
       // Clean up the email content - remove quoted reply text
       let cleanContent = emailContent;
 
       // Try to extract just the new reply by splitting on common patterns
       const replyPatterns = [
-        /On .+ wrote:/i,
+        /On .+wrote:/i,
+        /On .+ at .+ wrote:/i,
         /-----Original Message-----/i,
         /From:.*\nSent:.*\nTo:/i,
+        /_{3,}/,
         /-{3,}/,
-        /^>.*$/gm,
       ];
 
       for (const pattern of replyPatterns) {
-        if (pattern.global) {
-          // For global patterns, remove matching lines
-          cleanContent = cleanContent.replace(pattern, "");
-        } else {
-          const match = cleanContent.match(pattern);
-          if (match && match.index) {
-            cleanContent = cleanContent.substring(0, match.index).trim();
-            break;
-          }
+        const match = cleanContent.match(pattern);
+        if (match && match.index !== undefined && match.index > 0) {
+          cleanContent = cleanContent.substring(0, match.index).trim();
+          break;
         }
       }
 
-      // Remove lines starting with >
+      // Remove lines starting with > (quoted text)
       cleanContent = cleanContent
         .split("\n")
         .filter((line) => !line.trim().startsWith(">"))
         .join("\n")
         .trim();
 
+      // Clean up multiple newlines
+      cleanContent = cleanContent.replace(/\n{3,}/g, "\n\n").trim();
+
+      // Fallback if we couldn't extract content
       if (!cleanContent) {
-        cleanContent = emailContent || "(Empty reply)";
+        cleanContent = emailContent || `(Reply to ticket - see email for details)`;
       }
+
+      console.log("[INBOUND] Clean content:", cleanContent?.substring(0, 200));
 
       // Extract sender email
       const senderEmail = typeof from === "string"
@@ -136,11 +133,11 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ success: true, ticketNumber });
     }
 
-    // Handle legacy/direct format (in case we need it)
+    // Handle other webhook formats or direct POST
     const { from, to, subject, text, html } = body;
 
     if (to) {
-      console.log("[INBOUND] Legacy format email:", { from, to, subject });
+      console.log("[INBOUND] Direct format email:", { from, to, subject });
 
       const toAddress = Array.isArray(to) ? to[0] : to;
       const ticketMatch = toAddress?.match(/ticket-(\d+)@/i);
@@ -190,7 +187,7 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ success: true, ticketNumber });
     }
 
-    console.log("[INBOUND] Unknown webhook format:", body);
+    console.log("[INBOUND] Unknown webhook format");
     return NextResponse.json({ success: false, reason: "Unknown format" });
   } catch (error) {
     console.error("[INBOUND] Webhook error:", error);
