@@ -99,12 +99,17 @@ export async function POST(request: NextRequest) {
       let cleanContent = emailContent;
 
       if (cleanContent) {
-        // Remove quoted reply text (Gmail style: "On ... wrote:")
+        // Remove quoted reply text (various languages/formats)
         const replyPatterns = [
           /On .+wrote:/i,
           /On .+ at .+ wrote:/i,
+          /Il giorno .+ ha scritto:/i, // Italian
+          /Le .+ a écrit:/i, // French
+          /Am .+ schrieb:/i, // German
+          /El .+ escribió:/i, // Spanish
           /-----Original Message-----/i,
           /From:.*\r?\nSent:.*\r?\nTo:/i,
+          /Da:.*\r?\nInviato:.*\r?\nA:/i, // Italian Outlook
           /_{3,}/,
         ];
 
