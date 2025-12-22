@@ -1598,7 +1598,7 @@ export async function sendTicketReplyEmail(
     to,
     subject: `Re: Ticket #${ticketNumber} - ${subject}`,
     html: emailWrapper(content, `New reply from ${staffName} on Ticket #${ticketNumber}`),
-    replyTo: `support+${ticketNumber}@accredipro.academy` // Ideal for inbound parsing context
+    replyTo: `ticket-${ticketNumber}@accredipro-certificate.com`
   });
 }
 
