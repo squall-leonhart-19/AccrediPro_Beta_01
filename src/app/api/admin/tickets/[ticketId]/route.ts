@@ -2,9 +2,8 @@ import { NextRequest, NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
-import { Resend } from "resend";
+import { sendTicketRatingRequestEmail, sendTicketReplyEmail } from "@/lib/email"; // Also import rating email if needed, or just reply
 
-const resend = new Resend(process.env.RESEND_API_KEY);
 
 // GET - Get single ticket with all messages
 export async function GET(
@@ -94,6 +93,19 @@ export async function PATCH(
       },
     });
 
+    // Send rating request if resolved
+    if (status === "RESOLVED" && ticket.customerEmail) {
+      try {
+        await sendTicketRatingRequestEmail(
+          ticket.customerEmail,
+          ticket.customerName,
+          ticket.ticketNumber
+        );
+      } catch (emailError) {
+        console.error("Failed to send rating request:", emailError);
+      }
+    }
+
     return NextResponse.json({ ticket });
   } catch (error) {
     console.error("Failed to update ticket:", error);
@@ -143,40 +155,21 @@ export async function POST(
     // Send email if not internal note
     if (!isInternal) {
       try {
-        const emailResult = await resend.emails.send({
-          from: "AccrediPro Support <support@accredipro-certificate.com>",
-          to: ticket.customerEmail,
-          replyTo: `ticket-${ticket.ticketNumber}@tickets.accredipro-certificate.com`,
-          subject: `Re: [Ticket #${ticket.ticketNumber}] ${ticket.subject}`,
-          html: `
-            <!DOCTYPE html>
-            <html>
-              <head>
-                <meta charset="utf-8">
-              </head>
-              <body style="font-family: Arial, sans-serif; line-height: 1.6; color: #333;">
-                <p>Hi ${ticket.customerName.split(" ")[0]},</p>
+        const staffName = session.user.name || `${session.user.firstName} ${session.user.lastName}` || "AccrediPro Support";
 
-                <div style="margin: 20px 0; padding: 20px; background: #f9f9f9; border-left: 4px solid #6B2C40;">
-                  ${content.replace(/\n/g, "<br>")}
-                </div>
+        const emailResult = await sendTicketReplyEmail(
+          ticket.customerEmail,
+          ticket.customerName,
+          ticket.ticketNumber,
+          ticket.subject,
+          content,
+          staffName.trim()
+        );
 
-                <p>You can reply directly to this email to continue the conversation.</p>
-
-                <hr style="border: none; border-top: 1px solid #eee; margin: 30px 0;">
-
-                <p style="color: #666; font-size: 12px;">
-                  Ticket #${ticket.ticketNumber}<br>
-                  AccrediPro Academy Support<br>
-                  <a href="https://learn.accredipro.academy/dashboard/support">View your tickets</a>
-                </p>
-              </body>
-            </html>
-          `,
-        });
-
-        emailMessageId = emailResult.data?.id || null;
-        emailSentAt = new Date();
+        if (emailResult.success && emailResult.data) {
+          emailMessageId = emailResult.data.id || null;
+          emailSentAt = new Date();
+        }
       } catch (emailError) {
         console.error("Failed to send email:", emailError);
         // Continue anyway, just log the message without email

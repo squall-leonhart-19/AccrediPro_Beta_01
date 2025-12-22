@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
+import { sendStaffNotificationEmail } from "@/lib/email";
 
 // POST - Customer adds reply to their ticket
 export async function POST(
@@ -54,6 +55,19 @@ export async function POST(
         where: { id: ticketId },
         data: { status: "OPEN", updatedAt: new Date() },
       });
+    }
+
+    // Send notification to staff
+    try {
+      await sendStaffNotificationEmail(
+        "info@accredipro.academy",
+        ticket.ticketNumber,
+        ticket.customerName,
+        content,
+        ticketId
+      );
+    } catch (emailError) {
+      console.error("Failed to send staff notification:", emailError);
     }
 
     return NextResponse.json({ message });

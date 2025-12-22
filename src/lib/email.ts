@@ -1562,3 +1562,104 @@ export function generateEmailPreview(emailType: EmailType): string {
       `);
   }
 }
+
+// ============================================
+// SUPPORT TICKET EMAILS
+// ============================================
+
+// 17. Ticket Reply (Admin -> Customer)
+export async function sendTicketReplyEmail(
+  to: string,
+  customerName: string,
+  ticketNumber: number,
+  subject: string,
+  message: string,
+  staffName: string = "AccrediPro Support"
+) {
+  const content = `
+    <h2 style="color: #722F37; margin-top: 0; font-size: 24px;">New Reply to Ticket #${ticketNumber}</h2>
+
+    <p style="color: #555; font-size: 16px;">Hi ${customerName},</p>
+    <p style="color: #555; font-size: 16px;">${staffName} has replied to your ticket:</p>
+
+    <div style="background: #f8f9fa; border-radius: 8px; padding: 20px; margin: 20px 0; border-left: 4px solid #722F37;">
+      <p style="margin: 0; font-size: 14px; color: #888; margin-bottom: 8px;">Subject: ${subject}</p>
+      <p style="margin: 0; font-size: 15px; color: #333; line-height: 1.6; white-space: pre-wrap;">${message}</p>
+    </div>
+
+    ${primaryButton('View Ticket & Reply', `${BASE_URL}/dashboard/support`)}
+
+    <div style="background: #f8f9fa; border-radius: 8px; padding: 20px; margin-top: 30px;">
+      <p style="margin: 0; font-size: 14px; color: #666;">You can also reply directly to this email.</p>
+    </div>
+  `;
+
+  return sendEmail({
+    to,
+    subject: `Re: Ticket #${ticketNumber} - ${subject}`,
+    html: emailWrapper(content, `New reply from ${staffName} on Ticket #${ticketNumber}`),
+    replyTo: `support+${ticketNumber}@accredipro.academy` // Ideal for inbound parsing context
+  });
+}
+
+// 18. Rating Request (Auto or Manual Resolve)
+export async function sendTicketRatingRequestEmail(
+  to: string,
+  customerName: string,
+  ticketNumber: number
+) {
+  const content = `
+    <h2 style="color: #722F37; margin-top: 0; font-size: 24px;">How did we do?</h2>
+
+    <p style="color: #555; font-size: 16px;">Hi ${customerName},</p>
+    <p style="color: #555; font-size: 16px;">Your ticket <strong>#${ticketNumber}</strong> has been resolved. We'd love to hear about your experience.</p>
+
+    <div style="text-align: center; margin: 40px 0;">
+      <p style="color: #555; font-size: 16px; margin-bottom: 20px;">How would you rate the support you received?</p>
+      
+      <div style="display: flex; justify-content: center; gap: 10px;">
+        <a href="${BASE_URL}/ticket-feedback/${ticketNumber}?rating=5" style="text-decoration: none; font-size: 32px;" title="Excellent">⭐⭐⭐⭐⭐</a>
+      </div>
+      <div style="margin-top: 10px;">
+        <a href="${BASE_URL}/ticket-feedback/${ticketNumber}" style="color: #722F37; font-size: 14px; text-decoration: underline;">Rate your experience</a>
+      </div>
+    </div>
+
+    <div style="background: #f8f9fa; border-radius: 8px; padding: 20px; margin-top: 30px;">
+      <p style="margin: 0; font-size: 14px; color: #666;">If your issue isn't resolved, you can simply reply to this email to reopen the ticket.</p>
+    </div>
+  `;
+
+  return sendEmail({
+    to,
+    subject: `How was our support? (Ticket #${ticketNumber})`,
+    html: emailWrapper(content, `Rate your support experience for Ticket #${ticketNumber}`),
+  });
+}
+
+// 19. Staff Notification (Customer Reply)
+export async function sendStaffNotificationEmail(
+  staffEmail: string,
+  ticketNumber: number,
+  customerName: string,
+  message: string,
+  ticketId: string
+) {
+  const content = `
+    <h2 style="color: #722F37; margin-top: 0; font-size: 24px;">New Customer Reply</h2>
+
+    <p style="color: #555; font-size: 16px;"><strong>${customerName}</strong> replied to Ticket #${ticketNumber}:</p>
+
+    <div style="background: #fff; border: 1px solid #eee; border-radius: 8px; padding: 20px; margin: 20px 0;">
+      <p style="margin: 0; font-size: 15px; color: #333; line-height: 1.6; white-space: pre-wrap;">${message}</p>
+    </div>
+
+    ${primaryButton('View in Admin', `${BASE_URL}/admin/tickets`)}
+  `;
+
+  return sendEmail({
+    to: staffEmail,
+    subject: `[Ticket #${ticketNumber}] New reply from ${customerName}`,
+    html: emailWrapper(content, `${customerName} replied to their support ticket.`),
+  });
+}
