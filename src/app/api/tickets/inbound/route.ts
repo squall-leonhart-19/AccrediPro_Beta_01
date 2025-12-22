@@ -26,7 +26,8 @@ export async function POST(request: NextRequest) {
       let ticketNumber: number | null = null;
 
       for (const toAddr of toAddresses) {
-        const match = toAddr?.match(/ticket-(\d+)@/i);
+        // Match both 'ticket-123@' and 'support+123@' formats
+        const match = toAddr?.match(/(?:ticket-|support\+)(\d+)@/i);
         if (match) {
           ticketNumber = parseInt(match[1]);
           break;

@@ -4,24 +4,37 @@ import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 
 // CORS headers for cross-origin requests
-const corsHeaders = {
-  "Access-Control-Allow-Origin": "https://sarah.accredipro.academy",
-  "Access-Control-Allow-Methods": "GET, OPTIONS",
-  "Access-Control-Allow-Headers": "Content-Type",
-  "Access-Control-Allow-Credentials": "true",
+const allowedOrigins = [
+  "https://sarah.accredipro.academy",
+  "http://localhost:3000",
+  "https://accredipro.academy", // Main domain
+  "https://learn.accredipro.academy", // Admin/LMS domain
+];
+
+const getCorsHeaders = (request: Request) => {
+  const origin = request.headers.get("origin");
+  const isAllowed = origin && allowedOrigins.some(o => origin.startsWith(o));
+
+  return {
+    "Access-Control-Allow-Origin": isAllowed ? origin : allowedOrigins[0],
+    "Access-Control-Allow-Methods": "GET, OPTIONS",
+    "Access-Control-Allow-Headers": "Content-Type",
+    "Access-Control-Allow-Credentials": "true",
+  };
 };
 
-export async function OPTIONS() {
-  return NextResponse.json({}, { headers: corsHeaders });
+export async function OPTIONS(request: Request) {
+  return NextResponse.json({}, { headers: getCorsHeaders(request) });
 }
 
-export async function GET() {
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+export async function GET(request: Request) {
   try {
     const session = await getServerSession(authOptions);
     console.log("[LiveChat] Session:", session?.user?.email, session?.user?.role);
 
     if (!session?.user || !["ADMIN", "INSTRUCTOR"].includes(session.user.role as string)) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401, headers: corsHeaders });
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401, headers: getCorsHeaders(request) });
     }
 
     // Get all sales chat messages grouped by visitor
@@ -98,9 +111,9 @@ export async function GET() {
       .sort((a, b) => b.lastMessageAt.getTime() - a.lastMessageAt.getTime());
 
     console.log(`[LiveChat] Returning ${conversations.length} conversations`);
-    return NextResponse.json({ conversations }, { headers: corsHeaders });
+    return NextResponse.json({ conversations }, { headers: getCorsHeaders(request) });
   } catch (error) {
     console.error("Failed to fetch live chat:", error);
-    return NextResponse.json({ error: "Failed to fetch conversations" }, { status: 500, headers: corsHeaders });
+    return NextResponse.json({ error: "Failed to fetch conversations" }, { status: 500, headers: getCorsHeaders(request) });
   }
 }
