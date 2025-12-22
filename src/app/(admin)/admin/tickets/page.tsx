@@ -91,7 +91,7 @@ const TicketListItem = ({
           <span className="font-semibold text-sm text-slate-900 line-clamp-1">#{ticket.ticketNumber} {ticket.subject}</span>
         </div>
         <span className="text-xs text-slate-400 whitespace-nowrap">
-          {formatDistanceToNow(new Date(ticket.lastMessageAt || ticket.createdAt), { addSuffix: true })}
+          {formatDistanceToNow(new Date(ticket.updatedAt), { addSuffix: true })}
         </span>
       </div>
 
@@ -106,7 +106,7 @@ const TicketListItem = ({
       </div>
 
       <p className="text-xs text-slate-500 line-clamp-2 mt-1">
-        {ticket.messages?.[0]?.content || "No preview available..."}
+        {ticket.messages?.[ticket.messages.length - 1]?.content || "No preview available..."}
       </p>
     </div>
   );

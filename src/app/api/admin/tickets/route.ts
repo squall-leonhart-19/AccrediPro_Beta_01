@@ -85,9 +85,10 @@ export async function GET(request: NextRequest) {
         user: { select: { firstName: true, lastName: true, avatar: true } },
         assignedTo: { select: { firstName: true, lastName: true } },
         messages: {
-          orderBy: { createdAt: "desc" },
-          take: 1,
-          select: { content: true, createdAt: true, isFromCustomer: true },
+          orderBy: { createdAt: "asc" },
+          include: {
+            sentBy: { select: { firstName: true, lastName: true } },
+          },
         },
         _count: { select: { messages: true } },
       },
