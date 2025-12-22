@@ -12,7 +12,6 @@ async function getCourses() {
       slug: {
         in: [
           // 1. Certified FM Practitioner ($497 → $97 XMAS)
-          'functional-medicine-certification',
           'functional-medicine-complete-certification',
           // 2. Pro Accelerator ($997 → $397 XMAS)
           'fm-pro-accelerator',

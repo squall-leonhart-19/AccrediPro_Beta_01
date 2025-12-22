@@ -22,7 +22,7 @@ const PURCHASE_PIXEL_ID = process.env.META_PURCHASE_PIXEL_ID || "128791534906782
 const PURCHASE_ACCESS_TOKEN = process.env.META_PURCHASE_ACCESS_TOKEN || "EAAHMlaRKtUoBQBe0ZAFZBQPlRv3xujHeDw0y8kGmRewZA9jaqkbnZA5mJxndHZCNmalSrGmr9DlTbNewOdu4INw4xRRZCE4vC0mSvnWsV17sIvklD9X4PbttSgp2lVIOZBQxG9Uq8UVljCsqZA1LSqxlgjDQ1qIN6PctDh3M5LmJBKkqQa0FDQAIoBN1AAIVqwZDZD";
 
 // Product mappings
-// FIXED: Map to ACTUAL database slugs (functional-medicine-certification, not fm-certification)
+// FIXED: Map to ACTUAL database slugs
 const PRODUCT_COURSE_MAP: Record<string, string> = {
     // FM Mini Diploma ($27)
     "fm-mini-diploma": "integrative-health-functional-medicine-mini-diploma",
@@ -32,19 +32,24 @@ const PRODUCT_COURSE_MAP: Record<string, string> = {
     "r.o.o.t.s": "integrative-health-functional-medicine-mini-diploma",
     "roots": "integrative-health-functional-medicine-mini-diploma",
 
-    // FM Certification ($197) - THE MAIN PRODUCT
-    "fm-certification": "functional-medicine-certification",
-    "fm_certification": "functional-medicine-certification",
-    "certification": "functional-medicine-certification",
-    "fm cert": "functional-medicine-certification",
-    "functional medicine": "functional-medicine-certification",
-    "practitioner": "functional-medicine-certification",
+    // FM Certification ($97 XMAS) - THE MAIN PRODUCT
+    // Maps to: functional-medicine-complete-certification
+    "fm-certification": "functional-medicine-complete-certification",
+    "fm_certification": "functional-medicine-complete-certification",
+    "certification": "functional-medicine-complete-certification",
+    "fm cert": "functional-medicine-complete-certification",
+    "functional medicine": "functional-medicine-complete-certification",
+    "practitioner": "functional-medicine-complete-certification",
+    "complete certification": "functional-medicine-complete-certification",
+    "complete-certification": "functional-medicine-complete-certification",
 
-    // Pro Accelerator ($397)
+    // Pro Accelerator ($397 XMAS)
     "fm-pro-accelerator": "fm-pro-accelerator",
     "pro accelerator": "fm-pro-accelerator",
     "accelerator": "fm-pro-accelerator",
     "pro-accelerator": "fm-pro-accelerator",
+    "advanced": "fm-pro-accelerator",
+    "master": "fm-pro-accelerator",
 
     // Client Guarantee ($497)
     "fm-client-guarantee": "fm-10-client-guarantee",
@@ -55,13 +60,15 @@ const PRODUCT_COURSE_MAP: Record<string, string> = {
 
 const PRODUCT_PRICES: Record<string, number> = {
     "integrative-health-functional-medicine-mini-diploma": 27,
-    "functional-medicine-certification": 197,
-    "fm-pro-accelerator": 397,
+    "functional-medicine-complete-certification": 97,  // XMAS PRICE
+    "functional-medicine-certification": 97,           // Fallback
+    "fm-pro-accelerator": 397,                         // XMAS PRICE
     "fm-10-client-guarantee": 497,
 };
 
 const PRODUCT_NAMES: Record<string, string> = {
     "integrative-health-functional-medicine-mini-diploma": "R.O.O.T.S. Method Mini Diploma",
+    "functional-medicine-complete-certification": "Certified FM Practitioner",
     "functional-medicine-certification": "Certified FM Practitioner",
     "fm-pro-accelerator": "FM Pro Accelerator",
     "fm-10-client-guarantee": "10-Client Guarantee Mentorship",
