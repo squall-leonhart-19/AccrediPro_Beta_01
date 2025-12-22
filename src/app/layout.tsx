@@ -4,6 +4,7 @@ import { Suspense } from "react";
 import "./globals.css";
 import MetaPixel from "@/components/tracking/meta-pixel";
 import { QueryProvider } from "@/components/providers/query-provider";
+import { Toaster } from "sonner";
 
 const inter = Inter({
   variable: "--font-inter",
@@ -136,6 +137,7 @@ export default function RootLayout({
             <MetaPixel />
           </Suspense>
           {children}
+          <Toaster richColors position="top-right" />
         </QueryProvider>
       </body>
     </html>

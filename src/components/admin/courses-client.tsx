@@ -349,13 +349,10 @@ export function CoursesClient({
     };
 
     const openEditModal = (course: Course) => {
-        setEditingCourse(course);
-        setFormData({
-            title: course.title, slug: course.slug, description: course.description,
-            shortDescription: course.shortDescription || "",
-            isFree: course.isFree, isPublished: course.isPublished, isFeatured: course.isFeatured,
-            difficulty: course.difficulty, certificateType: course.certificateType,
-        });
+        // Navigate to new editor
+        // window.location.href = `/admin/courses/${course.id}`;
+        // Using router for SPA feel if available, but window.location is safer for now if useRouter not imported or compatible
+        window.location.href = `/admin/courses/${course.id}`;
     };
 
     const toggleModule = (moduleId: string) => {
