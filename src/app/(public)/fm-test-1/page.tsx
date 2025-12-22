@@ -2,7 +2,7 @@
 import { useState, useEffect, useRef } from 'react';
 import Script from 'next/script';
 import { trackViewContent, trackAddToCart } from '@/components/tracking/meta-pixel';
-import '../functional-medicine/styles.css';
+import '../styles/shared-sales-page.css';
 
 // Student avatars from CSV
 const studentAvatars = [
