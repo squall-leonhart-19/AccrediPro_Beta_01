@@ -114,7 +114,7 @@ export function useReplyTicket() {
             const res = await fetch(`/api/admin/tickets/${ticketId}`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ message, isInternal }),
+                body: JSON.stringify({ content: message, isInternal }),
             });
             if (!res.ok) throw new Error("Failed to send reply");
             return res.json();
