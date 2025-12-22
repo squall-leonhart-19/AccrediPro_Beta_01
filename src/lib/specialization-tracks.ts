@@ -84,9 +84,9 @@ export const FUNCTIONAL_MEDICINE_TRACK: SpecializationTrack = {
     stateConfig: {
         exploration: {
             welcomeMessage: "I'm so glad you're here. This is where your transformation into a Functional Medicine practitioner begins — at your own pace, with full support.",
-            actionLabel: "Start My Free Mini Diploma",
-            actionHref: "/courses/functional-medicine-mini-diploma",
-            motivation: "Your Mini Diploma gives you a real taste of Functional Medicine. No credit card, no pressure — just clarity about your path.",
+            actionLabel: "Start Certification",
+            actionHref: "/courses/functional-medicine-complete-certification",
+            motivation: "Your certification journey starts here. Join the program to unlock your career as a Functional Medicine practitioner.",
             nextUnlockTitle: "Step 1: Certified FM Practitioner",
             nextUnlockBenefits: [
                 "Full clinical certification with practitioner status",
@@ -289,9 +289,9 @@ export const HEALTH_COACH_TRACK: SpecializationTrack = {
     stateConfig: {
         exploration: {
             welcomeMessage: "I'm so glad you're here. This is where your transformation into a Health Coach begins — at your own pace, with full support.",
-            actionLabel: "Start My Free Mini Diploma",
-            actionHref: "/courses/health-coach-mini-diploma",
-            motivation: "Your Mini Diploma gives you a real taste of health coaching. No credit card, no pressure — just clarity about your path.",
+            actionLabel: "Start Certification",
+            actionHref: "/courses/functional-medicine-complete-certification",
+            motivation: "Your certification journey starts here. Join the program to unlock your career as a Health Coach.",
             nextUnlockTitle: "Step 1: Certified Health Coach",
             nextUnlockBenefits: [
                 "Full coaching certification with professional status",
@@ -494,9 +494,9 @@ export const MENOPAUSE_TRACK: SpecializationTrack = {
     stateConfig: {
         exploration: {
             welcomeMessage: "I'm so glad you're here. Millions of women need specialists like you to guide them through this transformative time.",
-            actionLabel: "Start My Free Mini Diploma",
-            actionHref: "/courses/menopause-mini-diploma",
-            motivation: "Your Mini Diploma shows you exactly what menopause specialists do — and why this work matters so much.",
+            actionLabel: "Start Certification",
+            actionHref: "/courses/functional-medicine-complete-certification",
+            motivation: "Your certification journey starts here. Join the program to become a trusted Menopause Specialist.",
             nextUnlockTitle: "Step 1: Certified Menopause Specialist",
             nextUnlockBenefits: [
                 "Evidence-based menopause protocols",
@@ -699,9 +699,9 @@ export const GUT_HEALTH_TRACK: SpecializationTrack = {
     stateConfig: {
         exploration: {
             welcomeMessage: "I'm so glad you're here. Gut health is transforming how we think about wellness — and you can be part of it.",
-            actionLabel: "Start My Free Mini Diploma",
-            actionHref: "/courses/gut-health-mini-diploma",
-            motivation: "Your Mini Diploma shows you the science of gut health and why this specialization is in such high demand.",
+            actionLabel: "Start Certification",
+            actionHref: "/courses/functional-medicine-complete-certification",
+            motivation: "Your certification journey starts here. Join the program to become a Gut Health Specialist.",
             nextUnlockTitle: "Step 1: Certified Gut Health Specialist",
             nextUnlockBenefits: [
                 "Microbiome science & gut protocols",
@@ -904,9 +904,9 @@ export const WOMENS_HEALTH_TRACK: SpecializationTrack = {
     stateConfig: {
         exploration: {
             welcomeMessage: "I'm so glad you're here. Women need specialists who understand their unique health needs at every stage.",
-            actionLabel: "Start My Free Mini Diploma",
-            actionHref: "/courses/womens-health-mini-diploma",
-            motivation: "Your Mini Diploma shows you the world of women's health — and why this work changes lives.",
+            actionLabel: "Start Certification",
+            actionHref: "/courses/functional-medicine-complete-certification",
+            motivation: "Your certification journey starts here. Join the program to become a Women's Health Specialist.",
             nextUnlockTitle: "Step 1: Certified Women's Health Specialist",
             nextUnlockBenefits: [
                 "Women's hormonal health protocols",
