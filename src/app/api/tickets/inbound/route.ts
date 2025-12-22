@@ -6,17 +6,17 @@ export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
 
-    console.log("[INBOUND] Webhook received:", JSON.stringify(body, null, 2));
+    console.log("[INBOUND] Full webhook payload:", JSON.stringify(body, null, 2));
 
     // Check if this is a Resend webhook event
     if (body.type === "email.received") {
       const { data } = body;
+      const emailId = data.email_id;
+      const from = data.from;
+      const to = data.to;
+      const subject = data.subject;
 
-      // Resend email.received payload structure:
-      // data.from, data.to, data.subject, data.text, data.html
-      const { from, to, subject, text, html } = data;
-
-      console.log("[INBOUND] Email received event:", { from, to, subject, hasText: !!text, hasHtml: !!html });
+      console.log("[INBOUND] Email received:", { emailId, from, to, subject });
 
       // Get the "to" address to extract ticket number
       const toAddresses = Array.isArray(to) ? to : [to];
@@ -45,62 +45,111 @@ export async function POST(request: NextRequest) {
         return NextResponse.json({ success: false, reason: "Ticket not found" });
       }
 
-      // Get email content from the webhook payload directly
-      let emailContent = text || "";
+      // Fetch the full email content from Resend's receiving API
+      let emailContent = "";
 
-      // If no text, try to extract from HTML
-      if (!emailContent && html) {
-        emailContent = html
-          .replace(/<br\s*\/?>/gi, "\n")
-          .replace(/<\/p>/gi, "\n\n")
-          .replace(/<[^>]*>/g, "")
-          .replace(/&nbsp;/g, " ")
-          .replace(/&amp;/g, "&")
-          .replace(/&lt;/g, "<")
-          .replace(/&gt;/g, ">")
-          .replace(/&quot;/g, '"')
-          .trim();
-      }
+      if (emailId) {
+        try {
+          // Use the receiving emails endpoint
+          const emailResponse = await fetch(
+            `https://api.resend.com/emails/receiving/${emailId}`,
+            {
+              headers: {
+                Authorization: `Bearer ${process.env.RESEND_API_KEY}`,
+              },
+            }
+          );
 
-      console.log("[INBOUND] Raw email content:", emailContent?.substring(0, 500));
+          console.log("[INBOUND] Fetch response status:", emailResponse.status);
 
-      // Clean up the email content - remove quoted reply text
-      let cleanContent = emailContent;
+          if (emailResponse.ok) {
+            const emailData = await emailResponse.json();
+            console.log("[INBOUND] Fetched email data keys:", Object.keys(emailData));
 
-      // Try to extract just the new reply by splitting on common patterns
-      const replyPatterns = [
-        /On .+wrote:/i,
-        /On .+ at .+ wrote:/i,
-        /-----Original Message-----/i,
-        /From:.*\nSent:.*\nTo:/i,
-        /_{3,}/,
-        /-{3,}/,
-      ];
+            // Try different possible field names
+            emailContent = emailData.text ||
+                          emailData.body ||
+                          emailData.plain_text ||
+                          emailData.text_body ||
+                          "";
 
-      for (const pattern of replyPatterns) {
-        const match = cleanContent.match(pattern);
-        if (match && match.index !== undefined && match.index > 0) {
-          cleanContent = cleanContent.substring(0, match.index).trim();
-          break;
+            // If no text, try HTML
+            if (!emailContent && (emailData.html || emailData.html_body)) {
+              const htmlContent = emailData.html || emailData.html_body;
+              emailContent = htmlContent
+                .replace(/<br\s*\/?>/gi, "\n")
+                .replace(/<\/p>/gi, "\n\n")
+                .replace(/<[^>]*>/g, "")
+                .replace(/&nbsp;/g, " ")
+                .replace(/&amp;/g, "&")
+                .replace(/&lt;/g, "<")
+                .replace(/&gt;/g, ">")
+                .trim();
+            }
+
+            console.log("[INBOUND] Extracted content:", emailContent?.substring(0, 200));
+          } else {
+            const errorText = await emailResponse.text();
+            console.log("[INBOUND] Fetch error:", emailResponse.status, errorText);
+          }
+        } catch (fetchError) {
+          console.error("[INBOUND] Error fetching email:", fetchError);
         }
       }
 
-      // Remove lines starting with > (quoted text)
-      cleanContent = cleanContent
-        .split("\n")
-        .filter((line) => !line.trim().startsWith(">"))
-        .join("\n")
-        .trim();
+      // If we still don't have content, check if it's in the webhook data
+      if (!emailContent) {
+        emailContent = data.text || data.body || data.plain_text || "";
 
-      // Clean up multiple newlines
-      cleanContent = cleanContent.replace(/\n{3,}/g, "\n\n").trim();
-
-      // Fallback if we couldn't extract content
-      if (!cleanContent) {
-        cleanContent = emailContent || `(Reply to ticket - see email for details)`;
+        if (!emailContent && data.html) {
+          emailContent = data.html
+            .replace(/<br\s*\/?>/gi, "\n")
+            .replace(/<\/p>/gi, "\n\n")
+            .replace(/<[^>]*>/g, "")
+            .trim();
+        }
       }
 
-      console.log("[INBOUND] Clean content:", cleanContent?.substring(0, 200));
+      // Clean up the email content
+      let cleanContent = emailContent;
+
+      if (cleanContent) {
+        // Remove quoted reply text
+        const replyPatterns = [
+          /On .+wrote:/i,
+          /On .+ at .+ wrote:/i,
+          /-----Original Message-----/i,
+          /From:.*\nSent:.*\nTo:/i,
+          /_{3,}/,
+          /-{3,}/,
+        ];
+
+        for (const pattern of replyPatterns) {
+          const match = cleanContent.match(pattern);
+          if (match && match.index !== undefined && match.index > 0) {
+            cleanContent = cleanContent.substring(0, match.index).trim();
+            break;
+          }
+        }
+
+        // Remove lines starting with >
+        cleanContent = cleanContent
+          .split("\n")
+          .filter((line) => !line.trim().startsWith(">"))
+          .join("\n")
+          .trim();
+
+        // Clean up multiple newlines
+        cleanContent = cleanContent.replace(/\n{3,}/g, "\n\n").trim();
+      }
+
+      // Final fallback - use a meaningful message
+      if (!cleanContent) {
+        // Extract just the new content indicator
+        cleanContent = `[Customer replied via email]\n\nSubject: ${subject || "Re: Ticket"}`;
+      }
+
+      console.log("[INBOUND] Final content:", cleanContent);
 
       // Extract sender email
       const senderEmail = typeof from === "string"
@@ -117,7 +166,7 @@ export async function POST(request: NextRequest) {
         },
       });
 
-      // Update ticket status to OPEN if it was PENDING or RESOLVED
+      // Update ticket status to OPEN if closed
       if (["PENDING", "RESOLVED", "CLOSED"].includes(ticket.status)) {
         await prisma.supportTicket.update({
           where: { id: ticket.id },
@@ -133,62 +182,8 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ success: true, ticketNumber });
     }
 
-    // Handle other webhook formats or direct POST
-    const { from, to, subject, text, html } = body;
-
-    if (to) {
-      console.log("[INBOUND] Direct format email:", { from, to, subject });
-
-      const toAddress = Array.isArray(to) ? to[0] : to;
-      const ticketMatch = toAddress?.match(/ticket-(\d+)@/i);
-
-      if (!ticketMatch) {
-        console.log("[INBOUND] No ticket number found:", toAddress);
-        return NextResponse.json({ success: false, reason: "No ticket number" });
-      }
-
-      const ticketNumber = parseInt(ticketMatch[1]);
-
-      const ticket = await prisma.supportTicket.findUnique({
-        where: { ticketNumber },
-      });
-
-      if (!ticket) {
-        console.log("[INBOUND] Ticket not found:", ticketNumber);
-        return NextResponse.json({ success: false, reason: "Ticket not found" });
-      }
-
-      let cleanContent = text || html?.replace(/<[^>]*>/g, "") || "(Empty reply)";
-
-      // Clean quoted text
-      cleanContent = cleanContent
-        .split("\n")
-        .filter((line: string) => !line.trim().startsWith(">"))
-        .join("\n")
-        .trim() || cleanContent;
-
-      await prisma.ticketMessage.create({
-        data: {
-          ticketId: ticket.id,
-          content: cleanContent,
-          isFromCustomer: true,
-          isInternal: false,
-        },
-      });
-
-      if (["PENDING", "RESOLVED", "CLOSED"].includes(ticket.status)) {
-        await prisma.supportTicket.update({
-          where: { id: ticket.id },
-          data: { status: "OPEN", updatedAt: new Date() },
-        });
-      }
-
-      console.log(`[INBOUND] Added reply to ticket #${ticketNumber}`);
-      return NextResponse.json({ success: true, ticketNumber });
-    }
-
-    console.log("[INBOUND] Unknown webhook format");
-    return NextResponse.json({ success: false, reason: "Unknown format" });
+    console.log("[INBOUND] Not an email.received event:", body.type);
+    return NextResponse.json({ success: false, reason: "Not email.received event" });
   } catch (error) {
     console.error("[INBOUND] Webhook error:", error);
     return NextResponse.json({ error: "Failed to process" }, { status: 500 });
