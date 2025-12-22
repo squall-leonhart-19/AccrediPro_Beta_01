@@ -396,9 +396,16 @@ export async function POST(request: NextRequest) {
         // Also send enrollment confirmation if we enrolled them
         if (enrollmentId && course) {
             try {
-                const { sendCourseEnrollmentEmail } = await import("@/lib/email");
-                await sendCourseEnrollmentEmail(normalizedEmail, firstName || "Student", course.title, course.slug);
-                console.log(`[CF Purchase] ✅ Enrollment confirmation email sent`);
+                // Use VIP email for Pro Accelerator, standard for others
+                if (courseSlug === 'fm-pro-accelerator' || courseSlug.includes('pro-accelerator')) {
+                    const { sendProAcceleratorEnrollmentEmail } = await import("@/lib/email");
+                    await sendProAcceleratorEnrollmentEmail(normalizedEmail, firstName || "Student");
+                    console.log(`[CF Purchase] ✅ VIP Pro Accelerator email sent`);
+                } else {
+                    const { sendCourseEnrollmentEmail } = await import("@/lib/email");
+                    await sendCourseEnrollmentEmail(normalizedEmail, firstName || "Student", course.title, course.slug);
+                    console.log(`[CF Purchase] ✅ Enrollment confirmation email sent`);
+                }
             } catch (enrollError) {
                 console.error("[CF Purchase] Failed to send enrollment email:", enrollError);
             }

@@ -807,6 +807,61 @@ export async function sendCourseEnrollmentEmail(to: string, firstName: string, c
   });
 }
 
+// 16b. Pro Accelerator VIP Enrollment - Premium/Exclusive Email
+export async function sendProAcceleratorEnrollmentEmail(to: string, firstName: string) {
+  const courseUrl = `${BASE_URL}/courses/fm-pro-accelerator`;
+  const dashboardUrl = `${BASE_URL}/my-courses`;
+
+  const content = `
+    <div style="text-align: center; margin-bottom: 30px;">
+      <div style="background: linear-gradient(135deg, #D4AF37 0%, #F5D76E 100%); color: #722F37; padding: 8px 20px; border-radius: 20px; display: inline-block; font-size: 12px; font-weight: bold; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 15px;">
+        ⭐ VIP ACCESS UNLOCKED ⭐
+      </div>
+      <h2 style="color: #722F37; margin: 0; font-size: 32px;">Welcome to the Inner Circle, ${firstName}!</h2>
+    </div>
+
+    <p style="color: #555; font-size: 16px; text-align: center;">You've just upgraded to our <strong style="color: #722F37;">Pro Accelerator™</strong> — and you now have access to <em>everything</em> we offer.</p>
+
+    <div style="background: linear-gradient(135deg, #722F37 0%, #8B3A42 100%); border-radius: 16px; padding: 30px; margin: 25px 0; text-align: center;">
+      <p style="margin: 0; font-size: 12px; color: #D4AF37; text-transform: uppercase; letter-spacing: 2px;">YOU'VE UNLOCKED</p>
+      <p style="margin: 15px 0 5px 0; font-size: 24px; font-weight: bold; color: white;">FM Pro Accelerator™</p>
+      <p style="margin: 0; font-size: 14px; color: rgba(255,255,255,0.8);">Advanced + Master + Practice & Income Paths</p>
+    </div>
+
+    ${highlightBox(`
+      <p style="margin: 0 0 15px 0; font-size: 15px; color: #722F37; font-weight: bold;">Your Login Credentials:</p>
+      <p style="margin: 0; font-size: 14px; color: #333;"><strong>Email:</strong> ${to}</p>
+      <p style="margin: 8px 0 0 0; font-size: 14px; color: #333;"><strong>Password:</strong> Futurecoach2025</p>
+      <p style="margin: 12px 0 0 0; font-size: 12px; color: #666; font-style: italic;">You can change your password anytime from your account settings.</p>
+    `, 'gold')}
+
+    <p style="color: #555; font-size: 16px; margin-top: 25px;"><strong>What's waiting for you inside:</strong></p>
+    <ul style="color: #555; font-size: 15px; padding-left: 20px;">
+      <li style="margin: 10px 0;">🔓 <strong>All Advanced Specialist Tracks</strong> — Hormones, Gut Health, Autoimmune & more</li>
+      <li style="margin: 10px 0;">🎓 <strong>Master-Level Training</strong> — Complex case protocols</li>
+      <li style="margin: 10px 0;">💼 <strong>Practice & Income Path</strong> — Build your $10K/month business</li>
+      <li style="margin: 10px 0;">👩‍⚕️ <strong>1:1 Coach Access</strong> — Direct support whenever you need it</li>
+    </ul>
+
+    ${primaryButton('Access My Pro Dashboard', dashboardUrl)}
+
+    <div style="background: linear-gradient(135deg, #FDF5E6 0%, #FFF8DC 100%); border: 2px solid #D4AF37; border-radius: 12px; padding: 20px; margin-top: 25px; text-align: center;">
+      <p style="margin: 0 0 10px 0; font-size: 14px; color: #722F37; font-weight: bold;">🎯 Pro Tip from Sarah</p>
+      <p style="margin: 0; font-size: 14px; color: #555;">Start with the Advanced tracks that excite you most. Passion + expertise = premium clients.</p>
+    </div>
+
+    <p style="color: #555; font-size: 16px; margin-top: 30px;">You've made an incredible investment in yourself. I'm here to make sure it pays off.</p>
+
+    <p style="color: #555; font-size: 16px; margin-top: 20px;">To your success,<br/><strong style="color: #722F37;">Sarah M.</strong><br/><span style="color: #888; font-size: 13px;">Lead Coach, AccrediPro Academy</span></p>
+  `;
+
+  return sendEmail({
+    to,
+    subject: `⭐ VIP Access Unlocked: Welcome to the Pro Accelerator, ${firstName}!`,
+    html: emailWrapper(content, `${firstName}, you're in! Your Pro Accelerator access is ready.`),
+  });
+}
+
 // ============================================
 // SUPPORT & SERVICE
 // ============================================
