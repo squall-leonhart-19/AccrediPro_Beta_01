@@ -4,28 +4,26 @@ import { prisma } from "../src/lib/prisma";
 async function main() {
     console.log("Testing DB connection...");
     try {
-        // 1. Test basic query
         const count = await prisma.user.count();
         console.log(`✅ Connection success. Found ${count} users.`);
 
-        // 2. Test new columns
-        console.log("Testing SupportTicket columns...");
+        console.log("Testing SalesChat table...");
         try {
-            // Just try to select the new fields from the first ticket found
-            const ticket = await prisma.supportTicket.findFirst({
-                select: {
-                    id: true,
-                    rating: true,
-                    ratingComment: true,
-                    ratedAt: true
-                }
-            });
-            console.log("✅ Verified SupportTicket schema columns (rating, ratingComment, ratedAt).");
+            const chat = await prisma.salesChat.findFirst();
+            console.log(`✅ Verified SalesChat table (found ${chat ? "records" : "empty table"}).`);
         } catch (e: any) {
-            console.error("❌ Schema Mismatch on SupportTicket:", e.message);
-            if (e.message.includes("column") || e.message.includes("does not exist")) {
-                console.log("\nRECOMMENDATION: The database migration did not complete. Try running the manual SQL script.");
+            console.error("❌ Schema Mismatch on SalesChat:", e.message);
+            if (e.message.includes("does not exist")) {
+                console.log("\nThe SalesChat table is missing. You need to run 'npx prisma db push'.");
             }
+        }
+
+        console.log("Testing ChatOptin table...");
+        try {
+            const optin = await prisma.chatOptin.findFirst();
+            console.log(`✅ Verified ChatOptin table (found ${optin ? "records" : "empty table"}).`);
+        } catch (e: any) {
+            console.error("❌ Schema Mismatch on ChatOptin:", e.message);
         }
 
     } catch (e: any) {

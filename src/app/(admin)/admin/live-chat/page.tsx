@@ -72,6 +72,7 @@ export default function LiveChatAdminPage() {
   const [selectedConversation, setSelectedConversation] = useState<Conversation | null>(null);
   const [replyMessage, setReplyMessage] = useState("");
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
   const [sending, setSending] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
   const [filterMode, setFilterMode] = useState<"all" | "unread" | "read">("all");
@@ -99,6 +100,7 @@ export default function LiveChatAdminPage() {
       }
     } catch (error) {
       console.error("Failed to fetch conversations:", error);
+      setError("Failed to load conversations. Please refresh.");
     } finally {
       setLoading(false);
     }
@@ -164,7 +166,7 @@ export default function LiveChatAdminPage() {
           visitorId: selectedConversation.visitorId,
           notes: visitorNotes,
         }),
-      }).catch(() => {}); // Silently fail if API doesn't exist
+      }).catch(() => { }); // Silently fail if API doesn't exist
     } finally {
       setSavingNotes(false);
     }
@@ -294,6 +296,13 @@ export default function LiveChatAdminPage() {
             <ScrollArea className="h-[calc(100vh-420px)]">
               {loading ? (
                 <div className="p-4 text-center text-gray-500">Loading...</div>
+              ) : error ? (
+                <div className="p-4 text-center text-red-500 bg-red-50 m-4 rounded">
+                  {error}
+                  <Button variant="outline" size="sm" onClick={fetchConversations} className="mt-2 w-full">
+                    Retry
+                  </Button>
+                </div>
               ) : filteredConversations.length === 0 ? (
                 <div className="p-4 text-center text-gray-500">
                   {searchTerm || filterMode !== "all" ? "No matching conversations" : "No conversations yet"}
@@ -303,9 +312,8 @@ export default function LiveChatAdminPage() {
                   <div
                     key={conv.visitorId}
                     onClick={() => setSelectedConversation(conv)}
-                    className={`p-4 border-b cursor-pointer hover:bg-gray-50 transition-colors ${
-                      selectedConversation?.visitorId === conv.visitorId ? "bg-blue-50" : ""
-                    }`}
+                    className={`p-4 border-b cursor-pointer hover:bg-gray-50 transition-colors ${selectedConversation?.visitorId === conv.visitorId ? "bg-blue-50" : ""
+                      }`}
                   >
                     <div className="flex items-start gap-3">
                       <div className="relative">
@@ -402,11 +410,10 @@ export default function LiveChatAdminPage() {
                         className={`flex ${msg.isFromVisitor ? "justify-start" : "justify-end"}`}
                       >
                         <div
-                          className={`max-w-[80%] rounded-lg p-3 ${
-                            msg.isFromVisitor
+                          className={`max-w-[80%] rounded-lg p-3 ${msg.isFromVisitor
                               ? "bg-gray-100 text-gray-900"
                               : "bg-[#6B2C40] text-white"
-                          }`}
+                            }`}
                         >
                           <div className="flex items-center gap-2 mb-1">
                             {msg.isFromVisitor ? (

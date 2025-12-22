@@ -18,6 +18,7 @@ export async function OPTIONS() {
 export async function GET() {
   try {
     const session = await getServerSession(authOptions);
+    console.log("[LiveChat] Session:", session?.user?.email, session?.user?.role);
 
     if (!session?.user || !["ADMIN", "INSTRUCTOR"].includes(session.user.role as string)) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401, headers: corsHeaders });
@@ -96,6 +97,7 @@ export async function GET() {
       }))
       .sort((a, b) => b.lastMessageAt.getTime() - a.lastMessageAt.getTime());
 
+    console.log(`[LiveChat] Returning ${conversations.length} conversations`);
     return NextResponse.json({ conversations }, { headers: corsHeaders });
   } catch (error) {
     console.error("Failed to fetch live chat:", error);
