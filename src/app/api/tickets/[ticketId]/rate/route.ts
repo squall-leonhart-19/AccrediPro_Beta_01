@@ -3,10 +3,13 @@ import { prisma } from "@/lib/prisma";
 
 export async function POST(
     request: NextRequest,
-    { params }: { params: { ticketNumber: string } }
+    { params }: { params: Promise<{ ticketId: string }> }
 ) {
     try {
-        const ticketNumber = parseInt(params.ticketNumber);
+        const { ticketId } = await params;
+        // In this specific sub-route, the "ticketId" path segment is actually containing the Ticket Number (integer)
+        // because the URL is constructed as /api/tickets/[ticketNumber]/rate
+        const ticketNumber = parseInt(ticketId);
 
         if (isNaN(ticketNumber)) {
             return NextResponse.json(
