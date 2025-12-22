@@ -22,42 +22,49 @@ const PURCHASE_PIXEL_ID = process.env.META_PURCHASE_PIXEL_ID || "128791534906782
 const PURCHASE_ACCESS_TOKEN = process.env.META_PURCHASE_ACCESS_TOKEN || "EAAHMlaRKtUoBQBe0ZAFZBQPlRv3xujHeDw0y8kGmRewZA9jaqkbnZA5mJxndHZCNmalSrGmr9DlTbNewOdu4INw4xRRZCE4vC0mSvnWsV17sIvklD9X4PbttSgp2lVIOZBQxG9Uq8UVljCsqZA1LSqxlgjDQ1qIN6PctDh3M5LmJBKkqQa0FDQAIoBN1AAIVqwZDZD";
 
 // Product mappings
+// FIXED: Map to ACTUAL database slugs (functional-medicine-certification, not fm-certification)
 const PRODUCT_COURSE_MAP: Record<string, string> = {
     // FM Mini Diploma ($27)
-    "fm-mini-diploma": "fm-mini-diploma",
-    "fm_mini_diploma": "fm-mini-diploma",
-    "mini diploma": "fm-mini-diploma",
-    "mini-diploma": "fm-mini-diploma",
+    "fm-mini-diploma": "integrative-health-functional-medicine-mini-diploma",
+    "fm_mini_diploma": "integrative-health-functional-medicine-mini-diploma",
+    "mini diploma": "integrative-health-functional-medicine-mini-diploma",
+    "mini-diploma": "integrative-health-functional-medicine-mini-diploma",
+    "r.o.o.t.s": "integrative-health-functional-medicine-mini-diploma",
+    "roots": "integrative-health-functional-medicine-mini-diploma",
 
-    // FM Certification ($197)
-    "fm-certification": "fm-certification",
-    "fm_certification": "fm-certification",
-    "certification": "fm-certification",
-    "fm cert": "fm-certification",
+    // FM Certification ($197) - THE MAIN PRODUCT
+    "fm-certification": "functional-medicine-certification",
+    "fm_certification": "functional-medicine-certification",
+    "certification": "functional-medicine-certification",
+    "fm cert": "functional-medicine-certification",
+    "functional medicine": "functional-medicine-certification",
+    "practitioner": "functional-medicine-certification",
 
     // Pro Accelerator ($397)
     "fm-pro-accelerator": "fm-pro-accelerator",
     "pro accelerator": "fm-pro-accelerator",
     "accelerator": "fm-pro-accelerator",
+    "pro-accelerator": "fm-pro-accelerator",
 
-    // Client Guarantee ($297)
-    "fm-client-guarantee": "fm-client-guarantee",
-    "client guarantee": "fm-client-guarantee",
-    "10-client": "fm-client-guarantee",
+    // Client Guarantee ($497)
+    "fm-client-guarantee": "fm-10-client-guarantee",
+    "client guarantee": "fm-10-client-guarantee",
+    "10-client": "fm-10-client-guarantee",
+    "10 client": "fm-10-client-guarantee",
 };
 
 const PRODUCT_PRICES: Record<string, number> = {
-    "fm-mini-diploma": 27,
-    "fm-certification": 197,
+    "integrative-health-functional-medicine-mini-diploma": 27,
+    "functional-medicine-certification": 197,
     "fm-pro-accelerator": 397,
-    "fm-client-guarantee": 297,
+    "fm-10-client-guarantee": 497,
 };
 
 const PRODUCT_NAMES: Record<string, string> = {
-    "fm-mini-diploma": "FM Mini Diploma",
-    "fm-certification": "FM Certification",
+    "integrative-health-functional-medicine-mini-diploma": "R.O.O.T.S. Method Mini Diploma",
+    "functional-medicine-certification": "Certified FM Practitioner",
     "fm-pro-accelerator": "FM Pro Accelerator",
-    "fm-client-guarantee": "FM 10-Client Guarantee",
+    "fm-10-client-guarantee": "10-Client Guarantee Mentorship",
 };
 
 // Hash PII for Meta
@@ -158,12 +165,14 @@ function getCourseSlug(productName: string): string {
     // Check direct mappings first
     for (const [key, slug] of Object.entries(PRODUCT_COURSE_MAP)) {
         if (lowerName.includes(key)) {
+            console.log(`[CF Purchase] Product "${productName}" matched to course slug: ${slug}`);
             return slug;
         }
     }
 
-    // Default to mini diploma
-    return "fm-mini-diploma";
+    // Default to the main certification
+    console.log(`[CF Purchase] Product "${productName}" NOT MATCHED - defaulting to functional-medicine-certification`);
+    return "functional-medicine-certification";
 }
 
 // Generate random password
@@ -281,9 +290,38 @@ export async function POST(request: NextRequest) {
         // =====================================================
 
         const courseSlug = getCourseSlug(productName);
-        const course = await prisma.course.findFirst({
+
+        // Try to find course with flexible slug matching
+        let course = await prisma.course.findFirst({
             where: { slug: courseSlug },
         });
+
+        // If not found, try alternative slugs (handle legacy mismatches)
+        if (!course) {
+            console.log(`[CF Purchase] Course not found with slug "${courseSlug}", trying alternatives...`);
+
+            // Try common variations
+            const alternativeSlugs = [
+                courseSlug.replace('fm-', ''),
+                courseSlug.replace('fm-', 'functional-medicine-'),
+                'functional-medicine-certification',
+                'functional-medicine-complete-certification',
+            ];
+
+            for (const altSlug of alternativeSlugs) {
+                course = await prisma.course.findFirst({
+                    where: { slug: altSlug },
+                });
+                if (course) {
+                    console.log(`[CF Purchase] Found course with alternative slug: ${altSlug}`);
+                    break;
+                }
+            }
+        }
+
+        if (!course) {
+            console.error(`[CF Purchase] ⚠️ CRITICAL: Course not found for ANY slug variation. Product: "${productName}"`);
+        }
 
         let enrollmentId: string | null = null;
 
@@ -333,15 +371,29 @@ export async function POST(request: NextRequest) {
         }
 
         // =====================================================
-        // 3. SEND WELCOME EMAIL (only for new users)
+        // 3. SEND WELCOME EMAIL (ALWAYS - returning users may have forgotten credentials)
         // =====================================================
 
-        if (isNewUser) {
+        try {
+            console.log(`[CF Purchase] Sending welcome email to ${normalizedEmail}...`);
+            const emailResult = await sendWelcomeEmail(normalizedEmail, firstName || "Student");
+            if (emailResult.success) {
+                console.log(`[CF Purchase] ✅ Welcome email sent successfully`);
+            } else {
+                console.error(`[CF Purchase] ❌ Welcome email failed:`, emailResult.error);
+            }
+        } catch (emailError) {
+            console.error("[CF Purchase] ❌ Exception sending welcome email:", emailError);
+        }
+
+        // Also send enrollment confirmation if we enrolled them
+        if (enrollmentId && course) {
             try {
-                await sendWelcomeEmail(normalizedEmail, firstName || "Student");
-                console.log(`[CF Purchase] ✅ Welcome email sent`);
-            } catch (emailError) {
-                console.error("[CF Purchase] Failed to send welcome email:", emailError);
+                const { sendCourseEnrollmentEmail } = await import("@/lib/email");
+                await sendCourseEnrollmentEmail(normalizedEmail, firstName || "Student", course.title, course.slug);
+                console.log(`[CF Purchase] ✅ Enrollment confirmation email sent`);
+            } catch (enrollError) {
+                console.error("[CF Purchase] Failed to send enrollment email:", enrollError);
             }
         }
 

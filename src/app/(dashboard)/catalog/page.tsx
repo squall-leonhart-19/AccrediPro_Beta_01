@@ -7,8 +7,22 @@ async function getCourses() {
   return prisma.course.findMany({
     where: {
       isPublished: true,
-      // Hide free mini diploma courses from catalog (they have their own page)
-      NOT: { certificateType: "MINI_DIPLOMA" },
+      // Only show our main product offerings
+      OR: [
+        // The Certified Practitioner ($197)
+        { slug: { contains: 'functional-medicine-certification' } },
+        { slug: { contains: 'fm-certification' } },
+        // Pro Accelerator ($397)
+        { slug: { contains: 'pro-accelerator' } },
+        // 10-Client Guarantee ($497)
+        { slug: { contains: 'client-guarantee' } },
+        // Advanced Bundle (if created)
+        { slug: { contains: 'advanced-master-bundle' } },
+        // Featured courses as fallback
+        { isFeatured: true },
+      ],
+      // Still exclude mini diplomas
+      NOT: { certificateType: 'MINI_DIPLOMA' },
     },
     include: {
       category: true,
@@ -32,7 +46,7 @@ async function getCourses() {
       },
       analytics: true,
     },
-    orderBy: [{ isFeatured: "desc" }, { createdAt: "asc" }],
+    orderBy: [{ isFeatured: 'desc' }, { createdAt: 'asc' }],
   });
 }
 
@@ -116,11 +130,11 @@ export default async function CoursesPage() {
       : null,
     coach: course.coach
       ? {
-          id: course.coach.id,
-          name: `${course.coach.firstName} ${course.coach.lastName}`,
-          avatar: course.coach.avatar,
-          title: course.coach.bio,
-        }
+        id: course.coach.id,
+        name: `${course.coach.firstName} ${course.coach.lastName}`,
+        avatar: course.coach.avatar,
+        title: course.coach.bio,
+      }
       : null,
     modules: course.modules.map((m) => ({
       lessons: m.lessons.map((l) => ({ id: l.id })),
@@ -128,9 +142,9 @@ export default async function CoursesPage() {
     _count: course._count,
     analytics: course.analytics
       ? {
-          totalEnrolled: course.analytics.totalEnrolled,
-          avgRating: Number(course.analytics.avgRating),
-        }
+        totalEnrolled: course.analytics.totalEnrolled,
+        avgRating: Number(course.analytics.avgRating),
+      }
       : null,
   }));
 
