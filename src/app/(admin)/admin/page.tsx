@@ -40,14 +40,11 @@ async function getAdminStats() {
   const lastMonth = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000);
   const twoWeeksAgo = new Date(now.getTime() - 14 * 24 * 60 * 60 * 1000);
 
-  // Base filter for real users (excludes fake profiles and null emails)
-  // Using OR to handle case where isFakeProfile column might not exist yet on some deployments
+  // Base filter for real users (excludes fake profiles)
+  // isFakeProfile is non-nullable with default false, so we just check for false
   const realUserFilter = {
     email: { not: null },
-    OR: [
-      { isFakeProfile: false },
-      { isFakeProfile: null }
-    ]
+    isFakeProfile: false
   };
 
   const [
