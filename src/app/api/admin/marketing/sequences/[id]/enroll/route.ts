@@ -117,7 +117,7 @@ export async function POST(
             .replace(/\{\{GRADUATE_TRAINING_URL\}\}/g, `${baseUrl}/training`)
             .replace(/\{\{CERTIFICATION_URL\}\}/g, `${baseUrl}/courses/functional-medicine-certification`)
             .replace(/\{\{DASHBOARD_URL\}\}/g, `${baseUrl}/dashboard`)
-            .replace(/\{\{ROADMAP_URL\}\}/g, `${baseUrl}/roadmap`)
+            .replace(/\{\{ROADMAP_URL\}\}/g, `${baseUrl}/my-personal-roadmap-by-coach-sarah`)
             // Convert markdown bold/italic to HTML
             .replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>')
             .replace(/\*([^*]+)\*/g, '<em>$1</em>')
@@ -247,7 +247,7 @@ export async function POST(
           .replace(/\{\{GRADUATE_TRAINING_URL\}\}/g, `${baseUrl}/training`)
           .replace(/\{\{CERTIFICATION_URL\}\}/g, `${baseUrl}/courses/functional-medicine-certification`)
           .replace(/\{\{DASHBOARD_URL\}\}/g, `${baseUrl}/dashboard`)
-          .replace(/\{\{ROADMAP_URL\}\}/g, `${baseUrl}/roadmap`)
+          .replace(/\{\{ROADMAP_URL\}\}/g, `${baseUrl}/my-personal-roadmap-by-coach-sarah`)
           // Convert markdown bold/italic to HTML
           .replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>')
           .replace(/\*([^*]+)\*/g, '<em>$1</em>')

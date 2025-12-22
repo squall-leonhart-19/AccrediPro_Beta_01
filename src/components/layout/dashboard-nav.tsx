@@ -42,7 +42,7 @@ const fullNavItems = [
   { href: "/start-here", label: "Start Here", icon: GraduationCap, tourId: "start-here" },
   { href: "/my-courses", label: "My Courses", icon: BookOpen, tourId: "my-courses" },
   { href: "/catalog", label: "Catalog", icon: Library, tourId: "catalog" },
-  { href: "/roadmap", label: "Your Roadmap", icon: Map, tourId: "roadmap" },
+  { href: "/my-personal-roadmap-by-coach-sarah", label: "Your Roadmap", icon: Map, tourId: "roadmap" },
   { href: "/career-center", label: "Career Center", icon: Briefcase, tourId: "career-center" },
   { href: "/programs", label: "Client Program Library", icon: Package, tourId: "programs" },
   { href: "/community", label: "Community", icon: Users, tourId: "community" },

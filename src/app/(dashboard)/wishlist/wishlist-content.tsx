@@ -212,7 +212,7 @@ export function WishlistContent({ wishlist: initialWishlist, enrollments }: Wish
                                         Browse All Courses
                                     </Button>
                                 </Link>
-                                <Link href="/roadmap">
+                                <Link href="/my-personal-roadmap-by-coach-sarah">
                                     <Button variant="outline" className="border-burgundy-200 text-burgundy-600">
                                         <MapIcon className="w-4 h-4 mr-2" />
                                         View Your Roadmap
@@ -446,7 +446,7 @@ export function WishlistContent({ wishlist: initialWishlist, enrollments }: Wish
                                     </div>
                                 </div>
                                 <div className="flex gap-3">
-                                    <Link href="/roadmap">
+                                    <Link href="/my-personal-roadmap-by-coach-sarah">
                                         <Button className="bg-burgundy-600 hover:bg-burgundy-700">
                                             <MapIcon className="w-4 h-4 mr-2" />
                                             My Roadmap

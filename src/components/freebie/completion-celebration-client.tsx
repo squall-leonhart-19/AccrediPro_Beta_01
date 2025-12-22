@@ -164,7 +164,7 @@ export function CompletionCelebrationClient({ user, fullCertification }: Complet
                         </div>
                         <h3 className="font-bold text-gray-900 mb-1">Roadmap Updated</h3>
                         <p className="text-sm text-gray-500 mb-4">Your next milestone is ready</p>
-                        <Link href="/roadmap">
+                        <Link href="/my-personal-roadmap-by-coach-sarah">
                             <Button size="sm" variant="outline" className="w-full">
                                 View Roadmap <ArrowRight className="w-4 h-4 ml-2" />
                             </Button>

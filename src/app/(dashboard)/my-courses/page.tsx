@@ -183,7 +183,7 @@ export default async function MyCoursesPage() {
   // Dynamic next steps based on user progress
   const nextSteps = [
     ...(inProgressCourses[0] ? [{ label: `Continue ${inProgressCourses[0].course.title.substring(0, 25)}...`, link: `/courses/${inProgressCourses[0].course.slug}`, icon: Play, priority: true }] : []),
-    { label: "View Your Roadmap", link: "/roadmap", icon: MapPin },
+    { label: "View Your Roadmap", link: "/my-personal-roadmap-by-coach-sarah", icon: MapPin },
     { label: "Join the Community", link: "/community", icon: Users },
     { label: "Chat with Your Mentor", link: "/messages", icon: MessageSquare },
   ];
@@ -254,7 +254,7 @@ export default async function MyCoursesPage() {
                   </Button>
                 </Link>
               )}
-              <Link href="/roadmap">
+              <Link href="/my-personal-roadmap-by-coach-sarah">
                 <Button size="sm" variant="outline" className="border-white/30 bg-white/10 text-burgundy-900 hover:bg-white/20 h-9">
                   <MapPin className="w-4 h-4 mr-1.5" />
                   Roadmap
@@ -318,7 +318,7 @@ export default async function MyCoursesPage() {
                 </div>
               )}
 
-              <Link href="/roadmap" className="block">
+              <Link href="/my-personal-roadmap-by-coach-sarah" className="block">
                 <Button variant="outline" size="sm" className="w-full">
                   <MapPin className="w-4 h-4 mr-2" /> View Roadmap
                 </Button>
@@ -710,7 +710,7 @@ export default async function MyCoursesPage() {
           <Card className="border-0 shadow-lg bg-gradient-to-r from-burgundy-600 to-burgundy-700 text-white">
             <CardContent className="p-5">
               <div className="flex flex-wrap items-center justify-center gap-3">
-                <Link href="/roadmap">
+                <Link href="/my-personal-roadmap-by-coach-sarah">
                   <Button variant="secondary" size="sm" className="bg-white/10 text-white hover:bg-white/20 border-0">
                     <MapPin className="w-4 h-4 mr-2" /> View Roadmap
                   </Button>

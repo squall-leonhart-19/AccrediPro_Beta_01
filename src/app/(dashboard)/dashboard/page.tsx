@@ -351,7 +351,7 @@ export default async function DashboardPage() {
                     <p className="text-gray-500 text-sm mb-4">
                       Begin your journey to certification with AccrediPro.
                     </p>
-                    <Link href="/roadmap">
+                    <Link href="/my-personal-roadmap-by-coach-sarah">
                       <Button size="sm" className="w-full bg-burgundy-600 hover:bg-burgundy-700 font-semibold">
                         View My Roadmap
                         <ArrowRight className="w-4 h-4 ml-2" />
@@ -366,7 +366,7 @@ export default async function DashboardPage() {
                     <p className="text-gray-500 text-sm mb-4">
                       Continue advancing your AccrediPro career.
                     </p>
-                    <Link href="/roadmap">
+                    <Link href="/my-personal-roadmap-by-coach-sarah">
                       <Button size="sm" className="w-full bg-burgundy-600 hover:bg-burgundy-700 font-semibold">
                         View My Roadmap
                         <ArrowRight className="w-4 h-4 ml-2" />
@@ -530,7 +530,7 @@ export default async function DashboardPage() {
                   <p className="text-gray-500 mb-6 max-w-md mx-auto">
                     View your personalized roadmap and begin your journey to certification.
                   </p>
-                  <Link href="/roadmap">
+                  <Link href="/my-personal-roadmap-by-coach-sarah">
                     <Button className="bg-burgundy-600 hover:bg-burgundy-700">
                       View My Roadmap
                       <ArrowRight className="w-4 h-4 ml-2" />
@@ -678,7 +678,7 @@ export default async function DashboardPage() {
                 </div>
 
                 {hasWatchedTraining && (
-                  <Link href="/roadmap" className="block mt-4">
+                  <Link href="/my-personal-roadmap-by-coach-sarah" className="block mt-4">
                     <Button variant="outline" size="sm" className="w-full border-burgundy-200 text-burgundy-700 hover:bg-burgundy-50">
                       <Map className="w-4 h-4 mr-2" />
                       View Full Roadmap
@@ -746,7 +746,7 @@ export default async function DashboardPage() {
                 <div className="space-y-2">
                   {hasWatchedTraining && (
                     <>
-                      <Link href="/roadmap" className="block">
+                      <Link href="/my-personal-roadmap-by-coach-sarah" className="block">
                         <div className="flex items-center gap-3 p-2.5 rounded-lg hover:bg-burgundy-50 transition-colors">
                           <Map className="w-4 h-4 text-burgundy-600" />
                           <span className="text-sm text-gray-700">My Roadmap</span>

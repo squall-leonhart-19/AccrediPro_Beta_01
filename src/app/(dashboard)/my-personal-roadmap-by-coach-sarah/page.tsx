@@ -2,13 +2,13 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { redirect } from "next/navigation";
 import prisma from "@/lib/prisma";
-import { RoadmapContent } from "./roadmap-content";
-import { getSpecializationTrack, FUNCTIONAL_MEDICINE_TRACK, type SpecializationTrack } from "@/lib/specialization-tracks";
+import { PersonalRoadmap } from "./personal-roadmap";
+import { getSpecializationTrack } from "@/lib/specialization-tracks";
 
 // Force dynamic rendering - no caching
 export const dynamic = "force-dynamic";
 
-// Define the 4-step career ladder
+// Career Steps Configuration
 const CAREER_STEPS = [
     {
         step: 1,
@@ -17,8 +17,7 @@ const CAREER_STEPS = [
         subtitle: "Become Legitimate",
         description: "Get certified with clinical knowledge, ethical scope, and practitioner tools.",
         incomeVision: "$3K–$5K/month",
-        color: "emerald",
-        courseSlugs: ["functional-medicine-health-coach"], // Main Step 1 course
+        courseSlugs: ["functional-medicine-health-coach", "functional-medicine-complete-certification"],
     },
     {
         step: 2,
@@ -27,8 +26,7 @@ const CAREER_STEPS = [
         subtitle: "Work With Real Clients",
         description: "Build your practice with client acquisition, branding, and income systems.",
         incomeVision: "$5K–$10K/month",
-        color: "amber",
-        courseSlugs: ["practice-income-path"], // Step 2 course
+        courseSlugs: ["practice-income-path", "fm-pro-accelerator"],
     },
     {
         step: 3,
@@ -37,8 +35,7 @@ const CAREER_STEPS = [
         subtitle: "Gain Authority",
         description: "Handle complex cases, charge premium rates, become an industry expert.",
         incomeVision: "$10K–$30K/month",
-        color: "blue",
-        courseSlugs: ["advanced-master-practitioner"], // Step 3 course
+        courseSlugs: ["advanced-master-practitioner"],
     },
     {
         step: 4,
@@ -47,25 +44,12 @@ const CAREER_STEPS = [
         subtitle: "Build Leverage",
         description: "Scale beyond 1:1 with teams, group programs, and passive income.",
         incomeVision: "$30K–$50K/month",
-        color: "burgundy",
-        courseSlugs: ["business-acceleration"], // Step 4 / DFY
+        courseSlugs: ["business-acceleration"],
     },
 ];
 
-// Roadmap State Types
-type RoadmapState =
-    | "exploration"           // Has mini diploma / freebie only
-    | "step1_in_progress"     // Purchased Step 1, not completed
-    | "step1_completed"       // Step 1 completed, ready for Step 2
-    | "step2_in_progress"     // Working on practice building
-    | "step2_completed"       // Ready for Advanced
-    | "step3_available"       // Can purchase Advanced + Master
-    | "step3_in_progress"     // Working on Advanced
-    | "step4_available"       // Ready for Business Scaler
-    | "step4_active";         // In DFY / Mentorship
-
 interface RoadmapData {
-    state: RoadmapState;
+    state: string;
     currentStep: number;
     currentStepProgress: number;
     currentCourse: {
@@ -78,24 +62,30 @@ interface RoadmapData {
     completedSteps: number[];
     enrolledSteps: number[];
     totalProgress: number;
-    specialization: SpecializationTrack;
+    userName: string;
+    userEmail: string;
+    memberSince: string;
 }
 
 async function getRoadmapData(userId: string): Promise<RoadmapData> {
-    // Get user with mini diploma status
+    // Get user info
     const user = await prisma.user.findUnique({
         where: { id: userId },
-        select: { miniDiplomaCompletedAt: true },
+        select: {
+            name: true,
+            firstName: true,
+            email: true,
+            createdAt: true,
+            miniDiplomaCompletedAt: true,
+        },
     });
-    const miniDiplomaCompleted = !!user?.miniDiplomaCompletedAt;
 
-    // Get user tags to determine specialization
-    const userTags = await prisma.userTag.findMany({
-        where: { userId },
-        select: { tag: true },
-    });
-    const tagStrings = userTags.map((t) => t.tag);
-    const specialization = getSpecializationTrack(tagStrings);
+    const miniDiplomaCompleted = !!user?.miniDiplomaCompletedAt;
+    const userName = user?.firstName || user?.name?.split(" ")[0] || "Practitioner";
+    const userEmail = user?.email || "";
+    const memberSince = user?.createdAt
+        ? new Date(user.createdAt).toLocaleDateString("en-US", { month: "long", year: "numeric" })
+        : "";
 
     // Get all enrollments with progress
     const enrollments = await prisma.enrollment.findMany({
@@ -152,7 +142,6 @@ async function getRoadmapData(userId: string): Promise<RoadmapData> {
             if (enrollment.status === "COMPLETED") {
                 completedSteps.push(step.step);
             } else if (!currentStepData) {
-                // First non-completed enrolled step is current
                 currentStepData = step;
                 currentEnrollment = enrollment;
             }
@@ -173,7 +162,6 @@ async function getRoadmapData(userId: string): Promise<RoadmapData> {
             const modCompletedLessons = mod.lessons.filter((l) => completedLessonIds.has(l.id)).length;
             completedLessons += modCompletedLessons;
 
-            // Find next incomplete module
             if (!nextModuleTitle && modCompletedLessons < mod.lessons.length) {
                 nextModuleTitle = mod.title;
             }
@@ -182,8 +170,8 @@ async function getRoadmapData(userId: string): Promise<RoadmapData> {
         currentStepProgress = totalLessons > 0 ? Math.round((completedLessons / totalLessons) * 100) : 0;
     }
 
-    // Determine roadmap state
-    let state: RoadmapState = "exploration";
+    // Determine state
+    let state = "exploration";
     let currentStep = 0;
 
     if (completedSteps.includes(4)) {
@@ -211,18 +199,12 @@ async function getRoadmapData(userId: string): Promise<RoadmapData> {
         state = "step1_in_progress";
         currentStep = 1;
     } else if (miniDiplomaCompleted) {
-        // Mini diploma completed - ready for Step 1
-        state = "step1_completed"; // This will show Step 1 as the next step
-        currentStep = 0; // Mini diploma is step 0, but completed
-        completedSteps.push(0); // Add mini diploma to completed steps
-    } else if (enrollments.length > 0) {
-        // Has some enrollment but not in main steps (mini diploma / freebie in progress)
         state = "exploration";
         currentStep = 0;
+        completedSteps.push(0);
     }
 
-    // Calculate total progress across all steps
-    const totalProgress = Math.round((completedSteps.length / 4) * 100);
+    const totalProgress = Math.round((completedSteps.filter(s => s > 0).length / 4) * 100);
 
     return {
         state,
@@ -238,11 +220,13 @@ async function getRoadmapData(userId: string): Promise<RoadmapData> {
         completedSteps,
         enrolledSteps,
         totalProgress,
-        specialization,
+        userName,
+        userEmail,
+        memberSince,
     };
 }
 
-export default async function RoadmapPage() {
+export default async function MyPersonalRoadmapPage() {
     const session = await getServerSession(authOptions);
     if (!session?.user?.id) {
         redirect("/login");
@@ -250,24 +234,19 @@ export default async function RoadmapPage() {
 
     const roadmapData = await getRoadmapData(session.user.id);
 
-    // Use specialization-specific steps instead of generic CAREER_STEPS
-    const specializationSteps = roadmapData.specialization.steps.map((step, index) => ({
-        step: step.step,
-        id: `step-${step.step}`,
-        title: step.title,
-        subtitle: step.subtitle,
-        description: step.description,
-        incomeVision: step.incomeVision,
-        color: ["emerald", "amber", "blue", "burgundy"][index] || "emerald",
-        courseSlugs: step.courseSlugs,
-    }));
+    // Get user tags for specialization
+    const userTags = await prisma.userTag.findMany({
+        where: { userId: session.user.id },
+        select: { tag: true },
+    });
+    const tagStrings = userTags.map((t) => t.tag);
+    const specialization = getSpecializationTrack(tagStrings);
 
     return (
-        <RoadmapContent
+        <PersonalRoadmap
             data={roadmapData}
-            steps={specializationSteps}
-            userName={session.user.name || session.user.firstName || "Practitioner"}
-            specialization={roadmapData.specialization}
+            steps={CAREER_STEPS}
+            specialization={specialization}
         />
     );
 }

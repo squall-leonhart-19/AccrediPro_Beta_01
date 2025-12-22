@@ -393,7 +393,7 @@ export default async function CareerCenterPage() {
                                     4.9 Rating
                                 </Badge>
                             </div>
-                            <Link href="/roadmap">
+                            <Link href="/my-personal-roadmap-by-coach-sarah">
                                 <Button size="sm" className="bg-gold-400 text-burgundy-900 hover:bg-gold-300 font-semibold h-9">
                                     <Map className="w-4 h-4 mr-1.5" />
                                     My Roadmap
@@ -491,7 +491,7 @@ export default async function CareerCenterPage() {
 
                     {/* CTA Section */}
                     <div className="mt-8 flex flex-col sm:flex-row items-center justify-center gap-4">
-                        <Link href="/roadmap">
+                        <Link href="/my-personal-roadmap-by-coach-sarah">
                             <Button className="bg-burgundy-600 hover:bg-burgundy-700 shadow-md">
                                 <Map className="w-4 h-4 mr-2" />
                                 View Your Personalized Roadmap
@@ -774,7 +774,7 @@ export default async function CareerCenterPage() {
                                     <ArrowRight className="w-4 h-4 ml-2" />
                                 </Button>
                             </Link>
-                            <Link href="/roadmap">
+                            <Link href="/my-personal-roadmap-by-coach-sarah">
                                 <Button size="lg" className="bg-white/20 border border-white/30 text-white hover:bg-white/30">
                                     <Map className="w-4 h-4 mr-2" />
                                     View My Roadmap

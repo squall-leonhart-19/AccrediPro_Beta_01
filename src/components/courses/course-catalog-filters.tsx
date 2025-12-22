@@ -614,7 +614,7 @@ export function CourseCatalogFilters({
                                 </Badge>
                             </div>
                             {/* CTA */}
-                            <Link href="/roadmap">
+                            <Link href="/my-personal-roadmap-by-coach-sarah">
                                 <Button size="sm" className="bg-gold-400 text-burgundy-900 hover:bg-gold-300 font-semibold h-9">
                                     <Target className="w-4 h-4 mr-1.5" />
                                     View Roadmap
@@ -1195,7 +1195,7 @@ export function CourseCatalogFilters({
                                 </p>
                             </div>
                             <div className="flex flex-col sm:flex-row gap-3">
-                                <Link href="/roadmap">
+                                <Link href="/my-personal-roadmap-by-coach-sarah">
                                     <Button size="lg" className="bg-gold-400 text-burgundy-900 hover:bg-gold-300 font-semibold shadow-lg">
                                         <Target className="w-5 h-5 mr-2" />
                                         See My Roadmap

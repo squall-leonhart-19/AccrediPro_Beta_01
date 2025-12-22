@@ -71,7 +71,7 @@ const walkthroughSteps: WalkthroughStep[] = [
     description:
       "This is your personalized career roadmap. It shows what you've completed, what you're ready for next, and your long-term certification journey.",
     icon: Map,
-    highlight: "/roadmap",
+    highlight: "/my-personal-roadmap-by-coach-sarah",
     color: "from-blue-500 to-blue-700",
   },
   {

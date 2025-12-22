@@ -568,7 +568,7 @@ export default async function CertificatesPage() {
                       <p className="text-xs text-burgundy-200 mb-3">
                         Unlock the full {categoryLabels[user.miniDiplomaCategory]} certification to practice professionally with clients and earn 9x accredited credentials.
                       </p>
-                      <Link href="/roadmap">
+                      <Link href="/my-personal-roadmap-by-coach-sarah">
                         <Button size="sm" className="w-full bg-gold-400 hover:bg-gold-500 text-burgundy-900 font-bold">
                           Unlock Full Certification & Become a Practitioner
                           <ArrowRight className="w-4 h-4 ml-2" />
@@ -904,7 +904,7 @@ export default async function CertificatesPage() {
               <p className="text-burgundy-200">View your personalized career path and unlock your next certification</p>
             </div>
             <div className="flex gap-3">
-              <Link href="/roadmap">
+              <Link href="/my-personal-roadmap-by-coach-sarah">
                 <Button variant="secondary" className="bg-white text-burgundy-700 hover:bg-white/90">
                   <Target className="w-4 h-4 mr-2" />
                   View Career Path

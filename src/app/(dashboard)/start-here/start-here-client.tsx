@@ -221,7 +221,7 @@ export function StartHereClient({ user, userId, enrollments, tourComplete: initi
 
     const quickLinks = [
         { href: "/courses", label: "Browse Courses", icon: BookOpen, color: "burgundy", description: "Explore our certifications" },
-        { href: "/roadmap", label: "Your Roadmap", icon: Map, color: "blue", description: "See your learning path" },
+        { href: "/my-personal-roadmap-by-coach-sarah", label: "Your Roadmap", icon: Map, color: "blue", description: "See your learning path" },
         { href: "/messages", label: "Mentor Chat", icon: MessageSquare, color: "green", description: "Connect with your coach" },
         { href: "/community", label: "Community", icon: Heart, color: "pink", description: "Meet fellow students" },
     ];
@@ -415,7 +415,7 @@ export function StartHereClient({ user, userId, enrollments, tourComplete: initi
                                         </div>
 
                                         {/* What's Next CTA */}
-                                        <Link href="/roadmap">
+                                        <Link href="/my-personal-roadmap-by-coach-sarah">
                                             <div className="flex items-center gap-4 p-4 bg-gradient-to-r from-burgundy-50 to-purple-50 rounded-xl border border-burgundy-200 hover:border-burgundy-300 hover:shadow-md transition-all cursor-pointer group">
                                                 <div className="w-12 h-12 bg-burgundy-100 rounded-xl flex items-center justify-center group-hover:bg-burgundy-200 transition-colors">
                                                     <Map className="w-6 h-6 text-burgundy-600" />
