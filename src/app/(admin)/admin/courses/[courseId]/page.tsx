@@ -5,9 +5,9 @@ import { redirect } from "next/navigation";
 import { CourseEditor } from "@/components/admin/courses/course-editor";
 
 interface AdminCoursePageProps {
-    params: {
+    params: Promise<{
         courseId: string;
-    };
+    }>;
 }
 
 export default async function AdminCoursePage({ params }: AdminCoursePageProps) {
@@ -16,7 +16,7 @@ export default async function AdminCoursePage({ params }: AdminCoursePageProps) 
         redirect("/login");
     }
 
-    const { courseId } = params;
+    const { courseId } = await params;
 
     const [course, categories, offers] = await Promise.all([
         prisma.course.findUnique({
