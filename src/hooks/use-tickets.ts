@@ -62,8 +62,8 @@ export function useTickets(
             if (!res.ok) throw new Error("Failed to fetch tickets");
             return res.json();
         },
-        // Refresh every 30 seconds automatically
-        refetchInterval: 30000,
+        // Refresh every 5 seconds per user request
+        refetchInterval: 5000,
     });
 }
 
