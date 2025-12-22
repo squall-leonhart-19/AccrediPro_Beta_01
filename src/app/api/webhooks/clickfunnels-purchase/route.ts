@@ -72,16 +72,39 @@ async function sendPurchaseToMeta(params: {
     currency?: string;
     contentName: string;
     firstName?: string;
+    lastName?: string;
+    phone?: string;
+    city?: string;
+    state?: string;
+    zip?: string;
+    country?: string;
+    clientIp?: string;
+    userAgent?: string;
     externalId?: string;
 }): Promise<{ success: boolean; eventId?: string; error?: string }> {
-    const { email, value, currency = "USD", contentName, firstName, externalId } = params;
+    const {
+        email, value, currency = "USD", contentName, firstName, lastName,
+        phone, city, state, zip, country, clientIp, userAgent, externalId
+    } = params;
 
     const eventId = crypto.randomUUID();
 
     const userData: Record<string, unknown> = {
         em: [hashData(email)],
     };
+
+    // Add all available PII
     if (firstName) userData.fn = [hashData(firstName)];
+    if (lastName) userData.ln = [hashData(lastName)];
+    if (phone) userData.ph = [hashData(phone.replace(/\D/g, ""))];
+    if (city) userData.ct = [hashData(city)];
+    if (state) userData.st = [hashData(state)];
+    if (zip) userData.zp = [hashData(zip)];
+    if (country) userData.country = [hashData(country)];
+
+    // Tech info (not hashed)
+    if (clientIp) userData.client_ip_address = clientIp;
+    if (userAgent) userData.client_user_agent = userAgent;
     if (externalId) userData.external_id = [hashData(externalId)];
 
     const eventData = {
@@ -115,7 +138,7 @@ async function sendPurchaseToMeta(params: {
             return { success: false, eventId, error: result.error?.message };
         }
 
-        console.log(`[Meta CAPI] ✅ Purchase sent: ${contentName} = $${value}`, { event_id: eventId });
+        console.log(`[Meta CAPI] ✅ Purchase sent: ${contentName} = $${value}, EV_ID: ${eventId}`);
         return { success: true, eventId };
     } catch (error) {
         console.error("[Meta CAPI] Exception:", error);
@@ -175,13 +198,26 @@ export async function POST(request: NextRequest) {
         const productName = productsVariant.name || originalProduct.name || firstLineItem.name || body.product_name || "FM Mini Diploma";
         const productAmount = parseFloat(firstLineItem.amount || firstLineItem.price || productsVariant.amount || body.amount) || 27;
 
+        // Extract Address Info (Try to find in contact addresses)
+        const addresses = contact.addresses || [];
+        const primaryAddress = addresses[0] || {};
+        const city = primaryAddress.city || data.city || "";
+        const state = primaryAddress.region || primaryAddress.state || data.state || "";
+        const zip = primaryAddress.postal_code || primaryAddress.zip || data.zip || "";
+        const country = primaryAddress.country_code || primaryAddress.country || data.country || "";
+
+        // Extract Tech Info
+        const clientIp = contact.ip_address || data.ip_address || "";
+        // CF doesn't always send User Agent directly, but check
+        const userAgent = data.user_agent || "";
+
         if (!email) {
             console.error("[CF Purchase] No email in payload");
             return NextResponse.json({ error: "No email provided" }, { status: 400 });
         }
 
         const normalizedEmail = email.toLowerCase().trim();
-        console.log(`[CF Purchase] Processing: ${normalizedEmail}, product: ${productName}, amount: $${productAmount}`);
+        console.log(`[CF Purchase] Processing: ${normalizedEmail}, Name: ${firstName} ${lastName}`);
 
         // =====================================================
         // 1. CREATE OR FIND USER
@@ -310,7 +346,15 @@ export async function POST(request: NextRequest) {
             value: purchaseValue,
             contentName,
             firstName: user.firstName || firstName,
+            lastName: user.lastName || lastName,
+            phone: user.phone || phone,
             externalId: user.id,
+            city,
+            state,
+            zip,
+            country,
+            clientIp,
+            userAgent
         });
 
         // =====================================================

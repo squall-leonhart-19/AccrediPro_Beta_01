@@ -35,6 +35,11 @@ interface SendEventParams {
     value?: number;
     currency?: string;
     contentName?: string;
+    // New Address Fields
+    city?: string;
+    state?: string;
+    zip?: string;
+    country?: string;
 }
 
 // Hash PII data as required by Meta
@@ -81,39 +86,32 @@ export async function sendMetaEvent(params: SendEventParams): Promise<{
         value,
         currency,
         contentName,
+        city,
+        state,
+        zip,
+        country
     } = params;
 
     try {
         // Build user_data object with hashed PII
         const userData: Record<string, unknown> = {};
 
-        if (email) {
-            userData.em = [hashData(email)];
-        }
-        if (phone) {
-            userData.ph = [hashData(phone.replace(/\D/g, ""))];
-        }
-        if (firstName) {
-            userData.fn = [hashData(firstName)];
-        }
-        if (lastName) {
-            userData.ln = [hashData(lastName)];
-        }
-        if (fbc) {
-            userData.fbc = fbc;
-        }
-        if (fbp) {
-            userData.fbp = fbp;
-        }
-        if (clientIp) {
-            userData.client_ip_address = clientIp;
-        }
-        if (userAgent) {
-            userData.client_user_agent = userAgent;
-        }
-        if (externalId) {
-            userData.external_id = [hashData(externalId)];
-        }
+        if (email) userData.em = [hashData(email)];
+        if (phone) userData.ph = [hashData(phone.replace(/\D/g, ""))];
+        if (firstName) userData.fn = [hashData(firstName)];
+        if (lastName) userData.ln = [hashData(lastName)];
+
+        // Address Info
+        if (city) userData.ct = [hashData(city)];
+        if (state) userData.st = [hashData(state)];
+        if (zip) userData.zp = [hashData(zip)];
+        if (country) userData.country = [hashData(country)]; // Meta uses 2-letter code ISO 3166-1 alpha-2
+
+        if (fbc) userData.fbc = fbc;
+        if (fbp) userData.fbp = fbp;
+        if (clientIp) userData.client_ip_address = clientIp;
+        if (userAgent) userData.client_user_agent = userAgent;
+        if (externalId) userData.external_id = [hashData(externalId)];
 
         const eventId = generateEventId();
 
