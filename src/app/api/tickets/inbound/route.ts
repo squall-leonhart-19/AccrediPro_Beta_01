@@ -1,12 +1,15 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
+import { Resend } from "resend";
+
+const resend = new Resend(process.env.RESEND_API_KEY);
 
 // Resend Inbound Webhook - receives email.received events
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
 
-    console.log("[INBOUND] Full webhook payload:", JSON.stringify(body, null, 2));
+    console.log("[INBOUND] Webhook type:", body.type);
 
     // Check if this is a Resend webhook event
     if (body.type === "email.received") {
@@ -45,68 +48,50 @@ export async function POST(request: NextRequest) {
         return NextResponse.json({ success: false, reason: "Ticket not found" });
       }
 
-      // Fetch the full email content from Resend's receiving API
+      // Fetch the full email content using Resend SDK
       let emailContent = "";
 
       if (emailId) {
         try {
-          // Use the receiving emails endpoint
-          const emailResponse = await fetch(
-            `https://api.resend.com/emails/receiving/${emailId}`,
-            {
-              headers: {
-                Authorization: `Bearer ${process.env.RESEND_API_KEY}`,
-              },
-            }
-          );
+          console.log("[INBOUND] Fetching email content for:", emailId);
 
-          console.log("[INBOUND] Fetch response status:", emailResponse.status);
+          // Use Resend SDK to get the received email
+          const { data: emailData, error } = await resend.emails.receiving.get(emailId);
 
-          if (emailResponse.ok) {
-            const emailData = await emailResponse.json();
-            console.log("[INBOUND] Fetched email data keys:", Object.keys(emailData));
+          if (error) {
+            console.error("[INBOUND] Resend SDK error:", error);
+          }
 
-            // Try different possible field names
-            emailContent = emailData.text ||
-                          emailData.body ||
-                          emailData.plain_text ||
-                          emailData.text_body ||
-                          "";
+          if (emailData) {
+            console.log("[INBOUND] Email data received:", {
+              hasText: !!emailData.text,
+              hasHtml: !!emailData.html,
+              textLength: emailData.text?.length || 0,
+              htmlLength: emailData.html?.length || 0,
+            });
 
-            // If no text, try HTML
-            if (!emailContent && (emailData.html || emailData.html_body)) {
-              const htmlContent = emailData.html || emailData.html_body;
-              emailContent = htmlContent
+            // Get text content, or extract from HTML
+            emailContent = emailData.text || "";
+
+            if (!emailContent && emailData.html) {
+              emailContent = emailData.html
                 .replace(/<br\s*\/?>/gi, "\n")
                 .replace(/<\/p>/gi, "\n\n")
+                .replace(/<\/div>/gi, "\n")
                 .replace(/<[^>]*>/g, "")
                 .replace(/&nbsp;/g, " ")
                 .replace(/&amp;/g, "&")
                 .replace(/&lt;/g, "<")
                 .replace(/&gt;/g, ">")
+                .replace(/&quot;/g, '"')
+                .replace(/&#39;/g, "'")
                 .trim();
             }
 
-            console.log("[INBOUND] Extracted content:", emailContent?.substring(0, 200));
-          } else {
-            const errorText = await emailResponse.text();
-            console.log("[INBOUND] Fetch error:", emailResponse.status, errorText);
+            console.log("[INBOUND] Extracted content preview:", emailContent?.substring(0, 100));
           }
         } catch (fetchError) {
           console.error("[INBOUND] Error fetching email:", fetchError);
-        }
-      }
-
-      // If we still don't have content, check if it's in the webhook data
-      if (!emailContent) {
-        emailContent = data.text || data.body || data.plain_text || "";
-
-        if (!emailContent && data.html) {
-          emailContent = data.html
-            .replace(/<br\s*\/?>/gi, "\n")
-            .replace(/<\/p>/gi, "\n\n")
-            .replace(/<[^>]*>/g, "")
-            .trim();
         }
       }
 
@@ -114,14 +99,13 @@ export async function POST(request: NextRequest) {
       let cleanContent = emailContent;
 
       if (cleanContent) {
-        // Remove quoted reply text
+        // Remove quoted reply text (Gmail style: "On ... wrote:")
         const replyPatterns = [
           /On .+wrote:/i,
           /On .+ at .+ wrote:/i,
           /-----Original Message-----/i,
-          /From:.*\nSent:.*\nTo:/i,
+          /From:.*\r?\nSent:.*\r?\nTo:/i,
           /_{3,}/,
-          /-{3,}/,
         ];
 
         for (const pattern of replyPatterns) {
@@ -132,7 +116,7 @@ export async function POST(request: NextRequest) {
           }
         }
 
-        // Remove lines starting with >
+        // Remove lines starting with > (quoted text)
         cleanContent = cleanContent
           .split("\n")
           .filter((line) => !line.trim().startsWith(">"))
@@ -143,10 +127,9 @@ export async function POST(request: NextRequest) {
         cleanContent = cleanContent.replace(/\n{3,}/g, "\n\n").trim();
       }
 
-      // Final fallback - use a meaningful message
+      // Fallback if no content extracted
       if (!cleanContent) {
-        // Extract just the new content indicator
-        cleanContent = `[Customer replied via email]\n\nSubject: ${subject || "Re: Ticket"}`;
+        cleanContent = `[Customer replied via email]`;
       }
 
       console.log("[INBOUND] Final content:", cleanContent);
@@ -154,7 +137,7 @@ export async function POST(request: NextRequest) {
       // Extract sender email
       const senderEmail = typeof from === "string"
         ? from.match(/<(.+?)>/)?.[1] || from
-        : "unknown";
+        : from;
 
       // Add message to ticket
       await prisma.ticketMessage.create({
@@ -177,7 +160,7 @@ export async function POST(request: NextRequest) {
         });
       }
 
-      console.log(`[INBOUND] Added reply to ticket #${ticketNumber} from ${senderEmail}`);
+      console.log(`[INBOUND] Success! Added reply to ticket #${ticketNumber} from ${senderEmail}`);
 
       return NextResponse.json({ success: true, ticketNumber });
     }
