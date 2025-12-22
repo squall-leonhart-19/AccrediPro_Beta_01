@@ -7,24 +7,17 @@ async function getCourses() {
   return prisma.course.findMany({
     where: {
       isPublished: true,
-      // ONLY show these two main products for now
-      OR: [
-        // 1. Certified FM Practitioner ($497 → $97 XMAS)
-        { slug: { contains: 'functional-medicine-certification' } },
-        { slug: { contains: 'fm-certification' } },
-        // 2. Pro Accelerator ($997 → $397 XMAS)
-        { slug: { contains: 'pro-accelerator' } },
-      ],
-      // Exclude everything else
-      NOT: [
-        { certificateType: 'MINI_DIPLOMA' },
-        // Hide these specific courses
-        { slug: { contains: 'hormone' } },
-        { slug: { contains: 'gut-health' } },
-        { slug: { contains: 'digestive' } },
-        { slug: { contains: 'client-guarantee' } },
-        { slug: { contains: 'women' } },
-      ],
+      certificateType: { not: 'MINI_DIPLOMA' },
+      // Show ONLY these courses by matching their slugs
+      slug: {
+        in: [
+          // Add all slug variations that should appear
+          'functional-medicine-certification',
+          'functional-medicine-complete-certification',
+          'fm-certification',
+          'fm-pro-accelerator',
+        ]
+      }
     },
     include: {
       category: true,
