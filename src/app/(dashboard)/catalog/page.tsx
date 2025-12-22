@@ -11,10 +11,10 @@ async function getCourses() {
       // Show ONLY these courses by matching their slugs
       slug: {
         in: [
-          // Add all slug variations that should appear
+          // 1. Certified FM Practitioner ($497 → $97 XMAS)
           'functional-medicine-certification',
           'functional-medicine-complete-certification',
-          'fm-certification',
+          // 2. Pro Accelerator ($997 → $397 XMAS)
           'fm-pro-accelerator',
         ]
       }
