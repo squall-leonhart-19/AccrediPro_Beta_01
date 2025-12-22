@@ -3,6 +3,7 @@ import { Inter } from "next/font/google";
 import { Suspense } from "react";
 import "./globals.css";
 import MetaPixel from "@/components/tracking/meta-pixel";
+import { QueryProvider } from "@/components/providers/query-provider";
 
 const inter = Inter({
   variable: "--font-inter",
@@ -130,10 +131,12 @@ export default function RootLayout({
         />
       </head>
       <body className={`${inter.variable} font-sans antialiased`}>
-        <Suspense fallback={null}>
-          <MetaPixel />
-        </Suspense>
-        {children}
+        <QueryProvider>
+          <Suspense fallback={null}>
+            <MetaPixel />
+          </Suspense>
+          {children}
+        </QueryProvider>
       </body>
     </html>
   );
