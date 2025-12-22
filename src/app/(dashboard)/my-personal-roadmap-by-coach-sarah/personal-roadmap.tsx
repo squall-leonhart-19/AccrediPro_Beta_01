@@ -1,7 +1,6 @@
 "use client";
 
 import Link from "next/link";
-import Image from "next/image";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -27,7 +26,6 @@ import {
     Quote,
     Zap,
     Trophy,
-    ArrowUpRight,
 } from "lucide-react";
 import type { SpecializationTrack } from "@/lib/specialization-tracks";
 
@@ -347,23 +345,23 @@ export function PersonalRoadmap({ data, steps, specialization }: PersonalRoadmap
                                     )}
 
                                     <div className={`flex items-center gap-4 rounded-xl border-2 transition-all ${current
-                                            ? `p-5 ${c.border} ${c.light} shadow-lg ring-2 ring-offset-2 ring-${color}-400`
-                                            : completed
-                                                ? "p-5 border-green-300 bg-green-50"
-                                                : enrolled
-                                                    ? `p-5 ${c.border} bg-white`
-                                                    : locked
-                                                        ? "p-5 border-gray-200 bg-gray-50 opacity-60"
-                                                        : "p-5 border-gray-200 bg-white hover:border-gray-300"
+                                        ? `p-5 ${c.border} ${c.light} shadow-lg ring-2 ring-offset-2 ring-${color}-400`
+                                        : completed
+                                            ? "p-5 border-green-300 bg-green-50"
+                                            : enrolled
+                                                ? `p-5 ${c.border} bg-white`
+                                                : locked
+                                                    ? "p-5 border-gray-200 bg-gray-50 opacity-60"
+                                                    : "p-5 border-gray-200 bg-white hover:border-gray-300"
                                         }`}>
                                         {/* Step Icon */}
                                         <div className={`w-16 h-16 rounded-xl flex items-center justify-center flex-shrink-0 ${completed
-                                                ? "bg-green-500"
-                                                : current
-                                                    ? `${c.bg}`
-                                                    : locked
-                                                        ? "bg-gray-200"
-                                                        : `${c.bg}`
+                                            ? "bg-green-500"
+                                            : current
+                                                ? `${c.bg}`
+                                                : locked
+                                                    ? "bg-gray-200"
+                                                    : `${c.bg}`
                                             }`}>
                                             {completed ? (
                                                 <CheckCircle className="w-8 h-8 text-white" />
@@ -415,8 +413,8 @@ export function PersonalRoadmap({ data, steps, specialization }: PersonalRoadmap
                                         {/* Income Vision */}
                                         <div className={`text-right hidden sm:block ${locked ? "opacity-40" : ""}`}>
                                             <p className={`text-xl font-bold ${completed ? "text-green-600" :
-                                                    current ? c.text :
-                                                        locked ? "text-gray-400" : "text-gray-700"
+                                                current ? c.text :
+                                                    locked ? "text-gray-400" : "text-gray-700"
                                                 }`}>
                                                 {step.incomeVision}
                                             </p>
