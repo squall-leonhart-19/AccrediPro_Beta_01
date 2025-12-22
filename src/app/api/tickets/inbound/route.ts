@@ -41,14 +41,6 @@ export async function POST(request: NextRequest) {
       // Find the ticket
       const ticket = await prisma.supportTicket.findUnique({
         where: { ticketNumber },
-        select: {
-          id: true,
-          ticketNumber: true,
-          subject: true,
-          status: true,
-          customerName: true,
-          customerEmail: true,
-        },
       });
 
       if (!ticket) {
@@ -171,56 +163,6 @@ export async function POST(request: NextRequest) {
             updatedAt: new Date(),
           },
         });
-      }
-
-      // Notify staff about customer reply
-      try {
-        await resend.emails.send({
-          from: "AccrediPro Support <support@accredipro-certificate.com>",
-          to: "info@accredipro.academy",
-          subject: `💬 Customer replied to Ticket #${ticketNumber}`,
-          html: `
-            <!DOCTYPE html>
-            <html>
-              <head><meta charset="utf-8"></head>
-              <body style="font-family: Arial, sans-serif; line-height: 1.6; color: #333;">
-                <div style="max-width: 600px; margin: 0 auto; padding: 20px;">
-                  <div style="background: #2563EB; padding: 20px; border-radius: 8px 8px 0 0;">
-                    <h2 style="color: #fff; margin: 0;">💬 New Customer Reply</h2>
-                  </div>
-                  <div style="background: #fff; padding: 20px; border: 1px solid #ddd; border-top: none; border-radius: 0 0 8px 8px;">
-                    <table style="width: 100%; margin-bottom: 20px;">
-                      <tr>
-                        <td style="padding: 8px 0; color: #666;">Ticket #</td>
-                        <td style="padding: 8px 0; font-weight: bold;">${ticketNumber}</td>
-                      </tr>
-                      <tr>
-                        <td style="padding: 8px 0; color: #666;">Subject</td>
-                        <td style="padding: 8px 0;">${ticket.subject}</td>
-                      </tr>
-                      <tr>
-                        <td style="padding: 8px 0; color: #666;">From</td>
-                        <td style="padding: 8px 0;">${ticket.customerName} (${senderEmail})</td>
-                      </tr>
-                    </table>
-
-                    <div style="background: #f5f5f5; padding: 15px; border-radius: 6px; margin-bottom: 20px;">
-                      <p style="margin: 0 0 8px; font-weight: bold; color: #666;">Message:</p>
-                      <p style="margin: 0; white-space: pre-wrap;">${cleanContent}</p>
-                    </div>
-
-                    <a href="https://learn.accredipro.academy/admin/tickets"
-                       style="display: inline-block; background: #2563EB; color: #fff; padding: 12px 24px; border-radius: 6px; text-decoration: none; font-weight: bold;">
-                      View Ticket →
-                    </a>
-                  </div>
-                </div>
-              </body>
-            </html>
-          `,
-        });
-      } catch (notifyError) {
-        console.error("[INBOUND] Failed to notify staff:", notifyError);
       }
 
       console.log(`[INBOUND] Success! Added reply to ticket #${ticketNumber} from ${senderEmail}`);

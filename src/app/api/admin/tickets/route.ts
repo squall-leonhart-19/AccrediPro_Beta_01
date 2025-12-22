@@ -16,8 +16,6 @@ export async function GET(request: NextRequest) {
     const priority = searchParams.get("priority");
     const category = searchParams.get("category");
     const assignedToMe = searchParams.get("assignedToMe") === "true";
-    const assignedTo = searchParams.get("assignedTo");
-    const dateRange = searchParams.get("dateRange");
     const search = searchParams.get("search");
 
     const where: Record<string, unknown> = {};
@@ -33,29 +31,6 @@ export async function GET(request: NextRequest) {
     }
     if (assignedToMe) {
       where.assignedToId = session.user.id;
-    }
-    if (assignedTo && assignedTo !== "ALL") {
-      if (assignedTo === "UNASSIGNED") {
-        where.assignedToId = null;
-      } else {
-        where.assignedToId = assignedTo;
-      }
-    }
-    if (dateRange && dateRange !== "ALL") {
-      const now = new Date();
-      let startDate: Date;
-
-      if (dateRange === "TODAY") {
-        startDate = new Date(now.getFullYear(), now.getMonth(), now.getDate());
-      } else if (dateRange === "WEEK") {
-        startDate = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
-      } else if (dateRange === "MONTH") {
-        startDate = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000);
-      } else {
-        startDate = new Date(0);
-      }
-
-      where.createdAt = { gte: startDate };
     }
     if (search) {
       where.OR = [

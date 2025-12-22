@@ -6,6 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import {
   Select,
@@ -15,29 +16,19 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-  DropdownMenuSeparator,
-  DropdownMenuLabel,
-} from "@/components/ui/dropdown-menu";
-import {
   Ticket,
   Send,
   Search,
+  Filter,
   User,
   Clock,
   RefreshCw,
+  AlertCircle,
+  CheckCircle,
   Mail,
   StickyNote,
   Trash2,
   ChevronRight,
-  UserPlus,
-  MessageSquare,
-  Calendar,
-  Star,
-  BarChart3,
 } from "lucide-react";
 
 interface TicketMessage {
@@ -75,13 +66,6 @@ interface TicketData {
   _count?: { messages: number };
 }
 
-interface StaffMember {
-  id: string;
-  firstName: string;
-  lastName: string;
-  email: string;
-}
-
 interface Stats {
   total: number;
   NEW: number;
@@ -89,74 +73,7 @@ interface Stats {
   PENDING: number;
   RESOLVED: number;
   CLOSED: number;
-  avgResponseTime?: number;
 }
-
-interface Analytics {
-  overview: {
-    total: number;
-    open: number;
-    resolvedLast30Days: number;
-    newLast7Days: number;
-    newLast30Days: number;
-  };
-  satisfaction: {
-    averageRating: number | null;
-    totalRatings: number;
-    recentFeedback: {
-      ticketNumber: number;
-      rating: number;
-      ratingComment: string | null;
-      ratedAt: string;
-      customerName: string;
-      subject: string;
-    }[];
-  };
-  performance: {
-    avgFirstResponseHours: number;
-  };
-  categories: Record<string, number>;
-  priorities: Record<string, number>;
-}
-
-// Canned responses
-const CANNED_RESPONSES = [
-  {
-    id: "greeting",
-    title: "Greeting",
-    content: "Hi there! Thank you for reaching out to AccrediPro Support. I'd be happy to help you with this.",
-  },
-  {
-    id: "more-info",
-    title: "Need More Info",
-    content: "To better assist you, could you please provide more details about your issue? Specifically:\n\n- What were you trying to do?\n- What error message (if any) did you see?\n- What device/browser are you using?",
-  },
-  {
-    id: "certificate-help",
-    title: "Certificate Help",
-    content: "Your certificate should be available in your dashboard under 'My Certificates' once you've completed all modules. If you've completed the course but don't see it, please try:\n\n1. Refreshing your dashboard\n2. Checking that all lessons are marked as complete\n\nIf the issue persists, let me know and I'll look into it for you.",
-  },
-  {
-    id: "access-issue",
-    title: "Course Access Issue",
-    content: "I understand you're having trouble accessing your course. Let me help:\n\n1. Please try logging out and back in\n2. Clear your browser cache\n3. Try a different browser if possible\n\nIf none of these work, I'll check your enrollment status on our end.",
-  },
-  {
-    id: "refund-policy",
-    title: "Refund Policy",
-    content: "Thank you for your inquiry about our refund policy. We offer a 14-day money-back guarantee from the date of purchase. To request a refund, please provide your order number and I'll process it for you.",
-  },
-  {
-    id: "resolved",
-    title: "Issue Resolved",
-    content: "Great news! I've resolved the issue you reported. Please let me know if you need any further assistance.\n\nIs there anything else I can help you with today?",
-  },
-  {
-    id: "closing",
-    title: "Closing",
-    content: "Thank you for contacting AccrediPro Support! If you have any other questions in the future, don't hesitate to reach out.\n\nHave a wonderful day!",
-  },
-];
 
 const STATUS_COLORS: Record<string, string> = {
   NEW: "bg-blue-500",
@@ -191,17 +108,12 @@ export default function TicketsPage() {
   const [replyContent, setReplyContent] = useState("");
   const [isInternalNote, setIsInternalNote] = useState(false);
   const [stats, setStats] = useState<Stats | null>(null);
-  const [staffMembers, setStaffMembers] = useState<StaffMember[]>([]);
-  const [showAnalytics, setShowAnalytics] = useState(false);
-  const [analytics, setAnalytics] = useState<Analytics | null>(null);
 
   // Filters
   const [searchTerm, setSearchTerm] = useState("");
   const [statusFilter, setStatusFilter] = useState("ALL");
   const [priorityFilter, setPriorityFilter] = useState("ALL");
   const [categoryFilter, setCategoryFilter] = useState("ALL");
-  const [dateFilter, setDateFilter] = useState("ALL");
-  const [assigneeFilter, setAssigneeFilter] = useState("ALL");
 
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
@@ -211,8 +123,6 @@ export default function TicketsPage() {
       if (statusFilter !== "ALL") params.set("status", statusFilter);
       if (priorityFilter !== "ALL") params.set("priority", priorityFilter);
       if (categoryFilter !== "ALL") params.set("category", categoryFilter);
-      if (dateFilter !== "ALL") params.set("dateRange", dateFilter);
-      if (assigneeFilter !== "ALL") params.set("assignedTo", assigneeFilter);
       if (searchTerm) params.set("search", searchTerm);
 
       const res = await fetch(`/api/admin/tickets?${params}`);
@@ -223,26 +133,6 @@ export default function TicketsPage() {
       console.error("Failed to fetch tickets:", error);
     } finally {
       setLoading(false);
-    }
-  };
-
-  const fetchStaffMembers = async () => {
-    try {
-      const res = await fetch("/api/admin/users?role=ADMIN,INSTRUCTOR&limit=50");
-      const data = await res.json();
-      setStaffMembers(data.users || []);
-    } catch (error) {
-      console.error("Failed to fetch staff:", error);
-    }
-  };
-
-  const fetchAnalytics = async () => {
-    try {
-      const res = await fetch("/api/admin/tickets/analytics");
-      const data = await res.json();
-      setAnalytics(data);
-    } catch (error) {
-      console.error("Failed to fetch analytics:", error);
     }
   };
 
@@ -258,11 +148,9 @@ export default function TicketsPage() {
 
   useEffect(() => {
     fetchTickets();
-    fetchStaffMembers();
-    fetchAnalytics();
-    const interval = setInterval(fetchTickets, 30000);
+    const interval = setInterval(fetchTickets, 30000); // Refresh every 30s
     return () => clearInterval(interval);
-  }, [statusFilter, priorityFilter, categoryFilter, dateFilter, assigneeFilter]);
+  }, [statusFilter, priorityFilter, categoryFilter]);
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -314,25 +202,6 @@ export default function TicketsPage() {
     }
   };
 
-  const assignTicket = async (staffId: string | null) => {
-    if (!selectedTicket) return;
-
-    try {
-      const res = await fetch(`/api/admin/tickets/${selectedTicket.id}`, {
-        method: "PATCH",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ assignedToId: staffId }),
-      });
-
-      if (res.ok) {
-        await fetchTicketDetails(selectedTicket.id);
-        await fetchTickets();
-      }
-    } catch (error) {
-      console.error("Failed to assign ticket:", error);
-    }
-  };
-
   const deleteTicket = async () => {
     if (!selectedTicket) return;
     if (!confirm(`Delete ticket #${selectedTicket.ticketNumber}? This cannot be undone.`)) return;
@@ -349,10 +218,6 @@ export default function TicketsPage() {
     } catch (error) {
       console.error("Failed to delete ticket:", error);
     }
-  };
-
-  const insertCannedResponse = (content: string) => {
-    setReplyContent((prev) => (prev ? `${prev}\n\n${content}` : content));
   };
 
   const formatTime = (dateString: string) => {
@@ -377,20 +242,10 @@ export default function TicketsPage() {
           </h1>
           <p className="text-gray-500">Manage customer support requests</p>
         </div>
-        <div className="flex gap-2">
-          <Button
-            variant={showAnalytics ? "default" : "outline"}
-            onClick={() => setShowAnalytics(!showAnalytics)}
-            className={showAnalytics ? "bg-[#6B2C40] hover:bg-[#5a2436]" : ""}
-          >
-            <BarChart3 className="w-4 h-4 mr-2" />
-            Analytics
-          </Button>
-          <Button variant="outline" onClick={fetchTickets}>
-            <RefreshCw className="w-4 h-4 mr-2" />
-            Refresh
-          </Button>
-        </div>
+        <Button variant="outline" onClick={fetchTickets}>
+          <RefreshCw className="w-4 h-4 mr-2" />
+          Refresh
+        </Button>
       </div>
 
       {/* Stats Bar */}
@@ -420,127 +275,6 @@ export default function TicketsPage() {
             <div className="text-2xl font-bold text-gray-600">{stats.CLOSED}</div>
             <div className="text-sm text-gray-500">Closed</div>
           </Card>
-        </div>
-      )}
-
-      {/* Analytics Dashboard */}
-      {showAnalytics && analytics && (
-        <div className="mb-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-          {/* Performance Card */}
-          <Card className="p-4">
-            <div className="flex items-center gap-2 text-gray-500 text-sm mb-2">
-              <Clock className="w-4 h-4" />
-              Avg. First Response
-            </div>
-            <div className="text-2xl font-bold">
-              {analytics.performance.avgFirstResponseHours > 0
-                ? `${analytics.performance.avgFirstResponseHours}h`
-                : "N/A"}
-            </div>
-            <p className="text-xs text-gray-500">Last 30 days</p>
-          </Card>
-
-          {/* Satisfaction Card */}
-          <Card className="p-4">
-            <div className="flex items-center gap-2 text-gray-500 text-sm mb-2">
-              <Star className="w-4 h-4" />
-              Customer Satisfaction
-            </div>
-            <div className="text-2xl font-bold flex items-center gap-2">
-              {analytics.satisfaction.averageRating ? (
-                <>
-                  {analytics.satisfaction.averageRating}
-                  <div className="flex">
-                    {[1, 2, 3, 4, 5].map((star) => (
-                      <Star
-                        key={star}
-                        className={`w-4 h-4 ${
-                          star <= Math.round(analytics.satisfaction.averageRating || 0)
-                            ? "fill-yellow-400 text-yellow-400"
-                            : "text-gray-300"
-                        }`}
-                      />
-                    ))}
-                  </div>
-                </>
-              ) : (
-                "No ratings"
-              )}
-            </div>
-            <p className="text-xs text-gray-500">{analytics.satisfaction.totalRatings} reviews</p>
-          </Card>
-
-          {/* 30-Day Summary */}
-          <Card className="p-4">
-            <div className="flex items-center gap-2 text-gray-500 text-sm mb-2">
-              <Calendar className="w-4 h-4" />
-              Last 30 Days
-            </div>
-            <div className="grid grid-cols-2 gap-2 text-sm">
-              <div>
-                <span className="text-lg font-bold">{analytics.overview.newLast30Days}</span>
-                <span className="text-gray-500 ml-1">new</span>
-              </div>
-              <div>
-                <span className="text-lg font-bold text-green-600">{analytics.overview.resolvedLast30Days}</span>
-                <span className="text-gray-500 ml-1">resolved</span>
-              </div>
-            </div>
-          </Card>
-
-          {/* Category Breakdown */}
-          <Card className="p-4">
-            <div className="flex items-center gap-2 text-gray-500 text-sm mb-2">
-              <Ticket className="w-4 h-4" />
-              By Category
-            </div>
-            <div className="space-y-1">
-              {Object.entries(analytics.categories)
-                .sort((a, b) => b[1] - a[1])
-                .slice(0, 4)
-                .map(([cat, count]) => (
-                  <div key={cat} className="flex justify-between text-sm">
-                    <span className="text-gray-600">{CATEGORY_LABELS[cat] || cat}</span>
-                    <span className="font-medium">{count}</span>
-                  </div>
-                ))}
-            </div>
-          </Card>
-
-          {/* Recent Feedback */}
-          {analytics.satisfaction.recentFeedback.length > 0 && (
-            <Card className="p-4 md:col-span-2 lg:col-span-4">
-              <div className="flex items-center gap-2 text-gray-500 text-sm mb-3">
-                <MessageSquare className="w-4 h-4" />
-                Recent Customer Feedback
-              </div>
-              <div className="grid gap-3 md:grid-cols-2 lg:grid-cols-3">
-                {analytics.satisfaction.recentFeedback.map((feedback) => (
-                  <div key={feedback.ticketNumber} className="p-3 bg-gray-50 rounded-lg">
-                    <div className="flex items-center gap-2 mb-1">
-                      <div className="flex">
-                        {[1, 2, 3, 4, 5].map((star) => (
-                          <Star
-                            key={star}
-                            className={`w-3 h-3 ${
-                              star <= feedback.rating
-                                ? "fill-yellow-400 text-yellow-400"
-                                : "text-gray-300"
-                            }`}
-                          />
-                        ))}
-                      </div>
-                      <span className="text-xs text-gray-500">#{feedback.ticketNumber}</span>
-                    </div>
-                    <p className="text-sm text-gray-700 line-clamp-2">
-                      &ldquo;{feedback.ratingComment}&rdquo;
-                    </p>
-                    <p className="text-xs text-gray-500 mt-1">- {feedback.customerName}</p>
-                  </div>
-                ))}
-              </div>
-            </Card>
-          )}
         </div>
       )}
 
@@ -591,39 +325,10 @@ export default function TicketsPage() {
                   </SelectContent>
                 </Select>
               </div>
-              <div className="flex gap-2">
-                <Select value={dateFilter} onValueChange={setDateFilter}>
-                  <SelectTrigger className="flex-1">
-                    <Calendar className="w-4 h-4 mr-2" />
-                    <SelectValue placeholder="Date" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="ALL">All Time</SelectItem>
-                    <SelectItem value="today">Today</SelectItem>
-                    <SelectItem value="week">This Week</SelectItem>
-                    <SelectItem value="month">This Month</SelectItem>
-                  </SelectContent>
-                </Select>
-                <Select value={assigneeFilter} onValueChange={setAssigneeFilter}>
-                  <SelectTrigger className="flex-1">
-                    <UserPlus className="w-4 h-4 mr-2" />
-                    <SelectValue placeholder="Assignee" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="ALL">All Assignees</SelectItem>
-                    <SelectItem value="unassigned">Unassigned</SelectItem>
-                    {staffMembers.map((staff) => (
-                      <SelectItem key={staff.id} value={staff.id}>
-                        {staff.firstName} {staff.lastName}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
             </div>
           </CardHeader>
           <CardContent className="p-0">
-            <ScrollArea className="h-[calc(100vh-560px)]">
+            <ScrollArea className="h-[calc(100vh-520px)]">
               {loading ? (
                 <div className="p-4 text-center text-gray-500">Loading...</div>
               ) : tickets.length === 0 ? (
@@ -645,12 +350,6 @@ export default function TicketsPage() {
                           <Badge className={`text-xs ${PRIORITY_COLORS[ticket.priority]} text-white`}>
                             {ticket.priority}
                           </Badge>
-                          {ticket.assignedTo && (
-                            <Badge variant="outline" className="text-xs">
-                              <UserPlus className="w-3 h-3 mr-1" />
-                              {ticket.assignedTo.firstName}
-                            </Badge>
-                          )}
                         </div>
                         <p className="font-medium text-sm truncate mt-1">{ticket.subject}</p>
                         <p className="text-xs text-gray-500">{ticket.customerName}</p>
@@ -687,7 +386,7 @@ export default function TicketsPage() {
                     </Badge>
                   </div>
                   <CardTitle className="text-lg">{selectedTicket.subject}</CardTitle>
-                  <div className="flex items-center gap-4 mt-2 text-sm flex-wrap">
+                  <div className="flex items-center gap-4 mt-2 text-sm">
                     <div className="flex items-center gap-1">
                       <User className="w-4 h-4 text-gray-400" />
                       <span>{selectedTicket.customerName}</span>
@@ -696,47 +395,9 @@ export default function TicketsPage() {
                       <Mail className="w-4 h-4" />
                       {selectedTicket.customerEmail}
                     </a>
-                    {selectedTicket.assignedTo ? (
-                      <div className="flex items-center gap-1 text-green-600">
-                        <UserPlus className="w-4 h-4" />
-                        Assigned to {selectedTicket.assignedTo.firstName} {selectedTicket.assignedTo.lastName}
-                      </div>
-                    ) : (
-                      <div className="flex items-center gap-1 text-gray-400">
-                        <UserPlus className="w-4 h-4" />
-                        Unassigned
-                      </div>
-                    )}
                   </div>
                 </div>
                 <div className="flex items-center gap-2">
-                  {/* Assign dropdown */}
-                  <DropdownMenu>
-                    <DropdownMenuTrigger asChild>
-                      <Button variant="outline" size="sm">
-                        <UserPlus className="w-4 h-4 mr-1" />
-                        Assign
-                      </Button>
-                    </DropdownMenuTrigger>
-                    <DropdownMenuContent>
-                      <DropdownMenuLabel>Assign to</DropdownMenuLabel>
-                      <DropdownMenuSeparator />
-                      <DropdownMenuItem onClick={() => assignTicket(null)}>
-                        Unassigned
-                      </DropdownMenuItem>
-                      {staffMembers.map((staff) => (
-                        <DropdownMenuItem
-                          key={staff.id}
-                          onClick={() => assignTicket(staff.id)}
-                        >
-                          {staff.firstName} {staff.lastName}
-                          {selectedTicket.assignedTo?.id === staff.id && (
-                            <span className="ml-2 text-green-600">*</span>
-                          )}
-                        </DropdownMenuItem>
-                      ))}
-                    </DropdownMenuContent>
-                  </DropdownMenu>
                   <Select value={selectedTicket.status} onValueChange={updateTicketStatus}>
                     <SelectTrigger className="w-32">
                       <SelectValue />
@@ -798,7 +459,7 @@ export default function TicketsPage() {
                                   : "Staff"}
                               </>
                             )}
-                            <span>* {formatTime(msg.createdAt)}</span>
+                            <span>• {formatTime(msg.createdAt)}</span>
                           </div>
                           <p className="whitespace-pre-wrap">{msg.content}</p>
                         </div>
@@ -810,7 +471,7 @@ export default function TicketsPage() {
 
                 {/* Reply Box */}
                 <div className="p-4 border-t">
-                  <div className="flex items-center gap-2 mb-2 flex-wrap">
+                  <div className="flex items-center gap-2 mb-2">
                     <Button
                       variant={isInternalNote ? "default" : "outline"}
                       size="sm"
@@ -826,31 +487,6 @@ export default function TicketsPage() {
                         Email will be sent to customer
                       </span>
                     )}
-                    {/* Canned Responses */}
-                    <DropdownMenu>
-                      <DropdownMenuTrigger asChild>
-                        <Button variant="outline" size="sm" className="ml-auto">
-                          <MessageSquare className="w-4 h-4 mr-1" />
-                          Templates
-                        </Button>
-                      </DropdownMenuTrigger>
-                      <DropdownMenuContent align="end" className="w-64">
-                        <DropdownMenuLabel>Quick Responses</DropdownMenuLabel>
-                        <DropdownMenuSeparator />
-                        {CANNED_RESPONSES.map((response) => (
-                          <DropdownMenuItem
-                            key={response.id}
-                            onClick={() => insertCannedResponse(response.content)}
-                            className="flex flex-col items-start"
-                          >
-                            <span className="font-medium">{response.title}</span>
-                            <span className="text-xs text-gray-500 truncate w-full">
-                              {response.content.substring(0, 50)}...
-                            </span>
-                          </DropdownMenuItem>
-                        ))}
-                      </DropdownMenuContent>
-                    </DropdownMenu>
                   </div>
                   <div className="flex gap-2">
                     <Textarea
