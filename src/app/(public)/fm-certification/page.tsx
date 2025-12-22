@@ -49,7 +49,10 @@ export default function FMCertificationPage() {
 
                             // C. Force Trustpilot Reload if needed
                             if(window.Trustpilot) {
-                                window.Trustpilot.loadFromElement(document.getElementById('trustpilot-widget-container')); 
+                                var trustpilotElements = document.getElementsByClassName('trustpilot-widget');
+                                for (var i = 0; i < trustpilotElements.length; ++i) {
+                                    window.Trustpilot.loadFromElement(trustpilotElements[i]);
+                                }
                             }
                         });
                     </script>
