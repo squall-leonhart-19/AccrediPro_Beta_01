@@ -170,7 +170,7 @@ export async function POST(request: NextRequest) {
 }
 
 // GET - Get customer's tickets (requires auth)
-export async function GET() {
+export async function GET(request: NextRequest) {
   try {
     const session = await getServerSession(authOptions);
 
@@ -178,6 +178,30 @@ export async function GET() {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
+    const { searchParams } = new URL(request.url);
+    const ticketId = searchParams.get("id");
+
+    if (ticketId) {
+      // Fetch single ticket details
+      const ticket = await prisma.supportTicket.findUnique({
+        where: { id: ticketId },
+        include: {
+          messages: {
+            orderBy: { createdAt: "asc" }, // Ascending for chat view
+          }
+        }
+      });
+
+      if (!ticket) return NextResponse.json({ error: "Not found" }, { status: 404 });
+
+      // Verify ownership
+      const isOwner = ticket.userId === session.user.id || ticket.customerEmail === session.user.email;
+      if (!isOwner) return NextResponse.json({ error: "Unauthorized" }, { status: 403 });
+
+      return NextResponse.json({ ticket });
+    }
+
+    // List tickets
     const tickets = await prisma.supportTicket.findMany({
       where: {
         OR: [
