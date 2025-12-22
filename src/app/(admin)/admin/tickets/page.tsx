@@ -6,7 +6,8 @@ import { formatDistanceToNow } from "date-fns";
 import {
   Search, Filter, RefreshCcw, CheckCircle2, XCircle,
   MessageSquare, User, Clock, Star, Paperclip, Send,
-  MoreVertical, Mail, Layout, LifeBuoy, Zap, ChevronRight
+  MoreVertical, Mail, Layout, LifeBuoy, Zap, ChevronRight,
+  Sparkles, Trash2, UserPlus, Reply
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -17,7 +18,10 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Separator } from "@/components/ui/separator";
 import { Textarea } from "@/components/ui/textarea";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger, DropdownMenuSeparator } from "@/components/ui/dropdown-menu";
 import { cn } from "@/lib/utils";
+import { useSession } from "next-auth/react";
+import { toast } from "sonner";
 
 // --- Sub-components for cleaner file ---
 
@@ -112,9 +116,18 @@ const TicketListItem = ({
   );
 };
 
+const SAVED_REPLIES = [
+  { label: "Greeting", text: "Hello,\n\nThank you for reaching out to AccrediPro Support. My name is Sarah and I'll be helping you today." },
+  { label: "Investigating", text: "I'm looking into this issue for you right now. Please allow me a few moments to investigate." },
+  { label: "Refund Policy", text: "Regarding our refund policy: We offer a 30-day money-back guarantee for all our certification programs if you are not satisfied." },
+  { label: "Closing Ticket", text: "I'm glad we could resolve this for you. I'll go ahead and close this ticket now. Please feel free to reach out if you need anything else!" },
+];
+
 // --- Main Page Component ---
 
 export default function SupportTicketsPage() {
+  const { data: session } = useSession();
+
   // Filters
   const [filterStatus, setFilterStatus] = useState("all");
   const [filterPriority, setFilterPriority] = useState("all");
@@ -125,6 +138,7 @@ export default function SupportTicketsPage() {
   const [selectedTicketId, setSelectedTicketId] = useState<string | null>(null);
   const [replyText, setReplyText] = useState("");
   const [isInternalNote, setIsInternalNote] = useState(false);
+  const [isGeneratingAI, setIsGeneratingAI] = useState(false);
 
   // Queries
   const { data, isLoading, error, refetch } = useTickets(filterStatus, filterPriority, searchTerm);
@@ -141,12 +155,13 @@ export default function SupportTicketsPage() {
     if (activeTab === "unresolved") {
       list = list.filter(t => !["RESOLVED", "CLOSED"].includes(t.status));
     } else if (activeTab === "mine") {
-      // Assuming we have current user ID, skipping for mock compatibility 
-      // In real app: list = list.filter(t => t.assignedToId === currentUserId)
+      if (session?.user?.id) {
+        list = list.filter(t => t.assignedTo?.id === session.user.id);
+      }
     }
 
     return list;
-  }, [tickets, activeTab]);
+  }, [tickets, activeTab, session?.user?.id]);
 
   const selectedTicket = useMemo(() =>
     tickets.find(t => t.id === selectedTicketId),
@@ -174,6 +189,28 @@ export default function SupportTicketsPage() {
     });
   };
 
+  const handleGenAI = async () => {
+    if (!selectedTicketId) return;
+    setIsGeneratingAI(true);
+    try {
+      const res = await fetch("/api/tickets/ai-reply", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ ticketId: selectedTicketId }),
+      });
+      const data = await res.json();
+      if (data.reply) {
+        setReplyText(prev => prev ? prev + "\n\n" + data.reply : data.reply);
+      } else {
+        toast.error("Failed to generate reply");
+      }
+    } catch (e) {
+      toast.error("Error generating AI reply");
+    } finally {
+      setIsGeneratingAI(false);
+    }
+  };
+
   const handleStatusChange = (newStatus: string) => {
     if (!selectedTicketId) return;
     mutationUpdate.mutate({
@@ -182,13 +219,36 @@ export default function SupportTicketsPage() {
     });
   };
 
-  const handleAssign = (userId: string) => {
-    if (!selectedTicketId) return;
+  const handleAssignToMe = () => {
+    if (!selectedTicketId || !session?.user?.id) return;
     mutationUpdate.mutate({
       ticketId: selectedTicketId,
-      updates: { assignedToId: userId === "unassign" ? undefined : userId } // Handle clearing
+      updates: { assignedToId: session.user.id }
     });
-  }
+  };
+
+  const handleDeleteTicket = async () => {
+    if (!selectedTicketId) return;
+    if (!confirm("Are you sure you want to delete this ticket?")) return;
+
+    try {
+      await fetch(`/api/admin/tickets/${selectedTicketId}`, { method: "DELETE" });
+      toast.success("Ticket deleted");
+      refetch();
+      if (filteredTickets.length > 1) {
+        const next = filteredTickets.find(t => t.id !== selectedTicketId);
+        setSelectedTicketId(next?.id || null);
+      } else {
+        setSelectedTicketId(null);
+      }
+    } catch (e) {
+      toast.error("Failed to delete ticket");
+    }
+  };
+
+  const handleSavedReply = (text: string) => {
+    setReplyText(prev => prev ? prev + "\n" + text : text);
+  };
 
   // --- Render ---
 
@@ -305,6 +365,14 @@ export default function SupportTicketsPage() {
                     <span className="flex items-center gap-1"><User className="w-3 h-3" /> {selectedTicket.customerName}</span>
                     <span>•</span>
                     <span className="flex items-center gap-1"><Mail className="w-3 h-3" /> {selectedTicket.customerEmail}</span>
+                    {selectedTicket.assignedTo && (
+                      <>
+                        <span>•</span>
+                        <Badge variant="outline" className="text-[10px] font-normal gap-1">
+                          Assigned to {selectedTicket.assignedTo.name}
+                        </Badge>
+                      </>
+                    )}
                   </div>
                 </div>
               </div>
@@ -324,9 +392,22 @@ export default function SupportTicketsPage() {
                   </SelectContent>
                 </Select>
 
-                <Button variant="outline" size="icon" className="h-9 w-9">
-                  <MoreVertical className="w-4 h-4 text-slate-500" />
-                </Button>
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button variant="outline" size="icon" className="h-9 w-9">
+                      <MoreVertical className="w-4 h-4 text-slate-500" />
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="end">
+                    <DropdownMenuItem onClick={handleAssignToMe}>
+                      <UserPlus className="w-4 h-4 mr-2" /> Assign to Me
+                    </DropdownMenuItem>
+                    <DropdownMenuSeparator />
+                    <DropdownMenuItem className="text-red-600" onClick={handleDeleteTicket}>
+                      <Trash2 className="w-4 h-4 mr-2" /> Delete Ticket
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
               </div>
             </header>
 
@@ -380,10 +461,34 @@ export default function SupportTicketsPage() {
                     >
                       Internal Note
                     </Button>
-                    <Button size="sm" variant="ghost" className="h-7 text-xs text-slate-500">
-                      Saved Replies
-                    </Button>
+
+                    <DropdownMenu>
+                      <DropdownMenuTrigger asChild>
+                        <Button size="sm" variant="ghost" className="h-7 text-xs text-slate-500">
+                          Saved Replies
+                        </Button>
+                      </DropdownMenuTrigger>
+                      <DropdownMenuContent align="start">
+                        {SAVED_REPLIES.map((reply) => (
+                          <DropdownMenuItem key={reply.label} onClick={() => handleSavedReply(reply.text)}>
+                            {reply.label}
+                          </DropdownMenuItem>
+                        ))}
+                      </DropdownMenuContent>
+                    </DropdownMenu>
+
                   </div>
+
+                  <Button
+                    size="sm"
+                    variant="ghost"
+                    className="h-7 text-xs text-purple-600 hover:text-purple-700 hover:bg-purple-50"
+                    onClick={handleGenAI}
+                    disabled={isGeneratingAI}
+                  >
+                    <Sparkles className={cn("w-3 h-3 mr-1", isGeneratingAI && "animate-spin")} />
+                    {isGeneratingAI ? "Generating..." : "AI Suggest"}
+                  </Button>
                 </div>
 
                 <div className={cn("relative rounded-lg border shadow-sm focus-within:ring-1 focus-within:ring-blue-500 overflow-hidden", isInternalNote && "ring-1 ring-yellow-400 bg-yellow-50/30")}>

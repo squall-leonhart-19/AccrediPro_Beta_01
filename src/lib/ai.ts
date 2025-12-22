@@ -1,6 +1,6 @@
 import Anthropic from "@anthropic-ai/sdk";
 
-const anthropic = new Anthropic({
+export const anthropic = new Anthropic({
   apiKey: process.env.ANTHROPIC_API_KEY,
 });
 
@@ -47,7 +47,7 @@ export async function streamChatResponse(
 ) {
   let contextInfo = "";
   if (context) {
-    const parts = [];
+    const parts: string[] = [];
     if (context.userName) parts.push(`User: ${context.userName}`);
     if (context.userRole) parts.push(`Role: ${context.userRole}`);
     if (context.currentCourse) parts.push(`Viewing course: ${context.currentCourse}`);
@@ -76,7 +76,7 @@ export async function getChatResponse(
 ): Promise<string> {
   let contextInfo = "";
   if (context) {
-    const parts = [];
+    const parts: string[] = [];
     if (context.userName) parts.push(`User: ${context.userName}`);
     if (context.userRole) parts.push(`Role: ${context.userRole}`);
     if (context.currentCourse) parts.push(`Viewing course: ${context.currentCourse}`);

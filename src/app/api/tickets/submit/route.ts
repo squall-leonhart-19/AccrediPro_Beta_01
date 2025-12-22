@@ -6,6 +6,18 @@ import { Resend } from "resend";
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 
+// Helper to classify ticket
+const classifyTicket = (subject: string, message: string) => {
+  const text = (subject + " " + message).toLowerCase();
+  if (text.includes("refund")) return "REFUND";
+  if (text.match(/money|charge|bill|invoice|payment|card|bank/)) return "BILLING";
+  if (text.match(/login|password|access|cant log|can't log|error|bug|broken|crash/)) return "TECHNICAL";
+  if (text.match(/unlocked|locked|permission|module/)) return "ACCESS";
+  if (text.match(/certificate|diploma|exam|quiz|test|pass|fail/)) return "CERTIFICATES";
+  if (text.match(/content|video|lesson|material/)) return "COURSE_CONTENT";
+  return "GENERAL";
+};
+
 // POST - Customer submits a new ticket
 export async function POST(request: NextRequest) {
   try {
@@ -31,7 +43,7 @@ export async function POST(request: NextRequest) {
         subject,
         customerName,
         customerEmail,
-        category: category || "GENERAL",
+        category: category || classifyTicket(subject, message),
         userId: session?.user?.id || null,
         messages: {
           create: {
