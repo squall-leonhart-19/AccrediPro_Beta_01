@@ -81,10 +81,13 @@ async function sendPurchaseToMeta(params: {
     clientIp?: string;
     userAgent?: string;
     externalId?: string;
+    fbp?: string;
+    fbc?: string;
 }): Promise<{ success: boolean; eventId?: string; error?: string }> {
     const {
         email, value, currency = "USD", contentName, firstName, lastName,
-        phone, city, state, zip, country, clientIp, userAgent, externalId
+        phone, city, state, zip, country, clientIp, userAgent, externalId,
+        fbp, fbc
     } = params;
 
     const eventId = crypto.randomUUID();
@@ -105,6 +108,8 @@ async function sendPurchaseToMeta(params: {
     // Tech info (not hashed)
     if (clientIp) userData.client_ip_address = clientIp;
     if (userAgent) userData.client_user_agent = userAgent;
+    if (fbp) userData.fbp = fbp;
+    if (fbc) userData.fbc = fbc;
     if (externalId) userData.external_id = [hashData(externalId)];
 
     const eventData = {
@@ -210,6 +215,12 @@ export async function POST(request: NextRequest) {
         const clientIp = contact.ip_address || data.ip_address || "";
         // CF doesn't always send User Agent directly, but check
         const userAgent = data.user_agent || "";
+
+        // Extract Pixel Cookies (fbp/fbc)
+        // Check various locations where custom fields might appear
+        const customFields = contact.custom_fields || data.custom_fields || {};
+        const fbp = customFields.fbp || data.fbp || contact.fbp || body.fbp || "";
+        const fbc = customFields.fbc || data.fbc || contact.fbc || body.fbc || "";
 
         if (!email) {
             console.error("[CF Purchase] No email in payload");
@@ -349,12 +360,12 @@ export async function POST(request: NextRequest) {
             lastName: user.lastName || lastName,
             phone: user.phone || phone,
             externalId: user.id,
-            city,
-            state,
             zip,
             country,
             clientIp,
-            userAgent
+            userAgent,
+            fbp,
+            fbc
         });
 
         // =====================================================
