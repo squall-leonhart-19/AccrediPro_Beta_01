@@ -2,6 +2,7 @@
 import { useState, useEffect } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
+import { trackViewContent, trackAddToCart } from '@/components/tracking/meta-pixel';
 import './styles.css';
 
 // Student avatars from CSV
@@ -100,250 +101,289 @@ function StickyCTA() {
     return (
         <div className={`fm-sticky ${visible ? 'visible' : ''}`}>
             <span>🎓 22 Certs • 9 Accreditations • $97</span>
-            <a href="https://www.accredipro.school/intfun-chk" className="fm-sticky-btn">Enroll Now →</a>
+            <a href="https://www.accredipro.school/intfun-chk" onClick={handleATC} className="fm-sticky-btn">Enroll Now →</a>
         </div>
     );
 }
 
 export default function FunctionalMedicinePage() {
-    return (
-        <div className="fm-page">
-            {/* Header */}
-            <header className="fm-header">
-                <img src="/newlogo.webp" alt="AccrediPro" className="fm-logo" />
-                <a href="https://www.accredipro.school/intfun-chk" className="fm-header-cta">Start Certification →</a>
-            </header>
+    // 1. Qualified ViewContent > 3s
+    useEffect(() => {
+        const timer = setTimeout(() => {
+            trackViewContent({
+                content_name: "Functional Medicine Certification",
+                content_category: "Course",
+                value: 97
+            });
+            console.log("AccrediPro Pixel: Fired Qualified ViewContent (3s)");
+        }, 3000);
 
-            {/* Accred Bar */}
-            <div className="fm-accred-bar">
-                <p>🏆 Internationally Accredited by 9 Bodies</p>
-                <img src="/All_Logos.png" alt="9 Accreditations" />
-            </div>
+        return () => clearTimeout(timer);
+    }, []);
 
-            {/* Hero */}
-            <section className="fm-hero">
-                <h1>Get Certified as a Functional Medicine Practitioner</h1>
-                <p className="fm-hero-sub">
-                    Master root-cause healing, earn <strong>22 professional certifications</strong>, and join 1,247+ graduates now earning <strong>$75-200/hour</strong> — without medical school.
-                </p>
+    // Add To Cart Handler
+    const handleATC = () => {
+        trackAddToCart({
+            content_name: "Functional Medicine Certification",
+            value: 97,
+            currency: "USD"
+        });
+        console.log("AccrediPro Pixel: Fired AddToCart");
+    };
 
-                <div className="fm-social">
-                    <div className="fm-avatars">
-                        {studentAvatars.slice(0, 5).map((url, i) => (
-                            <img key={i} src={url} alt="" />
+    export default function FunctionalMedicinePage() {
+        // 1. Qualified ViewContent > 3s
+        useEffect(() => {
+            const timer = setTimeout(() => {
+                trackViewContent({
+                    content_name: "Functional Medicine Certification",
+                    content_category: "Course",
+                    value: 97
+                });
+                console.log("AccrediPro Pixel: Fired Qualified ViewContent (3s)");
+            }, 3000);
+
+            return () => clearTimeout(timer);
+        }, []);
+
+        return (
+            <div className="fm-page">
+                {/* Header */}
+                <header className="fm-header">
+                    <img src="/newlogo.webp" alt="AccrediPro" className="fm-logo" />
+                    <a href="https://www.accredipro.school/intfun-chk" onClick={handleATC} className="fm-header-cta">Start Certification →</a>
+                </header>
+
+                {/* Accred Bar */}
+                <div className="fm-accred-bar">
+                    <p>🏆 Internationally Accredited by 9 Bodies</p>
+                    <img src="/All_Logos.png" alt="9 Accreditations" />
+                </div>
+
+                {/* Hero */}
+                <section className="fm-hero">
+                    <h1>Get Certified as a Functional Medicine Practitioner</h1>
+                    <p className="fm-hero-sub">
+                        Master root-cause healing, earn <strong>22 professional certifications</strong>, and join 1,247+ graduates now earning <strong>$75-200/hour</strong> — without medical school.
+                    </p>
+
+                    <div className="fm-social">
+                        <div className="fm-avatars">
+                            {studentAvatars.slice(0, 5).map((url, i) => (
+                                <img key={i} src={url} alt="" />
+                            ))}
+                            <div className="fm-more">+1.2K</div>
+                        </div>
+                        <div className="fm-stars">★★★★★</div>
+                        <div className="fm-rating">4.9/5 from 1,247+ graduates</div>
+                    </div>
+
+                    <img src="/course_images/FunctionalMedicinePractictioner.jpeg" alt="Bundle" className="fm-bundle" />
+
+                    <a href="https://www.accredipro.school/intfun-chk" onClick={handleATC} className="fm-cta">Start My Certification → Only $97 Today</a>
+                    <p className="fm-guarantee">30-Day Money-Back Guarantee • Lifetime Access • Instant Access</p>
+
+                    <div className="fm-stats">
+                        <div><span>21</span>Modules</div>
+                        <div><span>22</span>Certifications</div>
+                        <div><span>9</span>Accreditations</div>
+                        <div><span>100+</span>Hours</div>
+                    </div>
+                </section>
+
+                {/* Master Certificate - ENHANCED */}
+                <section className="fm-master-cert">
+                    <div className="fm-master-badge">🏆 YOUR CROWNING ACHIEVEMENT</div>
+                    <h2>Your Master Certification</h2>
+                    <p className="fm-master-sub">
+                        This isn't just a certificate — it's <strong>proof of your transformation</strong>. After completing all 21 modules,
+                        you'll receive this prestigious Master Certification, recognized by <strong>9 international accreditation bodies</strong>
+                        and valid in <strong>30+ countries worldwide</strong>.
+                    </p>
+
+                    <div className="fm-master-grid">
+                        <div className="fm-master-img-wrap">
+                            <img src="/certificates_img/FUNCTIONAL_MEDICINE_CERTIFICATE.webp" alt="Master Certificate" className="fm-master-img" />
+                        </div>
+                        <div className="fm-master-features">
+                            <div className="fm-master-feature">
+                                <span className="fm-feature-icon">✓</span>
+                                <div>
+                                    <strong>Legally Practice in 30+ Countries</strong>
+                                    <p>Your certification carries international weight and recognition</p>
+                                </div>
+                            </div>
+                            <div className="fm-master-feature">
+                                <span className="fm-feature-icon">✓</span>
+                                <div>
+                                    <strong>Professional Insurance Eligible</strong>
+                                    <p>Get covered by major insurers — we've had 100% approval rate</p>
+                                </div>
+                            </div>
+                            <div className="fm-master-feature">
+                                <span className="fm-feature-icon">✓</span>
+                                <div>
+                                    <strong>Post-Nominal Letters: FMPrac</strong>
+                                    <p>Add credentials after your name — instant credibility</p>
+                                </div>
+                            </div>
+                            <div className="fm-master-feature">
+                                <span className="fm-feature-icon">✓</span>
+                                <div>
+                                    <strong>Lifetime Validity</strong>
+                                    <p>Never expires, never needs renewal — yours forever</p>
+                                </div>
+                            </div>
+                            <div className="fm-master-feature">
+                                <span className="fm-feature-icon">✓</span>
+                                <div>
+                                    <strong>Verified & Trackable</strong>
+                                    <p>Each certificate has a unique ID clients can verify online</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div className="fm-master-quote">
+                        <p>"When I showed my certificate to my first potential client, she immediately said 'I've never seen so many accreditations on one certificate — you're clearly the real deal.' I signed her that day."</p>
+                        <div className="fm-master-author">— Jennifer M., Former ICU Nurse, now earning $12K/month</div>
+                    </div>
+                </section>
+
+                {/* 9 Accreditations */}
+                <section className="fm-accreditations">
+                    <span className="fm-accred-badge">🏆 OFFICIAL RECOGNITION</span>
+                    <h2>9 Official Accreditations</h2>
+                    <p className="fm-accred-sub">The World's Most Accredited Functional Medicine Program</p>
+
+                    <div className="fm-accred-features">
+                        <div>✓ Insurance Eligible</div>
+                        <div>✓ CPD Certified</div>
+                        <div>✓ Global Recognition</div>
+                        <div>✓ Post-Nominal Letters</div>
+                    </div>
+
+                    <div className="fm-accred-stats">
+                        <div><span>9</span>Accreditation Bodies</div>
+                        <div><span>30+</span>Countries Recognized</div>
+                        <div><span>100%</span>Insurance Eligibility</div>
+                        <div><span>∞</span>Lifetime Validity</div>
+                    </div>
+
+                    <img src="/All_Logos.png" alt="Accreditation Logos" className="fm-accred-logos" />
+                </section>
+
+                {/* Benefits */}
+                <section className="fm-benefits">
+                    <h2>Everything You Need to Succeed</h2>
+                    <div className="fm-benefits-grid">
+                        <div className="fm-benefit"><span>🎓</span><h4>No Medical Degree Needed</h4><p>Start from any background</p></div>
+                        <div className="fm-benefit"><span>♾️</span><h4>Lifetime Access</h4><p>All content forever + updates</p></div>
+                        <div className="fm-benefit"><span>👥</span><h4>Exclusive Community</h4><p>1,247+ practitioners</p></div>
+                        <div className="fm-benefit"><span>👩‍🏫</span><h4>Coach Sarah</h4><p>Unlimited private mentoring</p></div>
+                        <div className="fm-benefit"><span>📋</span><h4>30 Pro Resources</h4><p>Forms, protocols, templates</p></div>
+                        <div className="fm-benefit"><span>💻</span><h4>Coach Workspace</h4><p>Manage clients & protocols</p></div>
+                    </div>
+                </section>
+
+                {/* Modules */}
+                <section className="fm-modules">
+                    <h2>21 Comprehensive Modules</h2>
+                    <p className="fm-modules-intro">Each module includes training AND an individual certification</p>
+                    <div className="fm-start-early">🚀 Start practicing after Module 1 — Build your practice while you learn!</div>
+
+                    <div className="fm-module-grid">
+                        {modules.map(m => (
+                            <div key={m.num} className="fm-module">
+                                <span className="fm-module-num">Module {m.num}</span>
+                                <h4>{m.title}</h4>
+                                <p>{m.desc}</p>
+                                <div className="fm-mini-cert">
+                                    <div className="fm-cert-title">Certificate</div>
+                                    <div className="fm-cert-name">{m.cert}</div>
+                                </div>
+                            </div>
                         ))}
-                        <div className="fm-more">+1.2K</div>
                     </div>
-                    <div className="fm-stars">★★★★★</div>
-                    <div className="fm-rating">4.9/5 from 1,247+ graduates</div>
-                </div>
 
-                <img src="/course_images/FunctionalMedicinePractictioner.jpeg" alt="Bundle" className="fm-bundle" />
+                    <a href="https://www.accredipro.school/intfun-chk" onClick={handleATC} className="fm-cta">Get All 22 Certifications → $97</a>
+                </section>
 
-                <a href="https://www.accredipro.school/intfun-chk" className="fm-cta">Start My Certification → Only $97 Today</a>
-                <p className="fm-guarantee">30-Day Money-Back Guarantee • Lifetime Access • Instant Access</p>
-
-                <div className="fm-stats">
-                    <div><span>21</span>Modules</div>
-                    <div><span>22</span>Certifications</div>
-                    <div><span>9</span>Accreditations</div>
-                    <div><span>100+</span>Hours</div>
-                </div>
-            </section>
-
-            {/* Master Certificate - ENHANCED */}
-            <section className="fm-master-cert">
-                <div className="fm-master-badge">🏆 YOUR CROWNING ACHIEVEMENT</div>
-                <h2>Your Master Certification</h2>
-                <p className="fm-master-sub">
-                    This isn't just a certificate — it's <strong>proof of your transformation</strong>. After completing all 21 modules,
-                    you'll receive this prestigious Master Certification, recognized by <strong>9 international accreditation bodies</strong>
-                    and valid in <strong>30+ countries worldwide</strong>.
-                </p>
-
-                <div className="fm-master-grid">
-                    <div className="fm-master-img-wrap">
-                        <img src="/certificates_img/FUNCTIONAL_MEDICINE_CERTIFICATE.webp" alt="Master Certificate" className="fm-master-img" />
-                    </div>
-                    <div className="fm-master-features">
-                        <div className="fm-master-feature">
-                            <span className="fm-feature-icon">✓</span>
-                            <div>
-                                <strong>Legally Practice in 30+ Countries</strong>
-                                <p>Your certification carries international weight and recognition</p>
-                            </div>
-                        </div>
-                        <div className="fm-master-feature">
-                            <span className="fm-feature-icon">✓</span>
-                            <div>
-                                <strong>Professional Insurance Eligible</strong>
-                                <p>Get covered by major insurers — we've had 100% approval rate</p>
-                            </div>
-                        </div>
-                        <div className="fm-master-feature">
-                            <span className="fm-feature-icon">✓</span>
-                            <div>
-                                <strong>Post-Nominal Letters: FMPrac</strong>
-                                <p>Add credentials after your name — instant credibility</p>
-                            </div>
-                        </div>
-                        <div className="fm-master-feature">
-                            <span className="fm-feature-icon">✓</span>
-                            <div>
-                                <strong>Lifetime Validity</strong>
-                                <p>Never expires, never needs renewal — yours forever</p>
-                            </div>
-                        </div>
-                        <div className="fm-master-feature">
-                            <span className="fm-feature-icon">✓</span>
-                            <div>
-                                <strong>Verified & Trackable</strong>
-                                <p>Each certificate has a unique ID clients can verify online</p>
+                {/* Success Story */}
+                <section className="fm-story">
+                    <h2>From Burnt-Out Nurse to $12K/Month</h2>
+                    <div className="fm-story-card">
+                        <img src={studentAvatars[0]} alt="" className="fm-story-img" />
+                        <div className="fm-story-content">
+                            <h3>Jennifer M.</h3>
+                            <p className="fm-story-role">Former ICU Nurse → Functional Medicine Practitioner</p>
+                            <p className="fm-story-quote">"After 20 years in nursing, I was burnt out. Within 6 months, I replaced my income working 20 hours a week from home. The 9 accreditations gave me instant credibility."</p>
+                            <div className="fm-story-results">
+                                <div><span>$12K</span>Monthly</div>
+                                <div><span>20hrs</span>Week</div>
+                                <div><span>47</span>Clients</div>
                             </div>
                         </div>
                     </div>
-                </div>
+                </section>
 
-                <div className="fm-master-quote">
-                    <p>"When I showed my certificate to my first potential client, she immediately said 'I've never seen so many accreditations on one certificate — you're clearly the real deal.' I signed her that day."</p>
-                    <div className="fm-master-author">— Jennifer M., Former ICU Nurse, now earning $12K/month</div>
-                </div>
-            </section>
-
-            {/* 9 Accreditations */}
-            <section className="fm-accreditations">
-                <span className="fm-accred-badge">🏆 OFFICIAL RECOGNITION</span>
-                <h2>9 Official Accreditations</h2>
-                <p className="fm-accred-sub">The World's Most Accredited Functional Medicine Program</p>
-
-                <div className="fm-accred-features">
-                    <div>✓ Insurance Eligible</div>
-                    <div>✓ CPD Certified</div>
-                    <div>✓ Global Recognition</div>
-                    <div>✓ Post-Nominal Letters</div>
-                </div>
-
-                <div className="fm-accred-stats">
-                    <div><span>9</span>Accreditation Bodies</div>
-                    <div><span>30+</span>Countries Recognized</div>
-                    <div><span>100%</span>Insurance Eligibility</div>
-                    <div><span>∞</span>Lifetime Validity</div>
-                </div>
-
-                <img src="/All_Logos.png" alt="Accreditation Logos" className="fm-accred-logos" />
-            </section>
-
-            {/* Benefits */}
-            <section className="fm-benefits">
-                <h2>Everything You Need to Succeed</h2>
-                <div className="fm-benefits-grid">
-                    <div className="fm-benefit"><span>🎓</span><h4>No Medical Degree Needed</h4><p>Start from any background</p></div>
-                    <div className="fm-benefit"><span>♾️</span><h4>Lifetime Access</h4><p>All content forever + updates</p></div>
-                    <div className="fm-benefit"><span>👥</span><h4>Exclusive Community</h4><p>1,247+ practitioners</p></div>
-                    <div className="fm-benefit"><span>👩‍🏫</span><h4>Coach Sarah</h4><p>Unlimited private mentoring</p></div>
-                    <div className="fm-benefit"><span>📋</span><h4>30 Pro Resources</h4><p>Forms, protocols, templates</p></div>
-                    <div className="fm-benefit"><span>💻</span><h4>Coach Workspace</h4><p>Manage clients & protocols</p></div>
-                </div>
-            </section>
-
-            {/* Modules */}
-            <section className="fm-modules">
-                <h2>21 Comprehensive Modules</h2>
-                <p className="fm-modules-intro">Each module includes training AND an individual certification</p>
-                <div className="fm-start-early">🚀 Start practicing after Module 1 — Build your practice while you learn!</div>
-
-                <div className="fm-module-grid">
-                    {modules.map(m => (
-                        <div key={m.num} className="fm-module">
-                            <span className="fm-module-num">Module {m.num}</span>
-                            <h4>{m.title}</h4>
-                            <p>{m.desc}</p>
-                            <div className="fm-mini-cert">
-                                <div className="fm-cert-title">Certificate</div>
-                                <div className="fm-cert-name">{m.cert}</div>
+                {/* Testimonials */}
+                <section className="fm-testimonials">
+                    <h2>What Our 1,247+ Graduates Say</h2>
+                    <div className="fm-testimonial-grid">
+                        {testimonials.map((t, i) => (
+                            <div key={i} className="fm-testimonial">
+                                <div className="fm-testimonial-header">
+                                    <img src={studentAvatars[t.avatar]} alt="" />
+                                    <div><h5>{t.name}</h5><span>{t.role}</span></div>
+                                </div>
+                                <div className="fm-testimonial-stars">★★★★★</div>
+                                <p>"{t.quote}"</p>
+                                <div className="fm-testimonial-result">{t.result}</div>
                             </div>
-                        </div>
-                    ))}
-                </div>
-
-                <a href="https://www.accredipro.school/intfun-chk" className="fm-cta">Get All 22 Certifications → $97</a>
-            </section>
-
-            {/* Success Story */}
-            <section className="fm-story">
-                <h2>From Burnt-Out Nurse to $12K/Month</h2>
-                <div className="fm-story-card">
-                    <img src={studentAvatars[0]} alt="" className="fm-story-img" />
-                    <div className="fm-story-content">
-                        <h3>Jennifer M.</h3>
-                        <p className="fm-story-role">Former ICU Nurse → Functional Medicine Practitioner</p>
-                        <p className="fm-story-quote">"After 20 years in nursing, I was burnt out. Within 6 months, I replaced my income working 20 hours a week from home. The 9 accreditations gave me instant credibility."</p>
-                        <div className="fm-story-results">
-                            <div><span>$12K</span>Monthly</div>
-                            <div><span>20hrs</span>Week</div>
-                            <div><span>47</span>Clients</div>
-                        </div>
+                        ))}
                     </div>
-                </div>
-            </section>
+                </section>
 
-            {/* Testimonials */}
-            <section className="fm-testimonials">
-                <h2>What Our 1,247+ Graduates Say</h2>
-                <div className="fm-testimonial-grid">
-                    {testimonials.map((t, i) => (
-                        <div key={i} className="fm-testimonial">
-                            <div className="fm-testimonial-header">
-                                <img src={studentAvatars[t.avatar]} alt="" />
-                                <div><h5>{t.name}</h5><span>{t.role}</span></div>
-                            </div>
-                            <div className="fm-testimonial-stars">★★★★★</div>
-                            <p>"{t.quote}"</p>
-                            <div className="fm-testimonial-result">{t.result}</div>
-                        </div>
-                    ))}
-                </div>
-            </section>
+                {/* Pricing */}
+                <section className="fm-pricing">
+                    <h2>Start Your Certification Today</h2>
+                    <p className="fm-pricing-sub">21 Modules • 22 Certifications • 9 Accreditations • Lifetime Access</p>
+                    <div className="fm-price-card">
+                        <div className="fm-price-top"><span className="fm-was">$997</span><span className="fm-save">SAVE 90%</span></div>
+                        <div className="fm-now">$97 <small>one-time</small></div>
+                        <ul className="fm-price-list">
+                            <li><span>✓</span> 21 Comprehensive Modules</li>
+                            <li><span>✓</span> 22 Professional Certifications</li>
+                            <li><span>✓</span> 9 International Accreditations</li>
+                            <li><span>✓</span> Unlimited Mentor Support</li>
+                            <li><span>✓</span> Private Community Access</li>
+                            <li><span>✓</span> 30 Professional Resources</li>
+                            <li><span>✓</span> Coach Workspace Access</li>
+                            <li><span>✓</span> Lifetime Access & Updates</li>
+                            <li><span>✓</span> 30-Day Money-Back Guarantee</li>
+                        </ul>
+                        <a href="https://www.accredipro.school/intfun-chk" onClick={handleATC} className="fm-cta-full">Start My Certification Now →</a>
+                        <p className="fm-instant">Instant Access • No Hidden Fees</p>
+                    </div>
+                </section>
 
-            {/* Pricing */}
-            <section className="fm-pricing">
-                <h2>Start Your Certification Today</h2>
-                <p className="fm-pricing-sub">21 Modules • 22 Certifications • 9 Accreditations • Lifetime Access</p>
-                <div className="fm-price-card">
-                    <div className="fm-price-top"><span className="fm-was">$997</span><span className="fm-save">SAVE 90%</span></div>
-                    <div className="fm-now">$97 <small>one-time</small></div>
-                    <ul className="fm-price-list">
-                        <li><span>✓</span> 21 Comprehensive Modules</li>
-                        <li><span>✓</span> 22 Professional Certifications</li>
-                        <li><span>✓</span> 9 International Accreditations</li>
-                        <li><span>✓</span> Unlimited Mentor Support</li>
-                        <li><span>✓</span> Private Community Access</li>
-                        <li><span>✓</span> 30 Professional Resources</li>
-                        <li><span>✓</span> Coach Workspace Access</li>
-                        <li><span>✓</span> Lifetime Access & Updates</li>
-                        <li><span>✓</span> 30-Day Money-Back Guarantee</li>
-                    </ul>
-                    <a href="https://www.accredipro.school/intfun-chk" className="fm-cta-full">Start My Certification Now →</a>
-                    <p className="fm-instant">Instant Access • No Hidden Fees</p>
-                </div>
-            </section>
+                {/* Final CTA */}
+                <section className="fm-final">
+                    <h2>Ready to Transform Your Career?</h2>
+                    <p>Join 1,247+ graduates earning $75-200/hour from home. No medical degree required.</p>
+                    <a href="https://www.accredipro.school/intfun-chk" onClick={handleATC} className="fm-cta">Enroll Now → Only $97</a>
+                </section>
 
-            {/* Final CTA */}
-            <section className="fm-final">
-                <h2>Ready to Transform Your Career?</h2>
-                <p>Join 1,247+ graduates earning $75-200/hour from home. No medical degree required.</p>
-                <a href="https://www.accredipro.school/intfun-chk" className="fm-cta">Enroll Now → Only $97</a>
-            </section>
+                {/* Footer */}
+                <footer className="fm-footer">
+                    <img src="/newlogo.webp" alt="AccrediPro" />
+                    <p>© 2025 AccrediPro Academy. All rights reserved.</p>
+                    <p><a href="/privacy-policy">Privacy</a> • <a href="/terms-of-service">Terms</a> • <a href="/contact">Contact</a></p>
+                </footer>
 
-            {/* Footer */}
-            <footer className="fm-footer">
-                <img src="/newlogo.webp" alt="AccrediPro" />
-                <p>© 2025 AccrediPro Academy. All rights reserved.</p>
-                <p><a href="/privacy-policy">Privacy</a> • <a href="/terms-of-service">Terms</a> • <a href="/contact">Contact</a></p>
-            </footer>
-
-            <EnrollmentPopup />
-            <StickyCTA />
-        </div>
-    );
-}
+                <EnrollmentPopup />
+                <StickyCTA />
+            </div>
+        );
+    }
