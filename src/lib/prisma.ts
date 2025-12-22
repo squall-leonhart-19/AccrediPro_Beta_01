@@ -17,3 +17,4 @@ export const prisma = globalForPrisma.prisma ?? prismaClientSingleton();
 if (process.env.NODE_ENV !== "production") globalForPrisma.prisma = prisma;
 
 export default prisma;
+// Trigger redeploy Mon Dec 22 02:12:22 CET 2025
