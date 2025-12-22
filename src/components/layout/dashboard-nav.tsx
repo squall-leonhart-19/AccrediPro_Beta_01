@@ -139,7 +139,7 @@ export function DashboardNav() {
           </div>
           <div>
             <span className="text-xl font-bold text-white">AccrediPro</span>
-            <p className="text-xs text-white/70">Academy</p>
+            <p className="text-xs text-white/70">Academy <span className="text-gold-400 font-mono text-[10px] ml-1">v2.0</span></p>
           </div>
         </div>
 
