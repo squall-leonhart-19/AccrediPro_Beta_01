@@ -50,7 +50,7 @@ const fullNavItems = [
   { href: "/certificates", label: "My Certificates", icon: Award, notificationKey: "certificates" as const, tourId: "certificates" },
   { href: "/my-library", label: "My Library", icon: Library, tourId: "my-library" },
   { href: "/ebooks", label: "Professional Library", icon: ShoppingBag, tourId: "ebooks" },
-  { href: "/training", label: "Training", icon: GraduationCap, tourId: "training" },
+  // { href: "/training", label: "Training", icon: GraduationCap, tourId: "training" },
   { href: "/help", label: "Help & Support", icon: HelpCircle, tourId: "help" },
   { href: "/profile", label: "My Account", icon: User, tourId: "profile" },
 ];
@@ -62,7 +62,7 @@ const getMiniDiplomaNavItems = (isLocked: boolean) => [
   { href: "/mini-diploma", label: "My Lessons", icon: GraduationCap, tourId: "mini-diploma" },
   { href: "/community/cmj94foua0000736vfwdlheir", label: "Introduce Yourself", icon: Users, tourId: "community" },
   { href: "/messages", label: "Chat with Sarah", icon: MessageSquare, notificationKey: "messages" as const, tourId: "messages" },
-  { href: "/training", label: "Masterclass Bonus", icon: Award, tourId: "training", locked: isLocked, unlocked: !isLocked },
+  // { href: "/training", label: "Masterclass Bonus", icon: Award, tourId: "training", locked: isLocked, unlocked: !isLocked },
 ];
 
 // Minimal nav for FM Preview users - Module 0 & 1 only
@@ -112,8 +112,8 @@ export function DashboardNav() {
   const navItems = isFMPreviewOnly
     ? getFMPreviewNavItems()
     : isMiniDiplomaUser
-    ? getMiniDiplomaNavItems(isMiniDiplomaOnly) // locked if not completed yet
-    : fullNavItems;
+      ? getMiniDiplomaNavItems(isMiniDiplomaOnly) // locked if not completed yet
+      : fullNavItems;
 
   const getNotificationCount = (key?: "messages" | "certificates" | "announcements") => {
     if (!key) return 0;

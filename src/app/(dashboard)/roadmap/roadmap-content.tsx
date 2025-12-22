@@ -126,10 +126,10 @@ const STATE_CONFIG: Record<string, {
 }> = {
     exploration: {
         welcomeMessage: "I'm so glad you're here. This is where your transformation begins — at your own pace, with full support.",
-        actionLabel: "Start My Free Mini Diploma",
-        actionHref: "/courses/functional-medicine-mini-diploma",
-        actionIcon: Gift,
-        motivation: "Your Mini Diploma gives you a real taste of what's ahead. No credit card, no pressure — just clarity about your path.",
+        actionLabel: "Start Certification",
+        actionHref: "/courses/functional-medicine-complete-certification",
+        actionIcon: Rocket,
+        motivation: "Your path to becoming a Certified Practitioner starts here. Join the program to unlock your career.",
         nextUnlockTitle: "Step 1: Certified Practitioner",
         nextUnlockBenefits: [
             "Full clinical certification with practitioner status",
@@ -392,7 +392,8 @@ export function RoadmapContent({ data, steps, userName, specialization }: Roadma
     // Steps 1-4 from props are the main certification steps
     // NOTE: ACTIVATION_CHALLENGE temporarily hidden - re-add when videos arrive
     // See: /docs/CHALLENGES_REACTIVATION.md
-    const allSteps = [MINI_DIPLOMA, GRADUATE_TRAINING, ...steps];
+    // NOTE: Removed MINI_DIPLOMA (Step 0) and GRADUATE_TRAINING (Step 0.5) to focus on Paid Tracks
+    const allSteps = [...steps];
 
     return (
         <div className="space-y-6 animate-fade-in">
