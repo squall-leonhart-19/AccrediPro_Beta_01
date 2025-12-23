@@ -202,18 +202,6 @@ export function StartHereClient({ user, userId, enrollments, tourComplete: initi
                 emoji: "💬",
                 reward: "+15 XP",
             },
-            {
-                id: "explore",
-                label: "Start Your First Lesson",
-                description: "Begin your Mini Diploma journey today!",
-                completed: false,
-                link: "/my-mini-diploma",
-                action: null,
-                icon: Play,
-                color: "burgundy",
-                emoji: "🎓",
-                reward: "+10 XP",
-            },
         ];
 
     const completedCount = checklist.filter(item => item.completed).length;
@@ -290,7 +278,7 @@ export function StartHereClient({ user, userId, enrollments, tourComplete: initi
                                             <Rocket className="w-3 h-3 text-burgundy-500" /> Your journey begins here
                                         </span>
                                         <span className="flex items-center gap-1">
-                                            <Star className="w-3 h-3 text-gold-500" /> Earn up to 80 XP!
+                                            <Star className="w-3 h-3 text-gold-500" /> Earn up to 55 XP!
                                         </span>
                                     </div>
                                 </div>
@@ -304,17 +292,17 @@ export function StartHereClient({ user, userId, enrollments, tourComplete: initi
 
                                         const content = (
                                             <div className={`group relative flex items-center gap-4 p-4 rounded-2xl border-2 transition-all duration-200 ${item.completed
-                                                    ? "bg-gradient-to-r from-green-50 to-emerald-50 border-green-200"
-                                                    : isNextStep
-                                                        ? "bg-gradient-to-r from-gold-50 to-amber-50 border-gold-300 shadow-md shadow-gold-100 hover:shadow-lg hover:shadow-gold-200 cursor-pointer"
-                                                        : "bg-gray-50 border-gray-200 hover:border-burgundy-200 hover:bg-burgundy-50/50 cursor-pointer"
+                                                ? "bg-gradient-to-r from-green-50 to-emerald-50 border-green-200"
+                                                : isNextStep
+                                                    ? "bg-gradient-to-r from-gold-50 to-amber-50 border-gold-300 shadow-md shadow-gold-100 hover:shadow-lg hover:shadow-gold-200 cursor-pointer"
+                                                    : "bg-gray-50 border-gray-200 hover:border-burgundy-200 hover:bg-burgundy-50/50 cursor-pointer"
                                                 }`}>
                                                 {/* Step indicator */}
                                                 <div className={`relative w-14 h-14 rounded-xl flex items-center justify-center flex-shrink-0 transition-all ${item.completed
-                                                        ? "bg-gradient-to-br from-green-500 to-emerald-600"
-                                                        : isNextStep
-                                                            ? "bg-gradient-to-br from-gold-400 to-amber-500 animate-pulse"
-                                                            : `bg-${item.color}-100`
+                                                    ? "bg-gradient-to-br from-green-500 to-emerald-600"
+                                                    : isNextStep
+                                                        ? "bg-gradient-to-br from-gold-400 to-amber-500 animate-pulse"
+                                                        : `bg-${item.color}-100`
                                                     }`}>
                                                     {item.completed ? (
                                                         <CheckCircle className="w-7 h-7 text-white" />
@@ -323,8 +311,8 @@ export function StartHereClient({ user, userId, enrollments, tourComplete: initi
                                                     )}
                                                     {/* Step number badge */}
                                                     <div className={`absolute -top-1 -right-1 w-5 h-5 rounded-full text-xs font-bold flex items-center justify-center ${item.completed
-                                                            ? "bg-green-600 text-white"
-                                                            : "bg-white shadow border border-gray-200 text-gray-600"
+                                                        ? "bg-green-600 text-white"
+                                                        : "bg-white shadow border border-gray-200 text-gray-600"
                                                         }`}>
                                                         {item.completed ? "✓" : stepNumber}
                                                     </div>
@@ -355,8 +343,8 @@ export function StartHereClient({ user, userId, enrollments, tourComplete: initi
                                                         <>
                                                             {item.reward && (
                                                                 <Badge className={`${isNextStep
-                                                                        ? "bg-gold-100 text-gold-700 border-gold-300"
-                                                                        : "bg-gray-100 text-gray-600 border-gray-200"
+                                                                    ? "bg-gold-100 text-gold-700 border-gold-300"
+                                                                    : "bg-gray-100 text-gray-600 border-gray-200"
                                                                     }`}>
                                                                     {item.reward}
                                                                 </Badge>
@@ -407,7 +395,7 @@ export function StartHereClient({ user, userId, enrollments, tourComplete: initi
                                                 <div className="w-16 h-16 bg-white/20 backdrop-blur rounded-full flex items-center justify-center mx-auto mb-3">
                                                     <Award className="w-8 h-8 text-white" />
                                                 </div>
-                                                <h3 className="text-xl font-bold mb-2">You're All Set! +80 XP Earned!</h3>
+                                                <h3 className="text-xl font-bold mb-2">You're All Set! +55 XP Earned!</h3>
                                                 <p className="text-white/90 text-sm max-w-md mx-auto">
                                                     Congratulations! You've completed all getting started steps. Now let's begin your learning journey!
                                                 </p>
