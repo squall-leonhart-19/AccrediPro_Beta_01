@@ -477,7 +477,7 @@ export function OnboardingWizard({ onComplete, userName, userId }: OnboardingWiz
                             ))}
                             <p className="text-center text-sm text-gray-500 mt-4 bg-gold-50 p-3 rounded-lg border border-gold-200">
                                 <TrendingUp className="w-4 h-4 inline mr-1 text-gold-600" />
-                                Our graduates average <span className="font-bold text-burgundy-700">$4,200/month</span> within their first year!
+                                Our graduates average <span className="font-bold text-burgundy-700">$9,200/month</span> within their first year!
                             </p>
                         </div>
                     )}
@@ -700,14 +700,6 @@ export function OnboardingWizard({ onComplete, userName, userId }: OnboardingWiz
                         )}
                     </div>
                     <div className="flex gap-3">
-                        {step === 8 && (
-                            <Button
-                                variant="ghost"
-                                onClick={handleSkip}
-                            >
-                                Skip for now
-                            </Button>
-                        )}
                         <Button
                             onClick={handleNext}
                             disabled={!canProceed()}
