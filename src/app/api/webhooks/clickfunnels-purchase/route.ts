@@ -184,9 +184,9 @@ function getCourseSlug(productName: string): string {
         }
     }
 
-    // Default to the main certification
-    console.log(`[CF Purchase] Product "${productName}" NOT MATCHED - defaulting to functional-medicine-certification`);
-    return "functional-medicine-certification";
+    // Default to the main certification (COMPLETE slug)
+    console.log(`[CF Purchase] Product "${productName}" NOT MATCHED - defaulting to functional-medicine-complete-certification`);
+    return "functional-medicine-complete-certification";
 }
 
 // Generate random password
@@ -385,19 +385,32 @@ export async function POST(request: NextRequest) {
         }
 
         // =====================================================
-        // 3. SEND WELCOME EMAIL (ALWAYS - returning users may have forgotten credentials)
+        // 3. SEND WELCOME EMAIL (with deduplication)
         // =====================================================
 
-        try {
-            console.log(`[CF Purchase] Sending welcome email to ${normalizedEmail}...`);
-            const emailResult = await sendWelcomeEmail(normalizedEmail, firstName || "Student");
-            if (emailResult.success) {
-                console.log(`[CF Purchase] ✅ Welcome email sent successfully`);
-            } else {
-                console.error(`[CF Purchase] ❌ Welcome email failed:`, emailResult.error);
+        // Check for recent webhook to prevent duplicate emails
+        const recentWebhook = await prisma.webhookEvent.findFirst({
+            where: {
+                eventType: "clickfunnels.purchase",
+                processedAt: { gte: new Date(Date.now() - 5 * 60 * 1000) }, // Last 5 minutes
+                payload: { path: ["_processed", "email"], equals: normalizedEmail },
+            },
+        });
+
+        if (recentWebhook && !isNewUser) {
+            console.log(`[CF Purchase] ⏭️ Skipping duplicate email for ${normalizedEmail} (recent webhook found)`);
+        } else {
+            try {
+                console.log(`[CF Purchase] Sending welcome email to ${normalizedEmail}...`);
+                const emailResult = await sendWelcomeEmail(normalizedEmail, firstName || "Student");
+                if (emailResult.success) {
+                    console.log(`[CF Purchase] ✅ Welcome email sent successfully`);
+                } else {
+                    console.error(`[CF Purchase] ❌ Welcome email failed:`, emailResult.error);
+                }
+            } catch (emailError) {
+                console.error("[CF Purchase] ❌ Exception sending welcome email:", emailError);
             }
-        } catch (emailError) {
-            console.error("[CF Purchase] ❌ Exception sending welcome email:", emailError);
         }
 
         // Also send enrollment confirmation if we enrolled them
