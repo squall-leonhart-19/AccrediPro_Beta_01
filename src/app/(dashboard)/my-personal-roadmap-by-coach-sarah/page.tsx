@@ -72,8 +72,8 @@ async function getRoadmapData(userId: string): Promise<RoadmapData> {
     const user = await prisma.user.findUnique({
         where: { id: userId },
         select: {
-            name: true,
             firstName: true,
+            lastName: true,
             email: true,
             createdAt: true,
             miniDiplomaCompletedAt: true,
@@ -81,7 +81,7 @@ async function getRoadmapData(userId: string): Promise<RoadmapData> {
     });
 
     const miniDiplomaCompleted = !!user?.miniDiplomaCompletedAt;
-    const userName = user?.firstName || user?.name?.split(" ")[0] || "Practitioner";
+    const userName = user?.firstName || user?.lastName || "Practitioner";
     const userEmail = user?.email || "";
     const memberSince = user?.createdAt
         ? new Date(user.createdAt).toLocaleDateString("en-US", { month: "long", year: "numeric" })
