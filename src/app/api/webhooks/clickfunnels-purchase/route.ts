@@ -40,8 +40,15 @@ const PRODUCT_COURSE_MAP: Record<string, string> = {
     "fm cert": "functional-medicine-complete-certification",
     "functional medicine": "functional-medicine-complete-certification",
     "practitioner": "functional-medicine-complete-certification",
+    "practictioner": "functional-medicine-complete-certification", // Typo in CF
     "complete certification": "functional-medicine-complete-certification",
     "complete-certification": "functional-medicine-complete-certification",
+    // NEW: Coach Business Toolkit & Integrative Health products
+    "coach": "functional-medicine-complete-certification",
+    "toolkit": "functional-medicine-complete-certification",
+    "business toolkit": "functional-medicine-complete-certification",
+    "integrative": "functional-medicine-complete-certification",
+    "integrative health": "functional-medicine-complete-certification",
 
     // Pro Accelerator ($397 XMAS)
     "fm-pro-accelerator": "fm-pro-accelerator",
