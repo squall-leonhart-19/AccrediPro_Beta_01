@@ -105,20 +105,33 @@ async function sendPurchaseToMeta(params: {
 // Add your ClickFunnels product IDs here
 const PRODUCT_COURSE_MAP: Record<string, string> = {
   // FM Mini Diploma ($27)
-  "fm-mini-diploma": "fm-mini-diploma",
-  "fm_mini_diploma": "fm-mini-diploma",
+  "fm-mini-diploma": "integrative-health-functional-medicine-mini-diploma",
+  "fm_mini_diploma": "integrative-health-functional-medicine-mini-diploma",
+  "mini-diploma": "integrative-health-functional-medicine-mini-diploma",
+  "mini diploma": "integrative-health-functional-medicine-mini-diploma",
 
-  // FM Certification ($197 - Christmas offer)
-  "fm-certification": "fm-certification",
-  "fm_certification": "fm-certification",
+  // FM Certification (Main product - maps to complete certification)
+  "fm-certification": "functional-medicine-complete-certification",
+  "fm_certification": "functional-medicine-complete-certification",
+  "certification": "functional-medicine-complete-certification",
+  "practitioner": "functional-medicine-complete-certification",
+  "coach": "functional-medicine-complete-certification",
+  "toolkit": "functional-medicine-complete-certification",
+  "business toolkit": "functional-medicine-complete-certification",
+  "integrative": "functional-medicine-complete-certification",
+  "integrative health": "functional-medicine-complete-certification",
 
   // OTO1: Pro Accelerator ($397)
   "fm-pro-accelerator": "fm-pro-accelerator",
   "fm_pro_accelerator": "fm-pro-accelerator",
+  "accelerator": "fm-pro-accelerator",
+  "pro-accelerator": "fm-pro-accelerator",
 
   // OTO2: 10-Client Guarantee ($297)
-  "fm-client-guarantee": "fm-client-guarantee",
-  "fm_client_guarantee": "fm-client-guarantee",
+  "fm-client-guarantee": "fm-10-client-guarantee",
+  "fm_client_guarantee": "fm-10-client-guarantee",
+  "client guarantee": "fm-10-client-guarantee",
+  "10-client": "fm-10-client-guarantee",
 };
 
 // Product prices for Meta CAPI (fallback if not in payload)
@@ -280,8 +293,8 @@ export async function POST(request: NextRequest) {
 
     // Verify webhook signature if secret is configured
     const signature = request.headers.get("X-Signature") ||
-                     request.headers.get("x-clickfunnels-signature") ||
-                     request.headers.get("x-webhook-signature");
+      request.headers.get("x-clickfunnels-signature") ||
+      request.headers.get("x-webhook-signature");
     const secret = process.env.CLICKFUNNELS_WEBHOOK_SECRET || "";
 
     // Log incoming webhook for debugging
@@ -426,23 +439,25 @@ export async function POST(request: NextRequest) {
     }
 
     // 2. Determine which course to enroll
-    let courseSlug = "fm-mini-diploma"; // Default to Mini Diploma
+    let courseSlug = "functional-medicine-complete-certification"; // Default to main certification
 
     if (productId && PRODUCT_COURSE_MAP[productId]) {
       courseSlug = PRODUCT_COURSE_MAP[productId];
     } else if (productName) {
-      // Try to match by product name
+      // Try to match by product name keywords
       const lowerName = productName.toLowerCase();
-      if (lowerName.includes("mini diploma") || lowerName.includes("mini-diploma")) {
-        courseSlug = "fm-mini-diploma";
-      } else if (lowerName.includes("certification") || lowerName.includes("fm cert")) {
-        courseSlug = "fm-certification";
-      } else if (lowerName.includes("accelerator") || lowerName.includes("pro acc")) {
-        courseSlug = "fm-pro-accelerator";
-      } else if (lowerName.includes("guarantee") || lowerName.includes("client")) {
-        courseSlug = "fm-client-guarantee";
+
+      // Check all product keywords
+      for (const [key, slug] of Object.entries(PRODUCT_COURSE_MAP)) {
+        if (lowerName.includes(key)) {
+          courseSlug = slug;
+          console.log(`[CF] Product "${productName}" matched keyword "${key}" -> ${slug}`);
+          break;
+        }
       }
     }
+
+    console.log(`[CF] Determined course slug: ${courseSlug} for product: ${productName || productId}`);
 
     // Find the course
     const course = await prisma.course.findFirst({
@@ -598,49 +613,27 @@ export async function POST(request: NextRequest) {
       },
     });
 
-    // 6. Add marketing tags for tracking
+    // 6. Add product-specific tags using UserTag (same as clickfunnels-purchase webhook)
     try {
-      // General CF purchase tag
-      const purchaseTag = await prisma.marketingTag.findFirst({
-        where: { slug: "clickfunnels_purchase" },
-      });
-
-      if (purchaseTag) {
-        await prisma.userMarketingTag.upsert({
-          where: {
-            userId_tagId: { userId: user.id, tagId: purchaseTag.id },
-          },
-          update: {},
-          create: {
-            userId: user.id,
-            tagId: purchaseTag.id,
-            source: "ClickFunnels",
-          },
-        });
-      }
-
-      // Product-specific tag (e.g., fm_certification_purchased)
+      // Product-specific tag (e.g., functional_medicine_complete_certification_purchased)
       const productTagSlug = `${courseSlug.replace(/-/g, "_")}_purchased`;
-      const productTag = await prisma.marketingTag.findFirst({
-        where: { slug: productTagSlug },
+
+      await prisma.userTag.upsert({
+        where: { userId_tag: { userId: user.id, tag: productTagSlug } },
+        update: {},
+        create: { userId: user.id, tag: productTagSlug },
       });
 
-      if (productTag) {
-        await prisma.userMarketingTag.upsert({
-          where: {
-            userId_tagId: { userId: user.id, tagId: productTag.id },
-          },
-          update: {},
-          create: {
-            userId: user.id,
-            tagId: productTag.id,
-            source: "ClickFunnels",
-          },
-        });
-        console.log(`[Tag] Added ${productTagSlug} to user ${normalizedEmail}`);
-      }
+      // General purchase tag
+      await prisma.userTag.upsert({
+        where: { userId_tag: { userId: user.id, tag: "clickfunnels_purchase" } },
+        update: {},
+        create: { userId: user.id, tag: "clickfunnels_purchase" },
+      });
+
+      console.log(`[CF] ✅ Added tags: ${productTagSlug}, clickfunnels_purchase to ${normalizedEmail}`);
     } catch (tagError) {
-      console.error("Failed to add marketing tags:", tagError);
+      console.error("[CF] Failed to add tags:", tagError);
     }
 
     return NextResponse.json({
