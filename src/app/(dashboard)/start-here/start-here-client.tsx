@@ -139,7 +139,7 @@ export function StartHereClient({ user, userId, enrollments, tourComplete: initi
     };
 
     // Calculate checklist progress - Reordered for best user experience
-    // SIMPLIFIED: Removed personalization questions per user request
+    // Personalization questions trigger the OnboardingWizard modal
     const checklist: {
         id: string;
         label: string;
@@ -152,6 +152,18 @@ export function StartHereClient({ user, userId, enrollments, tourComplete: initi
         emoji: string;
         reward?: string;
     }[] = [
+            {
+                id: "personalize",
+                label: "Customize Your Experience",
+                description: "Tell us about your goals so we can personalize your journey",
+                completed: questionsCompleted,
+                link: null,
+                action: questionsCompleted ? null : () => setShowQuestionsWizard(true),
+                icon: Wand2,
+                color: "burgundy",
+                emoji: "✨",
+                reward: "+25 XP",
+            },
             {
                 id: "tutorial",
                 label: "Take the Platform Tour",
@@ -278,7 +290,7 @@ export function StartHereClient({ user, userId, enrollments, tourComplete: initi
                                             <Rocket className="w-3 h-3 text-burgundy-500" /> Your journey begins here
                                         </span>
                                         <span className="flex items-center gap-1">
-                                            <Star className="w-3 h-3 text-gold-500" /> Earn up to 55 XP!
+                                            <Star className="w-3 h-3 text-gold-500" /> Earn up to 80 XP!
                                         </span>
                                     </div>
                                 </div>
@@ -395,7 +407,7 @@ export function StartHereClient({ user, userId, enrollments, tourComplete: initi
                                                 <div className="w-16 h-16 bg-white/20 backdrop-blur rounded-full flex items-center justify-center mx-auto mb-3">
                                                     <Award className="w-8 h-8 text-white" />
                                                 </div>
-                                                <h3 className="text-xl font-bold mb-2">You're All Set! +55 XP Earned!</h3>
+                                                <h3 className="text-xl font-bold mb-2">You're All Set! +80 XP Earned!</h3>
                                                 <p className="text-white/90 text-sm max-w-md mx-auto">
                                                     Congratulations! You've completed all getting started steps. Now let's begin your learning journey!
                                                 </p>
