@@ -1,0 +1,812 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lesson 3.5: Menstrual Cycle Mapping and Infradian Tracking</title>
+    <style>
+        /* Base & Reset */
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Georgia, 'Times New Roman', serif;
+            line-height: 1.8;
+            color: #2d2d2d;
+            background: #f8f6f3;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Main Container */
+        .lesson-container {
+            max-width: 860px;
+            margin: 0 auto;
+            padding: 40px 30px;
+            background: #ffffff;
+            min-height: 100vh;
+            box-shadow: 0 0 60px rgba(0, 0, 0, 0.08);
+        }
+
+        /* Brand Header */
+        .brand-header {
+            text-align: center;
+            padding-bottom: 30px;
+            margin-bottom: 35px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .brand-logo {
+            max-width: 220px;
+            height: auto;
+            margin-bottom: 5px;
+        }
+
+        /* Module Header - PURPLE theme for Hormone Health */
+        .module-header {
+            background: linear-gradient(135deg, #6d28d9 0%, #8b5cf6 100%);
+            padding: 35px 35px 30px;
+            border-radius: 16px;
+            margin-bottom: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .module-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+            transform: translate(100px, -100px);
+        }
+
+        .module-header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, #B8860B, #D4A84B, #B8860B);
+        }
+
+        .module-label {
+            margin: 0;
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.75);
+            text-transform: uppercase;
+            letter-spacing: 2.5px;
+            font-weight: 500;
+        }
+
+        .lesson-title {
+            margin: 10px 0 0 0;
+            font-size: 28px;
+            color: #ffffff;
+            font-weight: 700;
+            line-height: 1.3;
+            position: relative;
+        }
+
+        .lesson-meta {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+            padding-top: 18px;
+            border-top: 1px solid rgba(255, 255, 255, 0.15);
+            flex-wrap: wrap;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.85);
+            background: rgba(255, 255, 255, 0.1);
+            padding: 5px 12px;
+            border-radius: 4px;
+        }
+
+        /* Table of Contents */
+        .toc-box {
+            background: linear-gradient(135deg, #fafafa 0%, #f5f5f5 100%);
+            border-radius: 14px;
+            padding: 24px 28px;
+            margin-bottom: 35px;
+            border: 1px solid #e8e8e8;
+        }
+
+        .toc-box .box-label {
+            font-weight: 600;
+            color: #6d28d9;
+            margin: 0 0 18px 0;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .toc-list {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px 24px;
+        }
+
+        .toc-list li {
+            margin: 0;
+        }
+
+        .toc-list a {
+            display: flex;
+            align-items: center;
+            padding: 8px 12px;
+            color: #555;
+            text-decoration: none;
+            font-size: 14px;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+        }
+
+        .toc-list a:hover {
+            background: white;
+            color: #6d28d9;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+        }
+
+        .toc-list .section-num {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 26px;
+            height: 26px;
+            background: #6d28d9;
+            color: white;
+            font-weight: 600;
+            font-size: 11px;
+            border-radius: 6px;
+            margin-right: 12px;
+            flex-shrink: 0;
+        }
+
+        /* Learning Objectives */
+        .objectives-box {
+            background: #f5f3ff;
+            border: 2px solid #8b5cf6;
+            border-radius: 14px;
+            padding: 30px 35px;
+            margin-bottom: 40px;
+        }
+
+        .objectives-box .box-label {
+            font-weight: 600;
+            color: #6d28d9;
+            margin: 0 0 18px 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .objectives-box .box-label::before {
+            content: '🎯';
+            font-size: 18px;
+        }
+
+        .objectives-box ul {
+            margin: 0;
+            padding-left: 22px;
+        }
+
+        .objectives-box li {
+            margin-bottom: 14px;
+            font-size: 16px;
+            line-height: 1.7;
+        }
+
+        /* Key Terms Box */
+        .key-terms-box {
+            background: linear-gradient(135deg, #f0f4f8 0%, #e8ecf1 100%);
+            border-radius: 14px;
+            padding: 28px 30px;
+            margin: 40px 0;
+            border: 1px solid #d8dce0;
+        }
+
+        .key-terms-box .box-label {
+            font-weight: 600;
+            color: #6d28d9;
+            margin: 0 0 18px 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .terms-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 16px;
+        }
+
+        .term-item {
+            background: white;
+            padding: 16px 18px;
+            border-radius: 10px;
+            border-left: 4px solid #8b5cf6;
+        }
+
+        .term-item .term {
+            font-weight: 700;
+            color: #6d28d9;
+            font-size: 15px;
+            margin: 0 0 6px 0;
+        }
+
+        .term-item .definition {
+            font-size: 14px;
+            color: #555;
+            margin: 0;
+            line-height: 1.6;
+        }
+
+        /* Section Headings */
+        h2 {
+            font-size: 24px;
+            color: #6d28d9;
+            margin: 50px 0 20px 0;
+            font-weight: 600;
+            position: relative;
+            padding-bottom: 12px;
+        }
+
+        h2::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 60px;
+            height: 3px;
+            background: #B8860B;
+        }
+
+        /* Paragraphs */
+        p {
+            font-size: 17px;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        /* Highlights */
+        .highlight {
+            background: linear-gradient(180deg, transparent 60%, #E9D5FF 60%);
+            padding: 0 4px;
+            font-weight: 500;
+        }
+
+        /* Welcome/Intro Box */
+        .welcome-box {
+            background: linear-gradient(135deg, #f5f3ff 0%, #ede9fe 100%);
+            padding: 30px 35px;
+            border-radius: 14px;
+            margin-bottom: 40px;
+            border: 1px solid #ddd6fe;
+        }
+
+        .welcome-box h3 {
+            margin: 0 0 15px 0;
+            font-size: 20px;
+            color: #6d28d9;
+            font-weight: 600;
+        }
+
+        /* Statistics Box */
+        .stats-box {
+            background: linear-gradient(135deg, #6d28d9 0%, #8b5cf6 100%);
+            padding: 40px;
+            border-radius: 16px;
+            margin: 35px 0;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 25px;
+            position: relative;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 42px;
+            font-weight: 700;
+            color: white;
+            line-height: 1;
+            margin-bottom: 8px;
+        }
+
+        .stat-label {
+            font-size: 13px;
+            color: rgba(255, 255, 255, 0.85);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* Case Study Box */
+        .case-study {
+            background: linear-gradient(135deg, #f8f9fb 0%, #f0f2f5 100%);
+            border-radius: 16px;
+            padding: 0;
+            margin: 40px 0;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+        }
+
+        .case-study-header {
+            background: linear-gradient(135deg, #6d28d9 0%, #8b5cf6 100%);
+            padding: 20px 30px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .case-study-icon {
+            width: 45px;
+            height: 45px;
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+        }
+
+        .case-study-header .box-label {
+            font-weight: 600;
+            color: #ffffff;
+            margin: 0;
+            font-size: 16px;
+        }
+
+        .case-study-content {
+            padding: 28px 30px;
+        }
+
+        .patient-profile {
+            display: flex;
+            align-items: center;
+            gap: 18px;
+            padding: 18px 22px;
+            background: white;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            border: 1px solid #e5e5e5;
+        }
+
+        .patient-avatar {
+            width: 55px;
+            height: 55px;
+            background: linear-gradient(135deg, #8b5cf6, #6d28d9);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            color: white;
+        }
+
+        /* Data Table */
+        .data-table-container {
+            margin: 35px 0;
+            overflow-x: auto;
+            border-radius: 12px;
+            border: 1px solid #e5e5e5;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 15px;
+            background: white;
+        }
+
+        th {
+            background: #f3f4f6;
+            padding: 15px;
+            text-align: left;
+            font-weight: 600;
+            color: #6d28d9;
+            border-bottom: 2px solid #e5e5e5;
+        }
+
+        td {
+            padding: 15px;
+            border-bottom: 1px solid #eee;
+            vertical-align: top;
+        }
+
+        /* Check Understanding Box */
+        .check-understanding {
+            background: linear-gradient(135deg, #fdfbf7 0%, #f9f5ed 100%);
+            border: 2px solid #B8860B;
+            border-radius: 16px;
+            padding: 32px;
+            margin: 45px 0;
+        }
+
+        .check-understanding .box-label {
+            font-weight: 600;
+            color: #8B6914;
+            margin: 0 0 8px 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .question-item {
+            background: white;
+            border-radius: 12px;
+            padding: 22px 24px;
+            margin-bottom: 16px;
+            border: 1px solid #e8e4dc;
+            position: relative;
+        }
+
+        .question-number {
+            position: absolute;
+            top: -12px;
+            left: 20px;
+            background: #6d28d9;
+            color: white;
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            font-size: 13px;
+        }
+
+        .reveal-btn {
+            background: #6d28d9;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-size: 14px;
+            cursor: pointer;
+            transition: background 0.2s ease;
+        }
+
+        .answer-text {
+            display: none;
+            font-size: 14px;
+            color: #1e40af;
+            margin: 14px 0 0 0;
+            padding: 14px;
+            background: #eff6ff;
+            border-radius: 8px;
+        }
+
+        .answer-text.show {
+            display: block;
+        }
+
+        /* Takeaways */
+        .takeaways-box {
+            background: linear-gradient(135deg, #f5f5f5 0%, #e8e8e8 100%);
+            padding: 22px 25px;
+            margin-top: 35px;
+            border-radius: 8px;
+            border: 1px solid #ddd;
+        }
+
+        .takeaways-box .box-label {
+            font-weight: 600;
+            color: #6d28d9;
+            margin: 0 0 15px 0;
+            font-size: 16px;
+            text-transform: uppercase;
+        }
+
+        /* References Box */
+        .references-box {
+            margin-top: 50px;
+            padding: 30px;
+            background: #f9f9f9;
+            border-radius: 12px;
+            font-size: 14px;
+            color: #666;
+            border: 1px solid #eee;
+        }
+
+        .references-box h4 {
+            color: #333;
+            margin-top: 0;
+            text-transform: uppercase;
+            font-size: 12px;
+            letter-spacing: 1px;
+        }
+
+        .references-box ul {
+            padding-left: 20px;
+            margin: 0;
+        }
+
+        .references-box li {
+            margin-bottom: 8px;
+            line-height: 1.5;
+        }
+
+        /* Footer */
+        .lesson-footer {
+            text-align: center;
+            padding-top: 50px;
+            margin-top: 60px;
+            border-top: 1px solid #eee;
+        }
+
+        .footer-logo {
+            max-width: 140px;
+            height: auto;
+            margin-bottom: 15px;
+        }
+
+        .brand {
+            color: #6d28d9;
+            font-weight: 600;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="lesson-container">
+        <div class="brand-header">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="brand-logo">
+        </div>
+
+        <header class="module-header">
+            <p class="module-label">Module 3: Survey & Systematize (S)</p>
+            <h1 class="lesson-title">Lesson 3.5: Menstrual Cycle Mapping and Infradian Tracking</h1>
+            <div class="lesson-meta">
+                <span class="meta-item">35 min read</span>
+                <span class="meta-item">Lesson 5 of 6</span>
+            </div>
+        </header>
+
+        <!-- Table of Contents -->
+        <div class="toc-box">
+            <p class="box-label">In This Lesson</p>
+            <ul class="toc-list">
+                <li><a href="#section1"><span class="section-num">1</span>The Infradian Rhythm</a></li>
+                <li><a href="#section2"><span class="section-num">2</span>Phase 1: Follicular Rise</a></li>
+                <li><a href="#section3"><span class="section-num">3</span>Phase 2: Ovulatory Peak</a></li>
+                <li><a href="#section4"><span class="section-num">4</span>Phase 3: Luteal Mechanism</a></li>
+                <li><a href="#section5"><span class="section-num">5</span>Phase 4: Menstrual Reset</a></li>
+                <li><a href="#section6"><span class="section-num">6</span>Cervical Mucus Mapping</a></li>
+            </ul>
+        </div>
+
+        <!-- Learning Objectives -->
+        <div class="objectives-box">
+            <p class="box-label">Learning Objectives</p>
+            <ul>
+                <li>Define the <strong>Infradian Rhythm</strong> and its impact on female metabolism and neurochemistry.</li>
+                <li>Differentiate between the four phases of the menstrual cycle using objective biomarkers.</li>
+                <li>Identify "Red Flag" data points in cycle mapping that indicate hormonal dysfunction.</li>
+                <li>Implement a systematic tracking protocol for cervical mucus and secondary symptoms.</li>
+                <li>Explain how the <strong>SIGNAL Method™</strong> utilizes cycle data to drive clinical interventions.</li>
+            </ul>
+        </div>
+
+        <div class="welcome-box">
+            <h3>The Second Biological Clock</h3>
+            <p>While the 24-hour circadian rhythm is the primary temporal driver for male physiology, individuals with a female reproductive system operate on a second, powerful internal clock: the <span class="highlight">Infradian Rhythm</span>. This 28-day (approximate) cycle governs not just fertility, but metabolism, immune response, brain chemistry, and stress resilience. To treat a female client without cycle mapping is to ignore the very foundation of her biological reality.</p>
+        </div>
+
+        <h2 id="section1">The Infradian Rhythm: Beyond the 24-Hour Cycle</h2>
+        <p>The term "Infradian" refers to biological rhythms with a frequency of less than one cycle per 24 hours. For women in their reproductive years, this rhythm influences the <span class="highlight">Hypothalamic-Pituitary-Ovarian (HPO) axis</span>, creating predictable shifts in every physiological system. A 2021 study published in <i>Nature Communications</i> demonstrated that the female brain undergoes structural changes in gray matter volume across the cycle, particularly in areas related to emotional processing and memory.</p>
+
+        <p>In the <strong>SIGNAL Method™</strong>, we use cycle mapping as the ultimate "Survey" tool. By systematizing the collection of data across the four phases, we move away from "snapshot" testing (like a single blood draw) and toward a dynamic understanding of hormonal flow.</p>
+
+        <!-- Statistics Box -->
+        <div class="stats-box">
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <div class="stat-number">11.5%</div>
+                    <div class="stat-label">BMR Increase in Luteal Phase</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">25%</div>
+                    <div class="stat-label">Cortisol Sensitivity Shift</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">90%</div>
+                    <div class="stat-label">Experience PMS Symptoms</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">4-6</div>
+                    <div class="stat-label">Days of Peak Fertility</div>
+                </div>
+            </div>
+        </div>
+
+        <h2 id="section2">The Four Phases: A Biochemical Comparison</h2>
+        <p>To map accurately, we must understand the primary hormonal drivers of each phase. The following table outlines the physiological shifts that occur throughout the 28-day cycle.</p>
+
+        <div class="data-table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Phase</th>
+                        <th>Hormone Dominance</th>
+                        <th>Metabolic State</th>
+                        <th>Neurochemistry</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Follicular</strong></td>
+                        <td>Estrogen (Rising)</td>
+                        <td>Slower BMR; High Insulin Sensitivity</td>
+                        <td>Rising Dopamine & Cortisol Resilience</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Ovulatory</strong></td>
+                        <td>Estrogen (Peak) & LH</td>
+                        <td>Peak Physical Strength</td>
+                        <td>High Serotonin & Social Confidence</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Luteal</strong></td>
+                        <td>Progesterone (Dominant)</td>
+                        <td>Higher BMR (+100-300 kcal/day)</td>
+                        <td>High GABA; Lower Stress Threshold</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Menstrual</strong></td>
+                        <td>Low/Baseline Hormones</td>
+                        <td>Lowest BMR; Nutrient Depletion</td>
+                        <td>Lower Serotonin; Internal Focus</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <h2 id="section3">Systematizing the "Fifth Vital Sign"</h2>
+        <p>The American College of Obstetricians and Gynecologists (ACOG) has designated the menstrual cycle as the <span class="highlight">fifth vital sign</span>. As a Hormone Health Coach, your job is to teach clients how to "read" this sign through systematic tracking of three primary markers:</p>
+
+        <div class="key-terms-box">
+            <p class="box-label">🔍 Primary Mapping Markers</p>
+            <div class="terms-grid">
+                <div class="term-item">
+                    <p class="term">Cervical Mucus (CM)</p>
+                    <p class="definition">Hydrogel produced by the cervix that changes in response to estrogen levels. It is the most reliable real-time indicator of the fertile window.</p>
+                </div>
+                <div class="term-item">
+                    <p class="term">Basal Body Temperature (BBT)</p>
+                    <p class="definition">The body's lowest resting temperature. A 0.5°F–1.0°F rise confirms that ovulation has occurred due to progesterone's thermogenic effect.</p>
+                </div>
+                <div class="term-item">
+                    <p class="term">Cervical Position</p>
+                    <p class="definition">The physical height, softness, and openness of the cervix, which changes as the body prepares for potential conception.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Case Study 1 -->
+        <div class="case-study">
+            <div class="case-study-header">
+                <div class="case-study-icon">📋</div>
+                <div>
+                    <p class="box-label">Case Study: The "Mystery" Anxiety</p>
+                    <p style="color: rgba(255,255,255,0.8); margin:0; font-size:13px;">Identifying Luteal Phase Defect</p>
+                </div>
+            </div>
+            <div class="case-study-content">
+                <div class="patient-profile">
+                    <div class="patient-avatar">S</div>
+                    <div class="patient-info">
+                        <h4>Sarah, 34</h4>
+                        <p>Presenting with: Severe anxiety and insomnia occurring 7 days before menses.</p>
+                    </div>
+                </div>
+                <p><strong>Intervention:</strong> Sarah began cycle mapping using the SIGNAL Method™ protocol. We tracked BBT and CM for three cycles.</p>
+                <p><strong>Data Findings:</strong> Sarah’s BBT rose as expected post-ovulation, but the temperature elevation only lasted 8 days before her period began. This indicated a <strong>Short Luteal Phase</strong>.</p>
+                <p><strong>Outcome:</strong> By identifying the short luteal phase, we pinpointed <i>Progesterone Insufficiency</i>. We adjusted her protocol to include Vitamin B6 and Vitex (Glandular Support) and increased caloric intake during Phase 3. Within two cycles, her luteal phase extended to 12 days, and her anxiety scores decreased by 65%.</p>
+            </div>
+        </div>
+
+        <h2 id="section4">Interpreting Cervical Mucus (CM) Patterns</h2>
+        <p>CM is the most immediate way to assess <span class="highlight">Estrogen-Progesterone balance</span>. As Estrogen rises in the follicular phase, CM transitions from "Dry" to "Sticky" to "Creamy" and finally to "Egg White" (EWCM). EWCM is highly alkaline and nutrient-rich, designed to keep sperm alive for up to 5 days.</p>
+
+        <p><strong>Red Flags in CM Mapping:</strong></p>
+        <ul>
+            <li><strong>Continuous "Dry" Days:</strong> May indicate low estrogen or dehydration.</li>
+            <li><strong>Patchy/Interrupted CM:</strong> Often seen in PCOS or high-stress states where the HPO axis is "stuttering."</li>
+            <li><strong>Post-Ovulatory EWCM:</strong> May indicate estrogen dominance or a failure of progesterone to suppress estrogenic effects.</li>
+        </ul>
+
+        <h2 id="section5">The Metabolic Shift: Why "One Size Fits All" Fails</h2>
+        <p>Perhaps the most critical data point for lifestyle intervention is the <span class="highlight">Infradian Metabolic Shift</span>. Research indicates that the resting metabolic rate increases by 5.8% to 11.5% during the luteal phase (the "burn" phase). During this time, the body preferentially uses fat for fuel but requires more total glucose to maintain the corpus luteum and a higher core temperature.</p>
+
+        <p>If a client maintains a strict caloric deficit or high-intensity interval training (HIIT) during the late luteal phase, she is likely to trigger a <strong>Cortisol Spike</strong>. This stress response can inhibit progesterone production, leading to the very PMS symptoms she is trying to avoid. Systematic mapping allows the coach to "Sync" nutrition and movement to these metabolic realities.</p>
+
+        <h2 id="section6">Red Flags in the Data: When to Refer Out</h2>
+        <p>As a Hormone Health Coach, you are surveying for patterns. While you do not diagnose, you must recognize data that requires medical consultation:</p>
+        <ul>
+            <li><strong>Anovulatory Cycles:</strong> A period occurs, but there is no BBT rise or EWCM (common in perimenopause and PCOS).</li>
+            <li><strong>Mid-Cycle Bleeding:</strong> Can indicate polyps, fibroids, or severe estrogen/progesterone imbalance.</li>
+            <li><strong>Cycles < 21 days or > 35 days:</strong> Indicates significant HPO axis dysregulation.</li>
+            <li><strong>Prolonged Menstrual Bleeding:</strong> Heavy bleeding (>80ml) or bleeding lasting more than 7 days.</li>
+        </ul>
+
+        <!-- Check Your Understanding -->
+        <div class="check-understanding">
+            <p class="box-label">Check Your Understanding</p>
+            <p style="margin-bottom: 20px;">Test your knowledge of infradian tracking and mapping.</p>
+            
+            <div class="question-item">
+                <div class="question-number">1</div>
+                <p class="question-text">Why does the Basal Body Temperature (BBT) rise after ovulation?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-text">The BBT rises because of the thermogenic effect of Progesterone, which is secreted by the corpus luteum after the egg is released. This rise confirms that ovulation has successfully occurred.</div>
+            </div>
+
+            <div class="question-item">
+                <div class="question-number">2</div>
+                <p class="question-text">A client reports intense hunger and low energy 5 days before her period. Based on the Infradian Rhythm, what is the likely physiological cause?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-text">This is likely due to the increase in Basal Metabolic Rate (BMR) during the luteal phase. The body requires approximately 100-300 more calories per day to support the corpus luteum and higher body temperature. If intake isn't increased, the client will experience hunger and fatigue.</div>
+            </div>
+        </div>
+
+        <!-- Takeaways -->
+        <div class="takeaways-box">
+            <p class="box-label">Key Takeaways</p>
+            <ul>
+                <li><strong>The Infradian Rhythm</strong> is a 28-day biological clock that influences metabolism, brain chemistry, and immunity.</li>
+                <li><strong>Cycle Mapping</strong> transforms the menstrual cycle from a "period" into a comprehensive data set (The 'S' in SIGNAL).</li>
+                <li><strong>Cervical Mucus</strong> is the primary real-time biomarker for Estrogen levels and the fertile window.</li>
+                <li><strong>Metabolic needs change</strong> across the cycle; the luteal phase requires higher caloric intake and lower intensity movement.</li>
+                <li><strong>BBT tracking</strong> is the only way to confirm ovulation occurred (differentiating between a true period and a withdrawal bleed).</li>
+            </ul>
+        </div>
+
+        <!-- References -->
+        <div class="references-box">
+            <h4>References & Further Reading</h4>
+            <ul>
+                <li>Alvergne, A., et al. (2021). "The female brain across the menstrual cycle: Structural and functional changes." <i>Nature Communications</i>.</li>
+                <li>Vitti, A. (2020). "In the Flo: Unlock Your Hormonal Advantage and Revolutionize Your Life." <i>HarperCollins</i>.</li>
+                <li>Reed, B.G., et al. (2018). "The Normal Menstrual Cycle and the Control of Ovulation." <i>Endotext [Internet]</i>.</li>
+                <li>Benton, M.J., et al. (2020). "Variations in Resting Metabolic Rate during the Menstrual Cycle: A Systematic Review." <i>Journal of Women's Health</i>.</li>
+                <li>Gollenberg, A.L., et al. (2019). "Cervical mucus as a biomarker for reproductive health and hormonal status." <i>Fertility and Sterility</i>.</li>
+                <li>American College of Obstetricians and Gynecologists (2015). "Menstruation in girls and adolescents: using the menstrual cycle as a vital sign." <i>Paediatrics & Child Health</i>.</li>
+            </ul>
+        </div>
+
+        <footer class="lesson-footer">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="footer-logo">
+            <p class="brand">AccrediPro Academy Certified Hormone Health Coach</p>
+            <p class="copyright">&copy; 2024 AccrediPro Academy. All rights reserved. Confidential Practitioner Material.</p>
+        </footer>
+    </div>
+</body>
+
+</html>

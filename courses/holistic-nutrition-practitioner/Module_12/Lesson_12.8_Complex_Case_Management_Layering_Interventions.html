@@ -1,0 +1,787 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lesson 12.8: Complex Case Management: Layering Interventions</title>
+    <style>
+        /* Base & Reset */
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Georgia, 'Times New Roman', serif;
+            line-height: 1.8;
+            color: #2d2d2d;
+            background: #f8f6f3;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Main Container */
+        .lesson-container {
+            max-width: 860px;
+            margin: 0 auto;
+            padding: 40px 30px;
+            background: #ffffff;
+            min-height: 100vh;
+            box-shadow: 0 0 60px rgba(0, 0, 0, 0.08);
+        }
+
+        /* Brand Header */
+        .brand-header {
+            text-align: center;
+            padding-bottom: 30px;
+            margin-bottom: 35px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .brand-logo {
+            max-width: 220px;
+            height: auto;
+            margin-bottom: 5px;
+        }
+
+        /* Module Header - PURPLE theme for Autoimmunity/Chronic */
+        .module-header {
+            background: linear-gradient(135deg, #4c1d95 0%, #6d28d9 100%);
+            padding: 35px 35px 30px;
+            border-radius: 16px;
+            margin-bottom: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .module-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+            transform: translate(100px, -100px);
+        }
+
+        .module-header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, #B8860B, #D4A84B, #B8860B);
+        }
+
+        .module-label {
+            margin: 0;
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.75);
+            text-transform: uppercase;
+            letter-spacing: 2.5px;
+            font-weight: 500;
+        }
+
+        .lesson-title {
+            margin: 10px 0 0 0;
+            font-size: 28px;
+            color: #ffffff;
+            font-weight: 700;
+            line-height: 1.3;
+            position: relative;
+        }
+
+        .lesson-meta {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+            padding-top: 18px;
+            border-top: 1px solid rgba(255, 255, 255, 0.15);
+            flex-wrap: wrap;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.85);
+            background: rgba(255, 255, 255, 0.1);
+            padding: 5px 12px;
+            border-radius: 4px;
+        }
+
+        /* Table of Contents */
+        .toc-box {
+            background: linear-gradient(135deg, #fafafa 0%, #f5f5f5 100%);
+            border-radius: 14px;
+            padding: 24px 28px;
+            margin-bottom: 35px;
+            border: 1px solid #e8e8e8;
+        }
+
+        .toc-box .box-label {
+            font-weight: 600;
+            color: #4c1d95;
+            margin: 0 0 18px 0;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .toc-list {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px 24px;
+        }
+
+        .toc-list li {
+            margin: 0;
+        }
+
+        .toc-list a {
+            display: flex;
+            align-items: center;
+            padding: 8px 12px;
+            color: #555;
+            text-decoration: none;
+            font-size: 14px;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+        }
+
+        .toc-list a:hover {
+            background: white;
+            color: #4c1d95;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+        }
+
+        .toc-list .section-num {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 26px;
+            height: 26px;
+            background: #4c1d95;
+            color: white;
+            font-weight: 600;
+            font-size: 11px;
+            border-radius: 6px;
+            margin-right: 12px;
+            flex-shrink: 0;
+        }
+
+        @media (max-width: 600px) {
+            .toc-list {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Learning Objectives */
+        .objectives-box {
+            background: #f5f3ff;
+            border: 2px solid #6d28d9;
+            border-radius: 14px;
+            padding: 30px 35px;
+            margin-bottom: 40px;
+        }
+
+        .objectives-box .box-label {
+            font-weight: 600;
+            color: #4c1d95;
+            margin: 0 0 18px 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .objectives-box .box-label::before {
+            content: '🎯';
+            font-size: 18px;
+        }
+
+        .objectives-box ul {
+            margin: 0;
+            padding-left: 22px;
+        }
+
+        .objectives-box li {
+            margin-bottom: 14px;
+            font-size: 16px;
+            line-height: 1.7;
+        }
+
+        /* Key Terms Box */
+        .key-terms-box {
+            background: linear-gradient(135deg, #f0f4f8 0%, #e8ecf1 100%);
+            border-radius: 14px;
+            padding: 28px 30px;
+            margin: 40px 0;
+            border: 1px solid #d8dce0;
+        }
+
+        .key-terms-box .box-label {
+            font-weight: 600;
+            color: #4c1d95;
+            margin: 0 0 18px 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .terms-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 16px;
+        }
+
+        .term-item {
+            background: white;
+            padding: 16px 18px;
+            border-radius: 10px;
+            border-left: 4px solid #6d28d9;
+        }
+
+        .term-item .term {
+            font-weight: 700;
+            color: #4c1d95;
+            font-size: 15px;
+            margin: 0 0 6px 0;
+        }
+
+        .term-item .definition {
+            font-size: 14px;
+            color: #555;
+            margin: 0;
+            line-height: 1.6;
+        }
+
+        /* Section Headings */
+        h2 {
+            font-size: 24px;
+            color: #4c1d95;
+            margin: 50px 0 20px 0;
+            font-weight: 600;
+            position: relative;
+            padding-bottom: 12px;
+        }
+
+        h2::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 60px;
+            height: 3px;
+            background: #B8860B;
+        }
+
+        /* Paragraphs */
+        p {
+            font-size: 17px;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        /* Highlights */
+        .highlight {
+            background: linear-gradient(180deg, transparent 60%, #e9d5ff 60%);
+            padding: 0 4px;
+            font-weight: 500;
+        }
+
+        /* Welcome/Intro Box */
+        .welcome-box {
+            background: linear-gradient(135deg, #f5f3ff 0%, #ede9fe 100%);
+            padding: 30px 35px;
+            border-radius: 14px;
+            margin-bottom: 40px;
+            border: 1px solid #ddd6fe;
+        }
+
+        .welcome-box h3 {
+            margin: 0 0 15px 0;
+            font-size: 20px;
+            color: #4c1d95;
+            font-weight: 600;
+        }
+
+        /* Alert Boxes */
+        .alert-box {
+            padding: 26px 30px;
+            margin: 35px 0;
+            border-radius: 0 14px 14px 0;
+            border-left: 5px solid;
+        }
+
+        .alert-box .alert-label {
+            font-weight: 600;
+            margin: 0 0 12px 0;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .alert-box.warning { background: #fff8e6; border-left-color: #ff9800; }
+        .alert-box.warning .alert-label { color: #e65100; }
+        .alert-box.info { background: #e3f2fd; border-left-color: #2196f3; }
+        .alert-box.info .alert-label { color: #1565c0; }
+
+        /* Case Study Box */
+        .case-study {
+            background: linear-gradient(135deg, #f8f9fb 0%, #f0f2f5 100%);
+            border-radius: 16px;
+            padding: 0;
+            margin: 40px 0;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+        }
+
+        .case-study-header {
+            background: linear-gradient(135deg, #4c1d95 0%, #6d28d9 100%);
+            padding: 20px 30px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .case-study-icon {
+            width: 45px;
+            height: 45px;
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+        }
+
+        .case-study-header .box-label {
+            font-weight: 600;
+            color: #ffffff;
+            margin: 0;
+            font-size: 16px;
+        }
+
+        .case-study-content {
+            padding: 28px 30px;
+        }
+
+        .patient-profile {
+            display: flex;
+            align-items: center;
+            gap: 18px;
+            padding: 18px 22px;
+            background: white;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            border: 1px solid #e5e5e5;
+        }
+
+        .patient-avatar {
+            width: 55px;
+            height: 55px;
+            background: linear-gradient(135deg, #7c3aed, #4c1d95);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            color: white;
+            flex-shrink: 0;
+        }
+
+        /* Stats Box */
+        .stats-box {
+            background: linear-gradient(135deg, #4c1d95 0%, #6d28d9 100%);
+            padding: 40px;
+            border-radius: 16px;
+            margin: 35px 0;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 25px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .stat-item { text-align: center; }
+        .stat-number { font-size: 42px; font-weight: 700; color: white; margin-bottom: 8px; }
+        .stat-label { font-size: 11px; color: rgba(255, 255, 255, 0.85); text-transform: uppercase; letter-spacing: 1px; }
+
+        /* Tables */
+        .data-table-container {
+            margin: 30px 0;
+            overflow-x: auto;
+            border-radius: 12px;
+            border: 1px solid #e5e7eb;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 15px;
+            background: white;
+        }
+
+        th {
+            background: #f9fafb;
+            padding: 16px;
+            text-align: left;
+            font-weight: 600;
+            color: #4c1d95;
+            border-bottom: 2px solid #e5e7eb;
+        }
+
+        td {
+            padding: 16px;
+            border-bottom: 1px solid #e5e7eb;
+            color: #4b5563;
+            vertical-align: top;
+        }
+
+        /* Check Your Understanding */
+        .check-understanding {
+            background: linear-gradient(135deg, #fdfbf7 0%, #f9f5ed 100%);
+            border: 2px solid #B8860B;
+            border-radius: 16px;
+            padding: 32px;
+            margin: 45px 0;
+        }
+
+        .question-item {
+            background: white;
+            border-radius: 12px;
+            padding: 22px 24px;
+            margin-bottom: 16px;
+            border: 1px solid #e8e4dc;
+            position: relative;
+        }
+
+        .question-number {
+            position: absolute;
+            top: -12px;
+            left: 20px;
+            background: #4c1d95;
+            color: white;
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+        }
+
+        .reveal-btn {
+            background: #4c1d95;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+
+        .answer-text {
+            display: none;
+            padding: 15px;
+            background: #f5f3ff;
+            border-radius: 8px;
+            margin-top: 15px;
+            color: #4c1d95;
+        }
+
+        .answer-text.show { display: block; }
+
+        /* Takeaways & References */
+        .takeaways-box {
+            background: #f3f4f6;
+            padding: 25px;
+            border-radius: 12px;
+            margin-top: 40px;
+        }
+
+        .references-box {
+            margin-top: 40px;
+            padding: 25px;
+            background: #fff;
+            border: 1px solid #eee;
+            border-radius: 12px;
+            font-size: 14px;
+        }
+
+        .lesson-footer {
+            text-align: center;
+            padding: 40px 0;
+            border-top: 1px solid #eee;
+            margin-top: 40px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="lesson-container">
+        <div class="brand-header">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="brand-logo">
+        </div>
+
+        <header class="module-header">
+            <p class="module-label">Module 12: Advanced Protocols: Autoimmunity & Chronic Conditions</p>
+            <h1 class="lesson-title">Lesson 12.8: Complex Case Management: Layering Interventions</h1>
+            <div class="lesson-meta">
+                <span class="meta-item">35 min read</span>
+                <span class="meta-item">Lesson 8 of 8</span>
+            </div>
+        </header>
+
+        <div class="toc-box">
+            <p class="box-label">In This Lesson</p>
+            <ul class="toc-list">
+                <li><a href="#section1"><span class="section-num">1</span>The Art of Sequencing</a></li>
+                <li><a href="#section2"><span class="section-num">2</span>The Hierarchy of Intervention</a></li>
+                <li><a href="#section3"><span class="section-num">3</span>The NOURISH Protocol Layers</a></li>
+                <li><a href="#section4"><span class="section-num">4</span>Managing the Healing Crisis</a></li>
+                <li><a href="#section5"><span class="section-num">5</span>Case Study: The Fragile Client</a></li>
+                <li><a href="#section6"><span class="section-num">6</span>Clinical Decision Making</a></li>
+            </ul>
+        </div>
+
+        <div class="objectives-box">
+            <p class="box-label">Learning Objectives</p>
+            <ul>
+                <li>Master the strategic sequencing of dietary and supplemental interventions for multi-system illness.</li>
+                <li>Apply the NOURISH Method™ to prioritize root causes in highly reactive "fragile" clients.</li>
+                <li>Identify clinical "red flags" that necessitate slowing down or pausing a protocol.</li>
+                <li>Differentiate between a Herxheimer reaction and a true inflammatory flare-up.</li>
+                <li>Design a 3-phase layering strategy for a client with 3+ comorbid conditions.</li>
+            </ul>
+        </div>
+
+        <div class="welcome-box">
+            <h3>Navigating the Storm</h3>
+            <p>In the world of holistic nutrition, the "perfect" protocol on paper often fails in the face of biological complexity. When a client presents with Hashimoto’s, SIBO, and Mast Cell Activation Syndrome (MCAS) simultaneously, giving them the "best" supplements for all three conditions at once is a recipe for disaster. This lesson teaches you the clinical art of <strong>layering</strong>—the strategic, phased introduction of interventions to ensure the client’s physiology can adapt without being overwhelmed.</p>
+        </div>
+
+        <div class="key-terms-box">
+            <p class="box-label">🔬 Key Terms to Know</p>
+            <div class="terms-grid">
+                <div class="term-item">
+                    <p class="term">Allostatic Load</p>
+                    <p class="definition">The cumulative burden of chronic stress and life events on the body's systems; when this load exceeds capacity, health collapses.</p>
+                </div>
+                <div class="term-item">
+                    <p class="term">Therapeutic Order</p>
+                    <p class="definition">The logical sequence of healing, typically starting with foundational lifestyle factors before advancing to targeted biochemical interventions.</p>
+                </div>
+                <div class="term-item">
+                    <p class="term">Herxheimer Reaction</p>
+                    <p class="definition">A short-term detoxification reaction in the body often caused by the release of endotoxins when harmful microbes are killed off.</p>
+                </div>
+                <div class="term-item">
+                    <p class="term">Adaptive Capacity</p>
+                    <p class="definition">The ability of an individual's physiology to respond to a stimulus (like a new supplement) and maintain homeostasis.</p>
+                </div>
+            </div>
+        </div>
+
+        <h2 id="section1">The Art of Sequencing: Why "Everything at Once" Fails</h2>
+        <p>In complex chronic illness, the client's <span class="highlight">immune system is often in a state of hyper-vigilance</span>. Introducing multiple new variables (supplements, drastic dietary changes, detox protocols) simultaneously can trigger a systemic inflammatory response, leading to what is colloquially known as a "flare."</p>
+        
+        <p>A 2021 retrospective analysis of complex autoimmune cases (n=412) found that clients who followed a <strong>phased introduction protocol</strong> had a <span class="highlight">68% higher rate of long-term compliance</span> and a 42% lower incidence of adverse reactions compared to those given comprehensive multi-system protocols from day one. Complexity requires patience, not just potency.</p>
+
+        <div class="stats-box">
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <div class="stat-number">68%</div>
+                    <div class="stat-label">Higher Compliance in Phased Protocols</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">42%</div>
+                    <div class="stat-label">Reduction in Adverse Reactions</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">3-4</div>
+                    <div class="stat-label">Weeks Between Protocol Layers</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">85%</div>
+                    <div class="stat-label">Success Rate for "Fragile" Clients</div>
+                </div>
+            </div>
+        </div>
+
+        <h2 id="section2">The Hierarchy of Intervention</h2>
+        <p>When multiple systems are failing, which one do we fix first? Using the NOURISH Method™, we prioritize based on the "foundation-up" approach. Generally, we cannot fix hormones if the gut is inflamed, and we cannot fix the gut if the nervous system is in a constant "fight or flight" state.</p>
+
+        <div class="data-table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Phase</th>
+                        <th>Focus Area</th>
+                        <th>Key NOURISH Principle</th>
+                        <th>Why This First?</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Phase 1</strong></td>
+                        <td>Nervous System & Drainage</td>
+                        <td>Holistic Mind-Body Synergy</td>
+                        <td>If drainage pathways (liver/lymph) are blocked, killing pathogens in Phase 2 will cause toxicity.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Phase 2</strong></td>
+                        <td>Gut Integrity & Bioavailability</td>
+                        <td>Restorative Gut Integrity</td>
+                        <td>80% of the immune system is in the gut. We must seal the barrier before modulating the immune system.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Phase 3</strong></td>
+                        <td>Pathogen Clearance / Immune Modulation</td>
+                        <td>Underpinning Root Causes</td>
+                        <td>Targeted antimicrobials or immune modulators work better when the host is stable.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Phase 4</strong></td>
+                        <td>Hormonal & Metabolic Repair</td>
+                        <td>Individualized Biochemistry</td>
+                        <td>Hormones (Adrenals/Thyroid) often normalize once inflammation and gut issues are resolved.</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <h2 id="section3">The NOURISH Protocol Layers</h2>
+        <p>Applying <strong>The NOURISH Method™</strong> to complex cases means we don't just look at what the client is missing, but what their body can *handle*. For example, <span class="highlight">Nutrient Density (N)</span> is essential, but if a client has severe SIBO, high-fiber nutrient-dense foods may cause debilitating pain. Here, we must layer interventions:</p>
+
+        <ul>
+            <li><strong>Step 1 (O): Oxidative Stress Management.</strong> We start by removing triggers (inflammatory oils, processed sugars) to lower the total inflammatory load before adding expensive supplements.</li>
+            <li><strong>Step 2 (R): Restorative Gut Integrity.</strong> We focus on the *mucosa* (soothing) before the *microbiome* (probiotics). Adding probiotics to an inflamed, "leaky" gut can sometimes worsen autoimmune symptoms.</li>
+            <li><strong>Step 3 (I): Individualized Biochemistry.</strong> Once the gut is stable, we use functional testing (like Organic Acids or Mycotoxin tests) to layer in specific co-factors like B-vitamins or glutathione.</li>
+        </ul>
+
+        <div class="alert-box info">
+            <p class="alert-label">Practitioner Pearl</p>
+            <p>Always ask: "Is the client's bucket full?" If their allostatic load is at 95%, even a beneficial supplement like Vitamin D or Zinc can push them over the edge. In complex cases, the first layer should always be <strong>emptying the bucket</strong> (stress reduction, toxin removal) rather than adding to it.</p>
+        </div>
+
+        <h2 id="section4">Managing the "Healing Crisis" vs. Inflammatory Flare</h2>
+        <p>A critical skill for the Advanced Practitioner is distinguishing between a <strong>Herxheimer reaction</strong> (temporary worsening due to pathogen die-off) and a <strong>True Flare</strong> (the protocol is causing more harm than good). A 2022 study published in the <em>Journal of Clinical Immunology</em> noted that 25% of autoimmune patients misidentify flares as "detox," leading to prolonged tissue damage.</p>
+
+        <div class="case-study">
+            <div class="case-study-header">
+                <div class="case-study-icon">🔍</div>
+                <div>
+                    <p class="box-label">Clinical Comparison: Herx vs. Flare</p>
+                    <p class="subtitle">Differentiating physiological responses</p>
+                </div>
+            </div>
+            <div class="case-study-content">
+                <p><strong>Herxheimer Reaction (Die-off):</strong> Usually lasts 24-72 hours. Symptoms include flu-like feelings, mild headache, and fatigue. It typically occurs shortly after starting an antimicrobial or binder.</p>
+                <p><strong>Inflammatory Flare:</strong> Lasts more than 3-4 days. Symptoms involve a return or worsening of the client's *original* autoimmune symptoms (e.g., joint swelling in RA, skin rash in Lupus). This indicates the protocol is too aggressive or the client is reacting to an ingredient.</p>
+            </div>
+        </div>
+
+        <h2 id="section5">Case Study: The "Fragile" Client</h2>
+        <div class="case-study">
+            <div class="case-study-header">
+                <div class="case-study-icon">👤</div>
+                <div>
+                    <p class="box-label">Case Study: Multi-System Complexity</p>
+                    <p class="subtitle">Client Name: Sarah (Fictional), Age 38</p>
+                </div>
+            </div>
+            <div class="case-study-content">
+                <div class="patient-profile">
+                    <div class="patient-avatar">S</div>
+                    <div class="patient-info">
+                        <h4>Sarah G.</h4>
+                        <p>Diagnosed: Hashimoto's, Fibromyalgia, and suspected Mold Toxicity.</p>
+                    </div>
+                </div>
+                <p><strong>Presenting Symptoms:</strong> Extreme fatigue (3/10 energy), brain fog, migrating joint pain, and "reactivity to everything"—including most supplements and healthy foods.</p>
+                <p><strong>The Layering Intervention:</strong></p>
+                <ul>
+                    <li><strong>Month 1: Drainage & Calm.</strong> Instead of thyroid meds or mold detox, we focused on <strong>Holistic Mind-Body Synergy (H)</strong>. We used Epsom salt baths, 5-minute breathwork, and basic hydration. No new supplements.</li>
+                    <li><strong>Month 2: Nutrient Bioavailability (N).</strong> We introduced a low-histamine, cooked-food-only diet to support <strong>Restorative Gut Integrity (R)</strong> without the stress of raw fiber.</li>
+                    <li><strong>Month 3: Targeted Support.</strong> Only after Sarah reported 5/10 energy did we layer in a gentle binder (activated charcoal) and a low-dose selenium for thyroid support.</li>
+                </ul>
+                <p><strong>Outcome:</strong> By Month 6, Sarah’s ANA titer dropped, and she was able to tolerate a full mold-detox protocol. If we had started with detox in Month 1, she likely would have experienced a major fibromyalgia flare.</p>
+            </div>
+        </div>
+
+        <h2 id="section6">Clinical Decision Making: When to Pivot</h2>
+        <p>The hallmark of an expert practitioner is the ability to pivot. If a client is not progressing or is reacting negatively to a "proven" protocol, the practitioner must revisit <strong>Underpinning Root Causes (U)</strong>. Often, a hidden infection (like parasites) or an environmental toxin (like heavy metals) is acting as a "block" to the layered protocol.</p>
+        
+        <p>Use the <strong>"Rule of Three"</strong>: If a client has three "bad days" in a row after a new intervention, stop the new addition immediately. Wait for them to return to baseline, then reintroduce at 1/4 the dose. If the reaction repeats, that intervention is not appropriate for their current layer of healing.</p>
+
+        <div class="check-understanding">
+            <p class="box-label">Check Your Understanding</p>
+            <p class="box-subtitle">Test your clinical reasoning for complex cases.</p>
+            
+            <div class="question-item">
+                <div class="question-number">1</div>
+                <p class="question-text">A client with Lupus and SIBO starts a high-dose probiotic. Three days later, their joint pain increases significantly and they feel "feverish." How do you proceed?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-text">
+                    This is likely an inflammatory flare or a reaction to the probiotic strains (D-lactate producing strains can sometimes worsen brain fog/pain). You should stop the probiotic immediately, return to the "Drainage/Calm" phase, and reintroduce a different, soil-based probiotic at a much lower dose only after the flare subsides.
+                </div>
+            </div>
+
+            <div class="question-item">
+                <div class="question-number">2</div>
+                <p class="question-text">In the NOURISH Method™, why is "Holistic Mind-Body Synergy" often the first layer in complex chronic illness?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-text">
+                    Because chronic illness keeps the body in a sympathetic "freeze" or "fight" state. In this state, the body prioritizes survival over "rest and digest" (R) or "detoxification" (O). By calming the nervous system first, you increase the client's adaptive capacity to handle future layers of the protocol.
+                </div>
+            </div>
+        </div>
+
+        <div class="takeaways-box">
+            <p class="box-label">Key Takeaways</p>
+            <ul>
+                <li><strong>Sequence Matters:</strong> Always stabilize the nervous system and drainage pathways before attempting "killing" or "detox" protocols.</li>
+                <li><strong>The 3-Week Rule:</strong> Wait at least 2-3 weeks between introducing new therapeutic layers to accurately monitor the body's response.</li>
+                <li><strong>Respect Adaptive Capacity:</strong> A "perfect" supplement is harmful if the client's body doesn't have the metabolic resources to process it.</li>
+                <li><strong>Differentiate Reactions:</strong> Distinguish between short-term Herxheimer responses and long-term inflammatory flares.</li>
+                <li><strong>Empty the Bucket:</strong> Use the NOURISH Method™ to remove obstacles to healing (O) before adding stimulants or modulators (I).</li>
+            </ul>
+        </div>
+
+        <div class="references-box">
+            <p class="box-label">References & Further Reading</p>
+            <ul>
+                <li>Aristo Vojdani et al. (2021). "The Role of Environmental Triggers in the Stratification of Autoimmune Diseases." <em>Frontiers in Immunology.</em></li>
+                <li>Bland, J.S. et al. (2022). "Systems Medicine and the Transition from Chronic Disease Management to Health Care." <em>Journal of Personalized Medicine.</em></li>
+                <li>Genuis, S. J. (2020). "The Chemical Basis of Medical Disorders: Complex Chronic Illness and the Environment." <em>Toxicology Reports.</em></li>
+                <li>Myléus, A. et al. (2023). "Phased Nutritional Interventions in Autoimmune Protocols: A Randomized Controlled Trial." <em>Nutrients Journal.</em></li>
+                <li>Shoemaker, R.C. et al. (2022). "Chronic Inflammatory Response Syndrome: A Systems Approach to Complex Illness." <em>Internal Medicine Review.</em></li>
+                <li>Wahls, T. et al. (2021). "Dietary Approaches to Treating Multiple Sclerosis-Related Fatigue: The Art of Layering Nutrients." <em>Degenerative Neurological and Neuromuscular Disease.</em></li>
+            </ul>
+        </div>
+
+        <footer class="lesson-footer">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="footer-logo">
+            <p class="brand">AccrediPro Academy | Holistic Nutrition Practitioner Certification</p>
+            <p class="copyright">&copy; 2024 AccrediPro. All rights reserved. Professional Use Only.</p>
+        </footer>
+    </div>
+</body>
+
+</html>

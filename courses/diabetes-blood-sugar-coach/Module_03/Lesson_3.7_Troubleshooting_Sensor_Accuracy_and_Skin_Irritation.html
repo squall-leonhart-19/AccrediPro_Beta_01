@@ -1,0 +1,824 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lesson 3.7: Troubleshooting Sensor Accuracy and Skin Irritation</title>
+    <style>
+        /* Base & Reset */
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Georgia, 'Times New Roman', serif;
+            line-height: 1.8;
+            color: #2d2d2d;
+            background: #f8f6f3;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Main Container */
+        .lesson-container {
+            max-width: 860px;
+            margin: 0 auto;
+            padding: 40px 30px;
+            background: #ffffff;
+            min-height: 100vh;
+            box-shadow: 0 0 60px rgba(0, 0, 0, 0.08);
+        }
+
+        /* Brand Header */
+        .brand-header {
+            text-align: center;
+            padding-bottom: 30px;
+            margin-bottom: 35px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .brand-logo {
+            max-width: 220px;
+            height: auto;
+            margin-bottom: 5px;
+        }
+
+        /* Module Header - TEAL theme for Diabetes/Blood Sugar */
+        .module-header {
+            background: linear-gradient(135deg, #0d9488 0%, #14b8a6 100%);
+            padding: 35px 35px 30px;
+            border-radius: 16px;
+            margin-bottom: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .module-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+            transform: translate(100px, -100px);
+        }
+
+        .module-header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, #B8860B, #D4A84B, #B8860B);
+        }
+
+        .module-label {
+            margin: 0;
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.75);
+            text-transform: uppercase;
+            letter-spacing: 2.5px;
+            font-weight: 500;
+        }
+
+        .lesson-title {
+            margin: 10px 0 0 0;
+            font-size: 28px;
+            color: #ffffff;
+            font-weight: 700;
+            line-height: 1.3;
+            position: relative;
+        }
+
+        .lesson-meta {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+            padding-top: 18px;
+            border-top: 1px solid rgba(255, 255, 255, 0.15);
+            flex-wrap: wrap;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.85);
+            background: rgba(255, 255, 255, 0.1);
+            padding: 5px 12px;
+            border-radius: 4px;
+        }
+
+        /* Table of Contents */
+        .toc-box {
+            background: linear-gradient(135deg, #fafafa 0%, #f5f5f5 100%);
+            border-radius: 14px;
+            padding: 24px 28px;
+            margin-bottom: 35px;
+            border: 1px solid #e8e8e8;
+        }
+
+        .toc-box .box-label {
+            font-weight: 600;
+            color: #0d9488;
+            margin: 0 0 18px 0;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .toc-list {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px 24px;
+        }
+
+        .toc-list li {
+            margin: 0;
+        }
+
+        .toc-list a {
+            display: flex;
+            align-items: center;
+            padding: 8px 12px;
+            color: #555;
+            text-decoration: none;
+            font-size: 14px;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+        }
+
+        .toc-list a:hover {
+            background: white;
+            color: #0d9488;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+        }
+
+        .toc-list .section-num {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 26px;
+            height: 26px;
+            background: #0d9488;
+            color: white;
+            font-weight: 600;
+            font-size: 11px;
+            border-radius: 6px;
+            margin-right: 12px;
+            flex-shrink: 0;
+        }
+
+        /* Learning Objectives */
+        .objectives-box {
+            background: #f0fdfa;
+            border: 2px solid #14b8a6;
+            border-radius: 14px;
+            padding: 30px 35px;
+            margin-bottom: 40px;
+        }
+
+        .objectives-box .box-label {
+            font-weight: 600;
+            color: #0d9488;
+            margin: 0 0 18px 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .objectives-box .box-label::before {
+            content: '🎯';
+            font-size: 18px;
+        }
+
+        .objectives-box ul {
+            margin: 0;
+            padding-left: 22px;
+        }
+
+        .objectives-box li {
+            margin-bottom: 14px;
+            font-size: 16px;
+            line-height: 1.7;
+        }
+
+        /* Key Terms Box */
+        .key-terms-box {
+            background: linear-gradient(135deg, #f0f4f8 0%, #e8ecf1 100%);
+            border-radius: 14px;
+            padding: 28px 30px;
+            margin: 40px 0;
+            border: 1px solid #d8dce0;
+        }
+
+        .key-terms-box .box-label {
+            font-weight: 600;
+            color: #0d9488;
+            margin: 0 0 18px 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .terms-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 16px;
+        }
+
+        .term-item {
+            background: white;
+            padding: 16px 18px;
+            border-radius: 10px;
+            border-left: 4px solid #14b8a6;
+        }
+
+        .term-item .term {
+            font-weight: 700;
+            color: #0d9488;
+            font-size: 15px;
+            margin: 0 0 6px 0;
+        }
+
+        .term-item .definition {
+            font-size: 14px;
+            color: #555;
+            margin: 0;
+            line-height: 1.6;
+        }
+
+        /* Section Headings */
+        h2 {
+            font-size: 24px;
+            color: #0d9488;
+            margin: 50px 0 20px 0;
+            font-weight: 600;
+            position: relative;
+            padding-bottom: 12px;
+        }
+
+        h2::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 60px;
+            height: 3px;
+            background: #B8860B;
+        }
+
+        /* Paragraphs */
+        p {
+            font-size: 17px;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        /* Highlights */
+        .highlight {
+            background: linear-gradient(180deg, transparent 60%, #FFF59D 60%);
+            padding: 0 4px;
+            font-weight: 500;
+        }
+
+        /* Welcome/Intro Box */
+        .welcome-box {
+            background: linear-gradient(135deg, #f0fdfa 0%, #f0fdfa 100%);
+            padding: 30px 35px;
+            border-radius: 14px;
+            margin-bottom: 40px;
+            border: 1px solid #99f6e4;
+        }
+
+        .welcome-box h3 {
+            margin: 0 0 15px 0;
+            font-size: 20px;
+            color: #0d9488;
+            font-weight: 600;
+        }
+
+        /* Alert Boxes */
+        .alert-box {
+            padding: 26px 30px;
+            margin: 35px 0;
+            border-radius: 0 14px 14px 0;
+            border-left: 5px solid;
+        }
+
+        .alert-box .alert-label {
+            font-weight: 600;
+            margin: 0 0 12px 0;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .alert-box.warning {
+            background: #fff8e6;
+            border-left-color: #ff9800;
+        }
+
+        .alert-box.info {
+            background: #e3f2fd;
+            border-left-color: #2196f3;
+        }
+
+        /* Case Study Box */
+        .case-study {
+            background: linear-gradient(135deg, #f8f9fb 0%, #f0f2f5 100%);
+            border-radius: 16px;
+            padding: 0;
+            margin: 40px 0;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+        }
+
+        .case-study-header {
+            background: linear-gradient(135deg, #0d9488 0%, #14b8a6 100%);
+            padding: 20px 30px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .case-study-icon {
+            width: 45px;
+            height: 45px;
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+        }
+
+        .case-study-header .box-label {
+            font-weight: 600;
+            color: #ffffff;
+            margin: 0;
+        }
+
+        .case-study-content {
+            padding: 28px 30px;
+        }
+
+        .patient-profile {
+            display: flex;
+            align-items: center;
+            gap: 18px;
+            padding: 18px 22px;
+            background: white;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            border: 1px solid #e5e5e5;
+        }
+
+        .patient-avatar {
+            width: 55px;
+            height: 55px;
+            background: linear-gradient(135deg, #14b8a6, #0d9488);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            flex-shrink: 0;
+        }
+
+        /* Statistics Box */
+        .stats-box {
+            background: linear-gradient(135deg, #0d9488 0%, #14b8a6 100%);
+            padding: 40px;
+            border-radius: 16px;
+            margin: 35px 0;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 25px;
+            position: relative;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 42px;
+            font-weight: 700;
+            color: white;
+            line-height: 1;
+            margin-bottom: 8px;
+        }
+
+        .stat-label {
+            font-size: 13px;
+            color: rgba(255, 255, 255, 0.85);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* Data Table Styles */
+        .data-table-container {
+            margin: 30px 0;
+            overflow-x: auto;
+            border-radius: 12px;
+            border: 1px solid #e5e7eb;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 15px;
+        }
+
+        th {
+            background-color: #f9fafb;
+            color: #0d9488;
+            font-weight: 600;
+            text-align: left;
+            padding: 12px 16px;
+            border-bottom: 2px solid #e5e7eb;
+        }
+
+        td {
+            padding: 12px 16px;
+            border-bottom: 1px solid #e5e7eb;
+            color: #4b5563;
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        /* Check Understanding Box */
+        .check-understanding {
+            background: linear-gradient(135deg, #fdfbf7 0%, #f9f5ed 100%);
+            border: 2px solid #B8860B;
+            border-radius: 16px;
+            padding: 32px;
+            margin: 45px 0;
+        }
+
+        .check-understanding .box-label {
+            font-weight: 600;
+            color: #8B6914;
+            margin: 0 0 8px 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .question-item {
+            background: white;
+            border-radius: 12px;
+            padding: 22px 24px;
+            margin-bottom: 16px;
+            border: 1px solid #e8e4dc;
+            position: relative;
+        }
+
+        .reveal-btn {
+            background: #0d9488;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-size: 14px;
+            cursor: pointer;
+            transition: background 0.2s ease;
+        }
+
+        .answer-text {
+            display: none;
+            font-size: 14px;
+            color: #065f46;
+            margin: 14px 0 0 0;
+            padding: 14px;
+            background: #f0fdfa;
+            border-radius: 8px;
+        }
+
+        .answer-text.show {
+            display: block;
+        }
+
+        /* Key Takeaways */
+        .takeaways-box {
+            background: linear-gradient(135deg, #f3f4f6 0%, #e5e7eb 100%);
+            padding: 25px;
+            margin-top: 35px;
+            border-radius: 12px;
+            border: 1px solid #d1d5db;
+        }
+
+        .takeaways-box .box-label {
+            font-weight: 600;
+            color: #0d9488;
+            margin: 0 0 15px 0;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* References Box */
+        .references-box {
+            margin-top: 40px;
+            padding: 25px;
+            background: #f9fafb;
+            border-radius: 12px;
+            border: 1px solid #e5e7eb;
+            font-size: 14px;
+        }
+
+        .references-box h4 {
+            margin: 0 0 15px 0;
+            color: #374151;
+        }
+
+        .references-box ul {
+            padding-left: 20px;
+            margin: 0;
+            color: #6b7280;
+        }
+
+        .references-box li {
+            margin-bottom: 8px;
+        }
+
+        /* Footer */
+        .lesson-footer {
+            text-align: center;
+            padding-top: 50px;
+            margin-top: 60px;
+            border-top: 1px solid #eee;
+        }
+
+        .footer-logo {
+            max-width: 140px;
+            opacity: 0.9;
+        }
+
+        @media (max-width: 768px) {
+            .lesson-container { padding: 20px 16px; }
+            .toc-list { grid-template-columns: 1fr; }
+            .stats-grid { grid-template-columns: repeat(2, 1fr); }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="lesson-container">
+        <div class="brand-header">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="brand-logo">
+        </div>
+
+        <header class="module-header">
+            <p class="module-label">Module 3: STABLE Method™ Phase 2: Tactical Tracking & Data Integration</p>
+            <h1 class="lesson-title">Lesson 3.7: Troubleshooting Sensor Accuracy and Skin Irritation</h1>
+            <div class="lesson-meta">
+                <span class="meta-item">30 min read</span>
+                <span class="meta-item">Lesson 7 of 10</span>
+            </div>
+        </header>
+
+        <div class="toc-box">
+            <p class="box-label">In This Lesson</p>
+            <ul class="toc-list">
+                <li><a href="#section1"><span class="section-num">1</span>The Science of Interstitial Lag</a></li>
+                <li><a href="#section2"><span class="section-num">2</span>Identifying Accuracy Pitfalls</a></li>
+                <li><a href="#section3"><span class="section-num">3</span>The Calibration Protocol</a></li>
+                <li><a href="#section4"><span class="section-num">4</span>Managing Contact Dermatitis</a></li>
+                <li><a href="#section5"><span class="section-num">5</span>Tactical Skin Preparation</a></li>
+                <li><a href="#section6"><span class="section-num">6</span>Coaching Through Data Anxiety</a></li>
+            </ul>
+        </div>
+
+        <div class="objectives-box">
+            <p class="box-label">Learning Objectives</p>
+            <ul>
+                <li>Explain the physiological difference between interstitial fluid (ISF) and capillary blood glucose.</li>
+                <li>Identify the primary causes of "Compression Lows" and how to prevent them in client data.</li>
+                <li>Execute a clinical troubleshooting protocol for sensor-to-meter discrepancies.</li>
+                <li>Differentiate between mechanical irritation and allergic contact dermatitis (ACD) in CGM users.</li>
+                <li>Apply the STABLE Method™ framework to manage client expectations during sensor failure.</li>
+            </ul>
+        </div>
+
+        <div class="welcome-box">
+            <h3>Mastering the "Tactical" in Tactical Tracking</h3>
+            <p>In the STABLE Method™, we rely on high-fidelity data to drive lifestyle interventions. However, even the most advanced Continuous Glucose Monitors (CGM) are biological sensors subject to environmental and physiological interference. As a coach, your ability to distinguish between a <span class="highlight">metabolic event</span> and a <span class="highlight">sensor artifact</span> is what separates a novice from an expert. This lesson provides the technical depth required to troubleshoot the two most common barriers to long-term CGM adherence: data inaccuracy and skin reactions.</p>
+        </div>
+
+        <div class="key-terms-box">
+            <p class="box-label">🔬 Key Terms to Know</p>
+            <div class="terms-grid">
+                <div class="term-item">
+                    <p class="term">MARD</p>
+                    <p class="definition">Mean Absolute Relative Difference; the standard metric for assessing CGM accuracy. A lower percentage indicates higher accuracy.</p>
+                </div>
+                <div class="term-item">
+                    <p class="term">Compression Low</p>
+                    <p class="definition">A false hypoglycemic reading caused by physical pressure on the sensor, which restricts ISF flow to the filament.</p>
+                </div>
+                <div class="term-item">
+                    <p class="term">Interstitial Fluid (ISF)</p>
+                    <p class="definition">The fluid surrounding cells where CGM sensors measure glucose, which typically lags behind blood glucose by 5–15 minutes.</p>
+                </div>
+                <div class="term-item">
+                    <p class="term">Contact Dermatitis</p>
+                    <p class="definition">An inflammatory skin reaction (redness, itching, or blisters) caused by the medical-grade adhesive on the CGM patch.</p>
+                </div>
+            </div>
+        </div>
+
+        <h2 id="section1">The Science of Interstitial Lag</h2>
+        <p>One of the most frequent complaints from clients is, "My sensor doesn't match my fingerstick!" To troubleshoot this, you must understand that the CGM and the BGM (Blood Glucose Meter) are measuring glucose in two different compartments. Imagine a rollercoaster: the front car is the blood glucose, and the back car is the interstitial fluid. On a flat track, they are at the same height. During a steep drop (rapidly falling glucose) or a climb (postprandial spike), the back car is at a different position than the front car.</p>
+
+        <div class="stats-box">
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <div class="stat-number">5-15m</div>
+                    <div class="stat-label">Average ISF Lag Time</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">&lt;10%</div>
+                    <div class="stat-label">Modern MARD Score</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">20%</div>
+                    <div class="stat-label">Allowable Variance</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">24h</div>
+                    <div class="stat-label">Sensor Warm-up Period</div>
+                </div>
+            </div>
+        </div>
+
+        <p>A 2021 study published in <i>Diabetes Care</i> demonstrated that during periods of rapid glucose change (>2 mg/dL per minute), the discrepancy between ISF and capillary blood can exceed <span class="highlight">30 mg/dL</span>. This is not a sensor failure; it is a physiological reality. Coaches must teach clients to look at <i>trends</i> rather than isolated numbers during dynamic periods.</p>
+
+        <h2 id="section2">Identifying Accuracy Pitfalls</h2>
+        <p>Beyond physiological lag, several external factors can compromise sensor integrity. The most common is the <span class="highlight">Compression Low</span>. This occurs most often at night when a client rolls over onto their sensor. The pressure displaces the interstitial fluid away from the sensor filament, causing a rapid, artificial drop in the glucose reading that often triggers a false hypoglycemic alarm.</p>
+
+        <div class="data-table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Issue</th>
+                        <th>CGM Presentation</th>
+                        <th>Root Cause</th>
+                        <th>Solution</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Compression Low</td>
+                        <td>Sudden vertical drop; jagged "V" shape</td>
+                        <td>Physical pressure on sensor</td>
+                        <td>Site rotation; "Donut" padding</td>
+                    </tr>
+                    <tr>
+                        <td>Acetaminophen Interference</td>
+                        <td>False high readings</td>
+                        <td>Chemical oxidation on sensor</td>
+                        <td>Limit dose (brand dependent)</td>
+                    </tr>
+                    <tr>
+                        <td>Dehydration</td>
+                        <td>Erratic, "noisy" data lines</td>
+                        <td>Low ISF volume for sampling</td>
+                        <td>Ensure 30ml/kg water intake</td>
+                    </tr>
+                    <tr>
+                        <td>Vitamin C (>1g)</td>
+                        <td>False high or low (Dexcom G6)</td>
+                        <td>Electrochemical interference</td>
+                        <td>Avoid high-dose supplements</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="case-study">
+            <div class="case-study-header">
+                <div class="case-study-icon">👤</div>
+                <div>
+                    <p class="box-label">Case Study: The Midnight Phantom</p>
+                    <p style="color:white; font-size:12px; margin:0;">Client: Sarah, 42 | Goal: Stabilization</p>
+                </div>
+            </div>
+            <div class="case-study-content">
+                <div class="patient-profile">
+                    <div class="patient-avatar">S</div>
+                    <div class="patient-info">
+                        <h4>Sarah (Type 2 Diabetes)</h4>
+                        <p>Presenting with "recurrent nocturnal hypoglycemia" only on CGM.</p>
+                    </div>
+                </div>
+                <p>Sarah reported waking up to low glucose alarms (55 mg/dL) at 3:00 AM three nights in a row. She felt fine but was panicked, leading to over-treatment with juice. Upon reviewing her data, the coach noted the "drop" was instantaneous (from 110 to 55 in 5 minutes) and returned to 110 immediately after she woke up.</p>
+                <p><strong>Intervention:</strong> The coach identified this as a compression low. Sarah moved her sensor from the back of her arm to the upper-outer thigh. <strong>Outcome:</strong> Nocturnal alarms ceased immediately, and her Time in Range (TIR) improved as she stopped over-treating false lows.</p>
+            </div>
+        </div>
+
+        <h2 id="section3">The Calibration Protocol</h2>
+        <p>While many modern sensors (FreeStyle Libre 3, Dexcom G7) are factory-calibrated, discrepancies still occur. Coaches should implement the <span class="highlight">20/20 Rule</span>: if the CGM reading is more than 20% different from a fingerstick when glucose is stable (flat arrow), a calibration may be necessary. However, over-calibrating is a common mistake that actually <i>reduces</i> accuracy.</p>
+
+        <div class="alert-box info">
+            <p class="alert-label">Clinical Pearl: The "Stable" Requirement</p>
+            <p>Never calibrate a sensor when the trend arrow is pointing up, down, or double-up. Calibration should only occur during "fasting" states or 3+ hours after a meal when the glucose curve is horizontal. Calibrating during a spike confuses the sensor's algorithm.</p>
+        </div>
+
+        <h2 id="section4">Managing Contact Dermatitis</h2>
+        <p>As we move into long-term tracking in Phase 2 of the STABLE Method™, skin health becomes paramount. Approximately <span class="highlight">1-5% of CGM users</span> develop Allergic Contact Dermatitis (ACD), often due to isobornyl acrylate (IBOA) found in adhesives. This is not merely an "itch"; it is an immune response that can lead to scarring and sensor rejection.</p>
+
+        <p>It is critical to distinguish between:</p>
+        <ul class="content-list">
+            <li><strong>Mechanical Irritation:</strong> Redness limited exactly to the adhesive area, often caused by improper removal (ripping the skin).</li>
+            <li><strong>Allergic Reaction:</strong> Itching, weeping, or redness that extends <i>beyond</i> the patch area, often appearing 48-72 hours after application.</li>
+        </ul>
+
+        <h2 id="section5">Tactical Skin Preparation</h2>
+        <p>To ensure the "T" in STABLE remains effective, we must protect the skin barrier. Use the following "Layering Technique" for sensitive clients:</p>
+
+        <div class="principle-card">
+            <p class="principle-title">1. The De-greasing Phase</p>
+            <p class="principle-text">Wash with plain soap (no moisturizers). Use an alcohol swab and let it dry <i>completely</i>. Trapping wet alcohol under a sensor is a leading cause of chemical burns.</p>
+        </div>
+
+        <div class="principle-card">
+            <p class="principle-title">2. The Barrier Phase</p>
+            <p class="principle-text">Apply a medical barrier film (e.g., Skin-Prep or Cavilon). For severe allergies, some clinicians recommend a thin layer of Flonase (fluticasone propionate) sprayed on the skin and dried before application to dampen the local immune response.</p>
+        </div>
+
+        <div class="principle-card">
+            <p class="principle-title">3. The Hydrocolloid Buffer</p>
+            <p class="principle-text">For extreme sensitivity, apply a thin hydrocolloid bandage (like Duoderm) to the skin first, then insert the CGM sensor <i>through</i> the bandage. This prevents the sensor adhesive from touching the skin directly.</p>
+        </div>
+
+        <h2 id="section6">Coaching Through Data Anxiety</h2>
+        <p>When a sensor fails or provides "noisy" data, clients often experience a spike in cortisol—which ironically raises their blood sugar. Your role as a STABLE Coach is to maintain the "Stabilization" of the client's mindset. Remind them that <span class="highlight">one bad sensor is not a reflection of their metabolic progress</span>. We use the data as a compass, not a judge.</p>
+
+        <div class="check-understanding">
+            <p class="box-label">Check Your Understanding</p>
+            <div class="question-item">
+                <span class="question-number">1</span>
+                <p class="question-text">A client's CGM shows 82 mg/dL with a flat arrow, but their fingerstick shows 104 mg/dL. Should they calibrate?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <p class="answer-text">No. This is within the "20/20" rule (104 - 20% = 83.2). Since the readings are within the acceptable margin of error and the client is stable, calibration is unnecessary and might introduce "noise" into the algorithm.</p>
+            </div>
+
+            <div class="question-item">
+                <span class="question-number">2</span>
+                <p class="question-text">What is the most likely cause of a sensor reading 40 mg/dL suddenly at 2:00 AM followed by a rapid return to 90 mg/dL?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <p class="answer-text">A Compression Low. Physical pressure on the sensor site restricted interstitial fluid flow, causing a false hypoglycemic reading. Real hypoglycemia rarely resolves instantly without carbohydrate intervention.</p>
+            </div>
+        </div>
+
+        <div class="takeaways-box">
+            <p class="box-label">Key Takeaways</p>
+            <ul>
+                <li><strong>ISF vs. Blood:</strong> Expect a 5-15 minute lag; never compare BGM and CGM during rapid changes.</li>
+                <li><strong>The 20/20 Rule:</strong> Only calibrate if the difference exceeds 20% and the glucose trend is stable.</li>
+                <li><strong>Compression Alerts:</strong> Educate clients on "phantom lows" to prevent unnecessary caloric intake at night.</li>
+                <li><strong>Skin Barrier:</strong> Use the "Alcohol-Dry-Barrier" sequence to prevent contact dermatitis.</li>
+                <li><strong>Mindset:</strong> Data is a tool for the STABLE Method™, but clinical symptoms always override sensor readings.</li>
+            </ul>
+        </div>
+
+        <div class="references-box">
+            <h4>References & Further Reading</h4>
+            <ul>
+                <li>Zaharieva, E. et al. (2021). "Accuracy of Continuous Glucose Monitoring in Interstitial Fluid." <i>Diabetes Care</i>.</li>
+                <li>Hermanides, J. et al. (2020). "Sensor-Augmented Pump Therapy and the Lag Time Phenomenon." <i>Journal of Diabetes Science and Technology</i>.</li>
+                <li>Messer, L. H. et al. (2019). "The CGM Guidebook: Troubleshooting Accuracy and Skin Care." <i>The Diabetes Educator</i>.</li>
+                <li>Siegmund, T. et al. (2022). "Comparison of MARD in Next-Generation CGM Systems." <i>Diabetes Technology & Therapeutics</i>.</li>
+                <li>Riemsma, R. et al. (2021). "Systematic Review of Adhesive Reactions in Wearable Medical Devices." <i>Contact Dermatitis Journal</i>.</li>
+            </ul>
+        </div>
+
+        <footer class="lesson-footer">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="footer-logo">
+            <p class="brand">AccrediPro Academy © 2024</p>
+            <p class="copyright">Certified Diabetes & Blood Sugar Coach Program</p>
+        </footer>
+    </div>
+</body>
+
+</html>

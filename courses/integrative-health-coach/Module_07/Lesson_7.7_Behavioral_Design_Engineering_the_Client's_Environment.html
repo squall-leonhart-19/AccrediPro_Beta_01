@@ -1,0 +1,775 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lesson 7.7: Behavioral Design: Engineering the Client's Environment</title>
+    <style>
+        /* Base & Reset */
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Georgia, 'Times New Roman', serif;
+            line-height: 1.8;
+            color: #2d2d2d;
+            background: #f8f6f3;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Main Container */
+        .lesson-container {
+            max-width: 860px;
+            margin: 0 auto;
+            padding: 40px 30px;
+            background: #ffffff;
+            min-height: 100vh;
+            box-shadow: 0 0 60px rgba(0, 0, 0, 0.08);
+        }
+
+        /* Brand Header */
+        .brand-header {
+            text-align: center;
+            padding-bottom: 30px;
+            margin-bottom: 35px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .brand-logo {
+            max-width: 220px;
+            height: auto;
+            margin-bottom: 5px;
+        }
+
+        /* Module Header - BLUE/TEAL theme for Behavioral Architecture */
+        .module-header {
+            background: linear-gradient(135deg, #0f172a 0%, #334155 100%);
+            padding: 35px 35px 30px;
+            border-radius: 16px;
+            margin-bottom: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .module-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+            transform: translate(100px, -100px);
+        }
+
+        .module-header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, #B8860B, #D4A84B, #B8860B);
+        }
+
+        .module-label {
+            margin: 0;
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.75);
+            text-transform: uppercase;
+            letter-spacing: 2.5px;
+            font-weight: 500;
+        }
+
+        .lesson-title {
+            margin: 10px 0 0 0;
+            font-size: 28px;
+            color: #ffffff;
+            font-weight: 700;
+            line-height: 1.3;
+            position: relative;
+        }
+
+        .lesson-meta {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+            padding-top: 18px;
+            border-top: 1px solid rgba(255, 255, 255, 0.15);
+            flex-wrap: wrap;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.85);
+            background: rgba(255, 255, 255, 0.1);
+            padding: 5px 12px;
+            border-radius: 4px;
+        }
+
+        /* Table of Contents */
+        .toc-box {
+            background: linear-gradient(135deg, #fafafa 0%, #f5f5f5 100%);
+            border-radius: 14px;
+            padding: 24px 28px;
+            margin-bottom: 35px;
+            border: 1px solid #e8e8e8;
+        }
+
+        .toc-box .box-label {
+            font-weight: 600;
+            color: #334155;
+            margin: 0 0 18px 0;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .toc-list {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px 24px;
+        }
+
+        .toc-list li {
+            margin: 0;
+        }
+
+        .toc-list a {
+            display: flex;
+            align-items: center;
+            padding: 8px 12px;
+            color: #555;
+            text-decoration: none;
+            font-size: 14px;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+        }
+
+        .toc-list a:hover {
+            background: white;
+            color: #1e293b;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+        }
+
+        .toc-list .section-num {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 26px;
+            height: 26px;
+            background: #334155;
+            color: white;
+            font-weight: 600;
+            font-size: 11px;
+            border-radius: 6px;
+            margin-right: 12px;
+            flex-shrink: 0;
+        }
+
+        @media (max-width: 600px) {
+            .toc-list {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Learning Objectives */
+        .objectives-box {
+            background: #f8fafc;
+            border: 2px solid #334155;
+            border-radius: 14px;
+            padding: 30px 35px;
+            margin-bottom: 40px;
+        }
+
+        .objectives-box .box-label {
+            font-weight: 600;
+            color: #334155;
+            margin: 0 0 18px 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .objectives-box .box-label::before {
+            content: '🎯';
+            font-size: 18px;
+        }
+
+        .objectives-box ul {
+            margin: 0;
+            padding-left: 22px;
+        }
+
+        .objectives-box li {
+            margin-bottom: 14px;
+            font-size: 16px;
+            line-height: 1.7;
+        }
+
+        /* Key Terms Box */
+        .key-terms-box {
+            background: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%);
+            border-radius: 14px;
+            padding: 28px 30px;
+            margin: 40px 0;
+            border: 1px solid #cbd5e1;
+        }
+
+        .key-terms-box .box-label {
+            font-weight: 600;
+            color: #1e293b;
+            margin: 0 0 18px 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .terms-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 16px;
+        }
+
+        .term-item {
+            background: white;
+            padding: 16px 18px;
+            border-radius: 10px;
+            border-left: 4px solid #334155;
+        }
+
+        .term-item .term {
+            font-weight: 700;
+            color: #1e293b;
+            font-size: 15px;
+            margin: 0 0 6px 0;
+        }
+
+        .term-item .definition {
+            font-size: 14px;
+            color: #555;
+            margin: 0;
+            line-height: 1.6;
+        }
+
+        /* Section Headings */
+        h2 {
+            font-size: 24px;
+            color: #1e293b;
+            margin: 50px 0 20px 0;
+            font-weight: 600;
+            position: relative;
+            padding-bottom: 12px;
+        }
+
+        h2::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 60px;
+            height: 3px;
+            background: #B8860B;
+        }
+
+        /* Paragraphs */
+        p {
+            font-size: 17px;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        /* Highlights */
+        .highlight {
+            background: linear-gradient(180deg, transparent 60%, #e2e8f0 60%);
+            padding: 0 4px;
+            font-weight: 500;
+            color: #1e293b;
+        }
+
+        /* Welcome/Intro Box */
+        .welcome-box {
+            background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+            padding: 30px 35px;
+            border-radius: 14px;
+            margin-bottom: 40px;
+            border: 1px solid #e2e8f0;
+        }
+
+        .welcome-box h3 {
+            margin: 0 0 15px 0;
+            font-size: 20px;
+            color: #1e293b;
+            font-weight: 600;
+        }
+
+        /* Case Study Box */
+        .case-study {
+            background: linear-gradient(135deg, #f8f9fb 0%, #f0f2f5 100%);
+            border-radius: 16px;
+            padding: 0;
+            margin: 40px 0;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+        }
+
+        .case-study-header {
+            background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
+            padding: 20px 30px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .case-study-icon {
+            width: 45px;
+            height: 45px;
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+        }
+
+        .case-study-header .box-label {
+            font-weight: 600;
+            color: #ffffff;
+            margin: 0;
+            font-size: 16px;
+        }
+
+        .case-study-content {
+            padding: 28px 30px;
+        }
+
+        .patient-profile {
+            display: flex;
+            align-items: center;
+            gap: 18px;
+            padding: 18px 22px;
+            background: white;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            border: 1px solid #e5e5e5;
+        }
+
+        .patient-avatar {
+            width: 55px;
+            height: 55px;
+            background: linear-gradient(135deg, #334155, #1e293b);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            flex-shrink: 0;
+        }
+
+        /* Statistics Box */
+        .stats-box {
+            background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
+            padding: 40px;
+            border-radius: 16px;
+            margin: 35px 0;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stat-number {
+            font-size: 42px;
+            font-weight: 700;
+            color: white;
+            line-height: 1;
+            margin-bottom: 8px;
+        }
+
+        .stat-label {
+            font-size: 13px;
+            color: rgba(255, 255, 255, 0.85);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 25px;
+            position: relative;
+        }
+
+        /* Check Understanding Box */
+        .check-understanding {
+            background: linear-gradient(135deg, #fdfbf7 0%, #f9f5ed 100%);
+            border: 2px solid #B8860B;
+            border-radius: 16px;
+            padding: 32px;
+            margin: 45px 0;
+        }
+
+        .reveal-btn {
+            background: #1e293b;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-size: 14px;
+            cursor: pointer;
+            font-family: inherit;
+        }
+
+        .answer-text {
+            display: none;
+            font-size: 14px;
+            color: #1e293b;
+            margin: 14px 0 0 0;
+            padding: 14px;
+            background: #f1f5f9;
+            border-radius: 8px;
+        }
+
+        .answer-text.show {
+            display: block;
+        }
+
+        /* Comparison Table */
+        .data-table-container {
+            overflow-x: auto;
+            margin: 30px 0;
+            border-radius: 12px;
+            border: 1px solid #e2e8f0;
+        }
+
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 15px;
+            background: white;
+        }
+
+        .data-table th {
+            background: #f1f5f9;
+            color: #1e293b;
+            font-weight: 600;
+            padding: 16px;
+            text-align: left;
+            border-bottom: 2px solid #e2e8f0;
+        }
+
+        .data-table td {
+            padding: 16px;
+            border-bottom: 1px solid #f1f5f9;
+            color: #444;
+        }
+
+        /* Takeaways */
+        .takeaways-box {
+            background: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%);
+            padding: 22px 25px;
+            margin-top: 35px;
+            border-radius: 8px;
+            border: 1px solid #cbd5e1;
+        }
+
+        .references-box {
+            margin-top: 40px;
+            padding: 25px;
+            background: #fafafa;
+            border-radius: 12px;
+            font-size: 14px;
+            color: #666;
+        }
+
+        .references-box h4 {
+            margin: 0 0 15px 0;
+            color: #333;
+        }
+
+        .lesson-footer {
+            text-align: center;
+            padding-top: 50px;
+            margin-top: 60px;
+            border-top: 1px solid #eee;
+        }
+
+        .stat-highlight {
+            color: #D4A84B;
+            font-weight: 700;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="lesson-container">
+        <div class="brand-header">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="brand-logo">
+        </div>
+
+        <header class="module-header">
+            <p class="module-label">Module 7: Guiding Behavioral Architecture (The 'G' in ALIGN)</p>
+            <h1 class="lesson-title">Lesson 7.7: Behavioral Design: Engineering the Client's Environment</h1>
+            <div class="lesson-meta">
+                <span class="meta-item">28 min read</span>
+                <span class="meta-item">Lesson 7 of 8</span>
+            </div>
+        </header>
+
+        <div class="toc-box">
+            <p class="box-label">In This Lesson</p>
+            <ul class="toc-list">
+                <li><a href="#section1"><span class="section-num">1</span>The Willpower Fallacy</a></li>
+                <li><a href="#section2"><span class="section-num">2</span>Choice Architecture Principles</a></li>
+                <li><a href="#section3"><span class="section-num">3</span>The Friction Factor</a></li>
+                <li><a href="#section4"><span class="section-num">4</span>Engineering the Home Sanctuary</a></li>
+                <li><a href="#section5"><span class="section-num">5</span>Digital & Social Architecture</a></li>
+                <li><a href="#section6"><span class="section-num">6</span>Implementation in ALIGN™</a></li>
+            </ul>
+        </div>
+
+        <div class="objectives-box">
+            <p class="box-label">Learning Objectives</p>
+            <ul>
+                <li>Explain the neurobiological limitations of willpower in long-term behavior change.</li>
+                <li>Define "Choice Architecture" and identify its primary components in a client's daily life.</li>
+                <li>Apply the concept of "Friction" to both encourage health-promoting habits and discourage maladaptive ones.</li>
+                <li>Design a structured "Environmental Audit" for a client’s home and workspace.</li>
+                <li>Integrate behavioral design strategies into the 'G' (Guide Behavioral Architecture) phase of the ALIGN™ Method.</li>
+            </ul>
+        </div>
+
+        <div class="welcome-box">
+            <h3>From Willpower to Design</h3>
+            <p>In the ALIGN™ Method, we recognize that the "G"—Guiding Behavioral Architecture—is the bridge between knowing what to do and actually doing it. Most coaching failures occur not because the client lacks information, but because their environment is optimized for their <em>old</em> habits. By engineering the environment, we move the client away from a reliance on the fragile prefrontal cortex and toward a structured lifestyle where healthy choices become the path of least resistance.</p>
+        </div>
+
+        <div class="key-terms-box">
+            <p class="box-label">🔬 Key Terms to Know</p>
+            <div class="terms-grid">
+                <div class="term-item">
+                    <p class="term">Choice Architecture</p>
+                    <p class="definition">The design of different ways in which choices can be presented to consumers, and the impact of that presentation on decision-making.</p>
+                </div>
+                <div class="term-item">
+                    <p class="term">Friction</p>
+                    <p class="definition">The physical or psychological effort required to complete a task. Increasing friction stops bad habits; decreasing it facilitates good ones.</p>
+                </div>
+                <div class="term-item">
+                    <p class="term">Ego Depletion</p>
+                    <p class="definition">The theory that willpower is a finite resource that can be exhausted through use, leading to poor decision-making later in the day.</p>
+                </div>
+                <div class="term-item">
+                    <p class="term">Nudge</p>
+                    <p class="definition">Any aspect of choice architecture that alters people's behavior in a predictable way without forbidding any options or significantly changing their economic incentives.</p>
+                </div>
+            </div>
+        </div>
+
+        <h2 id="section1">The Willpower Fallacy</h2>
+        <p>Many clients come to health coaching believing they simply need more "discipline." However, neuroscientific research suggests that relying on <span class="highlight">willpower is a statistically losing strategy</span>. The prefrontal cortex, responsible for executive function and impulse control, is metabolically expensive and easily fatigued by stress, lack of sleep, and decision fatigue.</p>
+
+        <p>A landmark 2011 study on "ego depletion" found that individuals who exerted self-control in one task performed significantly worse on subsequent tasks requiring willpower. In the context of health, a client who spends all day resisting workplace stressors and making complex professional decisions will have virtually <span class="highlight">zero "willpower reserve"</span> by the time they walk into a kitchen filled with processed snacks at 6:00 PM.</p>
+
+        <div class="stats-box">
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <div class="stat-number">200+</div>
+                    <div class="stat-label">Food Decisions Daily</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">90%</div>
+                    <div class="stat-label">Habit-Driven Actions</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">3.1x</div>
+                    <div class="stat-label">Success via Environment</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">15%</div>
+                    <div class="stat-label">Willpower Efficiency</div>
+                </div>
+            </div>
+        </div>
+
+        <h2 id="section2">Choice Architecture Principles</h2>
+        <p>As an Integrative Health Coach, you are a <span class="highlight">Choice Architect</span>. Every time you help a client reorganize their pantry, set a digital curfew, or prep their gym bag, you are influencing the "Default Option." Humans have a strong tendency to stick with the default or the easiest available choice.</p>
+
+        <p>Consider the "Plate Size Effect." A 2013 meta-analysis published in the <em>Journal of the Association for Consumer Research</em> found that <span class="stat-highlight">halving the plate size led to a 30% reduction in calories consumed</span> on average, without a corresponding increase in reported hunger. This is behavioral design in its simplest form: changing the physical constraint to change the biological outcome.</p>
+
+        <h2 id="section3">The Friction Factor</h2>
+        <p>The core mechanism of behavioral engineering is the manipulation of <span class="highlight">Friction</span>. If a client wants to meditate in the morning, but their meditation cushion is tucked away in a closet behind heavy boxes, the friction is too high. If they want to stop scrolling social media at night, but their phone is their primary alarm clock on their nightstand, the friction to the bad habit is too low.</p>
+
+        <div class="data-table-container">
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>Target Behavior</th>
+                        <th>High Friction (Harder)</th>
+                        <th>Low Friction (Easier)</th>
+                        <th>The "Architecture" Shift</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Hydration</td>
+                        <td>Getting water from a filtered pitcher in the fridge.</td>
+                        <td>Having a 32oz bottle on the desk at all times.</td>
+                        <td>Visual cue + immediate proximity.</td>
+                    </tr>
+                    <tr>
+                        <td>Morning Exercise</td>
+                        <td>Finding clothes and shoes in a dark closet.</td>
+                        <td>Clothes laid out on the bathroom counter.</td>
+                        <td>The "20-Second Rule" (Shawn Achor).</td>
+                    </tr>
+                    <tr>
+                        <td>Reducing Snacking</td>
+                        <td>Chips visible on the kitchen counter.</td>
+                        <td>Chips in an opaque container on a high shelf.</td>
+                        <td>Visual trigger removal + physical effort.</td>
+                    </tr>
+                    <tr>
+                        <td>Improved Sleep</td>
+                        <td>TV in the bedroom; phone on nightstand.</td>
+                        <td>Blackout curtains; phone in kitchen.</td>
+                        <td>Environment-driven cue for melatonin.</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="case-study">
+            <div class="case-study-header">
+                <div class="case-study-icon">👤</div>
+                <div>
+                    <p class="box-label">Case Study: Environmental Overhaul</p>
+                    <p style="color: rgba(255,255,255,0.8); margin: 0; font-size: 13px;">Client: David, 45 | Goal: Weight Loss & Stress Management</p>
+                </div>
+            </div>
+            <div class="case-study-content">
+                <div class="patient-profile">
+                    <div class="patient-avatar">D</div>
+                    <div class="patient-info">
+                        <h4>David's Presentation</h4>
+                        <p>High-stress executive, "night eater," struggles with consistency despite high motivation.</p>
+                    </div>
+                </div>
+                <p><strong>The Intervention:</strong> Instead of focusing on "discipline," we performed a kitchen and workspace audit. We implemented three primary shifts:</p>
+                <ul>
+                    <li><strong>The "Fruit Bowl" Effect:</strong> Moved all processed snacks to a locked "treat box" in the garage and placed a vibrant bowl of fruit on the kitchen island. (Research shows fruit visibility correlates with lower BMI).</li>
+                    <li><strong>The Digital Sunset:</strong> Installed a smart plug on the home router to turn off Wi-Fi at 10:30 PM, creating an "enforced" digital boundary.</li>
+                    <li><strong>The Desktop Water Tower:</strong> Replaced his small glass with a 2-liter insulated jug to remove the friction of frequent refills.</li>
+                </ul>
+                <p><strong>Outcome:</strong> David lost 12 lbs in 8 weeks. He reported that he didn't feel like he was "dieting," but rather that his house was "helping" him make better choices. His nighttime snacking decreased by 80% without conscious effort.</p>
+            </div>
+        </div>
+
+        <h2 id="section4">Engineering the Home Sanctuary</h2>
+        <p>The home is the primary site of habit formation. To guide behavioral architecture effectively, you must help clients audit three specific zones:</p>
+
+        <div class="principle-card">
+            <p class="principle-title">1. The Kitchen (The Fueling Station)</p>
+            <p class="principle-text">Visibility is the strongest trigger for eating behavior. A study by Wansink et al. (2016) found that women who had a box of cereal visible on their counter weighed an average of <span class="stat-highlight">20 lbs more</span> than those who didn't. 
+            <ul>
+                <li><strong>Strategy:</strong> Clear the counters. Only whole foods (fruit, nuts) should be visible.</li>
+                <li><strong>Strategy:</strong> Use smaller bowls and plates to leverage the Delboeuf illusion.</li>
+            </ul>
+            </p>
+        </div>
+
+        <div class="principle-card">
+            <p class="principle-title">2. The Bedroom (The Recovery Zone)</p>
+            <p class="principle-text">The bedroom should be optimized for parasympathetic dominance. 
+            <ul>
+                <li><strong>Strategy:</strong> Remove all light-emitting devices. Even small LED standby lights can disrupt circadian rhythms.</li>
+                <li><strong>Strategy:</strong> Temperature control—set the thermostat to 65-68°F (18-20°C) to facilitate the core body temperature drop required for deep sleep.</li>
+            </ul>
+            </p>
+        </div>
+
+        <h2 id="section5">Digital & Social Architecture</h2>
+        <p>In the 21st century, the "environment" extends into the digital and social realms. The <span class="highlight">Social Contagion Theory</span> (Christakis & Fowler) suggests that if your immediate friends are obese, you have a 45% higher risk of obesity yourself. This isn't just about peer pressure; it's about the normalization of behaviors.</p>
+
+        <p>Digital architecture is equally influential. The average person checks their phone <span class="stat-highlight">96 times per day</span>. Each check is a potential disruption to the "G" in ALIGN. We must help clients engineer their digital environment by:</p>
+        <ul>
+            <li><strong>Batching Notifications:</strong> Reducing the "ping" triggers that cause cortisol spikes.</li>
+            <li><strong>The "One-Screen" Rule:</strong> No secondary screens (phones/tablets) while watching TV or eating, to restore mindful awareness.</li>
+            <li><strong>Social Curation:</strong> Encouraging clients to join "communities of practice" (e.g., a local hiking group) where their target health behaviors are the social norm.</li>
+        </ul>
+
+        <h2 id="section6">Implementation in ALIGN™</h2>
+        <p>As you <strong>Guide Behavioral Architecture</strong>, follow this 3-step process during your coaching sessions:</p>
+        <ol>
+            <li><strong>Identify the Friction:</strong> Ask the client, "What is the very first physical step of this habit, and what is standing in your way?"</li>
+            <li><strong>Design the Nudge:</strong> Create a visual or physical cue that makes the habit unavoidable (e.g., putting the yoga mat in the middle of the living room floor).</li>
+            <li><strong>Test and Iterate:</strong> Architecture is rarely perfect on the first try. If the client fails to perform the habit, do not blame their willpower—<span class="highlight">blame the blueprint</span> and redesign the environment.</li>
+        </ol>
+
+        <div class="check-understanding">
+            <p class="box-label">Check Your Understanding</p>
+            <p class="box-subtitle">Test your knowledge of behavioral design principles.</p>
+
+            <div class="question-item">
+                <div class="question-number">1</div>
+                <p class="question-text">A client wants to stop eating cookies after dinner. According to behavioral design principles, which intervention is most likely to be successful long-term?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-text">
+                    The most successful intervention is <strong>increasing friction</strong> by not buying the cookies at all, or storing them in a difficult-to-reach, opaque container in a different room. Relying on "self-control" while the cookies are on the counter is statistically likely to fail due to ego depletion.
+                </div>
+            </div>
+
+            <div class="question-item">
+                <div class="question-number">2</div>
+                <p class="question-text">What is the "20-Second Rule" in the context of behavioral architecture?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-text">
+                    Developed by Shawn Achor, it suggests that reducing the time it takes to start a habit by just 20 seconds (e.g., having gym clothes ready) significantly increases the likelihood of follow-through. Conversely, adding 20 seconds of effort to a bad habit (e.g., taking batteries out of the remote) significantly decreases its frequency.
+                </div>
+            </div>
+        </div>
+
+        <div class="takeaways-box">
+            <p class="box-label">Key Takeaways</p>
+            <ul>
+                <li>Willpower is a finite metabolic resource; environment is a permanent structural asset.</li>
+                <li>Choice Architecture focuses on making the healthy choice the "default" option.</li>
+                <li>Friction is the most powerful tool in a coach's behavioral toolkit—increase it for distractions, decrease it for goals.</li>
+                <li>The 'G' in ALIGN™ shifts the focus from "trying harder" to "designing better."</li>
+                <li>Success in health coaching is often determined by the 20 seconds of effort required to initiate a behavior.</li>
+            </ul>
+        </div>
+
+        <div class="references-box">
+            <h4>References & Further Reading</h4>
+            <ul>
+                <li>Thaler, R. H., & Sunstein, C. R. (2008). "Nudge: Improving Decisions About Health, Wealth, and Happiness." Yale University Press.</li>
+                <li>Baumeister, R. F., et al. (2011). "Ego Depletion and Self-Control Failure: A Resource Model of Self-Regulation." Social and Personality Psychology Compass.</li>
+                <li>Wansink, B., et al. (2016). "Slim by Design: Kitchen Countertop Correlates of Obesity." Health Education & Behavior.</li>
+                <li>Christakis, N. A., & Fowler, J. H. (2007). "The Spread of Obesity in a Large Social Network over 32 Years." New England Journal of Medicine.</li>
+                <li>Achor, S. (2010). "The Happiness Advantage: The Seven Principles of Positive Psychology That Fuel Success and Performance at Work." Crown Business.</li>
+                <li>Hollands, G. J., et al. (2013). "Altering Micro-Environments to Change Population Health Behaviour: Towards an Evidence Synthesis of Interventions Based on Choice Architecture." BMC Public Health.</li>
+            </ul>
+        </div>
+
+        <footer class="lesson-footer">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="footer-logo">
+            <p class="brand">AccrediPro Academy | Integrative Health Coach Certification</p>
+            <p class="copyright">&copy; 2024 AccrediPro. All rights reserved. The ALIGN Method™ is a proprietary framework.</p>
+        </footer>
+    </div>
+</body>
+
+</html>

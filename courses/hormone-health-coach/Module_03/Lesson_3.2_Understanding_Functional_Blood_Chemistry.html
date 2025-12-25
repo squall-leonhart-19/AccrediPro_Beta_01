@@ -1,0 +1,827 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lesson 3.2: Understanding Functional Blood Chemistry</title>
+    <style>
+        /* Base & Reset */
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Georgia, 'Times New Roman', serif;
+            line-height: 1.8;
+            color: #2d2d2d;
+            background: #f8f6f3;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Main Container */
+        .lesson-container {
+            max-width: 860px;
+            margin: 0 auto;
+            padding: 40px 30px;
+            background: #ffffff;
+            min-height: 100vh;
+            box-shadow: 0 0 60px rgba(0, 0, 0, 0.08);
+        }
+
+        /* Brand Header */
+        .brand-header {
+            text-align: center;
+            padding-bottom: 30px;
+            margin-bottom: 35px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .brand-logo {
+            max-width: 220px;
+            height: auto;
+            margin-bottom: 5px;
+        }
+
+        /* Module Header - BLUE/TEAL theme for Assessment */
+        .module-header {
+            background: linear-gradient(135deg, #0f172a 0%, #334155 100%);
+            padding: 35px 35px 30px;
+            border-radius: 16px;
+            margin-bottom: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .module-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+            transform: translate(100px, -100px);
+        }
+
+        .module-header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, #B8860B, #D4A84B, #B8860B);
+        }
+
+        .module-label {
+            margin: 0;
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.75);
+            text-transform: uppercase;
+            letter-spacing: 2.5px;
+            font-weight: 500;
+        }
+
+        .lesson-title {
+            margin: 10px 0 0 0;
+            font-size: 28px;
+            color: #ffffff;
+            font-weight: 700;
+            line-height: 1.3;
+            position: relative;
+        }
+
+        .lesson-meta {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+            padding-top: 18px;
+            border-top: 1px solid rgba(255, 255, 255, 0.15);
+            flex-wrap: wrap;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.85);
+            background: rgba(255, 255, 255, 0.1);
+            padding: 5px 12px;
+            border-radius: 4px;
+        }
+
+        /* Table of Contents */
+        .toc-box {
+            background: linear-gradient(135deg, #fafafa 0%, #f5f5f5 100%);
+            border-radius: 14px;
+            padding: 24px 28px;
+            margin-bottom: 35px;
+            border: 1px solid #e8e8e8;
+        }
+
+        .toc-box .box-label {
+            font-weight: 600;
+            color: #334155;
+            margin: 0 0 18px 0;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .toc-list {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px 24px;
+        }
+
+        .toc-list li {
+            margin: 0;
+        }
+
+        .toc-list a {
+            display: flex;
+            align-items: center;
+            padding: 8px 12px;
+            color: #555;
+            text-decoration: none;
+            font-size: 14px;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+        }
+
+        .toc-list a:hover {
+            background: white;
+            color: #0f172a;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+        }
+
+        .toc-list .section-num {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 26px;
+            height: 26px;
+            background: #334155;
+            color: white;
+            font-weight: 600;
+            font-size: 11px;
+            border-radius: 6px;
+            margin-right: 12px;
+            flex-shrink: 0;
+        }
+
+        /* Learning Objectives */
+        .objectives-box {
+            background: #f8fafc;
+            border: 2px solid #334155;
+            border-radius: 14px;
+            padding: 30px 35px;
+            margin-bottom: 40px;
+        }
+
+        .objectives-box .box-label {
+            font-weight: 600;
+            color: #334155;
+            margin: 0 0 18px 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .objectives-box .box-label::before {
+            content: '📊';
+            font-size: 18px;
+        }
+
+        .objectives-box ul {
+            margin: 0;
+            padding-left: 22px;
+        }
+
+        .objectives-box li {
+            margin-bottom: 14px;
+            font-size: 16px;
+            line-height: 1.7;
+        }
+
+        /* Key Terms Box */
+        .key-terms-box {
+            background: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%);
+            border-radius: 14px;
+            padding: 28px 30px;
+            margin: 40px 0;
+            border: 1px solid #cbd5e1;
+        }
+
+        .key-terms-box .box-label {
+            font-weight: 600;
+            color: #334155;
+            margin: 0 0 18px 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .terms-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 16px;
+        }
+
+        .term-item {
+            background: white;
+            padding: 16px 18px;
+            border-radius: 10px;
+            border-left: 4px solid #334155;
+        }
+
+        .term-item .term {
+            font-weight: 700;
+            color: #0f172a;
+            font-size: 15px;
+            margin: 0 0 6px 0;
+        }
+
+        .term-item .definition {
+            font-size: 14px;
+            color: #555;
+            margin: 0;
+            line-height: 1.6;
+        }
+
+        /* Section Headings */
+        h2 {
+            font-size: 24px;
+            color: #0f172a;
+            margin: 50px 0 20px 0;
+            font-weight: 600;
+            position: relative;
+            padding-bottom: 12px;
+        }
+
+        h2::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 60px;
+            height: 3px;
+            background: #B8860B;
+        }
+
+        /* Paragraphs */
+        p {
+            font-size: 17px;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        /* Highlights */
+        .highlight {
+            background: linear-gradient(180deg, transparent 60%, #e2e8f0 60%);
+            padding: 0 4px;
+            font-weight: 500;
+        }
+
+        /* Welcome/Intro Box */
+        .welcome-box {
+            background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+            padding: 30px 35px;
+            border-radius: 14px;
+            margin-bottom: 40px;
+            border: 1px solid #e2e8f0;
+        }
+
+        .welcome-box h3 {
+            margin: 0 0 15px 0;
+            font-size: 20px;
+            color: #0f172a;
+            font-weight: 600;
+        }
+
+        /* Alert Boxes */
+        .alert-box {
+            padding: 26px 30px;
+            margin: 35px 0;
+            border-radius: 0 14px 14px 0;
+            border-left: 5px solid;
+        }
+
+        .alert-box .alert-label {
+            font-weight: 600;
+            margin: 0 0 12px 0;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .alert-box.info {
+            background: #f0f9ff;
+            border-left-color: #0ea5e9;
+        }
+
+        .alert-box.info .alert-label {
+            color: #0369a1;
+        }
+
+        /* Case Study Box */
+        .case-study {
+            background: linear-gradient(135deg, #f8f9fb 0%, #f1f5f9 100%);
+            border-radius: 16px;
+            padding: 0;
+            margin: 40px 0;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+        }
+
+        .case-study-header {
+            background: linear-gradient(135deg, #0f172a 0%, #334155 100%);
+            padding: 20px 30px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .case-study-icon {
+            width: 45px;
+            height: 45px;
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+        }
+
+        .case-study-header .box-label {
+            font-weight: 600;
+            color: #ffffff;
+            margin: 0;
+            font-size: 16px;
+        }
+
+        .case-study-content {
+            padding: 28px 30px;
+        }
+
+        .patient-profile {
+            display: flex;
+            align-items: center;
+            gap: 18px;
+            padding: 18px 22px;
+            background: white;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            border: 1px solid #e5e5e5;
+        }
+
+        .patient-avatar {
+            width: 55px;
+            height: 55px;
+            background: linear-gradient(135deg, #334155, #0f172a);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            flex-shrink: 0;
+        }
+
+        /* Comparison Cards */
+        .comparison-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+            margin: 30px 0;
+        }
+
+        .comparison-card {
+            border-radius: 14px;
+            padding: 26px;
+            border-top: 5px solid;
+        }
+
+        .comparison-card.conventional {
+            background: #fff5f5;
+            border-top-color: #c62828;
+        }
+
+        .comparison-card.functional {
+            background: #f0fdf4;
+            border-top-color: #16a34a;
+        }
+
+        /* Statistics Box */
+        .stats-box {
+            background: linear-gradient(135deg, #0f172a 0%, #334155 100%);
+            padding: 40px;
+            border-radius: 16px;
+            margin: 35px 0;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 25px;
+            position: relative;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 42px;
+            font-weight: 700;
+            color: white;
+            line-height: 1;
+            margin-bottom: 8px;
+        }
+
+        .stat-label {
+            font-size: 13px;
+            color: rgba(255, 255, 255, 0.85);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* Check Understanding Box */
+        .check-understanding {
+            background: linear-gradient(135deg, #fdfbf7 0%, #f9f5ed 100%);
+            border: 2px solid #B8860B;
+            border-radius: 16px;
+            padding: 32px;
+            margin: 45px 0;
+        }
+
+        .question-item {
+            background: white;
+            border-radius: 12px;
+            padding: 22px 24px;
+            margin-bottom: 16px;
+            border: 1px solid #e8e4dc;
+            position: relative;
+        }
+
+        .reveal-btn {
+            background: #334155;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+
+        .answer-text {
+            display: none;
+            font-size: 14px;
+            color: #1e293b;
+            margin-top: 14px;
+            padding: 14px;
+            background: #f1f5f9;
+            border-radius: 8px;
+        }
+
+        .answer-text.show {
+            display: block;
+        }
+
+        /* Reference Box */
+        .references-box {
+            background: #f8fafc;
+            padding: 30px;
+            border-radius: 14px;
+            margin-top: 50px;
+            border: 1px solid #e2e8f0;
+        }
+
+        .references-box h4 {
+            margin: 0 0 15px 0;
+            font-size: 16px;
+            color: #334155;
+        }
+
+        .references-box ul {
+            margin: 0;
+            padding-left: 20px;
+            font-size: 14px;
+            color: #64748b;
+        }
+
+        .references-box li {
+            margin-bottom: 8px;
+        }
+
+        /* Table Styling */
+        .data-table-container {
+            overflow-x: auto;
+            margin: 30px 0;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 15px;
+        }
+
+        th {
+            background: #334155;
+            color: white;
+            text-align: left;
+            padding: 12px 15px;
+        }
+
+        td {
+            padding: 12px 15px;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f8fafc;
+        }
+
+        /* Footer */
+        .lesson-footer {
+            text-align: center;
+            padding-top: 50px;
+            margin-top: 60px;
+            border-top: 1px solid #eee;
+        }
+
+        .footer-logo {
+            max-width: 140px;
+            height: auto;
+            margin-bottom: 15px;
+            opacity: 0.9;
+        }
+
+        .takeaways-box {
+            background: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%);
+            padding: 22px 25px;
+            margin-top: 35px;
+            border-radius: 8px;
+            border: 1px solid #cbd5e1;
+        }
+
+        .takeaways-box .box-label {
+            font-weight: 600;
+            color: #334155;
+            margin: 0 0 15px 0;
+            font-size: 16px;
+            text-transform: uppercase;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="lesson-container">
+        <div class="brand-header">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="brand-logo">
+        </div>
+
+        <header class="module-header">
+            <p class="module-label">Module 3: Survey & Systematize (S)</p>
+            <h1 class="lesson-title">Lesson 3.2: Understanding Functional Blood Chemistry</h1>
+            <div class="lesson-meta">
+                <span class="meta-item">35 min read</span>
+                <span class="meta-item">Lesson 2 of 6</span>
+            </div>
+        </header>
+
+        <!-- Table of Contents -->
+        <div class="toc-box">
+            <p class="box-label">In This Lesson</p>
+            <ul class="toc-list">
+                <li><a href="#section1"><span class="section-num">1</span>The Functional Gap</a></li>
+                <li><a href="#section2"><span class="section-num">2</span>Metabolic Foundation</a></li>
+                <li><a href="#section3"><span class="section-num">3</span>Thyroid & Adrenal Markers</a></li>
+                <li><a href="#section4"><span class="section-num">4</span>Lipids & Inflammation</a></li>
+                <li><a href="#section5"><span class="section-num">5</span>Nutrient Precursors</a></li>
+                <li><a href="#section6"><span class="section-num">6</span>Clinical Interpretation</a></li>
+            </ul>
+        </div>
+
+        <!-- Learning Objectives -->
+        <div class="objectives-box">
+            <p class="box-label">Learning Objectives</p>
+            <ul>
+                <li>Distinguish between conventional "pathological" lab ranges and functional "optimal" ranges.</li>
+                <li>Identify key biomarkers within the CBC and CMP that indicate hormonal dysregulation.</li>
+                <li>Analyze the relationship between blood glucose markers and endocrine stability.</li>
+                <li>Interpret thyroid and adrenal markers through a functional lens to identify subclinical dysfunction.</li>
+                <li>Evaluate nutrient status markers (Ferritin, Vitamin D, B12) as foundational pillars for hormone synthesis.</li>
+            </ul>
+        </div>
+
+        <!-- Welcome Box -->
+        <div class="welcome-box">
+            <h3>Beyond "Normal" Labs</h3>
+            <p>In the SIGNAL Method™, the first phase—<span class="highlight">Survey & Systematize</span>—is about moving from guesswork to precision. Many clients arrive with a stack of "normal" lab results while suffering from debilitating hormonal symptoms. This lesson teaches you how to bridge that gap. Functional Blood Chemistry Analysis (FBCA) is not about diagnosing disease; it is about identifying physiological shifts <i>before</i> they manifest as pathology, allowing for early intervention and true root-cause correction.</p>
+        </div>
+
+        <h2 id="section1">The Functional Gap: Normal vs. Optimal</h2>
+
+        <p>Conventional lab reference ranges are typically based on a <span class="highlight">bell curve of the "sick" population</span>. These ranges (often two standard deviations from the mean) are designed to identify overt disease—such as kidney failure or clinical hypothyroidism. However, a client can be "within range" and still be 90% of the way toward a disease state.</p>
+
+        <p>A 2021 study published in <i>The Lancet Healthy Longevity</i> emphasized that "normal" ranges often fail to account for biological aging and subclinical metabolic stress. As a Hormone Health Coach, you utilize <strong>Optimal Ranges</strong>—narrower windows where physiology operates with maximum efficiency.</p>
+
+        <div class="data-table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Biomarker</th>
+                        <th>Conventional Range</th>
+                        <th>Functional (Optimal) Range</th>
+                        <th>Hormonal Significance</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>TSH</td>
+                        <td>0.45 – 4.5 mIU/L</td>
+                        <td>1.0 – 2.0 mIU/L</td>
+                        <td>Metabolic rate & Thyroid signal</td>
+                    </tr>
+                    <tr>
+                        <td>HbA1c</td>
+                        <td>4.8 – 5.6 %</td>
+                        <td>4.8 – 5.2 %</td>
+                        <td>Insulin sensitivity & PCOS risk</td>
+                    </tr>
+                    <tr>
+                        <td>Ferritin</td>
+                        <td>15 – 150 ng/mL</td>
+                        <td>70 – 100 ng/mL</td>
+                        <td>Thyroid conversion & Oxygenation</td>
+                    </tr>
+                    <tr>
+                        <td>Fasting Insulin</td>
+                        <td>2.6 – 24.9 uIU/mL</td>
+                        <td>2.0 – 5.0 uIU/mL</td>
+                        <td>Primary driver of androgen excess</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <h2 id="section2">The Metabolic Foundation: Glucose & Insulin</h2>
+
+        <p>Hormonal health is impossible without glycemic control. A 2023 meta-analysis of 42 studies (n=8,234) found that even "high-normal" fasting glucose levels (95-99 mg/dL) were associated with a <span class="highlight">34% increased risk</span> of developing metabolic syndrome, a primary driver of hormonal imbalance.</p>
+
+        <p>In the SIGNAL Method™, we look at the "Triple Threat" of glucose markers:</p>
+        <ul class="content-list">
+            <li><strong>Fasting Glucose:</strong> A snapshot of current fuel management.</li>
+            <li><strong>HbA1c:</strong> A 90-day average of glycation (sugar sticking to proteins).</li>
+            <li><strong>Fasting Insulin:</strong> The most sensitive marker. Insulin often rises 5-10 years before glucose fails. High insulin directly suppresses SHBG (Sex Hormone Binding Globulin), leading to elevated free testosterone in women.</li>
+        </ul>
+
+        <div class="stats-box">
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <div class="stat-number">70%</div>
+                    <div class="stat-label">PCOS cases with Insulin Resistance</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">5.0</div>
+                    <div class="stat-label">Max Optimal Fasting Insulin</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">3x</div>
+                    <div class="stat-label">Risk of Thyroid issues with Dysglycemia</div>
+                </div>
+            </div>
+        </div>
+
+        <h2 id="section3">Thyroid & Adrenal Markers: The HPT & HPA Axes</h2>
+
+        <p>Conventional medicine often relies solely on TSH. From a functional perspective, TSH is a pituitary hormone, not a thyroid hormone. To truly <span class="highlight">Identify Root Dysfunctions</span> (the "I" in SIGNAL), we must see the full cascade.</p>
+
+        <p>Functional interpretation looks for "patterns" rather than single highs or lows. For example, a "normal" TSH with a low-normal Free T3 suggests a <span class="highlight">non-thyroidal illness syndrome</span> or "euthyroid sick syndrome," often caused by chronic stress (HPA-axis activation) or gut dysbiosis rather than a thyroid gland failure.</p>
+
+        <div class="alert-box info">
+            <p class="alert-label">Clinical Pearl: The Stress-Thyroid Connection</p>
+            <p>Elevated cortisol (from the HPA axis) inhibits the 5'-deiodinase enzyme, which is responsible for converting inactive T4 into active T3. If you only test TSH, you will miss the fact that your client is functionally hypothyroid due to stress-induced conversion failure.</p>
+        </div>
+
+        <h2 id="section4">Lipids & Inflammation: The Environment of Hormones</h2>
+
+        <p>Cholesterol is not the "enemy"—it is the <span class="highlight">raw material (precursor)</span> for all steroid hormones, including estrogen, progesterone, testosterone, and cortisol. Very low cholesterol (under 150 mg/dL) is often seen in clients with "hormonal burnout" or amenorrhea because the body lacks the building blocks for synthesis.</p>
+
+        <p>We also monitor <strong>hs-CRP (high-sensitivity C-Reactive Protein)</strong>. Inflammation is a "hormone disruptor." When hs-CRP is above 1.0 mg/L, it signals systemic inflammation that can desensitize hormone receptors, meaning even if hormone levels are "normal," the cells can't "hear" the message.</p>
+
+        <h2 id="section5">Nutrient Status: The Essential Cofactors</h2>
+
+        <p>Hormone synthesis and detoxification are nutrient-dependent processes. In the "S" phase, we screen for deficiencies that act as "bottlenecks."</p>
+
+        <div class="key-terms-box">
+            <p class="box-label">🔬 Critical Nutrient Biomarkers</p>
+            <div class="terms-grid">
+                <div class="term-item">
+                    <p class="term">Vitamin D (25-OH)</p>
+                    <p class="definition">Actually a pro-hormone. Optimal levels (60-80 ng/mL) are required for insulin sensitivity and ovarian function.</p>
+                </div>
+                <div class="term-item">
+                    <p class="term">Ferritin</p>
+                    <p class="definition">Stored iron. Required for the enzyme TPO to produce thyroid hormone. Low ferritin is a leading cause of "unexplained" hair loss.</p>
+                </div>
+                <div class="term-item">
+                    <p class="term">Serum B12</p>
+                    <p class="definition">Essential for methylation and estrogen detoxification. Functional optimal is &gt;800 pg/mL.</p>
+                </div>
+            </div>
+        </div>
+
+        <h2 id="section6">Case Study: The "Normal" Fatigue</h2>
+
+        <div class="case-study">
+            <div class="case-study-header">
+                <div class="case-study-icon">👤</div>
+                <div>
+                    <p class="box-label">Case Study: Sarah G.</p>
+                    <p style="color: rgba(255,255,255,0.8); margin:0; font-size: 13px;">Subclinical dysfunction in a "healthy" 32-year-old</p>
+                </div>
+            </div>
+            <div class="case-study-content">
+                <div class="patient-profile">
+                    <div class="patient-avatar">S</div>
+                    <div class="patient-info">
+                        <h4>Sarah G., 32</h4>
+                        <p>Symptoms: Fatigue, hair thinning, PMS, unable to lose weight despite exercise.</p>
+                    </div>
+                </div>
+                <p><strong>Conventional Results:</strong> Sarah was told her labs were "perfect." TSH: 3.8 mIU/L, Glucose: 98 mg/dL, Ferritin: 22 ng/mL.</p>
+                <p><strong>Functional Interpretation:</strong>
+                    <ul>
+                        <li><strong>TSH (3.8):</strong> While under the 4.5 limit, this indicates a struggling thyroid. Optimal is &lt;2.0.</li>
+                        <li><strong>Glucose (98):</strong> Approaching insulin resistance. Optimal is &lt;90.</li>
+                        <li><strong>Ferritin (22):</strong> Severely low for thyroid function. The thyroid "engine" lacks the iron "spark plugs" to run.</li>
+                    </ul>
+                </p>
+                <p><strong>Intervention:</strong> Focused on iron-rich nutrition, blood sugar stabilization (SIGNAL: Nutritional Precision), and adrenal support.</p>
+                <p><strong>Outcome:</strong> After 12 weeks, TSH dropped to 1.9, Ferritin rose to 65, and Sarah reported a 70% increase in energy and cessation of hair shedding.</p>
+            </div>
+        </div>
+
+        <!-- Check Your Understanding -->
+        <div class="check-understanding">
+            <p class="box-label">Check Your Understanding</p>
+            <p class="box-subtitle">Test your knowledge of functional blood chemistry.</p>
+            
+            <div class="question-item">
+                <div class="question-number">1</div>
+                <p class="question-text">A client's lab report shows a "Normal" Fasting Insulin of 18 uIU/mL. How would a functional practitioner interpret this?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-text">This is functionally high. While conventional ranges go up to ~25, the optimal functional range is 2.0-5.0 uIU/mL. A level of 18 indicates significant insulin resistance and is likely driving hormonal imbalances like PCOS or estrogen dominance.</div>
+            </div>
+
+            <div class="question-item">
+                <div class="question-number">2</div>
+                <p class="question-text">Why is TSH alone insufficient for assessing thyroid health in the SIGNAL Method?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-text">TSH is a pituitary signal, not a measure of circulating thyroid hormones. It fails to identify "conversion issues" (T4 to T3) or receptor desensitivity caused by inflammation or high cortisol.</div>
+            </div>
+        </div>
+
+        <div class="takeaways-box">
+            <p class="box-label">Key Takeaways</p>
+            <ul>
+                <li><strong>Reference Ranges vs. Optimal Ranges:</strong> Conventional ranges identify disease; functional ranges identify health and physiological efficiency.</li>
+                <li><strong>Metabolic Markers:</strong> Fasting insulin is the most sensitive early marker for hormonal disruption.</li>
+                <li><strong>Pattern Recognition:</strong> Look for relationships between markers (e.g., high TSH + low Ferritin) rather than isolated values.</li>
+                <li><strong>The precursor principle:</strong> Cholesterol and nutrients like Vitamin D and Iron are the building blocks of the endocrine system.</li>
+            </ul>
+        </div>
+
+        <div class="references-box">
+            <h4>References & Further Reading</h4>
+            <ul>
+                <li>Coates et al. (2021). "The limitation of reference ranges in clinical practice." <i>The Lancet Healthy Longevity</i>.</li>
+                <li>Guastamacchia et al. (2023). "Metabolic Syndrome and Thyroid Dysfunction: A Meta-Analysis." <i>Endocrine Reviews</i>.</li>
+                <li>Khatibi et al. (2022). "Fasting Insulin as a Predictor of Endocrine Disorders in Women." <i>Journal of Clinical Endocrinology & Metabolism</i>.</li>
+                <li>Soares et al. (2020). "Vitamin D and Hormonal Health: Beyond Bone Metabolism." <i>Nutrients</i>.</li>
+                <li>Weatherby, D. & Ferguson, S. (2020). "Blood Chemistry and CBC Analysis: Clinical Interpretation." <i>Bear Mountain Publishing</i>.</li>
+            </ul>
+        </div>
+
+        <footer class="lesson-footer">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="footer-logo">
+            <p class="brand">AccrediPro Academy Certified Hormone Health Coach</p>
+            <p class="copyright">&copy; 2024 AccrediPro. All rights reserved. Professional use only.</p>
+        </footer>
+    </div>
+</body>
+
+</html>

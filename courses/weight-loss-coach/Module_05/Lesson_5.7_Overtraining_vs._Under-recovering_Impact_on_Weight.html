@@ -1,0 +1,814 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lesson 5.7: Overtraining vs. Under-recovering: Impact on Weight</title>
+    <style>
+        /* Base & Reset */
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Georgia, 'Times New Roman', serif;
+            line-height: 1.8;
+            color: #2d2d2d;
+            background: #f8f6f3;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Main Container */
+        .lesson-container {
+            max-width: 860px;
+            margin: 0 auto;
+            padding: 40px 30px;
+            background: #ffffff;
+            min-height: 100vh;
+            box-shadow: 0 0 60px rgba(0, 0, 0, 0.08);
+        }
+
+        /* Brand Header */
+        .brand-header {
+            text-align: center;
+            padding-bottom: 30px;
+            margin-bottom: 35px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .brand-logo {
+            max-width: 220px;
+            height: auto;
+            margin-bottom: 5px;
+        }
+
+        /* Module Header - BLUE/TEAL theme for Resistance & Recovery */
+        .module-header {
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+            padding: 35px 35px 30px;
+            border-radius: 16px;
+            margin-bottom: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .module-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+            transform: translate(100px, -100px);
+        }
+
+        .module-header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, #B8860B, #D4A84B, #B8860B);
+        }
+
+        .module-label {
+            margin: 0;
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.75);
+            text-transform: uppercase;
+            letter-spacing: 2.5px;
+            font-weight: 500;
+        }
+
+        .lesson-title {
+            margin: 10px 0 0 0;
+            font-size: 28px;
+            color: #ffffff;
+            font-weight: 700;
+            line-height: 1.3;
+            position: relative;
+        }
+
+        .lesson-meta {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+            padding-top: 18px;
+            border-top: 1px solid rgba(255, 255, 255, 0.15);
+            flex-wrap: wrap;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.85);
+            background: rgba(255, 255, 255, 0.1);
+            padding: 5px 12px;
+            border-radius: 4px;
+        }
+
+        /* Table of Contents */
+        .toc-box {
+            background: linear-gradient(135deg, #fafafa 0%, #f5f5f5 100%);
+            border-radius: 14px;
+            padding: 24px 28px;
+            margin-bottom: 35px;
+            border: 1px solid #e8e8e8;
+        }
+
+        .toc-box .box-label {
+            font-weight: 600;
+            color: #1e3a8a;
+            margin: 0 0 18px 0;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .toc-list {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px 24px;
+        }
+
+        .toc-list li {
+            margin: 0;
+        }
+
+        .toc-list a {
+            display: flex;
+            align-items: center;
+            padding: 8px 12px;
+            color: #555;
+            text-decoration: none;
+            font-size: 14px;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+        }
+
+        .toc-list a:hover {
+            background: white;
+            color: #1e3a8a;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+        }
+
+        .toc-list .section-num {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 26px;
+            height: 26px;
+            background: #1e3a8a;
+            color: white;
+            font-weight: 600;
+            font-size: 11px;
+            border-radius: 6px;
+            margin-right: 12px;
+            flex-shrink: 0;
+        }
+
+        @media (max-width: 600px) {
+            .toc-list {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Learning Objectives */
+        .objectives-box {
+            background: #f0f7ff;
+            border: 2px solid #3b82f6;
+            border-radius: 14px;
+            padding: 30px 35px;
+            margin-bottom: 40px;
+        }
+
+        .objectives-box .box-label {
+            font-weight: 600;
+            color: #1e3a8a;
+            margin: 0 0 18px 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .objectives-box .box-label::before {
+            content: '🎯';
+            font-size: 18px;
+        }
+
+        .objectives-box ul {
+            margin: 0;
+            padding-left: 22px;
+        }
+
+        .objectives-box li {
+            margin-bottom: 14px;
+            font-size: 16px;
+            line-height: 1.7;
+        }
+
+        /* Key Terms Box */
+        .key-terms-box {
+            background: linear-gradient(135deg, #f0f4f8 0%, #e8ecf1 100%);
+            border-radius: 14px;
+            padding: 28px 30px;
+            margin: 40px 0;
+            border: 1px solid #d8dce0;
+        }
+
+        .key-terms-box .box-label {
+            font-weight: 600;
+            color: #1e3a8a;
+            margin: 0 0 18px 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .terms-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 16px;
+        }
+
+        .term-item {
+            background: white;
+            padding: 16px 18px;
+            border-radius: 10px;
+            border-left: 4px solid #3b82f6;
+        }
+
+        .term-item .term {
+            font-weight: 700;
+            color: #1e3a8a;
+            font-size: 15px;
+            margin: 0 0 6px 0;
+        }
+
+        .term-item .definition {
+            font-size: 14px;
+            color: #555;
+            margin: 0;
+            line-height: 1.6;
+        }
+
+        /* Section Headings */
+        h2 {
+            font-size: 24px;
+            color: #1e3a8a;
+            margin: 50px 0 20px 0;
+            font-weight: 600;
+            position: relative;
+            padding-bottom: 12px;
+        }
+
+        h2::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 60px;
+            height: 3px;
+            background: #B8860B;
+        }
+
+        /* Paragraphs */
+        p {
+            font-size: 17px;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        /* Highlights */
+        .highlight {
+            background: linear-gradient(180deg, transparent 60%, #FFF59D 60%);
+            padding: 0 4px;
+            font-weight: 500;
+        }
+
+        /* Welcome/Intro Box */
+        .welcome-box {
+            background: linear-gradient(135deg, #f0f7ff 0%, #e0effe 100%);
+            padding: 30px 35px;
+            border-radius: 14px;
+            margin-bottom: 40px;
+            border: 1px solid #bfdbfe;
+        }
+
+        .welcome-box h3 {
+            margin: 0 0 15px 0;
+            font-size: 20px;
+            color: #1e3a8a;
+            font-weight: 600;
+        }
+
+        .welcome-box p {
+            margin: 0;
+            font-size: 17px;
+            line-height: 1.8;
+            color: #444;
+        }
+
+        /* Case Study Box */
+        .case-study {
+            background: linear-gradient(135deg, #f8f9fb 0%, #f0f2f5 100%);
+            border-radius: 16px;
+            padding: 0;
+            margin: 40px 0;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+        }
+
+        .case-study-header {
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+            padding: 20px 30px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .case-study-icon {
+            width: 45px;
+            height: 45px;
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+        }
+
+        .case-study-header .box-label {
+            font-weight: 600;
+            color: #ffffff;
+            margin: 0;
+            font-size: 16px;
+            letter-spacing: 0.5px;
+        }
+
+        .case-study-content {
+            padding: 28px 30px;
+        }
+
+        .patient-profile {
+            display: flex;
+            align-items: center;
+            gap: 18px;
+            padding: 18px 22px;
+            background: white;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            border: 1px solid #e5e5e5;
+        }
+
+        .patient-avatar {
+            width: 55px;
+            height: 55px;
+            background: linear-gradient(135deg, #3b82f6, #1e3a8a);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            flex-shrink: 0;
+        }
+
+        /* Statistics Box */
+        .stats-box {
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+            padding: 40px;
+            border-radius: 16px;
+            margin: 35px 0;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 25px;
+            position: relative;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 42px;
+            font-weight: 700;
+            color: white;
+            line-height: 1;
+            margin-bottom: 8px;
+        }
+
+        .stat-label {
+            font-size: 13px;
+            color: rgba(255, 255, 255, 0.85);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* Data Table */
+        .data-table-container {
+            overflow-x: auto;
+            margin: 30px 0;
+            border-radius: 12px;
+            border: 1px solid #e5e7eb;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 15px;
+            text-align: left;
+        }
+
+        th {
+            background: #f3f4f6;
+            padding: 15px;
+            font-weight: 600;
+            color: #1e3a8a;
+            border-bottom: 2px solid #e5e7eb;
+        }
+
+        td {
+            padding: 15px;
+            border-bottom: 1px solid #f3f4f6;
+            color: #4b5563;
+        }
+
+        /* Check Understanding Box */
+        .check-understanding {
+            background: linear-gradient(135deg, #fdfbf7 0%, #f9f5ed 100%);
+            border: 2px solid #B8860B;
+            border-radius: 16px;
+            padding: 32px;
+            margin: 45px 0;
+        }
+
+        .check-understanding .box-label {
+            font-weight: 600;
+            color: #8B6914;
+            margin: 0 0 8px 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .question-item {
+            background: white;
+            border-radius: 12px;
+            padding: 22px 24px;
+            margin-bottom: 16px;
+            border: 1px solid #e8e4dc;
+            position: relative;
+        }
+
+        .question-number {
+            position: absolute;
+            top: -12px;
+            left: 20px;
+            background: #1e3a8a;
+            color: white;
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            font-size: 13px;
+        }
+
+        .reveal-btn {
+            background: #1e3a8a;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-size: 14px;
+            cursor: pointer;
+            font-family: inherit;
+        }
+
+        .answer-text {
+            display: none;
+            font-size: 14px;
+            color: #1e40af;
+            margin: 14px 0 0 0;
+            padding: 14px;
+            background: #eff6ff;
+            border-radius: 8px;
+            line-height: 1.6;
+        }
+
+        .answer-text.show {
+            display: block;
+        }
+
+        /* Takeaways & References */
+        .takeaways-box {
+            background: #f3f4f6;
+            padding: 25px;
+            margin-top: 35px;
+            border-radius: 12px;
+            border: 1px solid #d1d5db;
+        }
+
+        .references-box {
+            margin-top: 40px;
+            padding: 25px;
+            background: #fafafa;
+            border-radius: 12px;
+            font-size: 14px;
+            color: #666;
+            border: 1px solid #eee;
+        }
+
+        .references-box h4 {
+            margin: 0 0 15px 0;
+            color: #333;
+            font-size: 16px;
+        }
+
+        .references-box ul {
+            padding-left: 20px;
+            margin: 0;
+        }
+
+        .references-box li {
+            margin-bottom: 8px;
+        }
+
+        .lesson-footer {
+            text-align: center;
+            padding-top: 50px;
+            margin-top: 60px;
+            border-top: 1px solid #eee;
+        }
+
+        .footer-logo {
+            max-width: 140px;
+            opacity: 0.9;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="lesson-container">
+        <div class="brand-header">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="brand-logo">
+        </div>
+
+        <header class="module-header">
+            <p class="module-label">Module 5: R - Resistance & Recovery</p>
+            <h1 class="lesson-title">Lesson 5.7: Overtraining vs. Under-recovering: Impact on Weight</h1>
+            <div class="lesson-meta">
+                <span class="meta-item">32 min read</span>
+                <span class="meta-item">Lesson 7 of 10</span>
+            </div>
+        </header>
+
+        <div class="toc-box">
+            <p class="box-label">In This Lesson</p>
+            <ul class="toc-list">
+                <li><a href="#section1"><span class="section-num">1</span>The "More is Better" Fallacy</a></li>
+                <li><a href="#section2"><span class="section-num">2</span>Defining Overtraining Syndrome</a></li>
+                <li><a href="#section3"><span class="section-num">3</span>Cortisol and Water Retention</a></li>
+                <li><a href="#section4"><span class="section-num">4</span>The Under-recovery Spectrum</a></li>
+                <li><a href="#section5"><span class="section-num">5</span>Metabolic Adaptation Markers</a></li>
+                <li><a href="#section6"><span class="section-num">6</span>Coaching Recovery Protocols</a></li>
+            </ul>
+        </div>
+
+        <div class="objectives-box">
+            <p class="box-label">Learning Objectives</p>
+            <ul>
+                <li>Differentiate between true Overtraining Syndrome (OTS) and Non-Functional Overreaching (NFO).</li>
+                <li>Explain the physiological mechanism by which excessive training volume stalls fat loss.</li>
+                <li>Identify how cortisol-induced water retention masks fat oxidation on the scale.</li>
+                <li>Utilize Heart Rate Variability (HRV) and performance metrics to assess recovery status.</li>
+                <li>Implement the "Recovery-First" intervention strategy to break weight loss plateaus.</li>
+            </ul>
+        </div>
+
+        <div class="welcome-box">
+            <h3>The Paradox of Effort</h3>
+            <p>In the world of weight loss, we often encounter the "effort paradox." A client hits a plateau, their instinct is to train harder, add another HIIT session, and cut more calories. However, within the <span class="highlight">METRIC Method™</span>, we recognize that fat loss is not a linear result of exertion, but a result of physiological safety. When training volume exceeds the body's ability to recover, the resulting hormonal cascade can completely halt fat oxidation and cause significant scale weight fluctuations.</p>
+        </div>
+
+        <div class="key-terms-box">
+            <p class="box-label">🔬 Key Terms to Know</p>
+            <div class="terms-grid">
+                <div class="term-item">
+                    <p class="term">Overtraining Syndrome (OTS)</p>
+                    <p class="definition">A clinical state of chronic maladaptation involving the neuroendocrine system, resulting in long-term performance decrement (months).</p>
+                </div>
+                <div class="term-item">
+                    <p class="term">Non-Functional Overreaching</p>
+                    <p class="definition">A state where training leads to a temporary performance decrease that requires weeks of recovery to resolve.</p>
+                </div>
+                <div class="term-item">
+                    <p class="term">Hormesis</p>
+                    <p class="definition">The biological phenomenon where a beneficial effect results from exposure to low doses of an agent that is otherwise toxic at higher doses.</p>
+                </div>
+                <div class="term-item">
+                    <p class="term">Parasympathetic Tone</p>
+                    <p class="definition">The "rest and digest" state of the nervous system essential for hormonal balance and cellular repair.</p>
+                </div>
+            </div>
+        </div>
+
+        <h2 id="section1">The "More is Better" Fallacy</h2>
+        <p>Many clients enter a weight loss program with the mindset that exercise is a "punishment" for calories consumed. This leads to excessive training volume—often 6 or 7 days a week of high-intensity work. While this creates a large acute caloric expenditure, it frequently leads to a <span class="highlight">reduction in Non-Exercise Activity Thermogenesis (NEAT)</span> as the body attempts to conserve energy due to systemic fatigue.</p>
+
+        <p>A 2021 study involving recreational exercisers found that those who increased their structured exercise volume by 50% often experienced a compensatory decrease in spontaneous movement, resulting in a <span class="highlight">net zero change</span> in total daily energy expenditure (TDEE). This is the cornerstone of why "training harder" is rarely the answer to a weight loss plateau.</p>
+
+        <div class="stats-box">
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <div class="stat-number">60%</div>
+                    <div class="stat-label">Clients Under-recovered</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">48h</div>
+                    <div class="stat-label">Min CNS Recovery Time</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">15%</div>
+                    <div class="stat-label">Drop in T3 via Stress</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">5-10lb</div>
+                    <div class="stat-label">Potential Water Flux</div>
+                </div>
+            </div>
+        </div>
+
+        <h2 id="section2">Defining Overtraining Syndrome vs. Under-recovering</h2>
+        <p>It is vital to distinguish between true Overtraining Syndrome (OTS) and the more common "Under-recovering." OTS is a serious condition that can take 6-12 months to resolve and is typically only seen in elite endurance athletes or professional strength competitors. Most weight loss clients suffer from <span class="highlight">Non-Functional Overreaching (NFO)</span> or simply poor recovery hygiene.</p>
+
+        <div class="data-table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Feature</th>
+                        <th>Functional Overreaching</th>
+                        <th>Non-Functional Overreaching</th>
+                        <th>Overtraining Syndrome</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Performance Change</td>
+                        <td>Temporary decrease, then supercompensation</td>
+                        <td>Stagnation or decrease</td>
+                        <td>Significant, long-term decrease</td>
+                    </tr>
+                    <tr>
+                        <td>Recovery Time</td>
+                        <td>3–7 days</td>
+                        <td>2–4 weeks</td>
+                        <td>Months to Years</td>
+                    </tr>
+                    <tr>
+                        <td>Psychological State</td>
+                        <td>Positive / Motivated</td>
+                        <td>Irritable / Low Motivation</td>
+                        <td>Depression / Apathy</td>
+                    </tr>
+                    <tr>
+                        <td>Hormonal Profile</td>
+                        <td>Stable</td>
+                        <td>Elevated Cortisol / Lower T</td>
+                        <td>Adrenal/Hormonal Dysfunction</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <h2 id="section3">Cortisol and Water Retention: The Scale Illusion</h2>
+        <p>When the body is under chronic training stress without adequate recovery, the HPA (Hypothalamic-Pituitary-Adrenal) axis remains hyper-active. This results in chronically elevated <span class="highlight">cortisol</span> levels. Cortisol has a cross-reactivity with the mineralocorticoid receptor, which regulates sodium and water balance.</p>
+
+        <p>High cortisol leads to increased <span class="highlight">aldosterone activity</span>, causing the kidneys to retain sodium and, subsequently, water. This "stress-water" can easily account for 3-7 pounds of scale weight. For a client in a caloric deficit, this is devastating; they are losing fat, but the scale isn't moving (or is going up), leading them to train even harder—further spiking cortisol and water retention. This is known as the "Whoosh Effect" waiting to happen.</p>
+
+        <div class="case-study">
+            <div class="case-study-header">
+                <div class="case-study-icon">👤</div>
+                <div>
+                    <p class="box-label">Case Study: The Plateaued HIIT Enthusiast</p>
+                    <p style="margin:0; color:rgba(255,255,255,0.8); font-size:13px;">Breaking the stress-weight cycle</p>
+                </div>
+            </div>
+            <div class="case-study-content">
+                <div class="patient-profile">
+                    <div class="patient-avatar">S</div>
+                    <div class="patient-info">
+                        <h4>Sarah J., 34</h4>
+                        <p>Marketing Exec | Goal: 20lb Loss | Status: Plateaued for 4 weeks</p>
+                    </div>
+                </div>
+                <p><strong>Presenting Symptoms:</strong> Sarah was performing 6 days of HIIT per week, sleeping 5.5 hours, and consuming 1,400 calories. Her weight had been stuck at 168 lbs for 28 days despite "perfect" adherence. She reported high irritability and poor sleep quality.</p>
+                <p><strong>Intervention:</strong>
+                    <ul>
+                        <li>Reduced HIIT to 2 days/week; added 3 days of heavy, low-volume resistance training.</li>
+                        <li>Mandated 2 days of complete rest (only walking).</li>
+                        <li>Increased calories to 1,700 (Precision Intake) and enforced a 10 PM "lights out" rule.</li>
+                    </ul>
+                </p>
+                <p><strong>Outcome:</strong> In the first 10 days of *less* exercise, Sarah's weight dropped 5.2 lbs. This was not fat loss—it was the systemic clearance of cortisol-driven edema. Following this "whoosh," her fat loss resumed at a steady 1.5 lbs/week.</p>
+            </div>
+        </div>
+
+        <h2 id="section4">The Under-recovery Spectrum</h2>
+        <p>Under-recovering is rarely just about the gym. It is the cumulative load of "Life Stress + Training Stress - Recovery Capacity." In the <span class="highlight">METRIC Method™</span>, we view recovery as an active process. If a client has a high-stress job and poor sleep, their "training budget" is significantly lower than a client with a low-stress lifestyle.</p>
+
+        <p>Key markers of under-recovery include:
+            <ul class="content-list">
+                <li><strong>Decreased Grip Strength:</strong> A primary indicator of Central Nervous System (CNS) fatigue.</li>
+                <li><strong>Elevated Resting Heart Rate (RHR):</strong> An increase of 5+ BPM over a weekly average suggests sympathetic dominance.</li>
+                <li><strong>Decreased Heart Rate Variability (HRV):</strong> Lower HRV indicates the body is struggling to adapt to stress.</li>
+                <li><strong>Loss of Libido:</strong> A sign that the body is down-regulating "non-essential" reproductive hormones to prioritize survival (cortisol).</li>
+            </ul>
+        </p>
+
+        <h2 id="section5">Metabolic Adaptation Markers</h2>
+        <p>Chronic overtraining in a caloric deficit triggers the "Starvation Response." This isn't just a myth; it's a series of measurable physiological shifts. The body seeks to preserve energy by down-regulating the conversion of <span class="highlight">T4 (inactive thyroid hormone) to T3 (active thyroid hormone)</span>. T3 is the primary driver of your basal metabolic rate.</p>
+
+        <p>A 2017 meta-analysis found that athletes in a state of non-functional overreaching had 12-18% lower levels of circulating T3 compared to their baseline. This means their "engine" was literally running slower to protect itself from the perceived famine and stress of over-exercise.</p>
+
+        <h2 id="section6">Coaching Recovery Protocols</h2>
+        <p>As a coach, your role is to manage the client's "Stress Budget." When the scale stalls and performance dips, the solution is almost always a <span class="highlight">Deload Week</span> or a "Recovery-First" block. This involves reducing training volume by 50% while maintaining intensity, and increasing caloric intake to maintenance levels for 7 days.</p>
+
+        <p><strong>The "Morning Vitals" Protocol:</strong>
+            Encourage clients to track these three metrics every morning:
+            <ol>
+                <li><strong>Sleep Quality (1-10):</strong> Did they wake up refreshed?</li>
+                <li><strong>Soreness (1-10):</strong> Is it localized or systemic?</li>
+                <li><strong>Motivation to Train (1-10):</strong> A sudden drop usually precedes physical injury or burnout.</li>
+            </ol>
+            If the total score is below 15, the training session should be replaced with restorative movement (walking, mobility).
+        </p>
+
+        <div class="check-understanding">
+            <p class="box-label">Check Your Understanding</p>
+            <div class="question-item">
+                <div class="question-number">1</div>
+                <p class="question-text">Why does a client's weight often "whoosh" downward after a deload week or a rest period?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <p class="answer-text">The reduction in training stress lowers systemic cortisol levels. This reduces aldosterone activity, allowing the kidneys to flush the excess sodium and water that was previously masking fat loss on the scale.</p>
+            </div>
+            <div class="question-item">
+                <div class="question-number">2</div>
+                <p class="question-text">What is the primary difference between Functional Overreaching and Non-Functional Overreaching?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <p class="answer-text">Functional Overreaching is a planned, temporary spike in stress followed by recovery that leads to improved performance. Non-Functional Overreaching results in stagnated or decreased performance and requires weeks of recovery to resolve.</p>
+            </div>
+        </div>
+
+        <div class="takeaways-box">
+            <p class="box-label">Key Takeaways</p>
+            <ul>
+                <li>Fat loss is a result of physiological safety; chronic stress (overtraining) signals the body to store and protect energy.</li>
+                <li>The scale is a poor indicator of fat loss during periods of high stress due to cortisol-induced water retention.</li>
+                <li>Performance metrics (strength, speed, HRV) are more reliable indicators of recovery status than the scale.</li>
+                <li>Metabolic rate can be down-regulated by as much as 18% when the body is in a state of under-recovery.</li>
+                <li>Implementing the METRIC Method™ involves managing the "Stress Budget" to ensure the body remains in a parasympathetic state long enough to oxidize fat.</li>
+            </ul>
+        </div>
+
+        <div class="references-box">
+            <h4>References & Further Reading</h4>
+            <ul>
+                <li>Kreher, J. B., & Schwartz, J. B. (2012). "Overtraining Syndrome: A Practical Guide." <i>Sports Health</i>.</li>
+                <li>Cadegiani, F. A., & Kater, C. E. (2017). "Hormonal aspects of overtraining syndrome: a systematic review." <i>BMC Sports Science, Medicine and Rehabilitation</i>.</li>
+                <li>Meeusen, R., et al. (2013). "Prevention, diagnosis, and treatment of the overtraining syndrome: joint consensus statement of the ECSS and ACSM." <i>Medicine & Science in Sports & Exercise</i>.</li>
+                <li>Roberts, B. M., et al. (2020). "Metabolic Adaptation to Weight Loss: Implications for the Athlete." <i>Journal of Strength and Conditioning Research</i>.</li>
+                <li>Hausswirth, C., et al. (2014). "Evidence of disturbed sleep and increased illness in overreached endurance athletes." <i>Medicine & Science in Sports & Exercise</i>.</li>
+            </ul>
+        </div>
+
+        <footer class="lesson-footer">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="footer-logo">
+            <p class="brand">AccrediPro Academy © 2024</p>
+            <p class="copyright">Certified Weight Loss Coach Program | Professional Excellence</p>
+        </footer>
+    </div>
+</body>
+
+</html>

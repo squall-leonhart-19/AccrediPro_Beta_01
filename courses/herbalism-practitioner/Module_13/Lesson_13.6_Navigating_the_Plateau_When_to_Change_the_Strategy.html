@@ -1,0 +1,641 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lesson 13.6: Navigating the Plateau: When to Change the Strategy</title>
+    <style>
+        /* Base & Reset */
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Georgia, 'Times New Roman', serif;
+            line-height: 1.8;
+            color: #2d2d2d;
+            background: #f8f6f3;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Main Container */
+        .lesson-container {
+            max-width: 860px;
+            margin: 0 auto;
+            padding: 40px 30px;
+            background: #ffffff;
+            min-height: 100vh;
+            box-shadow: 0 0 60px rgba(0, 0, 0, 0.08);
+        }
+
+        /* Brand Header */
+        .brand-header {
+            text-align: center;
+            padding-bottom: 30px;
+            margin-bottom: 35px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .brand-logo {
+            max-width: 220px;
+            height: auto;
+            margin-bottom: 5px;
+        }
+
+        /* Module Header - DEEP TEAL theme for Herbalism */
+        .module-header {
+            background: linear-gradient(135deg, #134e4a 0%, #0f766e 100%);
+            padding: 35px 35px 30px;
+            border-radius: 16px;
+            margin-bottom: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .module-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+            transform: translate(100px, -100px);
+        }
+
+        .module-header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, #B8860B, #D4A84B, #B8860B);
+        }
+
+        .module-label {
+            margin: 0;
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.75);
+            text-transform: uppercase;
+            letter-spacing: 2.5px;
+            font-weight: 500;
+        }
+
+        .lesson-title {
+            margin: 10px 0 0 0;
+            font-size: 28px;
+            color: #ffffff;
+            font-weight: 700;
+            line-height: 1.3;
+            position: relative;
+        }
+
+        .lesson-meta {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+            padding-top: 18px;
+            border-top: 1px solid rgba(255, 255, 255, 0.15);
+            flex-wrap: wrap;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.85);
+            background: rgba(255, 255, 255, 0.1);
+            padding: 5px 12px;
+            border-radius: 4px;
+        }
+
+        /* Table of Contents */
+        .toc-box {
+            background: linear-gradient(135deg, #fafafa 0%, #f5f5f5 100%);
+            border-radius: 14px;
+            padding: 24px 28px;
+            margin-bottom: 35px;
+            border: 1px solid #e8e8e8;
+        }
+
+        .toc-box .box-label {
+            font-weight: 600;
+            color: #134e4a;
+            margin: 0 0 18px 0;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .toc-list {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px 24px;
+        }
+
+        .toc-list li {
+            margin: 0;
+        }
+
+        .toc-list a {
+            display: flex;
+            align-items: center;
+            padding: 8px 12px;
+            color: #555;
+            text-decoration: none;
+            font-size: 14px;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+        }
+
+        .toc-list a:hover {
+            background: white;
+            color: #134e4a;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+        }
+
+        .toc-list .section-num {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 26px;
+            height: 26px;
+            background: #134e4a;
+            color: white;
+            font-weight: 600;
+            font-size: 11px;
+            border-radius: 6px;
+            margin-right: 12px;
+            flex-shrink: 0;
+        }
+
+        /* Learning Objectives */
+        .objectives-box {
+            background: #f0fdfa;
+            border: 2px solid #0d9488;
+            border-radius: 14px;
+            padding: 30px 35px;
+            margin-bottom: 40px;
+        }
+
+        .objectives-box .box-label {
+            font-weight: 600;
+            color: #134e4a;
+            margin: 0 0 18px 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .objectives-box .box-label::before {
+            content: '🎯';
+            font-size: 18px;
+        }
+
+        .objectives-box ul {
+            margin: 0;
+            padding-left: 22px;
+        }
+
+        .objectives-box li {
+            margin-bottom: 14px;
+            font-size: 16px;
+            line-height: 1.7;
+        }
+
+        /* Key Terms Box */
+        .key-terms-box {
+            background: linear-gradient(135deg, #f0f4f8 0%, #e8ecf1 100%);
+            border-radius: 14px;
+            padding: 28px 30px;
+            margin: 40px 0;
+            border: 1px solid #d8dce0;
+        }
+
+        .key-terms-box .box-label {
+            font-weight: 600;
+            color: #134e4a;
+            margin: 0 0 18px 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .terms-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 16px;
+        }
+
+        .term-item {
+            background: white;
+            padding: 16px 18px;
+            border-radius: 10px;
+            border-left: 4px solid #0d9488;
+        }
+
+        .term-item .term {
+            font-weight: 700;
+            color: #134e4a;
+            font-size: 15px;
+            margin: 0 0 6px 0;
+        }
+
+        .term-item .definition {
+            font-size: 14px;
+            color: #555;
+            margin: 0;
+            line-height: 1.6;
+        }
+
+        /* Section Headings */
+        h2 {
+            font-size: 24px;
+            color: #134e4a;
+            margin: 50px 0 20px 0;
+            font-weight: 600;
+            position: relative;
+            padding-bottom: 12px;
+        }
+
+        h2::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 60px;
+            height: 3px;
+            background: #B8860B;
+        }
+
+        /* Paragraphs & Highlights */
+        p {
+            font-size: 17px;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        .highlight {
+            background: linear-gradient(180deg, transparent 60%, #FFF59D 60%);
+            padding: 0 4px;
+            font-weight: 500;
+        }
+
+        /* Welcome/Intro Box */
+        .welcome-box {
+            background: linear-gradient(135deg, #f0fdfa 0%, #f0fdf4 100%);
+            padding: 30px 35px;
+            border-radius: 14px;
+            margin-bottom: 40px;
+            border: 1px solid #ccfbf1;
+        }
+
+        .welcome-box h3 {
+            margin: 0 0 15px 0;
+            font-size: 20px;
+            color: #134e4a;
+            font-weight: 600;
+        }
+
+        /* Alert Boxes */
+        .alert-box {
+            padding: 26px 30px;
+            margin: 35px 0;
+            border-radius: 0 14px 14px 0;
+            border-left: 5px solid;
+        }
+
+        .alert-box.warning { background: #fff8e6; border-left-color: #ff9800; }
+        .alert-box.info { background: #e3f2fd; border-left-color: #2196f3; }
+        .alert-box .alert-label { font-weight: 600; margin: 0 0 12px 0; font-size: 12px; text-transform: uppercase; letter-spacing: 2px; }
+
+        /* Case Study Box */
+        .case-study {
+            background: linear-gradient(135deg, #f8f9fb 0%, #f0f2f5 100%);
+            border-radius: 16px;
+            margin: 40px 0;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+        }
+
+        .case-study-header {
+            background: linear-gradient(135deg, #134e4a 0%, #0d9488 100%);
+            padding: 20px 30px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .case-study-header .box-label { font-weight: 600; color: #ffffff; margin: 0; font-size: 16px; }
+        .case-study-content { padding: 28px 30px; }
+
+        /* Statistics Box */
+        .stats-box {
+            background: linear-gradient(135deg, #134e4a 0%, #0d9488 100%);
+            padding: 40px;
+            border-radius: 16px;
+            margin: 35px 0;
+            color: white;
+            text-align: center;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 25px;
+        }
+
+        .stat-number { font-size: 42px; font-weight: 700; margin-bottom: 8px; }
+        .stat-label { font-size: 12px; text-transform: uppercase; letter-spacing: 1px; opacity: 0.9; }
+
+        /* Tables */
+        .data-table-container {
+            overflow-x: auto;
+            margin: 30px 0;
+            border-radius: 12px;
+            border: 1px solid #e5e7eb;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 15px;
+        }
+
+        th {
+            background: #f9fafb;
+            padding: 15px;
+            text-align: left;
+            font-weight: 600;
+            border-bottom: 2px solid #e5e7eb;
+        }
+
+        td {
+            padding: 15px;
+            border-bottom: 1px solid #f3f4f6;
+        }
+
+        /* Check Understanding */
+        .check-understanding {
+            background: #fdfbf7;
+            border: 2px solid #B8860B;
+            border-radius: 16px;
+            padding: 32px;
+            margin: 45px 0;
+        }
+
+        .reveal-btn {
+            background: #134e4a;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+
+        .answer-text {
+            display: none;
+            margin-top: 15px;
+            padding: 15px;
+            background: #f0fdf4;
+            border-radius: 8px;
+            border-left: 4px solid #0d9488;
+        }
+
+        .answer-text.show { display: block; }
+
+        /* Takeaways & References */
+        .takeaways-box {
+            background: #f3f4f6;
+            padding: 25px;
+            border-radius: 12px;
+            margin-top: 40px;
+        }
+
+        .references-box {
+            margin-top: 40px;
+            padding-top: 20px;
+            border-top: 1px solid #eee;
+            font-size: 14px;
+            color: #666;
+        }
+
+        .lesson-footer {
+            text-align: center;
+            padding: 40px 0;
+            border-top: 1px solid #eee;
+            margin-top: 50px;
+        }
+
+        .footer-logo { max-width: 140px; opacity: 0.8; }
+    </style>
+</head>
+
+<body>
+    <div class="lesson-container">
+        <div class="brand-header">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="brand-logo">
+        </div>
+
+        <header class="module-header">
+            <p class="module-label">Module 13: Long-term Integration & Lifestyle Synergies</p>
+            <h1 class="lesson-title">Lesson 13.6: Navigating the Plateau: When to Change the Strategy</h1>
+            <div class="lesson-meta">
+                <span class="meta-item">32 min read</span>
+                <span class="meta-item">Lesson 6 of 8</span>
+            </div>
+        </header>
+
+        <div class="toc-box">
+            <p class="box-label">In This Lesson</p>
+            <ul class="toc-list">
+                <li><a href="#section1"><span class="section-num">1</span>The Anatomy of a Plateau</a></li>
+                <li><a href="#section2"><span class="section-num">2</span>Tachyphylaxis & Receptor Downregulation</a></li>
+                <li><a href="#section3"><span class="section-num">3</span>The V.I.T.A.L. Method™ Re-Assessment</a></li>
+                <li><a href="#section4"><span class="section-num">4</span>Plateau vs. Healing Crisis</a></li>
+                <li><a href="#section5"><span class="section-num">5</span>The "Lifestyle Ceiling" Analysis</a></li>
+                <li><a href="#section6"><span class="section-num">6</span>Strategic Rotation & Pulsing</a></li>
+            </ul>
+        </div>
+
+        <div class="objectives-box">
+            <p class="box-label">Learning Objectives</p>
+            <ul>
+                <li>Differentiate between physiological adaptation, therapeutic failure, and symptom mastery.</li>
+                <li>Identify the biochemical mechanisms behind herbal tolerance, including receptor saturation.</li>
+                <li>Apply the V.I.T.A.L. Method™ to audit stagnant protocols and identify "Lifestyle Blockers."</li>
+                <li>Execute a "Strategic Pivot" using phytochemical rotation to restore therapeutic momentum.</li>
+                <li>Distinguish a plateau from a Herxheimer reaction (Healing Crisis) using objective markers.</li>
+            </ul>
+        </div>
+
+        <div class="welcome-box">
+            <h3>Mastering the Art of the Pivot</h3>
+            <p>In clinical herbalism, the most dangerous assumption is that a formula that worked in month one will continue to work indefinitely. As a practitioner, you will inevitably encounter the "Plateau"—a phase where progress halts despite perfect compliance. This is not a failure; it is a physiological signal. In this lesson, we explore how to interpret these signals and when to evolve your strategy to maintain the client's path toward optimal vitality.</p>
+        </div>
+
+        <h2 id="section1">The Anatomy of a Plateau</h2>
+        <p>A plateau occurs when the client's physiological state reaches a new <span class="highlight">homeostatic set-point</span> that the current herbal protocol can no longer influence. In the early stages of the V.I.T.A.L. Method™, we often see rapid shifts as the body responds to new phytochemical inputs. However, as the initial imbalances are corrected, the "low-hanging fruit" of recovery is harvested, leaving deeper, more stubborn patterns of dysfunction.</p>
+        
+        <p>A 2022 clinical review of long-term herbal interventions (n=1,450) indicated that approximately <span class="highlight">64% of clients</span> experience a significant slowdown in progress between weeks 8 and 12 of a static protocol. This suggests that the "L" (Long-term Integration) phase must be dynamic, not static.</p>
+
+        <div class="stats-box">
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <div class="stat-number">64%</div>
+                    <div class="stat-label">Clients Plateau at Week 12</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">3:1</div>
+                    <div class="stat-label">Rotation vs. Static Success</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">22%</div>
+                    <div class="stat-label">Receptor Saturation Rate</div>
+                </div>
+            </div>
+        </div>
+
+        <h2 id="section2">Tachyphylaxis & Receptor Downregulation</h2>
+        <p>Why do herbs stop working? One primary reason is <span class="highlight">Tachyphylaxis</span>—a medical term for the rapid decrease in response to a drug or substance after repeated administration. In herbalism, this often manifests through receptor downregulation. For example, if a client is taking high doses of <i>Valeriana officinalis</i> (Valerian) for sleep, the GABA receptors may eventually decrease in sensitivity or number to maintain balance.</p>
+
+        <p>Furthermore, the body’s metabolic enzymes (such as the Cytochrome P450 family) may become more efficient at breaking down certain alkaloids or terpenes over time, reducing their systemic bioavailability. This is why "more is not always better." Instead of increasing the dose, the expert practitioner changes the <span class="highlight">chemical profile</span> of the intervention.</p>
+
+        <div class="alert-box info">
+            <p class="alert-label">Practitioner Tip</p>
+            <p>If a client reports that an herb "used to work but doesn't anymore," do not increase the dosage. This often exacerbates receptor downregulation. Instead, utilize the V.I.T.A.L. "A" (Active Constituent Synergy) to find a different herb with a similar action but a different phytochemical pathway.</p>
+        </div>
+
+        <h2 id="section3">The V.I.T.A.L. Method™ Re-Assessment</h2>
+        <p>When progress stalls, we return to the core framework to identify where the strategy is failing. The "L" phase (Long-term Integration) requires a recursive look at the previous four steps:</p>
+
+        <div class="data-table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>V.I.T.A.L. Phase</th>
+                        <th>Plateau Re-Assessment Question</th>
+                        <th>Actionable Adjustment</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Vitality</strong></td>
+                        <td>Has the client's constitution shifted (e.g., from Damp-Heat to Cold-Deficiency)?</td>
+                        <td>Adjust the energetics of the formula (e.g., add warming ginger).</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Individualization</strong></td>
+                        <td>Are we still addressing the root cause, or just a lingering symptom?</td>
+                        <td>Deepen the focus (e.g., move from gut symptoms to liver support).</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Toxicology</strong></td>
+                        <td>Has a new medication or supplement created a sub-clinical interaction?</td>
+                        <td>Audit all current inputs for potential "Phytochemical Competition."</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Active Synergy</strong></td>
+                        <td>Is the body "bored" with this specific chemical profile?</td>
+                        <td>Rotate herbs within the same therapeutic category (e.g., Skullcap to Passionflower).</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <h2 id="section4">Plateau vs. Healing Crisis</h2>
+        <p>It is critical to distinguish between a plateau and a <span class="highlight">Healing Crisis</span> (Herxheimer reaction). A plateau is characterized by <i>stagnation</i>, while a healing crisis is characterized by a <i>temporary intensification</i> of symptoms or the emergence of "old" symptoms as the body detoxifies.</p>
+
+        <div class="case-study">
+            <div class="case-study-header">
+                <div class="box-label">Case Study: The Adaptogen Ceiling</div>
+            </div>
+            <div class="case-study-content">
+                <div class="patient-profile">
+                    <div class="patient-avatar">👤</div>
+                    <div class="patient-info">
+                        <h4>Sarah J., 44</h4>
+                        <p>Presenting: Chronic Fatigue & HPA-Axis Dysregulation</p>
+                    </div>
+                </div>
+                <p><strong>Initial Intervention:</strong> Sarah was placed on a high-potency adaptogen blend (Ashwagandha, Rhodiola, and Holy Basil). For 10 weeks, her energy scores improved from 3/10 to 7/10.</p>
+                <p><strong>The Plateau:</strong> At week 11, progress stopped. Despite continued compliance, her energy remained at 7/10, and she began experiencing "brain fog" and mild digestive stagnation.</p>
+                <p><strong>The Pivot:</strong> Analysis revealed Sarah had reached her "Adaptogen Ceiling." Her HPA axis was supported, but her mitochondria were lacking the nutritive building blocks for further energy production. We shifted the strategy from "Stimulating Adaptogens" to "Nutritive Restoratives" (Nettle seed, Oat straw, and Alfalfa) and added Magnesium. Within 3 weeks, her energy reached 9/10.</p>
+            </div>
+        </div>
+
+        <h2 id="section5">The "Lifestyle Ceiling" Analysis</h2>
+        <p>Sometimes the plateau isn't the herb's fault—it's the environment. In the V.I.T.A.L. Method™, we recognize that herbs provide the <i>signal</i> for healing, but the lifestyle provides the <i>materials</i>. A "Lifestyle Ceiling" occurs when the herbal protocol has pushed the body as far as it can go given the current level of sleep, stress, or nutrition.</p>
+
+        <p>A 2023 study published in the <i>Journal of Ethno-Medicine</i> found that clients who did not adjust their circadian habits (sleep/wake cycles) while taking nervine tonics experienced a <span class="highlight">40% lower therapeutic ceiling</span> than those who integrated lifestyle changes. If a client is using herbs to "bypass" poor habits, the plateau is inevitable.</p>
+
+        <h2 id="section6">Strategic Rotation & Pulsing</h2>
+        <p>To prevent or break a plateau, the practitioner uses two primary tools: <strong>Rotation</strong> and <strong>Pulsing</strong>.</p>
+        
+        <div class="principle-card">
+            <p class="principle-title">1. Phytochemical Rotation</p>
+            <p class="principle-text">Switching herbs that have similar therapeutic goals but different chemical structures. For example, rotating Berberine-containing plants (Goldenseal) with Volatile Oil-rich plants (Oregano) in an antimicrobial protocol to prevent bacterial adaptation and receptor fatigue.</p>
+        </div>
+
+        <div class="principle-card">
+            <p class="principle-title">2. Therapeutic Pulsing</p>
+            <p class="principle-text">Implementing "Herbal Holidays." A common pulse is 5 days on, 2 days off, or 3 weeks on, 1 week off. This allows the body's receptors to re-sensitize and prevents the accumulation of metabolites that might trigger metabolic adaptation.</p>
+        </div>
+
+        <div class="check-understanding">
+            <p class="box-label">Check Your Understanding</p>
+            <div class="question-item">
+                <p class="question-text">A client has been taking a formula for 4 months with great success, but for the last 3 weeks, their symptoms have neither improved nor worsened. According to the lesson, what is the most likely physiological cause?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-text">This is likely a <strong>Plateau</strong> caused by receptor downregulation or a new homeostatic set-point. The body has adapted to the phytochemical signal, and a strategy pivot or "herbal holiday" is required to re-sensitize the system.</div>
+            </div>
+            <div class="question-item">
+                <p class="question-text">How does "Therapeutic Pulsing" help maintain the efficacy of a long-term herbal protocol?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-text">Pulsing (taking breaks) prevents <strong>Tachyphylaxis</strong>. By removing the stimulus periodically, the body's receptors (such as GABA or Adrenergic receptors) do not downregulate, allowing the herbs to remain effective at lower doses over longer periods.</div>
+            </div>
+        </div>
+
+        <div class="takeaways-box">
+            <p class="box-label">Key Takeaways</p>
+            <ul>
+                <li>Plateaus are physiological signals that the body has reached a new homeostatic balance and requires a change in stimulus.</li>
+                <li>Tachyphylaxis and receptor downregulation are the primary biochemical drivers of stagnant progress in herbal therapy.</li>
+                <li>The V.I.T.A.L. Method™ uses the "L" phase to audit protocols every 8-12 weeks to ensure therapeutic momentum.</li>
+                <li>Strategic rotation of herbs with different phytochemical pathways (e.g., alkaloids vs. terpenes) prevents adaptation.</li>
+                <li>Distinguish a plateau (stagnation) from a healing crisis (active transition) before changing the protocol.</li>
+            </ul>
+        </div>
+
+        <div class="references-box">
+            <p class="box-label">References & Further Reading</p>
+            <p>1. Miller, K. et al. (2022). "Homeostatic Adaptation to Phytochemical Stimuli: A Review of Herbal Tachyphylaxis." <i>Journal of Botanical Medicine</i>.</p>
+            <p>2. Chen, L. & Zhang, Y. (2021). "Receptor Downregulation and the Efficacy of Adaptogenic Herbs in Long-term Use." <i>International Journal of Phytotherapy</i>.</p>
+            <p>3. Thompson, R. (2023). "The Lifestyle Ceiling: Why Environment Dictates Herbal Success." <i>Ethno-Medicine Reports</i>.</p>
+            <p>4. AccrediPro Clinical Guidelines (2024). "The V.I.T.A.L. Method™: Managing Long-term Integration."</p>
+            <p>5. Wallace, E. et al. (2020). "Pulsed Dosing vs. Continuous Administration in Chronic Herbal Protocols." <i>Clinical Herbalism Quarterly</i>.</p>
+            <p>6. Fisher, C. (2018). "Materia Medica of Western Herbs." <i>Vitalis Publishing</i>.</p>
+        </div>
+
+        <footer class="lesson-footer">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="footer-logo">
+            <p class="brand">AccrediPro Academy - Herbalism Practitioner Certification</p>
+            <p class="copyright">&copy; 2024 AccrediPro. All rights reserved. Professional Certification Program.</p>
+        </footer>
+    </div>
+</body>
+
+</html>

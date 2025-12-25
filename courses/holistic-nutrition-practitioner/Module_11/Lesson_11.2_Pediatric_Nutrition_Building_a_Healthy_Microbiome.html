@@ -1,0 +1,788 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lesson 11.2: Pediatric Nutrition: Building a Healthy Microbiome</title>
+    <style>
+        /* Base & Reset */
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Georgia, 'Times New Roman', serif;
+            line-height: 1.8;
+            color: #2d2d2d;
+            background: #f8f6f3;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Main Container */
+        .lesson-container {
+            max-width: 860px;
+            margin: 0 auto;
+            padding: 40px 30px;
+            background: #ffffff;
+            min-height: 100vh;
+            box-shadow: 0 0 60px rgba(0, 0, 0, 0.08);
+        }
+
+        /* Brand Header */
+        .brand-header {
+            text-align: center;
+            padding-bottom: 30px;
+            margin-bottom: 35px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .brand-logo {
+            max-width: 220px;
+            height: auto;
+            margin-bottom: 5px;
+        }
+
+        /* Module Header - BLUE/GREEN theme for Pediatric/Gut */
+        .module-header {
+            background: linear-gradient(135deg, #0369a1 0%, #0ea5e9 100%);
+            padding: 35px 35px 30px;
+            border-radius: 16px;
+            margin-bottom: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .module-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+            transform: translate(100px, -100px);
+        }
+
+        .module-header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, #B8860B, #D4A84B, #B8860B);
+        }
+
+        .module-label {
+            margin: 0;
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.85);
+            text-transform: uppercase;
+            letter-spacing: 2.5px;
+            font-weight: 500;
+        }
+
+        .lesson-title {
+            margin: 10px 0 0 0;
+            font-size: 28px;
+            color: #ffffff;
+            font-weight: 700;
+            line-height: 1.3;
+            position: relative;
+        }
+
+        .lesson-meta {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+            padding-top: 18px;
+            border-top: 1px solid rgba(255, 255, 255, 0.15);
+            flex-wrap: wrap;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.85);
+            background: rgba(255, 255, 255, 0.1);
+            padding: 5px 12px;
+            border-radius: 4px;
+        }
+
+        /* Table of Contents */
+        .toc-box {
+            background: linear-gradient(135deg, #fafafa 0%, #f5f5f5 100%);
+            border-radius: 14px;
+            padding: 24px 28px;
+            margin-bottom: 35px;
+            border: 1px solid #e8e8e8;
+        }
+
+        .toc-box .box-label {
+            font-weight: 600;
+            color: #0369a1;
+            margin: 0 0 18px 0;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .toc-list {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px 24px;
+        }
+
+        .toc-list li {
+            margin: 0;
+        }
+
+        .toc-list a {
+            display: flex;
+            align-items: center;
+            padding: 8px 12px;
+            color: #555;
+            text-decoration: none;
+            font-size: 14px;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+        }
+
+        .toc-list a:hover {
+            background: white;
+            color: #0369a1;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+        }
+
+        .toc-list .section-num {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 26px;
+            height: 26px;
+            background: #0369a1;
+            color: white;
+            font-weight: 600;
+            font-size: 11px;
+            border-radius: 6px;
+            margin-right: 12px;
+            flex-shrink: 0;
+        }
+
+        /* Learning Objectives */
+        .objectives-box {
+            background: #f0f9ff;
+            border: 2px solid #0ea5e9;
+            border-radius: 14px;
+            padding: 30px 35px;
+            margin-bottom: 40px;
+        }
+
+        .objectives-box .box-label {
+            font-weight: 600;
+            color: #0369a1;
+            margin: 0 0 18px 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .objectives-box .box-label::before {
+            content: '🎯';
+            font-size: 18px;
+        }
+
+        .objectives-box ul {
+            margin: 0;
+            padding-left: 22px;
+        }
+
+        .objectives-box li {
+            margin-bottom: 14px;
+            font-size: 16px;
+            line-height: 1.7;
+        }
+
+        /* Key Terms Box */
+        .key-terms-box {
+            background: linear-gradient(135deg, #f0f4f8 0%, #e8ecf1 100%);
+            border-radius: 14px;
+            padding: 28px 30px;
+            margin: 40px 0;
+            border: 1px solid #d8dce0;
+        }
+
+        .key-terms-box .box-label {
+            font-weight: 600;
+            color: #0369a1;
+            margin: 0 0 18px 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .terms-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 16px;
+        }
+
+        .term-item {
+            background: white;
+            padding: 16px 18px;
+            border-radius: 10px;
+            border-left: 4px solid #0ea5e9;
+        }
+
+        .term-item .term {
+            font-weight: 700;
+            color: #0369a1;
+            font-size: 15px;
+            margin: 0 0 6px 0;
+        }
+
+        .term-item .definition {
+            font-size: 14px;
+            color: #555;
+            margin: 0;
+            line-height: 1.6;
+        }
+
+        /* Section Headings */
+        h2 {
+            font-size: 24px;
+            color: #0369a1;
+            margin: 50px 0 20px 0;
+            font-weight: 600;
+            position: relative;
+            padding-bottom: 12px;
+        }
+
+        h2::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 60px;
+            height: 3px;
+            background: #B8860B;
+        }
+
+        /* Paragraphs */
+        p {
+            font-size: 17px;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        /* Highlights */
+        .highlight {
+            background: linear-gradient(180deg, transparent 60%, #e0f2fe 60%);
+            padding: 0 4px;
+            font-weight: 500;
+            color: #0369a1;
+        }
+
+        /* Welcome Box */
+        .welcome-box {
+            background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+            padding: 30px 35px;
+            border-radius: 14px;
+            margin-bottom: 40px;
+            border: 1px solid #bae6fd;
+        }
+
+        .welcome-box h3 {
+            margin: 0 0 15px 0;
+            font-size: 20px;
+            color: #0369a1;
+            font-weight: 600;
+        }
+
+        /* Statistics Box */
+        .stats-box {
+            background: linear-gradient(135deg, #0369a1 0%, #0ea5e9 100%);
+            padding: 40px;
+            border-radius: 16px;
+            margin: 35px 0;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 25px;
+            position: relative;
+            z-index: 2;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 42px;
+            font-weight: 700;
+            color: white;
+            line-height: 1;
+            margin-bottom: 8px;
+        }
+
+        .stat-label {
+            font-size: 13px;
+            color: rgba(255, 255, 255, 0.9);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* Case Study Box */
+        .case-study {
+            background: linear-gradient(135deg, #f8f9fb 0%, #f0f2f5 100%);
+            border-radius: 16px;
+            padding: 0;
+            margin: 40px 0;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+        }
+
+        .case-study-header {
+            background: linear-gradient(135deg, #0369a1 0%, #0ea5e9 100%);
+            padding: 20px 30px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .case-study-header .box-label {
+            font-weight: 600;
+            color: #ffffff;
+            margin: 0;
+            font-size: 16px;
+        }
+
+        .case-study-content {
+            padding: 28px 30px;
+        }
+
+        .patient-profile {
+            display: flex;
+            align-items: center;
+            gap: 18px;
+            padding: 18px 22px;
+            background: white;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            border: 1px solid #e5e5e5;
+        }
+
+        .patient-avatar {
+            width: 55px;
+            height: 55px;
+            background: linear-gradient(135deg, #0ea5e9, #0369a1);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            color: white;
+        }
+
+        /* Comparison Table */
+        .data-table-container {
+            margin: 35px 0;
+            overflow-x: auto;
+            border-radius: 12px;
+            border: 1px solid #e5e5e5;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 15px;
+        }
+
+        th {
+            background: #f8fafc;
+            color: #0369a1;
+            font-weight: 600;
+            text-align: left;
+            padding: 16px;
+            border-bottom: 2px solid #e2e8f0;
+        }
+
+        td {
+            padding: 16px;
+            border-bottom: 1px solid #f1f5f9;
+            color: #475569;
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        /* Check Understanding Box */
+        .check-understanding {
+            background: linear-gradient(135deg, #fdfbf7 0%, #f9f5ed 100%);
+            border: 2px solid #B8860B;
+            border-radius: 16px;
+            padding: 32px;
+            margin: 45px 0;
+        }
+
+        .question-item {
+            background: white;
+            border-radius: 12px;
+            padding: 22px 24px;
+            margin-bottom: 16px;
+            border: 1px solid #e8e4dc;
+            position: relative;
+        }
+
+        .reveal-btn {
+            background: #0369a1;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background 0.2s ease;
+        }
+
+        .answer-text {
+            display: none;
+            font-size: 14px;
+            color: #0369a1;
+            margin: 14px 0 0 0;
+            padding: 14px;
+            background: #f0f9ff;
+            border-radius: 8px;
+        }
+
+        .answer-text.show {
+            display: block;
+        }
+
+        /* Takeaways */
+        .takeaways-box {
+            background: linear-gradient(135deg, #f5f5f5 0%, #e8e8e8 100%);
+            padding: 22px 25px;
+            margin-top: 35px;
+            border-radius: 8px;
+            border: 1px solid #ddd;
+        }
+
+        .takeaways-box .box-label {
+            font-weight: 600;
+            color: #0369a1;
+            margin: 0 0 15px 0;
+            text-transform: uppercase;
+        }
+
+        /* References Box */
+        .references-box {
+            margin-top: 40px;
+            padding: 25px;
+            background: #fdfdfd;
+            border-radius: 12px;
+            border: 1px solid #eee;
+        }
+
+        .references-box h4 {
+            font-size: 14px;
+            color: #666;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 15px;
+        }
+
+        .references-box ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .references-box li {
+            font-size: 13px;
+            color: #777;
+            margin-bottom: 8px;
+            line-height: 1.5;
+        }
+
+        /* Footer */
+        .lesson-footer {
+            text-align: center;
+            padding-top: 50px;
+            margin-top: 60px;
+            border-top: 1px solid #eee;
+        }
+
+        .footer-logo {
+            max-width: 140px;
+            opacity: 0.9;
+        }
+
+        @media (max-width: 768px) {
+            .toc-list { grid-template-columns: 1fr; }
+            .stats-grid { grid-template-columns: repeat(2, 1fr); }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="lesson-container">
+        <div class="brand-header">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="brand-logo">
+        </div>
+
+        <header class="module-header">
+            <p class="module-label">Module 11: Nutrition for Specific Life Stages & Populations</p>
+            <h1 class="lesson-title">Lesson 11.2: Pediatric Nutrition: Building a Healthy Microbiome</h1>
+            <div class="lesson-meta">
+                <span class="meta-item">35 min read</span>
+                <span class="meta-item">Lesson 2 of 6</span>
+            </div>
+        </header>
+
+        <!-- Table of Contents -->
+        <div class="toc-box">
+            <p class="box-label">In This Lesson</p>
+            <ul class="toc-list">
+                <li><a href="#section1"><span class="section-num">1</span>The First 1,000 Days Window</a></li>
+                <li><a href="#section2"><span class="section-num">2</span>Seeding: Delivery & Colonization</a></li>
+                <li><a href="#section3"><span class="section-num">3</span>The Prebiotic Power of Breast Milk</a></li>
+                <li><a href="#section4"><span class="section-num">4</span>The Weaning Window & Diversity</a></li>
+                <li><a href="#section5"><span class="section-num">5</span>Pediatric Dysbiosis Triggers</a></li>
+                <li><a href="#section6"><span class="section-num">6</span>Clinical Protocols for Infants</a></li>
+            </ul>
+        </div>
+
+        <!-- Learning Objectives -->
+        <div class="objectives-box">
+            <p class="box-label">Learning Objectives</p>
+            <ul>
+                <li>Explain the concept of the "First 1,000 Days" and its impact on lifelong metabolic health.</li>
+                <li>Analyze the differences in microbial colonization between vaginal and Cesarean deliveries.</li>
+                <li>Identify the specific role of Human Milk Oligosaccharides (HMOs) in infant gut development.</li>
+                <li>Develop a nutrition-based strategy for the transition to solid foods to maximize microbial diversity.</li>
+                <li>Recognize the clinical signs of pediatric dysbiosis and implement restorative gut protocols.</li>
+            </ul>
+        </div>
+
+        <!-- Welcome Box -->
+        <div class="welcome-box">
+            <h3>The Foundation of a Lifetime</h3>
+            <p>As a Holistic Nutrition Practitioner, you are likely aware that the gut is the foundation of health. However, in pediatric nutrition, the gut is more than a foundation—it is a <span class="highlight">rapidly evolving ecosystem</span> that determines the trajectory of the child's immune system, cognitive development, and metabolic set-point for the rest of their life. In this lesson, we apply the <strong>Restorative Gut Integrity (R)</strong> and <strong>Nutrient Density (N)</strong> principles of the NOURISH Method™ to the most critical developmental window in human biology.</p>
+        </div>
+
+        <!-- Key Terms -->
+        <div class="key-terms-box">
+            <p class="box-label">🔬 Key Terms to Know</p>
+            <div class="terms-grid">
+                <div class="term-item">
+                    <p class="term">HMOs</p>
+                    <p class="definition">Human Milk Oligosaccharides: Complex sugars in breast milk that are indigestible by the infant but serve as the primary food for beneficial <i>Bifidobacterium</i>.</p>
+                </div>
+                <div class="term-item">
+                    <p class="term">Vertical Transmission</p>
+                    <p class="definition">The transfer of microbes from mother to infant during birth and breastfeeding, establishing the initial "seed" of the microbiome.</p>
+                </div>
+                <div class="term-item">
+                    <p class="term">Microbial Diversity</p>
+                    <p class="definition">The variety of different species present in the gut; higher diversity in early childhood is linked to lower risks of asthma, allergies, and obesity.</p>
+                </div>
+                <div class="term-item">
+                    <p class="term">The Hygiene Hypothesis</p>
+                    <p class="definition">The theory that a lack of early childhood exposure to diverse microbes and parasites increases susceptibility to allergic diseases.</p>
+                </div>
+            </div>
+        </div>
+
+        <h2 id="section1">The First 1,000 Days Window</h2>
+        <p>The "First 1,000 Days"—spanning from conception to a child’s second birthday—represents a unique <span class="highlight">window of opportunity</span>. During this period, the gut microbiome transitions from a relatively sterile environment to a complex community that closely resembles an adult's by age three. Research indicates that approximately <strong>80% of the adult microbiome's composition</strong> is established during this time.</p>
+
+        <p>Failure to establish a robust microbial community during this window is associated with "metabolic programming" for future disease. A 2021 study involving over 10,000 children found that those with low microbial diversity at age one had a <span class="highlight">3.5x higher risk</span> of developing food sensitivites by age five. This highlights why the <strong>Underpinning Root Causes (U)</strong> of the NOURISH Method™ often lead us back to infancy.</p>
+
+        <!-- Statistics Box -->
+        <div class="stats-box">
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <div class="stat-number">1,000</div>
+                    <div class="stat-label">Critical Days</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">80%</div>
+                    <div class="stat-label">Immune Cells in Gut</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">200+</div>
+                    <div class="stat-label">Types of HMOs</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">3yrs</div>
+                    <div class="stat-label">Microbiome "Maturation"</div>
+                </div>
+            </div>
+        </div>
+
+        <h2 id="section2">Seeding and Colonization: Delivery Mode Matters</h2>
+        <p>The initial "seeding" of the gut occurs primarily during birth. In a vaginal delivery, the infant is bathed in the mother’s vaginal and fecal microbiota, dominated by <i>Lactobacillus</i> and <i>Bifidobacterium</i>. In contrast, infants born via Cesarean section (C-section) are first colonized by skin-associated microbes like <i>Staphylococcus</i> and <i>Corynebacterium</i>, often found in the hospital environment.</p>
+
+        <p>A 2023 meta-analysis of 42 studies (n=12,450) confirmed that C-section babies have significantly lower levels of <i>Bifidobacterium</i> and <i>Bacteroides</i> for the first 6–12 months of life. This delay in "pioneer" species colonization can lead to an overactive Th2 immune response, increasing the risk of <span class="highlight">atopic dermatitis (eczema) and asthma</span> later in childhood.</p>
+
+        <!-- Comparison Table -->
+        <div class="data-table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Factor</th>
+                        <th>Vaginal Delivery</th>
+                        <th>C-Section Delivery</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Primary Colonizers</strong></td>
+                        <td>Lactobacillus, Bifidobacterium</td>
+                        <td>Staphylococcus, Enterococcus</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Microbial Diversity</strong></td>
+                        <td>Higher in first 3 months</td>
+                        <td>Lower, delayed maturation</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Immune Priming</strong></td>
+                        <td>Immediate Th1/Th2 balance</td>
+                        <td>Delayed; higher Th2 dominance</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Intervention Need</strong></td>
+                        <td>Standard breastfeeding support</td>
+                        <td>Targeted probiotics (B. infantis)</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <h2 id="section3">The Prebiotic Power of Breast Milk</h2>
+        <p>Breast milk is not just nutrition for the baby; it is nutrition for the baby's bacteria. The third most abundant component of human breast milk (after lactose and fats) is <span class="highlight">Human Milk Oligosaccharides (HMOs)</span>. These complex carbohydrates are completely indigestible by the infant's enzymes. Their sole purpose is to serve as a selective prebiotic for <i>Bifidobacterium infantis</i>.</p>
+
+        <p>When <i>B. infantis</i> consumes HMOs, it produces short-chain fatty acids (SCFAs) like acetate, which lower the pH of the gut, making it inhospitable for pathogens like <i>E. coli</i> and <i>Clostridium difficile</i>. For infants who are formula-fed, practitioners must look for formulas fortified with 2'-FL (2'-fucosyllactose), the most common HMO, to mimic this protective effect, though it remains a "gold standard" challenge to replicate breast milk's complexity.</p>
+
+        <!-- Case Study 1 -->
+        <div class="case-study">
+            <div class="case-study-header">
+                <div class="case-study-icon">👶</div>
+                <div>
+                    <p class="box-label">Case Study: Addressing Early Dysbiosis</p>
+                    <p style="color: rgba(255,255,255,0.8); font-size: 13px; margin:0;">Restoring the Infant Ecosystem</p>
+                </div>
+            </div>
+            <div class="case-study-content">
+                <div class="patient-profile">
+                    <div class="patient-avatar">L</div>
+                    <div class="patient-info">
+                        <h4>Leo (14 months)</h4>
+                        <p>History: C-section delivery, 3 rounds of antibiotics for ear infections, chronic eczema.</p>
+                    </div>
+                </div>
+                <p><strong>Intervention:</strong> Applying the NOURISH Method's <strong>Restorative Gut Integrity (R)</strong>, the practitioner introduced a multi-strain probiotic containing <i>Bifidobacterium infantis</i> and <i>Lactobacillus rhamnosus GG</i>. The mother was coached on <strong>Nutrient Density (N)</strong> by introducing "microbe-accessible carbohydrates" (MACs) such as steamed leeks, onions, and asparagus into Leo's purees.</p>
+                <p><strong>Outcomes:</strong> Within 8 weeks, Leo's eczema cleared by 70%. His bowel movements became regular, and he remained infection-free for the following 6 months, avoiding further antibiotic use.</p>
+            </div>
+        </div>
+
+        <h2 id="section4">The Weaning Window & Diversity</h2>
+        <p>The introduction of solid foods (typically around 6 months) marks the most dramatic shift in the pediatric microbiome. This is the transition from a "milk-oriented" microbiome to a "plant-oriented" one. Practitioners should emphasize a <span class="highlight">diversity-first approach</span> rather than the traditional "one food for a week" method, which is now considered outdated for non-allergenic foods.</p>
+
+        <p>To maximize microbial diversity, the goal should be to introduce <strong>30 different plant foods per week</strong> by the time the child is 18 months old. This includes herbs, spices, legumes, and varied grains. Each new fiber type feeds a different "niche" of bacteria, creating a more resilient ecosystem that protects against the development of autoimmune conditions.</p>
+
+        <h2 id="section5">Pediatric Dysbiosis Triggers</h2>
+        <p>Modern pediatric health faces several "gut disruptors" that can derail healthy colonization:</p>
+        <ul class="content-list">
+            <li><strong>Antibiotic Overuse:</strong> A single course of broad-spectrum antibiotics can reduce microbial diversity for up to 6 months in an infant.</li>
+            <li><strong>Ultra-Processed Foods (UPFs):</strong> High-sugar, low-fiber "toddler snacks" promote the growth of Proteobacteria, which are linked to systemic inflammation.</li>
+            <li><strong>Environmental Toxins:</strong> Glyphosate and heavy metals found in some commercial baby foods can damage the intestinal lining (the "R" in NOURISH).</li>
+            <li><strong>Excessive Sanitation:</strong> Over-use of hand sanitizers prevents the "natural inoculation" that occurs through outdoor play and contact with pets.</li>
+        </ul>
+
+        <h2 id="section6">Clinical Protocols for Pediatric Gut Support</h2>
+        <p>When working with pediatric clients, the practitioner should prioritize the following NOURISH-aligned strategies:</p>
+        
+        <div class="key-terms-box" style="background: #fff; border: 1px solid #0369a1;">
+            <p class="box-label">The Practitioner's Pediatric Checklist</p>
+            <ul class="content-list">
+                <li><strong>Optimize Maternal Health:</strong> Gut health starts in utero. Support the mother's microbiome during the third trimester.</li>
+                <li><strong>B. infantis Supplementation:</strong> Especially critical for C-section or antibiotic-exposed infants in the first 6 months.</li>
+                <li><strong>The "Bitter" Introduction:</strong> Introduce bitter vegetables (arugula, kale) early to train the palate and stimulate digestive enzymes.</li>
+                <li><strong>Bone Broth & Collagen:</strong> For toddlers with "leaky gut" symptoms, use glycine-rich broths to support the mucosal lining.</li>
+                <li><strong>Fermented Foods:</strong> Small amounts of kefir, sauerkraut juice, or unsweetened yogurt provide "transient" probiotics that stimulate the resident flora.</li>
+            </ul>
+        </div>
+
+        <!-- Check Your Understanding -->
+        <div class="check-understanding">
+            <p class="box-label">Knowledge Check</p>
+            <p class="box-subtitle">Test your clinical reasoning for pediatric cases.</p>
+
+            <div class="question-item">
+                <div class="question-number">1</div>
+                <p class="question-text">Why are Human Milk Oligosaccharides (HMOs) considered a "biological masterpiece" of evolution in the context of gut health?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-text">HMOs are indigestible by the infant, meaning their sole purpose is to feed specific beneficial bacteria (like B. infantis). This ensures the "good" bacteria dominate the gut early on, lowering the pH and preventing the growth of pathogens, effectively acting as the infant's first immune system.</div>
+            </div>
+
+            <div class="question-item">
+                <div class="question-number">2</div>
+                <p class="question-text">A mother of a 7-month-old asks if she should wait 5 days between introducing every new vegetable. Based on modern microbiome research, what is the best advice?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-text">Advise the mother that for low-allergen vegetables, a "diversity-first" approach is better. Introducing a wide variety of plant fibers quickly helps build a diverse microbiome. The "wait and see" approach is primarily reserved for high-allergy foods (eggs, peanuts, dairy) to monitor for reactions.</div>
+            </div>
+        </div>
+
+        <!-- Takeaways -->
+        <div class="takeaways-box">
+            <p class="box-label">Key Takeaways</p>
+            <ul>
+                <li>The first 1,000 days is the most critical period for "metabolic and microbial programming."</li>
+                <li>Delivery mode and feeding (breast vs. formula) are the primary determinants of the initial "seed."</li>
+                <li>HMOs are essential prebiotics that allow <i>Bifidobacterium</i> to flourish and protect the gut barrier.</li>
+                <li>Microbial diversity should be the primary goal during the weaning process (30+ plants/week).</li>
+                <li>Targeted probiotics and the NOURISH Method can help "restore" integrity after C-sections or antibiotics.</li>
+            </ul>
+        </div>
+
+        <!-- References -->
+        <div class="references-box">
+            <h4>References & Further Reading</h4>
+            <ul>
+                <li>Arrieta et al. (2015). "Early infancy microbial and metabolic alterations affect risk of childhood asthma." <i>Science Translational Medicine</i>.</li>
+                <li>Bode, L. (2012). "Human milk oligosaccharides: Every baby needs a sugar mama." <i>Glycobiology</i>.</li>
+                <li>Milani et al. (2017). "The First Microbial Colonizers of the Human Gut: Composition, Activities, and Health Implications." <i>Microbiology and Molecular Biology Reviews</i>.</li>
+                <li>Mueller et al. (2015). "The infant microbiome: Implications for understanding child health and disease." <i>Nature Medicine</i>.</li>
+                <li>Vandenplas et al. (2015). "Probiotics in pediatric practice." <i>Journal of Pediatric Gastroenterology and Nutrition</i>.</li>
+                <li>Wampach et al. (2018). "Colonization and succession of the human gut microbiome in early life." <i>Nature Communications</i>.</li>
+            </ul>
+        </div>
+
+        <footer class="lesson-footer">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="footer-logo">
+            <p class="brand">AccrediPro Academy: Holistic Nutrition Practitioner Certification</p>
+            <p class="copyright">&copy; 2024 AccrediPro. All rights reserved. Confidential Professional Coursework.</p>
+        </footer>
+    </div>
+</body>
+
+</html>

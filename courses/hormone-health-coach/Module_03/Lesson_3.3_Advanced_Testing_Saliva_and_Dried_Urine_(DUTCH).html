@@ -1,0 +1,964 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lesson 3.3: Advanced Testing: Saliva and Dried Urine (DUTCH)</title>
+    <style>
+        /* Base & Reset */
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Georgia, 'Times New Roman', serif;
+            line-height: 1.8;
+            color: #2d2d2d;
+            background: #f8f6f3;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Main Container */
+        .lesson-container {
+            max-width: 860px;
+            margin: 0 auto;
+            padding: 40px 30px;
+            background: #ffffff;
+            min-height: 100vh;
+            box-shadow: 0 0 60px rgba(0, 0, 0, 0.08);
+        }
+
+        /* Brand Header */
+        .brand-header {
+            text-align: center;
+            padding-bottom: 30px;
+            margin-bottom: 35px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .brand-logo {
+            max-width: 220px;
+            height: auto;
+            margin-bottom: 5px;
+        }
+
+        /* Module Header - GREEN theme for Hormone Health */
+        .module-header {
+            background: linear-gradient(135deg, #059669 0%, #10B981 100%);
+            padding: 35px 35px 30px;
+            border-radius: 16px;
+            margin-bottom: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .module-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+            transform: translate(100px, -100px);
+        }
+
+        .module-header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, #B8860B, #D4A84B, #B8860B);
+        }
+
+        .module-label {
+            margin: 0;
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.75);
+            text-transform: uppercase;
+            letter-spacing: 2.5px;
+            font-weight: 500;
+        }
+
+        .lesson-title {
+            margin: 10px 0 0 0;
+            font-size: 28px;
+            color: #ffffff;
+            font-weight: 700;
+            line-height: 1.3;
+            position: relative;
+        }
+
+        .lesson-meta {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+            padding-top: 18px;
+            border-top: 1px solid rgba(255, 255, 255, 0.15);
+            flex-wrap: wrap;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.85);
+            background: rgba(255, 255, 255, 0.1);
+            padding: 5px 12px;
+            border-radius: 4px;
+        }
+
+        /* Table of Contents */
+        .toc-box {
+            background: linear-gradient(135deg, #fafafa 0%, #f5f5f5 100%);
+            border-radius: 14px;
+            padding: 24px 28px;
+            margin-bottom: 35px;
+            border: 1px solid #e8e8e8;
+        }
+
+        .toc-box .box-label {
+            font-weight: 600;
+            color: #059669;
+            margin: 0 0 18px 0;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .toc-list {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px 24px;
+        }
+
+        .toc-list li {
+            margin: 0;
+        }
+
+        .toc-list a {
+            display: flex;
+            align-items: center;
+            padding: 8px 12px;
+            color: #555;
+            text-decoration: none;
+            font-size: 14px;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+        }
+
+        .toc-list a:hover {
+            background: white;
+            color: #059669;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+        }
+
+        .toc-list .section-num {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 26px;
+            height: 26px;
+            background: #059669;
+            color: white;
+            font-weight: 600;
+            font-size: 11px;
+            border-radius: 6px;
+            margin-right: 12px;
+            flex-shrink: 0;
+        }
+
+        @media (max-width: 600px) {
+            .toc-list {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Learning Objectives */
+        .objectives-box {
+            background: #f0fdf4;
+            border: 2px solid #10B981;
+            border-radius: 14px;
+            padding: 30px 35px;
+            margin-bottom: 40px;
+        }
+
+        .objectives-box .box-label {
+            font-weight: 600;
+            color: #059669;
+            margin: 0 0 18px 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .objectives-box .box-label::before {
+            content: '🎯';
+            font-size: 18px;
+        }
+
+        .objectives-box ul {
+            margin: 0;
+            padding-left: 22px;
+        }
+
+        .objectives-box li {
+            margin-bottom: 14px;
+            font-size: 16px;
+            line-height: 1.7;
+        }
+
+        .objectives-box li:last-child {
+            margin-bottom: 0;
+        }
+
+        /* Key Terms Box */
+        .key-terms-box {
+            background: linear-gradient(135deg, #f0f4f8 0%, #e8ecf1 100%);
+            border-radius: 14px;
+            padding: 28px 30px;
+            margin: 40px 0;
+            border: 1px solid #d8dce0;
+        }
+
+        .key-terms-box .box-label {
+            font-weight: 600;
+            color: #059669;
+            margin: 0 0 18px 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .terms-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 16px;
+        }
+
+        .term-item {
+            background: white;
+            padding: 16px 18px;
+            border-radius: 10px;
+            border-left: 4px solid #10B981;
+        }
+
+        .term-item .term {
+            font-weight: 700;
+            color: #059669;
+            font-size: 15px;
+            margin: 0 0 6px 0;
+        }
+
+        .term-item .definition {
+            font-size: 14px;
+            color: #555;
+            margin: 0;
+            line-height: 1.6;
+        }
+
+        /* Section Headings */
+        h2 {
+            font-size: 24px;
+            color: #059669;
+            margin: 50px 0 20px 0;
+            font-weight: 600;
+            position: relative;
+            padding-bottom: 12px;
+        }
+
+        h2::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 60px;
+            height: 3px;
+            background: #B8860B;
+        }
+
+        /* Paragraphs */
+        p {
+            font-size: 17px;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        /* Highlights */
+        .highlight {
+            background: linear-gradient(180deg, transparent 60%, #FFF59D 60%);
+            padding: 0 4px;
+            font-weight: 500;
+        }
+
+        /* Welcome/Intro Box */
+        .welcome-box {
+            background: linear-gradient(135deg, #f0fdf4 0%, #ecfdf5 100%);
+            padding: 30px 35px;
+            border-radius: 14px;
+            margin-bottom: 40px;
+            border: 1px solid #bbf7d0;
+        }
+
+        .welcome-box h3 {
+            margin: 0 0 15px 0;
+            font-size: 20px;
+            color: #059669;
+            font-weight: 600;
+        }
+
+        .welcome-box p {
+            margin: 0;
+            font-size: 17px;
+            line-height: 1.8;
+            color: #444;
+        }
+
+        /* Alert Boxes */
+        .alert-box {
+            padding: 26px 30px;
+            margin: 35px 0;
+            border-radius: 0 14px 14px 0;
+            border-left: 5px solid;
+        }
+
+        .alert-box .alert-label {
+            font-weight: 600;
+            margin: 0 0 12px 0;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .alert-box p:last-child {
+            margin: 0;
+            font-size: 16px;
+            line-height: 1.7;
+        }
+
+        .alert-box.warning {
+            background: #fff8e6;
+            border-left-color: #ff9800;
+        }
+
+        .alert-box.warning .alert-label {
+            color: #e65100;
+        }
+
+        .alert-box.success {
+            background: #f0f8f0;
+            border-left-color: #4caf50;
+        }
+
+        .alert-box.success .alert-label {
+            color: #2e7d32;
+        }
+
+        /* Case Study Box */
+        .case-study {
+            background: linear-gradient(135deg, #f8f9fb 0%, #f0f2f5 100%);
+            border-radius: 16px;
+            padding: 0;
+            margin: 40px 0;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+        }
+
+        .case-study-header {
+            background: linear-gradient(135deg, #059669 0%, #10B981 100%);
+            padding: 20px 30px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .case-study-icon {
+            width: 45px;
+            height: 45px;
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+        }
+
+        .case-study-header .box-label {
+            font-weight: 600;
+            color: #ffffff;
+            margin: 0;
+            font-size: 16px;
+            letter-spacing: 0.5px;
+        }
+
+        .case-study-header .subtitle {
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 13px;
+            margin: 4px 0 0 0;
+        }
+
+        .case-study-content {
+            padding: 28px 30px;
+        }
+
+        .case-study-content p {
+            font-size: 16px;
+            margin-bottom: 18px;
+        }
+
+        .patient-profile {
+            display: flex;
+            align-items: center;
+            gap: 18px;
+            padding: 18px 22px;
+            background: white;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            border: 1px solid #e5e5e5;
+        }
+
+        .patient-avatar {
+            width: 55px;
+            height: 55px;
+            background: linear-gradient(135deg, #10B981, #059669);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            flex-shrink: 0;
+        }
+
+        .patient-info h4 {
+            margin: 0 0 5px 0;
+            font-size: 17px;
+            color: #1a1a1a;
+        }
+
+        .patient-info p {
+            margin: 0;
+            font-size: 14px;
+            color: #666;
+        }
+
+        /* Comparison Table */
+        .data-table-container {
+            margin: 35px 0;
+            overflow-x: auto;
+            border-radius: 12px;
+            border: 1px solid #e5e5e5;
+        }
+
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 15px;
+            text-align: left;
+        }
+
+        .data-table th {
+            background: #f0fdf4;
+            color: #059669;
+            padding: 15px;
+            font-weight: 600;
+            border-bottom: 2px solid #10B981;
+        }
+
+        .data-table td {
+            padding: 15px;
+            border-bottom: 1px solid #eee;
+            vertical-align: top;
+        }
+
+        .data-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        /* Statistics Box */
+        .stats-box {
+            background: linear-gradient(135deg, #059669 0%, #10B981 100%);
+            padding: 40px;
+            border-radius: 16px;
+            margin: 35px 0;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stat-highlight {
+            font-weight: 700;
+            color: #059669;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 25px;
+            position: relative;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 42px;
+            font-weight: 700;
+            color: white;
+            line-height: 1;
+            margin-bottom: 8px;
+        }
+
+        .stat-label {
+            font-size: 13px;
+            color: rgba(255, 255, 255, 0.85);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* Check Understanding Box */
+        .check-understanding {
+            background: linear-gradient(135deg, #fdfbf7 0%, #f9f5ed 100%);
+            border: 2px solid #B8860B;
+            border-radius: 16px;
+            padding: 32px;
+            margin: 45px 0;
+        }
+
+        .check-understanding .box-label {
+            font-weight: 600;
+            color: #8B6914;
+            margin: 0 0 8px 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .question-item {
+            background: white;
+            border-radius: 12px;
+            padding: 22px 24px;
+            margin-bottom: 16px;
+            border: 1px solid #e8e4dc;
+            position: relative;
+        }
+
+        .question-number {
+            position: absolute;
+            top: -12px;
+            left: 20px;
+            background: #059669;
+            color: white;
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            font-size: 13px;
+        }
+
+        .reveal-btn {
+            background: #059669;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-size: 14px;
+            cursor: pointer;
+            font-family: inherit;
+            transition: background 0.2s ease;
+        }
+
+        .answer-text {
+            display: none;
+            font-size: 14px;
+            color: #2e7d32;
+            margin: 14px 0 0 0;
+            padding: 14px;
+            background: #f0f8f0;
+            border-radius: 8px;
+            line-height: 1.6;
+        }
+
+        .answer-text.show {
+            display: block;
+        }
+
+        /* Key Takeaways */
+        .takeaways-box {
+            background: linear-gradient(135deg, #f5f5f5 0%, #e8e8e8 100%);
+            padding: 22px 25px;
+            margin-top: 35px;
+            border-radius: 8px;
+            border: 1px solid #ddd;
+        }
+
+        .takeaways-box .box-label {
+            font-weight: 600;
+            color: #059669;
+            margin: 0 0 15px 0;
+            font-size: 16px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .takeaways-box ul {
+            margin: 0;
+            padding-left: 18px;
+            font-size: 15px;
+        }
+
+        /* References Box */
+        .references-box {
+            margin-top: 40px;
+            padding: 25px;
+            background: #f9f9f9;
+            border-radius: 12px;
+            font-size: 14px;
+            color: #666;
+            border: 1px solid #eee;
+        }
+
+        .references-box h4 {
+            margin: 0 0 15px 0;
+            color: #333;
+            font-size: 16px;
+        }
+
+        .references-box ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .references-box li {
+            margin-bottom: 10px;
+            line-height: 1.5;
+        }
+
+        /* Footer */
+        .lesson-footer {
+            text-align: center;
+            padding-top: 50px;
+            margin-top: 60px;
+            border-top: 1px solid #eee;
+        }
+
+        .footer-logo {
+            max-width: 140px;
+            height: auto;
+            margin-bottom: 15px;
+            opacity: 0.9;
+        }
+
+        .lesson-footer .brand {
+            color: #059669;
+            font-weight: 600;
+            margin: 0;
+            font-size: 15px;
+        }
+
+        .lesson-footer .copyright {
+            color: #888;
+            font-size: 13px;
+            margin: 10px 0 0 0;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .lesson-container { padding: 20px 16px; }
+            .module-header { padding: 25px 20px 22px; }
+            .lesson-title { font-size: 22px; }
+            .toc-list { grid-template-columns: 1fr; }
+            .stats-grid { grid-template-columns: repeat(2, 1fr); }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="lesson-container">
+        <div class="brand-header">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="brand-logo">
+        </div>
+
+        <header class="module-header">
+            <p class="module-label">Module 3: Survey & Systematize (S): Assessment & Data</p>
+            <h1 class="lesson-title">Lesson 3.3: Advanced Testing: Saliva and Dried Urine (DUTCH)</h1>
+            <div class="lesson-meta">
+                <span class="meta-item">35 min read</span>
+                <span class="meta-item">Lesson 3 of 6</span>
+            </div>
+        </header>
+
+        <!-- Table of Contents -->
+        <div class="toc-box">
+            <p class="box-label">In This Lesson</p>
+            <ul class="toc-list">
+                <li><a href="#section1"><span class="section-num">1</span>Beyond Serum: The Case for Advanced Testing</a></li>
+                <li><a href="#section2"><span class="section-num">2</span>Salivary Testing & The Free Hormone Fraction</a></li>
+                <li><a href="#section3"><span class="section-num">3</span>The Cortisol Awakening Response (CAR)</a></li>
+                <li><a href="#section4"><span class="section-num">4</span>DUTCH Testing: Metabolite Mapping</a></li>
+                <li><a href="#section5"><span class="section-num">5</span>Estrogen Detoxification Pathways</a></li>
+                <li><a href="#section6"><span class="section-num">6</span>Clinical Decision Making Matrix</a></li>
+            </ul>
+        </div>
+
+        <!-- Learning Objectives -->
+        <div class="objectives-box">
+            <p class="box-label">Learning Objectives</p>
+            <ul>
+                <li>Differentiate between bound, total, and free hormone fractions in various testing mediums.</li>
+                <li>Analyze the clinical significance of the Cortisol Awakening Response (CAR) in HPA-axis assessment.</li>
+                <li>Interpret dried urine metabolites to evaluate Phase I and Phase II estrogen detoxification.</li>
+                <li>Identify the specific advantages and limitations of Saliva vs. Dried Urine vs. Serum testing.</li>
+                <li>Apply advanced testing data to the SIGNAL Method™ to create data-driven client protocols.</li>
+            </ul>
+        </div>
+
+        <!-- Welcome Box -->
+        <div class="welcome-box">
+            <h3>Precision in the 'Survey' Phase</h3>
+            <p>In the SIGNAL Method™, the first 'S' stands for <span class="highlight">Survey & Systematize</span>. While functional blood chemistry (Lesson 3.2) provides a vital systemic overview, it often fails to capture the dynamic "rhythm" of hormones or the "fate" of hormones once they leave the bloodstream. To truly understand a client's endocrine health, we must look at bioavailable levels and metabolic pathways. This lesson dives into the gold standards of functional endocrine assessment: Saliva and Dried Urine (DUTCH).</p>
+        </div>
+
+        <!-- Key Terms -->
+        <div class="key-terms-box">
+            <p class="box-label">🔬 Key Terms to Know</p>
+            <div class="terms-grid">
+                <div class="term-item">
+                    <p class="term">Free Hormone Fraction</p>
+                    <p class="definition">The portion of a hormone not bound to carrier proteins (like SHBG or Albumin), making it biologically active and able to enter cells.</p>
+                </div>
+                <div class="term-item">
+                    <p class="term">DUTCH</p>
+                    <p class="definition">Dried Urine Test for Comprehensive Hormones; a method using dried urine strips to measure hormones and their metabolites over a 24-hour period.</p>
+                </div>
+                <div class="term-item">
+                    <p class="term">CAR (Cortisol Awakening Response)</p>
+                    <p class="definition">The sharp rise in cortisol levels occurring 30–45 minutes after waking, serving as a "stress test" for HPA-axis resiliency.</p>
+                </div>
+                <div class="term-item">
+                    <p class="term">Metabolites</p>
+                    <p class="definition">The intermediate or end products of metabolism; in hormone testing, these show how the body is breaking down and clearing hormones.</p>
+                </div>
+            </div>
+        </div>
+
+        <h2 id="section1">Beyond Serum: The Case for Advanced Testing</h2>
+        <p>Traditional serum (blood) testing is the standard of care for diagnosing acute pathologies, such as Addison’s disease or primary hypothyroidism. However, for the Hormone Health Coach looking for <span class="highlight">subclinical dysregulation</span>, serum has three primary limitations:</p>
+        
+        <ol class="content-list">
+            <li><strong>The Protein Binding Problem:</strong> Serum measures "Total" hormones. Approximately 95-99% of steroid hormones in the blood are bound to proteins and are inactive. Saliva and dried urine primarily measure the unbound, bioavailable fraction.</li>
+            <li><strong>The Snapshot Limitation:</strong> Hormones like cortisol follow a circadian rhythm. A single morning blood draw cannot differentiate between a client with high morning cortisol and a client whose cortisol stays high all night.</li>
+            <li><strong>The Metabolite Blind Spot:</strong> Blood tells us how much hormone is "in the tank," but it doesn't tell us if that hormone is being converted into protective or proliferative metabolites (especially critical for estrogen).</li>
+        </ol>
+
+        <div class="alert-box info">
+            <p class="alert-label">Pro Tip</p>
+            <p>A 2018 study in the <i>Journal of Clinical Medicine</i> found that while serum and salivary cortisol correlate well in healthy individuals (r = 0.71-0.96), saliva is significantly more sensitive for detecting the subtle nuances of burnout and chronic stress patterns.</p>
+        </div>
+
+        <h2 id="section2">Salivary Testing & The Free Hormone Fraction</h2>
+        <p>Salivary testing relies on the fact that only <span class="highlight">unbound (free) steroid hormones</span> can diffuse from the capillaries into the salivary glands. This provides a direct reflection of the hormone levels available to the target tissues. This is particularly useful for assessing the "Big Five": Cortisol, DHEA-S, Estradiol, Progesterone, and Testosterone.</p>
+
+        <p>In clinical practice, saliva is the preferred medium for mapping the <span class="highlight">diurnal cortisol curve</span>. By collecting samples at waking, noon, evening, and night, we can visualize the rhythm of the HPA-axis. A healthy curve starts high and gradually declines, whereas a "flat" curve is a hallmark of HPA-axis exhaustion (commonly termed "adrenal fatigue").</p>
+
+        <h2 id="section3">The Cortisol Awakening Response (CAR)</h2>
+        <p>The <span class="highlight">Cortisol Awakening Response (CAR)</span> is a unique physiological phenomenon. It is an abrupt increase in cortisol (usually 50-160% above waking levels) that occurs within the first hour of consciousness. It is not triggered by the act of waking itself, but by the anticipation of the day's demands.</p>
+
+        <div class="stats-box">
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <div class="stat-number">30-45m</div>
+                    <div class="stat-label">Peak CAR Time</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">50%+</div>
+                    <div class="stat-label">Healthy Rise</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">85%</div>
+                    <div class="stat-label">HPA Accuracy</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">4x</div>
+                    <div class="stat-label">Daily Samples</div>
+                </div>
+            </div>
+        </div>
+
+        <p>A <span class="stat-highlight">blunted CAR</span> is strongly associated with chronic fatigue, systemic inflammation, and PTSD. Conversely, an <span class="stat-highlight">exaggerated CAR</span> is often seen in clients with high perceived stress, "wired but tired" patterns, and morning anxiety. Saliva is the only practical medium for measuring the CAR because blood draws are too invasive to perform in the client's bedroom immediately upon waking.</p>
+
+        <h2 id="section4">DUTCH Testing: Metabolite Mapping</h2>
+        <p>The DUTCH test (Dried Urine Test for Comprehensive Hormones) has revolutionized functional endocrinology. By using four or five dried urine strips collected over 24 hours, it provides the most comprehensive look at sex and adrenal hormones available today. Its greatest strength lies in <span class="highlight">metabolite analysis</span>.</p>
+
+        <p>Why do metabolites matter? Let's look at Cortisol vs. Cortisone. The enzyme 11b-HSD serves as a "gatekeeper," converting active cortisol to inactive cortisone. If a client has high serum cortisol but the DUTCH test shows they are rapidly converting it to cortisone, their actual cellular "firepower" is low. This nuance is invisible in serum or saliva alone.</p>
+
+        <div class="data-table-container">
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>Feature</th>
+                        <th>Serum (Blood)</th>
+                        <th>Saliva</th>
+                        <th>Dried Urine (DUTCH)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Measures</strong></td>
+                        <td>Total (Bound + Free)</td>
+                        <td>Free (Bioavailable)</td>
+                        <td>Free + Metabolites</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Rhythm Assessment</strong></td>
+                        <td>Poor (Single Snapshot)</td>
+                        <td>Excellent (4-6 points)</td>
+                        <td>Excellent (4-5 points)</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Estrogen Detox</strong></td>
+                        <td>No</td>
+                        <td>No</td>
+                        <td>Yes (Phase I & II)</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Best Use Case</strong></td>
+                        <td>Pathology & Thyroid</td>
+                        <td>HPA-Axis & CAR</td>
+                        <td>PCOS, PMS, Menopause</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <h2 id="section5">Estrogen Detoxification Pathways</h2>
+        <p>Perhaps the most critical application of DUTCH testing is evaluating estrogen metabolism. Estrogen (specifically Estradiol and Estrone) must be detoxified through the liver in two phases:</p>
+
+        <p><strong>Phase I (Hydroxylation):</strong> Estrogen is converted into one of three metabolites:
+        <ul>
+            <li><span class="highlight">2-OH (The "Good" Pathway):</span> Generally protective and non-proliferative.</li>
+            <li><span class="highlight">16-OH (The "Proliferative" Pathway):</span> Associated with heavy periods and breast tenderness.</li>
+            <li><span class="highlight">4-OH (The "Toxic" Pathway):</span> Can cause DNA damage and is linked to increased cancer risk.</li>
+        </ul>
+        </p>
+
+        <p><strong>Phase II (Methylation):</strong> These metabolites must then be methylated (via the COMT enzyme) to be safely excreted. If a client has high 4-OH estrogen and <span class="highlight">sluggish methylation</span>, they are at a much higher risk for estrogen-dominant symptoms, regardless of their total estrogen levels in a blood test.</p>
+
+        <!-- Case Study 1 -->
+        <div class="case-study">
+            <div class="case-study-header">
+                <div class="case-study-icon">👤</div>
+                <div>
+                    <p class="box-label">Case Study: The "Wired but Tired" Executive</p>
+                    <p class="subtitle">HPA-Axis Dysregulation Assessment</p>
+                </div>
+            </div>
+            <div class="case-study-content">
+                <div class="patient-profile">
+                    <div class="patient-avatar">M</div>
+                    <div class="patient-info">
+                        <h4>Marcus, 44</h4>
+                        <p>Symptoms: Morning fatigue, 3 PM energy crash, evening "second wind," anxiety.</p>
+                    </div>
+                </div>
+                <p><strong>Intervention:</strong> Marcus had "normal" morning serum cortisol (14 mcg/dL). We ran a 4-point Salivary Cortisol with CAR.</p>
+                <p><strong>Findings:</strong> 
+                    <ul>
+                        <li>Waking Cortisol: Low</li>
+                        <li>CAR (30 min post-waking): Blunted (only 10% rise)</li>
+                        <li>Nighttime Cortisol: Elevated (double the reference range)</li>
+                    </ul>
+                </p>
+                <p><strong>Outcome:</strong> This data showed Marcus wasn't "low cortisol" overall, but had a <span class="highlight">circadian mismatch</span>. By using the SIGNAL Method™ to align his rhythms (A) and provide glandular support (G) specifically in the morning, his 3 PM crashes resolved within 4 weeks.</p>
+            </div>
+        </div>
+
+        <h2 id="section6">Clinical Decision Making Matrix</h2>
+        <p>As a Hormone Health Coach, how do you choose which test to recommend? Use the following logic based on the client's primary complaints:</p>
+
+        <div class="principle-card">
+            <p class="principle-title">1. Suspected HPA-Axis Exhaustion / Burnout</p>
+            <p class="principle-text"><strong>Recommendation:</strong> Saliva with CAR. 
+            <br><em>Reason:</em> The CAR is the most sensitive marker for HPA-axis resiliency and "brain-to-adrenal" communication.</p>
+        </div>
+
+        <div class="principle-card">
+            <p class="principle-title">2. Estrogen Dominance, PCOS, or PMS</p>
+            <p class="principle-text"><strong>Recommendation:</strong> DUTCH Complete. 
+            <br><em>Reason:</em> You need to see the 2/4/16-OH ratios and methylation activity to address the root cause of the hormonal "backup."</p>
+        </div>
+
+        <div class="principle-card">
+            <p class="principle-title">3. Basic Wellness Screening / Cost Sensitivity</p>
+            <p class="principle-text"><strong>Recommendation:</strong> Functional Blood Chemistry. 
+            <br><em>Reason:</em> Provides the widest net for the lowest cost, though it lacks the depth of the advanced options.</p>
+        </div>
+
+        <!-- Check Understanding -->
+        <div class="check-understanding">
+            <p class="box-label">Check Your Understanding</p>
+            
+            <div class="question-item">
+                <div class="question-number">1</div>
+                <p class="question-text">Why might a client with "normal" serum cortisol still feel exhausted in the morning according to salivary testing?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-text">Serum measures total cortisol (including bound/inactive). Saliva measures the "free" fraction and the CAR (Cortisol Awakening Response). A client may have enough total cortisol but a blunted CAR, meaning their body fails to "surge" the active hormone needed to wake up the brain and metabolism.</div>
+            </div>
+
+            <div class="question-item">
+                <div class="question-number">2</div>
+                <p class="question-text">A DUTCH test shows high 4-OH estrogen and low 2-methoxyestrone. What does this indicate?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-text">This indicates the client is shunting estrogen down a potentially toxic Phase I pathway (4-OH) and has sluggish Phase II Methylation (low methoxyestrone). This requires targeted nutritional precision (N) to support the COMT enzyme and liver detoxification.</div>
+            </div>
+        </div>
+
+        <!-- Takeaways -->
+        <div class="takeaways-box">
+            <p class="box-label">Key Takeaways</p>
+            <ul>
+                <li><strong>Free vs. Bound:</strong> Saliva and Dried Urine offer a superior look at bioavailable hormones compared to serum.</li>
+                <li><strong>The CAR:</strong> The Cortisol Awakening Response is a vital "stress test" for the HPA-axis, best measured via saliva.</li>
+                <li><strong>Metabolic Fate:</strong> DUTCH testing reveals how the body processes hormones, identifying "bottlenecks" in detoxification.</li>
+                <li><strong>Precision Mapping:</strong> Advanced testing removes the guesswork from the SIGNAL Method's "Survey" phase, allowing for highly bio-individual protocols.</li>
+            </ul>
+        </div>
+
+        <!-- References -->
+        <div class="references-box">
+            <h4>References & Further Reading</h4>
+            <ul>
+                <li>Newman et al. (2016). "Evaluating urinary cortisol and sex steroids using dried filter paper samples." <i>BMC Endocrine Disorders.</i></li>
+                <li>Clow et al. (2004). "The cortisol awakening response: Methodological issues and significance." <i>Psychoneuroendocrinology.</i></li>
+                <li>Rice et al. (2018). "A comparison of serum, salivary, and urinary cortisol and its metabolites." <i>Journal of Clinical Medicine.</i></li>
+                <li>Pickering et al. (2020). "Estrogen Metabolism and Breast Cancer Risk: A Review of DUTCH Testing Applications." <i>Functional Medicine Journal.</i></li>
+                <li>Stalder et al. (2016). "Assessment of the cortisol awakening response: Expert consensus guidelines." <i>Psychoneuroendocrinology.</i></li>
+                <li>Adam et al. (2017). "Diurnal cortisol slopes and mental and physical health outcomes: A systematic review." <i>Psychoneuroendocrinology.</i></li>
+            </ul>
+        </div>
+
+        <footer class="lesson-footer">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="footer-logo">
+            <p class="brand">AccrediPro Academy | Hormone Health Coach Certification</p>
+            <p class="copyright">&copy; 2024 AccrediPro. All rights reserved. Confidential Professional Courseware.</p>
+        </footer>
+    </div>
+</body>
+
+</html>

@@ -1,0 +1,771 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lesson 8.3: Analyzing Blood Biomarkers for Weight Loss Coaches</title>
+    <style>
+        /* Base & Reset */
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Georgia, 'Times New Roman', serif;
+            line-height: 1.8;
+            color: #2d2d2d;
+            background: #f8f6f3;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Main Container */
+        .lesson-container {
+            max-width: 860px;
+            margin: 0 auto;
+            padding: 40px 30px;
+            background: #ffffff;
+            min-height: 100vh;
+            box-shadow: 0 0 60px rgba(0, 0, 0, 0.08);
+        }
+
+        /* Brand Header */
+        .brand-header {
+            text-align: center;
+            padding-bottom: 30px;
+            margin-bottom: 35px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .brand-logo {
+            max-width: 220px;
+            height: auto;
+            margin-bottom: 5px;
+        }
+
+        /* Module Header - BLUE/NAVY theme for Data/Assessment */
+        .module-header {
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+            padding: 35px 35px 30px;
+            border-radius: 16px;
+            margin-bottom: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .module-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+            transform: translate(100px, -100px);
+        }
+
+        .module-header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, #B8860B, #D4A84B, #B8860B);
+        }
+
+        .module-label {
+            margin: 0;
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.75);
+            text-transform: uppercase;
+            letter-spacing: 2.5px;
+            font-weight: 500;
+        }
+
+        .lesson-title {
+            margin: 10px 0 0 0;
+            font-size: 28px;
+            color: #ffffff;
+            font-weight: 700;
+            line-height: 1.3;
+            position: relative;
+        }
+
+        .lesson-meta {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+            padding-top: 18px;
+            border-top: 1px solid rgba(255, 255, 255, 0.15);
+            flex-wrap: wrap;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.85);
+            background: rgba(255, 255, 255, 0.1);
+            padding: 5px 12px;
+            border-radius: 4px;
+        }
+
+        /* Table of Contents */
+        .toc-box {
+            background: linear-gradient(135deg, #fafafa 0%, #f5f5f5 100%);
+            border-radius: 14px;
+            padding: 24px 28px;
+            margin-bottom: 35px;
+            border: 1px solid #e8e8e8;
+        }
+
+        .toc-box .box-label {
+            font-weight: 600;
+            color: #1e3a8a;
+            margin: 0 0 18px 0;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .toc-list {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px 24px;
+        }
+
+        .toc-list li {
+            margin: 0;
+        }
+
+        .toc-list a {
+            display: flex;
+            align-items: center;
+            padding: 8px 12px;
+            color: #555;
+            text-decoration: none;
+            font-size: 14px;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+        }
+
+        .toc-list a:hover {
+            background: white;
+            color: #1e3a8a;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+        }
+
+        .toc-list .section-num {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 26px;
+            height: 26px;
+            background: #1e3a8a;
+            color: white;
+            font-weight: 600;
+            font-size: 11px;
+            border-radius: 6px;
+            margin-right: 12px;
+            flex-shrink: 0;
+        }
+
+        /* Learning Objectives */
+        .objectives-box {
+            background: #eff6ff;
+            border: 2px solid #3b82f6;
+            border-radius: 14px;
+            padding: 30px 35px;
+            margin-bottom: 40px;
+        }
+
+        .objectives-box .box-label {
+            font-weight: 600;
+            color: #1e3a8a;
+            margin: 0 0 18px 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .objectives-box .box-label::before {
+            content: '🎯';
+            font-size: 18px;
+        }
+
+        .objectives-box ul {
+            margin: 0;
+            padding-left: 22px;
+        }
+
+        .objectives-box li {
+            margin-bottom: 14px;
+            font-size: 16px;
+            line-height: 1.7;
+        }
+
+        /* Key Terms Box */
+        .key-terms-box {
+            background: linear-gradient(135deg, #f0f4f8 0%, #e8ecf1 100%);
+            border-radius: 14px;
+            padding: 28px 30px;
+            margin: 40px 0;
+            border: 1px solid #d8dce0;
+        }
+
+        .key-terms-box .box-label {
+            font-weight: 600;
+            color: #1e3a8a;
+            margin: 0 0 18px 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .terms-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 16px;
+        }
+
+        .term-item {
+            background: white;
+            padding: 16px 18px;
+            border-radius: 10px;
+            border-left: 4px solid #3b82f6;
+        }
+
+        .term-item .term {
+            font-weight: 700;
+            color: #1e3a8a;
+            font-size: 15px;
+            margin: 0 0 6px 0;
+        }
+
+        .term-item .definition {
+            font-size: 14px;
+            color: #555;
+            margin: 0;
+            line-height: 1.6;
+        }
+
+        /* Section Headings */
+        h2 {
+            font-size: 24px;
+            color: #1e3a8a;
+            margin: 50px 0 20px 0;
+            font-weight: 600;
+            position: relative;
+            padding-bottom: 12px;
+        }
+
+        h2::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 60px;
+            height: 3px;
+            background: #B8860B;
+        }
+
+        /* Paragraphs */
+        p {
+            font-size: 17px;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        /* Highlights */
+        .highlight {
+            background: linear-gradient(180deg, transparent 60%, #FFF59D 60%);
+            padding: 0 4px;
+            font-weight: 500;
+        }
+
+        /* Alert Boxes */
+        .alert-box {
+            padding: 26px 30px;
+            margin: 35px 0;
+            border-radius: 0 14px 14px 0;
+            border-left: 5px solid;
+        }
+
+        .alert-box .alert-label {
+            font-weight: 600;
+            margin: 0 0 12px 0;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .alert-box.warning {
+            background: #fff8e6;
+            border-left-color: #ff9800;
+        }
+
+        .alert-box.warning .alert-label {
+            color: #e65100;
+        }
+
+        .alert-box.info {
+            background: #e3f2fd;
+            border-left-color: #2196f3;
+        }
+
+        .alert-box.info .alert-label {
+            color: #1565c0;
+        }
+
+        /* Case Study Box */
+        .case-study {
+            background: linear-gradient(135deg, #f8f9fb 0%, #f0f2f5 100%);
+            border-radius: 16px;
+            padding: 0;
+            margin: 40px 0;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+        }
+
+        .case-study-header {
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+            padding: 20px 30px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .case-study-icon {
+            width: 45px;
+            height: 45px;
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+        }
+
+        .case-study-header .box-label {
+            font-weight: 600;
+            color: #ffffff;
+            margin: 0;
+            font-size: 16px;
+        }
+
+        .case-study-content {
+            padding: 28px 30px;
+        }
+
+        .patient-profile {
+            display: flex;
+            align-items: center;
+            gap: 18px;
+            padding: 18px 22px;
+            background: white;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            border: 1px solid #e5e5e5;
+        }
+
+        .patient-avatar {
+            width: 55px;
+            height: 55px;
+            background: linear-gradient(135deg, #3b82f6, #1e3a8a);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            flex-shrink: 0;
+        }
+
+        /* Statistics Box */
+        .stats-box {
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+            padding: 40px;
+            border-radius: 16px;
+            margin: 35px 0;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 25px;
+            position: relative;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 42px;
+            font-weight: 700;
+            color: white;
+            line-height: 1;
+            margin-bottom: 8px;
+        }
+
+        .stat-label {
+            font-size: 13px;
+            color: rgba(255, 255, 255, 0.85);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* Table Styling */
+        .data-table-container {
+            overflow-x: auto;
+            margin: 30px 0;
+            border-radius: 12px;
+            border: 1px solid #e5e5e5;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 15px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #f1f5f9;
+            color: #1e3a8a;
+            font-weight: 700;
+            padding: 15px;
+            border-bottom: 2px solid #e2e8f0;
+        }
+
+        td {
+            padding: 15px;
+            border-bottom: 1px solid #e2e8f0;
+            color: #444;
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        /* Check Understanding Box */
+        .check-understanding {
+            background: linear-gradient(135deg, #fdfbf7 0%, #f9f5ed 100%);
+            border: 2px solid #B8860B;
+            border-radius: 16px;
+            padding: 32px;
+            margin: 45px 0;
+        }
+
+        .reveal-btn {
+            background: #1e3a8a;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-size: 14px;
+            cursor: pointer;
+            transition: background 0.2s ease;
+        }
+
+        .answer-text {
+            display: none;
+            font-size: 14px;
+            color: #1e3a8a;
+            margin: 14px 0 0 0;
+            padding: 14px;
+            background: #eff6ff;
+            border-radius: 8px;
+        }
+
+        .answer-text.show {
+            display: block;
+        }
+
+        /* Footer */
+        .lesson-footer {
+            text-align: center;
+            padding-top: 50px;
+            margin-top: 60px;
+            border-top: 1px solid #eee;
+        }
+
+        .footer-logo {
+            max-width: 140px;
+            height: auto;
+            margin-bottom: 15px;
+            opacity: 0.9;
+        }
+
+        .references-box {
+            margin-top: 40px;
+            padding: 25px;
+            background: #f9f9f9;
+            border-radius: 12px;
+            font-size: 14px;
+        }
+
+        .takeaways-box {
+            background: linear-gradient(135deg, #f5f5f5 0%, #e8e8e8 100%);
+            padding: 22px 25px;
+            margin-top: 35px;
+            border-radius: 8px;
+            border: 1px solid #ddd;
+        }
+
+        .takeaways-box .box-label {
+            font-weight: 600;
+            color: #1e3a8a;
+            margin: 0 0 15px 0;
+            font-size: 16px;
+            text-transform: uppercase;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="lesson-container">
+        <div class="brand-header">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="brand-logo">
+        </div>
+
+        <header class="module-header">
+            <p class="module-label">Module 8: Client Assessment & Data Analysis</p>
+            <h1 class="lesson-title">Lesson 8.3: Analyzing Blood Biomarkers for Weight Loss Coaches</h1>
+            <div class="lesson-meta">
+                <span class="meta-item">35 min read</span>
+                <span class="meta-item">Lesson 3 of 6</span>
+            </div>
+        </header>
+
+        <div class="toc-box">
+            <p class="box-label">In This Lesson</p>
+            <ul class="toc-list">
+                <li><a href="#section1"><span class="section-num">1</span>Scope of Practice & Ethics</a></li>
+                <li><a href="#section2"><span class="section-num">2</span>The Glycemic Panel</a></li>
+                <li><a href="#section3"><span class="section-num">3</span>Lipids & Metabolic Health</a></li>
+                <li><a href="#section4"><span class="section-num">4</span>Inflammation & Weight Resistance</a></li>
+                <li><a href="#section5"><span class="section-num">5</span>The Thyroid & Nutrient Status</a></li>
+                <li><a href="#section6"><span class="section-num">6</span>METRIC Method™ Integration</a></li>
+            </ul>
+        </div>
+
+        <div class="objectives-box">
+            <p class="box-label">Learning Objectives</p>
+            <ul>
+                <li>Differentiate between conventional "normal" and functional "optimal" lab ranges for weight loss.</li>
+                <li>Analyze fasting insulin and HbA1c to assess a client's <span class="highlight">Metabolic Flexibility</span>.</li>
+                <li>Identify key inflammatory markers that signal systemic resistance to fat oxidation.</li>
+                <li>Interpret thyroid and micronutrient levels to optimize the metabolic rate.</li>
+                <li>Apply lab data to the METRIC Method™ for high-precision nutritional programming.</li>
+            </ul>
+        </div>
+
+        <div class="alert-box warning">
+            <p class="alert-label">⚠️ Important: Scope of Practice</p>
+            <p>As a Weight Loss Coach, you are not a medical doctor. You do not diagnose, treat, or cure medical conditions. Your role is to <strong>interpret</strong> biomarkers to educate the client and <strong>optimize</strong> their lifestyle interventions. Always recommend that clients review lab results with their primary care physician.</p>
+        </div>
+
+        <h2 id="section1">1. Scope of Practice & The "Functional" Philosophy</h2>
+        <p>In conventional medicine, blood work is typically used to identify <em>disease</em>. If a marker falls within the standard reference range, the client is often told they are "normal." However, for a weight loss coach, "normal" is often not "optimal." Standard reference ranges are based on a bell curve of the general population—a population that is increasingly sedentary and metabolically unhealthy.</p>
+
+        <p>We look for <span class="highlight">Functional Ranges</span>. These are narrower ranges that represent where a human body functions at its peak metabolic capacity. For example, while a fasting glucose of 99 mg/dL is technically "normal" by lab standards, it may indicate early-stage metabolic dysfunction in the context of the <span class="highlight">METRIC Method™</span>.</p>
+
+        <div class="stats-box">
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <div class="stat-number">88%</div>
+                    <div class="stat-label">Metabolically Unhealthy US Adults</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">10-15yr</div>
+                    <div class="stat-label">Insulin Rises Before Glucose</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">1.0</div>
+                    <div class="stat-label">Optimal hs-CRP Target</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">5.0</div>
+                    <div class="stat-label">Optimal Fasting Insulin</div>
+                </div>
+            </div>
+        </div>
+
+        <h2 id="section2">2. The Glycemic Panel: Assessing Metabolic Flexibility</h2>
+        <p>The cornerstone of the <span class="highlight">METRIC Method™</span> is Metabolic Flexibility (M). If a client's blood sugar and insulin are chronically elevated, they cannot efficiently access stored body fat for fuel. We analyze three primary markers to assess this:</p>
+
+        <ul>
+            <li><strong>Fasting Insulin:</strong> This is the most sensitive marker for early metabolic dysfunction. High insulin (Hyperinsulinemia) acts as a metabolic "lock" on fat cells, preventing lipolysis.</li>
+            <li><strong>HbA1c:</strong> This provides a 3-month average of blood glucose levels. It reflects long-term glycemic control and "Intake Precision" (I).</li>
+            <li><strong>HOMA-IR:</strong> Calculated as (Fasting Insulin x Fasting Glucose) / 405. This score quantifies the degree of insulin resistance.</li>
+        </ul>
+
+        <div class="data-table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Biomarker</th>
+                        <th>Conventional Range</th>
+                        <th>Optimal (Functional) Range</th>
+                        <th>Coaching Significance</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Fasting Insulin</td>
+                        <td>2.6 - 24.9 μIU/mL</td>
+                        <td>2.0 - 5.0 μIU/mL</td>
+                        <td>High levels block fat oxidation.</td>
+                    </tr>
+                    <tr>
+                        <td>HbA1c</td>
+                        <td>< 5.7% (Normal)</td>
+                        <td>4.8% - 5.2%</td>
+                        <td>Reflects long-term carbohydrate tolerance.</td>
+                    </tr>
+                    <tr>
+                        <td>Fasting Glucose</td>
+                        <td>65 - 99 mg/dL</td>
+                        <td>75 - 85 mg/dL</td>
+                        <td>Daily baseline for fuel availability.</td>
+                    </tr>
+                    <tr>
+                        <td>HOMA-IR</td>
+                        <td>< 2.0</td>
+                        <td>< 1.0</td>
+                        <td>Gold standard for insulin sensitivity.</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <h2 id="section3">3. Lipids & Metabolic Health</h2>
+        <p>While the standard lipid panel is often used to assess cardiovascular risk, it provides vital clues about metabolic health. Specifically, the <span class="highlight">Triglyceride-to-HDL ratio</span> is a powerful surrogate marker for insulin resistance and the presence of "small, dense" LDL particles.</p>
+        
+        <p>A 2021 study involving 4,500 participants found that individuals with a TG/HDL ratio greater than 3.0 had a significantly higher risk of metabolic syndrome and difficulty losing weight through standard caloric restriction. For our clients, we aim for a ratio of <strong>< 1.5</strong>.</p>
+
+        <h2 id="section4">4. Inflammation & Weight Resistance</h2>
+        <p>Inflammation is the "silent killer" of weight loss progress. Chronic low-grade inflammation interferes with leptin signaling in the brain, leading to "Leptin Resistance." When the brain cannot sense leptin, it believes the body is starving, slowing down the metabolic rate and increasing hunger.</p>
+
+        <p>The primary marker we monitor is <strong>hs-CRP (High-sensitivity C-reactive protein)</strong>. A score above 1.0 mg/L suggests systemic inflammation that may require an "Emotional Regulation" (E) focus (stress management) or an "Intake Precision" (I) focus (anti-inflammatory nutrition).</p>
+
+        <div class="case-study">
+            <div class="case-study-header">
+                <div class="case-study-icon">📋</div>
+                <div>
+                    <p class="box-label">Case Study: The "Stalled" Executive</p>
+                    <p style="color: white; font-size: 13px; margin: 0;">Metabolic Resistance vs. Caloric Deficit</p>
+                </div>
+            </div>
+            <div class="case-study-content">
+                <div class="patient-profile">
+                    <div class="patient-avatar">JD</div>
+                    <div class="patient-info">
+                        <h4>James, 52</h4>
+                        <p>CEO, High Stress, BMI 31, Stalled for 6 months on 1,800 kcal.</p>
+                    </div>
+                </div>
+                <p><strong>Initial Labs:</strong> Fasting Insulin: 18.5 μIU/mL | HbA1c: 5.8% | hs-CRP: 3.4 mg/L | TSH: 3.2 mIU/L.</p>
+                <p><strong>Analysis:</strong> James was in a caloric deficit, but his high insulin (18.5) kept him in a "fat storage" state. His high hs-CRP indicated stress-induced inflammation, further blunting his metabolism.</p>
+                <p><strong>METRIC Intervention:</strong>
+                    <ul>
+                        <li><strong>M (Metabolic Flexibility):</strong> Implemented 16:8 intermittent fasting to lower basal insulin.</li>
+                        <li><strong>E (Emotional Regulation):</strong> Added 10-min post-work breathwork to lower cortisol and CRP.</li>
+                        <li><strong>I (Intake Precision):</strong> Shifted to a 25% CHO / 35% PRO / 40% FAT split.</li>
+                    </ul>
+                </p>
+                <p><strong>Outcome:</strong> James lost 14 lbs in the first 5 weeks. Repeat labs showed Insulin dropped to 6.2 and hs-CRP to 0.9.</p>
+            </div>
+        </div>
+
+        <h2 id="section5">5. The Thyroid & Nutrient Status: The Metabolic Thermostat</h2>
+        <p>Thyroid hormones are the primary regulators of the basal metabolic rate (BMR). In the METRIC Method™, we pay close attention to the thyroid to ensure "Thermic Optimization" (T) is possible.</p>
+
+        <p>Many clients fall into the "Subclinical Hypothyroid" range, where TSH is between 2.5 and 4.5. While doctors may not medicate this, it can result in a 200-400 kcal reduction in daily TDEE. We also look for <strong>Vitamin D</strong> and <strong>Ferritin</strong> (iron stores). Low ferritin (< 50 ng/mL) can impair thyroid hormone production and oxygen transport, making "Resistance & Recovery" (R) training feel impossible for the client.</p>
+
+        <h2 id="section6">6. METRIC Method™ Integration</h2>
+        <p>How do we use this data practically? We map markers to our core principles:</p>
+        
+        <div class="principle-card">
+            <p class="principle-title">M: Metabolic Flexibility</p>
+            <p class="principle-text">If Fasting Insulin is > 7, prioritize lowering carbohydrate frequency and increasing fasting windows to "unlock" fat stores.</p>
+        </div>
+
+        <div class="principle-card">
+            <p class="principle-title">E: Emotional Regulation</p>
+            <p class="principle-text">If hs-CRP or morning Cortisol is elevated, emphasize sleep hygiene and parasympathetic activation over high-intensity cardio.</p>
+        </div>
+
+        <div class="principle-card">
+            <p class="principle-title">I: Intake Precision</p>
+            <p class="principle-text">If Ferritin or Vitamin D is low, adjust micronutrient density or supplementation to support mitochondrial function and energy levels.</p>
+        </div>
+
+        <div class="check-understanding">
+            <p class="box-label">Knowledge Check</p>
+            <p class="box-subtitle">Test your ability to interpret client data.</p>
+            
+            <div class="question-item">
+                <div class="question-number">1</div>
+                <p class="question-text">A client presents with a Fasting Glucose of 92 mg/dL and a Fasting Insulin of 15 μIU/mL. What is their HOMA-IR, and what does it suggest?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-text">
+                    The HOMA-IR is 3.4 [(92 x 15) / 405]. This suggests significant insulin resistance. Despite "normal" glucose, the high insulin is preventing fat oxidation, indicating poor Metabolic Flexibility (M).
+                </div>
+            </div>
+
+            <div class="question-item">
+                <div class="question-number">2</div>
+                <p class="question-text">Which marker is the most sensitive indicator of systemic inflammation that could lead to Leptin Resistance?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-text">
+                    hs-CRP (High-sensitivity C-reactive protein). An optimal level is < 1.0 mg/L. Levels above this suggest inflammation that may stall weight loss.
+                </div>
+            </div>
+        </div>
+
+        <div class="takeaways-box">
+            <p class="box-label">Key Takeaways</p>
+            <ul>
+                <li>Standard reference ranges identify disease; functional ranges identify metabolic peak performance.</li>
+                <li>Fasting insulin is the "master switch" for weight loss; levels > 5.0 μIU/mL often signal a need for metabolic intervention.</li>
+                <li>The TG/HDL ratio is a simple, effective surrogate for assessing insulin sensitivity and cardiovascular health.</li>
+                <li>Inflammation (hs-CRP) and Thyroid status (TSH/fT3) are common hidden barriers to weight loss success.</li>
+                <li>Always use blood work to tailor the METRIC Method™—precision data leads to precision results.</li>
+            </ul>
+        </div>
+
+        <div class="references-box">
+            <p style="font-weight: 700; color: #1e3a8a; margin-bottom: 15px; text-transform: uppercase; font-size: 12px; letter-spacing: 1px;">References & Further Reading</p>
+            <ul style="list-style: none; padding: 0; margin: 0;">
+                <li style="margin-bottom: 10px;">Ludwig, D. S., et al. (2018). "The Carbohydrate-Insulin Model: A Physiological Perspective on the Obesity Pandemic." <em>The American Journal of Clinical Nutrition.</em></li>
+                <li style="margin-bottom: 10px;">Ebbeling, C. B., et al. (2012). "Effects of Dietary Composition on Energy Expenditure During Weight-Loss Maintenance." <em>JAMA.</em></li>
+                <li style="margin-bottom: 10px;">Fung, J. (2016). <em>The Obesity Code: Unlocking the Secrets of Weight Loss.</em> Greystone Books.</li>
+                <li style="margin-bottom: 10px;">Hernandez, A. V., et al. (2021). "Triglyceride-to-HDL Ratio as a Predictor of Insulin Resistance in Diverse Populations." <em>Metabolic Syndrome and Related Disorders.</em></li>
+                <li style="margin-bottom: 10px;">Vigersky, R. A., et al. (2020). "The Role of Hemoglobin A1c in Weight Management and Metabolic Health." <em>Journal of Diabetes Science and Technology.</em></li>
+                <li style="margin-bottom: 10px;">Walsh, J. P. (2016). "Managing Thyroid Disease in the Context of Obesity." <em>The Lancet Diabetes & Endocrinology.</em></li>
+            </ul>
+        </div>
+
+        <footer class="lesson-footer">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="footer-logo">
+            <p class="brand">AccrediPro Academy Certified Weight Loss Coach</p>
+            <p class="copyright">&copy; 2024 AccrediPro Academy. All Rights Reserved. Professional Certification Program.</p>
+        </footer>
+    </div>
+</body>
+
+</html>

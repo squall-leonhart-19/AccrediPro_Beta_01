@@ -1,0 +1,796 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lesson 5.2: Moving from Suppression to Expression</title>
+    <style>
+        /* Base & Reset */
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Georgia, 'Times New Roman', serif;
+            line-height: 1.8;
+            color: #2d2d2d;
+            background: #f4f4f9;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Main Container */
+        .lesson-container {
+            max-width: 860px;
+            margin: 0 auto;
+            padding: 40px 30px;
+            background: #ffffff;
+            min-height: 100vh;
+            box-shadow: 0 0 60px rgba(0, 0, 0, 0.08);
+        }
+
+        /* Brand Header */
+        .brand-header {
+            text-align: center;
+            padding-bottom: 30px;
+            margin-bottom: 35px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .brand-logo {
+            max-width: 220px;
+            height: auto;
+            margin-bottom: 5px;
+        }
+
+        /* Module Header - INDIGO theme for Emotional Integration */
+        .module-header {
+            background: linear-gradient(135deg, #4338ca 0%, #6366f1 100%);
+            padding: 35px 35px 30px;
+            border-radius: 16px;
+            margin-bottom: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .module-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+            transform: translate(100px, -100px);
+        }
+
+        .module-header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, #B8860B, #D4A84B, #B8860B);
+        }
+
+        .module-label {
+            margin: 0;
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.75);
+            text-transform: uppercase;
+            letter-spacing: 2.5px;
+            font-weight: 500;
+        }
+
+        .lesson-title {
+            margin: 10px 0 0 0;
+            font-size: 28px;
+            color: #ffffff;
+            font-weight: 700;
+            line-height: 1.3;
+            position: relative;
+        }
+
+        .lesson-meta {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+            padding-top: 18px;
+            border-top: 1px solid rgba(255, 255, 255, 0.15);
+            flex-wrap: wrap;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.85);
+            background: rgba(255, 255, 255, 0.1);
+            padding: 5px 12px;
+            border-radius: 4px;
+        }
+
+        /* Table of Contents */
+        .toc-box {
+            background: linear-gradient(135deg, #fafafa 0%, #f5f5f5 100%);
+            border-radius: 14px;
+            padding: 24px 28px;
+            margin-bottom: 35px;
+            border: 1px solid #e8e8e8;
+        }
+
+        .toc-box .box-label {
+            font-weight: 600;
+            color: #4338ca;
+            margin: 0 0 18px 0;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .toc-list {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px 24px;
+        }
+
+        .toc-list li {
+            margin: 0;
+        }
+
+        .toc-list a {
+            display: flex;
+            align-items: center;
+            padding: 8px 12px;
+            color: #555;
+            text-decoration: none;
+            font-size: 14px;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+        }
+
+        .toc-list a:hover {
+            background: white;
+            color: #4338ca;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+        }
+
+        .toc-list .section-num {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 26px;
+            height: 26px;
+            background: #4338ca;
+            color: white;
+            font-weight: 600;
+            font-size: 11px;
+            border-radius: 6px;
+            margin-right: 12px;
+            flex-shrink: 0;
+        }
+
+        /* Learning Objectives */
+        .objectives-box {
+            background: #eef2ff;
+            border: 2px solid #6366f1;
+            border-radius: 14px;
+            padding: 30px 35px;
+            margin-bottom: 40px;
+        }
+
+        .objectives-box .box-label {
+            font-weight: 600;
+            color: #4338ca;
+            margin: 0 0 18px 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .objectives-box .box-label::before {
+            content: '🎯';
+            font-size: 18px;
+        }
+
+        .objectives-box ul {
+            margin: 0;
+            padding-left: 22px;
+        }
+
+        .objectives-box li {
+            margin-bottom: 14px;
+            font-size: 16px;
+            line-height: 1.7;
+        }
+
+        /* Key Terms Box */
+        .key-terms-box {
+            background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+            border-radius: 14px;
+            padding: 28px 30px;
+            margin: 40px 0;
+            border: 1px solid #e2e8f0;
+        }
+
+        .key-terms-box .box-label {
+            font-weight: 600;
+            color: #4338ca;
+            margin: 0 0 18px 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .terms-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 16px;
+        }
+
+        .term-item {
+            background: white;
+            padding: 16px 18px;
+            border-radius: 10px;
+            border-left: 4px solid #6366f1;
+        }
+
+        .term-item .term {
+            font-weight: 700;
+            color: #4338ca;
+            font-size: 15px;
+            margin: 0 0 6px 0;
+        }
+
+        .term-item .definition {
+            font-size: 14px;
+            color: #555;
+            margin: 0;
+            line-height: 1.6;
+        }
+
+        /* Section Headings */
+        h2 {
+            font-size: 24px;
+            color: #4338ca;
+            margin: 50px 0 20px 0;
+            font-weight: 600;
+            position: relative;
+            padding-bottom: 12px;
+        }
+
+        h2::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 60px;
+            height: 3px;
+            background: #B8860B;
+        }
+
+        /* Paragraphs */
+        p {
+            font-size: 17px;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        /* Highlights */
+        .highlight {
+            background: linear-gradient(180deg, transparent 60%, #e0e7ff 60%);
+            padding: 0 4px;
+            font-weight: 500;
+        }
+
+        /* Welcome/Intro Box */
+        .welcome-box {
+            background: linear-gradient(135deg, #f5f3ff 0%, #ede9fe 100%);
+            padding: 30px 35px;
+            border-radius: 14px;
+            margin-bottom: 40px;
+            border: 1px solid #ddd6fe;
+        }
+
+        .welcome-box h3 {
+            margin: 0 0 15px 0;
+            font-size: 20px;
+            color: #4338ca;
+            font-weight: 600;
+        }
+
+        /* Case Study Box */
+        .case-study {
+            background: linear-gradient(135deg, #f8f9fb 0%, #f1f5f9 100%);
+            border-radius: 16px;
+            padding: 0;
+            margin: 40px 0;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+        }
+
+        .case-study-header {
+            background: linear-gradient(135deg, #4338ca 0%, #6366f1 100%);
+            padding: 20px 30px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .case-study-icon {
+            width: 45px;
+            height: 45px;
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+        }
+
+        .case-study-header .box-label {
+            font-weight: 600;
+            color: #ffffff;
+            margin: 0;
+            font-size: 16px;
+        }
+
+        .case-study-content {
+            padding: 28px 30px;
+        }
+
+        .patient-profile {
+            display: flex;
+            align-items: center;
+            gap: 18px;
+            padding: 18px 22px;
+            background: white;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            border: 1px solid #e5e5e5;
+        }
+
+        .patient-avatar {
+            width: 55px;
+            height: 55px;
+            background: linear-gradient(135deg, #6366f1, #4338ca);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            color: white;
+        }
+
+        /* Statistics Box */
+        .stats-box {
+            background: linear-gradient(135deg, #4338ca 0%, #6366f1 100%);
+            padding: 40px;
+            border-radius: 16px;
+            margin: 35px 0;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 25px;
+            position: relative;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 42px;
+            font-weight: 700;
+            color: white;
+            line-height: 1;
+            margin-bottom: 8px;
+        }
+
+        .stat-label {
+            font-size: 13px;
+            color: rgba(255, 255, 255, 0.85);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* Comparison Cards */
+        .comparison-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+            margin: 30px 0;
+        }
+
+        .comparison-card {
+            border-radius: 14px;
+            padding: 26px;
+            border-top: 5px solid;
+        }
+
+        .comparison-card.conventional {
+            background: #fef2f2;
+            border-top-color: #ef4444;
+        }
+
+        .comparison-card.functional {
+            background: #f0fdf4;
+            border-top-color: #22c55e;
+        }
+
+        .comparison-card .card-label {
+            font-weight: 600;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            margin: 0 0 14px 0;
+        }
+
+        /* Check Understanding Box */
+        .check-understanding {
+            background: #fffcf5;
+            border: 2px solid #B8860B;
+            border-radius: 16px;
+            padding: 32px;
+            margin: 45px 0;
+        }
+
+        .check-understanding .box-label {
+            font-weight: 600;
+            color: #8B6914;
+            margin: 0 0 8px 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .question-item {
+            background: white;
+            border-radius: 12px;
+            padding: 22px 24px;
+            margin-bottom: 16px;
+            border: 1px solid #e8e4dc;
+            position: relative;
+        }
+
+        .reveal-btn {
+            background: #4338ca;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-size: 14px;
+            cursor: pointer;
+        }
+
+        .answer-text {
+            display: none;
+            font-size: 14px;
+            color: #3730a3;
+            margin: 14px 0 0 0;
+            padding: 14px;
+            background: #eef2ff;
+            border-radius: 8px;
+        }
+
+        .answer-text.show {
+            display: block;
+        }
+
+        /* Takeaways Box */
+        .takeaways-box {
+            background: #f8fafc;
+            padding: 22px 25px;
+            margin-top: 35px;
+            border-radius: 8px;
+            border: 1px solid #cbd5e1;
+        }
+
+        .takeaways-box .box-label {
+            font-weight: 600;
+            color: #4338ca;
+            margin: 0 0 15px 0;
+            font-size: 16px;
+            text-transform: uppercase;
+        }
+
+        /* References */
+        .references-box {
+            margin-top: 50px;
+            padding: 30px;
+            background: #f1f5f9;
+            border-radius: 12px;
+            font-size: 14px;
+        }
+
+        .references-box h4 {
+            margin: 0 0 15px 0;
+            color: #334155;
+        }
+
+        .references-box ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .references-box li {
+            margin-bottom: 10px;
+            color: #64748b;
+        }
+
+        /* Footer */
+        .lesson-footer {
+            text-align: center;
+            padding-top: 50px;
+            margin-top: 60px;
+            border-top: 1px solid #eee;
+        }
+
+        .footer-logo {
+            max-width: 140px;
+            opacity: 0.9;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="lesson-container">
+        <div class="brand-header">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="brand-logo">
+        </div>
+
+        <header class="module-header">
+            <p class="module-label">Module 5: Emotional Integration & Intelligence</p>
+            <h1 class="lesson-title">Lesson 5.2: Moving from Suppression to Expression</h1>
+            <div class="lesson-meta">
+                <span class="meta-item">28 min read</span>
+                <span class="meta-item">Lesson 2 of 6</span>
+            </div>
+        </header>
+
+        <!-- Table of Contents -->
+        <div class="toc-box">
+            <p class="box-label">In This Lesson</p>
+            <ul class="toc-list">
+                <li><a href="#section1"><span class="section-num">1</span>The Cost of Suppression</a></li>
+                <li><a href="#section2"><span class="section-num">2</span>The Amygdala Hijack</a></li>
+                <li><a href="#section3"><span class="section-num">3</span>Affect Labeling Science</a></li>
+                <li><a href="#section4"><span class="section-num">4</span>Suppression vs. Expression</a></li>
+                <li><a href="#section5"><span class="section-num">5</span>The Pennebaker Paradigm</a></li>
+                <li><a href="#section6"><span class="section-num">6</span>Coaching for Expression</a></li>
+            </ul>
+        </div>
+
+        <!-- Learning Objectives -->
+        <div class="objectives-box">
+            <p class="box-label">Learning Objectives</p>
+            <ul>
+                <li>Differentiate between emotional suppression, repression, and healthy integration.</li>
+                <li>Analyze the physiological impact of chronic suppression on the HPA axis and mortality.</li>
+                <li>Apply the "Affect Labeling" technique to down-regulate the amygdala in real-time.</li>
+                <li>Implement expressive writing protocols based on the Pennebaker Paradigm.</li>
+                <li>Identify somatic markers of unexpressed emotion in coaching clients.</li>
+            </ul>
+        </div>
+
+        <!-- Welcome Box -->
+        <div class="welcome-box">
+            <h3>Integrating the 'E' in ASCEND</h3>
+            <p>In the previous lesson, we explored the science of affective states. Now, we move into the core of <span class="highlight">Emotional Integration</span>. For many clients, the default response to "difficult" emotions is suppression—pushing the feeling down to remain "functional." However, the ASCEND Method teaches that emotions are data, not directives. To move toward neuroplastic habituation (the 'N' in ASCEND), we must first clear the physiological backlog created by years of emotional avoidance.</p>
+        </div>
+
+        <!-- Key Terms -->
+        <div class="key-terms-box">
+            <p class="box-label">🧠 Key Terms to Know</p>
+            <div class="terms-grid">
+                <div class="term-item">
+                    <p class="term">Suppression</p>
+                    <p class="definition">The conscious, intentional pushing away of distressing feelings, thoughts, or impulses.</p>
+                </div>
+                <div class="term-item">
+                    <p class="term">Affect Labeling</p>
+                    <p class="definition">The act of putting feelings into words, which has been shown to reduce amygdala activity and increase prefrontal cortex control.</p>
+                </div>
+                <div class="term-item">
+                    <p class="term">Ironic Process Theory</p>
+                    <p class="definition">The psychological phenomenon where the more we try to suppress a thought or emotion, the more persistent it becomes.</p>
+                </div>
+                <div class="term-item">
+                    <p class="term">Somatic Marker</p>
+                    <p class="definition">A physical sensation (like a tight chest or gut "knot") that signals an underlying emotional state.</p>
+                </div>
+            </div>
+        </div>
+
+        <h2 id="section1">The Physiological Cost of Suppression</h2>
+        <p>Emotional suppression is often mistaken for "strength" or "resilience." In reality, suppression is a high-energy metabolic process. When a client suppresses an emotion, they are not deleting the signal; they are simply blocking the output while the <span class="highlight">autonomic nervous system</span> remains in a state of high arousal. This creates a "pressure cooker" effect where the physiological stress response (cortisol and adrenaline) continues to circulate without resolution.</p>
+
+        <p>A landmark 2013 study published in the <i>Journal of Psychosomatic Research</i> followed 796 participants over 12 years. Researchers found that those with high "emotion suppression" scores had a <span class="highlight">35% increased risk of premature mortality</span> from all causes. The chronic elevation of the HPA axis leads to systemic inflammation, impaired immune function, and cardiovascular strain.</p>
+
+        <!-- Statistics Box -->
+        <div class="stats-box">
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <div class="stat-number">35%</div>
+                    <div class="stat-label">Higher Mortality Risk</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">2x</div>
+                    <div class="stat-label">Cortisol Recovery Time</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">47%</div>
+                    <div class="stat-label">Increased Insomnia</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">12yr</div>
+                    <div class="stat-label">Longitudinal Data</div>
+                </div>
+            </div>
+        </div>
+
+        <h2 id="section2">The Amygdala Hijack and Ironic Processes</h2>
+        <p>Why is suppression so counterproductive? Dr. Daniel Wegner’s "Ironic Process Theory" explains that the brain must constantly monitor for the very thing it is trying to suppress to ensure it stays hidden. This "monitoring process" keeps the emotional trigger active in the subconscious. If you tell a client, "Don't think about a white bear," the brain must first represent the white bear to ensure it isn't thinking about it.</p>
+
+        <p>Neurologically, suppression fails because it does not address the <span class="highlight">Amygdala Hijack</span>. While the client may look calm on the outside, fMRI scans show that suppression actually <i>increases</i> amygdala activation. The brain perceives the unexpressed emotion as an unresolved threat, keeping the body in a sympathetic "fight or flight" state.</p>
+
+        <h2 id="section3">The Science of Affect Labeling</h2>
+        <p>The bridge from suppression to integration is a technique called <span class="highlight">Affect Labeling</span>. Research by Matthew Lieberman at UCLA (2007) demonstrated that simply naming an emotion (e.g., "I am feeling frustrated") shifts neural activity from the emotional amygdala to the Right Ventrolateral Prefrontal Cortex (RVLPFC). This is the "brake system" of the brain.</p>
+
+        <div class="comparison-grid">
+            <div class="comparison-card conventional">
+                <p class="card-label">Emotional Suppression</p>
+                <p class="card-text">"I shouldn't feel this way. I'm fine. Just keep working."</p>
+                <p style="font-size: 13px; margin-top: 10px;">Outcome: Increased heart rate, sustained cortisol, eventual burnout.</p>
+            </div>
+            <div class="comparison-card functional">
+                <p class="card-label">Affect Labeling</p>
+                <p class="card-text">"I notice a tightness in my chest and a sense of overwhelm."</p>
+                <p style="font-size: 13px; margin-top: 10px;">Outcome: Decreased amygdala firing, parasympathetic activation.</p>
+            </div>
+        </div>
+
+        <!-- Case Study -->
+        <div class="case-study">
+            <div class="case-study-header">
+                <div class="case-study-icon">👤</div>
+                <div>
+                    <p class="box-label">Case Study: The "Stoic" Executive</p>
+                    <p style="color: rgba(255,255,255,0.8); font-size: 13px; margin: 0;">Addressing Somatic Manifestation of Suppression</p>
+                </div>
+            </div>
+            <div class="case-study-content">
+                <div class="patient-profile">
+                    <div class="patient-avatar">M</div>
+                    <div class="patient-info">
+                        <h4>Michael, 44</h4>
+                        <p>Presenting: Chronic tension headaches, insomnia, and "sudden" irritability.</p>
+                    </div>
+                </div>
+                <p>Michael prided himself on being "unflappable" at work. He viewed emotions as weaknesses that interfered with logic. Using the ASCEND Method, we identified that Michael was a chronic suppressor. He reported no "sadness" or "anger," yet his body was in a constant state of tension.</p>
+                <p><strong>Intervention:</strong> We introduced "Somatic Tracking" (from the 'S' in ASCEND) followed by "Affect Labeling." Instead of saying "I'm stressed," we had him describe the physical sensation: "There is a hot, sharp pressure behind my eyes."</p>
+                <p><strong>Outcome:</strong> Within 4 weeks, Michael’s headaches reduced by 70%. By labeling the "hot pressure" as "unexpressed resentment toward his board of directors," he was able to move into Cognitive Reframing ('C') and resolve the underlying conflict.</p>
+            </div>
+        </div>
+
+        <h2 id="section4">Suppression vs. Healthy Expression</h2>
+        <p>It is vital to clarify that "expression" does not mean "venting" without boundaries. Chronic venting (unstructured catharsis) can actually reinforce negative neural pathways. Healthy expression, or <span class="highlight">Emotional Integration</span>, involves acknowledging the emotion, feeling it somatically, and communicating it in a way that aligns with one's values.</p>
+
+        <table style="width: 100%; border-collapse: collapse; margin: 25px 0; font-size: 15px;">
+            <thead>
+                <tr style="background: #4338ca; color: white;">
+                    <th style="padding: 12px; text-align: left; border: 1px solid #ddd;">Feature</th>
+                    <th style="padding: 12px; text-align: left; border: 1px solid #ddd;">Suppression</th>
+                    <th style="padding: 12px; text-align: left; border: 1px solid #ddd;">Integration (Expression)</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td style="padding: 12px; border: 1px solid #ddd; font-weight: 600;">Neural Impact</td>
+                    <td style="padding: 12px; border: 1px solid #ddd;">High Amygdala activity</td>
+                    <td style="padding: 12px; border: 1px solid #ddd;">Prefrontal Cortex activation</td>
+                </tr>
+                <tr>
+                    <td style="padding: 12px; border: 1px solid #ddd; font-weight: 600;">Physiology</td>
+                    <td style="padding: 12px; border: 1px solid #ddd;">Elevated HR & Blood Pressure</td>
+                    <td style="padding: 12px; border: 1px solid #ddd;">Vagal Tone improvement</td>
+                </tr>
+                <tr>
+                    <td style="padding: 12px; border: 1px solid #ddd; font-weight: 600;">Long-term Effect</td>
+                    <td style="padding: 12px; border: 1px solid #ddd;">Burnout & Somatic Illness</td>
+                    <td style="padding: 12px; border: 1px solid #ddd;">Resilience & Authenticity</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <h2 id="section5">The Pennebaker Paradigm: Expressive Writing</h2>
+        <p>One of the most evidence-based tools for moving from suppression to expression is the "Expressive Writing" protocol developed by Dr. James Pennebaker. In over 300 studies, writing about traumatic or stressful experiences for <span class="highlight">15-20 minutes for four consecutive days</span> has been shown to improve T-lymphocyte cell (immune) function and reduce doctor visits.</p>
+
+        <p>The mechanism is "Linguistic Integration." By putting the chaotic emotional experience into a narrative structure, the brain can finally "file" the memory away. This moves the experience from the implicit, emotional memory system to the explicit, narrative memory system, effectively "turning off" the alarm signal.</p>
+
+        <h2 id="section6">Practical Coaching Strategies</h2>
+        <p>As a Mental Wellness Coach, your role is to create a "container of safety" where the client can stop suppressing. Here are three core strategies to use within the ASCEND framework:</p>
+
+        <div class="principle-card">
+            <p class="principle-title">1. Somatic Inquiry</p>
+            <p class="principle-text">When a client says "I'm fine" but has clenched fists, ask: "If that tension in your hands could speak, what would it be saying right now?" This bypasses the cognitive suppression and accesses the emotional data directly.</p>
+        </div>
+
+        <div class="principle-card">
+            <p class="principle-title">2. The "Both/And" Framework</p>
+            <p class="principle-text">Help clients hold complexity. "I can feel both grateful for my job AND angry about the lack of boundaries." This prevents the suppression of "negative" emotions in favor of "positive" ones (toxic positivity).</p>
+        </div>
+
+        <div class="principle-card">
+            <p class="principle-title">3. Affect Labeling Drills</p>
+            <p class="principle-text">Encourage clients to expand their emotional vocabulary. Instead of "bad," are they feeling: <i>rejected, incompetent, lonely, or overwhelmed?</i> Increased emotional granularity leads to better regulation.</p>
+        </div>
+
+        <!-- Check Understanding -->
+        <div class="check-understanding">
+            <p class="box-label">Check Your Understanding</p>
+            <p class="box-subtitle">Review the core concepts of emotional expression.</p>
+            
+            <div class="question-item">
+                <p class="question-text">According to the "Ironic Process Theory," why does trying to suppress an emotion often make it stronger?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <p class="answer-text">Because the brain must constantly monitor for the suppressed emotion to ensure it is hidden, which keeps the neural pathways associated with that emotion active and prominent in the subconscious.</p>
+            </div>
+
+            <div class="question-item">
+                <p class="question-text">What neurological shift occurs when a client uses "Affect Labeling"?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <p class="answer-text">Activity shifts from the amygdala (the emotional center) to the Right Ventrolateral Prefrontal Cortex (the regulatory center), effectively "braking" the emotional response.</p>
+            </div>
+        </div>
+
+        <!-- Takeaways -->
+        <div class="takeaways-box">
+            <p class="box-label">Key Takeaways</p>
+            <ul>
+                <li>Suppression is a metabolic drain that increases mortality risk by 35% through chronic HPA axis activation.</li>
+                <li>The "White Bear" effect proves that suppression actually keeps the emotional trigger active in the brain.</li>
+                <li>Affect Labeling (naming the emotion) is a primary tool for down-regulating the amygdala.</li>
+                <li>Expressive Writing (Pennebaker Paradigm) helps integrate emotional trauma into narrative memory, boosting immune function.</li>
+                <li>Coaches must look for somatic markers (physical tension) as clues to suppressed emotional data.</li>
+            </ul>
+        </div>
+
+        <!-- References -->
+        <div class="references-box">
+            <h4>References & Further Reading</h4>
+            <ul>
+                <li>Chapman, A. L., et al. (2013). "Emotion suppression and mortality risk over a 12-year follow-up." Journal of Psychosomatic Research.</li>
+                <li>Lieberman, M. D., et al. (2007). "Putting feelings into words: Affect labeling disrupts amygdala activity in response to affective stimuli." Psychological Science.</li>
+                <li>Gross, J. J. (2002). "Emotion regulation: Affective, cognitive, and social consequences." Psychophysiology.</li>
+                <li>Pennebaker, J. W. (1997). "Writing about emotional experiences as a therapeutic process." Psychological Science.</li>
+                <li>Wegner, D. M. (1994). "Ironic processes of mental control." Psychological Review.</li>
+                <li>Kashdan, T. B., et al. (2015). "Emotional differentiation: Harnessing the power of the brain's emotional database." Current Directions in Psychological Science.</li>
+            </ul>
+        </div>
+
+        <div class="lesson-footer">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="footer-logo">
+            <p class="brand">AccrediPro Academy © 2024</p>
+            <p class="copyright">Certified Mental Wellness Coach Program | Emotional Integration Module</p>
+        </div>
+    </div>
+</body>
+
+</html>

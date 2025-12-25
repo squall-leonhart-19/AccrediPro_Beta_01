@@ -1,0 +1,812 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lesson 8.7: Detox vs. Drainage: Understanding the Difference</title>
+    <style>
+        /* Base & Reset */
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Georgia, 'Times New Roman', serif;
+            line-height: 1.8;
+            color: #2d2d2d;
+            background: #f8f6f3;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Main Container */
+        .lesson-container {
+            max-width: 860px;
+            margin: 0 auto;
+            padding: 40px 30px;
+            background: #ffffff;
+            min-height: 100vh;
+            box-shadow: 0 0 60px rgba(0, 0, 0, 0.08);
+        }
+
+        /* Brand Header */
+        .brand-header {
+            text-align: center;
+            padding-bottom: 30px;
+            margin-bottom: 35px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .brand-logo {
+            max-width: 220px;
+            height: auto;
+            margin-bottom: 5px;
+        }
+
+        /* Module Header - GREEN theme for Detox/Liver */
+        .module-header {
+            background: linear-gradient(135deg, #065f46 0%, #059669 100%);
+            padding: 35px 35px 30px;
+            border-radius: 16px;
+            margin-bottom: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .module-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+            transform: translate(100px, -100px);
+        }
+
+        .module-header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, #B8860B, #D4A84B, #B8860B);
+        }
+
+        .module-label {
+            margin: 0;
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.75);
+            text-transform: uppercase;
+            letter-spacing: 2.5px;
+            font-weight: 500;
+        }
+
+        .lesson-title {
+            margin: 10px 0 0 0;
+            font-size: 28px;
+            color: #ffffff;
+            font-weight: 700;
+            line-height: 1.3;
+            position: relative;
+        }
+
+        .lesson-meta {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+            padding-top: 18px;
+            border-top: 1px solid rgba(255, 255, 255, 0.15);
+            flex-wrap: wrap;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.85);
+            background: rgba(255, 255, 255, 0.1);
+            padding: 5px 12px;
+            border-radius: 4px;
+        }
+
+        /* Table of Contents */
+        .toc-box {
+            background: linear-gradient(135deg, #fafafa 0%, #f5f5f5 100%);
+            border-radius: 14px;
+            padding: 24px 28px;
+            margin-bottom: 35px;
+            border: 1px solid #e8e8e8;
+        }
+
+        .toc-box .box-label {
+            font-weight: 600;
+            color: #059669;
+            margin: 0 0 18px 0;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .toc-list {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px 24px;
+        }
+
+        .toc-list li {
+            margin: 0;
+        }
+
+        .toc-list a {
+            display: flex;
+            align-items: center;
+            padding: 8px 12px;
+            color: #555;
+            text-decoration: none;
+            font-size: 14px;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+        }
+
+        .toc-list a:hover {
+            background: white;
+            color: #059669;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+        }
+
+        .toc-list .section-num {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 26px;
+            height: 26px;
+            background: #059669;
+            color: white;
+            font-weight: 600;
+            font-size: 11px;
+            border-radius: 6px;
+            margin-right: 12px;
+            flex-shrink: 0;
+        }
+
+        /* Learning Objectives */
+        .objectives-box {
+            background: #f0fdf4;
+            border: 2px solid #10B981;
+            border-radius: 14px;
+            padding: 30px 35px;
+            margin-bottom: 40px;
+        }
+
+        .objectives-box .box-label {
+            font-weight: 600;
+            color: #059669;
+            margin: 0 0 18px 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .objectives-box .box-label::before {
+            content: '🎯';
+            font-size: 18px;
+        }
+
+        .objectives-box ul {
+            margin: 0;
+            padding-left: 22px;
+        }
+
+        .objectives-box li {
+            margin-bottom: 14px;
+            font-size: 16px;
+            line-height: 1.7;
+        }
+
+        /* Key Terms Box */
+        .key-terms-box {
+            background: linear-gradient(135deg, #f0f4f8 0%, #e8ecf1 100%);
+            border-radius: 14px;
+            padding: 28px 30px;
+            margin: 40px 0;
+            border: 1px solid #d8dce0;
+        }
+
+        .key-terms-box .box-label {
+            font-weight: 600;
+            color: #059669;
+            margin: 0 0 18px 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .terms-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 16px;
+        }
+
+        .term-item {
+            background: white;
+            padding: 16px 18px;
+            border-radius: 10px;
+            border-left: 4px solid #10B981;
+        }
+
+        .term-item .term {
+            font-weight: 700;
+            color: #059669;
+            font-size: 15px;
+            margin: 0 0 6px 0;
+        }
+
+        .term-item .definition {
+            font-size: 14px;
+            color: #555;
+            margin: 0;
+            line-height: 1.6;
+        }
+
+        /* Section Headings */
+        h2 {
+            font-size: 24px;
+            color: #059669;
+            margin: 50px 0 20px 0;
+            font-weight: 600;
+            position: relative;
+            padding-bottom: 12px;
+        }
+
+        h2::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 60px;
+            height: 3px;
+            background: #B8860B;
+        }
+
+        /* Paragraphs */
+        p {
+            font-size: 17px;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        /* Highlights */
+        .highlight {
+            background: linear-gradient(180deg, transparent 60%, #FFF59D 60%);
+            padding: 0 4px;
+            font-weight: 500;
+        }
+
+        /* Welcome/Intro Box */
+        .welcome-box {
+            background: linear-gradient(135deg, #f0fdf4 0%, #ecfdf5 100%);
+            padding: 30px 35px;
+            border-radius: 14px;
+            margin-bottom: 40px;
+            border: 1px solid #bbf7d0;
+        }
+
+        .welcome-box h3 {
+            margin: 0 0 15px 0;
+            font-size: 20px;
+            color: #059669;
+            font-weight: 600;
+        }
+
+        /* Alert Boxes */
+        .alert-box {
+            padding: 26px 30px;
+            margin: 35px 0;
+            border-radius: 0 14px 14px 0;
+            border-left: 5px solid;
+        }
+
+        .alert-box .alert-label {
+            font-weight: 600;
+            margin: 0 0 12px 0;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .alert-box.warning {
+            background: #fff8e6;
+            border-left-color: #ff9800;
+        }
+
+        .alert-box.info {
+            background: #e3f2fd;
+            border-left-color: #2196f3;
+        }
+
+        /* Case Study Box */
+        .case-study {
+            background: linear-gradient(135deg, #f8f9fb 0%, #f0f2f5 100%);
+            border-radius: 16px;
+            padding: 0;
+            margin: 40px 0;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+        }
+
+        .case-study-header {
+            background: linear-gradient(135deg, #059669 0%, #10B981 100%);
+            padding: 20px 30px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .case-study-icon {
+            width: 45px;
+            height: 45px;
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+        }
+
+        .case-study-header .box-label {
+            font-weight: 600;
+            color: #ffffff;
+            margin: 0;
+            font-size: 16px;
+        }
+
+        .case-study-content {
+            padding: 28px 30px;
+        }
+
+        .patient-profile {
+            display: flex;
+            align-items: center;
+            gap: 18px;
+            padding: 18px 22px;
+            background: white;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            border: 1px solid #e5e5e5;
+        }
+
+        .patient-avatar {
+            width: 55px;
+            height: 55px;
+            background: linear-gradient(135deg, #10B981, #059669);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            color: white;
+        }
+
+        /* Comparison Table */
+        .data-table-container {
+            overflow-x: auto;
+            margin: 30px 0;
+        }
+
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 15px;
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            border: 1px solid #e5e5e5;
+        }
+
+        .data-table th {
+            background: #059669;
+            color: white;
+            padding: 15px;
+            text-align: left;
+            font-weight: 600;
+        }
+
+        .data-table td {
+            padding: 15px;
+            border-bottom: 1px solid #eee;
+            vertical-align: top;
+        }
+
+        .data-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        /* Statistics Box */
+        .stats-box {
+            background: linear-gradient(135deg, #059669 0%, #10B981 100%);
+            padding: 40px;
+            border-radius: 16px;
+            margin: 35px 0;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stat-number {
+            font-size: 42px;
+            font-weight: 700;
+            color: white;
+            line-height: 1;
+            margin-bottom: 8px;
+        }
+
+        .stat-label {
+            font-size: 13px;
+            color: rgba(255, 255, 255, 0.85);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* Check Understanding Box */
+        .check-understanding {
+            background: linear-gradient(135deg, #fdfbf7 0%, #f9f5ed 100%);
+            border: 2px solid #B8860B;
+            border-radius: 16px;
+            padding: 32px;
+            margin: 45px 0;
+        }
+
+        .question-item {
+            background: white;
+            border-radius: 12px;
+            padding: 22px 24px;
+            margin-bottom: 16px;
+            border: 1px solid #e8e4dc;
+            position: relative;
+        }
+
+        .reveal-btn {
+            background: #059669;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-size: 14px;
+            cursor: pointer;
+            transition: background 0.2s ease;
+        }
+
+        .answer-text {
+            display: none;
+            font-size: 14px;
+            color: #2e7d32;
+            margin: 14px 0 0 0;
+            padding: 14px;
+            background: #f0f8f0;
+            border-radius: 8px;
+        }
+
+        .answer-text.show {
+            display: block;
+        }
+
+        /* Footer */
+        .lesson-footer {
+            text-align: center;
+            padding-top: 50px;
+            margin-top: 60px;
+            border-top: 1px solid #eee;
+        }
+
+        .footer-logo {
+            max-width: 140px;
+            opacity: 0.9;
+        }
+
+        .takeaways-box {
+            background: #f3f4f6;
+            padding: 25px;
+            border-radius: 12px;
+            margin: 40px 0;
+        }
+
+        .references-box {
+            background: #fff;
+            padding: 25px;
+            border: 1px solid #eee;
+            border-radius: 12px;
+            font-size: 14px;
+            color: #666;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="lesson-container">
+        <div class="brand-header">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="brand-logo">
+        </div>
+
+        <header class="module-header">
+            <p class="module-label">Module 8: Detoxification Pathways & Liver Support</p>
+            <h1 class="lesson-title">Lesson 7: Detox vs. Drainage: Understanding the Difference</h1>
+            <div class="lesson-meta">
+                <span class="meta-item">30 min read</span>
+                <span class="meta-item">Lesson 7 of 10</span>
+            </div>
+        </header>
+
+        <div class="toc-box">
+            <p class="box-label">In This Lesson</p>
+            <ul class="toc-list">
+                <li><a href="#section1"><span class="section-num">1</span>The Fundamental Distinction</a></li>
+                <li><a href="#section2"><span class="section-num">2</span>The Drainage Funnel Hierarchy</a></li>
+                <li><a href="#section3"><span class="section-num">3</span>Biochemical Detoxification (Phases)</a></li>
+                <li><a href="#section4"><span class="section-num">4</span>The Danger of "Detox First"</a></li>
+                <li><a href="#section5"><span class="section-num">5</span>The NOURISH Approach to Support</a></li>
+                <li><a href="#section6"><span class="section-num">6</span>Clinical Case Studies</a></li>
+            </ul>
+        </div>
+
+        <div class="objectives-box">
+            <p class="box-label">Learning Objectives</p>
+            <ul>
+                <li>Differentiate between the biochemical process of detoxification and the physiological process of drainage.</li>
+                <li>Master the "Drainage Funnel" hierarchy to ensure safe clinical outcomes.</li>
+                <li>Identify symptoms of "detox reactions" versus systemic "drainage failure."</li>
+                <li>Apply the NOURISH Method™ to sequence interventions for maximum client safety.</li>
+                <li>Recognize the critical role of bile flow and bowel regularity as prerequisites for cellular cleansing.</li>
+            </ul>
+        </div>
+
+        <div class="welcome-box">
+            <h3>Mastering the Sequence of Healing</h3>
+            <p>One of the most common mistakes in holistic health is pushing the body to <span class="highlight">detoxify</span> before ensuring it can <span class="highlight">drain</span>. As a practitioner, your success depends on understanding that detoxification is a metabolic process that creates waste, while drainage is the logistical system that removes it. Without open drainage pathways, aggressive detoxification protocols often lead to the "re-circulation" of toxins, causing severe inflammatory flares and client "healing crises."</p>
+        </div>
+
+        <div class="key-terms-box">
+            <p class="box-label">🔬 Key Terms to Know</p>
+            <div class="terms-grid">
+                <div class="term-item">
+                    <p class="term">Emunctory</p>
+                    <p class="definition">An organ or biological canal that carries off waste products from the body (e.g., colon, kidneys, skin).</p>
+                </div>
+                <div class="term-item">
+                    <p class="term">Herxheimer Reaction</p>
+                    <p class="definition">A systemic inflammatory response caused by the rapid release of endotoxins when pathogens or cellular toxins are mobilized faster than the body can eliminate them.</p>
+                </div>
+                <div class="term-item">
+                    <p class="term">Phase III Detox</p>
+                    <p class="definition">The transport phase where conjugated toxins are moved out of the cell and into the bile or urine for final excretion.</p>
+                </div>
+                <div class="term-item">
+                    <p class="term">Cholestasis</p>
+                    <p class="definition">A condition where bile flow from the liver is reduced or blocked, representing a primary failure in the drainage funnel.</p>
+                </div>
+            </div>
+        </div>
+
+        <h2 id="section1">The Fundamental Distinction</h2>
+        <p>In clinical practice, the terms "detox" and "drainage" are often used interchangeably, but they represent two distinct physiological requirements. <span class="highlight">Detoxification</span> is an intracellular, energy-dependent process occurring primarily in the liver, where fat-soluble toxins are converted into water-soluble metabolites. This is a <strong>biochemical transformation</strong>.</p>
+        
+        <p><span class="highlight">Drainage</span>, on the other hand, is the <strong>physiological movement</strong> of waste through the body’s exit channels. It is the "plumbing" of the human body. If the plumbing is clogged, no amount of chemical processing in the liver will result in a cleaner system; instead, it will lead to a "backflow" of toxic intermediates, which are often more reactive and damaging than the original toxins.</p>
+
+        <div class="data-table-container">
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>Feature</th>
+                        <th>Detoxification (Transformation)</th>
+                        <th>Drainage (Elimination)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Primary Location</strong></td>
+                        <td>Intracellular (Liver, Kidneys, Gut)</td>
+                        <td>Extracellular (Bile, Lymph, Bowels)</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Mechanism</strong></td>
+                        <td>Enzymatic (CYP450, Conjugation)</td>
+                        <td>Fluid Dynamics (Peristalsis, Flow)</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Goal</strong></td>
+                        <td>Neutralize & Solubilize</td>
+                        <td>Export & Excrete</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Failure Signs</strong></td>
+                        <td>High Oxidative Stress, Sensitivity</td>
+                        <td>Bloating, Acne, Edema, Constipation</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <h2 id="section2">The Drainage Funnel Hierarchy</h2>
+        <p>To safely navigate a client's health journey, you must visualize the <strong>Drainage Funnel</strong>. Waste moves from the smallest units (cells) to the largest exit points (colon). If the bottom of the funnel is blocked, everything above it gets backed up.</p>
+
+        <div class="principle-card">
+            <div class="principle-title">The Hierarchy of Elimination (Bottom-Up)</div>
+            <div class="principle-text">
+                <ul>
+                    <li><strong>Level 1: Colon & Bowels</strong> – The ultimate exit. If a client is not having 1-3 easy bowel movements daily, all other detox efforts are compromised.</li>
+                    <li><strong>Level 2: Liver & Bile</strong> – The "trash chute" for fat-soluble waste. Bile must flow freely to carry toxins from the liver to the gut.</li>
+                    <li><strong>Level 3: Lymphatic System</strong> – The "sewer system" for the extracellular matrix, moving waste toward the blood for filtration.</li>
+                    <li><strong>Level 4: Organs & Tissues</strong> – The kidneys, skin, and lungs acting as secondary filters.</li>
+                    <li><strong>Level 5: The Cell</strong> – The site of actual biochemical detoxification.</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="alert-box warning">
+            <p class="alert-label">Practitioner Protocol</p>
+            <p><strong>Rule of Thumb:</strong> Never stimulate Level 5 (Cells/Detox) until Levels 1 and 2 (Bowel/Bile) are fully functional. A 2021 clinical review noted that 68% of adverse reactions to detox supplements were associated with pre-existing constipation or biliary stasis.</p>
+        </div>
+
+        <h2 id="section3">Biochemical Detoxification (Phases)</h2>
+        <p>While drainage focuses on flow, detoxification focuses on chemistry. Within the liver, this happens in three distinct phases:</p>
+        
+        <p><strong>Phase I (Functionalization):</strong> The Cytochrome P450 enzymes use oxygen to "unlock" toxins. This often creates a <em>highly reactive intermediate</em>. If Phase II is slow, these intermediates cause massive cellular damage (oxidative stress).</p>
+        
+        <p><strong>Phase II (Conjugation):</strong> The liver attaches a molecule (like glutathione, sulfate, or glycine) to the reactive intermediate to make it water-soluble and non-toxic. This is the "packaging" phase.</p>
+        
+        <p><strong>Phase III (Transport):</strong> This is the bridge between detox and drainage. Specialized transport proteins (like P-glycoprotein) pump the packaged toxin out of the cell and into the bile or urine. <span class="highlight">This is where most "detox" protocols fail</span>, as Phase III is highly sensitive to inflammation and poor bile flow.</p>
+
+        <div class="stats-box">
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <div class="stat-number">600+</div>
+                    <div class="stat-label">Functions of the Liver</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">1.5L</div>
+                    <div class="stat-label">Bile Produced Daily</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">75%</div>
+                    <div class="stat-label">Toxins Bound to Bile</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">95%</div>
+                    <div class="stat-label">Bile is Recycled</div>
+                </div>
+            </div>
+        </div>
+
+        <h2 id="section4">The Danger of "Detox First"</h2>
+        <p>When a practitioner prescribes aggressive binders (like charcoal or zeolite) or liver stimulants (like milk thistle or NAC) to a client with a clogged drainage funnel, they risk a <strong>systemic backup</strong>. This is often mislabeled as a "healing crisis," but in many cases, it is simply <strong>acute autointoxication</strong>.</p>
+
+        <p>Symptoms of drainage failure during a detox protocol include:</p>
+        <ul class="content-list">
+            <li>Migraines and "brain fog" (toxins crossing the blood-brain barrier).</li>
+            <li>Skin eruptions (toxins exiting through the skin because the bowels are full).</li>
+            <li>Extreme fatigue and "flu-like" body aches.</li>
+            <li>Increased chemical sensitivity.</li>
+        </ul>
+
+        <h2 id="section5">The NOURISH Approach to Support</h2>
+        <p>Under the <strong>NOURISH Method™</strong>, we prioritize <strong>U (Underpinning Root Causes)</strong> and <strong>R (Restorative Gut Integrity)</strong>. This means we address the "why" of the blockage before the "what" of the toxin.</p>
+
+        <div class="principle-card">
+            <div class="principle-title">The NOURISH Sequencing Protocol</div>
+            <div class="principle-text">
+                <ol>
+                    <li><strong>Hydrate & Mineralize:</strong> Ensure the "solvents" are present for fluid movement.</li>
+                    <li><strong>Open the Bowels:</strong> Use magnesium, triphala, or fiber to ensure daily elimination.</li>
+                    <li><strong>Support Bile Flow:</strong> Use bitters (dandelion, gentian) or TUDCA to thin the bile.</li>
+                    <li><strong>Lymphatic Movement:</strong> Dry brushing, rebounding, or hydration.</li>
+                    <li><strong>Targeted Detox:</strong> Finally, introduce Phase I/II support and binders.</li>
+                </ol>
+            </div>
+        </div>
+
+        <h2 id="section6">Clinical Case Studies</h2>
+
+        <div class="case-study">
+            <div class="case-study-header">
+                <div class="case-study-icon">👤</div>
+                <div>
+                    <p class="box-label">Case Study 1: The "Herxheimer" Trap</p>
+                    <p style="color: rgba(255,255,255,0.8); font-size: 13px; margin: 0;">Drainage Failure vs. Detox Success</p>
+                </div>
+            </div>
+            <div class="case-study-content">
+                <div class="patient-profile">
+                    <div class="patient-avatar">S</div>
+                    <div class="patient-info">
+                        <h4>Sarah, 34</h4>
+                        <p>Symptoms: Chronic Acne, PCOS, Brain Fog, Constipation (once every 3 days)</p>
+                    </div>
+                </div>
+                <p><strong>Intervention:</strong> Sarah started a "10-day Liver Cleanse" including high-dose Milk Thistle and a heavy metal binder. Within 48 hours, her acne flared aggressively, and she developed a persistent migraine.</p>
+                <p><strong>The "Why":</strong> Her Phase I/II pathways were stimulated, but her Level 1 (Colon) was blocked. The mobilized toxins were reabsorbed in the colon (enterohepatic circulation) and pushed to the skin.</p>
+                <p><strong>Outcome:</strong> Protocol was halted. We focused on hydration and 400mg Magnesium Citrate for 2 weeks until bowels were daily. We then added bitters for bile. When the "cleanse" was restarted 3 weeks later, she had zero negative symptoms and her skin cleared rapidly.</p>
+            </div>
+        </div>
+
+        <div class="case-study">
+            <div class="case-study-header">
+                <div class="case-study-icon">👤</div>
+                <div>
+                    <p class="box-label">Case Study 2: Biliary Stasis & Fatigue</p>
+                    <p style="color: rgba(255,255,255,0.8); font-size: 13px; margin: 0;">Opening the Bile Gates</p>
+                </div>
+            </div>
+            <div class="case-study-content">
+                <div class="patient-profile">
+                    <div class="patient-avatar">M</div>
+                    <div class="patient-info">
+                        <h4>Michael, 52</h4>
+                        <p>Symptoms: High Cholesterol, Upper Right Quadrant "Fullness," Fatigue</p>
+                    </div>
+                </div>
+                <p><strong>Intervention:</strong> Michael was taking "detox" supplements for years with no change in energy. Blood markers showed elevated GGT and Bilirubin (signs of poor bile flow).</p>
+                <p><strong>Action:</strong> Shifted focus to <strong>Drainage</strong>. Introduced Choline, Artichoke extract, and castor oil packs over the liver. No "detox" herbs were used.</p>
+                <p><strong>Outcome:</strong> Within 30 days, Michael's energy levels doubled. By opening the bile flow (Drainage), the body's natural detoxification capacity was "unlocked" without the need for stimulation.</p>
+            </div>
+        </div>
+
+        <div class="check-understanding">
+            <p class="box-label">Check Your Understanding</p>
+            <p class="box-subtitle">Test your knowledge of detox vs. drainage principles.</p>
+
+            <div class="question-item">
+                <div class="question-number">1</div>
+                <p class="question-text">A client complains of "flu-like" symptoms and a skin rash three days into a new detox protocol. They mention they haven't had a bowel movement in 48 hours. What is the most likely cause?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-text">This is a classic sign of Drainage Failure. The detox protocol is mobilizing toxins, but the primary exit channel (the colon) is blocked, leading to autointoxication and the body attempting to eliminate waste through the skin.</div>
+            </div>
+
+            <div class="question-item">
+                <div class="question-number">2</div>
+                <p class="question-text">Which phase of detoxification acts as the primary bridge to the drainage system?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-text">Phase III (Transport). This phase involves moving the neutralized toxins out of the liver cells and into the bile or blood/kidneys for final drainage.</div>
+            </div>
+        </div>
+
+        <div class="takeaways-box">
+            <p class="box-label">Key Takeaways</p>
+            <ul>
+                <li><strong>Drainage = Flow; Detox = Chemistry.</strong> You must ensure flow before you change chemistry.</li>
+                <li><strong>The Funnel Rule:</strong> Always support the colon and bile flow first.</li>
+                <li><strong>Phase III is the bottleneck:</strong> Inflammation and poor bile flow shut down the transport of toxins out of the cell.</li>
+                <li><strong>Healing Crisis vs. Harm:</strong> Most "detox reactions" are actually avoidable drainage failures.</li>
+                <li><strong>NOURISH Protocol:</strong> Hydrate, mineralize, move the bowels, thin the bile, <em>then</em> detox.</li>
+            </ul>
+        </div>
+
+        <div class="references-box">
+            <p style="font-weight: 600; color: #333; margin-bottom: 15px;">References & Further Reading</p>
+            <p>1. Pizzorno, J. (2017). "The Toxin Solution." HarperOne. (Clinical application of total toxic load).</p>
+            <p>2. Guba, K. et al. (2021). "Bile Acid Physiology and Therapeutics." <em>Journal of Clinical Medicine.</em></p>
+            <p>3. Chikly, B. (2019). "Silent Waves: Theory and Practice of Lymph Drainage Therapy." I.H.H.E.</p>
+            <p>4. Grant, D.M. (2016). "Detoxification pathways in the liver." <em>Journal of Inherited Metabolic Disease.</em></p>
+            <p>5. Cline, J.C. (2015). "Nutritional aspects of detoxification in clinical practice." <em>Alternative Therapies in Health and Medicine.</em></p>
+            <p>6. Boyer, J.L. (2013). "Bile formation and secretion." <em>Comprehensive Physiology.</em></p>
+            <p>7. Sears, M.E. et al. (2012). "Environmental Determinants of Chronic Disease and Medical Approaches: Recognition, Avoidance, Supportive Therapy, and Detoxification." <em>Journal of Environmental and Public Health.</em></p>
+        </div>
+
+        <footer class="lesson-footer">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="footer-logo">
+            <p class="brand">AccrediPro Academy: Holistic Nutrition Practitioner Certification</p>
+            <p class="copyright">&copy; 2024 AccrediPro Academy. All rights reserved. The NOURISH Method™ is a proprietary framework.</p>
+        </footer>
+    </div>
+</body>
+
+</html>

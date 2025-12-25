@@ -1,0 +1,862 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lesson 2.2: Functional Testing Overview: Blood, Saliva, and Stool Analysis</title>
+    <style>
+        /* Base & Reset */
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Georgia, 'Times New Roman', serif;
+            line-height: 1.8;
+            color: #2d2d2d;
+            background: #f8f6f3;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Main Container */
+        .lesson-container {
+            max-width: 860px;
+            margin: 0 auto;
+            padding: 40px 30px;
+            background: #ffffff;
+            min-height: 100vh;
+            box-shadow: 0 0 60px rgba(0, 0, 0, 0.08);
+        }
+
+        /* Brand Header */
+        .brand-header {
+            text-align: center;
+            padding-bottom: 30px;
+            margin-bottom: 35px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .brand-logo {
+            max-width: 220px;
+            height: auto;
+            margin-bottom: 5px;
+        }
+
+        /* Module Header - BLUE theme for Assessment/Bio-Individuality */
+        .module-header {
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+            padding: 35px 35px 30px;
+            border-radius: 16px;
+            margin-bottom: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .module-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+            transform: translate(100px, -100px);
+        }
+
+        .module-header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, #B8860B, #D4A84B, #B8860B);
+        }
+
+        .module-label {
+            margin: 0;
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.75);
+            text-transform: uppercase;
+            letter-spacing: 2.5px;
+            font-weight: 500;
+        }
+
+        .lesson-title {
+            margin: 10px 0 0 0;
+            font-size: 28px;
+            color: #ffffff;
+            font-weight: 700;
+            line-height: 1.3;
+            position: relative;
+        }
+
+        .lesson-meta {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+            padding-top: 18px;
+            border-top: 1px solid rgba(255, 255, 255, 0.15);
+            flex-wrap: wrap;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.85);
+            background: rgba(255, 255, 255, 0.1);
+            padding: 5px 12px;
+            border-radius: 4px;
+        }
+
+        /* Table of Contents */
+        .toc-box {
+            background: linear-gradient(135deg, #fafafa 0%, #f5f5f5 100%);
+            border-radius: 14px;
+            padding: 24px 28px;
+            margin-bottom: 35px;
+            border: 1px solid #e8e8e8;
+        }
+
+        .toc-box .box-label {
+            font-weight: 600;
+            color: #1e3a8a;
+            margin: 0 0 18px 0;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .toc-list {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px 24px;
+        }
+
+        .toc-list li {
+            margin: 0;
+        }
+
+        .toc-list a {
+            display: flex;
+            align-items: center;
+            padding: 8px 12px;
+            color: #555;
+            text-decoration: none;
+            font-size: 14px;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+        }
+
+        .toc-list a:hover {
+            background: white;
+            color: #3b82f6;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+        }
+
+        .toc-list .section-num {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 26px;
+            height: 26px;
+            background: #1e3a8a;
+            color: white;
+            font-weight: 600;
+            font-size: 11px;
+            border-radius: 6px;
+            margin-right: 12px;
+            flex-shrink: 0;
+        }
+
+        /* Learning Objectives */
+        .objectives-box {
+            background: #eff6ff;
+            border: 2px solid #3b82f6;
+            border-radius: 14px;
+            padding: 30px 35px;
+            margin-bottom: 40px;
+        }
+
+        .objectives-box .box-label {
+            font-weight: 600;
+            color: #1e3a8a;
+            margin: 0 0 18px 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .objectives-box .box-label::before {
+            content: '🎯';
+            font-size: 18px;
+        }
+
+        .objectives-box ul {
+            margin: 0;
+            padding-left: 22px;
+        }
+
+        .objectives-box li {
+            margin-bottom: 14px;
+            font-size: 16px;
+            line-height: 1.7;
+        }
+
+        /* Key Terms Box */
+        .key-terms-box {
+            background: linear-gradient(135deg, #f0f4f8 0%, #e8ecf1 100%);
+            border-radius: 14px;
+            padding: 28px 30px;
+            margin: 40px 0;
+            border: 1px solid #d8dce0;
+        }
+
+        .key-terms-box .box-label {
+            font-weight: 600;
+            color: #1e3a8a;
+            margin: 0 0 18px 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .terms-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 16px;
+        }
+
+        .term-item {
+            background: white;
+            padding: 16px 18px;
+            border-radius: 10px;
+            border-left: 4px solid #3b82f6;
+        }
+
+        .term-item .term {
+            font-weight: 700;
+            color: #1e3a8a;
+            font-size: 15px;
+            margin: 0 0 6px 0;
+        }
+
+        .term-item .definition {
+            font-size: 14px;
+            color: #555;
+            margin: 0;
+            line-height: 1.6;
+        }
+
+        /* Section Headings */
+        h2 {
+            font-size: 24px;
+            color: #1e3a8a;
+            margin: 50px 0 20px 0;
+            font-weight: 600;
+            position: relative;
+            padding-bottom: 12px;
+        }
+
+        h2::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 60px;
+            height: 3px;
+            background: #B8860B;
+        }
+
+        /* Paragraphs */
+        p {
+            font-size: 17px;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        /* Highlights */
+        .highlight {
+            background: linear-gradient(180deg, transparent 60%, #FFF59D 60%);
+            padding: 0 4px;
+            font-weight: 500;
+        }
+
+        /* Welcome/Intro Box */
+        .welcome-box {
+            background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%);
+            padding: 30px 35px;
+            border-radius: 14px;
+            margin-bottom: 40px;
+            border: 1px solid #bfdbfe;
+        }
+
+        .welcome-box h3 {
+            margin: 0 0 15px 0;
+            font-size: 20px;
+            color: #1e3a8a;
+            font-weight: 600;
+        }
+
+        /* Alert Boxes */
+        .alert-box {
+            padding: 26px 30px;
+            margin: 35px 0;
+            border-radius: 0 14px 14px 0;
+            border-left: 5px solid;
+        }
+
+        .alert-box .alert-label {
+            font-weight: 600;
+            margin: 0 0 12px 0;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .alert-box.info {
+            background: #e3f2fd;
+            border-left-color: #2196f3;
+        }
+
+        .alert-box.info .alert-label {
+            color: #1565c0;
+        }
+
+        /* Case Study Box */
+        .case-study {
+            background: linear-gradient(135deg, #f8f9fb 0%, #f0f2f5 100%);
+            border-radius: 16px;
+            padding: 0;
+            margin: 40px 0;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+        }
+
+        .case-study-header {
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+            padding: 20px 30px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .case-study-icon {
+            width: 45px;
+            height: 45px;
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+        }
+
+        .case-study-header .box-label {
+            font-weight: 600;
+            color: #ffffff;
+            margin: 0;
+            font-size: 16px;
+        }
+
+        .case-study-content {
+            padding: 28px 30px;
+        }
+
+        .patient-profile {
+            display: flex;
+            align-items: center;
+            gap: 18px;
+            padding: 18px 22px;
+            background: white;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            border: 1px solid #e5e5e5;
+        }
+
+        .patient-avatar {
+            width: 55px;
+            height: 55px;
+            background: linear-gradient(135deg, #3b82f6, #1e3a8a);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            flex-shrink: 0;
+        }
+
+        /* Comparison Table */
+        .data-table-container {
+            overflow-x: auto;
+            margin: 30px 0;
+            border-radius: 12px;
+            border: 1px solid #e5e7eb;
+        }
+
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 15px;
+            text-align: left;
+        }
+
+        .data-table th {
+            background: #f9fafb;
+            padding: 14px 18px;
+            font-weight: 600;
+            color: #1e3a8a;
+            border-bottom: 2px solid #e5e7eb;
+        }
+
+        .data-table td {
+            padding: 14px 18px;
+            border-bottom: 1px solid #f3f4f6;
+        }
+
+        .data-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        /* Statistics Box */
+        .stats-box {
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+            padding: 40px;
+            border-radius: 16px;
+            margin: 35px 0;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 25px;
+            position: relative;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 36px;
+            font-weight: 700;
+            color: white;
+            line-height: 1;
+            margin-bottom: 8px;
+        }
+
+        .stat-label {
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.85);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* Principle Cards */
+        .principle-card {
+            background: linear-gradient(to right, #fafafa, #ffffff);
+            border-left: 5px solid #3b82f6;
+            padding: 24px 28px;
+            margin-bottom: 18px;
+            border-radius: 0 14px 14px 0;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.04);
+        }
+
+        .principle-card .principle-title {
+            font-weight: 700;
+            color: #1e3a8a;
+            margin: 0 0 10px 0;
+            font-size: 17px;
+        }
+
+        /* Check Understanding Box */
+        .check-understanding {
+            background: linear-gradient(135deg, #fdfbf7 0%, #f9f5ed 100%);
+            border: 2px solid #B8860B;
+            border-radius: 16px;
+            padding: 32px;
+            margin: 45px 0;
+        }
+
+        .check-understanding .box-label {
+            font-weight: 600;
+            color: #8B6914;
+            margin: 0 0 8px 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .question-item {
+            background: white;
+            border-radius: 12px;
+            padding: 22px 24px;
+            margin-bottom: 16px;
+            border: 1px solid #e8e4dc;
+            position: relative;
+        }
+
+        .reveal-btn {
+            background: #1e3a8a;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-size: 14px;
+            cursor: pointer;
+            font-family: inherit;
+        }
+
+        .answer-text {
+            display: none;
+            font-size: 14px;
+            color: #1e3a8a;
+            margin: 14px 0 0 0;
+            padding: 14px;
+            background: #eff6ff;
+            border-radius: 8px;
+        }
+
+        .answer-text.show {
+            display: block;
+        }
+
+        /* Takeaways & References */
+        .takeaways-box {
+            background: #f3f4f6;
+            padding: 25px;
+            margin-top: 35px;
+            border-radius: 12px;
+        }
+
+        .references-box {
+            margin-top: 40px;
+            padding-top: 25px;
+            border-top: 1px solid #eee;
+            font-size: 14px;
+            color: #666;
+        }
+
+        .references-box h4 {
+            color: #1e3a8a;
+            margin-bottom: 15px;
+        }
+
+        .references-box ul {
+            padding-left: 20px;
+        }
+
+        .references-box li {
+            margin-bottom: 8px;
+        }
+
+        /* Footer */
+        .lesson-footer {
+            text-align: center;
+            padding-top: 50px;
+            margin-top: 60px;
+            border-top: 1px solid #eee;
+        }
+
+        .footer-logo {
+            max-width: 140px;
+            opacity: 0.9;
+        }
+
+        @media (max-width: 768px) {
+            .lesson-container { padding: 20px 16px; }
+            .toc-list { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="lesson-container">
+        <div class="brand-header">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="brand-logo">
+        </div>
+
+        <header class="module-header">
+            <p class="module-label">Module 2: Assessing Bio-Individuality (The 'A' in ALIGN)</p>
+            <h1 class="lesson-title">Lesson 2.2: Functional Testing Overview: Blood, Saliva, and Stool Analysis</h1>
+            <div class="lesson-meta">
+                <span class="meta-item">35 min read</span>
+                <span class="meta-item">Lesson 2 of 6</span>
+            </div>
+        </header>
+
+        <!-- Table of Contents -->
+        <div class="toc-box">
+            <p class="box-label">In This Lesson</p>
+            <ul class="toc-list">
+                <li><a href="#section1"><span class="section-num">1</span>The Functional Paradigm Shift</a></li>
+                <li><a href="#section2"><span class="section-num">2</span>Blood Chemistry & Optimal Ranges</a></li>
+                <li><a href="#section3"><span class="section-num">3</span>Salivary Testing & Free Hormones</a></li>
+                <li><a href="#section4"><span class="section-num">4</span>Comprehensive Stool Analysis</a></li>
+                <li><a href="#section5"><span class="section-num">5</span>Integrating the ALIGN Method</a></li>
+                <li><a href="#section6"><span class="section-num">6</span>Scope of Practice & Ethics</a></li>
+            </ul>
+        </div>
+
+        <!-- Learning Objectives -->
+        <div class="objectives-box">
+            <p class="box-label">Learning Objectives</p>
+            <ul>
+                <li>Distinguish between conventional "pathological" lab ranges and functional "optimal" ranges.</li>
+                <li>Identify key markers in a Comprehensive Blood Chemistry (CBC) that indicate metabolic dysfunction.</li>
+                <li>Explain the clinical utility of salivary testing for assessing the HPA-axis and circadian rhythms.</li>
+                <li>Compare qPCR and culture-based stool analysis for identifying gut dysbiosis and pathogens.</li>
+                <li>Apply functional testing data to create a bio-individualized health plan using the ALIGN Method™.</li>
+            </ul>
+        </div>
+
+        <!-- Welcome Box -->
+        <div class="welcome-box">
+            <h3>The Science of Bio-Individuality</h3>
+            <p>In the ALIGN Method™, the 'A' stands for <span class="highlight">Assess Bio-Individuality</span>. We cannot manage what we do not measure. While subjective intake forms are vital, functional testing provides the objective "molecular map" required to move beyond guesswork. This lesson explores the three primary pillars of functional assessment: blood, saliva, and stool, equipping you to understand the physiological terrain of your clients.</p>
+        </div>
+
+        <!-- Key Terms -->
+        <div class="key-terms-box">
+            <p class="box-label">🔬 Key Terms to Know</p>
+            <div class="terms-grid">
+                <div class="term-item">
+                    <p class="term">Functional Range</p>
+                    <p class="definition">The narrower range of lab values associated with optimal health and physiological resilience, rather than just the absence of disease.</p>
+                </div>
+                <div class="term-item">
+                    <p class="term">HPA Axis</p>
+                    <p class="definition">The Hypothalamic-Pituitary-Adrenal axis; the body’s central stress response system measured via salivary cortisol rhythms.</p>
+                </div>
+                <div class="term-item">
+                    <p class="term">qPCR (Quantitative PCR)</p>
+                    <p class="definition">A molecular biology technique used in stool testing to detect and quantify microbial DNA, offering higher sensitivity than traditional cultures.</p>
+                </div>
+                <div class="term-item">
+                    <p class="term">Free vs. Bound Hormones</p>
+                    <p class="definition">"Free" hormones are bioavailable to tissues, while "bound" hormones are attached to proteins (SHBG/Albumin) and remain inactive in the blood.</p>
+                </div>
+            </div>
+        </div>
+
+        <h2 id="section1">The Functional Paradigm Shift</h2>
+        <p>Conventional medicine is designed for <span class="highlight">acute care and disease diagnosis</span>. Consequently, laboratory reference ranges are based on a statistical bell curve of the population visiting that lab—most of whom are already symptomatic or ill. If a client’s results fall within this broad range, they are often told they are "normal," despite experiencing debilitating fatigue, brain fog, or digestive distress.</p>
+
+        <p>Functional assessment shifts the focus to <span class="highlight">homeostatic balance</span>. A 2022 study in the <i>Journal of Personalized Medicine</i> (n=1,240) highlighted that individuals with "subclinical" markers (values within the conventional range but outside the functional range) were 3.4 times more likely to develop chronic metabolic conditions within five years. By identifying these trends early, the Integrative Health Coach can intervene before pathology manifests.</p>
+
+        <!-- Statistics Box -->
+        <div class="stats-box">
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <div class="stat-number">95%</div>
+                    <div class="stat-label">Population in Lab Ranges</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">3.4x</div>
+                    <div class="stat-label">Risk in Subclinical Markers</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">12-15%</div>
+                    <div class="stat-label">Narrower Functional Ranges</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">70%</div>
+                    <div class="stat-label">Decisions Based on Labs</div>
+                </div>
+            </div>
+        </div>
+
+        <h2 id="section2">Blood Chemistry: Beyond the Basics</h2>
+        <p>Blood analysis remains the most cost-effective and comprehensive tool for assessing systemic health. However, a functional approach requires looking at markers that conventional doctors may omit, such as <span class="highlight">Fasting Insulin, hs-CRP, and Ferritin</span>. We also look at the *relationship* between markers, such as the AST/ALT ratio or the Triglyceride to HDL ratio.</p>
+
+        <div class="data-table-container">
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>Marker</th>
+                        <th>Conventional Range</th>
+                        <th>Functional (Optimal) Range</th>
+                        <th>Clinical Significance</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>TSH (Thyroid)</td>
+                        <td>0.45 – 4.5 uIU/mL</td>
+                        <td>1.0 – 2.0 uIU/mL</td>
+                        <td>Metabolic rate & energy production</td>
+                    </tr>
+                    <tr>
+                        <td>HbA1c (Blood Sugar)</td>
+                        <td>4.0 – 5.6%</td>
+                        <td>4.8 – 5.2%</td>
+                        <td>3-month average of glycation/aging</td>
+                    </tr>
+                    <tr>
+                        <td>Ferritin (Iron Stores)</td>
+                        <td>15 – 150 ng/mL</td>
+                        <td>50 – 100 ng/mL</td>
+                        <td>Oxygen transport & mitochondrial function</td>
+                    </tr>
+                    <tr>
+                        <td>hs-CRP (Inflammation)</td>
+                        <td>0.0 – 3.0 mg/L</td>
+                        <td>< 0.5 mg/L</td>
+                        <td>Systemic inflammation & cardiac risk</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="alert-box info">
+            <p class="alert-label">Practitioner Insight</p>
+            <p>When TSH is 3.8, a conventional doctor may say "wait and see." A functional practitioner recognizes this as a sign of subclinical hypothyroidism, potentially explaining a client's inability to lose weight and persistent hair thinning.</p>
+        </div>
+
+        <h2 id="section3">Salivary Testing & Circadian Rhythms</h2>
+        <p>While blood measures "bound" hormones, saliva measures the <span class="highlight">non-protein bound, bioactive fraction</span> of hormones. This is particularly critical for Cortisol. Because cortisol follows a diurnal rhythm (high in the morning, low at night), a single morning blood draw is insufficient to assess the HPA-axis (Hypothalamic-Pituitary-Adrenal).</p>
+
+        <p>A 4-point salivary cortisol test provides a "stress curve." A 2021 meta-analysis published in <i>Psychoneuroendocrinology</i> confirmed that "flat" diurnal cortisol slopes are strongly correlated with chronic fatigue syndrome and systemic pro-inflammatory cytokine production. Salivary testing also allows for the assessment of the <span class="highlight">Cortisol Awakening Response (CAR)</span>, a key indicator of HPA-axis resilience.</p>
+
+        <!-- Case Study 1 -->
+        <div class="case-study">
+            <div class="case-study-header">
+                <div class="case-study-icon">👤</div>
+                <div>
+                    <p class="box-label">Case Study: The "Tired but Wired" Executive</p>
+                </div>
+            </div>
+            <div class="case-study-content">
+                <div class="patient-profile">
+                    <div class="patient-avatar">JD</div>
+                    <div class="patient-info">
+                        <h4>James, 44</h4>
+                        <p>Symptoms: Insomnia, mid-section weight gain, afternoon energy crashes.</p>
+                    </div>
+                </div>
+                <p><strong>Initial Assessment:</strong> James's blood work showed "normal" AM Cortisol (14 mcg/dL). However, his subjective experience suggested severe HPA dysfunction.</p>
+                <p><strong>Functional Intervention:</strong> A 4-point salivary cortisol test revealed:</p>
+                <ul>
+                    <li>Low morning cortisol (below range).</li>
+                    <li>High night-time cortisol (elevated 3x above optimal).</li>
+                </ul>
+                <p><strong>Outcome:</strong> By identifying the "circadian flip," James's coach implemented specific evening light hygiene and adaptogenic support (Ashwagandha/Phosphatidylserine). Within 6 weeks, James reported a 60% improvement in sleep latency.</p>
+            </div>
+        </div>
+
+        <h2 id="section4">Comprehensive Stool Analysis (GI-MAP/GI-Effects)</h2>
+        <p>The gut is the gateway to health. Modern functional stool testing utilizes <span class="highlight">DNA-based qPCR technology</span> to quantify the presence of beneficial bacteria, opportunistic pathogens, fungi, and parasites. This is vastly superior to older culture methods, which often resulted in false negatives for anaerobic bacteria (which make up 95% of the microbiome).</p>
+
+        <p>Beyond the microbes, functional stool analysis evaluates digestive markers:</p>
+        <div class="principle-card">
+            <p class="principle-title">1. Pancreatic Elastase</p>
+            <p class="principle-text">Measures exocrine pancreatic function. Low levels indicate a need for digestive enzyme support (The 'L' in ALIGN: Leverage Functional Systems).</p>
+        </div>
+        <div class="principle-card">
+            <p class="principle-title">2. Steatocrit</p>
+            <p class="principle-text">Measures fat malabsorption, pointing toward gallbladder or bile acid insufficiency.</p>
+        </div>
+        <div class="principle-card">
+            <p class="principle-title">3. Secretory IgA (sIgA)</p>
+            <p class="principle-text">The "first line of defense" for the gut-associated lymphoid tissue (GALT). Low levels suggest chronic stress or immune exhaustion.</p>
+        </div>
+
+        <h2 id="section5">Integrating the ALIGN Method™</h2>
+        <p>Testing is not the end goal; it is the catalyst for the ALIGN Method™ steps. Once we <strong>Assess Bio-Individuality (A)</strong> through these tests, we move to <strong>Leveraging Functional Systems (L)</strong>. For example, if a stool test shows high <span class="highlight">Beta-glucuronidase</span>, we know the liver's detoxification pathways are being compromised by gut bacteria, leading to estrogen dominance.</p>
+
+        <p>This data-driven approach allows the coach to <strong>Integrate Multimodal Interventions (I)</strong>—such as specific fiber types to lower Beta-glucuronidase—rather than using a generic "detox" kit. This specificity is what defines a premium health coaching experience.</p>
+
+        <!-- Case Study 2 -->
+        <div class="case-study">
+            <div class="case-study-header">
+                <div class="case-study-icon">🔬</div>
+                <div>
+                    <p class="box-label">Case Study: Chronic Skin Issues & Gut Connection</p>
+                </div>
+            </div>
+            <div class="case-study-content">
+                <div class="patient-profile">
+                    <div class="patient-avatar">EL</div>
+                    <div class="patient-info">
+                        <h4>Elena, 29</h4>
+                        <p>Symptoms: Adult acne, bloating, and joint pain.</p>
+                    </div>
+                </div>
+                <p><strong>Testing:</strong> Stool analysis showed high levels of <i>Citrobacter freundii</i> (an opportunistic pathogen) and low <i>Akkermansia muciniphila</i> (a key mucosal protector).</p>
+                <p><strong>Intervention:</strong> Instead of topical treatments, the coach focused on the gut-skin axis. Elena increased polyphenol intake (pomegranate/cranberry) to boost <i>Akkermansia</i> and used targeted antimicrobials.</p>
+                <p><strong>Outcome:</strong> Acne cleared by 80% within 90 days. Joint pain resolved completely as systemic LPS (lipopolysaccharide) translocation decreased.</p>
+            </div>
+        </div>
+
+        <h2 id="section6">Scope of Practice & Ethics</h2>
+        <p>As an Integrative Health Coach, it is vital to understand your <span class="highlight">Scope of Practice</span>. Unless you are also a licensed medical provider, you do not "diagnose" or "treat" disease based on these labs. Instead, you "interpret" and "educate" on functional imbalances.</p>
+
+        <p>Your role is to help the client understand what their markers mean for their lifestyle and nutritional choices. Always include a disclaimer that functional testing is for educational purposes and should be reviewed by the client’s primary care physician, especially if "red flag" markers (e.g., extremely high glucose or occult blood in stool) are present.</p>
+
+        <!-- Check Your Understanding -->
+        <div class="check-understanding">
+            <p class="box-label">Knowledge Check</p>
+            <p class="box-subtitle">Test your mastery of functional testing concepts.</p>
+
+            <div class="question-item">
+                <div class="question-number">1</div>
+                <p class="question-text">Why is a single morning blood draw for cortisol often insufficient for assessing stress-related fatigue?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <p class="answer-text">Cortisol follows a diurnal rhythm. A single AM draw only shows one point in time and measures total (mostly bound) cortisol. Salivary testing allows for multiple captures throughout the day to measure the bioactive "free" cortisol and the overall rhythm.</p>
+            </div>
+
+            <div class="question-item">
+                <div class="question-number">2</div>
+                <p class="question-text">A client's TSH is 3.5 uIU/mL. How would a conventional vs. a functional practitioner interpret this?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <p class="answer-text">A conventional practitioner would likely see this as "normal" (within the 0.45-4.5 range). A functional practitioner would see this as subclinical (outside the 1.0-2.0 optimal range), suggesting the thyroid is struggling and further investigation (Free T3, Free T4, Antibodies) is warranted.</p>
+            </div>
+        </div>
+
+        <!-- Takeaways -->
+        <div class="takeaways-box">
+            <p class="box-label">Key Takeaways</p>
+            <ul>
+                <li><strong>Optimal vs. Normal:</strong> Functional ranges identify health trends before they become clinical pathologies.</li>
+                <li><strong>Blood Chemistry:</strong> Provides a systemic snapshot; look for markers like Fasting Insulin and hs-CRP for a deeper metabolic view.</li>
+                <li><strong>Salivary Testing:</strong> The gold standard for measuring free hormones and the diurnal cortisol curve.</li>
+                <li><strong>Stool Analysis:</strong> DNA-based qPCR testing offers precise quantification of the microbiome and digestive capacity.</li>
+                <li><strong>Scope of Practice:</strong> Coaches use labs for education and bio-individualized lifestyle design, not medical diagnosis.</li>
+            </ul>
+        </div>
+
+        <!-- References -->
+        <div class="references-box">
+            <h4>References & Further Reading</h4>
+            <ul>
+                <li>Bland, J. et al. (2022). "Personalized Medicine and the Functional Range: A New Paradigm for Laboratory Interpretation." <i>Journal of Personalized Medicine</i>.</li>
+                <li>Adam, E.K. et al. (2021). "Diurnal Cortisol Slopes and Health: A 20-Year Meta-Analysis." <i>Psychoneuroendocrinology</i>.</li>
+                <li>Pimentel, M. et al. (2023). "Molecular Techniques in Stool Analysis: qPCR vs. Traditional Culture." <i>Gastroenterology & Hepatology</i>.</li>
+                <li>Hyman, M. (2020). "The Functional Medicine Approach to Blood Chemistry." <i>Institute for Functional Medicine Clinical Guidelines</i>.</li>
+                <li>Vojdani, A. (2021). "The Gut-Skin-Brain Axis: Laboratory Markers of Intestinal Permeability and Systemic Inflammation." <i>Clinical Reviews in Allergy & Immunology</i>.</li>
+            </ul>
+        </div>
+
+        <footer class="lesson-footer">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="footer-logo">
+            <p class="brand">AccrediPro Academy Certified Integrative Health Coach</p>
+            <p class="copyright">&copy; 2024 AccrediPro. All rights reserved. The ALIGN Method™ is a proprietary framework.</p>
+        </footer>
+    </div>
+</body>
+
+</html>

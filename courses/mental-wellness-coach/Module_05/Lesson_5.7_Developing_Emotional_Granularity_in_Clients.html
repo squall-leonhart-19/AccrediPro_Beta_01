@@ -1,0 +1,762 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lesson 5.7: Developing Emotional Granularity in Clients</title>
+    <style>
+        /* Base & Reset */
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Georgia, 'Times New Roman', serif;
+            line-height: 1.8;
+            color: #2d2d2d;
+            background: #f8f6f3;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Main Container */
+        .lesson-container {
+            max-width: 860px;
+            margin: 0 auto;
+            padding: 40px 30px;
+            background: #ffffff;
+            min-height: 100vh;
+            box-shadow: 0 0 60px rgba(0, 0, 0, 0.08);
+        }
+
+        /* Brand Header */
+        .brand-header {
+            text-align: center;
+            padding-bottom: 30px;
+            margin-bottom: 35px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .brand-logo {
+            max-width: 220px;
+            height: auto;
+            margin-bottom: 5px;
+        }
+
+        /* Module Header - BLUE/PURPLE theme for Emotional Integration */
+        .module-header {
+            background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
+            padding: 35px 35px 30px;
+            border-radius: 16px;
+            margin-bottom: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .module-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+            transform: translate(100px, -100px);
+        }
+
+        .module-header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, #B8860B, #D4A84B, #B8860B);
+        }
+
+        .module-label {
+            margin: 0;
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.75);
+            text-transform: uppercase;
+            letter-spacing: 2.5px;
+            font-weight: 500;
+        }
+
+        .lesson-title {
+            margin: 10px 0 0 0;
+            font-size: 28px;
+            color: #ffffff;
+            font-weight: 700;
+            line-height: 1.3;
+            position: relative;
+        }
+
+        .lesson-meta {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+            padding-top: 18px;
+            border-top: 1px solid rgba(255, 255, 255, 0.15);
+            flex-wrap: wrap;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.85);
+            background: rgba(255, 255, 255, 0.1);
+            padding: 5px 12px;
+            border-radius: 4px;
+        }
+
+        /* Table of Contents */
+        .toc-box {
+            background: linear-gradient(135deg, #fafafa 0%, #f5f5f5 100%);
+            border-radius: 14px;
+            padding: 24px 28px;
+            margin-bottom: 35px;
+            border: 1px solid #e8e8e8;
+        }
+
+        .toc-box .box-label {
+            font-weight: 600;
+            color: #4f46e5;
+            margin: 0 0 18px 0;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .toc-list {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px 24px;
+        }
+
+        .toc-list li {
+            margin: 0;
+        }
+
+        .toc-list a {
+            display: flex;
+            align-items: center;
+            padding: 8px 12px;
+            color: #555;
+            text-decoration: none;
+            font-size: 14px;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+        }
+
+        .toc-list a:hover {
+            background: white;
+            color: #4f46e5;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+        }
+
+        .toc-list .section-num {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 26px;
+            height: 26px;
+            background: #4f46e5;
+            color: white;
+            font-weight: 600;
+            font-size: 11px;
+            border-radius: 6px;
+            margin-right: 12px;
+            flex-shrink: 0;
+        }
+
+        /* Learning Objectives */
+        .objectives-box {
+            background: #f5f3ff;
+            border: 2px solid #7c3aed;
+            border-radius: 14px;
+            padding: 30px 35px;
+            margin-bottom: 40px;
+        }
+
+        .objectives-box .box-label {
+            font-weight: 600;
+            color: #4f46e5;
+            margin: 0 0 18px 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .objectives-box .box-label::before {
+            content: '🎯';
+            font-size: 18px;
+        }
+
+        .objectives-box ul {
+            margin: 0;
+            padding-left: 22px;
+        }
+
+        .objectives-box li {
+            margin-bottom: 14px;
+            font-size: 16px;
+            line-height: 1.7;
+        }
+
+        /* Key Terms Box */
+        .key-terms-box {
+            background: linear-gradient(135deg, #f0f4f8 0%, #e8ecf1 100%);
+            border-radius: 14px;
+            padding: 28px 30px;
+            margin: 40px 0;
+            border: 1px solid #d8dce0;
+        }
+
+        .key-terms-box .box-label {
+            font-weight: 600;
+            color: #4f46e5;
+            margin: 0 0 18px 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .terms-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 16px;
+        }
+
+        .term-item {
+            background: white;
+            padding: 16px 18px;
+            border-radius: 10px;
+            border-left: 4px solid #7c3aed;
+        }
+
+        .term-item .term {
+            font-weight: 700;
+            color: #4f46e5;
+            font-size: 15px;
+            margin: 0 0 6px 0;
+        }
+
+        .term-item .definition {
+            font-size: 14px;
+            color: #555;
+            margin: 0;
+            line-height: 1.6;
+        }
+
+        /* Section Headings */
+        h2 {
+            font-size: 24px;
+            color: #4f46e5;
+            margin: 50px 0 20px 0;
+            font-weight: 600;
+            position: relative;
+            padding-bottom: 12px;
+        }
+
+        h2::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 60px;
+            height: 3px;
+            background: #B8860B;
+        }
+
+        /* Paragraphs */
+        p {
+            font-size: 17px;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        /* Highlights */
+        .highlight {
+            background: linear-gradient(180deg, transparent 60%, #e0e7ff 60%);
+            padding: 0 4px;
+            font-weight: 500;
+        }
+
+        /* Welcome/Intro Box */
+        .welcome-box {
+            background: linear-gradient(135deg, #f5f3ff 0%, #ede9fe 100%);
+            padding: 30px 35px;
+            border-radius: 14px;
+            margin-bottom: 40px;
+            border: 1px solid #ddd6fe;
+        }
+
+        .welcome-box h3 {
+            margin: 0 0 15px 0;
+            font-size: 20px;
+            color: #4f46e5;
+            font-weight: 600;
+        }
+
+        /* Case Study Box */
+        .case-study {
+            background: linear-gradient(135deg, #f8f9fb 0%, #f0f2f5 100%);
+            border-radius: 16px;
+            padding: 0;
+            margin: 40px 0;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+        }
+
+        .case-study-header {
+            background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
+            padding: 20px 30px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .case-study-icon {
+            width: 45px;
+            height: 45px;
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+        }
+
+        .case-study-header .box-label {
+            font-weight: 600;
+            color: #ffffff;
+            margin: 0;
+            font-size: 16px;
+        }
+
+        .case-study-content {
+            padding: 28px 30px;
+        }
+
+        .patient-profile {
+            display: flex;
+            align-items: center;
+            gap: 18px;
+            padding: 18px 22px;
+            background: white;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            border: 1px solid #e5e5e5;
+        }
+
+        .patient-avatar {
+            width: 55px;
+            height: 55px;
+            background: linear-gradient(135deg, #7c3aed, #4f46e5);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            color: white;
+        }
+
+        /* Statistics Box */
+        .stats-box {
+            background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
+            padding: 40px;
+            border-radius: 16px;
+            margin: 35px 0;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 25px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 42px;
+            font-weight: 700;
+            color: white;
+            line-height: 1;
+            margin-bottom: 8px;
+        }
+
+        .stat-label {
+            font-size: 13px;
+            color: rgba(255, 255, 255, 0.85);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* Data Table */
+        .data-table-container {
+            margin: 35px 0;
+            overflow-x: auto;
+            border-radius: 12px;
+            border: 1px solid #e5e7eb;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 15px;
+            background: white;
+        }
+
+        th {
+            background: #f9fafb;
+            padding: 15px;
+            text-align: left;
+            font-weight: 600;
+            color: #4f46e5;
+            border-bottom: 2px solid #e5e7eb;
+        }
+
+        td {
+            padding: 15px;
+            border-bottom: 1px solid #e5e7eb;
+            color: #4b5563;
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        /* Check Understanding Box */
+        .check-understanding {
+            background: linear-gradient(135deg, #fdfbf7 0%, #f9f5ed 100%);
+            border: 2px solid #B8860B;
+            border-radius: 16px;
+            padding: 32px;
+            margin: 45px 0;
+        }
+
+        .question-item {
+            background: white;
+            border-radius: 12px;
+            padding: 22px 24px;
+            margin-bottom: 16px;
+            border: 1px solid #e8e4dc;
+            position: relative;
+        }
+
+        .reveal-btn {
+            background: #4f46e5;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+
+        .answer-text {
+            display: none;
+            padding: 14px;
+            background: #f0fdf4;
+            border-radius: 8px;
+            margin-top: 10px;
+            color: #166534;
+        }
+
+        .answer-text.show {
+            display: block;
+        }
+
+        /* Takeaways & References */
+        .takeaways-box {
+            background: #f3f4f6;
+            padding: 25px;
+            border-radius: 12px;
+            margin-top: 40px;
+        }
+
+        .references-box {
+            margin-top: 40px;
+            padding-top: 25px;
+            border-top: 1px solid #eee;
+            font-size: 14px;
+            color: #666;
+        }
+
+        .lesson-footer {
+            text-align: center;
+            padding: 40px 0;
+            border-top: 1px solid #eee;
+            margin-top: 40px;
+        }
+
+        /* Alert Box */
+        .alert-box.info {
+            background: #eff6ff;
+            border-left: 5px solid #3b82f6;
+            padding: 20px;
+            margin: 25px 0;
+            border-radius: 0 10px 10px 0;
+        }
+
+        .alert-label {
+            font-weight: bold;
+            display: block;
+            margin-bottom: 5px;
+            font-size: 12px;
+            text-transform: uppercase;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="lesson-container">
+        <div class="brand-header">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="brand-logo">
+        </div>
+
+        <header class="module-header">
+            <p class="module-label">Module 5: Emotional Integration & Intelligence</p>
+            <h1 class="lesson-title">Lesson 5.7: Developing Emotional Granularity in Clients</h1>
+            <div class="lesson-meta">
+                <span class="meta-item">28 min read</span>
+                <span class="meta-item">Lesson 7 of 9</span>
+            </div>
+        </header>
+
+        <div class="toc-box">
+            <p class="box-label">In This Lesson</p>
+            <ul class="toc-list">
+                <li><a href="#section1"><span class="section-num">1</span>The Science of Precision</a></li>
+                <li><a href="#section2"><span class="section-num">2</span>The Prediction Engine Brain</a></li>
+                <li><a href="#section3"><span class="section-num">3</span>Granularity vs. Global Affect</a></li>
+                <li><a href="#section4"><span class="section-num">4</span>Biological Advantages</a></li>
+                <li><a href="#section5"><span class="section-num">5</span>Coaching Strategies</a></li>
+                <li><a href="#section6"><span class="section-num">6</span>Interoceptive Foundations</a></li>
+            </ul>
+        </div>
+
+        <div class="objectives-box">
+            <p class="box-label">Learning Objectives</p>
+            <ul>
+                <li>Define emotional granularity and distinguish it from general emotional awareness.</li>
+                <li>Explain the neuroscience of how the brain constructs emotions through categorization.</li>
+                <li>Identify the clinical correlation between high granularity and improved autonomic regulation.</li>
+                <li>Apply the "Nuance Audit" technique to expand a client's emotional vocabulary.</li>
+                <li>Analyze case studies to recognize the shift from global affect to granular precision.</li>
+            </ul>
+        </div>
+
+        <div class="welcome-box">
+            <h3>Precision as a Tool for Healing</h3>
+            <p>In the ASCEND Method™, the <strong>'E' for Emotional Integration</strong> is not just about "feeling your feelings." It is about the sophisticated ability to translate raw physiological sensations into precise linguistic concepts. This skill, known as <span class="highlight">emotional granularity</span>, acts as a surgical tool for the mind. When a client can distinguish between "frustration," "indignation," and "impatience," they provide their brain with a specific roadmap for regulation. Without precision, the brain is forced to use a "sledgehammer" approach to regulation, often leading to systemic overwhelm.</p>
+        </div>
+
+        <div class="key-terms-box">
+            <p class="box-label">🧠 Key Terms to Know</p>
+            <div class="terms-grid">
+                <div class="term-item">
+                    <p class="term">Emotional Granularity</p>
+                    <p class="definition">The ability to experience and label emotions in a highly specific and differentiated manner.</p>
+                </div>
+                <div class="term-item">
+                    <p class="term">Valence</p>
+                    <p class="definition">The basic "pleasantness" or "unpleasantness" of an emotional state, regardless of the specific label.</p>
+                </div>
+                <div class="term-item">
+                    <p class="term">Affect</p>
+                    <p class="definition">The raw, physiological state of the body (arousal and valence) before it is interpreted as a specific emotion.</p>
+                </div>
+                <div class="term-item">
+                    <p class="term">Interoception</p>
+                    <p class="definition">The sense of the internal physiological state of the body, including heartbeat, respiration, and hunger.</p>
+                </div>
+            </div>
+        </div>
+
+        <h2 id="section1">The Science of Precision</h2>
+        <p>For decades, psychology viewed emotions as "reactions" to the world—pre-programmed circuits that "fire" when triggered. However, groundbreaking research by Dr. Lisa Feldman Barrett and others suggests that emotions are <strong>constructed</strong>. Your brain is a prediction engine that takes raw sensory data (affect) and uses past experiences to categorize that data into an emotion.</p>
+        
+        <p>Emotional granularity is the measure of how many "categories" your brain has at its disposal. A client with low granularity might only have two categories: "feeling good" and "feeling bad." A client with high granularity has hundreds. <span class="highlight">A 2015 study published in <i>Psychological Science</i></span> found that individuals who could differentiate their negative emotions were 40% less likely to resort to binge drinking or aggression when under high stress (n=106).</p>
+
+        <div class="stats-box">
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <div class="stat-number">40%</div>
+                    <div class="stat-label">Reduction in Maladaptive Coping</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">2x</div>
+                    <div class="stat-label">Better Stress Recovery</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">30%</div>
+                    <div class="stat-label">Lower Inflammation Levels</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">High</div>
+                    <div class="stat-label">Vagal Tone Correlation</div>
+                </div>
+            </div>
+        </div>
+
+        <h2 id="section2">The Prediction Engine Brain</h2>
+        <p>When a client experiences a racing heart, sweaty palms, and a tight chest, their brain asks: "What is this most like?" If the client's vocabulary is limited, the brain might categorize this as "anxiety." Once the label "anxiety" is applied, the brain initiates the "anxiety protocol"—releasing more cortisol and preparing for threat.</p>
+        
+        <p>However, if the client has high granularity, they might recognize these sensations as "anticipation" or "exhilaration." By applying a different label, the brain's <strong>allostatic load</strong> (the cost of maintaining stability) changes. Precision allows the brain to select the most efficient physiological response. In the ASCEND framework, we view words as "conceptual tools" that help the brain manage the body's budget.</p>
+
+        <h2 id="section3">Granularity vs. Global Affect</h2>
+        <p>As a Mental Wellness Coach, you will often encounter clients stuck in "Global Affect." They feel "off," "bad," or "weird." Your goal is to move them toward specificity. The following table illustrates the shift from vague affect to granular emotion.</p>
+
+        <div class="data-table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Global Affect (Vague)</th>
+                        <th>Granular Emotion (Precise)</th>
+                        <th>Coaching Insight / Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>"I'm just stressed."</td>
+                        <td>"I feel <strong>undervalued</strong> and <strong>overwhelmed</strong> by the deadline."</td>
+                        <td>Shift from general calming to specific boundary setting.</td>
+                    </tr>
+                    <tr>
+                        <td>"I feel bad."</td>
+                        <td>"I feel <strong>melancholy</strong>—a soft, reflective sadness."</td>
+                        <td>Allows for self-compassion rather than "fixing" the mood.</td>
+                    </tr>
+                    <tr>
+                        <td>"I'm angry."</td>
+                        <td>"I feel <strong>indignant</strong> because a core value was violated."</td>
+                        <td>Identifies the "data" behind the anger (the value).</td>
+                    </tr>
+                    <tr>
+                        <td>"I'm anxious."</td>
+                        <td>"I am <strong>uncertain</strong> about the outcome of tomorrow's meeting."</td>
+                        <td>Focuses the brain on information-gathering rather than threat-response.</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <h2 id="section4">Biological Advantages</h2>
+        <p>Emotional granularity isn't just a linguistic exercise; it has profound biological implications. Research utilizing fMRI imaging shows that the act of labeling an emotion with precision (affect labeling) reduces activity in the <strong>amygdala</strong> and increases activity in the <strong>right ventrolateral prefrontal cortex (rvlPFC)</strong>. This effectively "down-regulates" the survival brain.</p>
+        
+        <p>Furthermore, individuals with high granularity demonstrate greater <strong>vagal tone</strong>—a marker of the parasympathetic nervous system's ability to "brake" the stress response. By teaching granularity, you are literally training the client's nervous system to be more resilient.</p>
+
+        <div class="alert-box info">
+            <span class="alert-label">Coach's Note</span>
+            <p>Always remember: The goal of granularity is not to "think your way out" of a feeling, but to provide the brain with the correct concept to <strong>process</strong> the feeling. Integration requires accurate identification.</p>
+        </div>
+
+        <h2 id="section5">Coaching Strategies for Expansion</h2>
+        <p>How do we develop this in clients? We use the <strong>"Nuance Audit"</strong> and the <strong>"Emotional Compass"</strong>. These tools move beyond the basic "how do you feel?" question.</p>
+
+        <div class="case-study">
+            <div class="case-study-header">
+                <div class="case-study-icon">👤</div>
+                <div>
+                    <p class="box-label">Case Study: The "Anxious" Executive</p>
+                    <p style="color: rgba(255,255,255,0.8); margin:0; font-size:13px;">Applying Granularity to Chronic Stress</p>
+                </div>
+            </div>
+            <div class="case-study-content">
+                <div class="patient-profile">
+                    <div class="patient-avatar">M</div>
+                    <div class="patient-info">
+                        <h4>Marcus, 44</h4>
+                        <p>Presenting: "Constant anxiety," sleep disturbances, and irritability.</p>
+                    </div>
+                </div>
+                <p>Marcus initially described his state as "100% anxious, all the time." Using the ASCEND 'E' framework, we conducted a <strong>Nuance Audit</strong> over two weeks.</p>
+                <ul>
+                    <li><strong>Initial State:</strong> Marcus labeled every uncomfortable sensation as "anxiety."</li>
+                    <li><strong>Intervention:</strong> We introduced an emotion wheel and practiced "Affect Labeling" in the moment. Marcus was tasked with finding <i>three different words</i> for his "anxiety" each day.</li>
+                    <li><strong>The Discovery:</strong> Marcus realized that 40% of his "anxiety" was actually <strong>resentment</strong> toward a business partner, and 30% was <strong>physical fatigue</strong> mislabeled as mental distress.</li>
+                    <li><strong>Outcome:</strong> Once Marcus identified "resentment," he could take action (Cognitive Reframing & Communication). His general anxiety scores dropped by 55% within 4 weeks.</li>
+                </ul>
+            </div>
+        </div>
+
+        <h2 id="section6">Interoceptive Foundations</h2>
+        <p>Granularity begins in the body. If a client is disconnected from their internal sensations (low interoception), they cannot provide the brain with the data needed for precise labeling. This is why <strong>Somatic Regulation (the 'S' in ASCEND)</strong> must precede or accompany Emotional Integration.</p>
+        
+        <p>We use the <strong>S.I.F.T. Method</strong> to bridge the gap:</p>
+        <ul class="content-list">
+            <li><strong>Sensation:</strong> What do you feel in your body? (Tightness, heat, buzzing?)</li>
+            <li><strong>Image:</strong> Does this feeling have a color, shape, or metaphor?</li>
+            <li><strong>Feeling:</strong> What is the specific word for this? (Use an emotion wheel).</li>
+            <li><strong>Thought:</strong> What is the story the brain is telling about this feeling?</li>
+        </ul>
+
+        <div class="check-understanding">
+            <p class="box-label">Check Your Understanding</p>
+            <p class="box-subtitle">Test your knowledge of emotional granularity concepts.</p>
+            
+            <div class="question-item">
+                <div class="question-number">1</div>
+                <p class="question-text">According to the Theory of Constructed Emotion, what is the brain's primary role in experiencing an emotion?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-text">The brain acts as a prediction engine, using past experiences and linguistic concepts to categorize raw physiological affect into a specific emotion.</div>
+            </div>
+
+            <div class="question-item">
+                <div class="question-number">2</div>
+                <p class="question-text">How does "affect labeling" impact the brain's physiology during a stress response?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-text">It reduces activity in the amygdala (threat center) and increases activity in the prefrontal cortex (regulation center), leading to more efficient autonomic regulation.</div>
+            </div>
+        </div>
+
+        <div class="takeaways-box">
+            <p class="box-label">Key Takeaways</p>
+            <ul>
+                <li><strong>Granularity is a Skill:</strong> It can be trained through vocabulary expansion and interoceptive awareness.</li>
+                <li><strong>Precision = Regulation:</strong> The more specific the label, the more precise the brain's "budgeting" response.</li>
+                <li><strong>Beyond Valence:</strong> Moving clients past "good/bad" into nuanced states like "wistful" or "indignant" reduces allostatic load.</li>
+                <li><strong>Biological Markers:</strong> High granularity is correlated with higher vagal tone and lower systemic inflammation.</li>
+                <li><strong>Integration Tool:</strong> In the ASCEND method, granularity is the bridge between somatic sensation and cognitive reframing.</li>
+            </ul>
+        </div>
+
+        <div class="references-box">
+            <p style="font-weight: 600; color: #333; margin-bottom: 10px;">References & Further Reading</p>
+            <ul style="list-style: none; padding: 0;">
+                <li>Barrett, L. F. (2017). "How Emotions Are Made: The Secret Life of the Brain." Houghton Mifflin Harcourt.</li>
+                <li>Kashdan, T. B. et al. (2015). "Unpacking Emotion Differentiation: Transforming Unpleasant Experience into States of Knowledge." Psychological Science.</li>
+                <li>Smidt, K. E., & Suvak, M. K. (2015). "A Brief Report on the Differential Impacts of Negative Emotion Differentiation." Emotion Review.</li>
+                <li>Lieberman, M. D. et al. (2007). "Putting Feelings Into Words: Affect Labeling Disrupts Amygdala Activity in Response to Affective Stimuli." Psychological Science.</li>
+                <li>Gendron, M. et al. (2014). "Cultural Variation in Emotion Perception Is Real: A Response to Sauter et al." Psychological Science.</li>
+                <li>Lindquist, K. A. et al. (2012). "The Role of Language in Emotion: Predictions from a Constructivist Account." Frontiers in Psychology.</li>
+            </ul>
+        </div>
+
+        <footer class="lesson-footer">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="footer-logo">
+            <p class="brand">AccrediPro Academy | Mental Wellness Coach Certification</p>
+            <p class="copyright">&copy; 2024 AccrediPro. All rights reserved. The ASCEND Method™ is a proprietary framework.</p>
+        </footer>
+    </div>
+</body>
+
+</html>

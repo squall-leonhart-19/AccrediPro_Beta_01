@@ -1,0 +1,844 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lesson 0.2: How This Program Works</title>
+    <style>
+        /* Base & Reset */
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Georgia, 'Times New Roman', serif;
+            line-height: 1.8;
+            color: #2d2d2d;
+            background: #f8f6f3;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Main Container */
+        .lesson-container {
+            max-width: 860px;
+            margin: 0 auto;
+            padding: 40px 30px;
+            background: #ffffff;
+            min-height: 100vh;
+            box-shadow: 0 0 60px rgba(0, 0, 0, 0.08);
+        }
+
+        /* Brand Header */
+        .brand-header {
+            text-align: center;
+            padding-bottom: 30px;
+            margin-bottom: 35px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .brand-logo {
+            max-width: 220px;
+            height: auto;
+            margin-bottom: 5px;
+        }
+
+        /* Module Header */
+        .module-header {
+            background: linear-gradient(135deg, #059669 0%, #10B981 100%);
+            padding: 35px 35px 30px;
+            border-radius: 16px;
+            margin-bottom: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .module-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+            transform: translate(100px, -100px);
+        }
+
+        .module-header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, #B8860B, #D4A84B, #B8860B);
+        }
+
+        .module-label {
+            margin: 0;
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.75);
+            text-transform: uppercase;
+            letter-spacing: 2.5px;
+            font-weight: 500;
+        }
+
+        .lesson-title {
+            margin: 10px 0 0 0;
+            font-size: 28px;
+            color: #ffffff;
+            font-weight: 700;
+            line-height: 1.3;
+        }
+
+        .lesson-meta {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+            padding-top: 18px;
+            border-top: 1px solid rgba(255, 255, 255, 0.15);
+            flex-wrap: wrap;
+        }
+
+        .meta-item {
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.85);
+            background: rgba(255, 255, 255, 0.1);
+            padding: 5px 12px;
+            border-radius: 4px;
+        }
+
+        /* Learning Objectives */
+        .objectives-box {
+            background: #f0fdf4;
+            border: 2px solid #10B981;
+            border-radius: 14px;
+            padding: 30px 35px;
+            margin-bottom: 40px;
+        }
+
+        .objectives-box .box-label {
+            font-weight: 600;
+            color: #059669;
+            margin: 0 0 18px 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .objectives-box .box-label::before {
+            content: '🎯';
+            font-size: 18px;
+        }
+
+        .objectives-box ul {
+            margin: 0;
+            padding-left: 22px;
+        }
+
+        .objectives-box li {
+            margin-bottom: 14px;
+            font-size: 16px;
+            line-height: 1.7;
+        }
+
+        /* Section Headings */
+        h2 {
+            font-size: 24px;
+            color: #059669;
+            margin: 50px 0 20px 0;
+            font-weight: 600;
+            position: relative;
+            padding-bottom: 12px;
+        }
+
+        h2::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 60px;
+            height: 3px;
+            background: #B8860B;
+        }
+
+        h3 {
+            font-size: 20px;
+            color: #333;
+            margin: 35px 0 15px 0;
+            font-weight: 600;
+        }
+
+        /* Paragraphs */
+        p {
+            font-size: 17px;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        /* Content Lists */
+        .content-list {
+            font-size: 17px;
+            margin: 20px 0;
+            padding-left: 24px;
+        }
+
+        .content-list li {
+            margin-bottom: 14px;
+            line-height: 1.7;
+        }
+
+        /* Feature Cards */
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin: 30px 0;
+        }
+
+        .feature-card {
+            background: white;
+            border: 2px solid #e5e5e5;
+            border-radius: 14px;
+            padding: 25px;
+            transition: all 0.3s ease;
+        }
+
+        .feature-card:hover {
+            border-color: #10B981;
+            box-shadow: 0 8px 25px rgba(16, 185, 129, 0.15);
+            transform: translateY(-3px);
+        }
+
+        .feature-card .icon {
+            font-size: 40px;
+            margin-bottom: 15px;
+        }
+
+        .feature-card h3 {
+            font-size: 18px;
+            color: #333;
+            margin: 0 0 10px 0;
+            font-weight: 600;
+        }
+
+        .feature-card p {
+            font-size: 14px;
+            color: #666;
+            margin: 0;
+            line-height: 1.6;
+        }
+
+        /* Step Cards */
+        .step-card {
+            display: flex;
+            gap: 20px;
+            align-items: flex-start;
+            margin-bottom: 25px;
+            padding: 25px;
+            background: #f8fafb;
+            border-radius: 14px;
+            border: 1px solid #e5e5e5;
+        }
+
+        .step-number {
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, #059669, #10B981);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 20px;
+            flex-shrink: 0;
+        }
+
+        .step-content h4 {
+            margin: 0 0 8px 0;
+            font-size: 17px;
+            color: #333;
+            font-weight: 600;
+        }
+
+        .step-content p {
+            margin: 0;
+            font-size: 15px;
+            color: #555;
+            line-height: 1.7;
+        }
+
+        /* Alert Boxes */
+        .alert-box {
+            padding: 26px 30px;
+            margin: 35px 0;
+            border-radius: 0 14px 14px 0;
+            border-left: 5px solid;
+        }
+
+        .alert-box .alert-label {
+            font-weight: 600;
+            margin: 0 0 12px 0;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .alert-box p:last-child {
+            margin: 0;
+            font-size: 16px;
+            line-height: 1.7;
+        }
+
+        .alert-box.success {
+            background: #f0f8f0;
+            border-left-color: #4caf50;
+        }
+
+        .alert-box.success .alert-label {
+            color: #2e7d32;
+        }
+
+        .alert-box.info {
+            background: #e3f2fd;
+            border-left-color: #2196f3;
+        }
+
+        .alert-box.info .alert-label {
+            color: #1565c0;
+        }
+
+        .alert-box.warning {
+            background: #fff8e6;
+            border-left-color: #ff9800;
+        }
+
+        .alert-box.warning .alert-label {
+            color: #e65100;
+        }
+
+        /* Time Commitment Box */
+        .time-box {
+            background: linear-gradient(135deg, #059669 0%, #10B981 100%);
+            padding: 35px;
+            border-radius: 16px;
+            margin: 35px 0;
+            color: white;
+        }
+
+        .time-box h3 {
+            color: white;
+            margin: 0 0 20px 0;
+            font-size: 20px;
+        }
+
+        .time-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+            text-align: center;
+        }
+
+        .time-item .number {
+            font-size: 36px;
+            font-weight: 700;
+            margin-bottom: 5px;
+        }
+
+        .time-item .label {
+            font-size: 13px;
+            opacity: 0.9;
+        }
+
+        /* Platform Features */
+        .platform-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 16px;
+            margin: 30px 0;
+        }
+
+        .platform-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 16px 20px;
+            background: #f8fafb;
+            border-radius: 10px;
+            border: 1px solid #e5e5e5;
+        }
+
+        .platform-item .check {
+            color: #10B981;
+            font-size: 20px;
+        }
+
+        .platform-item span {
+            font-size: 15px;
+            color: #333;
+        }
+
+        /* Key Takeaways */
+        .takeaways-box {
+            background: linear-gradient(135deg, #f5f5f5 0%, #e8e8e8 100%);
+            padding: 22px 25px;
+            margin-top: 35px;
+            border-radius: 8px;
+            border: 1px solid #ddd;
+        }
+
+        .takeaways-box .box-label {
+            font-weight: 600;
+            color: #059669;
+            margin: 0 0 15px 0;
+            font-size: 16px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .takeaways-box ul {
+            margin: 0;
+            padding-left: 18px;
+            font-size: 15px;
+        }
+
+        .takeaways-box li {
+            margin-bottom: 10px;
+        }
+
+        /* CTA Box */
+        .cta-box {
+            text-align: center;
+            padding: 35px;
+            background: linear-gradient(135deg, #059669 0%, #10B981 100%);
+            border-radius: 16px;
+            color: white;
+            margin-top: 40px;
+        }
+
+        .cta-box h3 {
+            margin: 0 0 12px 0;
+            font-size: 24px;
+        }
+
+        .cta-box p {
+            margin: 0;
+            color: white;
+            font-size: 16px;
+        }
+
+        /* Footer */
+        .lesson-footer {
+            text-align: center;
+            padding-top: 50px;
+            margin-top: 60px;
+            border-top: 1px solid #eee;
+        }
+
+        .footer-logo {
+            max-width: 160px;
+            height: auto;
+            margin-bottom: 15px;
+            opacity: 0.9;
+        }
+
+        .lesson-footer .brand {
+            color: #059669;
+            font-weight: 600;
+            margin: 0;
+            font-size: 15px;
+        }
+
+        .lesson-footer .copyright {
+            color: #888;
+            font-size: 13px;
+            margin: 10px 0 0 0;
+        }
+
+        @media (max-width: 768px) {
+            .lesson-container {
+                padding: 20px 16px;
+            }
+
+            .module-header {
+                padding: 25px 20px 22px;
+            }
+
+            .lesson-title {
+                font-size: 22px;
+            }
+
+            h2 {
+                font-size: 20px;
+                margin: 35px 0 15px 0;
+            }
+
+            p {
+                font-size: 16px;
+            }
+
+            .objectives-box {
+                padding: 25px 20px;
+            }
+
+            .time-box {
+                padding: 25px 20px;
+            }
+
+            .time-grid {
+                grid-template-columns: repeat(3, 1fr);
+                gap: 10px;
+            }
+
+            .time-item .number {
+                font-size: 28px;
+            }
+
+            .time-item .label {
+                font-size: 11px;
+            }
+
+            .step-card {
+                flex-direction: column;
+                padding: 20px;
+            }
+
+            .step-number {
+                width: 40px;
+                height: 40px;
+                font-size: 16px;
+            }
+
+            .feature-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .feature-card {
+                padding: 20px;
+            }
+
+            .platform-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .takeaways-box {
+                padding: 18px 20px;
+            }
+
+            .cta-box {
+                padding: 25px 20px;
+            }
+
+            .cta-box h3 {
+                font-size: 20px;
+            }
+
+            .alert-box {
+                padding: 20px;
+            }
+
+            .content-list {
+                padding-left: 20px;
+                font-size: 16px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .lesson-container {
+                padding: 15px 12px;
+            }
+
+            .brand-logo {
+                max-width: 180px;
+            }
+
+            .time-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="lesson-container">
+        <div class="brand-header">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="brand-logo">
+        </div>
+
+        <header class="module-header">
+            <p class="module-label">Module 0: Orientation</p>
+            <h1 class="lesson-title">Lesson 0.2: How This Program Works</h1>
+            <div class="lesson-meta">
+                <span class="meta-item">15 min read</span>
+                <span class="meta-item">Lesson 2 of 4</span>
+            </div>
+        </header>
+
+        <!-- Learning Objectives -->
+        <div class="objectives-box">
+            <p class="box-label">Learning Objectives</p>
+            <ul>
+                <li>Understand the structure and flow of the certification program</li>
+                <li>Learn how to navigate the learning platform and its features</li>
+                <li>Know what resources are available to support your learning</li>
+                <li>Set realistic expectations for time commitment and pacing</li>
+                <li>Understand how assessments and certification work</li>
+            </ul>
+        </div>
+
+        <h2>Program Structure</h2>
+
+        <p>This certification is designed for busy professionals who need flexibility without sacrificing depth. The
+            program is 100% online and self-paced, meaning you can study when it fits your schedule—early mornings,
+            lunch breaks, or late evenings. There are no live sessions you must attend (though optional live Q&As are
+            offered periodically).</p>
+
+        <p>The curriculum is organized into <strong>15 modules</strong>, each containing multiple lessons, exercises,
+            and assessments. Here's how the program flows:</p>
+
+        <div class="step-card">
+            <div class="step-number">1</div>
+            <div class="step-content">
+                <h4>Watch, Read & Learn</h4>
+                <p>Each lesson includes rich written content (like what you're reading now), often accompanied by
+                    supporting videos, diagrams, and downloadable resources. Take notes in our built-in note-taking
+                    system.</p>
+            </div>
+        </div>
+
+        <div class="step-card">
+            <div class="step-number">2</div>
+            <div class="step-content">
+                <h4>Complete Knowledge Checks</h4>
+                <p>At the end of each lesson, interactive questions help reinforce your learning. These are not
+                    graded—they're learning tools to solidify concepts before moving forward.</p>
+            </div>
+        </div>
+
+        <div class="step-card">
+            <div class="step-number">3</div>
+            <div class="step-content">
+                <h4>Pass Module Quizzes</h4>
+                <p>Each module concludes with a quiz covering key concepts. You need 70% to pass, and you can retake
+                    quizzes unlimited times. Passing unlocks the next module.</p>
+            </div>
+        </div>
+
+        <div class="step-card">
+            <div class="step-number">4</div>
+            <div class="step-content">
+                <h4>Apply What You Learn</h4>
+                <p>Throughout the program, you'll complete practical exercises—case study analyses, protocol designs,
+                    intake form practice—that build real-world skills.</p>
+            </div>
+        </div>
+
+        <div class="step-card">
+            <div class="step-number">5</div>
+            <div class="step-content">
+                <h4>Pass the Final Exam</h4>
+                <p>After completing all modules, you'll take a comprehensive final exam covering the entire curriculum.
+                    Pass with 70% or higher to earn your certification.</p>
+            </div>
+        </div>
+
+        <h2>Time Commitment</h2>
+
+        <p>We believe in transparency about what this certification requires. Here are the realistic time expectations:
+        </p>
+
+        <div class="time-box">
+            <h3>⏱️ Estimated Time Investment</h3>
+            <div class="time-grid">
+                <div class="time-item">
+                    <div class="number">40-50</div>
+                    <div class="label">Total Hours</div>
+                </div>
+                <div class="time-item">
+                    <div class="number">6-10</div>
+                    <div class="label">Weeks (Recommended)</div>
+                </div>
+                <div class="time-item">
+                    <div class="number">5-8</div>
+                    <div class="label">Hours Per Week</div>
+                </div>
+            </div>
+        </div>
+
+        <p>Most students complete the program in <strong>6-10 weeks</strong> studying 5-8 hours per week. Some complete
+            faster with more intensive study; others take longer due to work and family commitments. There's no
+            expiration on your access—take the time you need.</p>
+
+        <div class="alert-box success">
+            <p class="alert-label">Pro Tip</p>
+            <p>Consistency beats intensity. Students who study 30-45 minutes daily (or 2-3 hours twice weekly) typically
+                complete faster and retain more than those who cram in long, sporadic sessions. Build this into your
+                routine like any other important appointment.</p>
+        </div>
+
+        <h2>Platform Features</h2>
+
+        <p>Your learning portal includes everything you need to succeed:</p>
+
+        <div class="platform-grid">
+            <div class="platform-item">
+                <span class="check">✓</span>
+                <span>Progress Tracking Dashboard</span>
+            </div>
+            <div class="platform-item">
+                <span class="check">✓</span>
+                <span>Built-in Note Taking</span>
+            </div>
+            <div class="platform-item">
+                <span class="check">✓</span>
+                <span>Downloadable Resources</span>
+            </div>
+            <div class="platform-item">
+                <span class="check">✓</span>
+                <span>Mobile-Friendly Access</span>
+            </div>
+            <div class="platform-item">
+                <span class="check">✓</span>
+                <span>Community Forum</span>
+            </div>
+            <div class="platform-item">
+                <span class="check">✓</span>
+                <span>Coach Messaging</span>
+            </div>
+            <div class="platform-item">
+                <span class="check">✓</span>
+                <span>Quiz Retakes</span>
+            </div>
+            <div class="platform-item">
+                <span class="check">✓</span>
+                <span>Lifetime Access</span>
+            </div>
+        </div>
+
+        <h2>Support Available to You</h2>
+
+        <p>You're not alone on this journey. Multiple layers of support are available:</p>
+
+        <div class="feature-grid">
+            <div class="feature-card">
+                <div class="icon">👩‍🏫</div>
+                <h3>Coach Sarah</h3>
+                <p>Your dedicated coach is available via the messaging system. Ask questions about content, get guidance
+                    on challenging concepts, or discuss your career plans. Average response time: 24 hours.</p>
+            </div>
+            <div class="feature-card">
+                <div class="icon">👥</div>
+                <h3>Student Community</h3>
+                <p>Connect with fellow students in our private community. Share insights, ask questions, celebrate wins,
+                    and build relationships with future colleagues in the field.</p>
+            </div>
+            <div class="feature-card">
+                <div class="icon">📚</div>
+                <h3>Resource Library</h3>
+                <p>Download client intake forms, protocol templates, dietary guides, handouts, and business templates.
+                    All designed for immediate use in your practice.</p>
+            </div>
+            <div class="feature-card">
+                <div class="icon">🎓</div>
+                <h3>Technical Support</h3>
+                <p>Platform issues? Can't access a lesson? Our technical team is here to help via the Help section.
+                    We'll get you back on track quickly.</p>
+            </div>
+        </div>
+
+        <h2>Assessment & Certification</h2>
+
+        <p>Your certification is earned through demonstrated competence, not just completion. Here's how assessment
+            works:</p>
+
+        <h3>Module Quizzes</h3>
+        <ul class="content-list">
+            <li><strong>Format:</strong> Multiple choice and true/false questions</li>
+            <li><strong>Passing score:</strong> 70% (you can retake unlimited times)</li>
+            <li><strong>Purpose:</strong> Ensure mastery before advancing to new material</li>
+            <li><strong>Feedback:</strong> Immediate results with explanations for incorrect answers</li>
+        </ul>
+
+        <h3>Final Exam</h3>
+        <ul class="content-list">
+            <li><strong>Format:</strong> 100 questions covering all modules</li>
+            <li><strong>Time limit:</strong> 2 hours (most finish in 60-90 minutes)</li>
+            <li><strong>Passing score:</strong> 70%</li>
+            <li><strong>Retakes:</strong> Unlimited, with 48-hour waiting period between attempts</li>
+        </ul>
+
+        <h3>Your Certification</h3>
+        <p>Upon passing the final exam, you receive:</p>
+        <ul class="content-list">
+            <li><strong>Digital Certificate:</strong> Professionally designed, instantly downloadable</li>
+            <li><strong>Certification Number:</strong> Unique ID verifiable on our website</li>
+            <li><strong>Digital Badge:</strong> For your website, email signature, and LinkedIn</li>
+            <li><strong>Alumni Status:</strong> Ongoing access to updates and community</li>
+        </ul>
+
+        <div class="alert-box info">
+            <p class="alert-label">Credential Recognition</p>
+            <p>AccrediPro certifications are recognized across the integrative and functional health community. Many
+                graduates partner with physicians, naturopaths, and wellness centers who value our rigorous training
+                standards. Your credential demonstrates genuine expertise to potential clients and collaborators.</p>
+        </div>
+
+        <h2>Getting Started</h2>
+
+        <p>Here's your action plan for beginning this journey:</p>
+
+        <div class="step-card">
+            <div class="step-number">✓</div>
+            <div class="step-content">
+                <h4>Complete This Orientation (Module 0)</h4>
+                <p>Finish all four orientation lessons to understand the program structure, set yourself up for success,
+                    and get comfortable with the platform.</p>
+            </div>
+        </div>
+
+        <div class="step-card">
+            <div class="step-number">✓</div>
+            <div class="step-content">
+                <h4>Schedule Your Study Time</h4>
+                <p>Block out specific times in your calendar. Treat these as non-negotiable appointments with your
+                    future self and career.</p>
+            </div>
+        </div>
+
+        <div class="step-card">
+            <div class="step-number">✓</div>
+            <div class="step-content">
+                <h4>Introduce Yourself</h4>
+                <p>Visit the community and introduce yourself. Share your background, why you're here, and what you hope
+                    to achieve. Connections start here.</p>
+            </div>
+        </div>
+
+        <!-- Key Takeaways -->
+        <div class="takeaways-box">
+            <p class="box-label">📝 Key Takeaways</p>
+            <ul>
+                <li>The program is 100% online, self-paced, with lifetime access—study when it fits your schedule.</li>
+                <li>15 modules progress from foundations through clinical knowledge to practice building.</li>
+                <li>Expect 40-50 total hours; most complete in 6-10 weeks studying 5-8 hours weekly.</li>
+                <li>Support includes Coach Sarah, student community, resource library, and technical help.</li>
+                <li>Certification requires passing module quizzes (70%) and a comprehensive final exam (70%).</li>
+            </ul>
+        </div>
+
+        <!-- CTA Box -->
+
+        <footer class="lesson-footer">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro" class="footer-logo">
+            <p class="brand">AccrediPro Gut Health Practitioner Certification</p>
+            <p class="copyright">© 2024 AccrediPro Academy. All rights reserved.</p>
+        </footer>
+    </div>
+</body>
+
+</html>

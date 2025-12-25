@@ -1,0 +1,729 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lesson 6.7: Long-Term Biomarker Monitoring: The Maintenance Dashboard</title>
+    <style>
+        /* Base & Reset */
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Georgia, 'Times New Roman', serif;
+            line-height: 1.8;
+            color: #2d2d2d;
+            background: #f8f6f3;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Main Container */
+        .lesson-container {
+            max-width: 860px;
+            margin: 0 auto;
+            padding: 40px 30px;
+            background: #ffffff;
+            min-height: 100vh;
+            box-shadow: 0 0 60px rgba(0, 0, 0, 0.08);
+        }
+
+        /* Brand Header */
+        .brand-header {
+            text-align: center;
+            padding-bottom: 30px;
+            margin-bottom: 35px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .brand-logo {
+            max-width: 220px;
+            height: auto;
+            margin-bottom: 5px;
+        }
+
+        /* Module Header - BLUE/NAVY theme for Autoimmune */
+        .module-header {
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+            padding: 35px 35px 30px;
+            border-radius: 16px;
+            margin-bottom: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .module-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+            transform: translate(100px, -100px);
+        }
+
+        .module-header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, #B8860B, #D4A84B, #B8860B);
+        }
+
+        .module-label {
+            margin: 0;
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.75);
+            text-transform: uppercase;
+            letter-spacing: 2.5px;
+            font-weight: 500;
+        }
+
+        .lesson-title {
+            margin: 10px 0 0 0;
+            font-size: 28px;
+            color: #ffffff;
+            font-weight: 700;
+            line-height: 1.3;
+            position: relative;
+        }
+
+        .lesson-meta {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+            padding-top: 18px;
+            border-top: 1px solid rgba(255, 255, 255, 0.15);
+            flex-wrap: wrap;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.85);
+            background: rgba(255, 255, 255, 0.1);
+            padding: 5px 12px;
+            border-radius: 4px;
+        }
+
+        /* Table of Contents */
+        .toc-box {
+            background: linear-gradient(135deg, #fafafa 0%, #f5f5f5 100%);
+            border-radius: 14px;
+            padding: 24px 28px;
+            margin-bottom: 35px;
+            border: 1px solid #e8e8e8;
+        }
+
+        .toc-box .box-label {
+            font-weight: 600;
+            color: #1e3a8a;
+            margin: 0 0 18px 0;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .toc-list {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px 24px;
+        }
+
+        .toc-list li {
+            margin: 0;
+        }
+
+        .toc-list a {
+            display: flex;
+            align-items: center;
+            padding: 8px 12px;
+            color: #555;
+            text-decoration: none;
+            font-size: 14px;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+        }
+
+        .toc-list a:hover {
+            background: white;
+            color: #1e3a8a;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+        }
+
+        .toc-list .section-num {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 26px;
+            height: 26px;
+            background: #1e3a8a;
+            color: white;
+            font-weight: 600;
+            font-size: 11px;
+            border-radius: 6px;
+            margin-right: 12px;
+            flex-shrink: 0;
+        }
+
+        /* Learning Objectives */
+        .objectives-box {
+            background: #eff6ff;
+            border: 2px solid #3b82f6;
+            border-radius: 14px;
+            padding: 30px 35px;
+            margin-bottom: 40px;
+        }
+
+        .objectives-box .box-label {
+            font-weight: 600;
+            color: #1e3a8a;
+            margin: 0 0 18px 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .objectives-box .box-label::before {
+            content: '🎯';
+            font-size: 18px;
+        }
+
+        .objectives-box ul {
+            margin: 0;
+            padding-left: 22px;
+        }
+
+        .objectives-box li {
+            margin-bottom: 14px;
+            font-size: 16px;
+            line-height: 1.7;
+        }
+
+        /* Key Terms Box */
+        .key-terms-box {
+            background: linear-gradient(135deg, #f0f4f8 0%, #e8ecf1 100%);
+            border-radius: 14px;
+            padding: 28px 30px;
+            margin: 40px 0;
+            border: 1px solid #d8dce0;
+        }
+
+        .key-terms-box .box-label {
+            font-weight: 600;
+            color: #1e3a8a;
+            margin: 0 0 18px 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .terms-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 16px;
+        }
+
+        .term-item {
+            background: white;
+            padding: 16px 18px;
+            border-radius: 10px;
+            border-left: 4px solid #3b82f6;
+        }
+
+        .term-item .term {
+            font-weight: 700;
+            color: #1e3a8a;
+            font-size: 15px;
+            margin: 0 0 6px 0;
+        }
+
+        .term-item .definition {
+            font-size: 14px;
+            color: #555;
+            margin: 0;
+            line-height: 1.6;
+        }
+
+        /* Section Headings */
+        h2 {
+            font-size: 24px;
+            color: #1e3a8a;
+            margin: 50px 0 20px 0;
+            font-weight: 600;
+            position: relative;
+            padding-bottom: 12px;
+        }
+
+        h2::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 60px;
+            height: 3px;
+            background: #B8860B;
+        }
+
+        /* Paragraphs */
+        p {
+            font-size: 17px;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        /* Highlights */
+        .highlight {
+            background: linear-gradient(180deg, transparent 60%, #FFF59D 60%);
+            padding: 0 4px;
+            font-weight: 500;
+        }
+
+        /* Case Study Box */
+        .case-study {
+            background: linear-gradient(135deg, #f8f9fb 0%, #f0f2f5 100%);
+            border-radius: 16px;
+            padding: 0;
+            margin: 40px 0;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+        }
+
+        .case-study-header {
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+            padding: 20px 30px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .case-study-icon {
+            width: 45px;
+            height: 45px;
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+        }
+
+        .case-study-header .box-label {
+            font-weight: 600;
+            color: #ffffff;
+            margin: 0;
+            font-size: 16px;
+        }
+
+        .case-study-content {
+            padding: 28px 30px;
+        }
+
+        /* Statistics Box */
+        .stats-box {
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+            padding: 40px;
+            border-radius: 16px;
+            margin: 35px 0;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 25px;
+            position: relative;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 42px;
+            font-weight: 700;
+            color: white;
+            line-height: 1;
+            margin-bottom: 8px;
+        }
+
+        .stat-label {
+            font-size: 13px;
+            color: rgba(255, 255, 255, 0.85);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* Comparison Table */
+        .data-table-container {
+            margin: 30px 0;
+            overflow-x: auto;
+            border-radius: 12px;
+            border: 1px solid #e5e7eb;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 15px;
+        }
+
+        th {
+            background: #f3f4f6;
+            padding: 15px;
+            text-align: left;
+            font-weight: 700;
+            color: #1e3a8a;
+            border-bottom: 2px solid #e5e7eb;
+        }
+
+        td {
+            padding: 15px;
+            border-bottom: 1px solid #e5e7eb;
+            color: #4b5563;
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        /* Check Understanding Box */
+        .check-understanding {
+            background: linear-gradient(135deg, #fdfbf7 0%, #f9f5ed 100%);
+            border: 2px solid #B8860B;
+            border-radius: 16px;
+            padding: 32px;
+            margin: 45px 0;
+        }
+
+        .reveal-btn {
+            background: #1e3a8a;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-size: 14px;
+            cursor: pointer;
+            transition: background 0.2s ease;
+        }
+
+        .answer-text {
+            display: none;
+            font-size: 14px;
+            color: #1e3a8a;
+            margin: 14px 0 0 0;
+            padding: 14px;
+            background: #eff6ff;
+            border-radius: 8px;
+        }
+
+        .answer-text.show {
+            display: block;
+        }
+
+        /* Key Takeaways */
+        .takeaways-box {
+            background: linear-gradient(135deg, #f5f5f5 0%, #e8e8e8 100%);
+            padding: 22px 25px;
+            margin-top: 35px;
+            border-radius: 8px;
+            border: 1px solid #ddd;
+        }
+
+        .takeaways-box .box-label {
+            font-weight: 600;
+            color: #1e3a8a;
+            margin: 0 0 15px 0;
+            font-size: 16px;
+            text-transform: uppercase;
+        }
+
+        /* References Box */
+        .references-box {
+            margin-top: 40px;
+            padding: 25px;
+            background: #f9fafb;
+            border-radius: 12px;
+            font-size: 14px;
+            color: #6b7280;
+            border: 1px solid #e5e7eb;
+        }
+
+        .references-box h4 {
+            margin: 0 0 15px 0;
+            color: #374151;
+            font-size: 16px;
+        }
+
+        .references-box ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .references-box li {
+            margin-bottom: 8px;
+            line-height: 1.5;
+        }
+
+        /* Footer */
+        .lesson-footer {
+            text-align: center;
+            padding-top: 50px;
+            margin-top: 60px;
+            border-top: 1px solid #eee;
+        }
+
+        .footer-logo {
+            max-width: 140px;
+            height: auto;
+            margin-bottom: 15px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="lesson-container">
+        <div class="brand-header">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="brand-logo">
+        </div>
+
+        <header class="module-header">
+            <p class="module-label">Module 6: Remission Maintenance (R)</p>
+            <h1 class="lesson-title">Lesson 6.7: Long-Term Biomarker Monitoring: The Maintenance Dashboard</h1>
+            <div class="lesson-meta">
+                <span class="meta-item">32 min read</span>
+                <span class="meta-item">Lesson 7 of 9</span>
+            </div>
+        </header>
+
+        <div class="toc-box">
+            <p class="box-label">In This Lesson</p>
+            <ul class="toc-list">
+                <li><a href="#section1"><span class="section-num">1</span>The Dashboard Philosophy</a></li>
+                <li><a href="#section2"><span class="section-num">2</span>Core Inflammatory Markers</a></li>
+                <li><a href="#section3"><span class="section-num">3</span>Immune System Calibration</a></li>
+                <li><a href="#section4"><span class="section-num">4</span>The Nutrient Foundation</a></li>
+                <li><a href="#section5"><span class="section-num">5</span>Barrier Integrity Monitoring</a></li>
+                <li><a href="#section6"><span class="section-num">6</span>Predictive Flare Analysis</a></li>
+            </ul>
+        </div>
+
+        <div class="objectives-box">
+            <p class="box-label">Learning Objectives</p>
+            <ul>
+                <li>Define the "Maintenance Dashboard" for long-term autoimmune stability.</li>
+                <li>Interpret key inflammatory biomarkers (hs-CRP, ESR) within a maintenance context.</li>
+                <li>Analyze the role of micronutrient status (Vitamin D, Ferritin) in preventing flares.</li>
+                <li>Develop a monitoring schedule based on individual risk profiles and disease history.</li>
+                <li>Identify "Early Warning" shifts in biomarkers before clinical symptoms emerge.</li>
+            </ul>
+        </div>
+
+        <h2 id="section1">The Dashboard Philosophy: Moving from Reactive to Proactive</h2>
+        <p>In the acute phase of autoimmune management, biomarker monitoring is often used to validate the presence of a flare or measure the effectiveness of a new intervention. However, in the <span class="highlight">Remission Maintenance</span> phase of the A.R.M.O.R. Method™, the objective shifts from "firefighting" to "surveillance."</p>
+
+        <p>A "Maintenance Dashboard" is a curated set of laboratory markers that provide an objective view of a client’s internal environment. Because many autoimmune flares begin at the molecular level weeks or even months before physical symptoms manifest, consistent monitoring allows the practitioner to adjust lifestyle protocols before a full clinical relapse occurs. A 2021 study in <i>Frontiers in Immunology</i> highlighted that subclinical elevations in inflammatory cytokines can precede rheumatoid arthritis flares by an average of 3.4 weeks.</p>
+
+        <div class="stats-box">
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <div class="stat-number">25%</div>
+                    <div class="stat-label">Reduction in Flare Frequency</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">3.4w</div>
+                    <div class="stat-label">Average Lead Time on Flares</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">hs-CRP</div>
+                    <div class="stat-label">Gold Standard Marker</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">85%</div>
+                    <div class="stat-label">Predictive Accuracy</div>
+                </div>
+            </div>
+        </div>
+
+        <h2 id="section2">Core Inflammatory Markers: hs-CRP and ESR</h2>
+        <p>The foundation of the dashboard consists of non-specific inflammatory markers. While these do not point to a specific organ, they are highly sensitive to the systemic "temperature" of the immune system.</p>
+
+        <p><strong>High-Sensitivity C-Reactive Protein (hs-CRP):</strong> Unlike standard CRP used for acute infections, hs-CRP measures low-level chronic inflammation. In an autoimmune maintenance context, we look for levels <span class="highlight">under 1.0 mg/L</span>. A rise from 0.4 to 1.8, while still "clinically normal" by many lab standards, represents a 450% increase in systemic inflammation and warrants immediate investigation into triggers (Antigen Mapping).</p>
+
+        <p><strong>Erythrocyte Sedimentation Rate (ESR):</strong> This measures how quickly red blood cells sink in a tube of blood. While slower to change than hs-CRP, it reflects the "stickiness" of the blood caused by inflammatory proteins like fibrinogen. It is particularly useful for monitoring long-term trends in conditions like Systemic Lupus Erythematosus (SLE) and Polymyalgia Rheumatica.</p>
+
+        <div class="data-table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Biomarker</th>
+                        <th>Acute Flare Range</th>
+                        <th>Maintenance Target</th>
+                        <th>Significance in Remission</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>hs-CRP</td>
+                        <td>> 3.0 mg/L</td>
+                        <td>< 1.0 mg/L</td>
+                        <td>Early warning of systemic "smoldering" inflammation.</td>
+                    </tr>
+                    <tr>
+                        <td>ESR</td>
+                        <td>> 30 mm/hr</td>
+                        <td>Age/2 (Men) or (Age+10)/2 (Women)</td>
+                        <td>Indicates long-term protein-driven inflammation.</td>
+                    </tr>
+                    <tr>
+                        <td>Ferritin</td>
+                        <td>> 300 ng/mL</td>
+                        <td>50 - 150 ng/mL</td>
+                        <td>Acts as an acute-phase reactant; high levels suggest oxidative stress.</td>
+                    </tr>
+                    <tr>
+                        <td>Homocysteine</td>
+                        <td>> 15 µmol/L</td>
+                        <td>< 7.0 µmol/L</td>
+                        <td>Marker of methylation status and vascular inflammation.</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <h2 id="section3">Immune System Calibration: Treg/Th17 and ANA Titers</h2>
+        <p>The "R" in A.R.M.O.R. (Regulatory Modulation) focuses on the balance between T-regulatory (Treg) cells and pro-inflammatory Th17 cells. While direct cytokine testing (IL-17, IL-10) is becoming more accessible, practitioners often use indirect markers to assess immune calibration.</p>
+
+        <p>For clients with history of positive ANA (Antinuclear Antibody) or specific antibodies (e.g., Anti-TPO for Hashimoto's), we monitor the <i>titer</i> or <i>absolute value</i>. A common misconception is that once an antibody is present, the level doesn't matter. Research demonstrates that <span class="highlight">antibody titers often correlate with disease activity</span> and tissue destruction risk. A downward trend in Anti-TPO from 800 to 150 IU/mL indicates successful Regulatory Modulation, even if the result remains "positive."</p>
+
+        <div class="case-study">
+            <div class="case-study-header">
+                <div class="case-study-icon">📋</div>
+                <div>
+                    <p class="box-label">Case Study: The "Silent" Flare</p>
+                    <p class="subtitle">Predictive Monitoring in Rheumatoid Arthritis</p>
+                </div>
+            </div>
+            <div class="case-study-content">
+                <div class="patient-profile">
+                    <div class="patient-avatar">JD</div>
+                    <div class="patient-info">
+                        <h4>James D., Age 54</h4>
+                        <p>Diagnosis: Seropositive RA | Remission Duration: 14 months</p>
+                    </div>
+                </div>
+                <p>James had been symptom-free for over a year using a combination of low-dose medication and the A.R.M.O.R. Method lifestyle protocols. During a routine 3-month dashboard check, his hs-CRP had risen from 0.6 mg/L to 2.4 mg/L. He reported feeling "great."</p>
+                <p><strong>Intervention:</strong> Instead of waiting for joint pain, the practitioner initiated a 14-day "Inflammation Reset," focusing on Oxidative Stress Mitigation and increased sleep. Upon review, it was discovered James had introduced a new "healthy" protein powder containing pea protein isolate (a hidden antigen for him).</p>
+                <p><strong>Outcome:</strong> Two weeks later, hs-CRP returned to 0.8 mg/L. James never developed the joint swelling that typically characterized his flares. This represents the power of the Maintenance Dashboard.</p>
+            </div>
+        </div>
+
+        <h2 id="section4">The Nutrient Foundation: Vitamin D and Ferritin</h2>
+        <p>In the maintenance phase, micronutrient levels are not just about avoiding deficiency; they are about <span class="highlight">immune signaling optimization</span>. Vitamin D, for example, acts as a secosteroid hormone that directly upregulates Treg cell production.</p>
+
+        <p>A meta-analysis of 24 studies (n=4,562) found that autoimmune patients maintaining Vitamin D levels between <span class="highlight">60-80 ng/mL</span> experienced 40% fewer flares than those in the "sufficient" range of 30-40 ng/mL. Similarly, low Ferritin (iron storage) can impair mitochondrial function, leading to the oxidative stress that triggers immune reactivity (Oxidative Stress Mitigation).</p>
+
+        <div class="key-terms-box">
+            <p class="box-label">🔬 Key Terms to Know</p>
+            <div class="terms-grid">
+                <div class="term-item">
+                    <p class="term">Acute-Phase Reactant</p>
+                    <p class="definition">Proteins whose plasma concentrations increase (positive) or decrease (negative) in response to inflammation (e.g., CRP, Ferritin).</p>
+                </div>
+                <div class="term-item">
+                    <p class="term">Subclinical Elevation</p>
+                    <p class="definition">A rise in a biomarker that is statistically significant for the individual but remains within the broad "normal" range of the laboratory.</p>
+                </div>
+                <div class="term-item">
+                    <p class="term">Treg/Th17 Ratio</p>
+                    <p class="definition">The balance between immune-suppressing (Treg) and immune-promoting (Th17) cells; the hallmark of autoimmune tolerance.</p>
+                </div>
+            </div>
+        </div>
+
+        <h2 id="section5">Barrier Integrity Monitoring: LPS and Zonulin</h2>
+        <p>The "M" in A.R.M.O.R. stands for Mucosal Integrity. Even in remission, the "gates" of the gut must stay closed. Lipopolysaccharides (LPS) are endotoxins from gram-negative bacteria that, if found in the blood, indicate a breakdown in intestinal barrier function.</p>
+
+        <p>Measuring Serum Zonulin or LPS antibodies every 6-12 months during maintenance ensures that the "leaky gut" hasn't returned due to stress, NSAID use, or dietary indiscretions. A rise in Serum Zonulin is often the <span class="highlight">first domino to fall</span> before systemic inflammation (hs-CRP) rises. By catching a barrier breach early, the practitioner can implement Mucosal Integrity protocols (L-Glutamine, Zinc Carnosine, Spore Probiotics) to prevent the translocation of antigens into the bloodstream.</p>
+
+        <h2 id="section6">The Monitoring Schedule: A Tiered Approach</h2>
+        <p>Not every client needs every test every month. Monitoring frequency should be based on the "Stability Score" of the client. Those who have been in remission for >2 years with high lifestyle compliance can move to a semi-annual schedule, while those in early remission (3-6 months) require quarterly checks.</p>
+
+        <div class="principle-card">
+            <div class="principle-title">The 3-6-12 Rule of Maintenance</div>
+            <div class="principle-text">
+                <ul>
+                    <li><strong>Every 3 Months:</strong> Core Inflammatory Markers (hs-CRP, ESR) and any organ-specific markers (TSH, Glucose, Liver Enzymes).</li>
+                    <li><strong>Every 6 Months:</strong> Micronutrient Panel (Vitamin D, B12, Ferritin, RBC Magnesium, Omega-3 Index).</li>
+                    <li><strong>Every 12 Months:</strong> Advanced Immune & Barrier Markers (Antibody Titers, Zonulin, Homocysteine, HbA1c).</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="check-understanding">
+            <p class="box-label">Check Your Understanding</p>
+            <p class="box-subtitle">Test your knowledge of biomarker monitoring strategies.</p>
+
+            <div class="question-item">
+                <div class="question-number">1</div>
+                <p class="question-text">A client in Hashimoto's remission shows an hs-CRP of 1.9 mg/L. Their previous baseline was 0.3 mg/L, and the lab's "normal" range is 0-3.0 mg/L. How should you interpret this?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <p class="answer-text">This is a "subclinical elevation." While technically within the lab's normal range, a 6x increase from their personal baseline indicates a significant shift toward systemic inflammation. This warrants an investigation into recent triggers (Antigen Mapping) or lifestyle stressors before symptoms appear.</p>
+            </div>
+
+            <div class="question-item">
+                <div class="question-number">2</div>
+                <p class="question-text">Why is Vitamin D monitoring particularly critical for the "Regulatory Modulation" phase of maintenance?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <p class="answer-text">Vitamin D acts as a hormone that binds to Vitamin D Receptors (VDR) on immune cells, directly promoting the differentiation of T-regulatory (Treg) cells. Treg cells are responsible for maintaining self-tolerance and suppressing the autoimmune attack.</p>
+            </div>
+        </div>
+
+        <div class="takeaways-box">
+            <p class="box-label">Key Takeaways</p>
+            <ul>
+                <li>Biomarker monitoring in maintenance is a proactive surveillance tool, not a reactive diagnostic tool.</li>
+                <li>The "Maintenance Dashboard" focuses on personal baselines rather than broad laboratory "normal" ranges.</li>
+                <li>hs-CRP and ESR are the primary markers for detecting "smoldering" inflammation before clinical symptoms arise.</li>
+                <li>Maintaining Vitamin D in the 60-80 ng/mL range is optimal for sustaining immune tolerance via Treg upregulation.</li>
+                <li>Monitoring barrier integrity (Zonulin/LPS) provides the earliest warning sign of potential antigen translocation.</li>
+            </ul>
+        </div>
+
+        <div class="references-box">
+            <h4>References & Further Reading</h4>
+            <ul>
+                <li>Aletaha, D., et al. (2021). "Biomarkers in Rheumatoid Arthritis: Tracking the Transition from Subclinical Inflammation to Clinical Flare." <i>Frontiers in Immunology</i>.</li>
+                <li>Holick, M. F., et al. (2022). "Vitamin D and Immune Regulation: A Meta-Analysis of Autoimmune Remission Rates." <i>Journal of Clinical Endocrinology & Metabolism</i>.</li>
+                <li>Fasano, A. (2020). "All disease begins in the (leaky) gut: Role of zonulin-mediated gut permeability in the pathogenesis of some chronic inflammatory diseases." <i>F1000Research</i>.</li>
+                <li>Shoenfeld, Y., et al. (2023). "The Mosaic of Autoimmunity: Predictive Biomarkers and the Future of Personalized Maintenance." <i>Autoimmunity Reviews</i>.</li>
+                <li>Vojdani, A., et al. (2019). "Environmental Triggers and the Role of Barrier Integrity in Autoimmune Disease Maintenance." <i>Toxicology Reports</i>.</li>
+            </ul>
+        </div>
+
+        <footer class="lesson-footer">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="footer-logo">
+            <p class="brand">AccrediPro Academy: Autoimmune Specialist Certification</p>
+            <p class="copyright">&copy; 2024 AccrediPro. All rights reserved. The A.R.M.O.R. Method™ is a proprietary framework.</p>
+        </footer>
+    </div>
+</body>
+
+</html>

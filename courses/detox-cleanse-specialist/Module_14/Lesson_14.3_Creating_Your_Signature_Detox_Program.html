@@ -1,0 +1,731 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lesson 14.3: Creating Your Signature Detox Program</title>
+    <style>
+        /* Base & Reset */
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Georgia, 'Times New Roman', serif;
+            line-height: 1.8;
+            color: #2d2d2d;
+            background: #f8f6f3;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Main Container */
+        .lesson-container {
+            max-width: 860px;
+            margin: 0 auto;
+            padding: 40px 30px;
+            background: #ffffff;
+            min-height: 100vh;
+            box-shadow: 0 0 60px rgba(0, 0, 0, 0.08);
+        }
+
+        /* Brand Header */
+        .brand-header {
+            text-align: center;
+            padding-bottom: 30px;
+            margin-bottom: 35px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .brand-logo {
+            max-width: 220px;
+            height: auto;
+            margin-bottom: 5px;
+        }
+
+        /* Module Header - GREEN theme for Detox */
+        .module-header {
+            background: linear-gradient(135deg, #059669 0%, #10B981 100%);
+            padding: 35px 35px 30px;
+            border-radius: 16px;
+            margin-bottom: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .module-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+            transform: translate(100px, -100px);
+        }
+
+        .module-header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, #B8860B, #D4A84B, #B8860B);
+        }
+
+        .module-label {
+            margin: 0;
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.75);
+            text-transform: uppercase;
+            letter-spacing: 2.5px;
+            font-weight: 500;
+        }
+
+        .lesson-title {
+            margin: 10px 0 0 0;
+            font-size: 28px;
+            color: #ffffff;
+            font-weight: 700;
+            line-height: 1.3;
+            position: relative;
+        }
+
+        .lesson-meta {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+            padding-top: 18px;
+            border-top: 1px solid rgba(255, 255, 255, 0.15);
+            flex-wrap: wrap;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.85);
+            background: rgba(255, 255, 255, 0.1);
+            padding: 5px 12px;
+            border-radius: 4px;
+        }
+
+        /* Table of Contents */
+        .toc-box {
+            background: linear-gradient(135deg, #fafafa 0%, #f5f5f5 100%);
+            border-radius: 14px;
+            padding: 24px 28px;
+            margin-bottom: 35px;
+            border: 1px solid #e8e8e8;
+        }
+
+        .toc-box .box-label {
+            font-weight: 600;
+            color: #059669;
+            margin: 0 0 18px 0;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .toc-list {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px 24px;
+        }
+
+        .toc-list li {
+            margin: 0;
+        }
+
+        .toc-list a {
+            display: flex;
+            align-items: center;
+            padding: 8px 12px;
+            color: #555;
+            text-decoration: none;
+            font-size: 14px;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+        }
+
+        .toc-list a:hover {
+            background: white;
+            color: #059669;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+        }
+
+        .toc-list .section-num {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 26px;
+            height: 26px;
+            background: #059669;
+            color: white;
+            font-weight: 600;
+            font-size: 11px;
+            border-radius: 6px;
+            margin-right: 12px;
+            flex-shrink: 0;
+        }
+
+        /* Learning Objectives */
+        .objectives-box {
+            background: #f0fdf4;
+            border: 2px solid #10B981;
+            border-radius: 14px;
+            padding: 30px 35px;
+            margin-bottom: 40px;
+        }
+
+        .objectives-box .box-label {
+            font-weight: 600;
+            color: #059669;
+            margin: 0 0 18px 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .objectives-box .box-label::before {
+            content: '🎯';
+            font-size: 18px;
+        }
+
+        .objectives-box ul {
+            margin: 0;
+            padding-left: 22px;
+        }
+
+        .objectives-box li {
+            margin-bottom: 14px;
+            font-size: 16px;
+            line-height: 1.7;
+        }
+
+        /* Key Terms Box */
+        .key-terms-box {
+            background: linear-gradient(135deg, #f0f4f8 0%, #e8ecf1 100%);
+            border-radius: 14px;
+            padding: 28px 30px;
+            margin: 40px 0;
+            border: 1px solid #d8dce0;
+        }
+
+        .key-terms-box .box-label {
+            font-weight: 600;
+            color: #059669;
+            margin: 0 0 18px 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .terms-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 16px;
+        }
+
+        .term-item {
+            background: white;
+            padding: 16px 18px;
+            border-radius: 10px;
+            border-left: 4px solid #10B981;
+        }
+
+        .term-item .term {
+            font-weight: 700;
+            color: #059669;
+            font-size: 15px;
+            margin: 0 0 6px 0;
+        }
+
+        .term-item .definition {
+            font-size: 14px;
+            color: #555;
+            margin: 0;
+            line-height: 1.6;
+        }
+
+        /* Section Headings */
+        h2 {
+            font-size: 24px;
+            color: #059669;
+            margin: 50px 0 20px 0;
+            font-weight: 600;
+            position: relative;
+            padding-bottom: 12px;
+        }
+
+        h2::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 60px;
+            height: 3px;
+            background: #B8860B;
+        }
+
+        /* Paragraphs */
+        p {
+            font-size: 17px;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        /* Highlights */
+        .highlight {
+            background: linear-gradient(180deg, transparent 60%, #FFF59D 60%);
+            padding: 0 4px;
+            font-weight: 500;
+        }
+
+        /* Welcome/Intro Box */
+        .welcome-box {
+            background: linear-gradient(135deg, #f0fdf4 0%, #ecfdf5 100%);
+            padding: 30px 35px;
+            border-radius: 14px;
+            margin-bottom: 40px;
+            border: 1px solid #bbf7d0;
+        }
+
+        .welcome-box h3 {
+            margin: 0 0 15px 0;
+            font-size: 20px;
+            color: #059669;
+            font-weight: 600;
+        }
+
+        /* Case Study Box */
+        .case-study {
+            background: linear-gradient(135deg, #f8f9fb 0%, #f0f2f5 100%);
+            border-radius: 16px;
+            padding: 0;
+            margin: 40px 0;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+        }
+
+        .case-study-header {
+            background: linear-gradient(135deg, #059669 0%, #10B981 100%);
+            padding: 20px 30px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .case-study-icon {
+            width: 45px;
+            height: 45px;
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+        }
+
+        .case-study-header .box-label {
+            font-weight: 600;
+            color: #ffffff;
+            margin: 0;
+            font-size: 16px;
+        }
+
+        .case-study-content {
+            padding: 28px 30px;
+        }
+
+        .patient-profile {
+            display: flex;
+            align-items: center;
+            gap: 18px;
+            padding: 18px 22px;
+            background: white;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            border: 1px solid #e5e5e5;
+        }
+
+        .patient-avatar {
+            width: 55px;
+            height: 55px;
+            background: linear-gradient(135deg, #10B981, #059669);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            color: white;
+        }
+
+        /* Statistics Box */
+        .stats-box {
+            background: linear-gradient(135deg, #059669 0%, #10B981 100%);
+            padding: 40px;
+            border-radius: 16px;
+            margin: 35px 0;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 25px;
+            position: relative;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 42px;
+            font-weight: 700;
+            color: white;
+            line-height: 1;
+            margin-bottom: 8px;
+        }
+
+        .stat-label {
+            font-size: 13px;
+            color: rgba(255, 255, 255, 0.85);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* Check Understanding Box */
+        .check-understanding {
+            background: linear-gradient(135deg, #fdfbf7 0%, #f9f5ed 100%);
+            border: 2px solid #B8860B;
+            border-radius: 16px;
+            padding: 32px;
+            margin: 45px 0;
+        }
+
+        .reveal-btn {
+            background: #059669;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-size: 14px;
+            cursor: pointer;
+            font-family: inherit;
+        }
+
+        .answer-text {
+            display: none;
+            font-size: 14px;
+            color: #2e7d32;
+            margin: 14px 0 0 0;
+            padding: 14px;
+            background: #f0f8f0;
+            border-radius: 8px;
+        }
+
+        .answer-text.show {
+            display: block;
+        }
+
+        /* Comparison Table */
+        .data-table-container {
+            margin: 35px 0;
+            overflow-x: auto;
+            border-radius: 12px;
+            border: 1px solid #e5e5e5;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 15px;
+        }
+
+        th {
+            background: #f1f8f1;
+            color: #059669;
+            text-align: left;
+            padding: 15px;
+            border-bottom: 2px solid #10B981;
+        }
+
+        td {
+            padding: 15px;
+            border-bottom: 1px solid #eee;
+        }
+
+        /* Takeaways & References */
+        .takeaways-box {
+            background: linear-gradient(135deg, #f5f5f5 0%, #e8e8e8 100%);
+            padding: 22px 25px;
+            margin-top: 35px;
+            border-radius: 8px;
+            border: 1px solid #ddd;
+        }
+
+        .references-box {
+            margin-top: 40px;
+            padding: 25px;
+            background: #fff;
+            border-radius: 12px;
+            border: 1px solid #eee;
+            font-size: 14px;
+        }
+
+        .references-box h4 {
+            margin: 0 0 15px 0;
+            color: #059669;
+        }
+
+        .lesson-footer {
+            text-align: center;
+            padding-top: 50px;
+            margin-top: 60px;
+            border-top: 1px solid #eee;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="lesson-container">
+        <div class="brand-header">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="brand-logo">
+        </div>
+
+        <header class="module-header">
+            <p class="module-label">Module 14: Practice Building & Business</p>
+            <h1 class="lesson-title">Lesson 14.3: Creating Your Signature Detox Program</h1>
+            <div class="lesson-meta">
+                <span class="meta-item">35 min read</span>
+                <span class="meta-item">Lesson 3 of 5</span>
+            </div>
+        </header>
+
+        <div class="toc-box">
+            <p class="box-label">In This Lesson</p>
+            <ul class="toc-list">
+                <li><a href="#section1"><span class="section-num">1</span>The Signature Program Advantage</a></li>
+                <li><a href="#section2"><span class="section-num">2</span>The P.U.R.I.F.Y. Framework Integration</a></li>
+                <li><a href="#section3"><span class="section-num">3</span>Defining Your "Big Result"</a></li>
+                <li><a href="#section4"><span class="section-num">4</span>Program Deliverables & Structure</a></li>
+                <li><a href="#section5"><span class="section-num">5</span>Value-Based Pricing Strategies</a></li>
+                <li><a href="#section6"><span class="section-num">6</span>Launching Your Signature Offer</a></li>
+            </ul>
+        </div>
+
+        <div class="objectives-box">
+            <p class="box-label">Learning Objectives</p>
+            <ul>
+                <li>Differentiate between the "commodity" model of hourly coaching and the "premium" signature program model.</li>
+                <li>Apply the P.U.R.I.F.Y. Protocol™ to a 90-day client journey that ensures physiological safety and efficacy.</li>
+                <li>Identify the essential components of a high-ticket detox offer ($2,500 - $5,000 price point).</li>
+                <li>Develop a structured delivery roadmap that minimizes practitioner burnout while maximizing client outcomes.</li>
+                <li>Understand the psychology of "Outcome-Based Marketing" to attract ideal clients.</li>
+            </ul>
+        </div>
+
+        <div class="welcome-box">
+            <h3>From Practitioner to Business Architect</h3>
+            <p>Mastering the science of detoxification is only half the battle. To build a sustainable, high-impact practice, you must transition from "selling your time" to "selling a transformation." A <span class="highlight">Signature Program</span> is your proprietary method for taking a client from their current state of toxic burden to a state of metabolic clarity. This lesson will show you how to package the P.U.R.I.F.Y. Protocol™ into a premium offer that commands professional fees and delivers world-class results.</p>
+        </div>
+
+        <div class="key-terms-box">
+            <p class="box-label">💼 Business Terms for Practitioners</p>
+            <div class="terms-grid">
+                <div class="term-item">
+                    <p class="term">Signature System</p>
+                    <p class="definition">A unique, repeatable process that leads a specific type of client to a specific, predictable result.</p>
+                </div>
+                <div class="term-item">
+                    <p class="term">Outcome-Based Pricing</p>
+                    <p class="definition">Setting fees based on the value of the health transformation rather than the number of hours spent with the client.</p>
+                </div>
+                <div class="term-item">
+                    <p class="term">Onboarding</p>
+                    <p class="definition">The systematic process of welcoming a new client, collecting data, and setting expectations for the protocol.</p>
+                </div>
+                <div class="term-item">
+                    <p class="term">Beta Launch</p>
+                    <p class="definition">A preliminary release of your program to a small group to gather data, testimonials, and refine the delivery process.</p>
+                </div>
+            </div>
+        </div>
+
+        <h2 id="section1">The Signature Program Advantage</h2>
+        <p>In the wellness industry, practitioners often fall into the "hourly trap," charging $100–$200 per session. This model creates a ceiling on your income and often leads to poor client compliance. A 2022 survey of 1,500 health coaches found that those offering <span class="highlight">structured programs of 12 weeks or longer</span> reported 45% higher client retention and 3x higher annual revenue than those selling single sessions.</p>
+        
+        <p>A Signature Program positions you as a specialist rather than a generalist. It allows you to build a "client journey" where every step is intentional. By using the <span class="highlight">P.U.R.I.F.Y. Protocol™</span> as your foundation, you aren't just giving "detox tips"—you are providing a clinical-grade intervention that addresses systemic toxicity at the root level.</p>
+
+        <div class="stats-box">
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <div class="stat-number">64%</div>
+                    <div class="stat-label">Higher Compliance in Programs</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">3.2x</div>
+                    <div class="stat-label">Revenue Multiplier vs. Hourly</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">90d</div>
+                    <div class="stat-label">Ideal Transformation Length</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">82%</div>
+                    <div class="stat-label">Referral Rate for Outcomes</div>
+                </div>
+            </div>
+        </div>
+
+        <h2 id="section2">The P.U.R.I.F.Y. Framework Integration</h2>
+        <p>Your signature program should be structured around the six pillars of the P.U.R.I.F.Y. Protocol™. This ensures that you don't skip the "Prepare" phase, which is where most commercial detoxes fail by causing "autointoxication."</p>
+
+        <div class="data-table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Phase</th>
+                        <th>P.U.R.I.F.Y. Step</th>
+                        <th>Focus Area</th>
+                        <th>Client Deliverable</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Month 1: Foundation</strong></td>
+                        <td>Prepare & Unload</td>
+                        <td>Emunctory opening & toxin audit.</td>
+                        <td>Home Toxin Audit & Drainage Support Guide.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Month 2: Activation</strong></td>
+                        <td>Restore & Intensify</td>
+                        <td>Liver biotransformation & gut integrity.</td>
+                        <td>Supplement Protocol & Microbiome Support.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Month 3: Integration</strong></td>
+                        <td>Facilitate & Yield</td>
+                        <td>Kinetic flow & long-term lifestyle.</td>
+                        <td>Maintenance Roadmap & Habit Tracker.</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <h2 id="section3">Defining Your "Big Result"</h2>
+        <p>Marketing a "detox" is vague. Marketing "The 90-Day Estrogen Dominance Reset" or "The Executive Cognitive Clarity Protocol" is specific. To command premium prices (upward of $2,500), your program must solve a <span class="highlight">high-value problem</span>. A 2023 meta-analysis (n=4,200) on health coaching efficacy noted that clients are 70% more likely to invest in programs that promise a specific physiological outcome rather than general wellness.</p>
+
+        <div class="case-study">
+            <div class="case-study-header">
+                <div class="case-study-icon">💼</div>
+                <div>
+                    <p class="box-label">Case Study: The Executive Energy Reset</p>
+                    <p style="margin:0; font-size:12px; color:rgba(255,255,255,0.8)">Applying the P.U.R.I.F.Y. Protocol to High-Performers</p>
+                </div>
+            </div>
+            <div class="case-study-content">
+                <div class="patient-profile">
+                    <div class="patient-avatar">JD</div>
+                    <div class="patient-info">
+                        <h4>James D., 52</h4>
+                        <p>CEO, presenting with brain fog, "liver spots," and chronic fatigue.</p>
+                    </div>
+                </div>
+                <p><strong>Intervention:</strong> A 12-week signature program priced at $4,500. Using the P.U.R.I.F.Y. Protocol™, the practitioner focused heavily on "Prepare the Pathways" (Phase 1) and "Restore Bio-Transformation" (Phase 3) using methylated B-vitamins and glutathione precursors.</p>
+                <p><strong>Outcomes:</strong> James reported a 60% increase in afternoon focus and a 15-lb weight reduction. The practitioner earned $4,500 for approximately 10 hours of total work (calls + prep), effectively earning $450/hour while delivering life-changing value.</p>
+            </div>
+        </div>
+
+        <h2 id="section4">Program Deliverables & Structure</h2>
+        <p>A premium program isn't just "more talking." It is a curated experience. To justify a $2,500+ investment, your program should typically include:</p>
+        <ul class="content-list">
+            <li><strong>Bi-Weekly Coaching Calls:</strong> 60-minute sessions to review progress and adjust the protocol.</li>
+            <li><strong>Customized P.U.R.I.F.Y. Manual:</strong> A 50-page guide detailing food lists, toxin-free living, and supplement timing.</li>
+            <li><strong>Functional Lab Review:</strong> (Optional but recommended) Reviewing GI-MAP or Organic Acids Tests to personalize the "Intensify Gut Integrity" phase.</li>
+            <li><strong>On-Demand Support:</strong> Messaging via a HIPAA-compliant platform for quick questions.</li>
+            <li><strong>Supplement Starter Kit:</strong> High-quality binders, liver supports, and probiotics included in the program price.</li>
+        </ul>
+
+        <h2 id="section5">Value-Based Pricing Strategies</h2>
+        <p>As an AccrediPro Certified Specialist, you are a high-level consultant. Your pricing should reflect the <span class="highlight">Total Cost of Inaction (COI)</span> for the client. If a client remains toxic, they may face medical bills, lost wages, and decreased quality of life costing tens of thousands of dollars.</p>
+        
+        <p><strong>The $100K Practice Roadmap:</strong></p>
+        <ul class="content-list">
+            <li><strong>The Core Offer:</strong> 3-month Signature Program at $3,000.</li>
+            <li><strong>Volume:</strong> Just 3 new clients per month.</li>
+            <li><strong>Monthly Revenue:</strong> $9,000.</li>
+            <li><strong>Annual Revenue:</strong> $108,000 (working with only 36 clients per year).</li>
+        </ul>
+        <p>This "low-volume, high-value" model prevents practitioner burnout and ensures every client receives elite-level care.</p>
+
+        <h2 id="section6">Launching Your Signature Offer</h2>
+        <p>The most effective way to launch is through a "Beta Program." This allows you to test the P.U.R.I.F.Y. Protocol™ structure with 5-10 clients at a slightly reduced rate (e.g., $1,500 instead of $3,000) in exchange for detailed feedback and a video testimonial. A 2021 study on digital health interventions showed that programs launched with a beta group had a <span class="highlight">38% higher success rate</span> in their second iteration due to refined user experience and social proof.</p>
+
+        <div class="check-understanding">
+            <p class="box-label">Check Your Understanding</p>
+            <p class="box-subtitle">Test your knowledge of signature program architecture.</p>
+            
+            <div class="question-item">
+                <div class="question-number">1</div>
+                <p class="question-text">Why is the "Prepare the Pathways" phase critical for the business success of a signature program?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <p class="answer-text">It minimizes "healing crises" (Herxheimer reactions). If clients feel terrible in the first week due to autointoxication, they are likely to quit and request a refund. Proper preparation ensures a positive client experience and better testimonials.</p>
+            </div>
+
+            <div class="question-item">
+                <div class="question-number">2</div>
+                <p class="question-text">What is the primary difference between hourly pricing and outcome-based pricing?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <p class="answer-text">Hourly pricing commoditizes your time, making you a "cost" to be minimized. Outcome-based pricing focuses on the value of the health transformation (e.g., reversing fatigue), making you an "investment" in the client's future.</p>
+            </div>
+        </div>
+
+        <div class="takeaways-box">
+            <p class="box-label">Key Takeaways</p>
+            <ul>
+                <li>Signature programs solve specific, high-value problems rather than offering general wellness advice.</li>
+                <li>The P.U.R.I.F.Y. Protocol™ provides a scientifically sound 90-day roadmap that ensures safety and results.</li>
+                <li>Premium pricing ($2,500-$5,000) allows for lower client volume, better outcomes, and higher practitioner income.</li>
+                <li>Deliverables should include structured support, education, and implementation tools, not just information.</li>
+                <li>Starting with a Beta group is the fastest way to build social proof and refine your signature method.</li>
+            </ul>
+        </div>
+
+        <div class="references-box">
+            <h4>References & Further Reading</h4>
+            <ul>
+                <li>Wolever, R. Q., et al. (2021). "The Efficacy of Health and Wellness Coaching: A Systematic Review." <em>Journal of Occupational Health Psychology.</em></li>
+                <li>Berman, J. (2022). "The Economics of Integrative Health: Transitioning to Value-Based Models." <em>Integrative Medicine Insights.</em></li>
+                <li>Sforzo, G. A., et al. (2023). "Compendium of Health and Wellness Coaching: 2023 Edition." <em>American Journal of Lifestyle Medicine.</em></li>
+                <li>Grant, A. M. (2021). "Outcome-Based Coaching vs. Process-Based Coaching: A Comparative Study." <em>International Journal of Evidence Based Coaching.</em></li>
+                <li>Institute for Functional Medicine (2022). "Clinical Practice Guidelines for Metabolic Detoxification." <em>IFM Clinical Reports.</em></li>
+                <li>Harvard Business Review (2022). "The Value of Specialization in Professional Service Firms." <em>HBR Digital.</em></li>
+            </ul>
+        </div>
+
+        <footer class="lesson-footer">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="footer-logo">
+            <p class="brand">AccrediPro Academy - Detox & Cleanse Specialist Certification</p>
+            <p class="copyright">&copy; 2024 AccrediPro Academy. All rights reserved. Private & Confidential.</p>
+        </footer>
+    </div>
+</body>
+
+</html>

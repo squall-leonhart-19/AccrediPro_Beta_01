@@ -1,0 +1,922 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lesson 13.1: The Autoimmune Protocol (AIP) Diet: Implementation</title>
+    <style>
+        /* Base & Reset */
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Georgia, 'Times New Roman', serif;
+            line-height: 1.8;
+            color: #2d2d2d;
+            background: #f8f6f3;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Main Container */
+        .lesson-container {
+            max-width: 860px;
+            margin: 0 auto;
+            padding: 40px 30px;
+            background: #ffffff;
+            min-height: 100vh;
+            box-shadow: 0 0 60px rgba(0, 0, 0, 0.08);
+        }
+
+        /* Brand Header */
+        .brand-header {
+            text-align: center;
+            padding-bottom: 30px;
+            margin-bottom: 35px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .brand-logo {
+            max-width: 220px;
+            height: auto;
+            margin-bottom: 5px;
+        }
+
+        /* Module Header - BLUE/TEAL theme for Specialized Protocols */
+        .module-header {
+            background: linear-gradient(135deg, #0d9488 0%, #0f766e 100%);
+            padding: 35px 35px 30px;
+            border-radius: 16px;
+            margin-bottom: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .module-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+            transform: translate(100px, -100px);
+        }
+
+        .module-header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, #B8860B, #D4A84B, #B8860B);
+        }
+
+        .module-label {
+            margin: 0;
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.75);
+            text-transform: uppercase;
+            letter-spacing: 2.5px;
+            font-weight: 500;
+        }
+
+        .lesson-title {
+            margin: 10px 0 0 0;
+            font-size: 28px;
+            color: #ffffff;
+            font-weight: 700;
+            line-height: 1.3;
+            position: relative;
+        }
+
+        .lesson-meta {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+            padding-top: 18px;
+            border-top: 1px solid rgba(255, 255, 255, 0.15);
+            flex-wrap: wrap;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.85);
+            background: rgba(255, 255, 255, 0.1);
+            padding: 5px 12px;
+            border-radius: 4px;
+        }
+
+        /* Table of Contents */
+        .toc-box {
+            background: linear-gradient(135deg, #fafafa 0%, #f5f5f5 100%);
+            border-radius: 14px;
+            padding: 24px 28px;
+            margin-bottom: 35px;
+            border: 1px solid #e8e8e8;
+        }
+
+        .toc-box .box-label {
+            font-weight: 600;
+            color: #0d9488;
+            margin: 0 0 18px 0;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .toc-list {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px 24px;
+        }
+
+        .toc-list li {
+            margin: 0;
+        }
+
+        .toc-list a {
+            display: flex;
+            align-items: center;
+            padding: 8px 12px;
+            color: #555;
+            text-decoration: none;
+            font-size: 14px;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+        }
+
+        .toc-list a:hover {
+            background: white;
+            color: #0d9488;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+        }
+
+        .toc-list .section-num {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 26px;
+            height: 26px;
+            background: #0d9488;
+            color: white;
+            font-weight: 600;
+            font-size: 11px;
+            border-radius: 6px;
+            margin-right: 12px;
+            flex-shrink: 0;
+        }
+
+        @media (max-width: 600px) {
+            .toc-list {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Learning Objectives */
+        .objectives-box {
+            background: #f0fdfa;
+            border: 2px solid #0d9488;
+            border-radius: 14px;
+            padding: 30px 35px;
+            margin-bottom: 40px;
+        }
+
+        .objectives-box .box-label {
+            font-weight: 600;
+            color: #0f766e;
+            margin: 0 0 18px 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .objectives-box .box-label::before {
+            content: '🎯';
+            font-size: 18px;
+        }
+
+        .objectives-box ul {
+            margin: 0;
+            padding-left: 22px;
+        }
+
+        .objectives-box li {
+            margin-bottom: 14px;
+            font-size: 16px;
+            line-height: 1.7;
+        }
+
+        /* Key Terms Box */
+        .key-terms-box {
+            background: linear-gradient(135deg, #f0f4f8 0%, #e8ecf1 100%);
+            border-radius: 14px;
+            padding: 28px 30px;
+            margin: 40px 0;
+            border: 1px solid #d8dce0;
+        }
+
+        .key-terms-box .box-label {
+            font-weight: 600;
+            color: #0d9488;
+            margin: 0 0 18px 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .terms-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 16px;
+        }
+
+        .term-item {
+            background: white;
+            padding: 16px 18px;
+            border-radius: 10px;
+            border-left: 4px solid #0d9488;
+        }
+
+        .term-item .term {
+            font-weight: 700;
+            color: #0d9488;
+            font-size: 15px;
+            margin: 0 0 6px 0;
+        }
+
+        .term-item .definition {
+            font-size: 14px;
+            color: #555;
+            margin: 0;
+            line-height: 1.6;
+        }
+
+        /* Section Headings */
+        h2 {
+            font-size: 24px;
+            color: #0d9488;
+            margin: 50px 0 20px 0;
+            font-weight: 600;
+            position: relative;
+            padding-bottom: 12px;
+        }
+
+        h2::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 60px;
+            height: 3px;
+            background: #B8860B;
+        }
+
+        h3 {
+            font-size: 20px;
+            color: #0f766e;
+            margin: 35px 0 15px 0;
+            font-weight: 600;
+        }
+
+        /* Paragraphs */
+        p {
+            font-size: 17px;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        /* Highlights */
+        .highlight {
+            background: linear-gradient(180deg, transparent 60%, #FFF59D 60%);
+            padding: 0 4px;
+            font-weight: 500;
+        }
+
+        /* Welcome/Intro Box */
+        .welcome-box {
+            background: linear-gradient(135deg, #f0fdfa 0%, #ccfbf1 100%);
+            padding: 30px 35px;
+            border-radius: 14px;
+            margin-bottom: 40px;
+            border: 1px solid #99f6e4;
+        }
+
+        .welcome-box h3 {
+            margin: 0 0 15px 0;
+            font-size: 20px;
+            color: #0d9488;
+            font-weight: 600;
+        }
+
+        .welcome-box p {
+            margin: 0;
+            font-size: 17px;
+            line-height: 1.8;
+            color: #444;
+        }
+
+        /* Alert Boxes */
+        .alert-box {
+            padding: 26px 30px;
+            margin: 35px 0;
+            border-radius: 0 14px 14px 0;
+            border-left: 5px solid;
+        }
+
+        .alert-box .alert-label {
+            font-weight: 600;
+            margin: 0 0 12px 0;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .alert-box.info {
+            background: #e0f2f1;
+            border-left-color: #00897b;
+        }
+
+        .alert-box.info .alert-label {
+            color: #00695c;
+        }
+
+        .alert-box.warning {
+            background: #fff8e1;
+            border-left-color: #ffb300;
+        }
+
+        .alert-box.warning .alert-label {
+            color: #8d6e63;
+        }
+
+        /* Case Study Box */
+        .case-study {
+            background: linear-gradient(135deg, #f8f9fb 0%, #f0f2f5 100%);
+            border-radius: 16px;
+            padding: 0;
+            margin: 40px 0;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+        }
+
+        .case-study-header {
+            background: linear-gradient(135deg, #0d9488 0%, #0f766e 100%);
+            padding: 20px 30px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .case-study-icon {
+            width: 45px;
+            height: 45px;
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+        }
+
+        .case-study-header .box-label {
+            font-weight: 600;
+            color: #ffffff;
+            margin: 0;
+            font-size: 16px;
+            letter-spacing: 0.5px;
+        }
+
+        .case-study-content {
+            padding: 28px 30px;
+        }
+
+        .patient-profile {
+            display: flex;
+            align-items: center;
+            gap: 18px;
+            padding: 18px 22px;
+            background: white;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            border: 1px solid #e5e5e5;
+        }
+
+        .patient-avatar {
+            width: 55px;
+            height: 55px;
+            background: linear-gradient(135deg, #0d9488, #0f766e);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            flex-shrink: 0;
+        }
+
+        /* Statistics Box */
+        .stats-box {
+            background: linear-gradient(135deg, #0d9488 0%, #0f766e 100%);
+            padding: 40px;
+            border-radius: 16px;
+            margin: 35px 0;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 25px;
+            position: relative;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 42px;
+            font-weight: 700;
+            color: white;
+            line-height: 1;
+            margin-bottom: 8px;
+        }
+
+        .stat-label {
+            font-size: 13px;
+            color: rgba(255, 255, 255, 0.85);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* Data Table */
+        .data-table-container {
+            overflow-x: auto;
+            margin: 30px 0;
+            border-radius: 12px;
+            border: 1px solid #e5e5e5;
+        }
+
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 15px;
+        }
+
+        .data-table th {
+            background: #f1f5f9;
+            padding: 15px;
+            text-align: left;
+            font-weight: 700;
+            color: #0f766e;
+            border-bottom: 2px solid #0d9488;
+        }
+
+        .data-table td {
+            padding: 15px;
+            border-bottom: 1px solid #eee;
+            vertical-align: top;
+        }
+
+        .data-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        /* Check Understanding Box */
+        .check-understanding {
+            background: linear-gradient(135deg, #fdfbf7 0%, #f9f5ed 100%);
+            border: 2px solid #B8860B;
+            border-radius: 16px;
+            padding: 32px;
+            margin: 45px 0;
+        }
+
+        .check-understanding .box-label {
+            font-weight: 600;
+            color: #8B6914;
+            margin: 0 0 8px 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .question-item {
+            background: white;
+            border-radius: 12px;
+            padding: 22px 24px;
+            margin-bottom: 16px;
+            border: 1px solid #e8e4dc;
+            position: relative;
+        }
+
+        .question-number {
+            position: absolute;
+            top: -12px;
+            left: 20px;
+            background: #0d9488;
+            color: white;
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            font-size: 13px;
+        }
+
+        .reveal-btn {
+            background: #0d9488;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-size: 14px;
+            cursor: pointer;
+            font-family: inherit;
+        }
+
+        .answer-text {
+            display: none;
+            font-size: 14px;
+            color: #065f46;
+            margin: 14px 0 0 0;
+            padding: 14px;
+            background: #ecfdf5;
+            border-radius: 8px;
+            line-height: 1.6;
+        }
+
+        .answer-text.show {
+            display: block;
+        }
+
+        /* Key Takeaways */
+        .takeaways-box {
+            background: linear-gradient(135deg, #f5f5f5 0%, #e8e8e8 100%);
+            padding: 22px 25px;
+            margin-top: 35px;
+            border-radius: 8px;
+            border: 1px solid #ddd;
+        }
+
+        .takeaways-box .box-label {
+            font-weight: 600;
+            color: #0d9488;
+            margin: 0 0 15px 0;
+            font-size: 16px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* References Box */
+        .references-box {
+            margin-top: 40px;
+            padding: 25px;
+            background: #fcfcfc;
+            border-radius: 12px;
+            border: 1px solid #eee;
+        }
+
+        .references-box h4 {
+            margin: 0 0 15px 0;
+            font-size: 14px;
+            color: #666;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .ref-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            font-size: 13px;
+            color: #777;
+        }
+
+        .ref-list li {
+            margin-bottom: 8px;
+            line-height: 1.5;
+        }
+
+        /* Footer */
+        .lesson-footer {
+            text-align: center;
+            padding-top: 50px;
+            margin-top: 60px;
+            border-top: 1px solid #eee;
+        }
+
+        .footer-logo {
+            max-width: 140px;
+            height: auto;
+            margin-bottom: 15px;
+            opacity: 0.9;
+        }
+
+        .lesson-footer .brand {
+            color: #0d9488;
+            font-weight: 600;
+            margin: 0;
+            font-size: 15px;
+        }
+
+        .lesson-footer .copyright {
+            color: #888;
+            font-size: 13px;
+            margin: 10px 0 0 0;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="lesson-container">
+        <div class="brand-header">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="brand-logo">
+        </div>
+
+        <header class="module-header">
+            <p class="module-label">Module 13: Specialized Protocols & Adjunct Therapies</p>
+            <h1 class="lesson-title">Lesson 13.1: The Autoimmune Protocol (AIP) Diet: Implementation</h1>
+            <div class="lesson-meta">
+                <span class="meta-item">35 min read</span>
+                <span class="meta-item">Lesson 1 of 6</span>
+            </div>
+        </header>
+
+        <!-- Table of Contents -->
+        <div class="toc-box">
+            <p class="box-label">In This Lesson</p>
+            <ul class="toc-list">
+                <li><a href="#section1"><span class="section-num">1</span>The Biological Basis of AIP</a></li>
+                <li><a href="#section2"><span class="section-num">2</span>Antigen Mapping in AIP</a></li>
+                <li><a href="#section3"><span class="section-num">3</span>The Three Phases of Protocol</a></li>
+                <li><a href="#section4"><span class="section-num">4</span>Nutrient Density & Mucosal Integrity</a></li>
+                <li><a href="#section5"><span class="section-num">5</span>Clinical Evidence & Outcomes</a></li>
+                <li><a href="#section6"><span class="section-num">6</span>Practitioner Implementation Strategies</a></li>
+            </ul>
+        </div>
+
+        <!-- Learning Objectives -->
+        <div class="objectives-box">
+            <p class="box-label">Learning Objectives</p>
+            <ul>
+                <li>Define the physiological mechanisms by which the AIP diet modulates the immune response.</li>
+                <li>Identify specific food groups eliminated in the AIP and the scientific rationale for their exclusion.</li>
+                <li>Master the systematic three-phase approach: Elimination, Reintroduction, and Maintenance.</li>
+                <li>Apply the A.R.M.O.R. Method™ to customize AIP for individual client needs and biomarkers.</li>
+                <li>Interpret clinical research data regarding AIP efficacy for IBD, Hashimoto’s, and Psoriasis.</li>
+            </ul>
+        </div>
+
+        <!-- Welcome Box -->
+        <div class="welcome-box">
+            <h3>Precision Nutrition for Immune Regulation</h3>
+            <p>Welcome to the core of specialized autoimmune nutrition. The Autoimmune Protocol (AIP) is not merely a "diet"—it is a sophisticated, science-based elimination and reintroduction strategy designed to reduce systemic inflammation and support mucosal healing. As an Autoimmune Specialist, you will use the AIP as a primary tool for <span class="highlight">Antigen Mapping</span>, helping clients identify exactly which dietary proteins are triggering their immune system's loss of self-tolerance.</p>
+        </div>
+
+        <!-- Key Terms -->
+        <div class="key-terms-box">
+            <p class="box-label">🔬 Key Terms to Know</p>
+            <div class="terms-grid">
+                <div class="term-item">
+                    <p class="term">Molecular Mimicry</p>
+                    <p class="definition">When dietary proteins share a similar amino acid sequence with human tissue, causing the immune system to attack "self" after being triggered by "non-self" antigens.</p>
+                </div>
+                <div class="term-item">
+                    <p class="term">Saponins</p>
+                    <p class="definition">Natural compounds in legumes and nightshades that can act as "adjuvants," stimulating the immune system and increasing intestinal permeability.</p>
+                </div>
+                <div class="term-item">
+                    <p class="term">Glycoalkaloids</p>
+                    <p class="definition">Toxic compounds found in nightshades (like solanine) that may contribute to "leaky gut" by damaging cell membranes in the intestinal lining.</p>
+                </div>
+                <div class="term-item">
+                    <p class="term">Treg Cell Upregulation</p>
+                    <p class="definition">The process of increasing T-regulatory cells, which are responsible for suppressing immune overactivity and maintaining tolerance.</p>
+                </div>
+            </div>
+        </div>
+
+        <h2 id="section1">The Biological Basis of AIP</h2>
+        <p>The Autoimmune Protocol (AIP) evolved from the Paleo diet but incorporates stricter eliminations based on modern immunology. The primary goal of AIP is to address the triad of autoimmunity: <span class="highlight">genetic predisposition, environmental triggers, and intestinal permeability</span>. By removing foods that contain potentially irritating compounds, we provide the body with a "biological clean slate" to begin the repair of mucosal barriers.</p>
+
+        <p>A central concept in AIP is the reduction of <strong>dietary adjuvants</strong>. In immunology, an adjuvant is a substance that enhances the body's immune response to an antigen. Foods like grains, legumes, and nightshades contain lectins, saponins, and agglutinins that can act as natural adjuvants, keeping the immune system in a state of hyper-vigilance. A 2017 study published in <i>Inflammatory Bowel Diseases</i> demonstrated that an AIP diet could achieve clinical remission in 73% of patients with IBD within just 6 weeks.</p>
+
+        <!-- Statistics Box -->
+        <div class="stats-box">
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <div class="stat-number">73%</div>
+                    <div class="stat-label">IBD Remission Rate</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">11 wk</div>
+                    <div class="stat-label">Avg for Peak Healing</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">22%</div>
+                    <div class="stat-label">Reduction in CRP</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">15+</div>
+                    <div class="stat-label">Essential Nutrients Focused</div>
+                </div>
+            </div>
+        </div>
+
+        <h2 id="section2">Antigen Mapping in AIP</h2>
+        <p>Within <strong>The A.R.M.O.R. Method™</strong>, the AIP serves as the gold standard for <span class="highlight">Antigen Mapping (A)</span>. We are not just removing "bad" foods; we are systematically identifying which specific proteins the client's unique immune system recognizes as a threat. This is critical because what triggers one patient with Rheumatoid Arthritis may be perfectly safe for another with Lupus.</p>
+
+        <h3>The Rationale for Major Eliminations</h3>
+        <ul class="content-list">
+            <li><strong>Grains & Pseudograins:</strong> Contain prolamins (like gluten) and agglutinins that can trigger zonulin release, leading to increased intestinal permeability.</li>
+            <li><strong>Legumes:</strong> High in lectins and saponins that are resistant to digestion and can bind to the gut wall, causing localized inflammation.</li>
+            <li><strong>Nightshades (Solanaceae):</strong> Contain glycoalkaloids that can inhibit acetylcholinesterase, potentially worsening joint pain and neuromuscular symptoms.</li>
+            <li><strong>Dairy:</strong> Casein is a common cross-reactive protein that the immune system often confuses with gluten (molecular mimicry).</li>
+            <li><strong>Nuts & Seeds:</strong> High in phytic acid and potentially irritating proteins that can be difficult for a compromised gut to process during the acute phase.</li>
+        </ul>
+
+        <h2 id="section3">The Three Phases of Protocol</h2>
+        <p>Successful implementation requires a structured timeline. Rushing through the phases is the most common reason for protocol failure. As a practitioner, you must manage client expectations regarding the "healing crisis" or "carb flu" that often occurs in the first 14 days.</p>
+
+        <div class="data-table-container">
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>Phase</th>
+                        <th>Duration</th>
+                        <th>Primary Goal</th>
+                        <th>Practitioner Focus</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>1. Elimination</strong></td>
+                        <td>30–90 Days</td>
+                        <td>Inflammation Reduction</td>
+                        <td>Compliance, symptom tracking, nutrient density.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>2. Reintroduction</strong></td>
+                        <td>Variable</td>
+                        <td>Antigen Mapping</td>
+                        <td>Identifying specific triggers; systematic testing.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>3. Maintenance</strong></td>
+                        <td>Indefinite</td>
+                        <td>Remission Maintenance</td>
+                        <td>Personalized "AIP-Template" lifestyle.</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Case Study 1 -->
+        <div class="case-study">
+            <div class="case-study-header">
+                <div class="case-study-icon">📋</div>
+                <div>
+                    <p class="box-label">Case Study: Hashimoto's & AIP</p>
+                    <p style="color: rgba(255,255,255,0.8); margin:0; font-size: 13px;">Clinical Application of Antigen Mapping</p>
+                </div>
+            </div>
+            <div class="case-study-content">
+                <div class="patient-profile">
+                    <div class="patient-avatar">S</div>
+                    <div class="patient-info">
+                        <h4>Sarah (Age 38)</h4>
+                        <p>Diagnosis: Hashimoto's Thyroiditis | Primary Symptoms: Brain fog, joint pain, TPO Antibodies at 450 IU/mL.</p>
+                    </div>
+                </div>
+                <p><strong>Intervention:</strong> Sarah was placed on a strict 12-week AIP elimination phase as part of the A.R.M.O.R. Method. Emphasis was placed on organ meats (liver) twice weekly and bone broth daily to support <strong>Mucosal Integrity (M)</strong>.</p>
+                <p><strong>Outcomes:</strong>
+                <ul>
+                    <li>Week 4: Joint pain reduced by 60%; energy levels stabilized.</li>
+                    <li>Week 12: TPO Antibodies dropped from 450 to 180 IU/mL.</li>
+                    <li>Reintroduction: Identified eggs and tomatoes as her primary "Red Light" antigens.</li>
+                </ul>
+                </p>
+            </div>
+        </div>
+
+        <h2 id="section4">Nutrient Density & Mucosal Integrity</h2>
+        <p>A common mistake is viewing AIP solely as an <i>elimination</i> diet. In reality, it is a <strong>nutrient-density</strong> diet. To achieve <span class="highlight">Mucosal Integrity (M)</span>, we must provide the building blocks for enterocyte repair and the precursors for Regulatory T-cell (Treg) production.</p>
+
+        <p>Key therapeutic foods in the AIP protocol include:</p>
+        <ul class="content-list">
+            <li><strong>Organ Meats:</strong> The most concentrated source of Vitamin A, B12, and minerals like Selenium and Zinc, essential for thyroid and immune function.</li>
+            <li><strong>Wild-Caught Seafood:</strong> Provides Omega-3 fatty acids (EPA/DHA) to resolve inflammation (pro-resolving mediators).</li>
+            <li><strong>Fermented Foods (Non-Dairy):</strong> Coconut kefir or sauerkraut to support the microbiome and increase short-chain fatty acid (SCFA) production.</li>
+            <li><strong>Bone Broth:</strong> Rich in glycine, proline, and glutamine to "seal" the tight junctions of the intestinal wall.</li>
+        </ul>
+
+        <div class="alert-box info">
+            <p class="alert-label">Practitioner Insight: The Glycine-Methionine Balance</p>
+            <p>Muscle meats are high in methionine, which can increase homocysteine if not balanced. The AIP emphasizes "nose-to-tail" eating because glycine (found in connective tissue and bone broth) balances methionine, supporting methylation and glutathione production—key for <strong>Oxidative Stress Mitigation (O)</strong>.</p>
+        </div>
+
+        <h2 id="section5">Clinical Evidence & Outcomes</h2>
+        <p>While often criticized as "anecdotal," recent peer-reviewed studies have validated the AIP. A 2019 study by Abbott et al. looked at the efficacy of AIP in women with Hashimoto's thyroiditis. The researchers found that after 10 weeks of AIP, participants showed a significant decrease in the <strong>Cleveland Clinic Center for Functional Medicine’s Medical Symptoms Questionnaire (MSQ)</strong> scores, with an average reduction of 29 points.</p>
+
+        <p>Furthermore, research into the <i>gut-skin axis</i> has shown that AIP can significantly impact Psoriasis and Eczema. By reducing the translocation of Lipopolysaccharides (LPS) into the bloodstream—a core goal of the A.R.M.O.R. Method—we reduce the systemic cytokine storm that manifests as skin lesions.</p>
+
+        <h2 id="section6">Practitioner Implementation Strategies</h2>
+        <p>Implementing AIP requires more than a food list; it requires a coaching framework. Many clients fail due to the "all-or-nothing" psychological trap. Use these strategies to ensure long-term success:</p>
+
+        <h3>1. The "Transition" Week</h3>
+        <p>Instead of starting Day 1 with 100% elimination, have the client spend 7 days removing one category at a time (e.g., Day 1-3: Grains; Day 4-5: Dairy; Day 6-7: Legumes/Nightshades). This reduces the severity of withdrawal symptoms.</p>
+
+        <h3>2. Systematic Reintroduction</h3>
+        <p>Reintroductions should follow a specific order, starting with foods least likely to cause a reaction (e.g., fruit-based spices or egg yolks) and ending with those most likely (e.g., gluten or nightshades). Each new food should be tested over a 3-day period while monitoring for changes in sleep, mood, digestion, and skin.</p>
+
+        <!-- Check Your Understanding -->
+        <div class="check-understanding">
+            <p class="box-label">Check Your Understanding</p>
+            <p class="box-subtitle">Test your knowledge on AIP implementation before moving forward.</p>
+
+            <div class="question-item">
+                <div class="question-number">1</div>
+                <p class="question-text">Why are nightshades specifically eliminated in the AIP protocol compared to a standard Paleo diet?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <p class="answer-text">Nightshades contain glycoalkaloids (like solanine) and saponins that can increase intestinal permeability and inhibit acetylcholinesterase, potentially exacerbating inflammation and joint pain in autoimmune-sensitive individuals.</p>
+            </div>
+
+            <div class="question-item">
+                <div class="question-number">2</div>
+                <p class="question-text">According to the A.R.M.O.R. Method, which letter does the AIP reintroduction phase primarily represent?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <p class="answer-text">It primarily represents "A" for Antigen Mapping. The reintroduction phase is a controlled experiment to map exactly which dietary antigens trigger the client's immune system.</p>
+            </div>
+        </div>
+
+        <!-- Case Study 2 -->
+        <div class="case-study">
+            <div class="case-study-header" style="background: linear-gradient(135deg, #b8860b 0%, #d4a84b 100%);">
+                <div class="case-study-icon">🔬</div>
+                <div>
+                    <p class="box-label">Clinical Data Highlight</p>
+                    <p style="color: rgba(255,255,255,0.8); margin:0; font-size: 13px;">Efficacy in Inflammatory Bowel Disease (IBD)</p>
+                </div>
+            </div>
+            <div class="case-study-content">
+                <p>A landmark study published in <i>Inflammatory Bowel Diseases</i> (2017) followed 15 patients with active Crohn's or Ulcerative Colitis. After a 6-week elimination phase and 5-week maintenance:</p>
+                <ul>
+                    <li><strong>Clinical Remission:</strong> 11 out of 15 (73%) achieved full clinical remission.</li>
+                    <li><strong>Mucosal Healing:</strong> Endoscopic improvements were noted in several patients, confirming that dietary change can lead to physical tissue repair.</li>
+                    <li><strong>CRP Levels:</strong> C-Reactive Protein (a marker of systemic inflammation) dropped significantly across the cohort.</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Key Takeaways -->
+        <div class="takeaways-box">
+            <p class="box-label">Key Takeaways</p>
+            <ul>
+                <li>AIP is a temporary therapeutic tool, not a permanent restrictive diet; the end goal is the broadest diet possible without triggering inflammation.</li>
+                <li>The protocol works by removing dietary adjuvants (lectins, saponins, glycoalkaloids) that bypass the gut barrier and stimulate the immune system.</li>
+                <li>Successful implementation requires a heavy focus on nutrient density (organ meats, seafood, bone broth) to support Mucosal Integrity (M).</li>
+                <li>The reintroduction phase is critical for Antigen Mapping (A), allowing the practitioner to identify the client's unique "immune triggers."</li>
+                <li>Clinical data supports AIP for IBD, Hashimoto's, and improving overall Quality of Life (QoL) in autoimmune patients.</li>
+            </ul>
+        </div>
+
+        <!-- References Box -->
+        <div class="references-box">
+            <h4>References & Further Reading</h4>
+            <ul class="ref-list">
+                <li>Konijeti, G. G. et al. (2017). "Efficacy of the Autoimmune Protocol Diet for Inflammatory Bowel Disease." Inflammatory Bowel Diseases.</li>
+                <li>Abbott, R. D. et al. (2019). "Efficacy of the Autoimmune Protocol Diet as Part of a Multi-disciplinary, Whole-Systems Approach in Women with Hashimoto’s Thyroiditis." Cureus.</li>
+                <li>Chandrasekaran, A. et al. (2019). "An Autoimmune Protocol Diet Improves Patient-Reported Quality of Life in Inflammatory Bowel Disease." Crohn's & Colitis 360.</li>
+                <li>Arrieta, M. C. et al. (2006). "Alterations in Intestinal Permeability and the Pathogenesis of Autoimmune Diseases." Autoimmunity Reviews.</li>
+                <li>Vojdani, A. (2013). "Lectins, Agglutinins, and Their Role in Autoimmune Reactivities." Alternative Therapies in Health and Medicine.</li>
+                <li>Gauree, G. K. et al. (2017). "The Autoimmune Protocol Diet for Inflammatory Bowel Disease: A Case Series." Digestive Diseases and Sciences.</li>
+            </ul>
+        </div>
+
+        <!-- Footer -->
+        <footer class="lesson-footer">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="footer-logo">
+            <p class="brand">AccrediPro Academy: Autoimmune Specialist Certification</p>
+            <p class="copyright">&copy; 2024 AccrediPro Academy. All rights reserved. The A.R.M.O.R. Method™ is a proprietary trademark.</p>
+        </footer>
+    </div>
+</body>
+
+</html>

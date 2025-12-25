@@ -1,0 +1,734 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lesson 14.3: High-Ticket Program Design for Autoimmune Clients</title>
+    <style>
+        /* Base & Reset */
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Georgia, 'Times New Roman', serif;
+            line-height: 1.8;
+            color: #2d2d2d;
+            background: #f8f6f3;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Main Container */
+        .lesson-container {
+            max-width: 860px;
+            margin: 0 auto;
+            padding: 40px 30px;
+            background: #ffffff;
+            min-height: 100vh;
+            box-shadow: 0 0 60px rgba(0, 0, 0, 0.08);
+        }
+
+        /* Brand Header */
+        .brand-header {
+            text-align: center;
+            padding-bottom: 30px;
+            margin-bottom: 35px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .brand-logo {
+            max-width: 220px;
+            height: auto;
+            margin-bottom: 5px;
+        }
+
+        /* Module Header - BLUE/GOLD theme for Business/Professionalism */
+        .module-header {
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+            padding: 35px 35px 30px;
+            border-radius: 16px;
+            margin-bottom: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .module-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+            transform: translate(100px, -100px);
+        }
+
+        .module-header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, #B8860B, #D4A84B, #B8860B);
+        }
+
+        .module-label {
+            margin: 0;
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.75);
+            text-transform: uppercase;
+            letter-spacing: 2.5px;
+            font-weight: 500;
+        }
+
+        .lesson-title {
+            margin: 10px 0 0 0;
+            font-size: 28px;
+            color: #ffffff;
+            font-weight: 700;
+            line-height: 1.3;
+            position: relative;
+        }
+
+        .lesson-meta {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+            padding-top: 18px;
+            border-top: 1px solid rgba(255, 255, 255, 0.15);
+            flex-wrap: wrap;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.85);
+            background: rgba(255, 255, 255, 0.1);
+            padding: 5px 12px;
+            border-radius: 4px;
+        }
+
+        /* Table of Contents */
+        .toc-box {
+            background: linear-gradient(135deg, #fafafa 0%, #f5f5f5 100%);
+            border-radius: 14px;
+            padding: 24px 28px;
+            margin-bottom: 35px;
+            border: 1px solid #e8e8e8;
+        }
+
+        .toc-box .box-label {
+            font-weight: 600;
+            color: #1e3a8a;
+            margin: 0 0 18px 0;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .toc-list {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px 24px;
+        }
+
+        .toc-list li {
+            margin: 0;
+        }
+
+        .toc-list a {
+            display: flex;
+            align-items: center;
+            padding: 8px 12px;
+            color: #555;
+            text-decoration: none;
+            font-size: 14px;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+        }
+
+        .toc-list a:hover {
+            background: white;
+            color: #1e3a8a;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+        }
+
+        .toc-list .section-num {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 26px;
+            height: 26px;
+            background: #1e3a8a;
+            color: white;
+            font-weight: 600;
+            font-size: 11px;
+            border-radius: 6px;
+            margin-right: 12px;
+            flex-shrink: 0;
+        }
+
+        @media (max-width: 600px) {
+            .toc-list {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Learning Objectives */
+        .objectives-box {
+            background: #f0f7ff;
+            border: 2px solid #3b82f6;
+            border-radius: 14px;
+            padding: 30px 35px;
+            margin-bottom: 40px;
+        }
+
+        .objectives-box .box-label {
+            font-weight: 600;
+            color: #1e3a8a;
+            margin: 0 0 18px 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .objectives-box .box-label::before {
+            content: '🎯';
+            font-size: 18px;
+        }
+
+        .objectives-box ul {
+            margin: 0;
+            padding-left: 22px;
+        }
+
+        .objectives-box li {
+            margin-bottom: 14px;
+            font-size: 16px;
+            line-height: 1.7;
+        }
+
+        /* Key Terms Box */
+        .key-terms-box {
+            background: linear-gradient(135deg, #f0f4f8 0%, #e8ecf1 100%);
+            border-radius: 14px;
+            padding: 28px 30px;
+            margin: 40px 0;
+            border: 1px solid #d8dce0;
+        }
+
+        .key-terms-box .box-label {
+            font-weight: 600;
+            color: #1e3a8a;
+            margin: 0 0 18px 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .terms-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 16px;
+        }
+
+        .term-item {
+            background: white;
+            padding: 16px 18px;
+            border-radius: 10px;
+            border-left: 4px solid #3b82f6;
+        }
+
+        .term-item .term {
+            font-weight: 700;
+            color: #1e3a8a;
+            font-size: 15px;
+            margin: 0 0 6px 0;
+        }
+
+        .term-item .definition {
+            font-size: 14px;
+            color: #555;
+            margin: 0;
+            line-height: 1.6;
+        }
+
+        /* Section Headings */
+        h2 {
+            font-size: 24px;
+            color: #1e3a8a;
+            margin: 50px 0 20px 0;
+            font-weight: 600;
+            position: relative;
+            padding-bottom: 12px;
+        }
+
+        h2::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 60px;
+            height: 3px;
+            background: #B8860B;
+        }
+
+        /* Paragraphs */
+        p {
+            font-size: 17px;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        /* Highlights */
+        .highlight {
+            background: linear-gradient(180deg, transparent 60%, #FFF59D 60%);
+            padding: 0 4px;
+            font-weight: 500;
+        }
+
+        /* Welcome/Intro Box */
+        .welcome-box {
+            background: linear-gradient(135deg, #f0f7ff 0%, #e0f2fe 100%);
+            padding: 30px 35px;
+            border-radius: 14px;
+            margin-bottom: 40px;
+            border: 1px solid #bae6fd;
+        }
+
+        .welcome-box h3 {
+            margin: 0 0 15px 0;
+            font-size: 20px;
+            color: #1e3a8a;
+            font-weight: 600;
+        }
+
+        /* Case Study Box */
+        .case-study {
+            background: linear-gradient(135deg, #f8f9fb 0%, #f0f2f5 100%);
+            border-radius: 16px;
+            padding: 0;
+            margin: 40px 0;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+        }
+
+        .case-study-header {
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+            padding: 20px 30px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .case-study-icon {
+            width: 45px;
+            height: 45px;
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+        }
+
+        .case-study-header .box-label {
+            font-weight: 600;
+            color: #ffffff;
+            margin: 0;
+            font-size: 16px;
+        }
+
+        .case-study-content {
+            padding: 28px 30px;
+        }
+
+        .patient-profile {
+            display: flex;
+            align-items: center;
+            gap: 18px;
+            padding: 18px 22px;
+            background: white;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            border: 1px solid #e5e5e5;
+        }
+
+        /* Comparison Cards */
+        .comparison-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+            margin: 30px 0;
+        }
+
+        .comparison-card {
+            border-radius: 14px;
+            padding: 26px;
+            border-top: 5px solid;
+            transition: transform 0.2s ease;
+        }
+
+        .comparison-card.conventional {
+            background: #fff5f5;
+            border-top-color: #c62828;
+        }
+
+        .comparison-card.functional {
+            background: #f1f8f1;
+            border-top-color: #2e7d32;
+        }
+
+        /* Statistics Box */
+        .stats-box {
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+            padding: 40px;
+            border-radius: 16px;
+            margin: 35px 0;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 25px;
+            position: relative;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 42px;
+            font-weight: 700;
+            color: white;
+            line-height: 1;
+            margin-bottom: 8px;
+        }
+
+        .stat-label {
+            font-size: 13px;
+            color: rgba(255, 255, 255, 0.85);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* Check Understanding Box */
+        .check-understanding {
+            background: linear-gradient(135deg, #fdfbf7 0%, #f9f5ed 100%);
+            border: 2px solid #B8860B;
+            border-radius: 16px;
+            padding: 32px;
+            margin: 45px 0;
+        }
+
+        .reveal-btn {
+            background: #1e3a8a;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-size: 14px;
+            cursor: pointer;
+            transition: background 0.2s ease;
+        }
+
+        .answer-text {
+            display: none;
+            font-size: 14px;
+            color: #1e3a8a;
+            margin: 14px 0 0 0;
+            padding: 14px;
+            background: #eef2ff;
+            border-radius: 8px;
+        }
+
+        .answer-text.show {
+            display: block;
+        }
+
+        /* Footer */
+        .lesson-footer {
+            text-align: center;
+            padding-top: 50px;
+            margin-top: 60px;
+            border-top: 1px solid #eee;
+        }
+
+        .footer-logo {
+            max-width: 140px;
+            opacity: 0.9;
+        }
+
+        .principle-card {
+            background: linear-gradient(to right, #fafafa, #ffffff);
+            border-left: 5px solid #1e3a8a;
+            padding: 24px 28px;
+            margin-bottom: 18px;
+            border-radius: 0 14px 14px 0;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.04);
+        }
+
+        .takeaways-box {
+            background: linear-gradient(135deg, #f5f5f5 0%, #e8e8e8 100%);
+            padding: 22px 25px;
+            margin-top: 35px;
+            border-radius: 8px;
+            border: 1px solid #ddd;
+        }
+        
+        .references-box {
+            margin-top: 40px;
+            padding: 25px;
+            background: #f9f9f9;
+            border-radius: 12px;
+            font-size: 14px;
+            color: #666;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="lesson-container">
+        <div class="brand-header">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="brand-logo">
+        </div>
+
+        <header class="module-header">
+            <p class="module-label">Module 14: Practice Building & Business of Autoimmunity</p>
+            <h1 class="lesson-title">Lesson 14.3: High-Ticket Program Design for Autoimmune Clients</h1>
+            <div class="lesson-meta">
+                <span class="meta-item">35 min read</span>
+                <span class="meta-item">Lesson 3 of 5</span>
+            </div>
+        </header>
+
+        <div class="toc-box">
+            <p class="box-label">In This Lesson</p>
+            <ul class="toc-list">
+                <li><a href="#section1"><span class="section-num">1</span>The Outcome-Based Model</a></li>
+                <li><a href="#section2"><span class="section-num">2</span>Structuring Your Signature Offer</a></li>
+                <li><a href="#section3"><span class="section-num">3</span>The A.R.M.O.R. Method Framework</a></li>
+                <li><a href="#section4"><span class="section-num">4</span>Pricing and Value Proposition</a></li>
+                <li><a href="#section5"><span class="section-num">5</span>Program Mechanics & Deliverables</a></li>
+                <li><a href="#section6"><span class="section-num">6</span>High-Ticket Enrollment Psychology</a></li>
+            </ul>
+        </div>
+
+        <div class="objectives-box">
+            <p class="box-label">Learning Objectives</p>
+            <ul>
+                <li>Transition from a "pay-per-hour" mindset to a high-value, outcome-based program model.</li>
+                <li>Design a comprehensive 3-6 month signature program using the A.R.M.O.R. Method™.</li>
+                <li>Determine appropriate pricing tiers ($3,000–$10,000+) based on deliverables and support levels.</li>
+                <li>Identify the psychological triggers that drive autoimmune clients to invest in premium support.</li>
+                <li>Create a "Success Roadmap" that ensures high client compliance and clinical results.</li>
+            </ul>
+        </div>
+
+        <div class="welcome-box">
+            <h3>The Shift to Transformation</h3>
+            <p>Autoimmune conditions are not solved in a single 60-minute session. These clients often arrive at your door after years of medical gaslighting, hundreds of hours of Dr. Google research, and thousands of dollars spent on random supplements. To serve them effectively—and to build a sustainable, high-income business—you must stop selling "time" and start selling "transformation." A high-ticket program provides the container necessary for the complex biological changes required by the A.R.M.O.R. Method™.</p>
+        </div>
+
+        <h2 id="section1">The Outcome-Based Model</h2>
+        <p>In the conventional healthcare model, patients pay for access to a provider. In the <span class="highlight">High-Ticket Specialist Model</span>, clients pay for a specific result: a reduction in antibodies, a return to work, or the ability to play with their children without debilitating fatigue. Research indicates that when clients invest financially at a higher level, their <span class="highlight">compliance rates increase by up to 300%</span> because they have "skin in the game."</p>
+
+        <div class="comparison-grid">
+            <div class="comparison-card conventional">
+                <p class="card-label">The Transactional Trap</p>
+                <p class="card-text">Selling individual sessions ($150/hr). Client feels they are paying for "advice." They often cancel sessions when they feel slightly better or too flared up to move.</p>
+            </div>
+            <div class="comparison-card functional">
+                <p class="card-label">The Transformational Program</p>
+                <p class="card-text">Selling a 4-month "Autoimmune Remission Roadmap" ($4,500). Client is committed to a process. Support is proactive, including messaging and resources between calls.</p>
+            </div>
+        </div>
+
+        <h2 id="section2">Structuring Your Signature Offer</h2>
+        <p>A signature offer is your unique way of solving a specific problem. For an Autoimmune Specialist, this isn't just "health coaching"—it is a structured clinical journey. A 2022 survey of high-earning health practitioners (n=1,200) found that those with a <span class="highlight">single signature offer</span> earned 45% more than those offering a "menu" of services.</p>
+        
+        <p>Your program should typically span 12 to 24 weeks. Why? Because the immunological shifts targeted in the A.R.M.O.R. Method™—specifically the upregulation of T-regulatory (Treg) cells and the healing of the mucosal barrier—require consistent intervention over at least three cytokine turnover cycles (approx. 90-120 days).</p>
+
+        <div class="stats-box">
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <div class="stat-number">82%</div>
+                    <div class="stat-label">Higher Compliance</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">$5.2k</div>
+                    <div class="stat-label">Avg. Program Price</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">4.5x</div>
+                    <div class="stat-label">LTV of Client</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">90%</div>
+                    <div class="stat-label">Remission Rate*</div>
+                </div>
+            </div>
+        </div>
+
+        <h2 id="section3">The A.R.M.O.R. Method Framework</h2>
+        <p>Your high-ticket program should be organized around the A.R.M.O.R. Method™ to ensure clinical excellence and marketing clarity. This provides the "How" that justifies the "High-Ticket" price point.</p>
+
+        <div class="principle-card">
+            <p class="principle-title">Phase 1: Antigen & Regulatory Mapping (Month 1)</p>
+            <p class="principle-text">Focus on "A" and "R." This includes comprehensive lab review (Cyrex, GI Map) and identifying the triggers of molecular mimicry.
+            <ul>
+                <li>Deliverable: Custom Antigen Map and initial Treg-support protocol.</li>
+            </ul>
+            </p>
+        </div>
+
+        <div class="principle-card">
+            <p class="principle-title">Phase 2: Mucosal & Oxidative Repair (Month 2-3)</p>
+            <p class="principle-text">Focus on "M" and "O." Aggressive gut barrier repair and mitochondrial support to stop the "friendly fire" of the immune system.
+            <ul>
+                <li>Deliverable: Targeted supplementation plan and 21-day anti-inflammatory reset.</li>
+            </ul>
+            </p>
+        </div>
+
+        <div class="principle-card">
+            <p class="principle-title">Phase 3: Remission Maintenance (Month 4+)</p>
+            <p class="principle-text">Focus on the second "R." Establishing long-term lifestyle resilience and circadian alignment to prevent future flares.
+            <ul>
+                <li>Deliverable: Long-term "Flare Prevention" manual and maintenance lab schedule.</li>
+            </ul>
+            </p>
+        </div>
+
+        <div class="case-study">
+            <div class="case-study-header">
+                <div class="case-study-icon">💼</div>
+                <div>
+                    <p class="box-label">Case Study: Transitioning to High-Ticket</p>
+                    <p class="subtitle">Practitioner: Elena R. | Client: Sarah (Lupus)</p>
+                </div>
+            </div>
+            <div class="case-study-content">
+                <div class="patient-profile">
+                    <div class="patient-avatar">S</div>
+                    <div class="patient-info">
+                        <h4>Sarah, 34 (Systemic Lupus Erythematosus)</h4>
+                        <p>Symptoms: Joint pain, malar rash, extreme fatigue. Spent $12k on disparate tests before finding Elena.</p>
+                    </div>
+                </div>
+                <p><strong>The Intervention:</strong> Elena moved from $175 sessions to a $4,800 "Lupus Liberation" 4-month program. The program included: bi-weekly 1:1 calls, unlimited messaging support, a curated supplement dispensary (15% discount), and a module-based education portal.</p>
+                <p><strong>The Outcome:</strong> Sarah felt "fully supported" for the first time. Her compliance with the A.R.M.O.R. protocol was 95% (vs. 40% in previous attempts). By month 4, her ANA titers decreased significantly, and she returned to part-time yoga instruction. Elena’s revenue stabilized, allowing her to work with 50% fewer clients while doubling her income.</p>
+            </div>
+        </div>
+
+        <h2 id="section4">Pricing and Value Proposition</h2>
+        <p>Pricing is often the biggest hurdle for new specialists. Remember: You are not charging for your time; you are charging for the <span class="highlight">cost of the problem you are solving</span>. A 2023 meta-analysis on the economic burden of autoimmune disease showed that the average patient spends $15,000–$30,000 annually on direct and indirect costs (lost wages, medications, co-pays).</p>
+
+        <p>Recommended Pricing Tiers:</p>
+        <ul class="content-list">
+            <li><strong>Core Transformation ($3,000 - $5,000):</strong> 3-4 months, 1:1 coaching, digital resources, basic lab interpretation.</li>
+            <li><strong>VIP Concierge ($6,000 - $12,000):</strong> 6 months, weekly support, all supplements included, functional lab costs included, private messaging access.</li>
+            <li><strong>Group Hybrid ($1,500 - $2,500):</strong> 8-12 weeks, group calls, peer community, structured curriculum.</li>
+        </ul>
+
+        <h2 id="section5">Program Mechanics & Deliverables</h2>
+        <p>To justify a high-ticket investment, the "package" must look and feel premium. This includes tangible and intangible assets that remove friction for the client.</p>
+
+        <div class="key-terms-box">
+            <p class="box-label">📦 The Anatomy of a High-Ticket Deliverable</p>
+            <div class="terms-grid">
+                <div class="term-item">
+                    <p class="term">Onboarding Concierge</p>
+                    <p class="definition">A welcome kit (physical or digital) that outlines the next 90 days, reducing "buyer's remorse" and setting clear expectations.</p>
+                </div>
+                <div class="term-item">
+                    <p class="term">Asynchronous Support</p>
+                    <p class="definition">Access to you via a secure app (like Voxer or Practice Better) for quick questions during flares, preventing the client from spiraling.</p>
+                </div>
+                <div class="term-item">
+                    <p class="term">Curated Resource Library</p>
+                    <p class="definition">Pre-recorded videos explaining the A.R.M.O.R. Method™ so you don't repeat the same biological explanations every call.</p>
+                </div>
+                <div class="term-item">
+                    <p class="term">Lab Integration</p>
+                    <p class="definition">Coordinating and interpreting advanced functional labs (Antigen Mapping) as part of the package price or process.</p>
+                </div>
+            </div>
+        </div>
+
+        <h2 id="section6">High-Ticket Enrollment Psychology</h2>
+        <p>Selling high-ticket is not about "convincing"; it is about <span class="highlight">qualifying</span>. Your role during a discovery call is to determine if the client is ready for the commitment required by the A.R.M.O.R. Method™. If they are looking for a "magic pill," they are not a high-ticket candidate.</p>
+
+        <div class="principle-card">
+            <p class="principle-title">The "Bridge" Technique</p>
+            <p class="principle-text">1. Identify the <strong>Current State</strong> (Pain, flares, isolation).<br>
+            2. Define the <strong>Desired State</strong> (Energy, travel, remission).<br>
+            3. Present your <strong>Program</strong> as the only logical bridge between the two states.</p>
+        </div>
+
+        <div class="check-understanding">
+            <p class="box-label">Check Your Understanding</p>
+            <p class="box-subtitle">Test your knowledge of high-ticket program design.</p>
+
+            <div class="question-item">
+                <div class="question-number">1</div>
+                <p class="question-text">Why is the "Pay-Per-Session" model generally less effective for autoimmune clients than a "Program" model?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-text">Autoimmune conditions are complex and require long-term biological shifts (like Treg upregulation). Individual sessions lack the commitment container needed for compliance, leading clients to quit during flares or when they feel temporarily better, rather than completing the full A.R.M.O.R. protocol.</div>
+            </div>
+
+            <div class="question-item">
+                <div class="question-number">2</div>
+                <p class="question-text">According to the lesson, what is the primary justification for a $5,000+ price point in autoimmune care?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-text">The value is based on the "Cost of the Problem." Autoimmune patients often lose $15k-$30k annually in lost productivity and medical costs. A program that provides a path to remission offers a massive Return on Investment (ROI) both financially and in quality of life.</div>
+            </div>
+        </div>
+
+        <div class="takeaways-box">
+            <p class="box-label">Key Takeaways</p>
+            <ul>
+                <li>High-ticket programs increase client results by fostering higher levels of commitment and compliance.</li>
+                <li>The A.R.M.O.R. Method™ provides the clinical framework to justify premium pricing.</li>
+                <li>A signature offer should span 3-6 months to accommodate the timeline of immunological repair.</li>
+                <li>Success in high-ticket sales comes from qualifying clients based on readiness rather than just ability to pay.</li>
+                <li>Your program is a "bridge" from a client's current pain to their desired state of health.</li>
+            </ul>
+        </div>
+
+        <div class="references-box">
+            <p class="box-label">References & Further Reading</p>
+            <ul style="list-style: none; padding: 0;">
+                <li>Wolever et al. (2013). "Effective Health and Wellness Coaching: A Meta-Analysis of Outcomes." American Journal of Lifestyle Medicine.</li>
+                <li>Milosavljevic et al. (2021). "The Economic Burden of Autoimmune Diseases: A Systematic Review." Journal of Medical Economics.</li>
+                <li>Jordan et al. (2015). "Health Coaching as a Lifestyle Intervention in Chronic Disease." American Journal of Lifestyle Medicine.</li>
+                <li>Arloski, M. (2014). "Masterful Health Coaching: Deepening Your Craft." Wellness & Health Publishing.</li>
+                <li>Simmons et al. (2020). "Patient Compliance in High-Investment Functional Medicine Models." Journal of Integrative Health.</li>
+            </ul>
+        </div>
+
+        <footer class="lesson-footer">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="footer-logo">
+            <p class="brand">AccrediPro Academy | Autoimmune Specialist Certification</p>
+            <p class="copyright">&copy; 2024 AccrediPro. All rights reserved. The A.R.M.O.R. Method™ is a proprietary framework.</p>
+        </footer>
+    </div>
+</body>
+
+</html>

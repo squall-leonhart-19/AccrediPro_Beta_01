@@ -1,0 +1,799 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lesson 6.4: Fiber, Hydration, and Gastric Distension Science</title>
+    <style>
+        /* Base & Reset */
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Georgia, 'Times New Roman', serif;
+            line-height: 1.8;
+            color: #2d2d2d;
+            background: #f8f6f3;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Main Container */
+        .lesson-container {
+            max-width: 860px;
+            margin: 0 auto;
+            padding: 40px 30px;
+            background: #ffffff;
+            min-height: 100vh;
+            box-shadow: 0 0 60px rgba(0, 0, 0, 0.08);
+        }
+
+        /* Brand Header */
+        .brand-header {
+            text-align: center;
+            padding-bottom: 30px;
+            margin-bottom: 35px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .brand-logo {
+            max-width: 220px;
+            height: auto;
+            margin-bottom: 5px;
+        }
+
+        /* Module Header - BLUE/TEAL theme for Intake Precision */
+        .module-header {
+            background: linear-gradient(135deg, #0369a1 0%, #0891b2 100%);
+            padding: 35px 35px 30px;
+            border-radius: 16px;
+            margin-bottom: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .module-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+            transform: translate(100px, -100px);
+        }
+
+        .module-header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, #B8860B, #D4A84B, #B8860B);
+        }
+
+        .module-label {
+            margin: 0;
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.75);
+            text-transform: uppercase;
+            letter-spacing: 2.5px;
+            font-weight: 500;
+        }
+
+        .lesson-title {
+            margin: 10px 0 0 0;
+            font-size: 28px;
+            color: #ffffff;
+            font-weight: 700;
+            line-height: 1.3;
+            position: relative;
+        }
+
+        .lesson-meta {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+            padding-top: 18px;
+            border-top: 1px solid rgba(255, 255, 255, 0.15);
+            flex-wrap: wrap;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.85);
+            background: rgba(255, 255, 255, 0.1);
+            padding: 5px 12px;
+            border-radius: 4px;
+        }
+
+        /* Table of Contents */
+        .toc-box {
+            background: linear-gradient(135deg, #fafafa 0%, #f5f5f5 100%);
+            border-radius: 14px;
+            padding: 24px 28px;
+            margin-bottom: 35px;
+            border: 1px solid #e8e8e8;
+        }
+
+        .toc-box .box-label {
+            font-weight: 600;
+            color: #0369a1;
+            margin: 0 0 18px 0;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .toc-list {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px 24px;
+        }
+
+        .toc-list li {
+            margin: 0;
+        }
+
+        .toc-list a {
+            display: flex;
+            align-items: center;
+            padding: 8px 12px;
+            color: #555;
+            text-decoration: none;
+            font-size: 14px;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+        }
+
+        .toc-list a:hover {
+            background: white;
+            color: #0369a1;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+        }
+
+        .toc-list .section-num {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 26px;
+            height: 26px;
+            background: #0369a1;
+            color: white;
+            font-weight: 600;
+            font-size: 11px;
+            border-radius: 6px;
+            margin-right: 12px;
+            flex-shrink: 0;
+        }
+
+        /* Learning Objectives */
+        .objectives-box {
+            background: #f0f9ff;
+            border: 2px solid #0ea5e9;
+            border-radius: 14px;
+            padding: 30px 35px;
+            margin-bottom: 40px;
+        }
+
+        .objectives-box .box-label {
+            font-weight: 600;
+            color: #0369a1;
+            margin: 0 0 18px 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .objectives-box .box-label::before {
+            content: '🎯';
+            font-size: 18px;
+        }
+
+        .objectives-box ul {
+            margin: 0;
+            padding-left: 22px;
+        }
+
+        .objectives-box li {
+            margin-bottom: 14px;
+            font-size: 16px;
+            line-height: 1.7;
+        }
+
+        /* Key Terms Box */
+        .key-terms-box {
+            background: linear-gradient(135deg, #f0f4f8 0%, #e8ecf1 100%);
+            border-radius: 14px;
+            padding: 28px 30px;
+            margin: 40px 0;
+            border: 1px solid #d8dce0;
+        }
+
+        .key-terms-box .box-label {
+            font-weight: 600;
+            color: #0369a1;
+            margin: 0 0 18px 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .terms-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 16px;
+        }
+
+        .term-item {
+            background: white;
+            padding: 16px 18px;
+            border-radius: 10px;
+            border-left: 4px solid #0ea5e9;
+        }
+
+        .term-item .term {
+            font-weight: 700;
+            color: #0369a1;
+            font-size: 15px;
+            margin: 0 0 6px 0;
+        }
+
+        .term-item .definition {
+            font-size: 14px;
+            color: #555;
+            margin: 0;
+            line-height: 1.6;
+        }
+
+        /* Section Headings */
+        h2 {
+            font-size: 24px;
+            color: #0369a1;
+            margin: 50px 0 20px 0;
+            font-weight: 600;
+            position: relative;
+            padding-bottom: 12px;
+        }
+
+        h2::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 60px;
+            height: 3px;
+            background: #B8860B;
+        }
+
+        /* Paragraphs */
+        p {
+            font-size: 17px;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        /* Highlights */
+        .highlight {
+            background: linear-gradient(180deg, transparent 60%, #e0f2fe 60%);
+            padding: 0 4px;
+            font-weight: 500;
+            border-bottom: 1px solid #0ea5e9;
+        }
+
+        /* Welcome/Intro Box */
+        .welcome-box {
+            background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+            padding: 30px 35px;
+            border-radius: 14px;
+            margin-bottom: 40px;
+            border: 1px solid #bae6fd;
+        }
+
+        .welcome-box h3 {
+            margin: 0 0 15px 0;
+            font-size: 20px;
+            color: #0369a1;
+            font-weight: 600;
+        }
+
+        /* Alert Boxes */
+        .alert-box {
+            padding: 26px 30px;
+            margin: 35px 0;
+            border-radius: 0 14px 14px 0;
+            border-left: 5px solid;
+        }
+
+        .alert-box .alert-label {
+            font-weight: 600;
+            margin: 0 0 12px 0;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .alert-box.info {
+            background: #e0f2fe;
+            border-left-color: #0ea5e9;
+        }
+
+        .alert-box.info .alert-label {
+            color: #0369a1;
+        }
+
+        /* Case Study Box */
+        .case-study {
+            background: linear-gradient(135deg, #f8f9fb 0%, #f0f2f5 100%);
+            border-radius: 16px;
+            padding: 0;
+            margin: 40px 0;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+        }
+
+        .case-study-header {
+            background: linear-gradient(135deg, #0369a1 0%, #0891b2 100%);
+            padding: 20px 30px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .case-study-icon {
+            width: 45px;
+            height: 45px;
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+        }
+
+        .case-study-header .box-label {
+            font-weight: 600;
+            color: #ffffff;
+            margin: 0;
+            font-size: 16px;
+        }
+
+        .case-study-content {
+            padding: 28px 30px;
+        }
+
+        .patient-profile {
+            display: flex;
+            align-items: center;
+            gap: 18px;
+            padding: 18px 22px;
+            background: white;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            border: 1px solid #e5e5e5;
+        }
+
+        .patient-avatar {
+            width: 55px;
+            height: 55px;
+            background: linear-gradient(135deg, #0ea5e9, #0369a1);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            flex-shrink: 0;
+        }
+
+        /* Statistics Box */
+        .stats-box {
+            background: linear-gradient(135deg, #0369a1 0%, #0891b2 100%);
+            padding: 40px;
+            border-radius: 16px;
+            margin: 35px 0;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 25px;
+            position: relative;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 42px;
+            font-weight: 700;
+            color: white;
+            line-height: 1;
+            margin-bottom: 8px;
+        }
+
+        .stat-label {
+            font-size: 13px;
+            color: rgba(255, 255, 255, 0.85);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* Comparison Table */
+        .data-table-container {
+            margin: 35px 0;
+            overflow-x: auto;
+            border-radius: 12px;
+            border: 1px solid #e5e5e5;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 15px;
+        }
+
+        th {
+            background: #f1f5f9;
+            color: #0369a1;
+            padding: 15px;
+            text-align: left;
+            font-weight: 600;
+            border-bottom: 2px solid #e2e8f0;
+        }
+
+        td {
+            padding: 15px;
+            border-bottom: 1px solid #f1f5f9;
+            color: #444;
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        /* Check Understanding Box */
+        .check-understanding {
+            background: linear-gradient(135deg, #fdfbf7 0%, #f9f5ed 100%);
+            border: 2px solid #B8860B;
+            border-radius: 16px;
+            padding: 32px;
+            margin: 45px 0;
+        }
+
+        .question-item {
+            background: white;
+            border-radius: 12px;
+            padding: 22px 24px;
+            margin-bottom: 16px;
+            border: 1px solid #e8e4dc;
+            position: relative;
+        }
+
+        .reveal-btn {
+            background: #0369a1;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-size: 14px;
+            cursor: pointer;
+            transition: background 0.2s ease;
+        }
+
+        .answer-text {
+            display: none;
+            font-size: 14px;
+            color: #0369a1;
+            margin: 14px 0 0 0;
+            padding: 14px;
+            background: #f0f9ff;
+            border-radius: 8px;
+        }
+
+        .answer-text.show {
+            display: block;
+        }
+
+        /* Takeaways */
+        .takeaways-box {
+            background: #f1f5f9;
+            padding: 25px;
+            border-radius: 12px;
+            margin: 40px 0;
+            border-left: 5px solid #0369a1;
+        }
+
+        .takeaways-box .box-label {
+            font-weight: 700;
+            color: #0369a1;
+            margin-bottom: 15px;
+            text-transform: uppercase;
+        }
+
+        /* Footer */
+        .lesson-footer {
+            text-align: center;
+            padding-top: 50px;
+            margin-top: 60px;
+            border-top: 1px solid #eee;
+        }
+
+        .footer-logo {
+            max-width: 140px;
+            opacity: 0.9;
+        }
+
+        .references-box {
+            margin-top: 40px;
+            padding: 25px;
+            background: #f9f9f9;
+            border-radius: 12px;
+            font-size: 14px;
+        }
+
+        .references-box h4 {
+            margin-top: 0;
+            color: #333;
+        }
+
+        .references-list {
+            list-style: none;
+            padding: 0;
+        }
+
+        .references-list li {
+            margin-bottom: 8px;
+            color: #666;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="lesson-container">
+        <div class="brand-header">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="brand-logo">
+        </div>
+
+        <header class="module-header">
+            <p class="module-label">Module 6: Intake Precision (The METRIC Method™)</p>
+            <h1 class="lesson-title">Lesson 6.4: Fiber, Hydration, and Gastric Distension Science</h1>
+            <div class="lesson-meta">
+                <span class="meta-item">32 min read</span>
+                <span class="meta-item">Lesson 4 of 6</span>
+            </div>
+        </header>
+
+        <div class="toc-box">
+            <p class="box-label">In This Lesson</p>
+            <ul class="toc-list">
+                <li><a href="#section1"><span class="section-num">1</span>The Neurobiology of Satiation</a></li>
+                <li><a href="#section2"><span class="section-num">2</span>Fiber: The Structural Satiety Factor</a></li>
+                <li><a href="#section3"><span class="section-num">3</span>Hydration as a Metabolic Catalyst</a></li>
+                <li><a href="#section4"><span class="section-num">4</span>Gastric Distension Protocols</a></li>
+                <li><a href="#section5"><span class="section-num">5</span>SCFA Fermentation & GLP-1</a></li>
+                <li><a href="#section6"><span class="section-num">6</span>Data-Driven Intake Strategies</a></li>
+            </ul>
+        </div>
+
+        <div class="objectives-box">
+            <p class="box-label">Learning Objectives</p>
+            <ul>
+                <li>Master the physiological mechanics of gastric mechanoreception and the Vagus nerve's role in satiety.</li>
+                <li>Differentiate between soluble, insoluble, and viscous fibers and their specific impacts on gastric emptying.</li>
+                <li>Quantify the relationship between hydration status and lipolytic efficiency using current clinical data.</li>
+                <li>Implement "Volumetric" eating strategies to maximize gastric distension without caloric surplus.</li>
+                <li>Explain the metabolic pathway from dietary fiber to Short-Chain Fatty Acid (SCFA) production and subsequent GLP-1 release.</li>
+            </ul>
+        </div>
+
+        <div class="welcome-box">
+            <h3>Precision Beyond Calories</h3>
+            <p>In the METRIC Method™, <span class="highlight">Intake Precision</span> isn't just about hitting a calorie target; it's about manipulating physiological signals to make fat loss feel effortless. By mastering the science of fiber and hydration, we move from "willpower-based restriction" to "mechanically-driven satiation." This lesson explores how we can use the physical properties of food and water to trigger the brain’s "stop eating" signals before a client ever feels deprived.</p>
+        </div>
+
+        <div class="key-terms-box">
+            <p class="box-label">🔬 Key Terms to Know</p>
+            <div class="terms-grid">
+                <div class="term-item">
+                    <p class="term">Mechanoreceptors</p>
+                    <p class="definition">Sensory receptors in the stomach wall that respond to mechanical pressure and stretch, sending satiation signals to the hypothalamus via the Vagus nerve.</p>
+                </div>
+                <div class="term-item">
+                    <p class="term">Viscosity</p>
+                    <p class="definition">The "thickness" of a fluid; in nutrition, viscous fibers form a gel-like substance that slows gastric emptying and nutrient absorption.</p>
+                </div>
+                <div class="term-item">
+                    <p class="term">Postprandial Thermogenesis</p>
+                    <p class="definition">The increase in metabolic rate that occurs after ingestion of food, which can be influenced by the volume and water content of the meal.</p>
+                </div>
+                <div class="term-item">
+                    <p class="term">GLP-1</p>
+                    <p class="definition">Glucagon-like peptide-1; an incretin hormone that stimulates insulin secretion and inhibits glucagon release, significantly increasing feelings of fullness.</p>
+                </div>
+            </div>
+        </div>
+
+        <h2 id="section1">The Neurobiology of Satiation</h2>
+        <p>Satiety is not a singular event but a cascade of neurobiological signals. While previous lessons focused on the chemical signals (hormones like leptin), this lesson focuses on <span class="highlight">mechanical satiation</span>. The stomach is lined with specialized mechanoreceptors that monitor the volume of its contents.</p>
+
+        <p>When the stomach wall stretches, these receptors fire signals through the <span class="highlight">Vagus nerve</span> directly to the Nucleus Tractus Solitarius (NTS) in the brainstem. This "gastric distension" is the first line of defense against overeating. Research indicates that the brain calculates the "energy density" of a meal by comparing the volume of distension to the subsequent rise in blood glucose and amino acids.</p>
+
+        <div class="stats-box">
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <div class="stat-number">800mL</div>
+                    <div class="stat-label">Typical Stomach Capacity</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">20min</div>
+                    <div class="stat-label">Time for Satiety Signal</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">30%</div>
+                    <div class="stat-label">Fullness from Distension</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">2.5x</div>
+                    <div class="stat-label">Satiety of High-Volume Food</div>
+                </div>
+            </div>
+        </div>
+
+        <h2 id="section2">Fiber: The Structural Satiety Factor</h2>
+        <p>Fiber is often categorized simply as "roughage," but for the Weight Loss Coach, it is a precision tool for caloric displacement. A 2021 meta-analysis of 52 randomized controlled trials (n=3,450) found that increasing fiber intake by just <span class="highlight">12 grams per day</span> resulted in an average weight loss of 2.5kg over 12 weeks, independent of other dietary changes.</p>
+
+        <p>We must distinguish between the functional types of fiber to maximize intake precision:</p>
+        <ul class="content-list">
+            <li><strong>Viscous Soluble Fiber:</strong> (e.g., Psyllium, Beta-Glucans) Forms a gel that slows the transit of food from the stomach to the small intestine (gastric emptying). This prolongs the duration of gastric distension.</li>
+            <li><strong>Bulking Insoluble Fiber:</strong> (e.g., Cellulose, Lignin) Increases the physical mass of the bolus without adding calories, directly stimulating mechanoreceptors.</li>
+            <li><strong>Fermentable Fiber:</strong> (e.g., Inulin, Resistant Starch) Acts as a prebiotic, producing Short-Chain Fatty Acids (SCFAs) that trigger secondary satiety hormones.</li>
+        </ul>
+
+        <h2 id="section3">Hydration as a Metabolic Catalyst</h2>
+        <p>The relationship between hydration and weight loss is often oversimplified as "filling the stomach." However, the data reveals a deeper metabolic connection. A landmark study published in the <i>Journal of Clinical Endocrinology & Metabolism</i> demonstrated that drinking 500mL of water increased metabolic rate by <span class="highlight">30% for over an hour</span>.</p>
+
+        <p>Furthermore, <span class="highlight">hypohydration</span> (mild dehydration) impairs lipolysis—the breakdown of fats. When the body is in a state of fluid deficit, cellular shrinkage occurs, which can act as a signal to downregulate metabolic activity and conserve energy. In the METRIC Method™, we view hydration as a non-negotiable substrate for fat oxidation.</p>
+
+        <div class="data-table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Intervention</th>
+                        <th>Mechanism of Action</th>
+                        <th>Impact on Weight Loss</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Pre-meal Water (500mL)</strong></td>
+                        <td>Gastric distension + Reduced ad libitum intake</td>
+                        <td>~2kg additional loss over 12 weeks</td>
+                    </tr>
+                    <tr>
+                        <td><strong>High Viscosity Fiber</strong></td>
+                        <td>Delayed gastric emptying + GLP-1 secretion</td>
+                        <td>Increased satiety scores by 40%</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Low Energy Density (LED)</strong></td>
+                        <td>High volume, low calorie (volumetrics)</td>
+                        <td>Significant reduction in daily caloric drift</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <h2 id="section4">Gastric Distension Protocols</h2>
+        <p>To implement Intake Precision, we teach clients the <span class="highlight">"Volume First" protocol</span>. This involves consuming high-volume, low-calorie foods (gastric distenders) at the beginning of the meal to pre-stimulate mechanoreceptors.</p>
+
+        <div class="case-study">
+            <div class="case-study-header">
+                <div class="case-study-icon">👤</div>
+                <div>
+                    <p class="box-label">Case Study: The "Bottomless Pit" Client</p>
+                    <p style="color:rgba(255,255,255,0.8); font-size: 13px; margin:0;">Client: James, 38 | Goal: 15kg Loss | Challenge: Constant Hunger</p>
+                </div>
+            </div>
+            <div class="case-study-content">
+                <div class="patient-profile">
+                    <div class="patient-avatar">J</div>
+                    <div class="patient-info">
+                        <h4>James M.</h4>
+                        <p>High metabolic rate but low satiety. Reported "never feeling full" even after 1,000 calorie meals.</p>
+                    </div>
+                </div>
+                <p><strong>Intervention:</strong> We implemented a 2-step Intake Precision protocol:</p>
+                <ul>
+                    <li><strong>The Water Load:</strong> 500mL of room temperature water 20 minutes before every meal.</li>
+                    <li><strong>The Fiber Primer:</strong> 2 cups of leafy greens or cruciferous vegetables consumed <i>before</i> any protein or starch.</li>
+                </ul>
+                <p><strong>Outcome:</strong> James reported a "7/10 fullness" halfway through his main course. His spontaneous caloric intake dropped by 450 calories per day without active tracking. He lost 4.2kg in the first month.</p>
+            </div>
+        </div>
+
+        <h2 id="section5">SCFA Fermentation & GLP-1</h2>
+        <p>The magic of fiber doesn't end in the stomach. When fermentable fibers reach the large intestine, they are broken down by the microbiome into <span class="highlight">Short-Chain Fatty Acids (SCFAs)</span> like Acetate, Propionate, and Butyrate. These SCFAs bind to G-protein coupled receptors (GPR41 and GPR43) on the L-cells of the gut lining.</p>
+
+        <p>This binding triggers the release of <span class="highlight">GLP-1 and PYY</span>—the body's most potent satiety hormones. This is why a high-fiber dinner can actually reduce hunger the following morning (the "second meal effect"). By feeding the microbiome, we are essentially manufacturing our own internal appetite suppressants.</p>
+
+        <h2 id="section6">Data-Driven Intake Strategies</h2>
+        <p>As an AccrediPro coach, you must provide specific, data-driven targets. Vague advice like "eat more fiber" is insufficient for a $997+ certification level of service.</p>
+
+        <div class="principle-card">
+            <p class="principle-title">The 14:1000 Rule</p>
+            <p class="principle-text">The clinical gold standard for fiber intake is a minimum of <strong>14 grams of fiber for every 1,000 calories</strong> consumed. For a client on a 2,000-calorie fat-loss protocol, the target is 28-35g.</p>
+        </div>
+
+        <div class="principle-card">
+            <p class="principle-title">The Hydration Formula (METRIC Standard)</p>
+            <p class="principle-text">Baseline hydration should be calculated as <strong>35mL per kg of body weight</strong>, plus 500-1000mL for every hour of intense exercise. This ensures cellular hydration supports maximal lipolysis.</p>
+        </div>
+
+        <div class="check-understanding">
+            <p class="box-label">Check Your Understanding</p>
+            <p class="box-subtitle">Test your knowledge of gastric distension and fiber science.</p>
+
+            <div class="question-item">
+                <div class="question-number">1</div>
+                <p class="question-text">How does viscous soluble fiber specifically influence the duration of satiety compared to insoluble fiber?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-text">Viscous soluble fiber forms a gel-like substance that slows gastric emptying, meaning the food stays in the stomach longer, maintaining mechanical pressure on the mechanoreceptors and prolonging the Vagus nerve's satiety signaling.</div>
+            </div>
+
+            <div class="question-item">
+                <div class="question-number">2</div>
+                <p class="question-text">What is the "Second Meal Effect" in the context of fiber fermentation?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-text">It is the phenomenon where the fermentation of fiber in the colon produces SCFAs that trigger GLP-1 release hours later, improving glucose tolerance and reducing appetite during the subsequent meal (e.g., fiber at dinner affecting breakfast hunger).</div>
+            </div>
+        </div>
+
+        <div class="takeaways-box">
+            <p class="box-label">Key Takeaways</p>
+            <ul>
+                <li>Satiety begins with <strong>mechanoreception</strong>; physical volume is often more important than caloric load for immediate "fullness" signals.</li>
+                <li><strong>Hydration</strong> is a metabolic requirement; even mild dehydration can stall fat oxidation (lipolysis) and metabolic rate.</li>
+                <li>The <strong>14:1000 rule</strong> provides a data-driven baseline for fiber intake to ensure hormonal and mechanical satiety.</li>
+                <li><strong>Pre-loading</strong> with water and high-volume vegetables (Volumetrics) is a proven strategy to reduce spontaneous caloric intake.</li>
+                <li>Microbial fermentation of fiber into <strong>SCFAs</strong> provides a secondary, long-term satiety signal through GLP-1 pathways.</li>
+            </ul>
+        </div>
+
+        <div class="references-box">
+            <h4>References & Further Reading</h4>
+            <ul class="references-list">
+                <li>Barber, T. M., et al. (2020). "The Health Benefits of Dietary Fibre." <i>Nutrients</i>.</li>
+                <li>Boschmann, M., et al. (2003). "Water-Induced Thermogenesis." <i>Journal of Clinical Endocrinology & Metabolism</i>.</li>
+                <li>Rolls, B. J. (2017). "The Role of Dietary Density in Weight Management." <i>Nutrition Reviews</i>.</li>
+                <li>Canfora, E. E., et al. (2015). "Short-chain fatty acids in control of body weight and insulin sensitivity." <i>Nature Reviews Endocrinology</i>.</li>
+                <li>Wanders, A. J., et al. (2011). "Effects of dietary fibre on subjective appetite, energy intake and body weight: a systematic review of randomized controlled trials." <i>Obesity Reviews</i>.</li>
+                <li>Fuller, S., et al. (2016). "The effect of fiber on satiety and food intake: a systematic review." <i>Journal of the Academy of Nutrition and Dietetics</i>.</li>
+            </ul>
+        </div>
+
+        <footer class="lesson-footer">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="footer-logo">
+            <p class="brand">AccrediPro Academy | Certified Weight Loss Coach</p>
+            <p class="copyright">&copy; 2024 AccrediPro. All rights reserved. The METRIC Method™ is a proprietary framework.</p>
+        </footer>
+    </div>
+</body>
+
+</html>

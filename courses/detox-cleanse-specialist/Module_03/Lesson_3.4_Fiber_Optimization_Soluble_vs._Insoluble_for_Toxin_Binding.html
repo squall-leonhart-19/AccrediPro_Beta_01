@@ -1,0 +1,824 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lesson 3.4: Fiber Optimization: Soluble vs. Insoluble for Toxin Binding</title>
+    <style>
+        /* Base & Reset */
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Georgia, 'Times New Roman', serif;
+            line-height: 1.8;
+            color: #2d2d2d;
+            background: #f8f6f3;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Main Container */
+        .lesson-container {
+            max-width: 860px;
+            margin: 0 auto;
+            padding: 40px 30px;
+            background: #ffffff;
+            min-height: 100vh;
+            box-shadow: 0 0 60px rgba(0, 0, 0, 0.08);
+        }
+
+        /* Brand Header */
+        .brand-header {
+            text-align: center;
+            padding-bottom: 30px;
+            margin-bottom: 35px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .brand-logo {
+            max-width: 220px;
+            height: auto;
+            margin-bottom: 5px;
+        }
+
+        /* Module Header - PURIFY Blue/Green theme */
+        .module-header {
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+            padding: 35px 35px 30px;
+            border-radius: 16px;
+            margin-bottom: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .module-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+            transform: translate(100px, -100px);
+        }
+
+        .module-header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, #B8860B, #D4A84B, #B8860B);
+        }
+
+        .module-label {
+            margin: 0;
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.75);
+            text-transform: uppercase;
+            letter-spacing: 2.5px;
+            font-weight: 500;
+        }
+
+        .lesson-title {
+            margin: 10px 0 0 0;
+            font-size: 28px;
+            color: #ffffff;
+            font-weight: 700;
+            line-height: 1.3;
+            position: relative;
+        }
+
+        .lesson-meta {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+            padding-top: 18px;
+            border-top: 1px solid rgba(255, 255, 255, 0.15);
+            flex-wrap: wrap;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.85);
+            background: rgba(255, 255, 255, 0.1);
+            padding: 5px 12px;
+            border-radius: 4px;
+        }
+
+        /* Table of Contents */
+        .toc-box {
+            background: linear-gradient(135deg, #fafafa 0%, #f5f5f5 100%);
+            border-radius: 14px;
+            padding: 24px 28px;
+            margin-bottom: 35px;
+            border: 1px solid #e8e8e8;
+        }
+
+        .toc-box .box-label {
+            font-weight: 600;
+            color: #1e3a8a;
+            margin: 0 0 18px 0;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .toc-list {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px 24px;
+        }
+
+        .toc-list li {
+            margin: 0;
+        }
+
+        .toc-list a {
+            display: flex;
+            align-items: center;
+            padding: 8px 12px;
+            color: #555;
+            text-decoration: none;
+            font-size: 14px;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+        }
+
+        .toc-list a:hover {
+            background: white;
+            color: #3b82f6;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+        }
+
+        .toc-list .section-num {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 26px;
+            height: 26px;
+            background: #1e3a8a;
+            color: white;
+            font-weight: 600;
+            font-size: 11px;
+            border-radius: 6px;
+            margin-right: 12px;
+            flex-shrink: 0;
+        }
+
+        /* Learning Objectives */
+        .objectives-box {
+            background: #eff6ff;
+            border: 2px solid #3b82f6;
+            border-radius: 14px;
+            padding: 30px 35px;
+            margin-bottom: 40px;
+        }
+
+        .objectives-box .box-label {
+            font-weight: 600;
+            color: #1e3a8a;
+            margin: 0 0 18px 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .objectives-box .box-label::before {
+            content: '🎯';
+            font-size: 18px;
+        }
+
+        .objectives-box ul {
+            margin: 0;
+            padding-left: 22px;
+        }
+
+        .objectives-box li {
+            margin-bottom: 14px;
+            font-size: 16px;
+            line-height: 1.7;
+        }
+
+        /* Key Terms Box */
+        .key-terms-box {
+            background: linear-gradient(135deg, #f0f4f8 0%, #e8ecf1 100%);
+            border-radius: 14px;
+            padding: 28px 30px;
+            margin: 40px 0;
+            border: 1px solid #d8dce0;
+        }
+
+        .key-terms-box .box-label {
+            font-weight: 600;
+            color: #1e3a8a;
+            margin: 0 0 18px 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .terms-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 16px;
+        }
+
+        .term-item {
+            background: white;
+            padding: 16px 18px;
+            border-radius: 10px;
+            border-left: 4px solid #3b82f6;
+        }
+
+        .term-item .term {
+            font-weight: 700;
+            color: #1e3a8a;
+            font-size: 15px;
+            margin: 0 0 6px 0;
+        }
+
+        .term-item .definition {
+            font-size: 14px;
+            color: #555;
+            margin: 0;
+            line-height: 1.6;
+        }
+
+        /* Section Headings */
+        h2 {
+            font-size: 24px;
+            color: #1e3a8a;
+            margin: 50px 0 20px 0;
+            font-weight: 600;
+            position: relative;
+            padding-bottom: 12px;
+        }
+
+        h2::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 60px;
+            height: 3px;
+            background: #B8860B;
+        }
+
+        h3 {
+            font-size: 20px;
+            color: #2563eb;
+            margin: 35px 0 15px 0;
+            font-weight: 600;
+        }
+
+        /* Paragraphs */
+        p {
+            font-size: 17px;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        /* Highlights */
+        .highlight {
+            background: linear-gradient(180deg, transparent 60%, #FFF59D 60%);
+            padding: 0 4px;
+            font-weight: 500;
+        }
+
+        /* Welcome/Intro Box */
+        .welcome-box {
+            background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%);
+            padding: 30px 35px;
+            border-radius: 14px;
+            margin-bottom: 40px;
+            border: 1px solid #bfdbfe;
+        }
+
+        .welcome-box h3 {
+            margin: 0 0 15px 0;
+            font-size: 20px;
+            color: #1e3a8a;
+            font-weight: 600;
+        }
+
+        /* Comparison Table */
+        .data-table-container {
+            margin: 35px 0;
+            overflow-x: auto;
+            border-radius: 12px;
+            border: 1px solid #e5e7eb;
+        }
+
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 15px;
+            background: white;
+        }
+
+        .data-table th {
+            background: #1e3a8a;
+            color: white;
+            padding: 15px;
+            text-align: left;
+            font-weight: 600;
+        }
+
+        .data-table td {
+            padding: 15px;
+            border-bottom: 1px solid #f3f4f6;
+            vertical-align: top;
+        }
+
+        .data-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        .data-table tr:nth-child(even) {
+            background: #f9fafb;
+        }
+
+        /* Statistics Box */
+        .stats-box {
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+            padding: 40px;
+            border-radius: 16px;
+            margin: 35px 0;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 25px;
+            position: relative;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 42px;
+            font-weight: 700;
+            color: white;
+            line-height: 1;
+            margin-bottom: 8px;
+        }
+
+        .stat-label {
+            font-size: 13px;
+            color: rgba(255, 255, 255, 0.85);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* Case Study Box */
+        .case-study {
+            background: linear-gradient(135deg, #f8f9fb 0%, #f0f2f5 100%);
+            border-radius: 16px;
+            padding: 0;
+            margin: 40px 0;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+        }
+
+        .case-study-header {
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+            padding: 20px 30px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .case-study-icon {
+            width: 45px;
+            height: 45px;
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+        }
+
+        .case-study-header .box-label {
+            font-weight: 600;
+            color: #ffffff;
+            margin: 0;
+            font-size: 16px;
+        }
+
+        .case-study-content {
+            padding: 28px 30px;
+        }
+
+        .patient-profile {
+            display: flex;
+            align-items: center;
+            gap: 18px;
+            padding: 18px 22px;
+            background: white;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            border: 1px solid #e5e5e5;
+        }
+
+        .patient-avatar {
+            width: 55px;
+            height: 55px;
+            background: linear-gradient(135deg, #3b82f6, #1e3a8a);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            color: white;
+            flex-shrink: 0;
+        }
+
+        /* Check Understanding */
+        .check-understanding {
+            background: linear-gradient(135deg, #fdfbf7 0%, #f9f5ed 100%);
+            border: 2px solid #B8860B;
+            border-radius: 16px;
+            padding: 32px;
+            margin: 45px 0;
+        }
+
+        .check-understanding .box-label {
+            font-weight: 600;
+            color: #8B6914;
+            margin: 0 0 24px 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .question-item {
+            background: white;
+            border-radius: 12px;
+            padding: 22px 24px;
+            margin-bottom: 16px;
+            border: 1px solid #e8e4dc;
+            position: relative;
+        }
+
+        .reveal-btn {
+            background: #1e3a8a;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-size: 14px;
+            cursor: pointer;
+            transition: background 0.2s ease;
+        }
+
+        .answer-text {
+            display: none;
+            font-size: 14px;
+            color: #1e40af;
+            margin: 14px 0 0 0;
+            padding: 14px;
+            background: #eff6ff;
+            border-radius: 8px;
+        }
+
+        .answer-text.show {
+            display: block;
+        }
+
+        /* Takeaways */
+        .takeaways-box {
+            background: linear-gradient(135deg, #f5f5f5 0%, #e8e8e8 100%);
+            padding: 22px 25px;
+            margin-top: 35px;
+            border-radius: 8px;
+            border: 1px solid #ddd;
+        }
+
+        .takeaways-box .box-label {
+            font-weight: 600;
+            color: #1e3a8a;
+            margin: 0 0 15px 0;
+            font-size: 16px;
+            text-transform: uppercase;
+        }
+
+        /* References Box */
+        .references-box {
+            margin-top: 50px;
+            padding: 30px;
+            background: #f9fafb;
+            border-radius: 12px;
+            border: 1px solid #eee;
+        }
+
+        .references-box h4 {
+            margin: 0 0 15px 0;
+            font-size: 14px;
+            color: #666;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .references-list {
+            margin: 0;
+            padding: 0;
+            list-style: none;
+            font-size: 13px;
+            color: #777;
+        }
+
+        .references-list li {
+            margin-bottom: 8px;
+            line-height: 1.5;
+        }
+
+        /* Footer */
+        .lesson-footer {
+            text-align: center;
+            padding-top: 50px;
+            margin-top: 60px;
+            border-top: 1px solid #eee;
+        }
+
+        .footer-logo {
+            max-width: 140px;
+            height: auto;
+            margin-bottom: 15px;
+            opacity: 0.9;
+        }
+
+        .copyright {
+            color: #888;
+            font-size: 13px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="lesson-container">
+        <div class="brand-header">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="brand-logo">
+        </div>
+
+        <header class="module-header">
+            <p class="module-label">Module 3: The P.U.R.I.F.Y. Protocol™: Phase 1</p>
+            <h1 class="lesson-title">Lesson 3.4: Fiber Optimization: Soluble vs. Insoluble for Toxin Binding</h1>
+            <div class="lesson-meta">
+                <span class="meta-item">32 min read</span>
+                <span class="meta-item">Lesson 4 of 6</span>
+            </div>
+        </header>
+
+        <!-- Table of Contents -->
+        <div class="toc-box">
+            <p class="box-label">In This Lesson</p>
+            <ul class="toc-list">
+                <li><a href="#section1"><span class="section-num">1</span>The "Molecular Sponge" Concept</a></li>
+                <li><a href="#section2"><span class="section-num">2</span>Soluble Fiber & Bile Acids</a></li>
+                <li><a href="#section3"><span class="section-num">3</span>Insoluble Fiber & Transit Time</a></li>
+                <li><a href="#section4"><span class="section-num">4</span>Interrupting Autointoxication</a></li>
+                <li><a href="#section5"><span class="section-num">5</span>The Estrobolome Connection</a></li>
+                <li><a href="#section6"><span class="section-num">6</span>Clinical Titration Protocol</a></li>
+            </ul>
+        </div>
+
+        <!-- Learning Objectives -->
+        <div class="objectives-box">
+            <p class="box-label">Learning Objectives</p>
+            <ul>
+                <li>Differentiate between the biophysical mechanisms of soluble and insoluble fiber in detoxification.</li>
+                <li>Explain how fiber interrupts the <span class="highlight">enterohepatic circulation</span> of toxins.</li>
+                <li>Identify specific fiber sources (pectin, lignans, psyllium) for targeted toxin binding.</li>
+                <li>Implement a titration strategy to increase fiber intake without causing "detox bloat."</li>
+                <li>Analyze the impact of fiber on hormone clearance via the estrobolome.</li>
+            </ul>
+        </div>
+
+        <!-- Welcome Box -->
+        <div class="welcome-box">
+            <h3>The Gateway to Elimination</h3>
+            <p>In Phase 1 of the P.U.R.I.F.Y. Protocol™ (Prepare the Pathways), our primary goal is to ensure that toxins mobilized from the tissues actually leave the body. Without adequate fiber, the colon becomes a "revolving door" where toxins are reabsorbed into the bloodstream. This lesson explores the sophisticated science of fiber as a biophysical binder, transforming the gut from a site of reabsorption into a high-efficiency exit ramp.</p>
+        </div>
+
+        <!-- Key Terms -->
+        <div class="key-terms-box">
+            <p class="box-label">🔬 Key Terms to Know</p>
+            <div class="terms-grid">
+                <div class="term-item">
+                    <p class="term">Enterohepatic Circulation</p>
+                    <p class="definition">The process where bile acids and associated toxins are reabsorbed from the small intestine and returned to the liver.</p>
+                </div>
+                <div class="term-item">
+                    <p class="term">Lignans</p>
+                    <p class="definition">Phytonutrients found in seeds (like flax) that act as insoluble fiber and bind specifically to recirculating estrogens.</p>
+                </div>
+                <div class="term-item">
+                    <p class="term">Viscosity</p>
+                    <p class="definition">The "thickness" or gel-forming ability of soluble fiber, which determines its toxin-trapping capacity.</p>
+                </div>
+                <div class="term-item">
+                    <p class="term">Estrobolome</p>
+                    <p class="definition">A collection of gut bacteria specialized in metabolizing and clearing estrogen from the body.</p>
+                </div>
+            </div>
+        </div>
+
+        <h2 id="section1">The "Molecular Sponge" Concept</h2>
+        <p>In clinical detoxification, we often focus on the liver's ability to chemically transform toxins. However, once the liver has neutralized a toxin and dumped it into the bile, the journey is only half over. Without a physical substrate to latch onto, these toxins—especially heavy metals, pesticides, and hormones—are frequently reabsorbed in the terminal ileum.</p>
+
+        <p>Fiber acts as a <span class="highlight">biophysical binder</span>. It is not merely "bulk" to help with bowel movements; it is a complex matrix of polysaccharides that utilizes ionic attraction and physical entrapment to secure toxins. A 2021 review published in <i>Nutrients</i> noted that certain fibers can reduce the bioavailability of persistent organic pollutants (POPs) by up to <span class="highlight">45%</span> simply by increasing fecal excretion rates.</p>
+
+        <!-- Statistics Box -->
+        <div class="stats-box">
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <div class="stat-number">95%</div>
+                    <div class="stat-label">Bile Acids Reabsorbed Without Fiber</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">35g+</div>
+                    <div class="stat-label">Daily Target for Detox</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">2x</div>
+                    <div class="stat-label">Faster Transit with Insoluble</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">15g</div>
+                    <div class="stat-label">Avg. Western Fiber Intake</div>
+                </div>
+            </div>
+        </div>
+
+        <h2 id="section2">Soluble Fiber & Bile Acids: The Viscous Trap</h2>
+        <p>Soluble fiber (found in oats, pectin, and psyllium) dissolves in water to form a thick, gelatinous substance. This gel is the primary mechanism for binding <span class="highlight">lipophilic (fat-soluble) toxins</span>. Because many environmental toxins are sequestered in bile, soluble fiber's ability to bind bile acids is its most potent detox function.</p>
+
+        <p>When soluble fiber binds to bile acids, it forces the liver to pull cholesterol from the blood to manufacture <i>new</i> bile. This creates a "one-way street" for excretion. Modified Citrus Pectin (MCP), a specific form of soluble fiber, has been shown in clinical trials to increase the urinary excretion of toxic metals like lead, mercury, and arsenic without depleting essential minerals.</p>
+
+        <h2 id="section3">Insoluble Fiber & Transit Time: The Mechanical Broom</h2>
+        <p>While soluble fiber traps, insoluble fiber (found in wheat bran, skins of vegetables, and seeds) moves. It does not dissolve in water and remains relatively intact as it passes through the GI tract. Its primary role in the P.U.R.I.F.Y. Protocol™ is to <span class="highlight">facilitate kinetic flow</span>.</p>
+
+        <p>By irritating the intestinal lining slightly, insoluble fiber triggers peristalsis. This reduces "transit time"—the duration waste sits in the colon. The longer the transit time, the more "autointoxication" occurs as the body reabsorbs water and the toxins dissolved within it. A healthy detox transit time should be between 12 and 24 hours; many clients presenting for detox have transit times exceeding 72 hours.</p>
+
+        <!-- Comparison Table -->
+        <div class="data-table-container">
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>Fiber Type</th>
+                        <th>Primary Mechanism</th>
+                        <th>Toxins Targeted</th>
+                        <th>Best Food Sources</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Soluble (Viscous)</strong></td>
+                        <td>Gel formation; Bile acid binding</td>
+                        <td>Heavy metals, Cholesterol, POPs</td>
+                        <td>Apple Pectin, Psyllium, Chia, Oats</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Insoluble (Bulking)</strong></td>
+                        <td>Mechanical sweeping; Peristalsis</td>
+                        <td>General waste, metabolic byproducts</td>
+                        <td>Dark leafy greens, Flaxseed, Nut skins</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Prebiotic (Fermentable)</strong></td>
+                        <td>Microbiome fuel; SCFA production</td>
+                        <td>Ammonia, secondary bile acids</td>
+                        <td>Garlic, Leeks, Jerusalem Artichoke</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <h2 id="section4">Interrupting Enterohepatic Circulation</h2>
+        <p>The liver processes toxins and excretes them into the gallbladder in the form of bile. When we eat fat, the gallbladder contracts, dumping this toxic bile into the small intestine. In a state of fiber deficiency, <span class="highlight">95% of these bile acids</span> are reabsorbed and sent back to the liver via the portal vein. This is the "Enterohepatic Loop."</p>
+
+        <p>For a practitioner, this loop is the enemy of progress. If a client is "detoxing" but constipated and low-fiber, they are simply moving toxins from the liver to the gut and back to the liver. This often leads to the "healing crisis" or "Herxheimer-like" reactions, where the client feels flu-like symptoms, headaches, and skin breakouts. Fiber breaks this loop by sequestering the bile and ensuring it ends up in the toilet.</p>
+
+        <!-- Case Study -->
+        <div class="case-study">
+            <div class="case-study-header">
+                <div class="case-study-icon">👤</div>
+                <div>
+                    <p class="box-label">Case Study: The "Reabsorption" Crisis</p>
+                    <p style="color: rgba(255,255,255,0.8); font-size: 13px; margin: 0;">Estrogen Dominance & Chronic Constipation</p>
+                </div>
+            </div>
+            <div class="case-study-content">
+                <div class="patient-profile">
+                    <div class="patient-avatar">S</div>
+                    <div class="patient-info">
+                        <h4>Sarah, 42</h4>
+                        <p>Symptoms: Severe PMS, cystic acne, bloating, 1 bowel movement every 3 days.</p>
+                    </div>
+                </div>
+                <p><strong>The Challenge:</strong> Sarah attempted a "juice cleanse" without fiber. On day 3, her acne flared aggressively, and she developed a migraine. Her lack of "pathway preparation" meant mobilized estrogens were being reabsorbed.</p>
+                <p><strong>The Intervention:</strong> We paused the cleanse and implemented Phase 1 of the P.U.R.I.F.Y. Protocol™:
+                <ul>
+                    <li>2 tablespoons of ground flaxseeds (Lignans for estrogen binding).</li>
+                    <li>5g of Apple Pectin daily.</li>
+                    <li>Increased water intake to 3L to support fiber hydration.</li>
+                </ul>
+                </p>
+                <p><strong>Outcome:</strong> Within 14 days, Sarah achieved daily bowel movements. When she resumed the detox, she experienced zero headaches, and her skin cleared significantly. Her transit time dropped from 80 hours to 18 hours.</p>
+            </div>
+        </div>
+
+        <h2 id="section5">The Estrobolome Connection</h2>
+        <p>A specific subset of the gut microbiome, the <span class="highlight">estrobolome</span>, produces an enzyme called <i>beta-glucuronidase</i>. When the liver conjugates estrogen (packaging it for exit), this enzyme can "unzip" the package, reactivating the estrogen and allowing it to be reabsorbed. High levels of beta-glucuronidase are linked to estrogen-driven cancers and PMS.</p>
+
+        <p>Fiber, particularly calcium-d-glucarate (found in cruciferous vegetables) and insoluble lignans, inhibits this "unzipping" process. By providing the right fiber matrix, we support the estrobolome in its mission to keep estrogen in its conjugated, excretable form. This is why fiber is non-negotiable for hormonal detoxification.</p>
+
+        <h2 id="section6">Clinical Titration Protocol: The "Low-and-Slow" Rule</h2>
+        <p>One of the most common mistakes practitioners make is prescribing a high-fiber diet (35-50g) to a client currently consuming 12g. This leads to "fiber bloat," gas, and abdominal pain, causing the client to abandon the protocol. In the P.U.R.I.F.Y. Protocol™, we use the following titration schedule:</p>
+
+        <div class="principle-card">
+            <div class="principle-title">Week 1: The Foundation</div>
+            <p class="principle-text">Focus on <strong>Hydration first</strong>. Fiber without water creates "intestinal concrete." Target 30ml of water per kg of body weight. Add 5g of fiber (e.g., 1 tsp psyllium or 1 apple with skin).</p>
+        </div>
+
+        <div class="principle-card">
+            <div class="principle-title">Week 2: The Binding Phase</div>
+            <p class="principle-text">Add <strong>Soluble Binders</strong>. Introduce 1 tbsp ground flax or chia seeds. Monitor for bloating. If gas occurs, stay at this level until the microbiome adapts.</p>
+        </div>
+
+        <div class="principle-card">
+            <div class="principle-title">Week 3: The Kinetic Flow</div>
+            <p class="principle-text">Introduce <strong>Insoluble Bulk</strong>. Increase leafy green consumption to 3-4 cups daily. Target 30-35g of total fiber. Bowel movements should be effortless and daily.</p>
+        </div>
+
+        <!-- Check Your Understanding -->
+        <div class="check-understanding">
+            <p class="box-label">Check Your Understanding</p>
+            <div class="question-item">
+                <p class="question-text">Why is soluble fiber specifically prioritized for heavy metal and fat-soluble toxin clearance?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-text">Soluble fiber forms a viscous gel that binds to bile acids. Since the liver excretes fat-soluble toxins and heavy metals into the bile, trapping the bile prevents these toxins from being reabsorbed in the terminal ileum (enterohepatic circulation).</div>
+            </div>
+
+            <div class="question-item">
+                <p class="question-text">A client complains of intense bloating after starting a fiber-rich detox protocol. What is the likely practitioner error?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-text">Likely a failure to "titrate" (increasing fiber too quickly) or insufficient hydration. Fiber requires significant water to move through the GI tract; without it, it causes stagnation and fermentation (gas).</div>
+            </div>
+        </div>
+
+        <!-- Takeaways -->
+        <div class="takeaways-box">
+            <p class="box-label">Key Takeaways</p>
+            <ul>
+                <li><strong>Fiber is a Binder:</strong> It is the physical substrate that prevents the reabsorption of toxins in the colon.</li>
+                <li><strong>Soluble traps, Insoluble moves:</strong> A 1:3 ratio of soluble to insoluble fiber is generally ideal for most detox protocols.</li>
+                <li><strong>Interrupt the Loop:</strong> Fiber breaks the enterohepatic circulation, reducing the liver's "toxic backlog."</li>
+                <li><strong>Hydration is Mandatory:</strong> Fiber without water is a recipe for constipation and autointoxication.</li>
+                <li><strong>Estrogen Clearance:</strong> Lignans and insoluble fiber are critical for managing the estrobolome and hormonal balance.</li>
+            </ul>
+        </div>
+
+        <!-- References Box -->
+        <div class="references-box">
+            <h4>References & Further Reading</h4>
+            <ul class="references-list">
+                <li>Eliaz, I., et al. (2019). "The Role of Modified Citrus Pectin in Heavy Metal Detoxification." <i>Journal of Clinical Nutrition & Dietetics.</i></li>
+                <li>Lattimer, J. M., & Haub, M. D. (2010). "Effects of Dietary Fiber and Its Components on Metabolic Health." <i>Nutrients.</i></li>
+                <li>Baker, J. M., et al. (2017). "Estrogen-gut microbiome axis: Physiological and clinical implications." <i>Maturitas.</i></li>
+                <li>Kaczmarczyk, M. M., et al. (2012). "The health benefits of dietary fiber: beyond the usual suspects of colon health." <i>Metabolism.</i></li>
+                <li>Guan, Z. W., et al. (2021). "Impact of Dietary Fiber on Toxin Absorption and Fecal Excretion." <i>Frontiers in Nutrition.</i></li>
+                <li>He, X., et al. (2020). "Bile acid-binding resins and dietary fiber: mechanisms and clinical applications." <i>Journal of Lipid Research.</i></li>
+            </ul>
+        </div>
+
+        <footer class="lesson-footer">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="footer-logo">
+            <p class="brand">AccrediPro Academy: Detox & Cleanse Specialist Certification</p>
+            <p class="copyright">&copy; 2024 AccrediPro Academy. All rights reserved. Professional use only.</p>
+        </footer>
+    </div>
+</body>
+
+</html>

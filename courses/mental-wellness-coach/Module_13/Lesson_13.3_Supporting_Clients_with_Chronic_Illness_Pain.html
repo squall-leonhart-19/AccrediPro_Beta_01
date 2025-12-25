@@ -1,0 +1,766 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lesson 13.3: Supporting Clients with Chronic Illness/Pain</title>
+    <style>
+        /* Base & Reset */
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Georgia, 'Times New Roman', serif;
+            line-height: 1.8;
+            color: #2d2d2d;
+            background: #f8f6f3;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Main Container */
+        .lesson-container {
+            max-width: 860px;
+            margin: 0 auto;
+            padding: 40px 30px;
+            background: #ffffff;
+            min-height: 100vh;
+            box-shadow: 0 0 60px rgba(0, 0, 0, 0.08);
+        }
+
+        /* Brand Header */
+        .brand-header {
+            text-align: center;
+            padding-bottom: 30px;
+            margin-bottom: 35px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .brand-logo {
+            max-width: 220px;
+            height: auto;
+            margin-bottom: 5px;
+        }
+
+        /* Module Header - TEAL theme for Wellness/Pain */
+        .module-header {
+            background: linear-gradient(135deg, #0d9488 0%, #14b8a6 100%);
+            padding: 35px 35px 30px;
+            border-radius: 16px;
+            margin-bottom: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .module-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+            transform: translate(100px, -100px);
+        }
+
+        .module-header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, #B8860B, #D4A84B, #B8860B);
+        }
+
+        .module-label {
+            margin: 0;
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.75);
+            text-transform: uppercase;
+            letter-spacing: 2.5px;
+            font-weight: 500;
+        }
+
+        .lesson-title {
+            margin: 10px 0 0 0;
+            font-size: 28px;
+            color: #ffffff;
+            font-weight: 700;
+            line-height: 1.3;
+            position: relative;
+        }
+
+        .lesson-meta {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+            padding-top: 18px;
+            border-top: 1px solid rgba(255, 255, 255, 0.15);
+            flex-wrap: wrap;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.85);
+            background: rgba(255, 255, 255, 0.1);
+            padding: 5px 12px;
+            border-radius: 4px;
+        }
+
+        /* Table of Contents */
+        .toc-box {
+            background: linear-gradient(135deg, #fafafa 0%, #f5f5f5 100%);
+            border-radius: 14px;
+            padding: 24px 28px;
+            margin-bottom: 35px;
+            border: 1px solid #e8e8e8;
+        }
+
+        .toc-box .box-label {
+            font-weight: 600;
+            color: #0d9488;
+            margin: 0 0 18px 0;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .toc-list {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px 24px;
+        }
+
+        .toc-list li {
+            margin: 0;
+        }
+
+        .toc-list a {
+            display: flex;
+            align-items: center;
+            padding: 8px 12px;
+            color: #555;
+            text-decoration: none;
+            font-size: 14px;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+        }
+
+        .toc-list a:hover {
+            background: white;
+            color: #0d9488;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+        }
+
+        .toc-list .section-num {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 26px;
+            height: 26px;
+            background: #0d9488;
+            color: white;
+            font-weight: 600;
+            font-size: 11px;
+            border-radius: 6px;
+            margin-right: 12px;
+            flex-shrink: 0;
+        }
+
+        /* Learning Objectives */
+        .objectives-box {
+            background: #f0fdfa;
+            border: 2px solid #14b8a6;
+            border-radius: 14px;
+            padding: 30px 35px;
+            margin-bottom: 40px;
+        }
+
+        .objectives-box .box-label {
+            font-weight: 600;
+            color: #0d9488;
+            margin: 0 0 18px 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .objectives-box .box-label::before {
+            content: '🎯';
+            font-size: 18px;
+        }
+
+        .objectives-box ul {
+            margin: 0;
+            padding-left: 22px;
+        }
+
+        .objectives-box li {
+            margin-bottom: 14px;
+            font-size: 16px;
+            line-height: 1.7;
+        }
+
+        /* Key Terms Box */
+        .key-terms-box {
+            background: linear-gradient(135deg, #f0f4f8 0%, #e8ecf1 100%);
+            border-radius: 14px;
+            padding: 28px 30px;
+            margin: 40px 0;
+            border: 1px solid #d8dce0;
+        }
+
+        .key-terms-box .box-label {
+            font-weight: 600;
+            color: #0d9488;
+            margin: 0 0 18px 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .terms-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 16px;
+        }
+
+        .term-item {
+            background: white;
+            padding: 16px 18px;
+            border-radius: 10px;
+            border-left: 4px solid #14b8a6;
+        }
+
+        .term-item .term {
+            font-weight: 700;
+            color: #0d9488;
+            font-size: 15px;
+            margin: 0 0 6px 0;
+        }
+
+        .term-item .definition {
+            font-size: 14px;
+            color: #555;
+            margin: 0;
+            line-height: 1.6;
+        }
+
+        /* Section Headings */
+        h2 {
+            font-size: 24px;
+            color: #0d9488;
+            margin: 50px 0 20px 0;
+            font-weight: 600;
+            position: relative;
+            padding-bottom: 12px;
+        }
+
+        h2::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 60px;
+            height: 3px;
+            background: #B8860B;
+        }
+
+        /* Paragraphs */
+        p {
+            font-size: 17px;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        /* Highlights */
+        .highlight {
+            background: linear-gradient(180deg, transparent 60%, #e6fffa 60%);
+            padding: 0 4px;
+            font-weight: 600;
+            color: #0d9488;
+        }
+
+        /* Welcome Box */
+        .welcome-box {
+            background: linear-gradient(135deg, #f0fdfa 0%, #f0fdf4 100%);
+            padding: 30px 35px;
+            border-radius: 14px;
+            margin-bottom: 40px;
+            border: 1px solid #99f6e4;
+        }
+
+        .welcome-box h3 {
+            margin: 0 0 15px 0;
+            font-size: 20px;
+            color: #0d9488;
+            font-weight: 600;
+        }
+
+        /* Alert Boxes */
+        .alert-box {
+            padding: 26px 30px;
+            margin: 35px 0;
+            border-radius: 0 14px 14px 0;
+            border-left: 5px solid;
+        }
+
+        .alert-box .alert-label {
+            font-weight: 600;
+            margin: 0 0 12px 0;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .alert-box.info {
+            background: #e0f2fe;
+            border-left-color: #0ea5e9;
+        }
+
+        .alert-box.info .alert-label {
+            color: #0369a1;
+        }
+
+        /* Case Study Box */
+        .case-study {
+            background: linear-gradient(135deg, #f8f9fb 0%, #f0f2f5 100%);
+            border-radius: 16px;
+            padding: 0;
+            margin: 40px 0;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+        }
+
+        .case-study-header {
+            background: linear-gradient(135deg, #0d9488 0%, #14b8a6 100%);
+            padding: 20px 30px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .case-study-header .box-label {
+            font-weight: 600;
+            color: #ffffff;
+            margin: 0;
+            font-size: 16px;
+        }
+
+        .case-study-content {
+            padding: 28px 30px;
+        }
+
+        .patient-profile {
+            display: flex;
+            align-items: center;
+            gap: 18px;
+            padding: 18px 22px;
+            background: white;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            border: 1px solid #e5e5e5;
+        }
+
+        .patient-avatar {
+            width: 55px;
+            height: 55px;
+            background: linear-gradient(135deg, #14b8a6, #0d9488);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            flex-shrink: 0;
+        }
+
+        /* Comparison Cards */
+        .comparison-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+            margin: 30px 0;
+        }
+
+        .comparison-card {
+            border-radius: 14px;
+            padding: 26px;
+            border-top: 5px solid;
+        }
+
+        .comparison-card.conventional {
+            background: #fff7ed;
+            border-top-color: #f97316;
+        }
+
+        .comparison-card.functional {
+            background: #f0fdfa;
+            border-top-color: #14b8a6;
+        }
+
+        /* Statistics Box */
+        .stats-box {
+            background: linear-gradient(135deg, #0d9488 0%, #14b8a6 100%);
+            padding: 40px;
+            border-radius: 16px;
+            margin: 35px 0;
+            color: white;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 25px;
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 42px;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        .stat-label {
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            opacity: 0.9;
+        }
+
+        /* Principle Cards */
+        .principle-card {
+            background: white;
+            border-left: 5px solid #0d9488;
+            padding: 24px 28px;
+            margin-bottom: 18px;
+            border-radius: 0 14px 14px 0;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.04);
+        }
+
+        .principle-title {
+            font-weight: 700;
+            color: #0d9488;
+            margin-bottom: 8px;
+        }
+
+        /* Check Understanding */
+        .check-understanding {
+            background: #fdfbf7;
+            border: 2px solid #B8860B;
+            border-radius: 16px;
+            padding: 32px;
+            margin: 45px 0;
+        }
+
+        .question-item {
+            background: white;
+            border-radius: 12px;
+            padding: 22px 24px;
+            margin-bottom: 16px;
+            border: 1px solid #e8e4dc;
+        }
+
+        .reveal-btn {
+            background: #0d9488;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+
+        .answer-text {
+            display: none;
+            padding: 14px;
+            background: #f0fdfa;
+            border-radius: 8px;
+            margin-top: 10px;
+        }
+
+        .answer-text.show {
+            display: block;
+        }
+
+        /* References Box */
+        .references-box {
+            background: #f9f9f9;
+            padding: 25px;
+            border-radius: 12px;
+            margin-top: 40px;
+            font-size: 14px;
+            border: 1px solid #eee;
+        }
+
+        .references-box h4 {
+            margin-top: 0;
+            color: #555;
+            text-transform: uppercase;
+            font-size: 12px;
+            letter-spacing: 1px;
+        }
+
+        .references-box ul {
+            padding-left: 20px;
+            margin: 0;
+        }
+
+        .references-box li {
+            margin-bottom: 8px;
+            color: #666;
+        }
+
+        /* Footer */
+        .lesson-footer {
+            text-align: center;
+            padding-top: 50px;
+            margin-top: 60px;
+            border-top: 1px solid #eee;
+        }
+
+        .footer-logo {
+            max-width: 140px;
+            opacity: 0.9;
+            margin-bottom: 10px;
+        }
+
+        @media (max-width: 768px) {
+            .lesson-container { padding: 20px 16px; }
+            .toc-list { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="lesson-container">
+        <div class="brand-header">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="brand-logo">
+        </div>
+
+        <header class="module-header">
+            <p class="module-label">Module 13: Specialized Populations & Challenges</p>
+            <h1 class="lesson-title">Lesson 13.3: Supporting Clients with Chronic Illness & Pain</h1>
+            <div class="lesson-meta">
+                <span class="meta-item">35 min read</span>
+                <span class="meta-item">Lesson 3 of 6</span>
+            </div>
+        </header>
+
+        <div class="toc-box">
+            <p class="box-label">In This Lesson</p>
+            <ul class="toc-list">
+                <li><a href="#section1"><span class="section-num">1</span>The Biopsychosocial Model</a></li>
+                <li><a href="#section2"><span class="section-num">2</span>Neurobiology of Chronic Pain</a></li>
+                <li><a href="#section3"><span class="section-num">3</span>The Psychological Impact</a></li>
+                <li><a href="#section4"><span class="section-num">4</span>The ASCEND™ Framework for Pain</a></li>
+                <li><a href="#section5"><span class="section-num">5</span>Cognitive Reframing for Illness</a></li>
+                <li><a href="#section6"><span class="section-num">6</span>Pacing & Energy Management</a></li>
+            </ul>
+        </div>
+
+        <div class="objectives-box">
+            <p class="box-label">Learning Objectives</p>
+            <ul>
+                <li>Understand the shift from the biomedical to the biopsychosocial model of chronic pain.</li>
+                <li>Identify the mechanisms of <span class="highlight">central sensitization</span> and how mental state influences pain perception.</li>
+                <li>Apply the ASCEND Method™ to help clients navigate the identity loss associated with chronic illness.</li>
+                <li>Implement evidence-based cognitive reframing techniques to reduce pain catastrophizing.</li>
+                <li>Guide clients in the "Pacing" methodology to prevent the boom-and-bust cycle.</li>
+            </ul>
+        </div>
+
+        <div class="welcome-box">
+            <h3>The Invisible Struggle</h3>
+            <p>Working with clients experiencing chronic illness or persistent pain requires a unique blend of clinical empathy and strategic regulation. Unlike acute injury, chronic pain often persists long after tissue healing has occurred, becoming a condition of the nervous system itself. As a Mental Wellness Coach, your role is not to "fix" the physical pathology, but to help the client reclaim their life from the shadow of their symptoms, optimizing their mental resilience to improve their physiological outcomes.</p>
+        </div>
+
+        <h2 id="section1">The Biopsychosocial Reality of Pain</h2>
+        <p>For centuries, medicine viewed pain through a purely <span class="highlight">biomedical lens</span>: tissue damage equals pain. However, this fails to explain why some individuals with significant spinal degeneration feel no pain, while others with "clean" scans experience debilitating agony. A 2021 study in the journal <i>Pain</i> found that psychosocial factors were stronger predictors of long-term disability than the initial physical injury itself.</p>
+        
+        <p>The <span class="highlight">Biopsychosocial Model</span> posits that pain is a dynamic interaction between biological (genetics, inflammation), psychological (beliefs, emotions), and social (work environment, support) factors. Chronic pain is now understood as a "threat response" generated by the brain when it perceives the body is in danger, regardless of actual tissue status.</p>
+
+        <div class="stats-box">
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <div class="stat-number">20.9%</div>
+                    <div class="stat-label">US Adults with Chronic Pain</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">45%</div>
+                    <div class="stat-label">Comorbidity with Depression</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">3x</div>
+                    <div class="stat-label">Higher Suicide Risk</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">$635B</div>
+                    <div class="stat-label">Annual Economic Cost (US)</div>
+                </div>
+            </div>
+        </div>
+
+        <h2 id="section2">Neurobiology: When the Alarm Gets Stuck</h2>
+        <p>In chronic conditions, the nervous system can enter a state of <span class="highlight">central sensitization</span>. This is essentially a "volume knob" that has been turned up and stuck in the high position. The neurons in the spinal cord and brain become hypersensitive, and the brain's "danger alarm" fires even in response to safe movements or minor stressors.</p>
+
+        <div class="alert-box info">
+            <p class="alert-label">Coach's Insight: Neuroplasticity</p>
+            <p>Just as the brain can "learn" to be in pain through repeated firing of danger pathways, it can also "unlearn" these responses through neuroplasticity. This is where the ASCEND Method™ becomes a powerful clinical tool.</p>
+        </div>
+
+        <div class="comparison-grid">
+            <div class="comparison-card conventional">
+                <p class="card-label">Acute Pain</p>
+                <p class="card-text">Directly related to tissue damage. Acts as a helpful warning signal. Short duration (0-3 months). Responds well to traditional rest and medication.</p>
+            </div>
+            <div class="comparison-card functional">
+                <p class="card-label">Chronic/Nociplastic Pain</p>
+                <p class="card-text">Related to nervous system sensitivity. Acts as a "false alarm." Long duration (3+ months). Responds best to movement, stress management, and cognitive work.</p>
+            </div>
+        </div>
+
+        <h2 id="section3">The Psychological Toll & Identity Loss</h2>
+        <p>Chronic illness is rarely just about physical symptoms; it is a profound disruption of the "biographical narrative." Clients often experience a <span class="highlight">grief process</span> for the version of themselves that existed before the diagnosis. This includes the loss of career potential, physical hobbies, social roles, and sexual identity.</p>
+        
+        <p>A common phenomenon is the <span class="highlight">Fear-Avoidance Model</span>. When a client experiences pain, they develop a fear of movement (kinesiophobia). This leads to avoidance, which causes physical deconditioning and social isolation, which in turn increases depression and lowers the pain threshold—creating a self-perpetuating cycle of disability.</p>
+
+        <div class="case-study">
+            <div class="case-study-header">
+                <div class="case-study-icon">👤</div>
+                <div>
+                    <p class="box-label">Case Study: Breaking the Pain-Anxiety Cycle</p>
+                    <p style="color:white; font-size:12px; margin:0;">Client: Elena, 42 | Diagnosis: Fibromyalgia & Chronic Fatigue</p>
+                </div>
+            </div>
+            <div class="case-study-content">
+                <div class="patient-profile">
+                    <div class="patient-avatar">E</div>
+                    <div class="patient-info">
+                        <h4>Elena</h4>
+                        <p>Presenting with high anxiety, social withdrawal, and "all-or-nothing" activity patterns.</p>
+                    </div>
+                </div>
+                <p><strong>The Challenge:</strong> Elena would feel "good" for one day, over-exert herself (the "Boom"), and then be bedridden for four days (the "Bust"). Her fear of the next flare-up kept her in a state of constant sympathetic dominance (fight-or-flight).</p>
+                <p><strong>Intervention:</strong> Using the <strong>ASCEND Method™</strong>, we focused on:</p>
+                <ul>
+                    <li><strong>Somatic Regulation:</strong> Implementation of "Box Breathing" twice daily to signal safety to the brain.</li>
+                    <li><strong>Cognitive Reframing:</strong> Challenging the thought "Movement is damaging my body" to "Movement is safe, but my alarm system is sensitive."</li>
+                    <li><strong>Neuroplastic Habituation:</strong> Graded exposure to walking, starting with just 3 minutes, regardless of pain levels.</li>
+                </ul>
+                <p><strong>Outcome:</strong> After 12 weeks, Elena's pain scores remained similar, but her <strong>disability score</strong> dropped by 40%. She returned to part-time work and reported a significant increase in "self-efficacy."</p>
+            </div>
+        </div>
+
+        <h2 id="section4">Applying the ASCEND Method™ to Chronic Pain</h2>
+        <p>The ASCEND Method™ provides a structured pathway to move a client from "victim of symptoms" to "manager of wellness."</p>
+
+        <div class="principle-card">
+            <p class="principle-title">A - Assessment & Awareness</p>
+            <p class="principle-text">Identify "Pain Triggers" beyond the physical. Does pain spike after a stressful meeting? Use a "Pain & Mood Diary" to find correlations between emotional state and symptom intensity.</p>
+        </div>
+
+        <div class="principle-card">
+            <p class="principle-title">S - Somatic Regulation</p>
+            <p class="principle-text">The goal is to downregulate the autonomic nervous system. Techniques like <i>Vagus Nerve Stimulation</i> and <i>Progressive Muscle Relaxation</i> help the brain feel safe enough to lower the pain volume.</p>
+        </div>
+
+        <div class="principle-card">
+            <p class="principle-title">C - Cognitive Reframing</p>
+            <p class="principle-text">Targeting "Catastrophizing" (the tendency to assume the worst). We move from "This pain will never end" to "This is a flare-up, I have the tools to manage this temporary increase in sensation."</p>
+        </div>
+
+        <div class="principle-card">
+            <p class="principle-title">E - Emotional Integration</p>
+            <p class="principle-text">Processing the anger and grief of the illness. Using <i>Self-Compassion</i> frameworks (Neff et al.) to reduce the secondary suffering caused by self-judgment for being "unproductive."</p>
+        </div>
+
+        <h2 id="section5">Cognitive Reframing: Defeating Catastrophizing</h2>
+        <p>Research indicates that <span class="highlight">Pain Catastrophizing</span>—characterized by magnification, rumination, and helplessness—is one of the most significant predictors of poor outcomes in chronic pain. As a coach, you help the client identify these cognitive distortions.</p>
+
+        <p>Common distortions in chronic illness include:</p>
+        <ul class="content-list">
+            <li><strong>Fortune Telling:</strong> "If I go to that dinner, I'll be in bed for a week."</li>
+            <li><strong>Black-and-White Thinking:</strong> "If I'm not 100% pain-free, I'm a failure."</li>
+            <li><strong>Emotional Reasoning:</strong> "I feel like my body is falling apart, so it must be true."</li>
+        </ul>
+
+        <div class="alert-box reflect">
+            <p class="alert-label">Reflective Inquiry</p>
+            <p>Ask your client: "If this pain were a person trying to protect you, what do you think it is worried about right now?" This shifts the focus from 'pain as an enemy' to 'pain as a misguided protector.'</p>
+        </div>
+
+        <h2 id="section6">Design for Durability: Pacing & Energy</h2>
+        <p>The final stage of the ASCEND Method™ involves creating a sustainable lifestyle. The core concept here is <span class="highlight">Pacing</span>. Many clients live in a "Boom-and-Bust" cycle. They wait for a low-pain day and then try to do everything they've missed, which inevitably triggers a "crash."</p>
+
+        <p><strong>The Spoon Theory:</strong> Created by Christine Miserandino, this is a popular metaphor for energy management. Most people have an unlimited supply of "spoons" (energy units), but those with chronic illness have a finite number. Every task—showering, driving, working—costs a spoon. Once they are gone, they are gone.</p>
+
+        <div class="principle-card">
+            <p class="principle-title">The 80% Rule</p>
+            <p class="principle-text">Encourage clients to stop their activity when they feel they have reached 80% of their capacity. This leaves a "buffer" for the nervous system to remain in a state of safety, preventing the inflammatory rebound.</p>
+        </div>
+
+        <div class="check-understanding">
+            <p class="box-label">Check Your Understanding</p>
+            <p class="box-subtitle">Test your knowledge of chronic pain coaching principles.</p>
+            
+            <div class="question-item">
+                <div class="question-number">1</div>
+                <p class="question-text">What is the primary difference between acute pain and central sensitization?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <p class="answer-text">Acute pain is a direct signal of tissue damage. Central sensitization is a condition where the nervous system remains in a high-alert state, amplifying pain signals even after tissue healing has occurred.</p>
+            </div>
+
+            <div class="question-item">
+                <div class="question-number">2</div>
+                <p class="question-number" style="background:#B8860B; top:-12px;">2</p>
+                <p class="question-text">How does "Catastrophizing" affect the physiological experience of pain?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <p class="answer-text">Catastrophizing activates the amygdala and the sympathetic nervous system, increasing cortisol and pro-inflammatory cytokines, which physically lowers the pain threshold and increases the intensity of the sensation.</p>
+            </div>
+        </div>
+
+        <div class="takeaways-box">
+            <p class="box-label">Key Takeaways</p>
+            <ul>
+                <li>Chronic pain is a <strong>biopsychosocial</strong> phenomenon, not just a physical one.</li>
+                <li>The <strong>ASCEND Method™</strong> helps clients shift from a "fight" or "flight" relationship with pain to a "regulation" and "integration" approach.</li>
+                <li><strong>Somatic Regulation</strong> is the prerequisite for cognitive work; a stressed brain cannot rationally reframe pain.</li>
+                <li><strong>Pacing</strong> and the <strong>80% Rule</strong> are essential for breaking the Boom-and-Bust cycle of disability.</li>
+                <li>Your role is to increase the client's <strong>Self-Efficacy</strong>—their belief in their ability to influence their own wellbeing.</li>
+            </ul>
+        </div>
+
+        <div class="references-box">
+            <h4>References & Further Reading</h4>
+            <ul>
+                <li>Gatchel, R. J., et al. (2007). "The Biopsychosocial Approach to Chronic Pain: Scientific Advances and Future Directions." <i>Psychological Bulletin</i>.</li>
+                <li>Jensen, M. P., et al. (2011). "Mechanisms of Chronic Pain: The Role of Central Sensitization." <i>The Journal of Pain</i>.</li>
+                <li>Neff, K. D., et al. (2007). "Self-Compassion, Health, and Well-being." <i>Social and Personality Psychology Compass</i>.</li>
+                <li>Vlaeyen, J. W., & Linton, S. J. (2000). "Fear-avoidance and its consequences in chronic musculoskeletal pain: a state of the art." <i>Pain</i>.</li>
+                <li>CDC (2023). "Chronic Pain and High-Impact Chronic Pain Among U.S. Adults, 2021." <i>Morbidity and Mortality Weekly Report</i>.</li>
+                <li>Miserandino, C. (2003). "The Spoon Theory." <i>But You Don't Look Sick</i>.</li>
+            </ul>
+        </div>
+
+        <footer class="lesson-footer">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="footer-logo">
+            <p class="brand">AccrediPro Academy Certified Mental Wellness Coach</p>
+            <p class="copyright">&copy; 2024 AccrediPro Academy. All rights reserved. Professional Certification Program.</p>
+        </footer>
+    </div>
+</body>
+
+</html>

@@ -1,0 +1,872 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lesson 4.5: NEAT (Non-Exercise Activity Thermogenesis) and Blood Sugar</title>
+    <style>
+        /* Base & Reset */
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Georgia, 'Times New Roman', serif;
+            line-height: 1.8;
+            color: #2d2d2d;
+            background: #f8f6f3;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Main Container */
+        .lesson-container {
+            max-width: 860px;
+            margin: 0 auto;
+            padding: 40px 30px;
+            background: #ffffff;
+            min-height: 100vh;
+            box-shadow: 0 0 60px rgba(0, 0, 0, 0.08);
+        }
+
+        /* Brand Header */
+        .brand-header {
+            text-align: center;
+            padding-bottom: 30px;
+            margin-bottom: 35px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .brand-logo {
+            max-width: 220px;
+            height: auto;
+            margin-bottom: 5px;
+        }
+
+        /* Module Header - GREEN theme for Blood Sugar/Health */
+        .module-header {
+            background: linear-gradient(135deg, #059669 0%, #10B981 100%);
+            padding: 35px 35px 30px;
+            border-radius: 16px;
+            margin-bottom: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .module-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+            transform: translate(100px, -100px);
+        }
+
+        .module-header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, #B8860B, #D4A84B, #B8860B);
+        }
+
+        .module-label {
+            margin: 0;
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.75);
+            text-transform: uppercase;
+            letter-spacing: 2.5px;
+            font-weight: 500;
+        }
+
+        .lesson-title {
+            margin: 10px 0 0 0;
+            font-size: 28px;
+            color: #ffffff;
+            font-weight: 700;
+            line-height: 1.3;
+            position: relative;
+        }
+
+        .lesson-meta {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+            padding-top: 18px;
+            border-top: 1px solid rgba(255, 255, 255, 0.15);
+            flex-wrap: wrap;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.85);
+            background: rgba(255, 255, 255, 0.1);
+            padding: 5px 12px;
+            border-radius: 4px;
+        }
+
+        /* Table of Contents */
+        .toc-box {
+            background: linear-gradient(135deg, #fafafa 0%, #f5f5f5 100%);
+            border-radius: 14px;
+            padding: 24px 28px;
+            margin-bottom: 35px;
+            border: 1px solid #e8e8e8;
+        }
+
+        .toc-box .box-label {
+            font-weight: 600;
+            color: #059669;
+            margin: 0 0 18px 0;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .toc-list {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px 24px;
+        }
+
+        .toc-list li {
+            margin: 0;
+        }
+
+        .toc-list a {
+            display: flex;
+            align-items: center;
+            padding: 8px 12px;
+            color: #555;
+            text-decoration: none;
+            font-size: 14px;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+        }
+
+        .toc-list a:hover {
+            background: white;
+            color: #059669;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+        }
+
+        .toc-list .section-num {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 26px;
+            height: 26px;
+            background: #059669;
+            color: white;
+            font-weight: 600;
+            font-size: 11px;
+            border-radius: 6px;
+            margin-right: 12px;
+            flex-shrink: 0;
+        }
+
+        /* Learning Objectives */
+        .objectives-box {
+            background: #f0fdf4;
+            border: 2px solid #10B981;
+            border-radius: 14px;
+            padding: 30px 35px;
+            margin-bottom: 40px;
+        }
+
+        .objectives-box .box-label {
+            font-weight: 600;
+            color: #059669;
+            margin: 0 0 18px 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .objectives-box .box-label::before {
+            content: '🎯';
+            font-size: 18px;
+        }
+
+        .objectives-box ul {
+            margin: 0;
+            padding-left: 22px;
+        }
+
+        .objectives-box li {
+            margin-bottom: 14px;
+            font-size: 16px;
+            line-height: 1.7;
+        }
+
+        /* Key Terms Box */
+        .key-terms-box {
+            background: linear-gradient(135deg, #f0f4f8 0%, #e8ecf1 100%);
+            border-radius: 14px;
+            padding: 28px 30px;
+            margin: 40px 0;
+            border: 1px solid #d8dce0;
+        }
+
+        .key-terms-box .box-label {
+            font-weight: 600;
+            color: #059669;
+            margin: 0 0 18px 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .terms-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 16px;
+        }
+
+        .term-item {
+            background: white;
+            padding: 16px 18px;
+            border-radius: 10px;
+            border-left: 4px solid #10B981;
+        }
+
+        .term-item .term {
+            font-weight: 700;
+            color: #059669;
+            font-size: 15px;
+            margin: 0 0 6px 0;
+        }
+
+        .term-item .definition {
+            font-size: 14px;
+            color: #555;
+            margin: 0;
+            line-height: 1.6;
+        }
+
+        /* Section Headings */
+        h2 {
+            font-size: 24px;
+            color: #059669;
+            margin: 50px 0 20px 0;
+            font-weight: 600;
+            position: relative;
+            padding-bottom: 12px;
+        }
+
+        h2::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 60px;
+            height: 3px;
+            background: #B8860B;
+        }
+
+        /* Paragraphs */
+        p {
+            font-size: 17px;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        /* Highlights */
+        .highlight {
+            background: linear-gradient(180deg, transparent 60%, #FFF59D 60%);
+            padding: 0 4px;
+            font-weight: 500;
+        }
+
+        /* Welcome/Intro Box */
+        .welcome-box {
+            background: linear-gradient(135deg, #f0fdf4 0%, #ecfdf5 100%);
+            padding: 30px 35px;
+            border-radius: 14px;
+            margin-bottom: 40px;
+            border: 1px solid #bbf7d0;
+        }
+
+        .welcome-box h3 {
+            margin: 0 0 15px 0;
+            font-size: 20px;
+            color: #059669;
+            font-weight: 600;
+        }
+
+        /* Alert Boxes */
+        .alert-box {
+            padding: 26px 30px;
+            margin: 35px 0;
+            border-radius: 0 14px 14px 0;
+            border-left: 5px solid;
+        }
+
+        .alert-box .alert-label {
+            font-weight: 600;
+            margin: 0 0 12px 0;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .alert-box.info {
+            background: #e3f2fd;
+            border-left-color: #2196f3;
+        }
+
+        .alert-box.info .alert-label {
+            color: #1565c0;
+        }
+
+        /* Case Study Box */
+        .case-study {
+            background: linear-gradient(135deg, #f8f9fb 0%, #f0f2f5 100%);
+            border-radius: 16px;
+            padding: 0;
+            margin: 40px 0;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+        }
+
+        .case-study-header {
+            background: linear-gradient(135deg, #059669 0%, #10B981 100%);
+            padding: 20px 30px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .case-study-icon {
+            width: 45px;
+            height: 45px;
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+        }
+
+        .case-study-header .box-label {
+            font-weight: 600;
+            color: #ffffff;
+            margin: 0;
+            font-size: 16px;
+        }
+
+        .case-study-content {
+            padding: 28px 30px;
+        }
+
+        .patient-profile {
+            display: flex;
+            align-items: center;
+            gap: 18px;
+            padding: 18px 22px;
+            background: white;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            border: 1px solid #e5e5e5;
+        }
+
+        .patient-avatar {
+            width: 55px;
+            height: 55px;
+            background: linear-gradient(135deg, #10B981, #059669);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            flex-shrink: 0;
+        }
+
+        /* Statistics Box */
+        .stats-box {
+            background: linear-gradient(135deg, #059669 0%, #10B981 100%);
+            padding: 40px;
+            border-radius: 16px;
+            margin: 35px 0;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 25px;
+            position: relative;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 42px;
+            font-weight: 700;
+            color: white;
+            line-height: 1;
+            margin-bottom: 8px;
+        }
+
+        .stat-label {
+            font-size: 13px;
+            color: rgba(255, 255, 255, 0.85);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* Table Styling */
+        .data-table-container {
+            overflow-x: auto;
+            margin: 30px 0;
+            border-radius: 12px;
+            border: 1px solid #e5e5e5;
+        }
+
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 15px;
+            text-align: left;
+        }
+
+        .data-table th {
+            background: #f0fdf4;
+            color: #059669;
+            padding: 15px;
+            font-weight: 700;
+            border-bottom: 2px solid #10B981;
+        }
+
+        .data-table td {
+            padding: 15px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .data-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        /* Check Understanding Box */
+        .check-understanding {
+            background: linear-gradient(135deg, #fdfbf7 0%, #f9f5ed 100%);
+            border: 2px solid #B8860B;
+            border-radius: 16px;
+            padding: 32px;
+            margin: 45px 0;
+        }
+
+        .check-understanding .box-label {
+            font-weight: 600;
+            color: #8B6914;
+            margin: 0 0 8px 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .question-item {
+            background: white;
+            border-radius: 12px;
+            padding: 22px 24px;
+            margin-bottom: 16px;
+            border: 1px solid #e8e4dc;
+            position: relative;
+        }
+
+        .question-number {
+            position: absolute;
+            top: -12px;
+            left: 20px;
+            background: #059669;
+            color: white;
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            font-size: 13px;
+        }
+
+        .reveal-btn {
+            background: #059669;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-size: 14px;
+            cursor: pointer;
+            font-family: inherit;
+        }
+
+        .answer-text {
+            display: none;
+            font-size: 14px;
+            color: #2e7d32;
+            margin: 14px 0 0 0;
+            padding: 14px;
+            background: #f0f8f0;
+            border-radius: 8px;
+        }
+
+        .answer-text.show {
+            display: block;
+        }
+
+        /* Takeaways & References */
+        .takeaways-box {
+            background: linear-gradient(135deg, #f5f5f5 0%, #e8e8e8 100%);
+            padding: 22px 25px;
+            margin-top: 35px;
+            border-radius: 8px;
+            border: 1px solid #ddd;
+        }
+
+        .references-box {
+            margin-top: 40px;
+            padding: 25px;
+            background: #f9f9f9;
+            border-radius: 12px;
+            font-size: 14px;
+            color: #666;
+        }
+
+        .references-box h4 {
+            margin: 0 0 15px 0;
+            color: #333;
+        }
+
+        .references-box ul {
+            padding-left: 20px;
+            margin: 0;
+        }
+
+        .references-box li {
+            margin-bottom: 8px;
+        }
+
+        /* Footer */
+        .lesson-footer {
+            text-align: center;
+            padding-top: 50px;
+            margin-top: 60px;
+            border-top: 1px solid #eee;
+        }
+
+        .footer-logo {
+            max-width: 140px;
+            height: auto;
+            margin-bottom: 15px;
+            opacity: 0.9;
+        }
+
+        .lesson-footer .brand {
+            color: #059669;
+            font-weight: 600;
+            margin: 0;
+            font-size: 15px;
+        }
+
+        .lesson-footer .copyright {
+            color: #888;
+            font-size: 13px;
+            margin: 10px 0 0 0;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="lesson-container">
+        <div class="brand-header">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="brand-logo">
+        </div>
+
+        <header class="module-header">
+            <p class="module-label">Module 4: STABLE Method™ Phase 3: Active Sensitization</p>
+            <h1 class="lesson-title">Lesson 4.5: NEAT (Non-Exercise Activity Thermogenesis) and Blood Sugar</h1>
+            <div class="lesson-meta">
+                <span class="meta-item">32 min read</span>
+                <span class="meta-item">Lesson 5 of 8</span>
+            </div>
+        </header>
+
+        <!-- Table of Contents -->
+        <div class="toc-box">
+            <p class="box-label">In This Lesson</p>
+            <ul class="toc-list">
+                <li><a href="#section1"><span class="section-num">1</span>Defining NEAT in Metabolic Health</a></li>
+                <li><a href="#section2"><span class="section-num">2</span>The GLUT4 Mechanism of NEAT</a></li>
+                <li><a href="#section3"><span class="section-num">3</span>The "Sedentary Athlete" Paradox</a></li>
+                <li><a href="#section4"><span class="section-num">4</span>Quantifying NEAT's Glycemic Impact</a></li>
+                <li><a href="#section5"><span class="section-num">5</span>Practical Implementation Strategies</a></li>
+                <li><a href="#section6"><span class="section-num">6</span>Case Study: The Corporate Executive</a></li>
+            </ul>
+        </div>
+
+        <!-- Learning Objectives -->
+        <div class="objectives-box">
+            <p class="box-label">Learning Objectives</p>
+            <ul>
+                <li>Differentiate between NEAT and EAT (Exercise Activity Thermogenesis) in the context of TDEE.</li>
+                <li>Explain the physiological mechanism by which low-intensity movement facilitates glucose disposal.</li>
+                <li>Identify the "Sedentary Athlete" paradox and its impact on glycemic variability.</li>
+                <li>Analyze clinical data regarding the substitution of sitting with standing or light movement.</li>
+                <li>Develop a client-specific NEAT protocol to reduce postprandial glucose excursions.</li>
+            </ul>
+        </div>
+
+        <!-- Welcome Box -->
+        <div class="welcome-box">
+            <h3>The Power of "Micro-Movement"</h3>
+            <p>In the STABLE Method™, we emphasize <span class="highlight">Active Sensitization</span>. While high-intensity training and resistance work are vital, they often only occupy 3-5% of a client's total week. The remaining 95% of their time—their "Non-Exercise" hours—is where the metabolic battle is often won or lost. NEAT represents the most underrated tool in a Diabetes Coach's arsenal for flattening the glucose curve and improving long-term insulin sensitivity.</p>
+        </div>
+
+        <!-- Key Terms -->
+        <div class="key-terms-box">
+            <p class="box-label">🔬 Key Terms to Know</p>
+            <div class="terms-grid">
+                <div class="term-item">
+                    <p class="term">NEAT</p>
+                    <p class="definition">Non-Exercise Activity Thermogenesis: Energy expended for everything we do that is not sleeping, eating, or sports-like exercise.</p>
+                </div>
+                <div class="term-item">
+                    <p class="term">TDEE</p>
+                    <p class="definition">Total Daily Energy Expenditure: The total number of calories the body burns in a 24-hour period.</p>
+                </div>
+                <div class="term-item">
+                    <p class="term">LPL (Lipoprotein Lipase)</p>
+                    <p class="definition">An enzyme that plays a critical role in breaking down fat; its activity drops significantly during prolonged sitting.</p>
+                </div>
+                <div class="term-item">
+                    <p class="term">Postprandial Excursion</p>
+                    <p class="definition">The rise in blood glucose levels that occurs after eating a meal.</p>
+                </div>
+            </div>
+        </div>
+
+        <h2 id="section1">Defining NEAT in Metabolic Health</h2>
+
+        <p>Non-Exercise Activity Thermogenesis (NEAT) encompasses the energy expenditure of all physical activities other than volitional exercise. This includes walking to a car, typing, performing yard work, fidgeting, and even maintaining posture while standing. In modern sedentary societies, NEAT has plummeted, contributing significantly to the "metabolic clog" seen in Type 2 Diabetes and insulin resistance.</p>
+
+        <p>Research led by Dr. James Levine at the Mayo Clinic has shown that NEAT can vary by as much as <span class="highlight">2,000 calories per day</span> between two people of similar size. For a client with blood sugar dysregulation, this variance isn't just about weight management; it's about the continuous "trickle-charge" of glucose disposal into skeletal muscle throughout the day.</p>
+
+        <!-- Statistics Box -->
+        <div class="stats-box">
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <div class="stat-number">15-50%</div>
+                    <div class="stat-label">% of TDEE from NEAT</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">2.5x</div>
+                    <div class="stat-label">Higher Glucose Uptake</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">90 min</div>
+                    <div class="stat-label">Max Sitting Threshold</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">34%</div>
+                    <div class="stat-label">Drop in Post-Meal Spike</div>
+                </div>
+            </div>
+        </div>
+
+        <h2 id="section2">The GLUT4 Mechanism of NEAT</h2>
+
+        <p>To understand why NEAT is vital for the STABLE Method™, we must look at the cellular level. Skeletal muscle is the primary site for postprandial glucose disposal. Usually, insulin is required to signal <span class="highlight">GLUT4 translocation</span>—the process where glucose transporters move to the cell surface to "let sugar in."</p>
+
+        <p>However, muscle contraction itself—even at low intensities like standing or slow walking—stimulates GLUT4 translocation via insulin-independent pathways (AMPK activation). By maintaining high levels of NEAT, a client effectively keeps their "glucose gates" slightly ajar all day long. This reduces the burden on the pancreas to secrete large amounts of insulin, thereby addressing the root cause of hyperinsulinemia.</p>
+
+        <div class="alert-box info">
+            <p class="alert-label">The LPL Factor</p>
+            <p>Lipoprotein Lipase (LPL) is an enzyme essential for capturing fat from the bloodstream to be used as fuel. Studies show that LPL activity in the legs drops by nearly 90% within minutes of sitting. NEAT keeps LPL active, promoting metabolic flexibility (the ability to switch between burning carbs and fats).</p>
+        </div>
+
+        <h2 id="section3">The "Sedentary Athlete" Paradox</h2>
+
+        <p>A common challenge for Diabetes Coaches is the client who "does everything right" in the gym but still sees high fasting glucose or erratic CGM readings. This is the <span class="highlight">Sedentary Athlete</span>. This individual may perform a 60-minute vigorous workout (EAT) but remains seated for the remaining 15 hours of their waking day.</p>
+
+        <p>A 2022 study published in <i>Medicine & Science in Sports & Exercise</i> demonstrated that the metabolic benefits of a morning workout can be almost entirely negated by 10+ hours of subsequent sitting. For these clients, the focus must shift from "more exercise" to "less sitting."</p>
+
+        <!-- Comparison Table -->
+        <div class="data-table-container">
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>Feature</th>
+                        <th>EAT (Exercise)</th>
+                        <th>NEAT (Non-Exercise)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Primary Driver</strong></td>
+                        <td>Intensity & Duration</td>
+                        <td>Frequency & Consistency</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Glucose Mechanism</strong></td>
+                        <td>Rapid Glycogen Depletion</td>
+                        <td>Steady-State GLUT4 Translocation</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Insulin Requirement</strong></td>
+                        <td>High Insulin Sensitivity Post-Workout</td>
+                        <td>Consistent Insulin-Independent Uptake</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Sustainability</strong></td>
+                        <td>Limited by Fatigue/Recovery</td>
+                        <td>Indefinite (Low Fatigue)</td>
+                    </tr>
+                    <tr>
+                        <td><strong>CGM Impact</strong></td>
+                        <td>Large Drops (Potential Hypo)</td>
+                        <td>Flattening of the Glycemic Curve</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <h2 id="section4">Quantifying NEAT's Glycemic Impact</h2>
+
+        <p>Specific data allows us to provide evidence-based coaching. A 2023 meta-analysis of 12 randomized controlled trials (n=842) investigated the impact of "interrupting sitting." The findings were profound:</p>
+        
+        <ul>
+            <li>Replacing sitting with <span class="highlight">standing</span> for just 5 minutes every 30 minutes reduced post-meal glucose spikes by an average of 9.6%.</li>
+            <li>Replacing sitting with <span class="highlight">light walking</span> (2 mph) for the same duration reduced spikes by 22.2%.</li>
+            <li>The "Area Under the Curve" (AUC) for insulin was reduced by 18% in the walking group compared to the sitting group.</li>
+        </ul>
+
+        <p>For a client with Type 2 Diabetes, these "micro-interventions" can be the difference between staying in range (70-140 mg/dL) and entering the zone of vascular damage (>180 mg/dL).</p>
+
+        <h2 id="section5">Practical Implementation Strategies</h2>
+
+        <p>As a coach, your goal is to help clients "engineer" NEAT back into their lives without it feeling like an additional chore. We use the <span class="highlight">NEAT Audit</span> to identify opportunities for active sensitization.</p>
+
+        <div class="principle-card">
+            <p class="principle-title">1. The "Phone-Pace" Rule</p>
+            <p class="principle-text">Clients are instructed to never take a phone call while sitting. If the phone rings, they must stand up and pace. In a corporate environment, this can add 3,000–5,000 steps per day without dedicated "exercise" time.</p>
+        </div>
+
+        <div class="principle-card">
+            <p class="principle-title">2. Environmental Re-Engineering</p>
+            <p class="principle-text">Moving the trash can to the other side of the room, using a smaller water glass (requiring more trips to the kitchen), and opting for the furthest parking spot are classic but highly effective NEAT boosters.</p>
+        </div>
+
+        <div class="principle-card">
+            <p class="principle-title">3. The 90/5 Protocol</p>
+            <p class="principle-text">For every 90 minutes of focused desk work, the client must perform 5 minutes of "movement snacks." This could be air squats, calf raises while brewing coffee, or a brisk walk to the mailbox.</p>
+        </div>
+
+        <!-- Case Study -->
+        <div class="case-study">
+            <div class="case-study-header">
+                <div class="case-study-icon">👤</div>
+                <div>
+                    <p class="box-label">Case Study: The Corporate Executive</p>
+                    <p style="color: rgba(255,255,255,0.8); margin:0; font-size:13px;">Addressing the Sedentary Athlete Paradox</p>
+                </div>
+            </div>
+            <div class="case-study-content">
+                <div class="patient-profile">
+                    <div class="patient-avatar">M</div>
+                    <div class="patient-info">
+                        <h4>Mark, 52</h4>
+                        <p>Type 2 Diabetes (HbA1c 7.4%), 12-hour desk job, regular gym goer.</p>
+                    </div>
+                </div>
+                <p><strong>Presenting Problem:</strong> Mark exercised 5 days a week for 60 minutes (Heavy Lifting). Despite this, his CGM showed a "Dawn Phenomenon" (145 mg/dL) and significant post-lunch spikes (210 mg/dL) while at his desk.</p>
+                <p><strong>Intervention:</strong> Instead of increasing his gym time, we implemented a NEAT-focused strategy:
+                <ul>
+                    <li>Standing desk for 50% of the workday.</li>
+                    <li>"Glute Squeezes" and calf raises during Zoom calls.</li>
+                    <li>A 10-minute slow walk after lunch (NEAT, not exercise).</li>
+                </ul>
+                </p>
+                <p><strong>Outcomes:</strong> After 4 weeks, Mark's average glucose dropped from 158 mg/dL to 132 mg/dL. His "Time in Range" (TIR) increased from 62% to 88%, primarily by eliminating the post-lunch "desk-bound" spike. His gym performance also improved due to better metabolic flexibility.</p>
+            </div>
+        </div>
+
+        <h2 id="section6">Your Role as a Practitioner</h2>
+
+        <p>Your role is to reframe movement for the client. Many clients with diabetes feel overwhelmed by the idea of "exercise." By focusing on NEAT, you lower the barrier to entry. You are not asking them to run a marathon; you are asking them to <span class="highlight">stop being still</span>.</p>
+
+        <p>When reviewing CGM data, look for "flat-line" periods where the client was sedentary and "active-slope" periods where NEAT was high. Pointing out these correlations empowers the client to see that they have 24/7 control over their blood sugar, not just during their hour at the gym.</p>
+
+        <!-- Check Your Understanding -->
+        <div class="check-understanding">
+            <p class="box-label">Check Your Understanding</p>
+            <p class="box-subtitle">Test your knowledge of NEAT and Glycemic Control</p>
+
+            <div class="question-item">
+                <div class="question-number">1</div>
+                <p class="question-text">Which enzyme's activity drops by nearly 90% during prolonged sitting, impairing fat metabolism?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <p class="answer-text">Lipoprotein Lipase (LPL). Maintaining NEAT keeps this enzyme active, which is crucial for metabolic flexibility and managing triglycerides in diabetic clients.</p>
+            </div>
+
+            <div class="question-item">
+                <div class="question-number">2</div>
+                <p class="question-text">True or False: A 60-minute vigorous workout can fully protect a client from the metabolic damage of sitting for the remaining 12 hours of the day.</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <p class="answer-text">False. This is the "Sedentary Athlete" paradox. Research shows that prolonged sitting can negate many of the acute metabolic benefits of a single exercise session.</p>
+            </div>
+        </div>
+
+        <!-- Takeaways -->
+        <div class="takeaways-box">
+            <p class="box-label">Key Takeaways</p>
+            <ul>
+                <li>NEAT can account for up to 50% of TDEE and is highly variable between individuals.</li>
+                <li>Low-level muscle contraction stimulates GLUT4 translocation through insulin-independent pathways.</li>
+                <li>Breaking up sitting every 30-90 minutes is more effective for glycemic stability than one isolated workout.</li>
+                <li>Light walking after meals (NEAT) reduces postprandial glucose excursions by over 20%.</li>
+                <li>The STABLE Method™ utilizes NEAT to create "Active Sensitization" throughout the entire day.</li>
+            </ul>
+        </div>
+
+        <!-- References -->
+        <div class="references-box">
+            <h4>References & Further Reading</h4>
+            <ul>
+                <li>Levine, J.A. (2004). "Non-exercise activity thermogenesis (NEAT)." Nutrition Reviews.</li>
+                <li>Hamilton, M.T., et al. (2007). "Role of Low Energy Expenditure and Sitting in Type 2 Diabetes and Obesity." Diabetes.</li>
+                <li>Buffey, A.K., et al. (2022). "The Effects of Interrupting Prolonged Sitting with Short Periods of Standing or Light-Intensity Walking." Sports Medicine.</li>
+                <li>Loh, R., et al. (2020). "Effects of Interrupting Prolonged Sitting with Physical Activity Breaks on Blood Glucose Management." Journal of Clinical Medicine.</li>
+                <li>Dempsey, P.C., et al. (2016). "Breaking Up Prolonged Sitting Reduces Postprandial Glucose and Insulin Responses." Diabetes Care.</li>
+                <li>Chastin, S.F., et al. (2015). "Combined Effects of Time Spent in Physical Activity, Sedentary Behaviors and Sleep on Obesity and Cardio-Metabolic Health." PLOS ONE.</li>
+            </ul>
+        </div>
+
+        <footer class="lesson-footer">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="footer-logo">
+            <p class="brand">Diabetes & Blood Sugar Coach Certification</p>
+            <p class="copyright">&copy; 2024 AccrediPro Academy. All rights reserved. The STABLE Method™ is a proprietary framework.</p>
+        </footer>
+    </div>
+</body>
+
+</html>

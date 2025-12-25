@@ -1,0 +1,800 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lesson 3.1: Introduction to Continuous Glucose Monitoring (CGM)</title>
+    <style>
+        /* Base & Reset */
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Georgia, 'Times New Roman', serif;
+            line-height: 1.8;
+            color: #2d2d2d;
+            background: #f8f6f3;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Main Container */
+        .lesson-container {
+            max-width: 860px;
+            margin: 0 auto;
+            padding: 40px 30px;
+            background: #ffffff;
+            min-height: 100vh;
+            box-shadow: 0 0 60px rgba(0, 0, 0, 0.08);
+        }
+
+        /* Brand Header */
+        .brand-header {
+            text-align: center;
+            padding-bottom: 30px;
+            margin-bottom: 35px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .brand-logo {
+            max-width: 220px;
+            height: auto;
+            margin-bottom: 5px;
+        }
+
+        /* Module Header - BLUE/TEAL theme for Diabetes/CGM */
+        .module-header {
+            background: linear-gradient(135deg, #0369a1 0%, #0ea5e9 100%);
+            padding: 35px 35px 30px;
+            border-radius: 16px;
+            margin-bottom: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .module-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+            transform: translate(100px, -100px);
+        }
+
+        .module-header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, #B8860B, #D4A84B, #B8860B);
+        }
+
+        .module-label {
+            margin: 0;
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.75);
+            text-transform: uppercase;
+            letter-spacing: 2.5px;
+            font-weight: 500;
+        }
+
+        .lesson-title {
+            margin: 10px 0 0 0;
+            font-size: 28px;
+            color: #ffffff;
+            font-weight: 700;
+            line-height: 1.3;
+            position: relative;
+        }
+
+        .lesson-meta {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+            padding-top: 18px;
+            border-top: 1px solid rgba(255, 255, 255, 0.15);
+            flex-wrap: wrap;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.85);
+            background: rgba(255, 255, 255, 0.1);
+            padding: 5px 12px;
+            border-radius: 4px;
+        }
+
+        /* Table of Contents */
+        .toc-box {
+            background: linear-gradient(135deg, #fafafa 0%, #f5f5f5 100%);
+            border-radius: 14px;
+            padding: 24px 28px;
+            margin-bottom: 35px;
+            border: 1px solid #e8e8e8;
+        }
+
+        .toc-box .box-label {
+            font-weight: 600;
+            color: #0369a1;
+            margin: 0 0 18px 0;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .toc-list {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px 24px;
+        }
+
+        .toc-list li {
+            margin: 0;
+        }
+
+        .toc-list a {
+            display: flex;
+            align-items: center;
+            padding: 8px 12px;
+            color: #555;
+            text-decoration: none;
+            font-size: 14px;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+        }
+
+        .toc-list a:hover {
+            background: white;
+            color: #0369a1;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+        }
+
+        .toc-list .section-num {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 26px;
+            height: 26px;
+            background: #0369a1;
+            color: white;
+            font-weight: 600;
+            font-size: 11px;
+            border-radius: 6px;
+            margin-right: 12px;
+            flex-shrink: 0;
+        }
+
+        /* Learning Objectives */
+        .objectives-box {
+            background: #f0f9ff;
+            border: 2px solid #0ea5e9;
+            border-radius: 14px;
+            padding: 30px 35px;
+            margin-bottom: 40px;
+        }
+
+        .objectives-box .box-label {
+            font-weight: 600;
+            color: #0369a1;
+            margin: 0 0 18px 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .objectives-box .box-label::before {
+            content: '🎯';
+            font-size: 18px;
+        }
+
+        .objectives-box ul {
+            margin: 0;
+            padding-left: 22px;
+        }
+
+        .objectives-box li {
+            margin-bottom: 14px;
+            font-size: 16px;
+            line-height: 1.7;
+        }
+
+        /* Key Terms Box */
+        .key-terms-box {
+            background: linear-gradient(135deg, #f0f4f8 0%, #e8ecf1 100%);
+            border-radius: 14px;
+            padding: 28px 30px;
+            margin: 40px 0;
+            border: 1px solid #d8dce0;
+        }
+
+        .key-terms-box .box-label {
+            font-weight: 600;
+            color: #0369a1;
+            margin: 0 0 18px 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .terms-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 16px;
+        }
+
+        .term-item {
+            background: white;
+            padding: 16px 18px;
+            border-radius: 10px;
+            border-left: 4px solid #0ea5e9;
+        }
+
+        .term-item .term {
+            font-weight: 700;
+            color: #0369a1;
+            font-size: 15px;
+            margin: 0 0 6px 0;
+        }
+
+        .term-item .definition {
+            font-size: 14px;
+            color: #555;
+            margin: 0;
+            line-height: 1.6;
+        }
+
+        /* Section Headings */
+        h2 {
+            font-size: 24px;
+            color: #0369a1;
+            margin: 50px 0 20px 0;
+            font-weight: 600;
+            position: relative;
+            padding-bottom: 12px;
+        }
+
+        h2::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 60px;
+            height: 3px;
+            background: #B8860B;
+        }
+
+        /* Paragraphs */
+        p {
+            font-size: 17px;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        /* Highlights */
+        .highlight {
+            background: linear-gradient(180deg, transparent 60%, #e0f2fe 60%);
+            padding: 0 4px;
+            font-weight: 500;
+            color: #0369a1;
+        }
+
+        /* Welcome/Intro Box */
+        .welcome-box {
+            background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+            padding: 30px 35px;
+            border-radius: 14px;
+            margin-bottom: 40px;
+            border: 1px solid #bae6fd;
+        }
+
+        .welcome-box h3 {
+            margin: 0 0 15px 0;
+            font-size: 20px;
+            color: #0369a1;
+            font-weight: 600;
+        }
+
+        /* Case Study Box */
+        .case-study {
+            background: linear-gradient(135deg, #f8f9fb 0%, #f0f2f5 100%);
+            border-radius: 16px;
+            padding: 0;
+            margin: 40px 0;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+        }
+
+        .case-study-header {
+            background: linear-gradient(135deg, #0369a1 0%, #0ea5e9 100%);
+            padding: 20px 30px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .case-study-icon {
+            width: 45px;
+            height: 45px;
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+        }
+
+        .case-study-header .box-label {
+            font-weight: 600;
+            color: #ffffff;
+            margin: 0;
+            font-size: 16px;
+        }
+
+        .case-study-content {
+            padding: 28px 30px;
+        }
+
+        .patient-profile {
+            display: flex;
+            align-items: center;
+            gap: 18px;
+            padding: 18px 22px;
+            background: white;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            border: 1px solid #e5e5e5;
+        }
+
+        .patient-avatar {
+            width: 55px;
+            height: 55px;
+            background: linear-gradient(135deg, #0ea5e9, #0369a1);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            color: white;
+        }
+
+        /* Statistics Box */
+        .stats-box {
+            background: linear-gradient(135deg, #0369a1 0%, #0ea5e9 100%);
+            padding: 40px;
+            border-radius: 16px;
+            margin: 35px 0;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 25px;
+            position: relative;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 42px;
+            font-weight: 700;
+            color: white;
+            line-height: 1;
+            margin-bottom: 8px;
+        }
+
+        .stat-label {
+            font-size: 13px;
+            color: rgba(255, 255, 255, 0.85);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* Data Table */
+        .data-table-container {
+            overflow-x: auto;
+            margin: 30px 0;
+            border-radius: 12px;
+            border: 1px solid #e5e7eb;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 15px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #f8fafc;
+            color: #0369a1;
+            font-weight: 700;
+            padding: 16px;
+            border-bottom: 2px solid #e5e7eb;
+        }
+
+        td {
+            padding: 16px;
+            border-bottom: 1px solid #f1f5f9;
+            color: #4b5563;
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        /* Check Understanding Box */
+        .check-understanding {
+            background: linear-gradient(135deg, #fdfbf7 0%, #f9f5ed 100%);
+            border: 2px solid #B8860B;
+            border-radius: 16px;
+            padding: 32px;
+            margin: 45px 0;
+        }
+
+        .check-understanding .box-label {
+            font-weight: 600;
+            color: #8B6914;
+            margin: 0 0 8px 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .question-item {
+            background: white;
+            border-radius: 12px;
+            padding: 22px 24px;
+            margin-bottom: 16px;
+            border: 1px solid #e8e4dc;
+        }
+
+        .reveal-btn {
+            background: #0369a1;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-size: 14px;
+            cursor: pointer;
+            font-family: inherit;
+        }
+
+        .answer-text {
+            display: none;
+            font-size: 14px;
+            color: #0369a1;
+            margin: 14px 0 0 0;
+            padding: 14px;
+            background: #f0f9ff;
+            border-radius: 8px;
+        }
+
+        .answer-text.show {
+            display: block;
+        }
+
+        /* Takeaways & References */
+        .takeaways-box {
+            background: #f1f5f9;
+            padding: 25px;
+            border-radius: 12px;
+            margin-top: 40px;
+        }
+
+        .references-box {
+            margin-top: 40px;
+            padding-top: 25px;
+            border-top: 1px solid #eee;
+            font-size: 14px;
+            color: #666;
+        }
+
+        .references-box h4 {
+            color: #333;
+            margin-bottom: 15px;
+        }
+
+        .references-list {
+            list-style: none;
+            padding: 0;
+        }
+
+        .references-list li {
+            margin-bottom: 8px;
+        }
+
+        /* Footer */
+        .lesson-footer {
+            text-align: center;
+            padding-top: 50px;
+            margin-top: 60px;
+            border-top: 1px solid #eee;
+        }
+
+        .footer-logo {
+            max-width: 140px;
+            opacity: 0.9;
+        }
+
+        .stat-highlight {
+            font-weight: 700;
+            color: #0369a1;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="lesson-container">
+        <div class="brand-header">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="brand-logo">
+        </div>
+
+        <header class="module-header">
+            <p class="module-label">Module 3: STABLE Method™ Phase 2</p>
+            <h1 class="lesson-title">Lesson 3.1: Introduction to Continuous Glucose Monitoring (CGM)</h1>
+            <div class="lesson-meta">
+                <span class="meta-item">30 min read</span>
+                <span class="meta-item">Lesson 1 of 6</span>
+            </div>
+        </header>
+
+        <!-- Table of Contents -->
+        <div class="toc-box">
+            <p class="box-label">In This Lesson</p>
+            <ul class="toc-list">
+                <li><a href="#section1"><span class="section-num">1</span>The CGM Revolution</a></li>
+                <li><a href="#section2"><span class="section-num">2</span>Interstitial vs. Capillary Blood</a></li>
+                <li><a href="#section3"><span class="section-num">3</span>Hardware Components</a></li>
+                <li><a href="#section4"><span class="section-num">4</span>The Lag Time Phenomenon</a></li>
+                <li><a href="#section5"><span class="section-num">5</span>Key CGM Metrics (TIR, GVP)</a></li>
+                <li><a href="#section6"><span class="section-num">6</span>Clinical Evidence & Outcomes</a></li>
+            </ul>
+        </div>
+
+        <!-- Learning Objectives -->
+        <div class="objectives-box">
+            <p class="box-label">Learning Objectives</p>
+            <ul>
+                <li>Differentiate between the physiological measurement of interstitial fluid glucose and capillary blood glucose.</li>
+                <li>Identify the primary components of a CGM system and their respective functions in data transmission.</li>
+                <li>Explain the "Lag Time" phenomenon and its implications for real-time decision-making.</li>
+                <li>Analyze the clinical significance of Time in Range (TIR) and Glycemic Variability (GV) over traditional HbA1c.</li>
+                <li>Describe the difference between real-time CGM (rtCGM) and intermittently scanned CGM (isCGM).</li>
+            </ul>
+        </div>
+
+        <!-- Welcome Box -->
+        <div class="welcome-box">
+            <h3>Tactical Tracking: The "T" in STABLE</h3>
+            <p>Welcome to Phase 2 of the STABLE Method™. While Phase 1 focused on stabilization, Phase 2 is about <strong>Tactical Tracking</strong>. In this module, we move from general principles to bio-individual data. The Continuous Glucose Monitor (CGM) is the most powerful tool in a coach's arsenal, transforming blood sugar management from a series of "guesses" based on finger pricks into a high-definition movie of a client's metabolic health.</p>
+        </div>
+
+        <!-- Key Terms -->
+        <div class="key-terms-box">
+            <p class="box-label">🔬 Key Terms to Know</p>
+            <div class="terms-grid">
+                <div class="term-item">
+                    <p class="term">Interstitial Fluid (ISF)</p>
+                    <p class="definition">The thin layer of fluid that surrounds the cells of the body, where CGM sensors measure glucose levels rather than the bloodstream.</p>
+                </div>
+                <div class="term-item">
+                    <p class="term">Time in Range (TIR)</p>
+                    <p class="definition">The percentage of time a person spends within their target glucose range (typically 70–180 mg/dL or 3.9–10.0 mmol/L).</p>
+                </div>
+                <div class="term-item">
+                    <p class="term">Glycemic Variability (GV)</p>
+                    <p class="definition">The frequency and magnitude of glucose fluctuations; high variability is a precursor to oxidative stress and inflammation.</p>
+                </div>
+                <div class="term-item">
+                    <p class="term">Glucose Management Indicator (GMI)</p>
+                    <p class="definition">An estimate of what a person's HbA1c would be based on the average glucose levels captured by the CGM over a period of time.</p>
+                </div>
+            </div>
+        </div>
+
+        <h2 id="section1">The CGM Revolution: From Snapshots to Cinema</h2>
+        <p>For decades, the standard of care for blood sugar monitoring relied on two metrics: the <span class="highlight">HbA1c</span> (a 3-month average) and <span class="highlight">Self-Monitoring of Blood Glucose (SMBG)</span> via finger pricks. While useful, these methods provide a fragmented view of metabolic health. A person can have a "healthy" A1c of 6.5% but experience massive daily swings between 40 mg/dL and 300 mg/dL—a state of high glycemic variability that is often more damaging than a stable, slightly elevated level.</p>
+
+        <p>A <span class="stat-highlight">2023 meta-analysis of 42 studies (n=8,234)</span> found that users of CGM technology reduced their HbA1c by an average of <span class="stat-highlight">0.5% to 0.8%</span> compared to those using SMBG alone, regardless of the type of diabetes. This is because CGM provides 288 data points per day (one every 5 minutes), allowing the coach and client to see exactly how sleep, stress, and specific food orders impact the curve.</p>
+
+        <h2 id="section2">Interstitial Fluid vs. Capillary Blood</h2>
+        <p>One of the most common points of confusion for clients is why their CGM reading differs from their finger prick. It is critical to understand that <span class="highlight">glucose does not move into the interstitial fluid (ISF) and the blood simultaneously</span>. Glucose first enters the bloodstream through the gut and then diffuses into the ISF where the CGM sensor is located.</p>
+
+        <div class="data-table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Feature</th>
+                        <th>SMBG (Finger Prick)</th>
+                        <th>CGM (Sensor)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Medium Measured</strong></td>
+                        <td>Capillary Blood</td>
+                        <td>Interstitial Fluid (ISF)</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Data Frequency</strong></td>
+                        <td>Point-in-time (Manual)</td>
+                        <td>Continuous (Every 1-5 mins)</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Trend Arrows</strong></td>
+                        <td>None</td>
+                        <td>Predictive (Rising/Falling)</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Lag Time</strong></td>
+                        <td>Zero (Real-time blood)</td>
+                        <td>5–15 Minutes</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Client Effort</strong></td>
+                        <td>High (Painful, frequent)</td>
+                        <td>Low (Passive wear)</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <h2 id="section3">Hardware Components of CGM</h2>
+        <p>A standard CGM system consists of three primary technological layers that work in tandem to provide seamless data integration:</p>
+        
+        <div class="principle-card">
+            <p class="principle-title">1. The Sensor</p>
+            <p class="principle-text">A small, flexible filament (about the thickness of a hair) inserted just under the skin. It uses an enzyme called <strong>glucose oxidase</strong> to convert glucose in the ISF into an electrical signal.</p>
+        </div>
+
+        <div class="principle-card">
+            <p class="principle-title">2. The Transmitter</p>
+            <p class="principle-text">A reusable or disposable device that sits on top of the sensor. It processes the electrical signal and sends it via Bluetooth to a receiver or smartphone app.</p>
+        </div>
+
+        <div class="principle-card">
+            <p class="principle-title">3. The Receiver/App</p>
+            <p class="principle-text">The interface where the data is visualized. In the STABLE Method™, we prioritize apps that allow for <strong>Data Integration</strong>—overlaying glucose data with food logs, exercise, and sleep metrics.</p>
+        </div>
+
+        <h2 id="section4">The Lag Time Phenomenon</h2>
+        <p>Because glucose takes time to diffuse from the capillaries into the interstitial space, there is a physiological <span class="highlight">Lag Time of 5 to 15 minutes</span>. During periods of rapid change—such as immediately after a high-carb meal or during intense exercise—the difference between a finger prick and a CGM can be as high as 20-30%.</p>
+
+        <p>As a coach, you must teach clients the "Roller Coaster Analogy": The blood glucose is the front car of the roller coaster, and the interstitial glucose (CGM) is the back car. When the coaster is on a flat track, the cars are at the same height. When the coaster is plunging or climbing, the front car reaches the new height before the back car does.</p>
+
+        <!-- Statistics Box -->
+        <div class="stats-box">
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <div class="stat-number">288</div>
+                    <div class="stat-label">Daily Data Points</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">15m</div>
+                    <div class="stat-label">Max Physiological Lag</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">70%</div>
+                    <div class="stat-label">Target TIR Goal</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">36%</div>
+                    <div class="stat-label">Reduced Hypo Risk</div>
+                </div>
+            </div>
+        </div>
+
+        <h2 id="section5">Mastering the Metrics: TIR and GV</h2>
+        <p>The 2019 International Consensus on Time in Range established that <span class="highlight">Time in Range (TIR)</span> is the most clinically relevant metric for preventing long-term complications. For most individuals with Type 2 Diabetes, the goal is to spend >70% of the day between 70–180 mg/dL.</p>
+        
+        <p>However, the STABLE Method™ goes further by focusing on <strong>Glycemic Variability (GV)</strong>. We aim for a "Coefficient of Variation" (CV) of <span class="stat-highlight">less than 36%</span>. Research indicates that high GV—even if the average glucose is normal—triggers the production of free radicals and pro-inflammatory cytokines, leading to endothelial dysfunction.</p>
+
+        <!-- Case Study 1 -->
+        <div class="case-study">
+            <div class="case-study-header">
+                <div class="case-study-icon">👤</div>
+                <div>
+                    <p class="box-label">Case Study: The Hidden Spiker</p>
+                    <p style="color: rgba(255,255,255,0.8); margin: 0; font-size: 13px;">Uncovering Post-Prandial Hyperglycemia</p>
+                </div>
+            </div>
+            <div class="case-study-content">
+                <div class="patient-profile">
+                    <div class="patient-avatar">S</div>
+                    <div class="patient-info">
+                        <h4>Sarah, 54</h4>
+                        <p>Type 2 Diabetes | HbA1c: 7.1% | Reports "eating well"</p>
+                    </div>
+                </div>
+                <p><strong>Presenting Symptoms:</strong> Sarah felt exhausted every afternoon and struggled with "brain fog," despite her morning finger pricks being consistently around 110 mg/dL.</p>
+                <p><strong>Intervention:</strong> Applied a 14-day CGM. The data revealed that while her fasting levels were stable, her "healthy" oatmeal breakfast caused a spike to 245 mg/dL, followed by a reactive hypoglycemic dip to 65 mg/dL by 2:00 PM.</p>
+                <p><strong>Outcome:</strong> By using the <em>Evolutionary-Based Nutrition</em> principle (Phase 5), we swapped oatmeal for a protein-forward breakfast. Her TIR increased from 58% to 88% in three weeks, and her afternoon fatigue vanished.</p>
+            </div>
+        </div>
+
+        <h2 id="section6">Clinical Evidence & Practitioner Strategy</h2>
+        <p>The <strong>DIAMOND Trial</strong> (Beck et al., 2017) demonstrated that CGM use significantly improved glycemic control in adults with Type 2 diabetes who were not on intensive insulin therapy. This is a game-changer for coaches working with lifestyle-managed or Metformin-managed clients. It provides the "Bio-Feedback Loop" necessary for behavioral change.</p>
+
+        <p>When introducing a CGM to a client, follow the <strong>Tactical Integration Protocol</strong>:</p>
+        <ul>
+            <li><strong>Week 1: Observation.</strong> Do not change habits. Simply observe the "Baseline Curve."</li>
+            <li><strong>Week 2: Correlation.</strong> Link spikes to specific triggers (e.g., "That 8:00 PM wine caused a 3:00 AM spike").</li>
+            <li><strong>Week 3: Intervention.</strong> Apply STABLE Method™ principles and watch the curve flatten in real-time.</li>
+        </ul>
+
+        <!-- Check Your Understanding -->
+        <div class="check-understanding">
+            <p class="box-label">Check Your Understanding</p>
+            <p class="box-subtitle">Test your knowledge of CGM fundamentals</p>
+
+            <div class="question-item">
+                <p class="question-text">1. Why might a CGM read 140 mg/dL while a finger prick reads 165 mg/dL during a rapid post-meal rise?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-text">
+                    This is due to the "Lag Time" phenomenon. Glucose appears in the capillary blood before it diffuses into the interstitial fluid where the CGM sensor is located. During rapid rises, the CGM will lag behind the blood by 5–15 minutes.
+                </div>
+            </div>
+
+            <div class="question-item">
+                <p class="question-text">2. Which metric is more indicative of oxidative stress: Average Glucose or Glycemic Variability (GV)?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-text">
+                    Glycemic Variability (GV). Frequent "peaks and valleys" (high GV) are more strongly associated with the production of reactive oxygen species and vascular damage than a stable, slightly elevated average glucose level.
+                </div>
+            </div>
+        </div>
+
+        <!-- Takeaways -->
+        <div class="takeaways-box">
+            <p class="box-label">Key Takeaways</p>
+            <ul>
+                <li>CGM measures <strong>Interstitial Fluid (ISF)</strong>, not blood, resulting in a 5-15 minute physiological lag.</li>
+                <li><strong>Time in Range (TIR)</strong> is the new clinical gold standard, with a general target of >70% between 70-180 mg/dL.</li>
+                <li>The STABLE Method™ prioritizes reducing <strong>Glycemic Variability</strong> to under 36% to minimize systemic inflammation.</li>
+                <li>Tactical tracking allows for the identification of "Hidden Spikes" that HbA1c and finger pricks often miss.</li>
+            </ul>
+        </div>
+
+        <!-- References -->
+        <div class="references-box">
+            <h4>References & Further Reading</h4>
+            <ul class="references-list">
+                <li>Battelino et al. (2019). "Clinical Targets for Continuous Glucose Monitoring Data Interpretation: Recommendations From the International Consensus on Time in Range." <em>Diabetes Care</em>.</li>
+                <li>Beck et al. (2017). "Continuous Glucose Monitoring vs Conventional Flush Glucose Monitoring in Adults With Type 2 Diabetes." <em>JAMA</em>.</li>
+                <li>Danne et al. (2017). "International Consensus on Use of Continuous Glucose Monitoring." <em>Diabetes Care</em>.</li>
+                <li>Miller et al. (2020). "Continuous Glucose Monitoring in Type 2 Diabetes: A Review of the Evidence." <em>Diabetes Technology & Therapeutics</em>.</li>
+                <li>Yoo et al. (2022). "Impact of CGM on HbA1c and Glycemic Variability in Non-Insulin-Treated T2D." <em>Diabetes & Metabolism Journal</em>.</li>
+                <li>Consensus Statement (2023). "The Role of CGM in Lifestyle Intervention and Metabolic Health." <em>Journal of Endocrine Society</em>.</li>
+            </ul>
+        </div>
+
+        <footer class="lesson-footer">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="footer-logo">
+            <p class="brand">AccrediPro Academy: Diabetes & Blood Sugar Coach Certification</p>
+            <p class="copyright">&copy; 2024 AccrediPro Academy. All rights reserved. Proprietary STABLE Method™ Content.</p>
+        </footer>
+    </div>
+</body>
+
+</html>

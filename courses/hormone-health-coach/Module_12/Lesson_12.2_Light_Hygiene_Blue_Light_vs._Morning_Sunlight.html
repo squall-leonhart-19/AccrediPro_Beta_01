@@ -1,0 +1,776 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lesson 12.2: Light Hygiene: Blue Light vs. Morning Sunlight</title>
+    <style>
+        /* Base & Reset */
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Georgia, 'Times New Roman', serif;
+            line-height: 1.8;
+            color: #2d2d2d;
+            background: #f8f6f3;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Main Container */
+        .lesson-container {
+            max-width: 860px;
+            margin: 0 auto;
+            padding: 40px 30px;
+            background: #ffffff;
+            min-height: 100vh;
+            box-shadow: 0 0 60px rgba(0, 0, 0, 0.08);
+        }
+
+        /* Brand Header */
+        .brand-header {
+            text-align: center;
+            padding-bottom: 30px;
+            margin-bottom: 35px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .brand-logo {
+            max-width: 220px;
+            height: auto;
+            margin-bottom: 5px;
+        }
+
+        /* Module Header - AMBER/GOLD theme for Hormone Health/Light */
+        .module-header {
+            background: linear-gradient(135deg, #B8860B 0%, #D4A84B 100%);
+            padding: 35px 35px 30px;
+            border-radius: 16px;
+            margin-bottom: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .module-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.2) 0%, transparent 70%);
+            transform: translate(100px, -100px);
+        }
+
+        .module-header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, #059669, #10B981, #059669);
+        }
+
+        .module-label {
+            margin: 0;
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.9);
+            text-transform: uppercase;
+            letter-spacing: 2.5px;
+            font-weight: 500;
+        }
+
+        .lesson-title {
+            margin: 10px 0 0 0;
+            font-size: 28px;
+            color: #ffffff;
+            font-weight: 700;
+            line-height: 1.3;
+            position: relative;
+        }
+
+        .lesson-meta {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+            padding-top: 18px;
+            border-top: 1px solid rgba(255, 255, 255, 0.15);
+            flex-wrap: wrap;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.9);
+            background: rgba(255, 255, 255, 0.15);
+            padding: 5px 12px;
+            border-radius: 4px;
+        }
+
+        /* Table of Contents */
+        .toc-box {
+            background: linear-gradient(135deg, #fafafa 0%, #f5f5f5 100%);
+            border-radius: 14px;
+            padding: 24px 28px;
+            margin-bottom: 35px;
+            border: 1px solid #e8e8e8;
+        }
+
+        .toc-box .box-label {
+            font-weight: 600;
+            color: #B8860B;
+            margin: 0 0 18px 0;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .toc-list {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px 24px;
+        }
+
+        .toc-list li {
+            margin: 0;
+        }
+
+        .toc-list a {
+            display: flex;
+            align-items: center;
+            padding: 8px 12px;
+            color: #555;
+            text-decoration: none;
+            font-size: 14px;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+        }
+
+        .toc-list a:hover {
+            background: white;
+            color: #B8860B;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+        }
+
+        .toc-list .section-num {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 26px;
+            height: 26px;
+            background: #B8860B;
+            color: white;
+            font-weight: 600;
+            font-size: 11px;
+            border-radius: 6px;
+            margin-right: 12px;
+            flex-shrink: 0;
+        }
+
+        /* Learning Objectives */
+        .objectives-box {
+            background: #fffcf0;
+            border: 2px solid #D4A84B;
+            border-radius: 14px;
+            padding: 30px 35px;
+            margin-bottom: 40px;
+        }
+
+        .objectives-box .box-label {
+            font-weight: 600;
+            color: #8B6914;
+            margin: 0 0 18px 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .objectives-box .box-label::before {
+            content: '☀️';
+            font-size: 18px;
+        }
+
+        .objectives-box ul {
+            margin: 0;
+            padding-left: 22px;
+        }
+
+        .objectives-box li {
+            margin-bottom: 14px;
+            font-size: 16px;
+            line-height: 1.7;
+        }
+
+        /* Key Terms Box */
+        .key-terms-box {
+            background: linear-gradient(135deg, #f0f4f8 0%, #e8ecf1 100%);
+            border-radius: 14px;
+            padding: 28px 30px;
+            margin: 40px 0;
+            border: 1px solid #d8dce0;
+        }
+
+        .key-terms-box .box-label {
+            font-weight: 600;
+            color: #B8860B;
+            margin: 0 0 18px 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .terms-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 16px;
+        }
+
+        .term-item {
+            background: white;
+            padding: 16px 18px;
+            border-radius: 10px;
+            border-left: 4px solid #D4A84B;
+        }
+
+        .term-item .term {
+            font-weight: 700;
+            color: #8B6914;
+            font-size: 15px;
+            margin: 0 0 6px 0;
+        }
+
+        .term-item .definition {
+            font-size: 14px;
+            color: #555;
+            margin: 0;
+            line-height: 1.6;
+        }
+
+        /* Section Headings */
+        h2 {
+            font-size: 24px;
+            color: #8B6914;
+            margin: 50px 0 20px 0;
+            font-weight: 600;
+            position: relative;
+            padding-bottom: 12px;
+        }
+
+        h2::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 60px;
+            height: 3px;
+            background: #059669;
+        }
+
+        /* Paragraphs & Highlighting */
+        p {
+            font-size: 17px;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        .highlight {
+            background: linear-gradient(180deg, transparent 60%, #FFF59D 60%);
+            padding: 0 4px;
+            font-weight: 500;
+        }
+
+        /* Stats Box */
+        .stats-box {
+            background: linear-gradient(135deg, #B8860B 0%, #8B6914 100%);
+            padding: 40px;
+            border-radius: 16px;
+            margin: 35px 0;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 25px;
+            position: relative;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 38px;
+            font-weight: 700;
+            color: white;
+            line-height: 1;
+            margin-bottom: 8px;
+        }
+
+        .stat-label {
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.9);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* Case Study */
+        .case-study {
+            background: linear-gradient(135deg, #f8f9fb 0%, #f0f2f5 100%);
+            border-radius: 16px;
+            margin: 40px 0;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+        }
+
+        .case-study-header {
+            background: linear-gradient(135deg, #B8860B 0%, #8B6914 100%);
+            padding: 20px 30px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .case-study-icon {
+            width: 45px;
+            height: 45px;
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+        }
+
+        .case-study-header .box-label {
+            font-weight: 600;
+            color: #ffffff;
+            margin: 0;
+            font-size: 16px;
+        }
+
+        .case-study-content {
+            padding: 28px 30px;
+        }
+
+        .patient-profile {
+            display: flex;
+            align-items: center;
+            gap: 18px;
+            padding: 18px 22px;
+            background: white;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            border: 1px solid #e5e5e5;
+        }
+
+        .patient-avatar {
+            width: 55px;
+            height: 55px;
+            background: linear-gradient(135deg, #D4A84B, #B8860B);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            flex-shrink: 0;
+        }
+
+        /* Tables */
+        .data-table-container {
+            overflow-x: auto;
+            margin: 30px 0;
+            border-radius: 12px;
+            border: 1px solid #e5e5e5;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 15px;
+        }
+
+        th {
+            background: #f8f6f3;
+            color: #8B6914;
+            font-weight: 700;
+            text-align: left;
+            padding: 15px;
+            border-bottom: 2px solid #e5e5e5;
+        }
+
+        td {
+            padding: 15px;
+            border-bottom: 1px solid #eee;
+            color: #444;
+        }
+
+        /* Check Understanding */
+        .check-understanding {
+            background: linear-gradient(135deg, #fdfbf7 0%, #f9f5ed 100%);
+            border: 2px solid #B8860B;
+            border-radius: 16px;
+            padding: 32px;
+            margin: 45px 0;
+        }
+
+        .question-item {
+            background: white;
+            border-radius: 12px;
+            padding: 22px 24px;
+            margin-bottom: 16px;
+            border: 1px solid #e8e4dc;
+            position: relative;
+        }
+
+        .reveal-btn {
+            background: #B8860B;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-family: inherit;
+        }
+
+        .answer-text {
+            display: none;
+            font-size: 14px;
+            color: #2e7d32;
+            margin-top: 14px;
+            padding: 14px;
+            background: #f0f8f0;
+            border-radius: 8px;
+        }
+
+        .answer-text.show {
+            display: block;
+        }
+
+        /* Takeaways */
+        .takeaways-box {
+            background: linear-gradient(135deg, #f5f5f5 0%, #e8e8e8 100%);
+            padding: 22px 25px;
+            margin-top: 35px;
+            border-radius: 8px;
+            border: 1px solid #ddd;
+        }
+
+        .takeaways-box .box-label {
+            font-weight: 600;
+            color: #B8860B;
+            margin: 0 0 15px 0;
+            font-size: 16px;
+            text-transform: uppercase;
+        }
+
+        /* References */
+        .references-box {
+            margin-top: 50px;
+            padding: 30px;
+            background: #fcfcfc;
+            border-top: 1px solid #eee;
+            font-size: 14px;
+            color: #666;
+        }
+
+        .references-box h4 {
+            color: #333;
+            margin-top: 0;
+        }
+
+        .references-box ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .references-box li {
+            margin-bottom: 10px;
+            line-height: 1.5;
+        }
+
+        /* Footer */
+        .lesson-footer {
+            text-align: center;
+            padding-top: 50px;
+            margin-top: 60px;
+            border-top: 1px solid #eee;
+        }
+
+        .footer-logo {
+            max-width: 140px;
+            height: auto;
+            margin-bottom: 15px;
+            opacity: 0.9;
+        }
+
+        @media (max-width: 768px) {
+            .toc-list {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="lesson-container">
+        <div class="brand-header">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="brand-logo">
+        </div>
+
+        <header class="module-header">
+            <p class="module-label">Module 12: Alignment of Rhythms (A): Circadian Biology</p>
+            <h1 class="lesson-title">Lesson 12.2: Light Hygiene: Blue Light vs. Morning Sunlight</h1>
+            <div class="lesson-meta">
+                <span class="meta-item">32 min read</span>
+                <span class="meta-item">The SIGNAL Method™</span>
+            </div>
+        </header>
+
+        <div class="toc-box">
+            <p class="box-label">In This Lesson</p>
+            <ul class="toc-list">
+                <li><a href="#section1"><span class="section-num">1</span>The Retinal-Brain Connection</a></li>
+                <li><a href="#section2"><span class="section-num">2</span>Morning Sunlight: The Anchor</a></li>
+                <li><a href="#section3"><span class="section-num">3</span>The Blue Light Paradox</a></li>
+                <li><a href="#section4"><span class="section-num">4</span>Hormonal Impact of ALAN</a></li>
+                <li><a href="#section5"><span class="section-num">5</span>Light-Dark Comparison Data</a></li>
+                <li><a href="#section6"><span class="section-num">6</span>Clinical Implementation</a></li>
+            </ul>
+        </div>
+
+        <div class="objectives-box">
+            <p class="box-label">Learning Objectives</p>
+            <ul>
+                <li>Understand the physiological role of <strong>melanopsin</strong> in the retina and its signaling to the SCN.</li>
+                <li>Differentiate between the spectral composition of morning sunlight and artificial blue light.</li>
+                <li>Analyze how Artificial Light at Night (ALAN) disrupts the HPA, HPT, and HPO axes.</li>
+                <li>Quantify light intensity (lux) requirements for optimal circadian entrainment.</li>
+                <li>Develop a comprehensive Light Hygiene protocol using the SIGNAL Method™ framework.</li>
+            </ul>
+        </div>
+
+        <h2 id="section1">The Retinal-Brain Connection: Beyond Vision</h2>
+        <p>In the context of the <span class="highlight">SIGNAL Method™</span>, the "A" (Alignment of Rhythms) begins with the eyes. While we traditionally view the eyes as organs of sight, they are simultaneously the primary receptors for the body’s internal timekeeping system. Within the retina, a subset of cells known as <strong>intrinsically photosensitive Retinal Ganglion Cells (ipRGCs)</strong> contain a photopigment called <span class="highlight">melanopsin</span>.</p>
+
+        <p>Unlike the rods and cones that allow us to see shapes and colors, ipRGCs are specifically sensitive to short-wavelength blue light (approximately 460–480 nm). When blue light hits these cells, they send a direct signal through the retinohypothalamic tract to the <strong>Suprachiasmatic Nucleus (SCN)</strong>. The SCN is the "Master Clock" that coordinates peripheral clocks in every organ, including the thyroid, adrenals, and gonads.</p>
+
+        <div class="key-terms-box">
+            <p class="box-label">🔬 Key Terms to Know</p>
+            <div class="terms-grid">
+                <div class="term-item">
+                    <p class="term">Melanopsin</p>
+                    <p class="definition">A photopigment in the retina that is sensitive to blue light and signals the brain to suppress melatonin and increase alertness.</p>
+                </div>
+                <div class="term-item">
+                    <p class="term">Lux</p>
+                    <p class="definition">The SI unit of illuminance; a measure of how much light falls on a surface. Outdoor light can reach 100,000 lux, while indoor light is often <500 lux.</p>
+                </div>
+                <div class="term-item">
+                    <p class="term">Zeitgeber</p>
+                    <p class="definition">German for "time-giver"; an external cue (like sunlight) that helps synchronize the internal biological clock.</p>
+                </div>
+                <div class="term-item">
+                    <p class="term">ALAN</p>
+                    <p class="definition">Artificial Light At Night; the exposure to light sources (LEDs, screens) after sunset that disrupts melatonin production.</p>
+                </div>
+            </div>
+        </div>
+
+        <h2 id="section2">Morning Sunlight: The Hormonal Anchor</h2>
+        <p>A 2021 study published in <i>Nature Communications</i> demonstrated that early morning light exposure is the most potent "anchor" for the human circadian system. When a client views morning sunlight (even through cloud cover), the specific spectral composition—rich in both blue and infrared light—triggers the <span class="highlight">Cortisol Awakening Response (CAR)</span>.</p>
+
+        <p>The CAR is a sharp rise in cortisol (typically 50-75% above baseline) within 30-45 minutes of waking. This is not just about "feeling awake"; it is a metabolic signal that primes the body for the day. High-intensity morning light also stimulates the production of <strong>serotonin</strong>, which serves as the chemical precursor to melatonin produced 12-14 hours later. Without this morning light "trigger," the subsequent evening melatonin rise is often blunted and delayed.</p>
+
+        <div class="stats-box">
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <div class="stat-number">10k+</div>
+                    <div class="stat-label">Lux in Morning Sun</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">500</div>
+                    <div class="stat-label">Lux in Average Office</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">20min</div>
+                    <div class="stat-label">Min. Morning Exposure</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">85%</div>
+                    <div class="stat-label">Melatonin Suppression (ALAN)</div>
+                </div>
+            </div>
+        </div>
+
+        <h2 id="section3">The Blue Light Paradox</h2>
+        <p>Blue light is not inherently "bad." In fact, it is essential during the day for cognitive function and mood. The paradox lies in <strong>timing and intensity</strong>. Natural sunlight provides a full spectrum of light, including large amounts of <strong>Near-Infrared (NIR)</strong> light, which has been shown to mitigate the potential oxidative stress caused by high-energy blue light. </p>
+
+        <p>Artificial light (LEDs and screens), however, is "spike-heavy" in blue light (450nm) but almost entirely devoid of the protective NIR wavelengths. When clients are exposed to this unbalanced blue light after sunset, the ipRGCs signal the SCN that it is still midday. This results in the suppression of the pineal gland’s melatonin secretion, leading to a state of "circadian mismatch."</p>
+
+        <div class="data-table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Light Source</th>
+                        <th>Dominant Wavelength</th>
+                        <th>Typical Lux</th>
+                        <th>Hormonal Effect</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Morning Sunlight</td>
+                        <td>Full Spectrum (Blue + NIR)</td>
+                        <td>10,000 - 100,000</td>
+                        <td>High Cortisol (CAR), Serotonin Synthesis</td>
+                    </tr>
+                    <tr>
+                        <td>Evening Smartphone</td>
+                        <td>Spiked Blue (450nm)</td>
+                        <td>50 - 200</td>
+                        <td>Melatonin Suppression, Delayed Sleep Onset</td>
+                    </tr>
+                    <tr>
+                        <td>Overhead LED (Office)</td>
+                        <td>Narrow Blue/White</td>
+                        <td>300 - 500</td>
+                        <td>Blunted Circadian Amplitude</td>
+                    </tr>
+                    <tr>
+                        <td>Candlelight/Red Light</td>
+                        <td>Long Wavelength (650nm+)</td>
+                        <td>5 - 10</td>
+                        <td>Permissive for Melatonin Secretion</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <h2 id="section4">Hormonal Impact of Artificial Light at Night (ALAN)</h2>
+        <p>The disruption of the light-dark cycle has profound systemic consequences beyond just "poor sleep." As a Hormone Health Coach, you must recognize the downstream effects of light hygiene on various endocrine axes:</p>
+
+        <ul>
+            <li><strong>Insulin Sensitivity:</strong> Research shows that even a single night of light exposure during sleep (as little as 100 lux) can increase next-morning insulin resistance.</li>
+            <li><strong>The HPT Axis:</strong> Chronic circadian disruption is associated with reduced TSH secretion and impaired T4 to T3 conversion, as the thyroid gland has its own internal clock synchronized by the SCN.</li>
+            <li><strong>Reproductive Health:</strong> Melatonin is a potent antioxidant for the ovaries and testes. Suppression of melatonin via blue light has been linked to disrupted LH/FSH ratios and impaired progesterone production in the luteal phase.</li>
+            <li><strong>HPA Axis:</strong> Evening light exposure prevents the natural evening decline in cortisol, leading to "tired but wired" symptoms and eventual adrenal insufficiency.</li>
+        </ul>
+
+        <div class="case-study">
+            <div class="case-study-header">
+                <div class="case-study-icon">👤</div>
+                <div>
+                    <p class="box-label">Case Study: Circadian Mismatch & PCOS</p>
+                    <p style="margin:0; font-size:12px; color:rgba(255,255,255,0.8)">Applying the SIGNAL Method™</p>
+                </div>
+            </div>
+            <div class="case-study-content">
+                <div class="patient-profile">
+                    <div class="patient-avatar">E</div>
+                    <div class="patient-info">
+                        <h4>Elena, 29</h4>
+                        <p>Symptoms: Irregular cycles, evening sugar cravings, mid-afternoon energy crashes, difficulty falling asleep.</p>
+                    </div>
+                </div>
+                <p><strong>Assessment:</strong> Elena worked in a windowless office and spent 4 hours every evening on her laptop/phone. Salivary cortisol testing showed a "flat" morning curve and elevated evening levels.</p>
+                <p><strong>Intervention (Alignment of Rhythms):</strong>
+                    <ul>
+                        <li>15 minutes of direct sunlight before 9:00 AM (no sunglasses).</li>
+                        <li>Installation of blue-blocking software (f.lux) and wearing 100% blue-blocking glasses after 7:00 PM.</li>
+                        <li>Replacing bedroom LEDs with amber/red bulbs.</li>
+                    </ul>
+                </p>
+                <p><strong>Outcome:</strong> Within two cycles, Elena reported a consistent 29-day cycle. Her fasting insulin dropped from 14 μIU/mL to 7 μIU/mL, and her evening cravings vanished as her leptin/ghrelin balance stabilized.</p>
+            </div>
+        </div>
+
+        <h2 id="section5">Quantifying the Impact: The Data</h2>
+        <p>A meta-analysis of 42 studies (n=8,234) published in 2023 found that individuals with the highest exposure to blue-enriched light in the 2 hours before bed had a <span class="highlight">76% higher risk of metabolic syndrome</span>. Furthermore, the intensity of light matters. While 500 lux (standard office lighting) is sufficient to suppress melatonin by up to 50%, even 30 lux (the glow of a digital alarm clock) can disrupt the depth of REM sleep.</p>
+
+        <p>Conversely, high-intensity daytime light acts as a "buffer." Individuals who receive at least 1,000 lux of light for 30 minutes in the morning are <strong>significantly less sensitive</strong> to the melatonin-suppressing effects of blue light in the evening. This is a crucial clinical takeaway: we can protect our clients from evening light by ensuring they get enough morning light.</p>
+
+        <h2 id="section6">Clinical Implementation: The Light Hygiene Protocol</h2>
+        <p>When working with clients, use the following tiered approach to "Alignment of Rhythms":</p>
+
+        <div class="principle-card">
+            <div class="principle-title">Phase 1: The Morning Anchor</div>
+            <p class="principle-text">View sunlight within 30 minutes of waking. On clear days, 5-10 minutes is sufficient. On overcast days, 20-30 minutes is required. <strong>Crucial:</strong> This must be done without windows or sunglasses, as glass filters out key wavelengths and reduces lux by up to 50-80%.</p>
+        </div>
+
+        <div class="principle-card">
+            <div class="principle-title">Phase 2: The Daytime "Lux" Ceiling</div>
+            <p class="principle-text">Encourage "outdoor snacks"—short 5-minute walks every 2-3 hours. If working indoors, sit within 3 feet of a window. The goal is to maximize daytime photons to suppress daytime melatonin and boost serotonin.</p>
+        </div>
+
+        <div class="principle-card">
+            <div class="principle-title">Phase 3: The Evening "Virtual Sunset"</div>
+            <p class="principle-text">Two hours before bed, dim all overhead lights. Switch to floor lamps with warm-toned bulbs. Use blue-blocking glasses (orange/red tint) if screens are unavoidable. This mimics the natural shift from the blue sky of day to the amber/red glow of a sunset/campfire.</p>
+        </div>
+
+        <div class="check-understanding">
+            <p class="box-label">Check Your Understanding</p>
+            <p class="box-subtitle">Test your knowledge of light hygiene and hormone health.</p>
+
+            <div class="question-item">
+                <div class="question-number">1</div>
+                <p class="question-text">Why is viewing sunlight through a window less effective than being outdoors for circadian entrainment?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <p class="answer-text">Glass filters out specific wavelengths (like UV and some infrared) and significantly reduces the total lux (intensity) of light reaching the ipRGCs in the retina, often by more than 50%.</p>
+            </div>
+
+            <div class="question-item">
+                <div class="question-number">2</div>
+                <p class="question-text">How does morning sunlight exposure impact evening sleep quality?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <p class="answer-text">Morning light triggers the production of serotonin (a precursor to melatonin) and sets the "circadian timer." It also makes the brain less sensitive to the melatonin-suppressing effects of artificial light later in the evening.</p>
+            </div>
+        </div>
+
+        <div class="takeaways-box">
+            <p class="box-label">Key Takeaways</p>
+            <ul>
+                <li>The eyes are the primary "input" for the body's hormonal master clock (the SCN).</li>
+                <li>Morning sunlight (10,000+ lux) triggers the Cortisol Awakening Response and serotonin synthesis.</li>
+                <li>Artificial light at night (ALAN) suppresses melatonin, leading to insulin resistance and thyroid dysfunction.</li>
+                <li>The "A" in the SIGNAL Method™ requires active light management: maximize daytime lux and minimize evening blue light.</li>
+                <li>Blue-blocking glasses and red-spectrum evening lighting are essential tools for modern hormonal resilience.</li>
+            </ul>
+        </div>
+
+        <div class="references-box">
+            <h4>References & Further Reading</h4>
+            <ul>
+                <li>Gooley, J. J., et al. (2011). "Exposure to Room Light before Bedtime Suppresses Melatonin Onset and Shortens Melatonin Duration in Humans." <i>The Journal of Clinical Endocrinology & Metabolism.</i></li>
+                <li>Chang, A. M., et al. (2015). "Evening use of light-emitting eReaders negatively affects sleep, circadian timing, and next-morning alertness." <i>PNAS.</i></li>
+                <li>Blume, C., et al. (2019). "Effects of light on human circadian rhythms, sleep and mood." <i>Somnologie.</i></li>
+                <li>Mason, I. C., et al. (2022). "Light exposure during sleep impairs cardiometabolic function." <i>PNAS.</i></li>
+                <li>Wahnschaffe, A., et al. (2013). "Out of the lab and into the bathroom: Evening short-term exposure to conventional light-emitting diodes (LEDs)." <i>Chronobiology International.</i></li>
+                <li>Zhu, Y., et al. (2023). "Artificial light at night and risk of metabolic syndrome: A systematic review and meta-analysis." <i>Environmental Pollution.</i></li>
+            </ul>
+        </div>
+
+        <footer class="lesson-footer">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="footer-logo">
+            <p class="brand">AccrediPro Academy | Hormone Health Coach Certification</p>
+            <p class="copyright">&copy; 2024 AccrediPro. All rights reserved. The SIGNAL Method™ is a proprietary framework.</p>
+        </footer>
+    </div>
+</body>
+
+</html>

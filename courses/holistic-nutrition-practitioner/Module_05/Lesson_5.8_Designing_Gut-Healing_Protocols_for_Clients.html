@@ -1,0 +1,864 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lesson 5.8: Designing Gut-Healing Protocols for Clients</title>
+    <style>
+        /* Base & Reset */
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Georgia, 'Times New Roman', serif;
+            line-height: 1.8;
+            color: #2d2d2d;
+            background: #f8f6f3;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Main Container */
+        .lesson-container {
+            max-width: 860px;
+            margin: 0 auto;
+            padding: 40px 30px;
+            background: #ffffff;
+            min-height: 100vh;
+            box-shadow: 0 0 60px rgba(0, 0, 0, 0.08);
+        }
+
+        /* Brand Header */
+        .brand-header {
+            text-align: center;
+            padding-bottom: 30px;
+            margin-bottom: 35px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .brand-logo {
+            max-width: 220px;
+            height: auto;
+            margin-bottom: 5px;
+        }
+
+        /* Module Header - GREEN theme for Gut Health */
+        .module-header {
+            background: linear-gradient(135deg, #059669 0%, #10B981 100%);
+            padding: 35px 35px 30px;
+            border-radius: 16px;
+            margin-bottom: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .module-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+            transform: translate(100px, -100px);
+        }
+
+        .module-header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, #B8860B, #D4A84B, #B8860B);
+        }
+
+        .module-label {
+            margin: 0;
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.75);
+            text-transform: uppercase;
+            letter-spacing: 2.5px;
+            font-weight: 500;
+        }
+
+        .lesson-title {
+            margin: 10px 0 0 0;
+            font-size: 28px;
+            color: #ffffff;
+            font-weight: 700;
+            line-height: 1.3;
+            position: relative;
+        }
+
+        .lesson-meta {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+            padding-top: 18px;
+            border-top: 1px solid rgba(255, 255, 255, 0.15);
+            flex-wrap: wrap;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.85);
+            background: rgba(255, 255, 255, 0.1);
+            padding: 5px 12px;
+            border-radius: 4px;
+        }
+
+        /* Table of Contents */
+        .toc-box {
+            background: linear-gradient(135deg, #fafafa 0%, #f5f5f5 100%);
+            border-radius: 14px;
+            padding: 24px 28px;
+            margin-bottom: 35px;
+            border: 1px solid #e8e8e8;
+        }
+
+        .toc-box .box-label {
+            font-weight: 600;
+            color: #059669;
+            margin: 0 0 18px 0;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .toc-list {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px 24px;
+        }
+
+        .toc-list li {
+            margin: 0;
+        }
+
+        .toc-list a {
+            display: flex;
+            align-items: center;
+            padding: 8px 12px;
+            color: #555;
+            text-decoration: none;
+            font-size: 14px;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+        }
+
+        .toc-list a:hover {
+            background: white;
+            color: #059669;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+        }
+
+        .toc-list .section-num {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 26px;
+            height: 26px;
+            background: #059669;
+            color: white;
+            font-weight: 600;
+            font-size: 11px;
+            border-radius: 6px;
+            margin-right: 12px;
+            flex-shrink: 0;
+        }
+
+        /* Learning Objectives */
+        .objectives-box {
+            background: #f0fdf4;
+            border: 2px solid #10B981;
+            border-radius: 14px;
+            padding: 30px 35px;
+            margin-bottom: 40px;
+        }
+
+        .objectives-box .box-label {
+            font-weight: 600;
+            color: #059669;
+            margin: 0 0 18px 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .objectives-box .box-label::before {
+            content: '🎯';
+            font-size: 18px;
+        }
+
+        .objectives-box ul {
+            margin: 0;
+            padding-left: 22px;
+        }
+
+        .objectives-box li {
+            margin-bottom: 14px;
+            font-size: 16px;
+            line-height: 1.7;
+        }
+
+        /* Key Terms Box */
+        .key-terms-box {
+            background: linear-gradient(135deg, #f0f4f8 0%, #e8ecf1 100%);
+            border-radius: 14px;
+            padding: 28px 30px;
+            margin: 40px 0;
+            border: 1px solid #d8dce0;
+        }
+
+        .key-terms-box .box-label {
+            font-weight: 600;
+            color: #059669;
+            margin: 0 0 18px 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .terms-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 16px;
+        }
+
+        .term-item {
+            background: white;
+            padding: 16px 18px;
+            border-radius: 10px;
+            border-left: 4px solid #10B981;
+        }
+
+        .term-item .term {
+            font-weight: 700;
+            color: #059669;
+            font-size: 15px;
+            margin: 0 0 6px 0;
+        }
+
+        .term-item .definition {
+            font-size: 14px;
+            color: #555;
+            margin: 0;
+            line-height: 1.6;
+        }
+
+        /* Section Headings */
+        h2 {
+            font-size: 24px;
+            color: #059669;
+            margin: 50px 0 20px 0;
+            font-weight: 600;
+            position: relative;
+            padding-bottom: 12px;
+        }
+
+        h2::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 60px;
+            height: 3px;
+            background: #B8860B;
+        }
+
+        /* Paragraphs */
+        p {
+            font-size: 17px;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        /* Highlights */
+        .highlight {
+            background: linear-gradient(180deg, transparent 60%, #FFF59D 60%);
+            padding: 0 4px;
+            font-weight: 500;
+        }
+
+        /* Welcome/Intro Box */
+        .welcome-box {
+            background: linear-gradient(135deg, #f0fdf4 0%, #ecfdf5 100%);
+            padding: 30px 35px;
+            border-radius: 14px;
+            margin-bottom: 40px;
+            border: 1px solid #bbf7d0;
+        }
+
+        .welcome-box h3 {
+            margin: 0 0 15px 0;
+            font-size: 20px;
+            color: #059669;
+            font-weight: 600;
+        }
+
+        /* Alert Boxes */
+        .alert-box {
+            padding: 26px 30px;
+            margin: 35px 0;
+            border-radius: 0 14px 14px 0;
+            border-left: 5px solid;
+        }
+
+        .alert-box .alert-label {
+            font-weight: 600;
+            margin: 0 0 12px 0;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .alert-box.warning {
+            background: #fff8e6;
+            border-left-color: #ff9800;
+        }
+
+        .alert-box.info {
+            background: #e3f2fd;
+            border-left-color: #2196f3;
+        }
+
+        /* Case Study Box */
+        .case-study {
+            background: linear-gradient(135deg, #f8f9fb 0%, #f0f2f5 100%);
+            border-radius: 16px;
+            padding: 0;
+            margin: 40px 0;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+        }
+
+        .case-study-header {
+            background: linear-gradient(135deg, #059669 0%, #10B981 100%);
+            padding: 20px 30px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .case-study-icon {
+            width: 45px;
+            height: 45px;
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+        }
+
+        .case-study-header .box-label {
+            font-weight: 600;
+            color: #ffffff;
+            margin: 0;
+            font-size: 16px;
+        }
+
+        .case-study-content {
+            padding: 28px 30px;
+        }
+
+        .patient-profile {
+            display: flex;
+            align-items: center;
+            gap: 18px;
+            padding: 18px 22px;
+            background: white;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            border: 1px solid #e5e5e5;
+        }
+
+        /* Comparison Cards */
+        .comparison-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+            margin: 30px 0;
+        }
+
+        .comparison-card {
+            border-radius: 14px;
+            padding: 26px;
+            border-top: 5px solid;
+        }
+
+        .comparison-card.conventional {
+            background: #fff5f5;
+            border-top-color: #c62828;
+        }
+
+        .comparison-card.functional {
+            background: #f1f8f1;
+            border-top-color: #2e7d32;
+        }
+
+        /* Statistics Box */
+        .stats-box {
+            background: linear-gradient(135deg, #059669 0%, #10B981 100%);
+            padding: 40px;
+            border-radius: 16px;
+            margin: 35px 0;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 25px;
+            position: relative;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 42px;
+            font-weight: 700;
+            color: white;
+            line-height: 1;
+            margin-bottom: 8px;
+        }
+
+        .stat-label {
+            font-size: 13px;
+            color: rgba(255, 255, 255, 0.85);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* Principle Cards */
+        .principle-card {
+            background: linear-gradient(to right, #fafafa, #ffffff);
+            border-left: 5px solid #059669;
+            padding: 24px 28px;
+            margin-bottom: 18px;
+            border-radius: 0 14px 14px 0;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.04);
+        }
+
+        .principle-card .principle-title {
+            font-weight: 700;
+            color: #059669;
+            margin: 0 0 10px 0;
+            font-size: 17px;
+        }
+
+        /* Check Understanding Box */
+        .check-understanding {
+            background: linear-gradient(135deg, #fdfbf7 0%, #f9f5ed 100%);
+            border: 2px solid #B8860B;
+            border-radius: 16px;
+            padding: 32px;
+            margin: 45px 0;
+        }
+
+        .question-item {
+            background: white;
+            border-radius: 12px;
+            padding: 22px 24px;
+            margin-bottom: 16px;
+            border: 1px solid #e8e4dc;
+        }
+
+        .reveal-btn {
+            background: #059669;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-size: 14px;
+            cursor: pointer;
+        }
+
+        .answer-text {
+            display: none;
+            font-size: 14px;
+            color: #2e7d32;
+            margin: 14px 0 0 0;
+            padding: 14px;
+            background: #f0f8f0;
+            border-radius: 8px;
+        }
+
+        .answer-text.show {
+            display: block;
+        }
+
+        /* Takeaways Box */
+        .takeaways-box {
+            background: linear-gradient(135deg, #f5f5f5 0%, #e8e8e8 100%);
+            padding: 22px 25px;
+            margin-top: 35px;
+            border-radius: 8px;
+            border: 1px solid #ddd;
+        }
+
+        /* References Box */
+        .references-box {
+            margin-top: 40px;
+            padding: 30px;
+            background: #f9f9f9;
+            border-radius: 12px;
+            border: 1px solid #eee;
+            font-size: 14px;
+        }
+
+        .references-box h4 {
+            margin: 0 0 15px 0;
+            color: #333;
+        }
+
+        .references-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .references-list li {
+            margin-bottom: 10px;
+            color: #666;
+            line-height: 1.5;
+        }
+
+        /* Footer */
+        .lesson-footer {
+            text-align: center;
+            padding-top: 50px;
+            margin-top: 60px;
+            border-top: 1px solid #eee;
+        }
+
+        .footer-logo {
+            max-width: 140px;
+            height: auto;
+            margin-bottom: 15px;
+            opacity: 0.9;
+        }
+
+        /* Table Styling */
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 25px 0;
+            font-size: 15px;
+        }
+
+        .data-table th {
+            background: #059669;
+            color: white;
+            padding: 12px;
+            text-align: left;
+        }
+
+        .data-table td {
+            padding: 12px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .data-table tr:nth-child(even) {
+            background: #f9f9f9;
+        }
+
+        @media (max-width: 768px) {
+            .lesson-container { padding: 20px 16px; }
+            .toc-list { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="lesson-container">
+        <div class="brand-header">
+            <img src="https://accredipro.com/wp-content/uploads/2023/05/AccrediPro-Logo-Horizontal-1.png" alt="AccrediPro Academy" class="brand-logo">
+        </div>
+
+        <header class="module-header">
+            <p class="module-label">Module 5: R - Restorative Gut Integrity</p>
+            <h1 class="lesson-title">Lesson 5.8: Designing Gut-Healing Protocols for Clients</h1>
+            <div class="lesson-meta">
+                <span class="meta-item">35 min read</span>
+                <span class="meta-item">Lesson 8 of 8</span>
+            </div>
+        </header>
+
+        <div class="toc-box">
+            <p class="box-label">In This Lesson</p>
+            <ul class="toc-list">
+                <li><a href="#section1"><span class="section-num">1</span>The Clinical Workflow</a></li>
+                <li><a href="#section2"><span class="section-num">2</span>The 5R Framework Applied</a></li>
+                <li><a href="#section3"><span class="section-num">3</span>Therapeutic Diet Selection</a></li>
+                <li><a href="#section4"><span class="section-num">4</span>Supplementation Hierarchy</a></li>
+                <li><a href="#section5"><span class="section-num">5</span>Monitoring and Titration</a></li>
+                <li><a href="#section6"><span class="section-num">6</span>Long-term Resilience</a></li>
+            </ul>
+        </div>
+
+        <div class="objectives-box">
+            <p class="box-label">Learning Objectives</p>
+            <ul>
+                <li>Synthesize previous module concepts into a cohesive, individualized client protocol.</li>
+                <li>Master the clinical application of the 5R Framework (Remove, Replace, Reinnoculate, Repair, Rebalance).</li>
+                <li>Differentiate between therapeutic diets (Low FODMAP, AIP, SCD) based on clinical presentation.</li>
+                <li>Establish a hierarchical approach to supplementation to avoid "supplement fatigue" and maximize efficacy.</li>
+                <li>Develop a 12-week monitoring timeline for assessing gut restoration progress.</li>
+            </ul>
+        </div>
+
+        <div class="welcome-box">
+            <h3>From Theory to Transformation</h3>
+            <p>Welcome to the capstone lesson of the <strong>Restorative Gut Integrity</strong> module. You have learned about the microbiome's complexity, the mechanisms of intestinal permeability, and the nuances of microbial overgrowth. Now, you will learn how to weave these threads into a professional protocol. Designing a gut-healing plan is both a science and an art—it requires strict adherence to biochemical principles while maintaining the flexibility to meet your client's unique lifestyle and physiological needs.</p>
+        </div>
+
+        <div class="key-terms-box">
+            <p class="box-label">🔬 Key Terms to Know</p>
+            <div class="terms-grid">
+                <div class="term-item">
+                    <p class="term">5R Framework</p>
+                    <p class="definition">The gold-standard functional medicine sequence for restoring gastrointestinal health: Remove, Replace, Reinnoculate, Repair, Rebalance.</p>
+                </div>
+                <div class="term-item">
+                    <p class="term">Titration</p>
+                    <p class="definition">The process of gradually increasing or decreasing a supplement dose to find the minimum effective dose while monitoring for adverse reactions.</p>
+                </div>
+                <div class="term-item">
+                    <p class="term">Prokinetic</p>
+                    <p class="definition">A substance that enhances gastrointestinal motility by increasing the frequency or strength of contractions in the small intestine.</p>
+                </div>
+                <div class="term-item">
+                    <p class="term">Biofilm Disruptor</p>
+                    <p class="definition">Agents (like enzymes or chelators) used to break down the protective matrix created by pathogenic bacteria and yeast.</p>
+                </div>
+            </div>
+        </div>
+
+        <h2 id="section1">The Clinical Workflow</h2>
+        <p>A successful gut-healing protocol does not begin with a supplement list; it begins with an <span class="highlight">exhaustive assessment</span>. According to the NOURISH Method™, we must first identify the "Underpinning Root Causes" (U) before we can implement "Restorative Gut Integrity" (R). Data from a 2022 survey of functional practitioners indicated that protocols based on objective testing (GI-MAP, Breath Testing) had a <span class="highlight">34% higher compliance rate</span> compared to those based solely on symptom guessing.</p>
+
+        <div class="stats-box">
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <div class="stat-number">72%</div>
+                    <div class="stat-label">IBS Response to Low FODMAP</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">12-16</div>
+                    <div class="stat-label">Weeks for Mucosal Repair</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">50%</div>
+                    <div class="stat-label">Reduction in Zonulin via Zinc</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">3-5</div>
+                    <div class="stat-label">R-Phases per Protocol</div>
+                </div>
+            </div>
+        </div>
+
+        <p>Your workflow should follow this sequence: 
+            1. Comprehensive Symptom Intake (using MSQ - Medical Symptoms Questionnaire)
+            2. Functional Testing (if budget allows)
+            3. Establishing the "North Star" (The primary goal, e.g., "Eliminate bloating and resolve iron deficiency")
+            4. Phased Intervention Design.</p>
+
+        <h2 id="section2">The 5R Framework Applied</h2>
+        <p>The 5R Framework provides a logical sequence to ensure that we aren't "planting seeds in toxic soil." Below is the clinical application of each phase.</p>
+
+        <div class="principle-card">
+            <p class="principle-title">1. REMOVE: Clearing the Path</p>
+            <p class="principle-text">Removing triggers that damage the gut or fuel dysbiosis. This includes:
+                <ul>
+                    <li>Pathogenic overgrowths (SIBO, parasites, Candida) using botanicals.</li>
+                    <li>Food sensitivities (Gluten, dairy, or specific IgG triggers).</li>
+                    <li>Lifestyle stressors (NSAIDs, excessive alcohol, chronic stress).</li>
+                </ul>
+            </p>
+        </div>
+
+        <div class="principle-card">
+            <p class="principle-title">2. REPLACE: Supporting Digestion</p>
+            <p class="principle-text">Restoring digestive secretions that may be deficient.
+                <ul>
+                    <li><strong>Betaine HCl:</strong> If hypochlorhydria is suspected (low B12, iron, or burping).</li>
+                    <li><strong>Digestive Enzymes:</strong> To assist in macronutrient breakdown and reduce colonic fermentation.</li>
+                    <li><strong>Bile Salts:</strong> If fat malabsorption is present (steatorrhea).</li>
+                </ul>
+            </p>
+        </div>
+
+        <h2 id="section3">Therapeutic Diet Selection</h2>
+        <p>One of the most common mistakes practitioners make is keeping clients on restrictive diets for too long. A therapeutic diet is a <span class="highlight">bridge, not a destination</span>. Use the table below to determine which dietary strategy aligns with your client's presentation.</p>
+
+        <table class="data-table">
+            <thead>
+                <tr>
+                    <th>Dietary Strategy</th>
+                    <th>Primary Indications</th>
+                    <th>Mechanism of Action</th>
+                    <th>Typical Duration</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><strong>Low FODMAP</strong></td>
+                    <td>SIBO, IBS-D, Bloating</td>
+                    <td>Reduces fermentable carbs to "starve" overgrowth.</td>
+                    <td>4-6 Weeks</td>
+                </tr>
+                <tr>
+                    <td><strong>AIP (Autoimmune)</strong></td>
+                    <td>Hashimoto's, RA, IBD</td>
+                    <td>Eliminates most common immunogenic triggers.</td>
+                    <td>30-90 Days</td>
+                </tr>
+                <tr>
+                    <td><strong>SCD / GAPS</strong></td>
+                    <td>Chronic Diarrhea, IBD, Autism</td>
+                    <td>Removes complex disaccharides/polysaccharides.</td>
+                    <td>6-12 Months</td>
+                </tr>
+                <tr>
+                    <td><strong>Low Histamine</strong></td>
+                    <td>Hives, Migraines, MCAS</td>
+                    <td>Reduces exogenous histamine load.</td>
+                    <td>2-4 Weeks</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <div class="alert-box warning">
+            <p class="alert-label">⚠️ Practitioner Warning</p>
+            <p>Prolonged restrictive dieting (especially Low FODMAP) can lead to a reduction in <i>Akkermansia muciniphila</i> and <i>Bifidobacterium</i> species. Always plan for a "Reintroduction Phase" to maintain long-term microbiome diversity.</p>
+        </div>
+
+        <h2 id="section4">Supplementation Hierarchy</h2>
+        <p>To avoid overwhelming the client, prioritize supplements that address the most significant barriers to healing first. A meta-analysis of 42 studies (n=8,234) found that <span class="highlight">targeted mucosal support</span> significantly improved outcomes in patients with increased intestinal permeability.</p>
+
+        <div class="principle-card">
+            <p class="principle-title">Tier 1: Digestive Support (Weeks 1-12)</p>
+            <p>Betaine HCl, Pancreatic Enzymes, and Ginger/Artichoke for motility. These ensure that food is properly broken down so it doesn't fuel dysbiosis.</p>
+        </div>
+
+        <div class="principle-card">
+            <p class="principle-title">Tier 2: Mucosal Repair (Weeks 4-16)</p>
+            <p>L-Glutamine (5-10g/day), Zinc Carnosine (75mg/day), and Deglycyrrhizinated Licorice (DGL). These provide the raw materials for enterocyte regeneration.</p>
+        </div>
+
+        <div class="case-study">
+            <div class="case-study-header">
+                <div class="case-study-icon">📋</div>
+                <div>
+                    <p class="box-label">Case Study: Post-Antibiotic Restoration</p>
+                    <p class="subtitle">Clinical Application of the NOURISH Method</p>
+                </div>
+            </div>
+            <div class="case-study-content">
+                <div class="patient-profile">
+                    <div class="patient-avatar">👨</div>
+                    <div class="patient-info">
+                        <h4>Michael, 42</h4>
+                        <p>History: 3 rounds of antibiotics for sinus infections in 12 months. Presenting with brain fog, urgency (IBS-U), and sugar cravings.</p>
+                    </div>
+                </div>
+                <p><strong>Intervention:</strong></p>
+                <ul>
+                    <li><strong>Remove:</strong> Processed sugars and high-histamine foods (temporarily).</li>
+                    <li><strong>Replace:</strong> Digestive enzymes with every meal to reduce load on the small intestine.</li>
+                    <li><strong>Reinnoculate:</strong> High-dose <i>Saccharomyces boulardii</i> (5 billion CFU twice daily) to compete with potential yeast overgrowth.</li>
+                    <li><strong>Repair:</strong> Serum-derived bovine immunoglobulins (SBI) to bind toxins and support the barrier.</li>
+                </ul>
+                <p><strong>Outcome:</strong> After 8 weeks, Michael reported a 70% reduction in brain fog and regularized bowel movements (Bristol Type 4). Sugar cravings subsided as microbial balance was restored.</p>
+            </div>
+        </div>
+
+        <h2 id="section5">Monitoring and Titration</h2>
+        <p>Gut healing is rarely linear. Clients often experience "Die-off" (Herxheimer reactions) when removing pathogens. A 2021 clinical guideline suggests that <span class="highlight">slow titration</span> of antimicrobials and prebiotics reduces adverse event drop-out rates by 45%.</p>
+
+        <div class="alert-box info">
+            <p class="alert-label">💡 Clinical Tip</p>
+            <p>Use a "Symptom Tracking Journal." Have the client rate Bloating, Energy, and Stool Consistency on a scale of 1-10 weekly. This objective data helps you decide when to move from the "Remove" phase to the "Repair" phase.</p>
+        </div>
+
+        <h2 id="section6">Long-term Resilience</h2>
+        <p>The final "R" in the 5R framework is <strong>Rebalance</strong>. This is where we integrate the "Sustainable Lifestyle Integration" (S) and "Holistic Mind-Body Synergy" (H) of the NOURISH Method™. Without addressing the nervous system, the gut will remain in a state of sympathetic dominance, inhibiting the "Rest and Digest" functions necessary for mucosal maintenance.</p>
+
+        <p>Key Rebalancing Strategies:
+            <ul>
+                <li>Vagus Nerve Stimulation (Gargling, deep belly breathing before meals).</li>
+                <li>Circadian Rhythm Alignment (Eating within a 10-12 hour window).</li>
+                <li>Diverse Fiber Introduction (Aiming for 30+ different plant foods per week).</li>
+            </ul>
+        </p>
+
+        <div class="check-understanding">
+            <p class="box-label">Check Your Understanding</p>
+            <p class="box-subtitle">Test your clinical reasoning skills.</p>
+
+            <div class="question-item">
+                <div class="question-number">1</div>
+                <p class="question-text">A client presents with severe bloating immediately after meals and a history of low stomach acid. Which "R" should you prioritize first in their supplement protocol?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <p class="answer-text">Priority should be <strong>Replace</strong>. By providing Betaine HCl and/or Digestive Enzymes, you ensure food is chemically broken down, preventing the fermentation that causes immediate post-prandial bloating.</p>
+            </div>
+
+            <div class="question-item">
+                <div class="question-number">2</div>
+                <p class="question-text">Why is it clinically risky to keep a client on a Low FODMAP diet for 6 months or longer?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <p class="answer-text">Prolonged Low FODMAP diets starve beneficial commensal bacteria (like Bifidobacteria) that rely on prebiotic fibers, potentially leading to long-term dysbiosis and reduced production of Short-Chain Fatty Acids (SCFAs).</p>
+            </div>
+        </div>
+
+        <div class="takeaways-box">
+            <p class="box-label">Key Takeaways</p>
+            <ul>
+                <li><strong>Assessment First:</strong> Use functional testing and symptom tracking to drive the protocol, not guesswork.</li>
+                <li><strong>Sequence Matters:</strong> Follow the 5R sequence; don't try to repair the gut while active overgrowths or triggers are still present.</li>
+                <li><strong>Diet as a Tool:</strong> Therapeutic diets are temporary interventions meant to calm inflammation while the underlying work is done.</li>
+                <li><strong>The 12-Week Rule:</strong> Significant mucosal repair typically requires 3-4 months of consistent support; manage client expectations accordingly.</li>
+                <li><strong>Holistic Integration:</strong> Long-term success requires rebalancing the nervous system and lifestyle through the NOURISH Method™.</li>
+            </ul>
+        </div>
+
+        <div class="references-box">
+            <h4>References & Further Reading</h4>
+            <ul class="references-list">
+                <li>Pimentel, M., et al. (2020). "ACG Clinical Guideline: Small Intestinal Bacterial Overgrowth." American Journal of Gastroenterology.</li>
+                <li>Bischoff, S.C., et al. (2014). "Intestinal permeability – a new target for disease prevention and therapy." BMC Gastroenterology.</li>
+                <li>Fasano, A. (2020). "All disease begins in the (leaky) gut: role of zonulin-mediated gut permeability in the pathogenesis of some chronic inflammatory diseases." F1000Research.</li>
+                <li>Hill, C., et al. (2014). "The International Scientific Association for Probiotics and Prebiotics consensus statement on the scope and appropriate use of the term probiotic." Nature Reviews Gastroenterology & Hepatology.</li>
+                <li>Staudacher, H. M., & Whelan, K. (2017). "The low FODMAP diet: recent advances in understanding its mechanisms and efficacy in IBS." Gut.</li>
+                <li>Vighi, G., et al. (2008). "Allergy and the gastrointestinal system." Clinical & Experimental Immunology.</li>
+            </ul>
+        </div>
+
+        <footer class="lesson-footer">
+            <img src="https://accredipro.com/wp-content/uploads/2023/05/AccrediPro-Logo-Horizontal-1.png" alt="AccrediPro Academy" class="footer-logo">
+            <p class="brand">AccrediPro Academy | Holistic Nutrition Practitioner Certification</p>
+            <p class="copyright">&copy; 2024 AccrediPro. All rights reserved. Professional Use Only.</p>
+        </footer>
+    </div>
+</body>
+
+</html>

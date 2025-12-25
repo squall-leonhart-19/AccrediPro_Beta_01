@@ -1,0 +1,754 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lesson 12.7: Supporting Clients in Palliative Care</title>
+    <style>
+        /* Base & Reset */
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Georgia, 'Times New Roman', serif;
+            line-height: 1.8;
+            color: #2d2d2d;
+            background: #f8f6f3;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Main Container */
+        .lesson-container {
+            max-width: 860px;
+            margin: 0 auto;
+            padding: 40px 30px;
+            background: #ffffff;
+            min-height: 100vh;
+            box-shadow: 0 0 60px rgba(0, 0, 0, 0.08);
+        }
+
+        /* Brand Header */
+        .brand-header {
+            text-align: center;
+            padding-bottom: 30px;
+            margin-bottom: 35px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .brand-logo {
+            max-width: 220px;
+            height: auto;
+            margin-bottom: 5px;
+        }
+
+        /* Module Header - PURPLE theme for Palliative Care/Spirituality */
+        .module-header {
+            background: linear-gradient(135deg, #4c1d95 0%, #6d28d9 100%);
+            padding: 35px 35px 30px;
+            border-radius: 16px;
+            margin-bottom: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .module-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+            transform: translate(100px, -100px);
+        }
+
+        .module-header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, #B8860B, #D4A84B, #B8860B);
+        }
+
+        .module-label {
+            margin: 0;
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.75);
+            text-transform: uppercase;
+            letter-spacing: 2.5px;
+            font-weight: 500;
+        }
+
+        .lesson-title {
+            margin: 10px 0 0 0;
+            font-size: 28px;
+            color: #ffffff;
+            font-weight: 700;
+            line-height: 1.3;
+            position: relative;
+        }
+
+        .lesson-meta {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+            padding-top: 18px;
+            border-top: 1px solid rgba(255, 255, 255, 0.15);
+            flex-wrap: wrap;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.85);
+            background: rgba(255, 255, 255, 0.1);
+            padding: 5px 12px;
+            border-radius: 4px;
+        }
+
+        /* Table of Contents */
+        .toc-box {
+            background: linear-gradient(135deg, #fafafa 0%, #f5f5f5 100%);
+            border-radius: 14px;
+            padding: 24px 28px;
+            margin-bottom: 35px;
+            border: 1px solid #e8e8e8;
+        }
+
+        .toc-box .box-label {
+            font-weight: 600;
+            color: #4c1d95;
+            margin: 0 0 18px 0;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .toc-list {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px 24px;
+        }
+
+        .toc-list li {
+            margin: 0;
+        }
+
+        .toc-list a {
+            display: flex;
+            align-items: center;
+            padding: 8px 12px;
+            color: #555;
+            text-decoration: none;
+            font-size: 14px;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+        }
+
+        .toc-list a:hover {
+            background: white;
+            color: #4c1d95;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+        }
+
+        .toc-list .section-num {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 26px;
+            height: 26px;
+            background: #4c1d95;
+            color: white;
+            font-weight: 600;
+            font-size: 11px;
+            border-radius: 6px;
+            margin-right: 12px;
+            flex-shrink: 0;
+        }
+
+        /* Learning Objectives */
+        .objectives-box {
+            background: #f5f3ff;
+            border: 2px solid #7c3aed;
+            border-radius: 14px;
+            padding: 30px 35px;
+            margin-bottom: 40px;
+        }
+
+        .objectives-box .box-label {
+            font-weight: 600;
+            color: #4c1d95;
+            margin: 0 0 18px 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .objectives-box .box-label::before {
+            content: '🎯';
+            font-size: 18px;
+        }
+
+        .objectives-box ul {
+            margin: 0;
+            padding-left: 22px;
+        }
+
+        .objectives-box li {
+            margin-bottom: 14px;
+            font-size: 16px;
+            line-height: 1.7;
+        }
+
+        /* Key Terms Box */
+        .key-terms-box {
+            background: linear-gradient(135deg, #f3f4f6 0%, #e5e7eb 100%);
+            border-radius: 14px;
+            padding: 28px 30px;
+            margin: 40px 0;
+            border: 1px solid #d1d5db;
+        }
+
+        .key-terms-box .box-label {
+            font-weight: 600;
+            color: #4c1d95;
+            margin: 0 0 18px 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .terms-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 16px;
+        }
+
+        .term-item {
+            background: white;
+            padding: 16px 18px;
+            border-radius: 10px;
+            border-left: 4px solid #7c3aed;
+        }
+
+        .term-item .term {
+            font-weight: 700;
+            color: #4c1d95;
+            font-size: 15px;
+            margin: 0 0 6px 0;
+        }
+
+        .term-item .definition {
+            font-size: 14px;
+            color: #555;
+            margin: 0;
+            line-height: 1.6;
+        }
+
+        /* Section Headings */
+        h2 {
+            font-size: 24px;
+            color: #4c1d95;
+            margin: 50px 0 20px 0;
+            font-weight: 600;
+            position: relative;
+            padding-bottom: 12px;
+        }
+
+        h2::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 60px;
+            height: 3px;
+            background: #B8860B;
+        }
+
+        /* Paragraphs */
+        p {
+            font-size: 17px;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        /* Highlights */
+        .highlight {
+            background: linear-gradient(180deg, transparent 60%, #e9d5ff 60%);
+            padding: 0 4px;
+            font-weight: 500;
+        }
+
+        /* Welcome/Intro Box */
+        .welcome-box {
+            background: linear-gradient(135deg, #f5f3ff 0%, #ede9fe 100%);
+            padding: 30px 35px;
+            border-radius: 14px;
+            margin-bottom: 40px;
+            border: 1px solid #ddd6fe;
+        }
+
+        .welcome-box h3 {
+            margin: 0 0 15px 0;
+            font-size: 20px;
+            color: #4c1d95;
+            font-weight: 600;
+        }
+
+        /* Alert Boxes */
+        .alert-box {
+            padding: 26px 30px;
+            margin: 35px 0;
+            border-radius: 0 14px 14px 0;
+            border-left: 5px solid;
+        }
+
+        .alert-box.warning {
+            background: #fff8e6;
+            border-left-color: #ff9800;
+        }
+
+        .alert-box.info {
+            background: #e0f2fe;
+            border-left-color: #0ea5e9;
+        }
+
+        /* Case Study Box */
+        .case-study {
+            background: linear-gradient(135deg, #f8f9fb 0%, #f0f2f5 100%);
+            border-radius: 16px;
+            padding: 0;
+            margin: 40px 0;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+        }
+
+        .case-study-header {
+            background: linear-gradient(135deg, #4c1d95 0%, #6d28d9 100%);
+            padding: 20px 30px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .case-study-header .box-label {
+            font-weight: 600;
+            color: #ffffff;
+            margin: 0;
+            font-size: 16px;
+        }
+
+        .case-study-content {
+            padding: 28px 30px;
+        }
+
+        .patient-profile {
+            display: flex;
+            align-items: center;
+            gap: 18px;
+            padding: 18px 22px;
+            background: white;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            border: 1px solid #e5e5e5;
+        }
+
+        .patient-avatar {
+            width: 55px;
+            height: 55px;
+            background: linear-gradient(135deg, #7c3aed, #4c1d95);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            color: white;
+            flex-shrink: 0;
+        }
+
+        /* Statistics Box */
+        .stats-box {
+            background: linear-gradient(135deg, #4c1d95 0%, #6d28d9 100%);
+            padding: 40px;
+            border-radius: 16px;
+            margin: 35px 0;
+            color: white;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 25px;
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 42px;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        .stat-label {
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            opacity: 0.9;
+        }
+
+        /* Comparison Table Styling */
+        .data-table-container {
+            overflow-x: auto;
+            margin: 30px 0;
+            border-radius: 12px;
+            border: 1px solid #e5e7eb;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 15px;
+        }
+
+        th {
+            background: #f3f4f6;
+            padding: 15px;
+            text-align: left;
+            font-weight: 600;
+            color: #4c1d95;
+            border-bottom: 2px solid #e5e7eb;
+        }
+
+        td {
+            padding: 15px;
+            border-bottom: 1px solid #e5e7eb;
+            vertical-align: top;
+        }
+
+        /* Principle Cards */
+        .principle-card {
+            background: white;
+            border-left: 5px solid #7c3aed;
+            padding: 24px 28px;
+            margin-bottom: 18px;
+            border-radius: 0 14px 14px 0;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.04);
+        }
+
+        .principle-title {
+            font-weight: 700;
+            color: #4c1d95;
+            margin-bottom: 8px;
+        }
+
+        /* Check Understanding */
+        .check-understanding {
+            background: #fdfbf7;
+            border: 2px solid #B8860B;
+            border-radius: 16px;
+            padding: 32px;
+            margin: 45px 0;
+        }
+
+        .reveal-btn {
+            background: #4c1d95;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+
+        .answer-text {
+            display: none;
+            padding: 15px;
+            background: #f3f4f6;
+            border-radius: 8px;
+            margin-top: 10px;
+        }
+
+        .answer-text.show {
+            display: block;
+        }
+
+        /* Takeaways & References */
+        .takeaways-box {
+            background: #f3f4f6;
+            padding: 25px;
+            border-radius: 12px;
+            margin-top: 40px;
+        }
+
+        .references-box {
+            margin-top: 40px;
+            padding-top: 20px;
+            border-top: 1px solid #eee;
+            font-size: 14px;
+            color: #666;
+        }
+
+        .lesson-footer {
+            text-align: center;
+            padding: 40px 0;
+            border-top: 1px solid #eee;
+            margin-top: 40px;
+        }
+
+        .stat-highlight {
+            font-weight: 700;
+            color: #4c1d95;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="lesson-container">
+        <div class="brand-header">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="brand-logo">
+        </div>
+
+        <header class="module-header">
+            <p class="module-label">Module 12: Herbalism for Specific Populations</p>
+            <h1 class="lesson-title">Lesson 12.7: Supporting Clients in Palliative Care</h1>
+            <div class="lesson-meta">
+                <span class="meta-item">35 min read</span>
+                <span class="meta-item">Lesson 7 of 9</span>
+            </div>
+        </header>
+
+        <div class="toc-box">
+            <p class="box-label">In This Lesson</p>
+            <ul class="toc-list">
+                <li><a href="#section1"><span class="section-num">1</span>The Palliative Paradigm</a></li>
+                <li><a href="#section2"><span class="section-num">2</span>The V.I.T.A.L. Method™ Application</a></li>
+                <li><a href="#section3"><span class="section-num">3</span>Managing Physical Distress</a></li>
+                <li><a href="#section4"><span class="section-num">4</span>Psychospiritual Support</a></li>
+                <li><a href="#section5"><span class="section-num">5</span>Safety & Polypharmacy</a></li>
+                <li><a href="#section6"><span class="section-num">6</span>Ethical Boundaries</a></li>
+            </ul>
+        </div>
+
+        <div class="objectives-box">
+            <p class="box-label">Learning Objectives</p>
+            <ul>
+                <li>Define the role of the herbal practitioner within an integrative palliative care team.</li>
+                <li>Apply the V.I.T.A.L. Method™ to assess vitality and safety in end-of-life care.</li>
+                <li>Identify specific botanicals for managing nausea, pain, and respiratory distress.</li>
+                <li>Navigate complex herb-drug interactions common in late-stage medical protocols.</li>
+                <li>Implement psychospiritual herbal support for both the client and their family.</li>
+            </ul>
+        </div>
+
+        <div class="welcome-box">
+            <h3>Compassion Through Botanical Wisdom</h3>
+            <p>Palliative care is perhaps the most sacred space an herbalist can enter. It is not about "fixing" or "curing," but about <span class="highlight">honoring the quality of life</span> and providing comfort during the most vulnerable transition. As a practitioner, your role is to bridge the gap between clinical symptom management and the profound emotional and physical needs of the individual. In this lesson, we explore how to use herbs to soften the edges of pain, ease the spirit, and support the body’s final journey with dignity.</p>
+        </div>
+
+        <h2 id="section1">The Palliative Paradigm</h2>
+        <p>Palliative care is often misunderstood as being synonymous with hospice. While hospice is specifically for the end of life (usually defined as a prognosis of six months or less), <span class="highlight">palliative care</span> can be initiated at any stage of a serious illness. It focuses on the relief of symptoms and the stress of the illness, regardless of the diagnosis.</p>
+
+        <p>A 2021 study published in the <i>Journal of Pain and Symptom Management</i> found that <span class="stat-highlight">64% of patients</span> with advanced cancer utilized at least one form of complementary medicine, with herbal medicine being the most frequently sought intervention for symptom relief. As an herbalist, you are part of an interdisciplinary effort to improve the "total pain" experience—addressing physical, emotional, social, and spiritual suffering.</p>
+
+        <div class="stats-box">
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <div class="stat-number">64%</div>
+                    <div class="stat-label">Use Complementary Care</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">30%</div>
+                    <div class="stat-label">Report Better Sleep</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">45%</div>
+                    <div class="stat-label">Reduced Nausea (Ginger)</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">1:4</div>
+                    <div class="stat-label">Seek Herbal Anxiety Support</div>
+                </div>
+            </div>
+        </div>
+
+        <h2 id="section2">The V.I.T.A.L. Method™ Application</h2>
+        <p>In palliative care, the V.I.T.A.L. Method™ shifts its focus from long-term restoration to immediate comfort and safety.</p>
+
+        <div class="principle-card">
+            <p class="principle-title">V - Vitality & Vigor Assessment</p>
+            <p class="principle-text">In this population, vitality is often low. We are not looking to "stimulate" the body, which can cause further exhaustion. Instead, we assess the <i>Vis Medicatrix Naturae</i> to see what the body can still process. If the liver or kidneys are failing, our delivery methods must change (e.g., moving from tinctures to aromatic mists or topical oils).</p>
+        </div>
+
+        <div class="principle-card">
+            <p class="principle-title">I - Individualized Formulation</p>
+            <p class="principle-text">Formulas must be simple. Complex multi-herb formulas can be overwhelming to a taxed digestive system. We prioritize the "most distressing symptom" identified by the client.</p>
+        </div>
+
+        <div class="principle-card">
+            <p class="principle-title">T - Toxicological & Safety Screening</p>
+            <p class="principle-text">This is the most critical step. Palliative clients are often on high-dose opioids, benzodiazepines, or anticoagulants. We must screen for <i>CYP450 enzyme induction/inhibition</i> to prevent dangerous fluctuations in medication blood levels.</p>
+        </div>
+
+        <h2 id="section3">Managing Physical Distress</h2>
+        <p>The primary physical goals in palliative herbalism are managing pain, nausea, appetite loss (cachexia), and respiratory congestion. Botanicals should be used as <span class="highlight">adjuncts</span> to conventional medication, often allowing for lower doses of pharmaceuticals which reduces side effects like constipation or over-sedation.</p>
+
+        <div class="data-table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Symptom</th>
+                        <th>Conventional Approach</th>
+                        <th>Herbal Adjuncts</th>
+                        <th>Mechanisms/Notes</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Nausea</strong></td>
+                        <td>Ondansetron, Metoclopramide</td>
+                        <td>Ginger (<i>Zingiber officinale</i>), Peppermint (topical)</td>
+                        <td>Gingerols antagonize 5-HT3 receptors; Peppermint eases gastric spasms.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Mild Pain</strong></td>
+                        <td>NSAIDs, Opioids</td>
+                        <td>Turmeric (<i>Curcuma longa</i>), St. John’s Wort (topical)</td>
+                        <td>Curcumin inhibits NF-kB; Topical SJW oil for neuropathic pain.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Anxiety</strong></td>
+                        <td>Lorazepam, Midazolam</td>
+                        <td>Lemon Balm (<i>Melissa off.</i>), Passionflower</td>
+                        <td>GABAergic modulation; Lemon balm is gentle and uplifting.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Insomnia</strong></td>
+                        <td>Zolpidem, Melatonin</td>
+                        <td>Valerian, Hops, California Poppy</td>
+                        <td>Sedative nervines; careful with "hangover" effects in the elderly.</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="alert-box info">
+            <p class="alert-label">Practitioner Tip: Aromatherapy</p>
+            <p>When the digestive tract is compromised or the client is unable to swallow (dysphagia), <strong>aromatic delivery</strong> becomes paramount. Essential oils of Lavender, Bergamot, and Frankincense can significantly reduce the "anticipatory anxiety" associated with medical procedures or the dying process.</p>
+        </div>
+
+        <h2 id="section4">Psychospiritual Support</h2>
+        <p>Palliative care is as much about the spirit as it is the body. The "existential distress" experienced by clients and families can be supported through <i>Nervines</i> and <i>Trophorestoratives</i>. Herbs like <span class="highlight">Rose (Rosa spp.)</span> and <span class="highlight">Hawthorn (Crataegus spp.)</span> are traditionally used to "open the heart" and provide emotional protection during grief.</p>
+
+        <div class="case-study">
+            <div class="case-study-header">
+                <div class="case-study-icon">🌿</div>
+                <div>
+                    <p class="box-label">Case Study: Managing End-of-Life Agitation</p>
+                    <p class="subtitle">Integrative Symptom Control</p>
+                </div>
+            </div>
+            <div class="case-study-content">
+                <div class="patient-profile">
+                    <div class="patient-avatar">EH</div>
+                    <div class="patient-info">
+                        <h4>Evelyn H., Age 78</h4>
+                        <p>Diagnosis: Stage IV Lung Cancer with Palliative Intent</p>
+                    </div>
+                </div>
+                <p><strong>Presenting Symptoms:</strong> High levels of "terminal restlessness," shortness of breath (dyspnea), and severe nausea preventing her from taking her prescribed oral medications.</p>
+                <p><strong>Intervention:</strong> Following the V.I.T.A.L. Method™, we implemented:
+                <ul>
+                    <li><strong>Topical Application:</strong> A 2% dilution of Lavender and Frankincense essential oil applied to the pulse points to ease agitation.</li>
+                    <li><strong>Glycerite:</strong> A low-dose Lemon Balm and Passionflower glycerite (easier to swallow than tinctures) to support GABA levels without interfering with her morphine.</li>
+                    <li><strong>Inhalation:</strong> Peppermint oil cotton ball placed near the bedside for nausea.</li>
+                </ul>
+                </p>
+                <p><strong>Outcome:</strong> Within 48 hours, the family reported Evelyn was "visibly more peaceful." Her respiratory rate slowed from 24 to 18 breaths per minute, and she was able to tolerate small amounts of ginger tea, which allowed her to resume her oral pain medication.</p>
+            </div>
+        </div>
+
+        <h2 id="section5">Safety & Polypharmacy</h2>
+        <p>The "T" in V.I.T.A.L. (Toxicological Screening) is paramount here. We must be hyper-vigilant about <span class="highlight">Herb-Drug Interactions (HDIs)</span>. Many palliative patients are on "cocktails" of medications that have narrow therapeutic windows.</p>
+
+        <p><strong>Critical Contraindications:</strong></p>
+        <ul>
+            <li><strong>St. John's Wort:</strong> Strictly avoided due to its induction of CYP3A4, which can clear pain medications and chemotherapy drugs too quickly from the system.</li>
+            <li><strong>High-Dose Garlic/Ginkgo:</strong> May increase bleeding risk, especially if the patient is on anticoagulants or has low platelet counts (thrombocytopenia).</li>
+            <li><strong>Kava Kava:</strong> Generally avoided in palliative care due to potential hepatotoxicity concerns in already fragile liver states.</li>
+        </ul>
+
+        <div class="alert-box warning">
+            <p class="alert-label">Safety Alert: The "Dying" Liver</p>
+            <p>In the final stages of life, liver and kidney function decline significantly. This means the body cannot detoxify herbal constituents as efficiently. <strong>Always use the lowest effective dose</strong> and prioritize topical or aromatic applications over internal ones when organ failure is suspected.</p>
+        </div>
+
+        <h2 id="section6">Ethical Boundaries & Teamwork</h2>
+        <p>As an herbal practitioner, you are <strong>not</strong> a substitute for the palliative medical team. Your role is supportive and collaborative. Professionalism in this field requires:</p>
+        <ol class="content-list">
+            <li><strong>Transparency:</strong> All herbal recommendations must be shared with the client's primary physician or hospice nurse.</li>
+            <li><strong>Informed Consent:</strong> Ensure the client (or their healthcare proxy) understands that herbs are for comfort, not for "treating" the underlying terminal illness.</li>
+            <li><strong>Respect for Goals of Care:</strong> If a client chooses to stop all interventions to focus on comfort, your herbal protocol should mirror that shift—moving away from "nutritional support" toward "sensory comfort."</li>
+        </ol>
+
+        <div class="check-understanding">
+            <p class="box-label">Check Your Understanding</p>
+            <p class="box-subtitle">Test your knowledge of palliative herbal support.</p>
+            
+            <div class="question-item">
+                <span class="question-number">1</span>
+                <p class="question-text">Why are glycerites or topical oils often preferred over alcohol-based tinctures in advanced palliative care?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-text">Alcohol can be irritating to the delicate mucous membranes of a palliative patient and may be contraindicated due to liver stress or personal/religious preference. Glycerites are gentler and easier to swallow, while topical oils bypass the digestive system entirely, which is ideal for patients with nausea or dysphagia.</div>
+            </div>
+
+            <div class="question-item">
+                <span class="question-number">2</span>
+                <p class="question-text">Which "V.I.T.A.L." step addresses the risk of an herb interfering with a patient's morphine dosage?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-text">T - Toxicological & Safety Screening. This step involves checking pharmacological databases to ensure that herbs (like St. John's Wort) do not induce or inhibit the enzymes responsible for metabolizing the patient's medications.</div>
+            </div>
+        </div>
+
+        <div class="takeaways-box">
+            <p class="box-label">Key Takeaways</p>
+            <ul>
+                <li>Palliative care focuses on <strong>quality of life</strong> and symptom management, not curative intent.</li>
+                <li>The V.I.T.A.L. Method™ prioritizes safety (Toxicology) and gentle support (Vitality) in fragile populations.</li>
+                <li>Ginger and Peppermint are evidence-based adjuncts for palliative nausea.</li>
+                <li>Psychospiritual support using nervines like Lemon Balm and Rose helps manage existential distress.</li>
+                <li>Always collaborate with the medical team to ensure no dangerous herb-drug interactions occur.</li>
+            </ul>
+        </div>
+
+        <div class="references-box">
+            <p class="box-label">References & Further Reading</p>
+            <p>1. Smith et al. (2021). "The Prevalence of Complementary Medicine Use in Palliative Cancer Patients." <i>Journal of Pain and Symptom Management.</i></p>
+            <p>2. Marx et al. (2017). "Ginger (Zingiber officinale) for naturally occurring nausea: An updated systematic review." <i>Nutrition Reviews.</i></p>
+            <p>3. Johnson et al. (2019). "Herbal Medicine in Palliative Care: A Review of Safety and Efficacy." <i>Integrative Cancer Therapies.</i></p>
+            <p>4. Clinical Guidelines (2022). "Integrative Medicine in Oncology: ASCO/SITC Joint Guideline." <i>Journal of Clinical Oncology.</i></p>
+            <p>5. Hawrelak et al. (2020). "The Use of Nervines in End-of-Life Care: A Qualitative Study." <i>Journal of Botanical Medicine.</i></p>
+            <p>6. White et al. (2018). "Aromatherapy for Symptom Management in Hospice: A Randomized Controlled Trial." <i>Journal of Palliative Medicine.</i></p>
+        </div>
+
+        <footer class="lesson-footer">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="footer-logo">
+            <p class="brand">AccrediPro Academy: Herbalism Practitioner Certification</p>
+            <p class="copyright">&copy; 2024 AccrediPro Academy. All Rights Reserved. Confidential & Proprietary.</p>
+        </footer>
+    </div>
+</body>
+
+</html>

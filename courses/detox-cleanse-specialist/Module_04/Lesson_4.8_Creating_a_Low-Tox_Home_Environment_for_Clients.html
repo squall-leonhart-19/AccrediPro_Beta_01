@@ -1,0 +1,779 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lesson 4.8: Creating a Low-Tox Home Environment for Clients</title>
+    <style>
+        /* Base & Reset */
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Georgia, 'Times New Roman', serif;
+            line-height: 1.8;
+            color: #2d2d2d;
+            background: #f8f6f3;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Main Container */
+        .lesson-container {
+            max-width: 860px;
+            margin: 0 auto;
+            padding: 40px 30px;
+            background: #ffffff;
+            min-height: 100vh;
+            box-shadow: 0 0 60px rgba(0, 0, 0, 0.08);
+        }
+
+        /* Brand Header */
+        .brand-header {
+            text-align: center;
+            padding-bottom: 30px;
+            margin-bottom: 35px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .brand-logo {
+            max-width: 220px;
+            height: auto;
+            margin-bottom: 5px;
+        }
+
+        /* Module Header - TEAL/BLUE theme for Environmental Detox */
+        .module-header {
+            background: linear-gradient(135deg, #0d9488 0%, #0ea5e9 100%);
+            padding: 35px 35px 30px;
+            border-radius: 16px;
+            margin-bottom: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .module-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+            transform: translate(100px, -100px);
+        }
+
+        .module-header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, #B8860B, #D4A84B, #B8860B);
+        }
+
+        .module-label {
+            margin: 0;
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.85);
+            text-transform: uppercase;
+            letter-spacing: 2.5px;
+            font-weight: 500;
+        }
+
+        .lesson-title {
+            margin: 10px 0 0 0;
+            font-size: 28px;
+            color: #ffffff;
+            font-weight: 700;
+            line-height: 1.3;
+            position: relative;
+        }
+
+        .lesson-meta {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+            padding-top: 18px;
+            border-top: 1px solid rgba(255, 255, 255, 0.15);
+            flex-wrap: wrap;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.85);
+            background: rgba(255, 255, 255, 0.1);
+            padding: 5px 12px;
+            border-radius: 4px;
+        }
+
+        /* Table of Contents */
+        .toc-box {
+            background: linear-gradient(135deg, #fafafa 0%, #f5f5f5 100%);
+            border-radius: 14px;
+            padding: 24px 28px;
+            margin-bottom: 35px;
+            border: 1px solid #e8e8e8;
+        }
+
+        .toc-box .box-label {
+            font-weight: 600;
+            color: #0d9488;
+            margin: 0 0 18px 0;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .toc-list {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px 24px;
+        }
+
+        .toc-list li {
+            margin: 0;
+        }
+
+        .toc-list a {
+            display: flex;
+            align-items: center;
+            padding: 8px 12px;
+            color: #555;
+            text-decoration: none;
+            font-size: 14px;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+        }
+
+        .toc-list a:hover {
+            background: white;
+            color: #0d9488;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+        }
+
+        .toc-list .section-num {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 26px;
+            height: 26px;
+            background: #0d9488;
+            color: white;
+            font-weight: 600;
+            font-size: 11px;
+            border-radius: 6px;
+            margin-right: 12px;
+            flex-shrink: 0;
+        }
+
+        /* Learning Objectives */
+        .objectives-box {
+            background: #f0f9ff;
+            border: 2px solid #0ea5e9;
+            border-radius: 14px;
+            padding: 30px 35px;
+            margin-bottom: 40px;
+        }
+
+        .objectives-box .box-label {
+            font-weight: 600;
+            color: #0369a1;
+            margin: 0 0 18px 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .objectives-box .box-label::before {
+            content: '🎯';
+            font-size: 18px;
+        }
+
+        .objectives-box ul {
+            margin: 0;
+            padding-left: 22px;
+        }
+
+        .objectives-box li {
+            margin-bottom: 14px;
+            font-size: 16px;
+            line-height: 1.7;
+        }
+
+        /* Key Terms Box */
+        .key-terms-box {
+            background: linear-gradient(135deg, #f0f4f8 0%, #e8ecf1 100%);
+            border-radius: 14px;
+            padding: 28px 30px;
+            margin: 40px 0;
+            border: 1px solid #d8dce0;
+        }
+
+        .key-terms-box .box-label {
+            font-weight: 600;
+            color: #0d9488;
+            margin: 0 0 18px 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .terms-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 16px;
+        }
+
+        .term-item {
+            background: white;
+            padding: 16px 18px;
+            border-radius: 10px;
+            border-left: 4px solid #0d9488;
+        }
+
+        .term-item .term {
+            font-weight: 700;
+            color: #0d9488;
+            font-size: 15px;
+            margin: 0 0 6px 0;
+        }
+
+        .term-item .definition {
+            font-size: 14px;
+            color: #555;
+            margin: 0;
+            line-height: 1.6;
+        }
+
+        /* Section Headings */
+        h2 {
+            font-size: 24px;
+            color: #0d9488;
+            margin: 50px 0 20px 0;
+            font-weight: 600;
+            position: relative;
+            padding-bottom: 12px;
+        }
+
+        h2::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 60px;
+            height: 3px;
+            background: #B8860B;
+        }
+
+        /* Paragraphs & Lists */
+        p {
+            font-size: 17px;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        .highlight {
+            background: linear-gradient(180deg, transparent 60%, #e0f2fe 60%);
+            padding: 0 4px;
+            font-weight: 500;
+        }
+
+        /* Welcome Box */
+        .welcome-box {
+            background: linear-gradient(135deg, #f0fdfa 0%, #f0f9ff 100%);
+            padding: 30px 35px;
+            border-radius: 14px;
+            margin-bottom: 40px;
+            border: 1px solid #ccfbf1;
+        }
+
+        .welcome-box h3 {
+            margin: 0 0 15px 0;
+            font-size: 20px;
+            color: #0d9488;
+            font-weight: 600;
+        }
+
+        /* Statistics Box */
+        .stats-box {
+            background: linear-gradient(135deg, #0d9488 0%, #0ea5e9 100%);
+            padding: 40px;
+            border-radius: 16px;
+            margin: 35px 0;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 25px;
+            position: relative;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 42px;
+            font-weight: 700;
+            color: white;
+            line-height: 1;
+            margin-bottom: 8px;
+        }
+
+        .stat-label {
+            font-size: 13px;
+            color: rgba(255, 255, 255, 0.9);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* Case Study Box */
+        .case-study {
+            background: linear-gradient(135deg, #f8f9fb 0%, #f0f2f5 100%);
+            border-radius: 16px;
+            padding: 0;
+            margin: 40px 0;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+        }
+
+        .case-study-header {
+            background: linear-gradient(135deg, #0d9488 0%, #0ea5e9 100%);
+            padding: 20px 30px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .case-study-icon {
+            width: 45px;
+            height: 45px;
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+        }
+
+        .case-study-header .box-label {
+            font-weight: 600;
+            color: #ffffff;
+            margin: 0;
+            font-size: 16px;
+        }
+
+        .case-study-content {
+            padding: 28px 30px;
+        }
+
+        .patient-profile {
+            display: flex;
+            align-items: center;
+            gap: 18px;
+            padding: 18px 22px;
+            background: white;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            border: 1px solid #e5e5e5;
+        }
+
+        .patient-avatar {
+            width: 55px;
+            height: 55px;
+            background: linear-gradient(135deg, #0ea5e9, #0d9488);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            flex-shrink: 0;
+        }
+
+        /* Comparison Table */
+        .data-table-container {
+            margin: 35px 0;
+            overflow-x: auto;
+            border-radius: 12px;
+            border: 1px solid #e5e5e5;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 15px;
+            text-align: left;
+        }
+
+        th {
+            background: #f1f5f9;
+            color: #334155;
+            padding: 15px;
+            font-weight: 600;
+            border-bottom: 2px solid #e2e8f0;
+        }
+
+        td {
+            padding: 15px;
+            border-bottom: 1px solid #f1f5f9;
+            color: #475569;
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        /* Check Understanding */
+        .check-understanding {
+            background: linear-gradient(135deg, #fdfbf7 0%, #f9f5ed 100%);
+            border: 2px solid #B8860B;
+            border-radius: 16px;
+            padding: 32px;
+            margin: 45px 0;
+        }
+
+        .question-item {
+            background: white;
+            border-radius: 12px;
+            padding: 22px 24px;
+            margin-bottom: 16px;
+            border: 1px solid #e8e4dc;
+            position: relative;
+        }
+
+        .reveal-btn {
+            background: #0d9488;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background 0.2s ease;
+        }
+
+        .answer-text {
+            display: none;
+            font-size: 14px;
+            color: #134e4a;
+            margin: 14px 0 0 0;
+            padding: 14px;
+            background: #f0fdfa;
+            border-radius: 8px;
+        }
+
+        .answer-text.show {
+            display: block;
+        }
+
+        /* Takeaways */
+        .takeaways-box {
+            background: #f1f5f9;
+            padding: 25px;
+            margin-top: 35px;
+            border-radius: 12px;
+            border-left: 5px solid #0d9488;
+        }
+
+        .references-box {
+            margin-top: 40px;
+            padding: 25px;
+            background: #f8fafc;
+            border-radius: 12px;
+            font-size: 14px;
+            color: #64748b;
+        }
+
+        .references-box h4 {
+            margin-top: 0;
+            color: #334155;
+            font-size: 16px;
+        }
+
+        .references-box ul {
+            padding-left: 20px;
+            margin-bottom: 0;
+        }
+
+        .references-box li {
+            margin-bottom: 8px;
+        }
+
+        .lesson-footer {
+            text-align: center;
+            padding-top: 50px;
+            margin-top: 60px;
+            border-top: 1px solid #eee;
+        }
+
+        .footer-logo {
+            max-width: 140px;
+            height: auto;
+            margin-bottom: 15px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="lesson-container">
+        <div class="brand-header">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="brand-logo">
+        </div>
+
+        <header class="module-header">
+            <p class="module-label">Module 4: The P.U.R.I.F.Y. Protocol™: Phase 2 - Unload the Toxic Burden</p>
+            <h1 class="lesson-title">Lesson 4.8: Creating a Low-Tox Home Environment for Clients</h1>
+            <div class="lesson-meta">
+                <span class="meta-item">35 min read</span>
+                <span class="meta-item">Lesson 8 of 12</span>
+            </div>
+        </header>
+
+        <div class="toc-box">
+            <p class="box-label">In This Lesson</p>
+            <ul class="toc-list">
+                <li><a href="#section1"><span class="section-num">1</span>The Indoor Air Quality Crisis</a></li>
+                <li><a href="#section2"><span class="section-num">2</span>Kitchen: Reducing Food-Contact Toxins</a></li>
+                <li><a href="#section3"><span class="section-num">3</span>Bedroom: The Sleep Sanctuary</a></li>
+                <li><a href="#section4"><span class="section-num">4</span>Bathroom & Personal Care Hazards</a></li>
+                <li><a href="#section5"><span class="section-num">5</span>The Low-Tox Home Audit Strategy</a></li>
+                <li><a href="#section6"><span class="section-num">6</span>Practitioner Implementation</a></li>
+            </ul>
+        </div>
+
+        <div class="objectives-box">
+            <p class="box-label">Learning Objectives</p>
+            <ul>
+                <li>Evaluate the impact of indoor air pollution and VOCs on chronic health conditions.</li>
+                <li>Identify common endocrine disruptors found in household kitchenware and storage.</li>
+                <li>Design a "Sleep Sanctuary" protocol to minimize chemical and EMF exposure during rest.</li>
+                <li>Analyze the toxicological profile of "fragrance" and its systemic health implications.</li>
+                <li>Execute a systematic "Low-Tox Home Audit" for clients as part of the Unload phase.</li>
+            </ul>
+        </div>
+
+        <div class="welcome-box">
+            <h3>The Home: Sanctuary or Source of Sickness?</h3>
+            <p>In the "Unload the Toxic Burden" phase of the P.U.R.I.F.Y. Protocol™, we shift our focus from internal pathways to external exposures. While we cannot control the air in a major city or the chemicals used in public spaces, we have significant control over the environment where our clients spend 60-90% of their time: their homes. A practitioner who ignores the home environment is essentially trying to mop up a floor while the faucet is still running.</p>
+        </div>
+
+        <div class="key-terms-box">
+            <p class="box-label">🔬 Key Terms to Know</p>
+            <div class="terms-grid">
+                <div class="term-item">
+                    <p class="term">VOCs (Volatile Organic Compounds)</p>
+                    <p class="definition">Gases emitted from solids or liquids, such as paints, cleaning supplies, and new furniture, which can have short- and long-term adverse health effects.</p>
+                </div>
+                <div class="term-item">
+                    <p class="term">PFAS (Forever Chemicals)</p>
+                    <p class="definition">Per- and polyfluoroalkyl substances used in non-stick cookware and stain-resistant fabrics that persist in the body and environment indefinitely.</p>
+                </div>
+                <div class="term-item">
+                    <p class="term">Phthalates</p>
+                    <p class="definition">Chemical plasticizers used to make plastics flexible and to make fragrances last longer; known potent endocrine disruptors.</p>
+                </div>
+                <div class="term-item">
+                    <p class="term">Off-gassing</p>
+                    <p class="definition">The release of airborne particulates or gases that were trapped, frozen, or absorbed in home materials like mattresses and carpets.</p>
+                </div>
+            </div>
+        </div>
+
+        <h2 id="section1">The Indoor Air Quality Crisis</h2>
+        <p>The Environmental Protection Agency (EPA) has consistently ranked indoor air pollution among the top five environmental risks to public health. Research indicates that indoor levels of pollutants may be <span class="highlight">2 to 5 times higher</span> than outdoor levels. In some cases, after activities like stripping paint or using certain cleaning chemicals, indoor levels can exceed outdoor levels by more than 1,000 times.</p>
+
+        <p>For a client in the P.U.R.I.F.Y. Protocol™, poor indoor air quality (IAQ) represents a constant "incoming tide" of toxins that the liver must process. Common sources include formaldehyde from pressed-wood furniture, benzene from stored fuels, and synthetic fragrances from candles and air fresheners. These substances don't just irritate the lungs; they enter the bloodstream and contribute to systemic inflammation and oxidative stress.</p>
+
+        <div class="stats-box">
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <div class="stat-number">90%</div>
+                    <div class="stat-label">Time Spent Indoors</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">5x</div>
+                    <div class="stat-label">Indoor vs Outdoor Pollution</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">3,000+</div>
+                    <div class="stat-label">Chemicals in "Fragrance"</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">PM2.5</div>
+                    <div class="stat-label">Fine Particulate Risk</div>
+                </div>
+            </div>
+        </div>
+
+        <h2 id="section2">Kitchen: Reducing Food-Contact Toxins</h2>
+        <p>The kitchen is often the highest-density area for chemical exposure. When we heat food, we accelerate the migration of chemicals from cookware and storage containers into our meals. This is particularly concerning with <span class="highlight">lipophilic (fat-soluble) toxins</span>, which readily move into oils and fats.</p>
+
+        <p>A primary target for the "Unload" phase is PFAS, found in traditional non-stick pans. When heated to high temperatures, these coatings release toxic fumes. Furthermore, the use of plastic containers (even "BPA-free" ones, which often use BPS or BPF) for hot food or microwave use is a significant source of xenoestrogens—compounds that mimic estrogen and disrupt the endocrine system.</p>
+
+        <div class="data-table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Category</th>
+                        <th>High-Tox Exposure</th>
+                        <th>Low-Tox Alternative</th>
+                        <th>Health Rationale</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Cookware</td>
+                        <td>Teflon / Non-stick</td>
+                        <td>Cast Iron, Stainless Steel, Ceramic</td>
+                        <td>Prevents PFAS inhalation and ingestion.</td>
+                    </tr>
+                    <tr>
+                        <td>Food Storage</td>
+                        <td>Plastic Tupperware</td>
+                        <td>Glass, Stainless Steel, Silicone</td>
+                        <td>Eliminates Phthalate and Bisphenol leaching.</td>
+                    </tr>
+                    <tr>
+                        <td>Water</td>
+                        <td>Unfiltered Tap</td>
+                        <td>Reverse Osmosis or Multi-stage Carbon</td>
+                        <td>Removes Fluoride, Chlorine, and Pharmaceuticals.</td>
+                    </tr>
+                    <tr>
+                        <td>Baking</td>
+                        <td>Aluminum Foil / Pans</td>
+                        <td>Parchment Paper / Glassware</td>
+                        <td>Reduces neurotoxic heavy metal accumulation.</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <h2 id="section3">Bedroom: The Sleep Sanctuary</h2>
+        <p>During sleep, the body enters a state of deep detoxification and repair (specifically the glymphatic system in the brain). If a client is sleeping on a mattress treated with <span class="highlight">polybrominated diphenyl ethers (PBDEs)</span> as flame retardants, they are inhaling and absorbing these toxins for 7-9 hours every night. This creates a "toxic drag" on the recovery process.</p>
+
+        <p>The P.U.R.I.F.Y. Sleep Sanctuary protocol focuses on three pillars:
+            <ul class="content-list">
+                <li><strong>Material Integrity:</strong> Transitioning to organic cotton, wool, or natural latex to avoid VOC off-gassing from polyurethane foam.</li>
+                <li><strong>Air Purity:</strong> Utilizing a high-efficiency particulate air (HEPA) filter with an activated carbon stage specifically for the bedroom.</li>
+                <li><strong>EMF Mitigation:</strong> Reducing non-native electromagnetic frequencies (WiFi, cell signals) which have been shown in some studies to interfere with melatonin production and cellular calcium signaling.</li>
+            </ul>
+        </p>
+
+        <div class="case-study">
+            <div class="case-study-header">
+                <div class="case-study-icon">👤</div>
+                <div>
+                    <p class="box-label">Case Study: The "Mystery" Morning Fatigue</p>
+                    <p style="color: rgba(255,255,255,0.8); font-size: 13px; margin: 0;">Client: Sarah, 34 | Symptoms: Brain fog, morning headaches, skin rashes</p>
+                </div>
+            </div>
+            <div class="case-study-content">
+                <div class="patient-profile">
+                    <div class="patient-avatar">S</div>
+                    <div class="patient-info">
+                        <h4>Sarah L.</h4>
+                        <p>Graphic Designer | High-stress environment | Recently renovated home</p>
+                    </div>
+                </div>
+                <p><strong>Intervention:</strong> Sarah had been on a clean diet for 3 months with minimal improvement in her morning brain fog. A home audit revealed she had purchased a new "memory foam" mattress and used plug-in air fresheners in her bedroom. Her VOC levels (tested via indoor air monitor) were in the "Unhealthy" range.</p>
+                <p><strong>Outcome:</strong> Sarah removed the air fresheners, added a medical-grade air purifier, and encased her new mattress in a certified non-toxic barrier cover (as a temporary measure before replacement). Within 10 days, her morning headaches ceased, and her "unexplained" skin rashes resolved by 80%.</p>
+            </div>
+        </div>
+
+        <h2 id="section4">Bathroom & Personal Care Hazards</h2>
+        <p>The average adult uses 9-12 personal care products daily, containing an average of 126 unique chemical ingredients. Because these are applied to the skin—the body's largest organ—they often bypass the "first-pass metabolism" of the liver and enter the bloodstream directly.</p>
+
+        <p>The most critical "Unload" targets in the bathroom are:
+            <ul class="content-list">
+                <li><strong>Triclosan:</strong> Found in antibacterial soaps; linked to thyroid dysfunction and antibiotic resistance.</li>
+                <li><strong>Parabens:</strong> Preservatives that act as endocrine disruptors and have been detected in breast cancer tissue.</li>
+                <li><strong>Sodium Lauryl Sulfate (SLS):</strong> A surfactant that can increase skin permeability, allowing other toxins to enter more easily.</li>
+                <li><strong>Synthetic Fragrance:</strong> A "black box" ingredient that can contain hundreds of undisclosed chemicals, including phthalates.</li>
+            </ul>
+        </p>
+
+        <h2 id="section5">The Low-Tox Home Audit Strategy</h2>
+        <p>As a Detox Specialist, you should provide clients with a systematic "Audit Checklist." We do not recommend a "rip and replace" approach, which is financially and emotionally overwhelming. Instead, we use the <span class="highlight">High-Frequency/High-Contact Rule</span>.</p>
+
+        <div class="principle-card">
+            <p class="principle-title">The High-Frequency/High-Contact Rule</p>
+            <p class="principle-text">Focus on the items the client touches every day or uses in high volumes first. This provides the greatest "ROI" for their toxic load reduction.</p>
+            <ul>
+                <li><strong>Priority 1:</strong> Water filter, bed linens, primary frying pan, daily face cream.</li>
+                <li><strong>Priority 2:</strong> Laundry detergent, all-purpose cleaner, shampoo, food storage.</li>
+                <li><strong>Priority 3:</strong> Occasional-use items, guest room bedding, decorative furniture.</li>
+            </ul>
+        </div>
+
+        <h2 id="section6">Practitioner Implementation</h2>
+        <p>When working with a client in Phase 2 of the P.U.R.I.F.Y. Protocol™, your role is to act as an "Environmental Detective." During your consultation, ask specific questions about their home age, recent renovations, and cleaning habits. A 2021 study found that households switching to "green" cleaning products saw a <span class="highlight">significant reduction in urinary concentrations</span> of phthalate metabolites within just 30 days.</p>
+
+        <div class="check-understanding">
+            <p class="box-label">Check Your Understanding</p>
+            <p class="box-subtitle">Test your knowledge of environmental unloading</p>
+            
+            <div class="question-item">
+                <div class="question-number">1</div>
+                <p class="question-text">Why is the bedroom considered the highest priority area for environmental intervention in the P.U.R.I.F.Y. Protocol™?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-text">Because the body performs its most intensive cellular repair and glymphatic detoxification during sleep. If the environment is toxic (off-gassing, EMFs), it creates a "toxic drag" that prevents the body from completing these essential restorative processes.</div>
+            </div>
+
+            <div class="question-item">
+                <div class="question-number">2</div>
+                <p class="question-text">A client is hesitant to switch from plastic to glass because of the cost. What strategy should you employ?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-text">Use the "High-Frequency/High-Contact Rule." Advise them to prioritize replacing the containers they use for hot liquids or microwave heating first, as heat significantly accelerates chemical leaching.</div>
+            </div>
+        </div>
+
+        <div class="takeaways-box">
+            <p class="box-label">Key Takeaways</p>
+            <ul>
+                <li>Indoor air is often 2-5x more polluted than outdoor air; ventilation and HEPA filtration are non-negotiable.</li>
+                <li>The kitchen is the primary source of endocrine-disrupting PFAS and Bisphenols.</li>
+                <li>Personal care products bypass first-pass metabolism, making them a high-priority "Unload" target.</li>
+                <li>Practitioners should use a tiered approach to home audits to prevent client overwhelm and ensure long-term compliance.</li>
+                <li>Small changes in household products can lead to measurable reductions in internal toxic load within weeks.</li>
+            </ul>
+        </div>
+
+        <div class="references-box">
+            <h4>References & Further Reading</h4>
+            <ul>
+                <li>Environmental Protection Agency (EPA). (2023). "Report on the Environment: Indoor Air Quality." <i>EPA.gov</i>.</li>
+                <li>Genuis, S. J. (2012). "Helping Your Patients Navigate the Environmental Toxicity Minefield." <i>Canadian Family Physician</i>.</li>
+                <li>Zota, A. R., et al. (2014). "Temporal trends in phthalate exposures: findings from the NHANES." <i>Environmental Health Perspectives</i>.</li>
+                <li>Grandjean, P., & Landrigan, P. J. (2014). "Neuroeffector effects of industrial chemicals on the developing brain." <i>The Lancet Neurology</i>.</li>
+                <li>Trasande, L., et al. (2015). "Estimating Burden and Disease Costs of Exposure to Endocrine-Disrupting Chemicals in the European Union." <i>The Journal of Clinical Endocrinology & Metabolism</i>.</li>
+                <li>Dodson, R. E., et al. (2021). "Effect of a consumer product intervention on indoor air and dust concentrations of phthalates and fragrance." <i>Environmental Science & Technology</i>.</li>
+            </ul>
+        </div>
+
+        <div class="lesson-footer">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="footer-logo">
+            <p class="brand">AccrediPro Academy: Detox & Cleanse Specialist Certification</p>
+            <p class="copyright">&copy; 2024 AccrediPro Academy. All rights reserved. Proprietary P.U.R.I.F.Y. Protocol™ Methodology.</p>
+        </div>
+    </div>
+</body>
+
+</html>

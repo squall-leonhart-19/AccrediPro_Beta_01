@@ -1,0 +1,786 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lesson 4.1: The GLUT4 Mechanism: Non-Insulin Mediated Glucose Uptake</title>
+    <style>
+        /* Base & Reset */
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Georgia, 'Times New Roman', serif;
+            line-height: 1.8;
+            color: #2d2d2d;
+            background: #f8f6f3;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Main Container */
+        .lesson-container {
+            max-width: 860px;
+            margin: 0 auto;
+            padding: 40px 30px;
+            background: #ffffff;
+            min-height: 100vh;
+            box-shadow: 0 0 60px rgba(0, 0, 0, 0.08);
+        }
+
+        /* Brand Header */
+        .brand-header {
+            text-align: center;
+            padding-bottom: 30px;
+            margin-bottom: 35px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .brand-logo {
+            max-width: 220px;
+            height: auto;
+            margin-bottom: 5px;
+        }
+
+        /* Module Header - BLUE/TEAL theme for Movement/Active Sensitization */
+        .module-header {
+            background: linear-gradient(135deg, #0369a1 0%, #0ea5e9 100%);
+            padding: 35px 35px 30px;
+            border-radius: 16px;
+            margin-bottom: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .module-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+            transform: translate(100px, -100px);
+        }
+
+        .module-header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, #B8860B, #D4A84B, #B8860B);
+        }
+
+        .module-label {
+            margin: 0;
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.75);
+            text-transform: uppercase;
+            letter-spacing: 2.5px;
+            font-weight: 500;
+        }
+
+        .lesson-title {
+            margin: 10px 0 0 0;
+            font-size: 28px;
+            color: #ffffff;
+            font-weight: 700;
+            line-height: 1.3;
+            position: relative;
+        }
+
+        .lesson-meta {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+            padding-top: 18px;
+            border-top: 1px solid rgba(255, 255, 255, 0.15);
+            flex-wrap: wrap;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.85);
+            background: rgba(255, 255, 255, 0.1);
+            padding: 5px 12px;
+            border-radius: 4px;
+        }
+
+        /* Table of Contents */
+        .toc-box {
+            background: linear-gradient(135deg, #fafafa 0%, #f5f5f5 100%);
+            border-radius: 14px;
+            padding: 24px 28px;
+            margin-bottom: 35px;
+            border: 1px solid #e8e8e8;
+        }
+
+        .toc-box .box-label {
+            font-weight: 600;
+            color: #0369a1;
+            margin: 0 0 18px 0;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .toc-list {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px 24px;
+        }
+
+        .toc-list li {
+            margin: 0;
+        }
+
+        .toc-list a {
+            display: flex;
+            align-items: center;
+            padding: 8px 12px;
+            color: #555;
+            text-decoration: none;
+            font-size: 14px;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+        }
+
+        .toc-list a:hover {
+            background: white;
+            color: #0369a1;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+        }
+
+        .toc-list .section-num {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 26px;
+            height: 26px;
+            background: #0369a1;
+            color: white;
+            font-weight: 600;
+            font-size: 11px;
+            border-radius: 6px;
+            margin-right: 12px;
+            flex-shrink: 0;
+        }
+
+        /* Learning Objectives */
+        .objectives-box {
+            background: #f0f9ff;
+            border: 2px solid #0ea5e9;
+            border-radius: 14px;
+            padding: 30px 35px;
+            margin-bottom: 40px;
+        }
+
+        .objectives-box .box-label {
+            font-weight: 600;
+            color: #0369a1;
+            margin: 0 0 18px 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .objectives-box .box-label::before {
+            content: '🎯';
+            font-size: 18px;
+        }
+
+        .objectives-box ul {
+            margin: 0;
+            padding-left: 22px;
+        }
+
+        .objectives-box li {
+            margin-bottom: 14px;
+            font-size: 16px;
+            line-height: 1.7;
+        }
+
+        /* Key Terms Box */
+        .key-terms-box {
+            background: linear-gradient(135deg, #f0f4f8 0%, #e8ecf1 100%);
+            border-radius: 14px;
+            padding: 28px 30px;
+            margin: 40px 0;
+            border: 1px solid #d8dce0;
+        }
+
+        .key-terms-box .box-label {
+            font-weight: 600;
+            color: #0369a1;
+            margin: 0 0 18px 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .terms-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 16px;
+        }
+
+        .term-item {
+            background: white;
+            padding: 16px 18px;
+            border-radius: 10px;
+            border-left: 4px solid #0ea5e9;
+        }
+
+        .term-item .term {
+            font-weight: 700;
+            color: #0369a1;
+            font-size: 15px;
+            margin: 0 0 6px 0;
+        }
+
+        .term-item .definition {
+            font-size: 14px;
+            color: #555;
+            margin: 0;
+            line-height: 1.6;
+        }
+
+        /* Section Headings */
+        h2 {
+            font-size: 24px;
+            color: #0369a1;
+            margin: 50px 0 20px 0;
+            font-weight: 600;
+            position: relative;
+            padding-bottom: 12px;
+        }
+
+        h2::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 60px;
+            height: 3px;
+            background: #B8860B;
+        }
+
+        /* Paragraphs */
+        p {
+            font-size: 17px;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        /* Highlights */
+        .highlight {
+            background: linear-gradient(180deg, transparent 60%, #e0f2fe 60%);
+            padding: 0 4px;
+            font-weight: 500;
+            color: #0369a1;
+        }
+
+        /* Statistics Box */
+        .stats-box {
+            background: linear-gradient(135deg, #0369a1 0%, #0ea5e9 100%);
+            padding: 40px;
+            border-radius: 16px;
+            margin: 35px 0;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 25px;
+            position: relative;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 42px;
+            font-weight: 700;
+            color: white;
+            line-height: 1;
+            margin-bottom: 8px;
+        }
+
+        .stat-label {
+            font-size: 13px;
+            color: rgba(255, 255, 255, 0.85);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* Data Table */
+        .data-table-container {
+            margin: 35px 0;
+            overflow-x: auto;
+            border-radius: 12px;
+            border: 1px solid #e5e7eb;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 15px;
+            background: white;
+        }
+
+        th {
+            background: #f8fafc;
+            color: #0369a1;
+            font-weight: 600;
+            padding: 15px;
+            text-align: left;
+            border-bottom: 2px solid #e5e7eb;
+        }
+
+        td {
+            padding: 15px;
+            border-bottom: 1px solid #f1f5f9;
+            color: #4b5563;
+        }
+
+        /* Case Study Box */
+        .case-study {
+            background: linear-gradient(135deg, #f8f9fb 0%, #f0f2f5 100%);
+            border-radius: 16px;
+            padding: 0;
+            margin: 40px 0;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+        }
+
+        .case-study-header {
+            background: linear-gradient(135deg, #0369a1 0%, #0ea5e9 100%);
+            padding: 20px 30px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .case-study-icon {
+            width: 45px;
+            height: 45px;
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+        }
+
+        .case-study-header .box-label {
+            font-weight: 600;
+            color: #ffffff;
+            margin: 0;
+            font-size: 16px;
+            letter-spacing: 0.5px;
+        }
+
+        .case-study-content {
+            padding: 28px 30px;
+        }
+
+        .patient-profile {
+            display: flex;
+            align-items: center;
+            gap: 18px;
+            padding: 18px 22px;
+            background: white;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            border: 1px solid #e5e5e5;
+        }
+
+        .patient-avatar {
+            width: 55px;
+            height: 55px;
+            background: linear-gradient(135deg, #0ea5e9, #0369a1);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            flex-shrink: 0;
+        }
+
+        /* Check Understanding Box */
+        .check-understanding {
+            background: linear-gradient(135deg, #fdfbf7 0%, #f9f5ed 100%);
+            border: 2px solid #B8860B;
+            border-radius: 16px;
+            padding: 32px;
+            margin: 45px 0;
+        }
+
+        .check-understanding .box-label {
+            font-weight: 600;
+            color: #8B6914;
+            margin: 0 0 8px 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .question-item {
+            background: white;
+            border-radius: 12px;
+            padding: 22px 24px;
+            margin-bottom: 16px;
+            border: 1px solid #e8e4dc;
+            position: relative;
+        }
+
+        .question-number {
+            position: absolute;
+            top: -12px;
+            left: 20px;
+            background: #0369a1;
+            color: white;
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            font-size: 13px;
+        }
+
+        .reveal-btn {
+            background: #0369a1;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-size: 14px;
+            cursor: pointer;
+            transition: background 0.2s ease;
+        }
+
+        .answer-text {
+            display: none;
+            font-size: 14px;
+            color: #1e40af;
+            margin: 14px 0 0 0;
+            padding: 14px;
+            background: #eff6ff;
+            border-radius: 8px;
+            line-height: 1.6;
+        }
+
+        .answer-text.show {
+            display: block;
+        }
+
+        /* Takeaways */
+        .takeaways-box {
+            background: linear-gradient(135deg, #f5f5f5 0%, #e8e8e8 100%);
+            padding: 22px 25px;
+            margin-top: 35px;
+            border-radius: 8px;
+            border: 1px solid #ddd;
+        }
+
+        .takeaways-box .box-label {
+            font-weight: 600;
+            color: #0369a1;
+            margin: 0 0 15px 0;
+            font-size: 16px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* References Box */
+        .references-box {
+            margin-top: 50px;
+            padding: 30px;
+            background: #fafafa;
+            border-radius: 12px;
+            border: 1px solid #eee;
+            font-size: 14px;
+        }
+
+        .references-box h4 {
+            margin: 0 0 15px 0;
+            color: #666;
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .references-box ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .references-box li {
+            margin-bottom: 10px;
+            color: #777;
+            line-height: 1.5;
+        }
+
+        /* Footer */
+        .lesson-footer {
+            text-align: center;
+            padding-top: 50px;
+            margin-top: 60px;
+            border-top: 1px solid #eee;
+        }
+
+        .footer-logo {
+            max-width: 140px;
+            height: auto;
+            margin-bottom: 15px;
+            opacity: 0.9;
+        }
+
+        .lesson-footer .brand {
+            color: #0369a1;
+            font-weight: 600;
+            margin: 0;
+            font-size: 15px;
+        }
+
+        .lesson-footer .copyright {
+            color: #888;
+            font-size: 13px;
+            margin: 10px 0 0 0;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="lesson-container">
+        <div class="brand-header">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="brand-logo">
+        </div>
+
+        <header class="module-header">
+            <p class="module-label">Module 4: STABLE Method™ Phase 3: Active Sensitization</p>
+            <h1 class="lesson-title">Lesson 4.1: The GLUT4 Mechanism: Non-Insulin Mediated Glucose Uptake</h1>
+            <div class="lesson-meta">
+                <span class="meta-item">35 min read</span>
+                <span class="meta-item">Lesson 1 of 6</span>
+            </div>
+        </header>
+
+        <!-- Table of Contents -->
+        <div class="toc-box">
+            <p class="box-label">In This Lesson</p>
+            <ul class="toc-list">
+                <li><a href="#section1"><span class="section-num">1</span>The "A" in STABLE</a></li>
+                <li><a href="#section2"><span class="section-num">2</span>The GLUT Family Overview</a></li>
+                <li><a href="#section3"><span class="section-num">3</span>The Molecular Mechanism</a></li>
+                <li><a href="#section4"><span class="section-num">4</span>Contraction vs. Insulin</a></li>
+                <li><a href="#section5"><span class="section-num">5</span>The Post-Prandial Window</a></li>
+                <li><a href="#section6"><span class="section-num">6</span>Coaching Application</a></li>
+            </ul>
+        </div>
+
+        <!-- Learning Objectives -->
+        <div class="objectives-box">
+            <p class="box-label">Learning Objectives</p>
+            <ul>
+                <li>Define the role of <span class="highlight">GLUT4</span> in systemic glucose homeostasis.</li>
+                <li>Differentiate between insulin-mediated and contraction-mediated glucose uptake pathways.</li>
+                <li>Explain the role of <span class="highlight">AMPK</span> as the metabolic master switch for non-insulin uptake.</li>
+                <li>Apply the "15-minute rule" for post-meal movement to optimize glycemic variability.</li>
+                <li>Understand the physiological impact of resistance training on GLUT4 density.</li>
+            </ul>
+        </div>
+
+        <h2 id="section1">The "A" in STABLE: Active Sensitization</h2>
+        <p>In the STABLE Method™, the letter <strong>A</strong> stands for <strong>Active Sensitization</strong>. This phase marks a shift from passive management (like dietary restriction) to active metabolic optimization. While dietary interventions focus on reducing the <em>input</em> of glucose, Active Sensitization focuses on increasing the <em>clearance</em> of glucose from the bloodstream.</p>
+
+        <p>The primary vehicle for this clearance is a specialized protein known as <strong>Glucose Transporter Type 4 (GLUT4)</strong>. For individuals with insulin resistance or Type 2 Diabetes, the "front door" for glucose (the insulin receptor) is often jammed. Active Sensitization leverages a "backdoor" that allows muscle cells to pull sugar out of the blood <em>without</em> requiring additional insulin. This is the physiological "holy grail" of blood sugar coaching.</p>
+
+        <!-- Statistics Box -->
+        <div class="stats-box">
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <div class="stat-number">80%</div>
+                    <div class="stat-label">Glucose Disposal in Muscle</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">2-3x</div>
+                    <div class="stat-label">Uptake During Exercise</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">48h</div>
+                    <div class="stat-label">Post-Exercise Sensitivity</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">17%</div>
+                    <div class="stat-label">Spike Reduction (Walking)</div>
+                </div>
+            </div>
+        </div>
+
+        <h2 id="section2">The GLUT Family Overview</h2>
+        <p>Glucose is a polar molecule and cannot simply diffuse across the lipid bilayer of cell membranes. It requires specific transporter proteins. While there are over 14 known glucose transporters (GLUTs), three are of primary interest to the Diabetes Coach:</p>
+        
+        <div class="data-table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Transporter</th>
+                        <th>Primary Location</th>
+                        <th>Mechanism</th>
+                        <th>Coach's Context</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>GLUT1</strong></td>
+                        <td>All cells (Basal)</td>
+                        <td>Insulin-Independent</td>
+                        <td>Ensures the brain and organs get a constant supply of fuel regardless of activity.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>GLUT2</strong></td>
+                        <td>Liver, Pancreas, Gut</td>
+                        <td>High Capacity</td>
+                        <td>Acts as a glucose sensor in the pancreas to trigger insulin release.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>GLUT4</strong></td>
+                        <td><strong>Skeletal Muscle, Fat</strong></td>
+                        <td><strong>Stimulus-Dependent</strong></td>
+                        <td>The "gatekeeper" that responds to both insulin and muscle contraction.</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <h2 id="section3">The Molecular Mechanism: Translocation</h2>
+        <p>Under resting, low-insulin conditions, <span class="highlight">GLUT4</span> molecules are not located on the surface of the cell. Instead, they are sequestered inside the cell in small bubbles called <strong>GLUT4 Storage Vesicles (GSVs)</strong>. Think of these as "emergency glucose trucks" parked in a warehouse.</p>
+
+        <p>For glucose to enter the cell, these vesicles must move to the cell membrane and fuse with it—a process called <strong>translocation</strong>. There are two primary signals that cause this move:</p>
+
+        <ol class="content-list">
+            <li><strong>The Insulin Pathway (PI3K):</strong> Insulin binds to the receptor, triggering a signaling cascade that tells the trucks to leave the warehouse. In insulin resistance, this signal is muffled.</li>
+            <li><strong>The Contraction Pathway (AMPK/Calcium):</strong> When a muscle contracts, it uses ATP. This increases the ratio of AMP to ATP, activating <strong>AMP-activated protein kinase (AMPK)</strong>. Simultaneously, calcium is released to facilitate the contraction. Both AMPK and calcium act as independent signals to trigger GLUT4 translocation <em>completely bypassing</em> the need for insulin.</li>
+        </ol>
+
+        <!-- Case Study 1 -->
+        <div class="case-study">
+            <div class="case-study-header">
+                <div class="case-study-icon">👤</div>
+                <div>
+                    <p class="box-label">Case Study: The "Jammed Door" Scenario</p>
+                </div>
+            </div>
+            <div class="case-study-content">
+                <div class="patient-profile">
+                    <div class="patient-avatar">M</div>
+                    <div class="patient-info">
+                        <h4>Mark, 54</h4>
+                        <p>Type 2 Diabetes (A1c: 7.8%) | High Post-Prandial Spikes</p>
+                    </div>
+                </div>
+                <p><strong>Presenting Symptoms:</strong> Mark experienced significant lethargy and brain fog after lunch, with CGM data showing spikes from 110 mg/dL to 215 mg/dL after a moderate-carb meal.</p>
+                <p><strong>Intervention:</strong> Instead of further reducing carbohydrates (which Mark found unsustainable), we implemented the <strong>"10-minute GLUT4 Activation."</strong> Mark was instructed to perform 10 minutes of brisk walking or "air squats" starting 15 minutes after his last bite of food.</p>
+                <p><strong>Outcome:</strong> By activating the non-insulin mediated pathway, Mark's peak post-meal glucose dropped from 215 mg/dL to 165 mg/dL. His Time in Range (TIR) increased from 62% to 84% within three weeks.</p>
+            </div>
+        </div>
+
+        <h2 id="section4">Contraction-Mediated vs. Insulin-Mediated Uptake</h2>
+        <p>Understanding the difference between these two pathways is critical for coaching. A 2013 meta-analysis in <i>Nature Reviews Endocrinology</i> highlighted that contraction-mediated glucose uptake can increase glucose clearance by up to <span class="highlight">50-fold</span> compared to resting states.</p>
+
+        <p>Importantly, these pathways are <strong>additive</strong>. If a client has some insulin sensitivity remaining AND they exercise, the two signals work together to clear glucose even faster. However, for the client with advanced insulin resistance, the contraction pathway remains functional even when the insulin pathway is nearly broken. This provides the coach with a reliable lever to pull when diet alone isn't enough.</p>
+
+        <h2 id="section5">The Post-Prandial Window: The 15-Minute Rule</h2>
+        <p>Timing is everything in blood sugar coaching. A 2022 study published in <i>Sports Medicine</i> (Buffey et al.) found that even standing or light walking for 2-5 minutes every 20-30 minutes significantly improved glycemic profiles compared to prolonged sitting.</p>
+
+        <p>However, for maximum impact on the post-meal spike, the <strong>"A" Phase of the STABLE Method™</strong> recommends movement within the <strong>15 to 45-minute window</strong> following a meal. This is because glucose levels usually peak between 60 and 90 minutes. By activating GLUT4 translocation early, we "catch" the glucose as it enters the bloodstream, preventing the spike before it reaches its zenith.</p>
+
+        <h2 id="section6">Coaching Application: Resistance vs. Aerobic</h2>
+        <p>While any movement is better than none, different types of exercise impact the GLUT4 mechanism in unique ways:</p>
+        
+        <ul class="content-list">
+            <li><strong>Aerobic (Walking, Cycling):</strong> Excellent for immediate glucose clearance via AMPK activation. It is the "emergency relief valve" for a high reading.</li>
+            <li><strong>Resistance Training (Weights, Bands):</strong> This has a long-term "structural" benefit. Chronic resistance training increases the <strong>total density</strong> of GLUT4 proteins within the muscle cell. More muscle mass means more "warehouses" for GLUT4, making the body more metabolically flexible even at rest.</li>
+        </ul>
+
+        <div class="alert-box info">
+            <p class="alert-label">Practitioner Tip</p>
+            <p>Don't just tell clients to "exercise." Tell them to "activate their glucose transporters." Using scientific terminology like <strong>GLUT4</strong> and <strong>translocation</strong> helps clients understand the <em>why</em> behind the 15-minute walk, moving it from a "chore" to a "metabolic strategy."</p>
+        </div>
+
+        <!-- Check Your Understanding -->
+        <div class="check-understanding">
+            <p class="box-label">Check Your Understanding</p>
+            <p class="box-subtitle">Test your knowledge of the GLUT4 mechanism.</p>
+
+            <div class="question-item">
+                <div class="question-number">1</div>
+                <p class="question-text">Why is the contraction-mediated glucose uptake pathway particularly important for clients with Type 2 Diabetes?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-text">Because it is insulin-independent. It allows muscle cells to clear glucose from the blood even when insulin receptors are resistant or "jammed," leveraging the AMPK and calcium signaling pathways instead.</div>
+            </div>
+
+            <div class="question-item">
+                <div class="question-number">2</div>
+                <p class="question-text">According to the STABLE Method™, what is the ideal window for post-meal movement to minimize glycemic spikes?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-text">The 15 to 45-minute window after a meal. This allows GLUT4 translocation to occur just as glucose is entering the bloodstream, flattening the curve before the peak.</div>
+            </div>
+        </div>
+
+        <!-- Key Takeaways -->
+        <div class="takeaways-box">
+            <p class="box-label">Key Takeaways</p>
+            <ul>
+                <li><strong>GLUT4</strong> is the primary transporter responsible for clearing 80% of post-meal glucose into skeletal muscle.</li>
+                <li><strong>Active Sensitization</strong> uses muscle contraction to trigger GLUT4 translocation without requiring insulin.</li>
+                <li><strong>AMPK</strong> acts as the "metabolic switch" that moves GLUT4 vesicles to the cell membrane during exercise.</li>
+                <li><strong>Resistance training</strong> increases the long-term density of GLUT4 transporters, improving basal metabolic health.</li>
+                <li><strong>Strategic timing</strong> (15-45 minutes post-meal) is more effective for spike management than general exercise at other times.</li>
+            </ul>
+        </div>
+
+        <!-- References Box -->
+        <div class="references-box">
+            <h4>References & Further Reading</h4>
+            <ul>
+                <li>Richter, E. A., & Hargreaves, M. (2013). "Exercise, GLUT4, and Skeletal Muscle Glucose Uptake." <i>Physiological Reviews</i>, 93(3), 993-1017.</li>
+                <li>Buffey, A. J., et al. (2022). "The Effects of Breaking Up Prolonged Sitting with Short Bouts of Standing and Light-Intensity Walking." <i>Sports Medicine</i>.</li>
+                <li>Sylow, L., et al. (2017). "Exercise-stimulated glucose uptake — central role of GLUT4." <i>Nature Reviews Endocrinology</i>, 13, 133–144.</li>
+                <li>Stanford, K. I., & Goodyear, L. J. (2014). "Exercise and type 2 diabetes: molecular mechanisms regulating glucose uptake in skeletal muscle." <i>Advances in Physiology Education</i>.</li>
+                <li>Bird, S. R., & Hawley, J. A. (2016). "Update on the effects of physical activity on insulin sensitivity in humans." <i>BMJ Open Sport & Exercise Medicine</i>.</li>
+                <li>Kennedy, J. W., et al. (1999). "Acute exercise reverses insulin resistance in muscle by mobilizing GLUT4." <i>Diabetes</i>, 48(5), 1192-1197.</li>
+            </ul>
+        </div>
+
+        <footer class="lesson-footer">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="footer-logo">
+            <p class="brand">AccrediPro Academy: Diabetes & Blood Sugar Coach Certification</p>
+            <p class="copyright">&copy; 2024 AccrediPro Academy. All rights reserved. The STABLE Method™ is a proprietary framework.</p>
+        </footer>
+    </div>
+</body>
+
+</html>

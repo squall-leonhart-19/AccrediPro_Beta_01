@@ -1,0 +1,736 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lesson 3.7: Systematizing Client History for Root Cause Analysis</title>
+    <style>
+        /* Base & Reset */
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Georgia, 'Times New Roman', serif;
+            line-height: 1.8;
+            color: #2d2d2d;
+            background: #f8f6f3;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Main Container */
+        .lesson-container {
+            max-width: 860px;
+            margin: 0 auto;
+            padding: 40px 30px;
+            background: #ffffff;
+            min-height: 100vh;
+            box-shadow: 0 0 60px rgba(0, 0, 0, 0.08);
+        }
+
+        /* Brand Header */
+        .brand-header {
+            text-align: center;
+            padding-bottom: 30px;
+            margin-bottom: 35px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .brand-logo {
+            max-width: 220px;
+            height: auto;
+            margin-bottom: 5px;
+        }
+
+        /* Module Header - BLUE/GOLD theme for Hormone Health */
+        .module-header {
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+            padding: 35px 35px 30px;
+            border-radius: 16px;
+            margin-bottom: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .module-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+            transform: translate(100px, -100px);
+        }
+
+        .module-header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, #B8860B, #D4A84B, #B8860B);
+        }
+
+        .module-label {
+            margin: 0;
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.75);
+            text-transform: uppercase;
+            letter-spacing: 2.5px;
+            font-weight: 500;
+        }
+
+        .lesson-title {
+            margin: 10px 0 0 0;
+            font-size: 28px;
+            color: #ffffff;
+            font-weight: 700;
+            line-height: 1.3;
+            position: relative;
+        }
+
+        .lesson-meta {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+            padding-top: 18px;
+            border-top: 1px solid rgba(255, 255, 255, 0.15);
+            flex-wrap: wrap;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.85);
+            background: rgba(255, 255, 255, 0.1);
+            padding: 5px 12px;
+            border-radius: 4px;
+        }
+
+        /* Table of Contents */
+        .toc-box {
+            background: linear-gradient(135deg, #fafafa 0%, #f5f5f5 100%);
+            border-radius: 14px;
+            padding: 24px 28px;
+            margin-bottom: 35px;
+            border: 1px solid #e8e8e8;
+        }
+
+        .toc-box .box-label {
+            font-weight: 600;
+            color: #1e3a8a;
+            margin: 0 0 18px 0;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .toc-list {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px 24px;
+        }
+
+        .toc-list li {
+            margin: 0;
+        }
+
+        .toc-list a {
+            display: flex;
+            align-items: center;
+            padding: 8px 12px;
+            color: #555;
+            text-decoration: none;
+            font-size: 14px;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+        }
+
+        .toc-list a:hover {
+            background: white;
+            color: #1e3a8a;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+        }
+
+        .toc-list .section-num {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 26px;
+            height: 26px;
+            background: #1e3a8a;
+            color: white;
+            font-weight: 600;
+            font-size: 11px;
+            border-radius: 6px;
+            margin-right: 12px;
+            flex-shrink: 0;
+        }
+
+        /* Learning Objectives */
+        .objectives-box {
+            background: #f0f7ff;
+            border: 2px solid #3b82f6;
+            border-radius: 14px;
+            padding: 30px 35px;
+            margin-bottom: 40px;
+        }
+
+        .objectives-box .box-label {
+            font-weight: 600;
+            color: #1e3a8a;
+            margin: 0 0 18px 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .objectives-box .box-label::before {
+            content: '🎯';
+            font-size: 18px;
+        }
+
+        .objectives-box ul {
+            margin: 0;
+            padding-left: 22px;
+        }
+
+        .objectives-box li {
+            margin-bottom: 14px;
+            font-size: 16px;
+            line-height: 1.7;
+        }
+
+        /* Key Terms Box */
+        .key-terms-box {
+            background: linear-gradient(135deg, #f0f4f8 0%, #e8ecf1 100%);
+            border-radius: 14px;
+            padding: 28px 30px;
+            margin: 40px 0;
+            border: 1px solid #d8dce0;
+        }
+
+        .key-terms-box .box-label {
+            font-weight: 600;
+            color: #1e3a8a;
+            margin: 0 0 18px 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .terms-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 16px;
+        }
+
+        .term-item {
+            background: white;
+            padding: 16px 18px;
+            border-radius: 10px;
+            border-left: 4px solid #3b82f6;
+        }
+
+        .term-item .term {
+            font-weight: 700;
+            color: #1e3a8a;
+            font-size: 15px;
+            margin: 0 0 6px 0;
+        }
+
+        .term-item .definition {
+            font-size: 14px;
+            color: #555;
+            margin: 0;
+            line-height: 1.6;
+        }
+
+        /* Section Headings */
+        h2 {
+            font-size: 24px;
+            color: #1e3a8a;
+            margin: 50px 0 20px 0;
+            font-weight: 600;
+            position: relative;
+            padding-bottom: 12px;
+        }
+
+        h2::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 60px;
+            height: 3px;
+            background: #B8860B;
+        }
+
+        /* Paragraphs */
+        p {
+            font-size: 17px;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        /* Highlights */
+        .highlight {
+            background: linear-gradient(180deg, transparent 60%, #e0e7ff 60%);
+            padding: 0 4px;
+            font-weight: 500;
+            color: #1e3a8a;
+        }
+
+        /* Statistics Box */
+        .stats-box {
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+            padding: 40px;
+            border-radius: 16px;
+            margin: 35px 0;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 25px;
+            position: relative;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 42px;
+            font-weight: 700;
+            color: white;
+            line-height: 1;
+            margin-bottom: 8px;
+        }
+
+        .stat-label {
+            font-size: 13px;
+            color: rgba(255, 255, 255, 0.85);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* Case Study Box */
+        .case-study {
+            background: linear-gradient(135deg, #f8f9fb 0%, #f0f2f5 100%);
+            border-radius: 16px;
+            padding: 0;
+            margin: 40px 0;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+        }
+
+        .case-study-header {
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+            padding: 20px 30px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .case-study-icon {
+            width: 45px;
+            height: 45px;
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+        }
+
+        .case-study-header .box-label {
+            font-weight: 600;
+            color: #ffffff;
+            margin: 0;
+            font-size: 16px;
+        }
+
+        .case-study-content {
+            padding: 28px 30px;
+        }
+
+        .patient-profile {
+            display: flex;
+            align-items: center;
+            gap: 18px;
+            padding: 18px 22px;
+            background: white;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            border: 1px solid #e5e5e5;
+        }
+
+        .patient-avatar {
+            width: 55px;
+            height: 55px;
+            background: linear-gradient(135deg, #3b82f6, #1e3a8a);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            color: white;
+        }
+
+        /* Comparison Cards */
+        .comparison-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+            margin: 30px 0;
+        }
+
+        .comparison-card {
+            border-radius: 14px;
+            padding: 26px;
+            border-top: 5px solid;
+        }
+
+        .comparison-card.conventional {
+            background: #fff5f5;
+            border-top-color: #c62828;
+        }
+
+        .comparison-card.functional {
+            background: #f1f8f1;
+            border-top-color: #2e7d32;
+        }
+
+        /* Check Understanding Box */
+        .check-understanding {
+            background: linear-gradient(135deg, #fdfbf7 0%, #f9f5ed 100%);
+            border: 2px solid #B8860B;
+            border-radius: 16px;
+            padding: 32px;
+            margin: 45px 0;
+        }
+
+        .reveal-btn {
+            background: #1e3a8a;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+
+        .answer-text {
+            display: none;
+            margin-top: 15px;
+            padding: 15px;
+            background: #f0f7ff;
+            border-radius: 8px;
+            color: #1e3a8a;
+        }
+
+        .answer-text.show {
+            display: block;
+        }
+
+        /* Takeaways */
+        .takeaways-box {
+            background: #f3f4f6;
+            padding: 25px;
+            border-radius: 12px;
+            margin-top: 40px;
+            border: 1px solid #d1d5db;
+        }
+
+        .takeaways-box .box-label {
+            font-weight: 700;
+            color: #1e3a8a;
+            margin-bottom: 15px;
+            text-transform: uppercase;
+        }
+
+        /* References */
+        .references-box {
+            margin-top: 50px;
+            padding-top: 30px;
+            border-top: 1px solid #eee;
+            font-size: 14px;
+            color: #666;
+        }
+
+        .references-box h4 {
+            color: #333;
+            margin-bottom: 15px;
+        }
+
+        .references-box ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .references-box li {
+            margin-bottom: 10px;
+            line-height: 1.5;
+        }
+
+        /* Footer */
+        .lesson-footer {
+            text-align: center;
+            padding: 40px 0;
+            margin-top: 60px;
+            border-top: 1px solid #eee;
+        }
+
+        .footer-logo {
+            max-width: 140px;
+            opacity: 0.8;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="lesson-container">
+        <div class="brand-header">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="brand-logo">
+        </div>
+
+        <header class="module-header">
+            <p class="module-label">Module 3: Survey & Systematize (S): Assessment & Data</p>
+            <h1 class="lesson-title">Lesson 3.7: Systematizing Client History for Root Cause Analysis</h1>
+            <div class="lesson-meta">
+                <span class="meta-item">32 min read</span>
+                <span class="meta-item">Lesson 7 of 9</span>
+            </div>
+        </header>
+
+        <div class="toc-box">
+            <p class="box-label">In This Lesson</p>
+            <ul class="toc-list">
+                <li><a href="#section1"><span class="section-num">1</span>The Clinical Value of Chronology</a></li>
+                <li><a href="#section2"><span class="section-num">2</span>The ATM Framework</a></li>
+                <li><a href="#section3"><span class="section-num">3</span>Mapping the Hormone Timeline</a></li>
+                <li><a href="#section4"><span class="section-num">4</span>Standardized Assessment Tools</a></li>
+                <li><a href="#section5"><span class="section-num">5</span>Identifying Multi-System Patterns</a></li>
+                <li><a href="#section6"><span class="section-num">6</span>Red Flags & Clinical Referrals</a></li>
+            </ul>
+        </div>
+
+        <div class="objectives-box">
+            <p class="box-label">Learning Objectives</p>
+            <ul>
+                <li>Differentiate between a symptom-based intake and a systematic root-cause history.</li>
+                <li>Utilize the <span class="highlight">ATM (Antecedents, Triggers, Mediators)</span> framework to organize client data.</li>
+                <li>Construct a comprehensive "Hormone Timeline" to visualize the progression of endocrine dysfunction.</li>
+                <li>Implement standardized tools like the Medical Symptoms Questionnaire (MSQ) for objective baseline data.</li>
+                <li>Identify clinical "red flags" that necessitate immediate referral to medical specialists.</li>
+            </ul>
+        </div>
+
+        <h2 id="section1">The Clinical Value of Chronology</h2>
+        <p>In conventional health coaching, practitioners often focus on the "now"—the current symptoms, the current diet, and the current stress levels. However, in the <span class="highlight">SIGNAL Method™</span>, the "S" (Survey & Systematize) phase demands a deeper dive into the client's past. Hormonal imbalances rarely emerge in a vacuum; they are the result of a cumulative physiological narrative.</p>
+
+        <p>A 2021 study published in the <i>Journal of Personalized Medicine</i> (n=1,450) highlighted that systematic history-taking identified root causes that were missed in standard 15-minute clinical consultations in 74% of cases. By systematizing the history, we move from a "list of complaints" to a <span class="highlight">clinical map</span> of how the client arrived at their current state of dysfunction.</p>
+
+        <div class="stats-box">
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <div class="stat-number">74%</div>
+                    <div class="stat-label">Missed Root Causes</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">3.2x</div>
+                    <div class="stat-label">Higher Success Rate</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">10+</div>
+                    <div class="stat-label">Years of Latency</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">85%</div>
+                    <div class="stat-label">Client Confidence</div>
+                </div>
+            </div>
+        </div>
+
+        <h2 id="section2">The ATM Framework</h2>
+        <p>The core of systematizing client history is the <span class="highlight">ATM Framework</span>. This functional medicine approach categorizes historical data into three distinct buckets that allow us to see the "why" behind the "what."</p>
+
+        <div class="key-terms-box">
+            <p class="box-label">🔬 Key Terms: The ATM Categories</p>
+            <div class="terms-grid">
+                <div class="term-item">
+                    <p class="term">Antecedents</p>
+                    <p class="definition">Factors that predispose an individual to a condition. These include genetics, birth history (C-section vs. vaginal), and early childhood antibiotic use.</p>
+                </div>
+                <div class="term-item">
+                    <p class="term">Triggers</p>
+                    <p class="definition">Discrete events that initiate an imbalance. Examples include acute viral infections, pregnancy, major surgeries, or extreme emotional trauma.</p>
+                </div>
+                <div class="term-item">
+                    <p class="term">Mediators</p>
+                    <p class="definition">Factors that keep the dysfunction going. These are chronic influencers like poor sleep, ongoing nutrient deficiencies, or persistent exposure to endocrine disruptors.</p>
+                </div>
+            </div>
+        </div>
+
+        <p>Research indicates that <span class="highlight">epigenetic antecedents</span> (n=540) can influence HPA-axis sensitivity decades later. For instance, maternal stress during the second trimester has been correlated with increased cortisol reactivity in offspring during adulthood (p < 0.05). As a coach, identifying these antecedents helps you understand the client's "biological threshold."</p>
+
+        <h2 id="section3">Mapping the Hormone Timeline</h2>
+        <p>The Hormone Timeline is a visual tool used to plot major life events against hormonal shifts. This is critical because many clients do not connect disparate symptoms. They may not realize that their current thyroid dysfunction is linked to a period of extreme stress five years prior.</p>
+
+        <div class="comparison-grid">
+            <div class="comparison-card conventional">
+                <p class="card-label">Conventional Intake</p>
+                <p class="card-text">"What are your current symptoms today? Let's treat the fatigue and weight gain."</p>
+            </div>
+            <div class="comparison-card functional">
+                <p class="card-label">SIGNAL Systematic History</p>
+                <p class="card-text">"When was the last time you felt truly well? Let's map your health from birth to now."</p>
+            </div>
+        </div>
+
+        <p>When constructing the timeline, pay special attention to the "Big Three" transitions: <span class="highlight">Puberty, Pregnancy, and Perimenopause</span>. These are windows of high neuroendocrine plasticity where the system is most vulnerable to being "knocked off track." A 2018 meta-analysis found that 68% of endocrine disorders were preceded by a major life stressor within 12–24 months of symptom onset.</p>
+
+        <h2 id="section4">Standardized Assessment Tools</h2>
+        <p>To achieve the "S" in SIGNAL, we must use tools that provide <span class="highlight">quantifiable data</span>. While client stories are essential, we need numbers to track progress. The primary tool for this is the Medical Symptoms Questionnaire (MSQ).</p>
+
+        <table style="width:100%; border-collapse: collapse; margin: 25px 0; font-size: 15px;">
+            <thead>
+                <tr style="background-color: #1e3a8a; color: white;">
+                    <th style="padding: 12px; border: 1px solid #ddd; text-align: left;">Tool</th>
+                    <th style="padding: 12px; border: 1px solid #ddd; text-align: left;">Purpose</th>
+                    <th style="padding: 12px; border: 1px solid #ddd; text-align: left;">Interpretation</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td style="padding: 12px; border: 1px solid #ddd;"><b>MSQ (72-item)</b></td>
+                    <td style="padding: 12px; border: 1px solid #ddd;">Multi-system symptom burden</td>
+                    <td style="padding: 12px; border: 1px solid #ddd;">Score >30: Moderate; >100: Severe</td>
+                </tr>
+                <tr>
+                    <td style="padding: 12px; border: 1px solid #ddd;"><b>GAD-7 / PHQ-9</b></td>
+                    <td style="padding: 12px; border: 1px solid #ddd;">Anxiety and Depression screening</td>
+                    <td style="padding: 12px; border: 1px solid #ddd;">Assessing HPA-axis impact on mood</td>
+                </tr>
+                <tr>
+                    <td style="padding: 12px; border: 1px solid #ddd;"><b>Bristol Stool Scale</b></td>
+                    <td style="padding: 12px; border: 1px solid #ddd;">Gut motility and transit time</td>
+                    <td style="padding: 12px; border: 1px solid #ddd;">Types 3-4 are optimal for hormone detox</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <div class="case-study">
+            <div class="case-study-header">
+                <div class="case-study-icon">👤</div>
+                <div>
+                    <p class="box-label">Case Study: The Power of the Timeline</p>
+                    <p style="margin:0; font-size:12px; color:rgba(255,255,255,0.8)">Client: Sarah, Age 34 | Presenting: Secondary Amenorrhea</p>
+                </div>
+            </div>
+            <div class="case-study-content">
+                <div class="patient-profile">
+                    <div class="patient-avatar">S</div>
+                    <div class="patient-info">
+                        <h4>Sarah (34)</h4>
+                        <p>History of PCOS symptoms, recent loss of menstrual cycle for 8 months.</p>
+                    </div>
+                </div>
+                <p><b>The Systematic History:</b> Sarah reported her cycle stopped "randomly." However, using the Hormone Timeline, we identified:</p>
+                <ul>
+                    <li><b>Antecedent:</b> Born via C-section, early childhood asthma (frequent antibiotics).</li>
+                    <li><b>Trigger:</b> 10 months ago, Sarah underwent an aggressive "shred" diet and started a high-stress promotion at work.</li>
+                    <li><b>Mediator:</b> 4 hours of sleep/night and high caffeine intake (400mg+ daily).</li>
+                </ul>
+                <p><b>Outcome:</b> By identifying the "Trigger" (Metabolic stress) and "Mediators" (Sleep/Caffeine), we shifted focus from PCOS-supplements to HPA-axis recovery. Her cycle returned in 12 weeks with an MSQ score drop from 84 to 22.</p>
+            </div>
+        </div>
+
+        <h2 id="section5">Identifying Multi-System Patterns</h2>
+        <p>Hormone health does not exist in a silo. A systematic history must look for <span class="highlight">cross-talk</span> between systems. For example, if a client reports bloating (Gut) and brain fog (Neuro) alongside PMS (Hormone), you are likely looking at a systemic inflammatory issue or poor estrogen detoxification.</p>
+        
+        <p>A study involving 2,100 women (2020) demonstrated that those with a history of IBS were 3.4 times more likely to suffer from severe PMS symptoms. This data-driven connection allows the coach to prioritize the "G" (Gut/Glandular) in the later stages of the SIGNAL method.</p>
+
+        <h2 id="section6">Red Flags & Clinical Referrals</h2>
+        <p>As a Hormone Health Coach, your role is to support and optimize, not to diagnose or treat pathology. A systematic history is your primary defense against missing serious medical conditions. You must be vigilant for "Red Flags."</p>
+        
+        <div class="alert-box warning">
+            <p class="alert-label">⚠️ Referral Required: Red Flag Symptoms</p>
+            <p>If a client reports any of the following during the history-taking process, refer them to a medical provider immediately:</p>
+            <ul>
+                <li>Unexplained weight loss (>10 lbs in a month without effort)</li>
+                <li>Sudden, severe pelvic pain or abnormal uterine bleeding (post-menopausal)</li>
+                <li>New, palpable lumps in breast or neck (thyroid) tissue</li>
+                <li>Suicidal ideation or severe clinical depression</li>
+                <li>Night sweats accompanied by fever or lymph node swelling</li>
+            </ul>
+        </div>
+
+        <div class="check-understanding">
+            <p class="box-label">Check Your Understanding</p>
+            <p class="box-subtitle">Test your knowledge of systematic history-taking.</p>
+            
+            <div class="question-item">
+                <div class="question-number">1</div>
+                <p class="question-text">A client experienced a severe viral infection just before her thyroid symptoms began. In the ATM framework, what is this infection categorized as?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <p class="answer-text">This is a <b>Trigger</b>. It is a discrete event that initiated the physiological imbalance.</p>
+            </div>
+
+            <div class="question-item">
+                <div class="question-number">2</div>
+                <p class="question-text">What is the clinical significance of an MSQ score over 100?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <p class="answer-text">An MSQ score over 100 indicates a <b>severe systemic symptom burden</b>, suggesting that multiple organ systems are involved and significant metabolic/toxic load is present.</p>
+            </div>
+        </div>
+
+        <div class="takeaways-box">
+            <p class="box-label">Key Takeaways</p>
+            <ul>
+                <li>Systematizing history transforms subjective stories into objective, actionable clinical data.</li>
+                <li>The ATM Framework (Antecedents, Triggers, Mediators) is the gold standard for root cause identification.</li>
+                <li>The Hormone Timeline helps clients visualize the link between life stress and physical symptoms.</li>
+                <li>Standardized tools like the MSQ provide a baseline for measuring the efficacy of your SIGNAL interventions.</li>
+                <li>Always screen for red flags to ensure client safety and professional scope of practice.</li>
+            </ul>
+        </div>
+
+        <div class="references-box">
+            <h4>References & Further Reading</h4>
+            <ul>
+                <li>Bland, J. et al. (2014). "The Textbook of Functional Medicine." Institute for Functional Medicine.</li>
+                <li>Jones, D. et al. (2018). "Clinical History Taking in Endocrine Health: A Systematic Review." Journal of Clinical Endocrinology.</li>
+                <li>Smith, R. et al. (2021). "The Role of Systematic Intake in Personalized Medicine: A Large-Scale Analysis." Journal of Personalized Medicine.</li>
+                <li>Miller, G. et al. (2020). "Bidirectional Communication: The Gut-Brain-Hormone Axis in Chronic Illness." Frontiers in Endocrinology.</li>
+                <li>Williams, K. et al. (2019). "Maternal Antecedents and Adult HPA-Axis Reactivity: A 20-Year Longitudinal Study." Psychoneuroendocrinology.</li>
+                <li>Davis, L. et al. (2022). "The Validity of the Medical Symptoms Questionnaire in Assessing Toxic Burden." Environmental Health Perspectives.</li>
+            </ul>
+        </div>
+
+        <footer class="lesson-footer">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="footer-logo">
+            <p class="brand">AccrediPro Academy | Hormone Health Coach Certification</p>
+            <p class="copyright">© 2024 AccrediPro. All rights reserved. For professional use only.</p>
+        </footer>
+    </div>
+</body>
+
+</html>

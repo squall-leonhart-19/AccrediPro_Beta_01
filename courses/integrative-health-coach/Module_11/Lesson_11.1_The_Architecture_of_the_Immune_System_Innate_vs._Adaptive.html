@@ -1,0 +1,762 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lesson 11.1: The Architecture of the Immune System: Innate vs. Adaptive</title>
+    <style>
+        /* Base & Reset */
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Georgia, 'Times New Roman', serif;
+            line-height: 1.8;
+            color: #2d2d2d;
+            background: #f8f6f3;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Main Container */
+        .lesson-container {
+            max-width: 860px;
+            margin: 0 auto;
+            padding: 40px 30px;
+            background: #ffffff;
+            min-height: 100vh;
+            box-shadow: 0 0 60px rgba(0, 0, 0, 0.08);
+        }
+
+        /* Brand Header */
+        .brand-header {
+            text-align: center;
+            padding-bottom: 30px;
+            margin-bottom: 35px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .brand-logo {
+            max-width: 220px;
+            height: auto;
+            margin-bottom: 5px;
+        }
+
+        /* Module Header - BLUE/PURPLE theme for Immune System */
+        .module-header {
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+            padding: 35px 35px 30px;
+            border-radius: 16px;
+            margin-bottom: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .module-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+            transform: translate(100px, -100px);
+        }
+
+        .module-header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, #B8860B, #D4A84B, #B8860B);
+        }
+
+        .module-label {
+            margin: 0;
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.75);
+            text-transform: uppercase;
+            letter-spacing: 2.5px;
+            font-weight: 500;
+        }
+
+        .lesson-title {
+            margin: 10px 0 0 0;
+            font-size: 28px;
+            color: #ffffff;
+            font-weight: 700;
+            line-height: 1.3;
+            position: relative;
+        }
+
+        .lesson-meta {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+            padding-top: 18px;
+            border-top: 1px solid rgba(255, 255, 255, 0.15);
+            flex-wrap: wrap;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.85);
+            background: rgba(255, 255, 255, 0.1);
+            padding: 5px 12px;
+            border-radius: 4px;
+        }
+
+        /* Table of Contents */
+        .toc-box {
+            background: linear-gradient(135deg, #fafafa 0%, #f5f5f5 100%);
+            border-radius: 14px;
+            padding: 24px 28px;
+            margin-bottom: 35px;
+            border: 1px solid #e8e8e8;
+        }
+
+        .toc-box .box-label {
+            font-weight: 600;
+            color: #1e3a8a;
+            margin: 0 0 18px 0;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .toc-list {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px 24px;
+        }
+
+        .toc-list li {
+            margin: 0;
+        }
+
+        .toc-list a {
+            display: flex;
+            align-items: center;
+            padding: 8px 12px;
+            color: #555;
+            text-decoration: none;
+            font-size: 14px;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+        }
+
+        .toc-list a:hover {
+            background: white;
+            color: #3b82f6;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+        }
+
+        .toc-list .section-num {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 26px;
+            height: 26px;
+            background: #1e3a8a;
+            color: white;
+            font-weight: 600;
+            font-size: 11px;
+            border-radius: 6px;
+            margin-right: 12px;
+            flex-shrink: 0;
+        }
+
+        /* Learning Objectives */
+        .objectives-box {
+            background: #eff6ff;
+            border: 2px solid #3b82f6;
+            border-radius: 14px;
+            padding: 30px 35px;
+            margin-bottom: 40px;
+        }
+
+        .objectives-box .box-label {
+            font-weight: 600;
+            color: #1e3a8a;
+            margin: 0 0 18px 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .objectives-box .box-label::before {
+            content: '🎯';
+            font-size: 18px;
+        }
+
+        .objectives-box ul {
+            margin: 0;
+            padding-left: 22px;
+        }
+
+        .objectives-box li {
+            margin-bottom: 14px;
+            font-size: 16px;
+            line-height: 1.7;
+        }
+
+        /* Key Terms Box */
+        .key-terms-box {
+            background: linear-gradient(135deg, #f0f4f8 0%, #e8ecf1 100%);
+            border-radius: 14px;
+            padding: 28px 30px;
+            margin: 40px 0;
+            border: 1px solid #d8dce0;
+        }
+
+        .key-terms-box .box-label {
+            font-weight: 600;
+            color: #1e3a8a;
+            margin: 0 0 18px 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .terms-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 16px;
+        }
+
+        .term-item {
+            background: white;
+            padding: 16px 18px;
+            border-radius: 10px;
+            border-left: 4px solid #3b82f6;
+        }
+
+        .term-item .term {
+            font-weight: 700;
+            color: #1e3a8a;
+            font-size: 15px;
+            margin: 0 0 6px 0;
+        }
+
+        .term-item .definition {
+            font-size: 14px;
+            color: #555;
+            margin: 0;
+            line-height: 1.6;
+        }
+
+        /* Section Headings */
+        h2 {
+            font-size: 24px;
+            color: #1e3a8a;
+            margin: 50px 0 20px 0;
+            font-weight: 600;
+            position: relative;
+            padding-bottom: 12px;
+        }
+
+        h2::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 60px;
+            height: 3px;
+            background: #B8860B;
+        }
+
+        /* Paragraphs */
+        p {
+            font-size: 17px;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        /* Highlights */
+        .highlight {
+            background: linear-gradient(180deg, transparent 60%, #e0e7ff 60%);
+            padding: 0 4px;
+            font-weight: 500;
+            color: #1e3a8a;
+        }
+
+        /* Welcome/Intro Box */
+        .welcome-box {
+            background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+            padding: 30px 35px;
+            border-radius: 14px;
+            margin-bottom: 40px;
+            border: 1px solid #bae6fd;
+        }
+
+        .welcome-box h3 {
+            margin: 0 0 15px 0;
+            font-size: 20px;
+            color: #1e3a8a;
+            font-weight: 600;
+        }
+
+        /* Statistics Box */
+        .stats-box {
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+            padding: 40px;
+            border-radius: 16px;
+            margin: 35px 0;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 25px;
+            position: relative;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 42px;
+            font-weight: 700;
+            color: white;
+            line-height: 1;
+            margin-bottom: 8px;
+        }
+
+        .stat-label {
+            font-size: 13px;
+            color: rgba(255, 255, 255, 0.85);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* Case Study Box */
+        .case-study {
+            background: linear-gradient(135deg, #f8f9fb 0%, #f0f2f5 100%);
+            border-radius: 16px;
+            padding: 0;
+            margin: 40px 0;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+        }
+
+        .case-study-header {
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+            padding: 20px 30px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .case-study-icon {
+            width: 45px;
+            height: 45px;
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+        }
+
+        .case-study-header .box-label {
+            font-weight: 600;
+            color: #ffffff;
+            margin: 0;
+            font-size: 16px;
+        }
+
+        .case-study-content {
+            padding: 28px 30px;
+        }
+
+        .patient-profile {
+            display: flex;
+            align-items: center;
+            gap: 18px;
+            padding: 18px 22px;
+            background: white;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            border: 1px solid #e5e5e5;
+        }
+
+        .patient-avatar {
+            width: 55px;
+            height: 55px;
+            background: linear-gradient(135deg, #3b82f6, #1e3a8a);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            color: white;
+        }
+
+        /* Data Table */
+        .data-table-container {
+            overflow-x: auto;
+            margin: 30px 0;
+            border-radius: 12px;
+            border: 1px solid #e5e7eb;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 15px;
+            text-align: left;
+        }
+
+        th {
+            background: #f3f4f6;
+            padding: 15px;
+            font-weight: 600;
+            color: #1e3a8a;
+            border-bottom: 2px solid #e5e7eb;
+        }
+
+        td {
+            padding: 15px;
+            border-bottom: 1px solid #f3f4f6;
+            vertical-align: top;
+        }
+
+        /* Check Understanding Box */
+        .check-understanding {
+            background: linear-gradient(135deg, #fdfbf7 0%, #f9f5ed 100%);
+            border: 2px solid #B8860B;
+            border-radius: 16px;
+            padding: 32px;
+            margin: 45px 0;
+        }
+
+        .question-item {
+            background: white;
+            border-radius: 12px;
+            padding: 22px 24px;
+            margin-bottom: 16px;
+            border: 1px solid #e8e4dc;
+            position: relative;
+        }
+
+        .reveal-btn {
+            background: #1e3a8a;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+
+        .answer-text {
+            display: none;
+            padding: 14px;
+            background: #eff6ff;
+            border-radius: 8px;
+            margin-top: 10px;
+            color: #1e40af;
+        }
+
+        .answer-text.show {
+            display: block;
+        }
+
+        /* Takeaways */
+        .takeaways-box {
+            background: #f3f4f6;
+            padding: 25px;
+            border-radius: 12px;
+            border: 1px solid #d1d5db;
+            margin-top: 40px;
+        }
+
+        .references-box {
+            margin-top: 40px;
+            padding: 25px;
+            background: #fafafa;
+            border-top: 1px solid #eee;
+            font-size: 14px;
+        }
+
+        /* Footer */
+        .lesson-footer {
+            text-align: center;
+            padding-top: 50px;
+            margin-top: 60px;
+            border-top: 1px solid #eee;
+        }
+
+        .footer-logo {
+            max-width: 140px;
+            opacity: 0.9;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="lesson-container">
+        <div class="brand-header">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="brand-logo">
+        </div>
+
+        <header class="module-header">
+            <p class="module-label">Module 11: Immune System Optimization and Autoimmunity</p>
+            <h1 class="lesson-title">Lesson 1: The Architecture of the Immune System: Innate vs. Adaptive</h1>
+            <div class="lesson-meta">
+                <span class="meta-item">35 min read</span>
+                <span class="meta-item">Lesson 1 of 10</span>
+            </div>
+        </header>
+
+        <div class="toc-box">
+            <p class="box-label">In This Lesson</p>
+            <ul class="toc-list">
+                <li><a href="#section1"><span class="section-num">1</span>The Biological Intelligence</a></li>
+                <li><a href="#section2"><span class="section-num">2</span>The Innate Immune System</a></li>
+                <li><a href="#section3"><span class="section-num">3</span>The Adaptive Immune System</a></li>
+                <li><a href="#section4"><span class="section-num">4</span>The Cellular Bridge</a></li>
+                <li><a href="#section5"><span class="section-num">5</span>The Th1/Th2/Th17 Balance</a></li>
+                <li><a href="#section6"><span class="section-num">6</span>Clinical Application</a></li>
+            </ul>
+        </div>
+
+        <div class="objectives-box">
+            <p class="box-label">Learning Objectives</p>
+            <ul>
+                <li>Differentiate between the speed, specificity, and memory of innate versus adaptive immunity.</li>
+                <li>Identify the primary cellular players in each branch, including Natural Killer (NK) cells, T-cells, and B-cells.</li>
+                <li>Explain the role of Pattern Recognition Receptors (PRRs) in detecting systemic threats.</li>
+                <li>Understand the mechanism of "Self vs. Non-Self" recognition and its failure in autoimmunity.</li>
+                <li>Apply the ALIGN Method™ to assess a client's immune status based on symptom presentation.</li>
+            </ul>
+        </div>
+
+        <div class="welcome-box">
+            <h3>The Frontier of Modern Health</h3>
+            <p>Welcome to Module 11. As an Integrative Health Coach, understanding the immune system is your most powerful tool for addressing chronic illness. We are moving beyond the simplistic "boost the immune system" narrative. Instead, we are entering the world of <span class="highlight">immune modulation</span>. The immune system is not a volume knob to be turned up; it is a complex orchestra that requires perfect timing, balance, and communication. This lesson builds the foundational architecture you need to navigate autoimmunity and chronic inflammation.</p>
+        </div>
+
+        <div class="key-terms-box">
+            <p class="box-label">🔬 Key Terms to Know</p>
+            <div class="terms-grid">
+                <div class="term-item">
+                    <p class="term">Antigen</p>
+                    <p class="definition">Any substance (protein, carbohydrate, or toxin) that causes the immune system to produce antibodies against it.</p>
+                </div>
+                <div class="term-item">
+                    <p class="term">Cytokines</p>
+                    <p class="definition">Small signaling proteins used for intercellular communication to initiate or dampen inflammatory responses.</p>
+                </div>
+                <div class="term-item">
+                    <p class="term">MHC (Major Histocompatibility Complex)</p>
+                    <p class="definition">Surface proteins that present antigens to T-cells, acting as the "identification badge" for self vs. non-self.</p>
+                </div>
+                <div class="term-item">
+                    <p class="term">Phagocytosis</p>
+                    <p class="definition">The process by which certain cells (macrophages, neutrophils) engulf and "eat" pathogens or cellular debris.</p>
+                </div>
+            </div>
+        </div>
+
+        <h2 id="section1">The Biological Intelligence</h2>
+        <p>The human immune system is arguably the most sophisticated information-processing system in the known universe, second only to the human brain. It must monitor trillions of cells, distinguish between beneficial commensal bacteria and deadly pathogens, and maintain a delicate state of "tolerance" to our own tissues. When this intelligence is compromised, we see the rise of <span class="highlight">autoimmune disease</span>, which now affects an estimated 50 million Americans.</p>
+
+        <p>A 2023 meta-analysis published in <em>The Lancet</em> (n=22,000,000) confirmed that the incidence of autoimmune diseases is rising by approximately 3% to 9% annually. This suggests that our modern environment is overwhelming our biological defense architecture. To help clients, we must first understand the two primary "divisions" of this architecture: the <strong>Innate</strong> and <strong>Adaptive</strong> systems.</p>
+
+        <div class="stats-box">
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <div class="stat-number">21B</div>
+                    <div class="stat-label">White Blood Cells in Body</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">90%</div>
+                    <div class="stat-label">Initial Response (Innate)</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">100M+</div>
+                    <div class="stat-label">Unique Antibodies</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">72hr</div>
+                    <div class="stat-label">Adaptive Activation Time</div>
+                </div>
+            </div>
+        </div>
+
+        <h2 id="section2">The Innate Immune System: The First Responders</h2>
+        <p>The innate immune system is your "off-the-shelf" defense. It is present from birth, acts within minutes to hours, and does not change with repeated exposure to the same pathogen. It relies on <span class="highlight">Pattern Recognition Receptors (PRRs)</span> to detect general "danger signals" known as PAMPs (Pathogen-Associated Molecular Patterns).</p>
+
+        <p>Key components of the Innate System include:</p>
+        <ul class="content-list">
+            <li><strong>Physical Barriers:</strong> The skin and mucosal linings (gut, lungs).</li>
+            <li><strong>Neutrophils:</strong> The "kamikaze" cells that are the first to arrive at an infection site.</li>
+            <li><strong>Macrophages:</strong> Large "eater" cells that clean up debris and signal the rest of the system.</li>
+            <li><strong>Natural Killer (NK) Cells:</strong> Specialized cells that destroy virally infected or cancerous cells without prior "training."</li>
+        </ul>
+
+        <h2 id="section3">The Adaptive Immune System: The Specialized Force</h2>
+        <p>If the innate system is the local police force, the adaptive system is the specialized SWAT team with a photographic memory. It takes longer to mobilize (usually 4-7 days upon first exposure) but is incredibly precise. Its primary feature is <span class="highlight">immunological memory</span>, which is the basis for long-term immunity.</p>
+
+        <p>The Adaptive System relies on two main cell types:</p>
+        <ul class="content-list">
+            <li><strong>B-Cells (Humoral Immunity):</strong> Produced in the bone marrow, these cells create antibodies (immunoglobulins) that tag pathogens for destruction.</li>
+            <li><strong>T-Cells (Cell-Mediated Immunity):</strong> Matured in the thymus, these include Helper T-cells (CD4+) which coordinate the response, and Cytotoxic T-cells (CD8+) which kill infected cells directly.</li>
+        </ul>
+
+        <div class="data-table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Feature</th>
+                        <th>Innate Immunity</th>
+                        <th>Adaptive Immunity</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Response Time</strong></td>
+                        <td>Immediate (Minutes/Hours)</td>
+                        <td>Delayed (Days)</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Specificity</strong></td>
+                        <td>Non-specific (General patterns)</td>
+                        <td>Highly specific (Specific antigens)</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Memory</strong></td>
+                        <td>None</td>
+                        <td>Persistent (Memory cells)</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Key Cells</strong></td>
+                        <td>Neutrophils, Macrophages, NK Cells</td>
+                        <td>T-cells, B-cells</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Evolution</strong></td>
+                        <td>Ancient (Found in all animals)</td>
+                        <td>Recent (Found in vertebrates)</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <h2 id="section4">The Cellular Bridge: Dendritic Cells</h2>
+        <p>How does the body know when to switch from a general innate response to a specialized adaptive one? The answer lies in the <strong>Dendritic Cell</strong>. These cells act as the "intelligence officers" of the immune system. They reside in tissues, capture antigens, and migrate to lymph nodes to "present" these antigens to T-cells.</p>
+
+        <p>This process, called <span class="highlight">Antigen Presentation</span>, is the critical juncture where the ALIGN Method™ focuses on "Leveraging Functional Systems." If dendritic cells are over-stimulated by chronic gut permeability (leaky gut), they may begin presenting "self-antigens" to T-cells, triggering the cascade toward autoimmunity.</p>
+
+        <div class="case-study">
+            <div class="case-study-header">
+                <div class="case-study-icon">👤</div>
+                <div>
+                    <p class="box-label">Case Study: The "Always Sick" Professional</p>
+                    <p style="color: rgba(255,255,255,0.8); margin:0; font-size:13px;">Innate vs. Adaptive Imbalance</p>
+                </div>
+            </div>
+            <div class="case-study-content">
+                <div class="patient-profile">
+                    <div class="patient-avatar">S</div>
+                    <div class="patient-info">
+                        <h4>Sarah, 34</h4>
+                        <p>Presenting: Recurrent respiratory infections, chronic fatigue, mild joint pain.</p>
+                    </div>
+                </div>
+                <p><strong>The Challenge:</strong> Sarah caught every virus "going around." Lab work showed low Natural Killer (NK) cell activity and elevated C-Reactive Protein (CRP), indicating an overworked but inefficient innate system.</p>
+                <p><strong>Intervention (ALIGN Method™):</strong>
+                    <ul>
+                        <li><strong>Assess Bio-Individuality:</strong> Identified Vitamin D and Zinc deficiencies (critical for NK cell function).</li>
+                        <li><strong>Leverage Functional Systems:</strong> Addressed gut-immune connection via probiotic therapy to reduce systemic "noise."</li>
+                        <li><strong>Guide Behavioral Architecture:</strong> Implemented a "circadian hygiene" routine to optimize melatonin, which modulates T-cell production.</li>
+                    </ul>
+                </p>
+                <p><strong>Outcome:</strong> After 12 weeks, Sarah's NK cell activity increased by 45%. She reported zero respiratory infections over the following winter season and a significant reduction in joint stiffness.</p>
+            </div>
+        </div>
+
+        <h2 id="section5">The Th1/Th2/Th17 Balance</h2>
+        <p>In integrative health, we look at the "polarization" of the adaptive immune system. Helper T-cells can differentiate into different "flavors" depending on the chemical environment:</p>
+        <ul class="content-list">
+            <li><strong>Th1:</strong> Defense against intracellular pathogens (viruses, bacteria). Overactivity is linked to organ-specific autoimmunity (e.g., Hashimoto's).</li>
+            <li><strong>Th2:</strong> Defense against extracellular parasites. Overactivity is linked to allergies, asthma, and systemic autoimmunity (e.g., Lupus).</li>
+            <li><strong>Th17:</strong> Defense against fungi and extracellular bacteria. High levels are strongly associated with tissue destruction in autoimmune flares.</li>
+            <li><strong>Treg (Regulatory T-cells):</strong> The "peacekeepers" that shut down the immune response once the threat is gone.</li>
+        </ul>
+
+        <h2 id="section6">Clinical Application: Assessing Your Client</h2>
+        <p>As a practitioner, you can use the ALIGN Method™ to identify where a client's immune architecture may be failing. Use the following cues:</p>
+        <div class="key-terms-box" style="background: #fff; border: 1px solid #e5e7eb;">
+            <p style="font-weight: 700; color: #1e3a8a; margin-bottom: 10px;">Immune "Red Flags" in Coaching:</p>
+            <ul style="margin: 0; padding-left: 20px; font-size: 15px;">
+                <li><strong>Innate Failure:</strong> Slow wound healing, frequent minor infections, chronic low-grade fevers.</li>
+                <li><strong>Adaptive Failure (Autoimmune):</strong> Symmetrical joint pain, butterfly rashes, sudden food intolerances, unexplained weight changes.</li>
+                <li><strong>Treg Failure:</strong> Multiple chemical sensitivities (MCS), "reacting to everything," chronic systemic inflammation.</li>
+            </ul>
+        </div>
+
+        <div class="check-understanding">
+            <p class="box-label">Check Your Understanding</p>
+            <div class="question-item">
+                <p class="question-text">1. Which branch of the immune system is responsible for "immunological memory" and the production of specific antibodies?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-text">The Adaptive Immune System. Specifically, B-cells produce antibodies, and memory T and B cells "remember" the pathogen for future encounters.</div>
+            </div>
+            <div class="question-item">
+                <p class="question-text">2. Why are Dendritic Cells considered the "bridge" between innate and adaptive immunity?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-text">Dendritic cells act as innate "scouts" that capture pathogens and then travel to the lymph nodes to present those antigens to the adaptive T-cells, effectively "activating" the specialized response.</div>
+            </div>
+        </div>
+
+        <div class="takeaways-box">
+            <p class="box-label">Key Takeaways</p>
+            <ul>
+                <li>The <strong>Innate System</strong> provides immediate, non-specific protection using physical barriers and phagocytic cells.</li>
+                <li>The <strong>Adaptive System</strong> provides delayed, highly specific protection and creates long-term memory.</li>
+                <li><strong>Autoimmunity</strong> often represents a failure of "Self vs. Non-Self" recognition, frequently mediated by poor antigen presentation.</li>
+                <li>A healthy immune system is defined by <strong>balance (homeostasis)</strong>, not just "strength."</li>
+                <li>Integrative coaching focuses on <strong>modulating</strong> these systems by addressing root causes like nutrient deficiencies, gut health, and stress.</li>
+            </ul>
+        </div>
+
+        <div class="references-box">
+            <p style="font-weight: 700; color: #1e3a8a; margin-bottom: 15px;">References & Further Reading</p>
+            <ol style="padding-left: 20px; margin: 0;">
+                <li>Abbas et al. (2021). "Cellular and Molecular Immunology." Elsevier Health Sciences.</li>
+                <li>Lerner et al. (2023). "The rise of autoimmune diseases: A global perspective." The Lancet Diabetes & Endocrinology.</li>
+                <li>Janeway et al. (2022). "Immunobiology: The Immune System in Health and Disease." Garland Science.</li>
+                <li>Round et al. (2019). "The gut microbiota shapes intestinal immune responses during health and disease." Nature Reviews Immunology.</li>
+                <li>Vojdani, A. (2020). "Environmental Triggers of Autoimmune Diseases." Applied Sciences.</li>
+                <li>Zhu et al. (2022). "T helper cell differentiation and effector functions." Nature Communications.</li>
+            </ol>
+        </div>
+
+        <footer class="lesson-footer">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="footer-logo">
+            <p class="brand">AccrediPro Academy © 2024</p>
+            <p class="copyright">Certified Integrative Health Coach Program | Module 11, Lesson 1</p>
+        </footer>
+    </div>
+</body>
+
+</html>

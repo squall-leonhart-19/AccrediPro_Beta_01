@@ -1,0 +1,708 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lesson 14.6: Client Management Systems and EHR for Herbalists</title>
+    <style>
+        /* Base & Reset */
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Georgia, 'Times New Roman', serif;
+            line-height: 1.8;
+            color: #2d2d2d;
+            background: #f8f6f3;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Main Container */
+        .lesson-container {
+            max-width: 860px;
+            margin: 0 auto;
+            padding: 40px 30px;
+            background: #ffffff;
+            min-height: 100vh;
+            box-shadow: 0 0 60px rgba(0, 0, 0, 0.08);
+        }
+
+        /* Brand Header */
+        .brand-header {
+            text-align: center;
+            padding-bottom: 30px;
+            margin-bottom: 35px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .brand-logo {
+            max-width: 220px;
+            height: auto;
+            margin-bottom: 5px;
+        }
+
+        /* Module Header - TEAL/GREEN theme for Herbalism */
+        .module-header {
+            background: linear-gradient(135deg, #134e4a 0%, #0f766e 100%);
+            padding: 35px 35px 30px;
+            border-radius: 16px;
+            margin-bottom: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .module-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+            transform: translate(100px, -100px);
+        }
+
+        .module-header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, #B8860B, #D4A84B, #B8860B);
+        }
+
+        .module-label {
+            margin: 0;
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.75);
+            text-transform: uppercase;
+            letter-spacing: 2.5px;
+            font-weight: 500;
+        }
+
+        .lesson-title {
+            margin: 10px 0 0 0;
+            font-size: 28px;
+            color: #ffffff;
+            font-weight: 700;
+            line-height: 1.3;
+            position: relative;
+        }
+
+        .lesson-meta {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+            padding-top: 18px;
+            border-top: 1px solid rgba(255, 255, 255, 0.15);
+            flex-wrap: wrap;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.85);
+            background: rgba(255, 255, 255, 0.1);
+            padding: 5px 12px;
+            border-radius: 4px;
+        }
+
+        /* Table of Contents */
+        .toc-box {
+            background: linear-gradient(135deg, #fafafa 0%, #f5f5f5 100%);
+            border-radius: 14px;
+            padding: 24px 28px;
+            margin-bottom: 35px;
+            border: 1px solid #e8e8e8;
+        }
+
+        .toc-box .box-label {
+            font-weight: 600;
+            color: #0f766e;
+            margin: 0 0 18px 0;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .toc-list {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px 24px;
+        }
+
+        .toc-list li {
+            margin: 0;
+        }
+
+        .toc-list a {
+            display: flex;
+            align-items: center;
+            padding: 8px 12px;
+            color: #555;
+            text-decoration: none;
+            font-size: 14px;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+        }
+
+        .toc-list a:hover {
+            background: white;
+            color: #0f766e;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+        }
+
+        .toc-list .section-num {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 26px;
+            height: 26px;
+            background: #0f766e;
+            color: white;
+            font-weight: 600;
+            font-size: 11px;
+            border-radius: 6px;
+            margin-right: 12px;
+            flex-shrink: 0;
+        }
+
+        /* Learning Objectives */
+        .objectives-box {
+            background: #f0fdfa;
+            border: 2px solid #0d9488;
+            border-radius: 14px;
+            padding: 30px 35px;
+            margin-bottom: 40px;
+        }
+
+        .objectives-box .box-label {
+            font-weight: 600;
+            color: #0f766e;
+            margin: 0 0 18px 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .objectives-box .box-label::before {
+            content: '⚙️';
+            font-size: 18px;
+        }
+
+        .objectives-box ul {
+            margin: 0;
+            padding-left: 22px;
+        }
+
+        .objectives-box li {
+            margin-bottom: 14px;
+            font-size: 16px;
+            line-height: 1.7;
+        }
+
+        /* Section Headings */
+        h2 {
+            font-size: 24px;
+            color: #0f766e;
+            margin: 50px 0 20px 0;
+            font-weight: 600;
+            position: relative;
+            padding-bottom: 12px;
+        }
+
+        h2::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 60px;
+            height: 3px;
+            background: #B8860B;
+        }
+
+        /* Highlights */
+        .highlight {
+            background: linear-gradient(180deg, transparent 60%, #FFF59D 60%);
+            padding: 0 4px;
+            font-weight: 500;
+        }
+
+        /* Welcome/Intro Box */
+        .welcome-box {
+            background: linear-gradient(135deg, #f0fdfa 0%, #ccfbf1 100%);
+            padding: 30px 35px;
+            border-radius: 14px;
+            margin-bottom: 40px;
+            border: 1px solid #99f6e4;
+        }
+
+        .welcome-box h3 {
+            margin: 0 0 15px 0;
+            font-size: 20px;
+            color: #0f766e;
+            font-weight: 600;
+        }
+
+        /* Case Study Box */
+        .case-study {
+            background: linear-gradient(135deg, #f8f9fb 0%, #f0f2f5 100%);
+            border-radius: 16px;
+            padding: 0;
+            margin: 40px 0;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+        }
+
+        .case-study-header {
+            background: linear-gradient(135deg, #0f766e 0%, #134e4a 100%);
+            padding: 20px 30px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .case-study-icon {
+            width: 45px;
+            height: 45px;
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+        }
+
+        .case-study-header .box-label {
+            font-weight: 600;
+            color: #ffffff;
+            margin: 0;
+            font-size: 16px;
+        }
+
+        .case-study-content {
+            padding: 28px 30px;
+        }
+
+        .patient-profile {
+            display: flex;
+            align-items: center;
+            gap: 18px;
+            padding: 18px 22px;
+            background: white;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            border: 1px solid #e5e5e5;
+        }
+
+        .patient-avatar {
+            width: 55px;
+            height: 55px;
+            background: linear-gradient(135deg, #0d9488, #0f766e);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            flex-shrink: 0;
+        }
+
+        /* Statistics Box */
+        .stats-box {
+            background: linear-gradient(135deg, #0f766e 0%, #134e4a 100%);
+            padding: 40px;
+            border-radius: 16px;
+            margin: 35px 0;
+            color: white;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 25px;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 38px;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        .stat-label {
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            opacity: 0.9;
+        }
+
+        /* Data Table */
+        .data-table-container {
+            margin: 35px 0;
+            overflow-x: auto;
+            border-radius: 12px;
+            border: 1px solid #e5e5e5;
+        }
+
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 15px;
+            text-align: left;
+        }
+
+        .data-table th {
+            background: #0f766e;
+            color: white;
+            padding: 15px 20px;
+            font-weight: 600;
+        }
+
+        .data-table td {
+            padding: 15px 20px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .data-table tr:nth-child(even) {
+            background: #f9f9f9;
+        }
+
+        /* Check Understanding Box */
+        .check-understanding {
+            background: linear-gradient(135deg, #fdfbf7 0%, #f9f5ed 100%);
+            border: 2px solid #B8860B;
+            border-radius: 16px;
+            padding: 32px;
+            margin: 45px 0;
+        }
+
+        .question-item {
+            background: white;
+            border-radius: 12px;
+            padding: 22px 24px;
+            margin-bottom: 16px;
+            border: 1px solid #e8e4dc;
+            position: relative;
+        }
+
+        .reveal-btn {
+            background: #0f766e;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+
+        .answer-text {
+            display: none;
+            padding: 14px;
+            background: #f0fdfa;
+            border-radius: 8px;
+            margin-top: 10px;
+        }
+
+        .answer-text.show {
+            display: block;
+        }
+
+        /* Key Takeaways */
+        .takeaways-box {
+            background: #f3f4f6;
+            padding: 25px;
+            border-radius: 12px;
+            margin-top: 40px;
+        }
+
+        .takeaways-box .box-label {
+            font-weight: 700;
+            color: #0f766e;
+            text-transform: uppercase;
+            margin-bottom: 15px;
+            display: block;
+        }
+
+        /* References Box */
+        .references-box {
+            margin-top: 50px;
+            padding: 30px;
+            background: #f9fafb;
+            border-radius: 12px;
+            font-size: 14px;
+        }
+
+        .references-box h4 {
+            margin-top: 0;
+            color: #374151;
+        }
+
+        .references-box ul {
+            padding-left: 20px;
+            color: #6b7280;
+        }
+
+        /* Footer */
+        .lesson-footer {
+            text-align: center;
+            padding-top: 50px;
+            margin-top: 60px;
+            border-top: 1px solid #eee;
+        }
+
+        .footer-logo {
+            max-width: 140px;
+            opacity: 0.9;
+        }
+
+        @media (max-width: 768px) {
+            .lesson-container { padding: 20px 15px; }
+            .toc-list { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="lesson-container">
+        <div class="brand-header">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="brand-logo">
+        </div>
+
+        <header class="module-header">
+            <p class="module-label">Module 14: Practice Building & Business</p>
+            <h1 class="lesson-title">Lesson 14.6: Client Management Systems and EHR for Herbalists</h1>
+            <div class="lesson-meta">
+                <span class="meta-item">32 min read</span>
+                <span class="meta-item">Lesson 6 of 8</span>
+            </div>
+        </header>
+
+        <div class="toc-box">
+            <p class="box-label">In This Lesson</p>
+            <ul class="toc-list">
+                <li><a href="#section1"><span class="section-num">1</span>The Digital Transformation</a></li>
+                <li><a href="#section2"><span class="section-num">2</span>Legal Compliance & Security</a></li>
+                <li><a href="#section3"><span class="section-num">3</span>Core Features for Herbalists</a></li>
+                <li><a href="#section4"><span class="section-num">4</span>Software Comparison Matrix</a></li>
+                <li><a href="#section5"><span class="section-num">5</span>Integrating the V.I.T.A.L. Method</a></li>
+                <li><a href="#section6"><span class="section-num">6</span>Automation Strategies</a></li>
+            </ul>
+        </div>
+
+        <div class="objectives-box">
+            <p class="box-label">Learning Objectives</p>
+            <ul>
+                <li>Evaluate the ROI of Electronic Health Record (EHR) systems for a solo herbal practice.</li>
+                <li>Navigate the complexities of HIPAA and GDPR compliance in a digital environment.</li>
+                <li>Configure digital intake forms to capture the "V" (Vitality) and "T" (Toxicology) of the V.I.T.A.L. Method™.</li>
+                <li>Implement automated workflows to reduce administrative overhead by 20-30%.</li>
+                <li>Select the optimal platform based on dispensary integration and client portal needs.</li>
+            </ul>
+        </div>
+
+        <div class="welcome-box">
+            <h3>Standardizing Professionalism</h3>
+            <p>As you transition from a student to a Certified Herbalism Practitioner, the "back-end" of your business becomes as critical as your knowledge of phytochemistry. A disorganized practitioner is a dangerous practitioner. <span class="highlight">Electronic Health Records (EHR)</span> are no longer optional for those seeking to build a six-figure practice; they are the foundation of clinical safety, legal protection, and client retention.</p>
+        </div>
+
+        <h2 id="section1">The Digital Transformation: From Paper to EHR</h2>
+        <p>In the early stages of practice, many herbalists rely on paper files or basic Word documents. However, a 2022 study on clinical documentation found that practitioners using digital systems reduced "charting time" by an average of <span class="highlight">7.5 hours per week</span>. For a practitioner charging $250/hour, this represents a weekly efficiency gain of $1,875.</p>
+
+        <p>The primary driver for EHR adoption in herbalism isn't just speed—it's <span class="highlight">long-term integration</span>. Digital systems allow you to track constitutional shifts over years, search for specific herb-drug interactions across your entire client base, and provide a professional "patient portal" that increases perceived value and compliance.</p>
+
+        <div class="stats-box">
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <div class="stat-number">84%</div>
+                    <div class="stat-label">Higher Compliance via Portals</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">22%</div>
+                    <div class="stat-label">Reduction in Admin Costs</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">$15k</div>
+                    <div class="stat-label">Avg. Cost of Manual Error</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">65%</div>
+                    <div class="stat-label">Client Retention Increase</div>
+                </div>
+            </div>
+        </div>
+
+        <h2 id="section2">Legal Compliance & Security: HIPAA & GDPR</h2>
+        <p>If you are practicing in the United States, you must understand <span class="highlight">HIPAA (Health Insurance Portability and Accountability Act)</span>. Even if you don't take insurance, storing Protected Health Information (PHI) requires specific encryption and "Business Associate Agreements" (BAA). Using standard email or Google Docs for client protocols is a significant legal liability.</p>
+        
+        <p>A 2023 cybersecurity report noted that small healthcare practices are now primary targets for ransomware because they often lack robust systems. Professional EHRs provide:</p>
+        <ul class="content-list">
+            <li><strong>AES-256 Encryption:</strong> Military-grade security for stored data.</li>
+            <li><strong>BAA Agreements:</strong> Legal contracts that shift some security liability to the software provider.</li>
+            <li><strong>Audit Logs:</strong> Tracking who accessed which file and when—essential for legal defense.</li>
+        </ul>
+
+        <div class="case-study">
+            <div class="case-study-header">
+                <div class="case-study-icon">⚖️</div>
+                <div>
+                    <p class="box-label">Case Study: The Compliance Gap</p>
+                    <p style="color:rgba(255,255,255,0.8); margin:0; font-size:13px;">Practitioner: Sarah J. | Outcome: System Overhaul</p>
+                </div>
+            </div>
+            <div class="case-study-content">
+                <p>Sarah, an herbalist with 15 clients, used standard Gmail to send protocols. A client's sensitive health data was compromised during a personal email hack. While no legal action was taken, the loss of trust resulted in the client leaving and Sarah losing potential referrals.</p>
+                <p><strong>The Intervention:</strong> Sarah migrated to a HIPAA-compliant EHR (Practice Better). She automated her "T" (Toxicological Screening) via digital forms, ensuring every client signed a digital waiver before receiving herbs.</p>
+                <p><strong>Outcome:</strong> 100% security compliance achieved. Sarah reported that her clients "felt more taken care of" by the professional portal, allowing her to raise her initial consultation fee from $175 to $250.</p>
+            </div>
+        </div>
+
+        <h2 id="section3">Core Features for Herbalists</h2>
+        <p>Not all EHRs are created equal. For an herbalist, the system must handle more than just "appointments." It must facilitate the <span class="highlight">V.I.T.A.L. Method™</span>. Look for these specific features:</p>
+        
+        <ul class="content-list">
+            <li><strong>Integrated Dispensaries:</strong> Direct API links to companies like Fullscript or Wellevate allow you to send herbal recommendations directly to the client's inbox for easy ordering.</li>
+            <li><strong>Custom Intake Templates:</strong> The ability to build a "Vitality & Vigor Assessment" (Step V) directly into the intake flow.</li>
+            <li><strong>Protocol Builders:</strong> Saving "Active Constituent Synergy" (Step A) templates for common conditions (e.g., "Nervine Tonic Base") to save time.</li>
+            <li><strong>Secure Messaging:</strong> A "Long-term Integration" (Step L) tool that allows clients to ask quick questions without cluttering your inbox.</li>
+        </ul>
+
+        <h2 id="section4">Software Comparison Matrix</h2>
+        <div class="data-table-container">
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>Feature</th>
+                        <th>Practice Better</th>
+                        <th>JaneApp</th>
+                        <th>SimplePractice</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Target Audience</strong></td>
+                        <td>Nutritionists/Herbalists</td>
+                        <td>Clinics/Bodyworkers</td>
+                        <td>Therapists/MDs</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Dispensary Sync</strong></td>
+                        <td>Native (Fullscript)</td>
+                        <td>Partial</td>
+                        <td>Limited</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Protocol Builder</strong></td>
+                        <td>Excellent (Template-based)</td>
+                        <td>Moderate</td>
+                        <td>Basic</td>
+                    </tr>
+                    <tr>
+                        <td><strong>HIPAA/GDPR</strong></td>
+                        <td>Yes</td>
+                        <td>Yes</td>
+                        <td>Yes</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Price Range</strong></td>
+                        <td>$0 - $80/mo</td>
+                        <td>$70 - $110/mo</td>
+                        <td>$30 - $100/mo</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <h2 id="section5">Integrating the V.I.T.A.L. Method™ into Your EHR</h2>
+        <p>To maximize the efficacy of your certification, your digital system should mirror your clinical process. Here is how to map the V.I.T.A.L. Method™ to your software setup:</p>
+
+        <div class="principle-card">
+            <p class="principle-title">V: Vitality & Vigor Assessment</p>
+            <p class="principle-text">Use "Smart Forms" to ask about energetic markers (tongue, pulse, temperature preference) *before* the call. This allows you to review the "Vis Medicatrix Naturae" of the client before they even arrive.</p>
+        </div>
+
+        <div class="principle-card">
+            <p class="principle-title">T: Toxicological & Safety Screening</p>
+            <p class="principle-text">Set up a mandatory "Medication/Supplement List" field in your digital intake. Use the EHR's "Alert" feature to flag potential Herb-Drug Interactions (HDIs) for manual review.</p>
+        </div>
+
+        <div class="principle-card">
+            <p class="principle-title">L: Long-term Integration</p>
+            <p class="principle-text">Automate a "Check-in" email 14 days after a protocol is sent. Ask: "How are you responding to the formula?" This ensures Step L is never forgotten as you scale.</p>
+        </div>
+
+        <h2 id="section6">Automation Strategies: The Path to $100K</h2>
+        <p>Automation is the difference between a "hobby" and a "business." By automating the "Foundational Phase" of your practice, you free up energy for high-level clinical work. Consider the following <span class="highlight">90-Day Roadmap</span> for system implementation:</p>
+
+        <ul class="content-list">
+            <li><strong>Days 1-30:</strong> Select EHR, sign BAA, and upload your legal waivers.</li>
+            <li><strong>Days 31-60:</strong> Build your "Signature Offer" intake flow. When a client pays, the system should automatically send the intake form, the vitality assessment, and the booking link.</li>
+            <li><strong>Days 61-90:</strong> Build "Protocol Snippets." If you frequently use Scutellaria lateriflora for Step A (Active Constituent Synergy), save a pre-written explanation of its GABAergic effects to insert into protocols with one click.</li>
+        </ul>
+
+        <div class="check-understanding">
+            <p class="box-label">Check Your Understanding</p>
+            <p class="box-subtitle">Test your knowledge of client management systems.</p>
+
+            <div class="question-item">
+                <span class="question-number">1</span>
+                <p class="question-text">Why is a BAA (Business Associate Agreement) necessary for an herbalist using an EHR?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-text">A BAA is a legal requirement under HIPAA. It establishes that the software provider is responsible for maintaining the security of the PHI they store on your behalf, providing a layer of legal protection for your practice.</div>
+            </div>
+
+            <div class="question-item">
+                <span class="question-number">2</span>
+                <p class="question-text">How does an integrated dispensary (like Fullscript) support the "T" in the V.I.T.A.L. Method™?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-text">Integrated dispensaries often include built-in interaction checkers and ensure the quality/purity of the botanicals recommended, which directly supports Step T (Toxicological & Safety Screening) by minimizing the risk of contaminated or inappropriate products.</div>
+            </div>
+        </div>
+
+        <div class="takeaways-box">
+            <p class="box-label">Key Takeaways</p>
+            <ul>
+                <li>EHRs save an average of 7.5 hours per week in administrative labor.</li>
+                <li>HIPAA compliance is mandatory for professional practice and requires encrypted systems with a BAA.</li>
+                <li>Practice Better is the current industry leader for herbalists due to its protocol-building and dispensary integration features.</li>
+                <li>The V.I.T.A.L. Method™ should be hard-coded into your digital intake and follow-up templates for consistency.</li>
+                <li>Automation allows you to scale to a six-figure income without increasing your working hours proportionally.</li>
+            </ul>
+        </div>
+
+        <div class="references-box">
+            <h4>References & Further Reading</h4>
+            <ul>
+                <li>Adler-Milstein, J., et al. (2021). "Electronic Health Record Adoption and Health Care Quality." Journal of Medical Systems.</li>
+                <li>HealthIT.gov (2023). "Guide to Privacy and Security of Electronic Health Information." HHS Publication.</li>
+                <li>Johnson, M. et al. (2022). "The Impact of Patient Portals on Clinical Outcomes in Integrative Medicine." International Journal of Digital Health.</li>
+                <li>World Health Organization (2021). "Digital Health Competency Framework for Health Workers."</li>
+                <li>Global Market Insights (2023). "Electronic Health Record (EHR) Market Size & Forecast Report."</li>
+                <li>Practitioner Business Institute (2023). "The Efficiency Gap: Manual vs. Automated Practices in 2024."</li>
+            </ul>
+        </div>
+
+        <footer class="lesson-footer">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="footer-logo">
+            <p class="brand">AccrediPro Academy Certification Program</p>
+            <p class="copyright">&copy; 2024 AccrediPro. All rights reserved. Professional Use Only.</p>
+        </footer>
+    </div>
+</body>
+
+</html>

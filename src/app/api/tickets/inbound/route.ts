@@ -5,6 +5,7 @@ import { Resend } from "resend";
 const resend = new Resend(process.env.RESEND_API_KEY);
 
 // Resend Inbound Webhook - receives email.received events
+// Routes to either: 1) Chat replies or 2) Support tickets based on "To" address
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
@@ -21,8 +22,22 @@ export async function POST(request: NextRequest) {
 
       console.log("[INBOUND] Email received:", { emailId, from, to, subject });
 
-      // Get the "to" address to extract ticket number
       const toAddresses = Array.isArray(to) ? to : [to];
+
+      // ============================================
+      // ROUTE 1: CHAT REPLIES (chat@)
+      // ============================================
+      const isChatEmail = toAddresses.some((addr: string) =>
+        addr?.toLowerCase().includes("chat@")
+      );
+
+      if (isChatEmail) {
+        return handleChatReply(emailId, from, data);
+      }
+
+      // ============================================
+      // ROUTE 2: TICKET REPLIES (ticket-123@ or support+123@)
+      // ============================================
       let ticketNumber: number | null = null;
 
       for (const toAddr of toAddresses) {
@@ -177,4 +192,121 @@ export async function POST(request: NextRequest) {
     console.error("[INBOUND] Webhook error:", error);
     return NextResponse.json({ error: "Failed to process" }, { status: 500 });
   }
+}
+
+// ============================================
+// CHAT REPLY HANDLER
+// ============================================
+async function handleChatReply(emailId: string, from: string, data: Record<string, unknown>) {
+  console.log("[INBOUND/CHAT] Processing chat reply from:", from);
+
+  // Extract sender email
+  const senderEmail = typeof from === "string"
+    ? (from.match(/<(.+?)>/)?.[1] || from).toLowerCase().trim()
+    : String(from).toLowerCase().trim();
+
+  // Find ChatOptin by email
+  const optin = await prisma.chatOptin.findFirst({
+    where: {
+      email: {
+        equals: senderEmail,
+        mode: "insensitive"
+      }
+    },
+  });
+
+  if (!optin) {
+    console.log(`[INBOUND/CHAT] No ChatOptin found for email: ${senderEmail}`);
+    return NextResponse.json({ success: false, reason: "No chat optin found" });
+  }
+
+  console.log(`[INBOUND/CHAT] Found ChatOptin for visitor: ${optin.visitorId}`);
+
+  // Fetch email content
+  let emailContent = "";
+
+  if (emailId) {
+    try {
+      const { data: emailData, error } = await resend.emails.receiving.get(emailId);
+
+      if (error) {
+        console.error("[INBOUND/CHAT] Resend SDK error:", error);
+      }
+
+      if (emailData) {
+        emailContent = emailData.text || "";
+
+        if (!emailContent && emailData.html) {
+          emailContent = emailData.html
+            .replace(/<br\s*\/?>/gi, "\n")
+            .replace(/<\/p>/gi, "\n\n")
+            .replace(/<\/div>/gi, "\n")
+            .replace(/<[^>]*>/g, "")
+            .replace(/&nbsp;/g, " ")
+            .trim();
+        }
+      }
+    } catch (fetchError) {
+      console.error("[INBOUND/CHAT] Error fetching email:", fetchError);
+    }
+  }
+
+  // Clean up email content
+  let cleanContent = cleanEmailBody(emailContent);
+
+  if (!cleanContent || cleanContent.length < 2) {
+    console.log(`[INBOUND/CHAT] Message too short after cleaning`);
+    return NextResponse.json({ success: false, reason: "Empty message" });
+  }
+
+  // Create new SalesChat message
+  await prisma.salesChat.create({
+    data: {
+      visitorId: optin.visitorId,
+      page: optin.page || "fm-certification",
+      message: cleanContent,
+      isFromVisitor: true,
+      isRead: false,
+      visitorName: optin.name,
+      visitorEmail: optin.email,
+    },
+  });
+
+  console.log(`[INBOUND/CHAT] ✅ Created SalesChat message from visitor ${optin.visitorId}`);
+
+  return NextResponse.json({
+    success: true,
+    type: "chat",
+    visitorId: optin.visitorId
+  });
+}
+
+// Clean email body for chat messages
+function cleanEmailBody(text: string): string {
+  const lines = text.split("\n");
+  const cleanedLines: string[] = [];
+
+  for (const line of lines) {
+    const trimmed = line.trim();
+
+    // Stop at signature
+    if (trimmed === "--" || trimmed === "-- ") break;
+
+    // Skip quote lines
+    if (trimmed.startsWith(">")) continue;
+
+    // Skip "On ... wrote:" lines
+    if (/^On .+ wrote:$/i.test(trimmed)) break;
+
+    // Skip lines containing original message markers
+    if (trimmed.includes("Original Message") || trimmed.includes("------")) break;
+    if (trimmed.includes("From:") && trimmed.includes("@")) continue;
+
+    // Skip "Sent from" lines
+    if (/^Sent from/i.test(trimmed)) continue;
+
+    cleanedLines.push(line);
+  }
+
+  return cleanedLines.join("\n").trim();
 }

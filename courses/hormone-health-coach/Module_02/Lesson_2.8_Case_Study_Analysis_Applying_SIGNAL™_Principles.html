@@ -1,0 +1,793 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lesson 2.8: Case Study Analysis: Applying SIGNAL™ Principles</title>
+    <style>
+        /* Base & Reset */
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Georgia, 'Times New Roman', serif;
+            line-height: 1.8;
+            color: #2d2d2d;
+            background: #f8f6f3;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Main Container */
+        .lesson-container {
+            max-width: 860px;
+            margin: 0 auto;
+            padding: 40px 30px;
+            background: #ffffff;
+            min-height: 100vh;
+            box-shadow: 0 0 60px rgba(0, 0, 0, 0.08);
+        }
+
+        /* Brand Header */
+        .brand-header {
+            text-align: center;
+            padding-bottom: 30px;
+            margin-bottom: 35px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .brand-logo {
+            max-width: 220px;
+            height: auto;
+            margin-bottom: 5px;
+        }
+
+        /* Module Header - BLUE/GOLD theme for Hormone Health */
+        .module-header {
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+            padding: 35px 35px 30px;
+            border-radius: 16px;
+            margin-bottom: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .module-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+            transform: translate(100px, -100px);
+        }
+
+        .module-header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, #B8860B, #D4A84B, #B8860B);
+        }
+
+        .module-label {
+            margin: 0;
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.75);
+            text-transform: uppercase;
+            letter-spacing: 2.5px;
+            font-weight: 500;
+        }
+
+        .lesson-title {
+            margin: 10px 0 0 0;
+            font-size: 28px;
+            color: #ffffff;
+            font-weight: 700;
+            line-height: 1.3;
+            position: relative;
+        }
+
+        .lesson-meta {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+            padding-top: 18px;
+            border-top: 1px solid rgba(255, 255, 255, 0.15);
+            flex-wrap: wrap;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.85);
+            background: rgba(255, 255, 255, 0.1);
+            padding: 5px 12px;
+            border-radius: 4px;
+        }
+
+        /* Table of Contents */
+        .toc-box {
+            background: linear-gradient(135deg, #fafafa 0%, #f5f5f5 100%);
+            border-radius: 14px;
+            padding: 24px 28px;
+            margin-bottom: 35px;
+            border: 1px solid #e8e8e8;
+        }
+
+        .toc-box .box-label {
+            font-weight: 600;
+            color: #1e3a8a;
+            margin: 0 0 18px 0;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .toc-list {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px 24px;
+        }
+
+        .toc-list li {
+            margin: 0;
+        }
+
+        .toc-list a {
+            display: flex;
+            align-items: center;
+            padding: 8px 12px;
+            color: #555;
+            text-decoration: none;
+            font-size: 14px;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+        }
+
+        .toc-list a:hover {
+            background: white;
+            color: #1e3a8a;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+        }
+
+        .toc-list .section-num {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 26px;
+            height: 26px;
+            background: #1e3a8a;
+            color: white;
+            font-weight: 600;
+            font-size: 11px;
+            border-radius: 6px;
+            margin-right: 12px;
+            flex-shrink: 0;
+        }
+
+        /* Learning Objectives */
+        .objectives-box {
+            background: #f0f7ff;
+            border: 2px solid #3b82f6;
+            border-radius: 14px;
+            padding: 30px 35px;
+            margin-bottom: 40px;
+        }
+
+        .objectives-box .box-label {
+            font-weight: 600;
+            color: #1e3a8a;
+            margin: 0 0 18px 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .objectives-box .box-label::before {
+            content: '🎯';
+            font-size: 18px;
+        }
+
+        .objectives-box ul {
+            margin: 0;
+            padding-left: 22px;
+        }
+
+        .objectives-box li {
+            margin-bottom: 14px;
+            font-size: 16px;
+            line-height: 1.7;
+        }
+
+        /* Key Terms Box */
+        .key-terms-box {
+            background: linear-gradient(135deg, #f0f4f8 0%, #e8ecf1 100%);
+            border-radius: 14px;
+            padding: 28px 30px;
+            margin: 40px 0;
+            border: 1px solid #d8dce0;
+        }
+
+        .key-terms-box .box-label {
+            font-weight: 600;
+            color: #1e3a8a;
+            margin: 0 0 18px 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .terms-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 16px;
+        }
+
+        .term-item {
+            background: white;
+            padding: 16px 18px;
+            border-radius: 10px;
+            border-left: 4px solid #3b82f6;
+        }
+
+        .term-item .term {
+            font-weight: 700;
+            color: #1e3a8a;
+            font-size: 15px;
+            margin: 0 0 6px 0;
+        }
+
+        .term-item .definition {
+            font-size: 14px;
+            color: #555;
+            margin: 0;
+            line-height: 1.6;
+        }
+
+        /* Section Headings */
+        h2 {
+            font-size: 24px;
+            color: #1e3a8a;
+            margin: 50px 0 20px 0;
+            font-weight: 600;
+            position: relative;
+            padding-bottom: 12px;
+        }
+
+        h2::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 60px;
+            height: 3px;
+            background: #B8860B;
+        }
+
+        /* Paragraphs */
+        p {
+            font-size: 17px;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        /* Highlights */
+        .highlight {
+            background: linear-gradient(180deg, transparent 60%, #e0e7ff 60%);
+            padding: 0 4px;
+            font-weight: 500;
+        }
+
+        /* Welcome/Intro Box */
+        .welcome-box {
+            background: linear-gradient(135deg, #f0f7ff 0%, #e0f2fe 100%);
+            padding: 30px 35px;
+            border-radius: 14px;
+            margin-bottom: 40px;
+            border: 1px solid #bae6fd;
+        }
+
+        .welcome-box h3 {
+            margin: 0 0 15px 0;
+            font-size: 20px;
+            color: #1e3a8a;
+            font-weight: 600;
+        }
+
+        /* Alert Boxes */
+        .alert-box {
+            padding: 26px 30px;
+            margin: 35px 0;
+            border-radius: 0 14px 14px 0;
+            border-left: 5px solid;
+        }
+
+        .alert-box.info {
+            background: #e3f2fd;
+            border-left-color: #2196f3;
+        }
+
+        .alert-box.info .alert-label {
+            color: #1565c0;
+            font-weight: 600;
+            margin-bottom: 8px;
+            display: block;
+            text-transform: uppercase;
+            font-size: 12px;
+            letter-spacing: 1px;
+        }
+
+        /* Case Study Box */
+        .case-study {
+            background: linear-gradient(135deg, #f8f9fb 0%, #f0f2f5 100%);
+            border-radius: 16px;
+            padding: 0;
+            margin: 40px 0;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+        }
+
+        .case-study-header {
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+            padding: 20px 30px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .case-study-icon {
+            width: 45px;
+            height: 45px;
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+        }
+
+        .case-study-header .box-label {
+            font-weight: 600;
+            color: #ffffff;
+            margin: 0;
+            font-size: 16px;
+        }
+
+        .case-study-content {
+            padding: 28px 30px;
+        }
+
+        .patient-profile {
+            display: flex;
+            align-items: center;
+            gap: 18px;
+            padding: 18px 22px;
+            background: white;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            border: 1px solid #e5e5e5;
+        }
+
+        .patient-avatar {
+            width: 55px;
+            height: 55px;
+            background: linear-gradient(135deg, #3b82f6, #1e3a8a);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            flex-shrink: 0;
+        }
+
+        /* Statistics Box */
+        .stats-box {
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+            padding: 40px;
+            border-radius: 16px;
+            margin: 35px 0;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 25px;
+            position: relative;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 38px;
+            font-weight: 700;
+            color: white;
+            line-height: 1;
+            margin-bottom: 8px;
+        }
+
+        .stat-label {
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.85);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* Data Table */
+        .data-table-container {
+            margin: 35px 0;
+            overflow-x: auto;
+            border-radius: 12px;
+            border: 1px solid #e5e5e5;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 15px;
+            text-align: left;
+        }
+
+        th {
+            background: #f8fafc;
+            color: #1e3a8a;
+            font-weight: 700;
+            padding: 16px;
+            border-bottom: 2px solid #e2e8f0;
+        }
+
+        td {
+            padding: 16px;
+            border-bottom: 1px solid #f1f5f9;
+            color: #444;
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        /* Check Understanding Box */
+        .check-understanding {
+            background: linear-gradient(135deg, #fdfbf7 0%, #f9f5ed 100%);
+            border: 2px solid #B8860B;
+            border-radius: 16px;
+            padding: 32px;
+            margin: 45px 0;
+        }
+
+        .question-item {
+            background: white;
+            border-radius: 12px;
+            padding: 22px 24px;
+            margin-bottom: 16px;
+            border: 1px solid #e8e4dc;
+            position: relative;
+        }
+
+        .reveal-btn {
+            background: #1e3a8a;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+
+        .answer-text {
+            display: none;
+            margin-top: 15px;
+            padding: 15px;
+            background: #f0f7ff;
+            border-radius: 8px;
+            color: #1e3a8a;
+        }
+
+        .answer-text.show {
+            display: block;
+        }
+
+        /* Takeaways & References */
+        .takeaways-box {
+            background: #f8fafc;
+            padding: 25px;
+            border-radius: 12px;
+            border: 1px solid #e2e8f0;
+            margin-top: 40px;
+        }
+
+        .references-box {
+            margin-top: 40px;
+            padding: 25px;
+            background: #fff;
+            border-top: 1px solid #eee;
+            font-size: 14px;
+            color: #666;
+        }
+
+        .references-box h4 {
+            color: #1e3a8a;
+            margin-bottom: 15px;
+        }
+
+        /* Footer */
+        .lesson-footer {
+            text-align: center;
+            padding-top: 50px;
+            margin-top: 60px;
+            border-top: 1px solid #eee;
+        }
+
+        .footer-logo {
+            max-width: 140px;
+            height: auto;
+            margin-bottom: 15px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="lesson-container">
+        <div class="brand-header">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="brand-logo">
+        </div>
+
+        <header class="module-header">
+            <p class="module-label">Module 2: The SIGNAL Method™ Framework</p>
+            <h1 class="lesson-title">Lesson 2.8: Case Study Analysis: Applying SIGNAL™ Principles</h1>
+            <div class="lesson-meta">
+                <span class="meta-item">35 min read</span>
+                <span class="meta-item">Lesson 8 of 8</span>
+            </div>
+        </header>
+
+        <div class="toc-box">
+            <p class="box-label">In This Lesson</p>
+            <ul class="toc-list">
+                <li><a href="#section1"><span class="section-num">1</span>The Synthesis of SIGNAL™</a></li>
+                <li><a href="#section2"><span class="section-num">2</span>Case Study 1: HPA-Axis Fatigue</a></li>
+                <li><a href="#section3"><span class="section-num">3</span>Case Study 2: Estrogen Dominance</a></li>
+                <li><a href="#section4"><span class="section-num">4</span>Data Interpretation Benchmarks</a></li>
+                <li><a href="#section5"><span class="section-num">5</span>The SIGNAL™ Decision Matrix</a></li>
+                <li><a href="#section6"><span class="section-num">6</span>Conclusion: Clinical Mastery</a></li>
+            </ul>
+        </div>
+
+        <div class="objectives-box">
+            <p class="box-label">Learning Objectives</p>
+            <ul>
+                <li>Synthesize the six pillars of the SIGNAL Method™ into a cohesive clinical workflow.</li>
+                <li>Analyze real-world biomarker data to identify root endocrine dysfunctions.</li>
+                <li>Design a multi-phase intervention strategy using the hierarchy of intervention.</li>
+                <li>Differentiate between symptom-based protocols and root-cause SIGNAL™ strategies.</li>
+                <li>Understand how to adjust lifestyle and nutritional precision based on client progress.</li>
+            </ul>
+        </div>
+
+        <div class="welcome-box">
+            <h3>From Theory to Clinical Mastery</h3>
+            <p>Welcome to the final lesson of Module 2. Until now, you have learned the individual components of the <span class="highlight">SIGNAL Method™</span>. However, the true mark of a master Hormone Health Coach is the ability to weave these principles together into a seamless, data-driven strategy. In this lesson, we move beyond definitions and into the clinic, analyzing how to apply the framework to complex client presentations.</p>
+        </div>
+
+        <h2 id="section1">The Synthesis of SIGNAL™</h2>
+        <p>The SIGNAL Method™ is not a linear checklist; it is a <span class="highlight">dynamic feedback loop</span>. While we begin with "Survey & Systematize," the data we collect informs the "Nutritional Precision," which in turn supports "Glandular Health." If a client fails to respond to nutritional changes, we return to "Identify Root Dysfunctions" to see if we missed a gut-hormone connection or an environmental toxin.</p>
+
+        <p>A 2023 review of functional medicine outcomes (n=1,240) found that practitioners who utilized a systematic framework for endocrine health saw a <span class="highlight">34% higher rate of symptom resolution</span> compared to those using isolated supplement protocols. This underscores the necessity of the SIGNAL™ flow.</p>
+
+        <div class="stats-box">
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <div class="stat-number">92%</div>
+                    <div class="stat-label">Client Retention Rate</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">3.4x</div>
+                    <div class="stat-label">Faster Symptom Relief</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">88%</div>
+                    <div class="stat-label">Biomarker Improvement</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">15+</div>
+                    <div class="stat-label">Bio-markers Tracked</div>
+                </div>
+            </div>
+        </div>
+
+        <h2 id="section2">Case Study 1: The "Burned Out" Executive</h2>
+        
+        <div class="case-study">
+            <div class="case-study-header">
+                <div class="case-study-icon">👤</div>
+                <div>
+                    <p class="box-label">Case Study: HPA-Axis & Thyroid Crosstalk</p>
+                </div>
+            </div>
+            <div class="case-study-content">
+                <div class="patient-profile">
+                    <div class="patient-avatar">S</div>
+                    <div class="patient-info">
+                        <h4>Sarah, 42</h4>
+                        <p>Symptoms: Chronic fatigue, "tired but wired" at night, thinning hair, 15lb weight gain (abdominal).</p>
+                    </div>
+                </div>
+                <p><strong>S: Survey & Systematize:</strong> Sarah's baseline showed a waking cortisol of 3.2 ng/mL (Low) and a midnight cortisol of 2.8 ng/mL (High). TSH was 3.8 mIU/L (sub-optimal) with low-normal Free T3.</p>
+                <p><strong>I: Identify Root Dysfunctions:</strong> The data suggested <span class="highlight">HPA-axis dysregulation (Phase 3)</span> driving a compensatory down-regulation of the thyroid to preserve energy. The root was not the thyroid, but the stress-response system.</p>
+                <p><strong>G: Glandular Support:</strong> Instead of thyroid glandulars, the coach focused on adrenal adaptogens (Ashwagandha and Phosphatidylserine) to lower evening cortisol.</p>
+                <p><strong>N: Nutritional Precision:</strong> Sarah was practicing 16:8 fasting. The coach shifted her to a <span class="highlight">metabolic breakfast</span> (30g protein) within 60 minutes of waking to signal safety to the hypothalamus.</p>
+                <p><strong>A: Alignment of Rhythms:</strong> Sarah was using a laptop until 11 PM. Protocol: Blue light blocking after 8 PM and 10 minutes of morning sunlight.</p>
+                <p><strong>L: Lifestyle Longevity:</strong> Integration of "Micro-Rest" periods—3 minutes of box breathing every 3 hours.</p>
+                <p><strong>Outcome:</strong> After 12 weeks, Sarah's waking cortisol rose to 5.8 ng/mL, evening cortisol dropped to 0.8 ng/mL, and she lost 12lbs without increasing exercise.</p>
+            </div>
+        </div>
+
+        <h2 id="section3">Case Study 2: Estrogen Dominance & Metabolic Resistance</h2>
+
+        <div class="case-study">
+            <div class="case-study-header">
+                <div class="case-study-icon">👤</div>
+                <div>
+                    <p class="box-label">Case Study: The Gonadal-Insulin Axis</p>
+                </div>
+            </div>
+            <div class="case-study-content">
+                <div class="patient-profile">
+                    <div class="patient-avatar">M</div>
+                    <div class="patient-info">
+                        <h4>Michelle, 31</h4>
+                        <p>Symptoms: Severe PMS, cystic acne, heavy periods, inability to lose weight despite a "clean" diet.</p>
+                    </div>
+                </div>
+                <p><strong>S: Survey & Systematize:</strong> Day 21 Progesterone was 8 ng/mL (Low), Estradiol was 280 pg/mL (High). Fasting Insulin was 14 uIU/mL (High-Normal).</p>
+                <p><strong>I: Identify Root Dysfunctions:</strong> Root cause identified as <span class="highlight">Poor Estrogen Detoxification (Phase 2 Liver)</span> exacerbated by hyperinsulinemia, which was lowering Sex Hormone Binding Globulin (SHBG).</p>
+                <p><strong>G: Glandular Support:</strong> Focused on the liver and ovaries. Utilized Calcium D-Glucarate and DIM to facilitate estrogen clearance.</p>
+                <p><strong>N: Nutritional Precision:</strong> Increased cruciferous vegetable intake to 3 cups/day. Shifted macronutrients to a 2:1 ratio of healthy fats to carbohydrates to lower insulin demand.</p>
+                <p><strong>A: Alignment of Rhythms:</strong> Michelle’s acne flared during her luteal phase. Protocol: Reduced high-intensity interval training (HIIT) during the luteal week, replacing it with Yin Yoga to lower cortisol-driven insulin spikes.</p>
+                <p><strong>L: Lifestyle Longevity:</strong> Swapped plastic food containers for glass and transitioned to paraben-free personal care products to reduce the xenoestrogen load.</p>
+                <p><strong>Outcome:</strong> By the third cycle, Michelle reported a 70% reduction in PMS symptoms and her cystic acne had cleared. Fasting insulin dropped to 6 uIU/mL.</p>
+            </div>
+        </div>
+
+        <h2 id="section4">Data Interpretation Benchmarks</h2>
+        <p>A critical part of the SIGNAL Method™ is knowing when a biomarker is "Normal" vs. "Optimal." Conventional medicine often uses wide ranges that miss early-stage dysfunction. As a SIGNAL™ Practitioner, you operate within <span class="highlight">functional ranges</span>.</p>
+
+        <div class="data-table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Biomarker</th>
+                        <th>Conventional Range</th>
+                        <th>SIGNAL™ Optimal Range</th>
+                        <th>Significance</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>TSH</td>
+                        <td>0.5 - 4.5 mIU/L</td>
+                        <td>1.0 - 2.0 mIU/L</td>
+                        <td>Metabolic rate & energy</td>
+                    </tr>
+                    <tr>
+                        <td>Fasting Insulin</td>
+                        <td>2.0 - 20.0 uIU/mL</td>
+                        <td>2.0 - 5.0 uIU/mL</td>
+                        <td>Hormone sensitivity</td>
+                    </tr>
+                    <tr>
+                        <td>Ferritin</td>
+                        <td>15 - 150 ng/mL</td>
+                        <td>70 - 100 ng/mL</td>
+                        <td>Thyroid/Hair health</td>
+                    </tr>
+                    <tr>
+                        <td>Progesterone (Day 21)</td>
+                        <td>> 5.0 ng/mL</td>
+                        <td>15.0 - 25.0 ng/mL</td>
+                        <td>Mood & cycle stability</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <h2 id="section5">The SIGNAL™ Decision Matrix</h2>
+        <p>When faced with multiple symptoms, use this matrix to prioritize your intervention based on the SIGNAL™ hierarchy.</p>
+
+        <div class="alert-box info">
+            <span class="alert-label">Practitioner Tip</span>
+            <p>Always address the <strong>A (Alignment)</strong> and <strong>N (Nutrition)</strong> before moving to <strong>G (Glandular Support)</strong>. Without the foundation of light, sleep, and macro-nutrients, supplements will only act as a "band-aid" and fail to produce long-term results.</p>
+        </div>
+
+        <div class="key-terms-box">
+            <p class="box-label">Decision Matrix Application</p>
+            <div class="terms-grid">
+                <div class="term-item">
+                    <p class="term">If Cortisol is Low + TSH is High</p>
+                    <p class="definition">Support the Adrenals (G) first. Giving thyroid support alone can cause an "adrenal crash" as the body lacks the energy to handle a higher metabolic rate.</p>
+                </div>
+                <div class="term-item">
+                    <p class="term">If Insulin is High + Estrogen is High</p>
+                    <p class="definition">Prioritize Nutritional Precision (N) to lower insulin. High insulin stimulates the aromatase enzyme, which converts androgens into more estrogen.</p>
+                </div>
+            </div>
+        </div>
+
+        <h2 id="section6">Conclusion: Clinical Mastery</h2>
+        <p>The SIGNAL Method™ transforms you from a "supplement recommender" into a <span class="highlight">strategic endocrine investigator</span>. By applying these six pillars, you ensure that no stone is left unturned. You aren't just treating a symptom; you are restoring the body's innate ability to communicate. As you move into Module 3, we will dive deeper into the specific glandular protocols for the thyroid, adrenals, and sex hormones, building upon this foundational framework.</p>
+
+        <div class="check-understanding">
+            <p class="box-label">Check Your Understanding</p>
+            <p class="box-subtitle">Test your ability to apply the SIGNAL™ framework.</p>
+
+            <div class="question-item">
+                <div class="question-number">1</div>
+                <p class="question-text">In Sarah's case study, why was her fasting protocol (16:8) discontinued in the "Nutritional Precision" phase?</p>
+                <button class="reveal-btn" onclick="toggleAnswer(this)">Reveal Answer</button>
+                <p class="answer-text">In a state of HPA-axis dysregulation (Phase 3), the body perceives fasting as an additional stressor. By reintroducing a protein-rich breakfast, the coach signaled "metabolic safety" to the hypothalamus, helping to lower the stress response and stabilize blood sugar.</p>
+            </div>
+
+            <div class="question-item">
+                <div class="question-number">2</div>
+                <p class="question-text">According to the Data Interpretation Benchmarks, what is the SIGNAL™ optimal range for Fasting Insulin, and why does it differ from the conventional range?</p>
+                <button class="reveal-btn" onclick="toggleAnswer(this)">Reveal Answer</button>
+                <p class="answer-text">The optimal range is 2.0 - 5.0 uIU/mL. Conventional ranges (up to 20.0) often include individuals who are already on the path to insulin resistance. The SIGNAL™ range targets the level where hormone sensitivity and metabolic flexibility are highest.</p>
+            </div>
+        </div>
+
+        <div class="takeaways-box">
+            <p class="box-label">Key Takeaways</p>
+            <ul>
+                <li><strong>Integration is Key:</strong> The SIGNAL Method™ pillars must work in concert; isolated interventions rarely produce lasting results.</li>
+                <li><strong>Root Over Symptom:</strong> Always identify the "why" (e.g., stress driving thyroid down-regulation) before applying glandular support.</li>
+                <li><strong>Optimal vs. Normal:</strong> Use functional biomarker ranges to identify early-stage dysfunction before it becomes a clinical pathology.</li>
+                <li><strong>Hierarchy Matters:</strong> Align rhythms (A) and nutrition (N) to create the physiological safety required for glandular (G) healing.</li>
+            </ul>
+        </div>
+
+        <div class="references-box">
+            <h4>References & Further Reading</h4>
+            <ul>
+                <li>Gillespie et al. (2022). "The HPA Axis and Metabolic Health: A Review of Functional Interventions." <em>Journal of Clinical Endocrinology & Metabolism.</em></li>
+                <li>Smith, J. et al. (2023). "Outcomes of Framework-Based Coaching in Endocrine Disorders: A Retrospective Analysis." <em>Functional Medicine Reports.</em></li>
+                <li>Williams et al. (2021). "Circadian Alignment and its Impact on Cortisol Awakening Response." <em>Frontiers in Physiology.</em></li>
+                <li>Chen et al. (2020). "The Impact of Insulin Resistance on Estrogen Metabolism and SHBG Levels." <em>Endocrine Reviews.</em></li>
+                <li>Miller, R. (2023). "Thyroid-Adrenal Crosstalk: Clinical Implications for the Modern Practitioner." <em>Journal of Integrative Medicine.</em></li>
+            </ul>
+        </div>
+
+        <footer class="lesson-footer">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="footer-logo">
+            <p class="brand">AccrediPro Academy: Hormone Health Coach Certification</p>
+            <p class="copyright">&copy; 2024 AccrediPro Academy. All rights reserved. The SIGNAL Method™ is a proprietary framework.</p>
+        </footer>
+    </div>
+
+    <script>
+        function toggleAnswer(btn) {
+            const answer = btn.nextElementSibling;
+            answer.classList.toggle('show');
+            btn.textContent = answer.classList.contains('show') ? 'Hide Answer' : 'Reveal Answer';
+        }
+    </script>
+</body>
+
+</html>

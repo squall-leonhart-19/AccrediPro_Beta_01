@@ -1,0 +1,819 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lesson 2.5: Basal Body Temperature and Pulse: Functional Tracking</title>
+    <style>
+        /* Base & Reset */
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Georgia, 'Times New Roman', serif;
+            line-height: 1.8;
+            color: #2d2d2d;
+            background: #f8f6f3;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Main Container */
+        .lesson-container {
+            max-width: 860px;
+            margin: 0 auto;
+            padding: 40px 30px;
+            background: #ffffff;
+            min-height: 100vh;
+            box-shadow: 0 0 60px rgba(0, 0, 0, 0.08);
+        }
+
+        /* Brand Header */
+        .brand-header {
+            text-align: center;
+            padding-bottom: 30px;
+            margin-bottom: 35px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .brand-logo {
+            max-width: 220px;
+            height: auto;
+            margin-bottom: 5px;
+        }
+
+        /* Module Header - BLUE/TEAL theme for Thyroid Phase T */
+        .module-header {
+            background: linear-gradient(135deg, #0369a1 0%, #0ea5e9 100%);
+            padding: 35px 35px 30px;
+            border-radius: 16px;
+            margin-bottom: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .module-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+            transform: translate(100px, -100px);
+        }
+
+        .module-header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, #B8860B, #D4A84B, #B8860B);
+        }
+
+        .module-label {
+            margin: 0;
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.85);
+            text-transform: uppercase;
+            letter-spacing: 2.5px;
+            font-weight: 500;
+        }
+
+        .lesson-title {
+            margin: 10px 0 0 0;
+            font-size: 28px;
+            color: #ffffff;
+            font-weight: 700;
+            line-height: 1.3;
+            position: relative;
+        }
+
+        .lesson-meta {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+            padding-top: 18px;
+            border-top: 1px solid rgba(255, 255, 255, 0.15);
+            flex-wrap: wrap;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.9);
+            background: rgba(255, 255, 255, 0.1);
+            padding: 5px 12px;
+            border-radius: 4px;
+        }
+
+        /* Table of Contents */
+        .toc-box {
+            background: linear-gradient(135deg, #fafafa 0%, #f5f5f5 100%);
+            border-radius: 14px;
+            padding: 24px 28px;
+            margin-bottom: 35px;
+            border: 1px solid #e8e8e8;
+        }
+
+        .toc-box .box-label {
+            font-weight: 600;
+            color: #0369a1;
+            margin: 0 0 18px 0;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .toc-list {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px 24px;
+        }
+
+        .toc-list li {
+            margin: 0;
+        }
+
+        .toc-list a {
+            display: flex;
+            align-items: center;
+            padding: 8px 12px;
+            color: #555;
+            text-decoration: none;
+            font-size: 14px;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+        }
+
+        .toc-list a:hover {
+            background: white;
+            color: #0369a1;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+        }
+
+        .toc-list .section-num {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 26px;
+            height: 26px;
+            background: #0369a1;
+            color: white;
+            font-weight: 600;
+            font-size: 11px;
+            border-radius: 6px;
+            margin-right: 12px;
+            flex-shrink: 0;
+        }
+
+        /* Learning Objectives */
+        .objectives-box {
+            background: #f0f9ff;
+            border: 2px solid #0ea5e9;
+            border-radius: 14px;
+            padding: 30px 35px;
+            margin-bottom: 40px;
+        }
+
+        .objectives-box .box-label {
+            font-weight: 600;
+            color: #0369a1;
+            margin: 0 0 18px 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .objectives-box .box-label::before {
+            content: '🎯';
+            font-size: 18px;
+        }
+
+        .objectives-box ul {
+            margin: 0;
+            padding-left: 22px;
+        }
+
+        .objectives-box li {
+            margin-bottom: 14px;
+            font-size: 16px;
+            line-height: 1.7;
+        }
+
+        /* Key Terms Box */
+        .key-terms-box {
+            background: linear-gradient(135deg, #f0f4f8 0%, #e8ecf1 100%);
+            border-radius: 14px;
+            padding: 28px 30px;
+            margin: 40px 0;
+            border: 1px solid #d8dce0;
+        }
+
+        .key-terms-box .box-label {
+            font-weight: 600;
+            color: #0369a1;
+            margin: 0 0 18px 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .terms-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 16px;
+        }
+
+        .term-item {
+            background: white;
+            padding: 16px 18px;
+            border-radius: 10px;
+            border-left: 4px solid #0ea5e9;
+        }
+
+        .term-item .term {
+            font-weight: 700;
+            color: #0369a1;
+            font-size: 15px;
+            margin: 0 0 6px 0;
+        }
+
+        .term-item .definition {
+            font-size: 14px;
+            color: #555;
+            margin: 0;
+            line-height: 1.6;
+        }
+
+        /* Section Headings */
+        h2 {
+            font-size: 24px;
+            color: #0369a1;
+            margin: 50px 0 20px 0;
+            font-weight: 600;
+            position: relative;
+            padding-bottom: 12px;
+        }
+
+        h2::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 60px;
+            height: 3px;
+            background: #B8860B;
+        }
+
+        /* Paragraphs */
+        p {
+            font-size: 17px;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        /* Highlights */
+        .highlight {
+            background: linear-gradient(180deg, transparent 60%, #e0f2fe 60%);
+            padding: 0 4px;
+            font-weight: 500;
+            color: #0369a1;
+        }
+
+        /* Welcome/Intro Box */
+        .welcome-box {
+            background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+            padding: 30px 35px;
+            border-radius: 14px;
+            margin-bottom: 40px;
+            border: 1px solid #bae6fd;
+        }
+
+        .welcome-box h3 {
+            margin: 0 0 15px 0;
+            font-size: 20px;
+            color: #0369a1;
+            font-weight: 600;
+        }
+
+        /* Alert Boxes */
+        .alert-box {
+            padding: 26px 30px;
+            margin: 35px 0;
+            border-radius: 0 14px 14px 0;
+            border-left: 5px solid;
+        }
+
+        .alert-box .alert-label {
+            font-weight: 600;
+            margin: 0 0 12px 0;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .alert-box.info {
+            background: #e0f2fe;
+            border-left-color: #0ea5e9;
+        }
+
+        .alert-box.info .alert-label {
+            color: #0369a1;
+        }
+
+        /* Case Study Box */
+        .case-study {
+            background: linear-gradient(135deg, #f8f9fb 0%, #f0f2f5 100%);
+            border-radius: 16px;
+            padding: 0;
+            margin: 40px 0;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+        }
+
+        .case-study-header {
+            background: linear-gradient(135deg, #0369a1 0%, #0ea5e9 100%);
+            padding: 20px 30px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .case-study-icon {
+            width: 45px;
+            height: 45px;
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+        }
+
+        .case-study-header .box-label {
+            font-weight: 600;
+            color: #ffffff;
+            margin: 0;
+            font-size: 16px;
+        }
+
+        .case-study-content {
+            padding: 28px 30px;
+        }
+
+        .patient-profile {
+            display: flex;
+            align-items: center;
+            gap: 18px;
+            padding: 18px 22px;
+            background: white;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            border: 1px solid #e5e5e5;
+        }
+
+        .patient-avatar {
+            width: 55px;
+            height: 55px;
+            background: linear-gradient(135deg, #0ea5e9, #0369a1);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            flex-shrink: 0;
+            color: white;
+        }
+
+        /* Statistics Box */
+        .stats-box {
+            background: linear-gradient(135deg, #0369a1 0%, #0ea5e9 100%);
+            padding: 40px;
+            border-radius: 16px;
+            margin: 35px 0;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 25px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 38px;
+            font-weight: 700;
+            color: white;
+            line-height: 1;
+            margin-bottom: 8px;
+        }
+
+        .stat-label {
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.9);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* Comparison Table */
+        .data-table-container {
+            margin: 35px 0;
+            overflow-x: auto;
+            border-radius: 12px;
+            border: 1px solid #e5e5e5;
+        }
+
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 15px;
+        }
+
+        .data-table th {
+            background: #f1f5f9;
+            color: #0369a1;
+            padding: 15px;
+            text-align: left;
+            border-bottom: 2px solid #e2e8f0;
+        }
+
+        .data-table td {
+            padding: 15px;
+            border-bottom: 1px solid #f1f5f9;
+        }
+
+        .data-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        /* Check Understanding Box */
+        .check-understanding {
+            background: linear-gradient(135deg, #fdfbf7 0%, #f9f5ed 100%);
+            border: 2px solid #B8860B;
+            border-radius: 16px;
+            padding: 32px;
+            margin: 45px 0;
+        }
+
+        .check-understanding .box-label {
+            font-weight: 600;
+            color: #8B6914;
+            margin: 0 0 8px 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .question-item {
+            background: white;
+            border-radius: 12px;
+            padding: 22px 24px;
+            margin-bottom: 16px;
+            border: 1px solid #e8e4dc;
+        }
+
+        .reveal-btn {
+            background: #0369a1;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-family: inherit;
+        }
+
+        .answer-text {
+            display: none;
+            font-size: 14px;
+            color: #0369a1;
+            margin: 14px 0 0 0;
+            padding: 14px;
+            background: #f0f9ff;
+            border-radius: 8px;
+        }
+
+        .answer-text.show {
+            display: block;
+        }
+
+        /* Key Takeaways */
+        .takeaways-box {
+            background: linear-gradient(135deg, #f5f5f5 0%, #e8e8e8 100%);
+            padding: 22px 25px;
+            margin-top: 35px;
+            border-radius: 8px;
+            border: 1px solid #ddd;
+        }
+
+        .takeaways-box .box-label {
+            font-weight: 600;
+            color: #0369a1;
+            margin: 0 0 15px 0;
+            font-size: 16px;
+            text-transform: uppercase;
+        }
+
+        /* References Box */
+        .references-box {
+            margin-top: 40px;
+            padding: 25px;
+            background: #fff;
+            border: 1px solid #eee;
+            border-radius: 12px;
+            font-size: 14px;
+        }
+
+        .references-box h4 {
+            margin: 0 0 15px 0;
+            color: #666;
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .references-box ul {
+            padding-left: 18px;
+            color: #777;
+            margin: 0;
+        }
+
+        .references-box li {
+            margin-bottom: 8px;
+        }
+
+        /* Footer */
+        .lesson-footer {
+            text-align: center;
+            padding-top: 50px;
+            margin-top: 60px;
+            border-top: 1px solid #eee;
+        }
+
+        .footer-logo {
+            max-width: 140px;
+            opacity: 0.9;
+        }
+
+        @media (max-width: 768px) {
+            .lesson-container { padding: 20px 16px; }
+            .toc-list { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="lesson-container">
+        <div class="brand-header">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="brand-logo">
+        </div>
+
+        <header class="module-header">
+            <p class="module-label">Module 2: THRIVE Phase T: Targeted Biomarker Assessment</p>
+            <h1 class="lesson-title">Lesson 2.5: Basal Body Temperature and Pulse: Functional Tracking</h1>
+            <div class="lesson-meta">
+                <span class="meta-item">28 min read</span>
+                <span class="meta-item">Lesson 5 of 6</span>
+            </div>
+        </header>
+
+        <div class="toc-box">
+            <p class="box-label">In This Lesson</p>
+            <ul class="toc-list">
+                <li><a href="#section1"><span class="section-num">1</span>The Broda Barnes Legacy</a></li>
+                <li><a href="#section2"><span class="section-num">2</span>Thermogenesis & T3</a></li>
+                <li><a href="#section3"><span class="section-num">3</span>Pulse as a Metabolic Proxy</a></li>
+                <li><a href="#section4"><span class="section-num">4</span>The Measurement Protocol</a></li>
+                <li><a href="#section5"><span class="section-num">5</span>Interpreting Clinical Patterns</a></li>
+                <li><a href="#section6"><span class="section-num">6</span>Adrenal vs. Thyroid Signs</a></li>
+            </ul>
+        </div>
+
+        <div class="objectives-box">
+            <p class="box-label">Learning Objectives</p>
+            <ul>
+                <li>Explain the physiological link between active thyroid hormone (T3) and body temperature.</li>
+                <li>Master the standardized Broda Barnes protocol for accurate basal tracking.</li>
+                <li>Identify the "Adrenal Compensation" pattern: Low temperature with high pulse.</li>
+                <li>Differentiate between optimal, hypothyroid, and hyperthyroid metabolic signatures.</li>
+                <li>Utilize BBT and pulse data to validate or challenge serum lab findings.</li>
+            </ul>
+        </div>
+
+        <div class="welcome-box">
+            <h3>Beyond the Blood Draw</h3>
+            <p>While serum labs provide a "snapshot" of hormone levels in the blood, they do not always reflect <span class="highlight">cellular thyroid status</span>. As a Thyroid Health Coach, you must understand that the thyroid's ultimate job is to regulate the metabolic rate. Basal Body Temperature (BBT) and Resting Pulse are the most direct, real-time measurements of that metabolic engine in action. By tracking these, we move from observing "what's in the tank" (labs) to "how the engine is running" (metabolism).</p>
+        </div>
+
+        <div class="key-terms-box">
+            <p class="box-label">🔬 Key Terms to Know</p>
+            <div class="terms-grid">
+                <div class="term-item">
+                    <p class="term">Basal Body Temperature (BBT)</p>
+                    <p class="definition">The body's lowest temperature attained during rest (usually during sleep), measured immediately upon waking before any physical activity.</p>
+                </div>
+                <div class="term-item">
+                    <p class="term">Thermogenesis</p>
+                    <p class="definition">The process of heat production in organisms, primarily driven by mitochondrial oxidation under the influence of T3.</p>
+                </div>
+                <div class="term-item">
+                    <p class="term">Chronotropic Effect</p>
+                    <p class="definition">The effect of a substance (like T3) on the heart rate. Thyroid hormones increase the number of beta-adrenergic receptors in the heart.</p>
+                </div>
+                <div class="term-item">
+                    <p class="term">Uncoupling Protein 1 (UCP1)</p>
+                    <p class="definition">A protein in the mitochondria that allows for the dissipation of energy as heat rather than ATP; regulated by thyroid status.</p>
+                </div>
+            </div>
+        </div>
+
+        <h2 id="section1">The Broda Barnes Legacy</h2>
+        <p>Before the advent of the TSH (Thyroid Stimulating Hormone) test in the 1970s, physicians relied heavily on clinical signs and Basal Body Temperature to diagnose hypothyroidism. Dr. Broda Barnes, a pioneer in endocrine research, argued that the <span class="highlight">basal temperature was more reliable</span> than the early protein-bound iodine (PBI) tests.</p>
+        
+        <p>In his landmark study of over 2,000 patients, Dr. Barnes found that individuals with temperatures consistently below 97.8°F (36.6°C) frequently displayed classic hypothyroid symptoms, regardless of their blood work. He posited that subclinical hypothyroidism was far more prevalent than realized—a concept that forms a pillar of the <strong>THRIVE Restoration Method™</strong>.</p>
+
+        <div class="stats-box">
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <div class="stat-number">97.8°F</div>
+                    <div class="stat-label">Barnes' Threshold</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">2,000+</div>
+                    <div class="stat-label">Clinical Subjects</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">85%</div>
+                    <div class="stat-label">Symptom Correlation</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">1942</div>
+                    <div class="stat-label">Year of First Pub.</div>
+                </div>
+            </div>
+        </div>
+
+        <h2 id="section2">Thermogenesis & T3: The Cellular Furnace</h2>
+        <p>Why does the thyroid dictate temperature? The answer lies in the mitochondria. Active thyroid hormone (T3) enters the cell nucleus and stimulates the transcription of genes responsible for metabolism. Specifically, T3 increases the activity of the <strong>Sodium-Potassium Pump (Na+/K+-ATPase)</strong>.</p>
+
+        <p>This "pump" is responsible for maintaining the electrochemical gradient across cell membranes and consumes a staggering <span class="highlight">20-40% of the body's total energy</span> at rest. As T3 increases pump activity, the metabolic "byproduct" is heat. Therefore, a low BBT is a direct indicator of insufficient T3 activity at the nuclear receptor level, regardless of how much T4 or TSH is circulating in the blood.</p>
+
+        <div class="alert-box info">
+            <p class="alert-label">Clinical Pearl</p>
+            <p>If a client has "optimal" Free T3 labs but a BBT of 96.5°F, they likely have <strong>Cellular Thyroid Resistance</strong> or a lack of cofactors (like Zinc or Cortisol) required for T3 to actually bind to the receptors.</p>
+        </div>
+
+        <h2 id="section3">Pulse as a Metabolic Proxy</h2>
+        <p>While temperature reflects the <em>production</em> of energy, the pulse reflects the <em>distribution</em> and <em>demand</em> for that energy. Thyroid hormones have a potent "positive chronotropic effect," meaning they increase heart rate by upregulating beta-1 receptors in the cardiac tissue.</p>
+
+        <p>An optimal resting pulse for a healthy, non-athletic adult is typically between <strong>75 and 85 beats per minute (BPM)</strong>. A pulse consistently below 65 BPM (in a non-athlete) is a strong indicator of a sluggish metabolism. Conversely, a high pulse (90+ BPM) can indicate hyperthyroidism OR a compensatory stress response (adrenaline) trying to make up for low thyroid function.</p>
+
+        <div class="data-table-container">
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>Marker</th>
+                        <th>Optimal (THRIVE)</th>
+                        <th>Hypothyroid Pattern</th>
+                        <th>Hyperthyroid Pattern</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Waking BBT</strong></td>
+                        <td>97.8°F - 98.2°F</td>
+                        <td>&lt; 97.4°F</td>
+                        <td>&gt; 98.6°F</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Mid-Day Temp</strong></td>
+                        <td>98.6°F</td>
+                        <td>&lt; 98.0°F</td>
+                        <td>&gt; 99.0°F</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Resting Pulse</strong></td>
+                        <td>75 - 85 BPM</td>
+                        <td>&lt; 65 BPM</td>
+                        <td>&gt; 90 BPM</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <h2 id="section4">The Measurement Protocol</h2>
+        <p>For the data to be clinically useful, the protocol must be followed strictly. Small variables—like getting out of bed to use the bathroom—can spike the pulse and temperature, rendering the data useless.</p>
+
+        <div class="principle-card">
+            <p class="principle-title">The Standardized BBT Protocol</p>
+            <ul class="content-list">
+                <li><strong>Thermometer:</strong> Use a high-quality digital basal thermometer (accurate to 0.01 degrees) or a traditional glass galinstan thermometer.</li>
+                <li><strong>Timing:</strong> Measure immediately upon waking, before sitting up, drinking water, or speaking.</li>
+                <li><strong>Placement:</strong> Axillary (underarm) was Barnes' preferred method for 10 minutes, but oral is acceptable if consistent.</li>
+                <li><strong>Duration:</strong> Track for at least 5-7 consecutive days to establish a baseline.</li>
+                <li><strong>Menstrual Cycle:</strong> Note the day of the cycle. Temperature naturally rises by 0.5-1.0°F after ovulation due to progesterone.</li>
+            </ul>
+        </div>
+
+        <h2 id="section5">Interpreting Clinical Patterns</h2>
+        <p>As a coach, you are looking for <em>relationships</em> between temperature and pulse. This is where the "Targeted Biomarker Assessment" becomes truly functional.</p>
+
+        <div class="case-study">
+            <div class="case-study-header">
+                <div class="case-study-icon">👤</div>
+                <div>
+                    <p class="box-label">Case Study: The "Cold & Wired" Client</p>
+                </div>
+            </div>
+            <div class="case-study-content">
+                <div class="patient-profile">
+                    <div class="patient-avatar">S</div>
+                    <div class="patient-info">
+                        <h4>Sarah J., Age 42</h4>
+                        <p>Symptoms: Insomnia, anxiety, hair loss, cold hands/feet.</p>
+                    </div>
+                </div>
+                <p><strong>Initial Assessment:</strong> Sarah's TSH was 1.8 (Normal), and her Free T3 was 3.1 (Normal). However, she felt "awful."</p>
+                <p><strong>Tracking Data:</strong>
+                    <ul>
+                        <li>Average Waking BBT: 96.7°F</li>
+                        <li>Average Resting Pulse: 94 BPM</li>
+                    </ul>
+                </p>
+                <p><strong>Interpretation:</strong> This is the <strong>Adrenal Compensation Pattern</strong>. Her thyroid is failing to produce enough cellular energy (low temp), so her body is flooding the system with adrenaline/cortisol to maintain blood pressure and function (high pulse). This explains her anxiety and insomnia despite "normal" thyroid labs.</p>
+                <p><strong>Outcome:</strong> By supporting her adrenals and increasing her T3 levels, her temperature rose to 97.9°F and her pulse <em>dropped</em> to 80 BPM as the stress response was no longer needed.</p>
+            </div>
+        </div>
+
+        <h2 id="section6">Adrenal vs. Thyroid Signs</h2>
+        <p>How do we know if a low temperature is strictly a thyroid issue or an adrenal issue? We look at <strong>stability</strong>. A thyroid-driven low temperature is usually low but <em>stable</em> (e.g., 97.1, 97.1, 97.2). An adrenal-driven temperature is often <em>unstable</em> and erratic (e.g., 96.5, 97.8, 97.0).</p>
+
+        <p>A 2019 study published in the <em>Journal of Clinical Endocrinology</em> noted that heart rate variability (HRV) is significantly reduced in hypothyroid patients, indicating an autonomic nervous system imbalance. By tracking pulse, we are essentially monitoring the "tone" of the autonomic nervous system as it relates to metabolic demand.</p>
+
+        <div class="check-understanding">
+            <p class="box-label">Check Your Understanding</p>
+            <div class="question-item">
+                <p class="question-text">A client presents with a waking BBT of 97.2°F and a resting pulse of 58 BPM. What is the most likely metabolic state?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <p class="answer-text">This is a classic <strong>Overt Hypothyroid Pattern</strong>. Both heat production (temp) and distribution/demand (pulse) are low, suggesting a significant lack of active T3 at the cellular level.</p>
+            </div>
+            <div class="question-item">
+                <p class="question-text">Why does temperature rise during the luteal phase (post-ovulation) of the menstrual cycle?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <p class="answer-text">Progesterone, which dominates the luteal phase, is <strong>thermogenic</strong>. It stimulates the metabolic rate. This is why we must always track BBT in relation to the menstrual cycle to avoid misinterpreting a "normal" rise as a thyroid improvement.</p>
+            </div>
+        </div>
+
+        <div class="takeaways-box">
+            <p class="box-label">Key Takeaways</p>
+            <ul>
+                <li><strong>BBT = Energy Production:</strong> It reflects the activity of the Na+/K+ pump and mitochondrial thermogenesis.</li>
+                <li><strong>Pulse = Energy Distribution:</strong> It reflects the autonomic nervous system's response to metabolic demand.</li>
+                <li><strong>The 97.8°F Rule:</strong> Temperatures consistently below this threshold suggest a metabolic slowdown.</li>
+                <li><strong>Pattern Recognition:</strong> Low Temp + High Pulse often indicates adrenal compensation for low thyroid.</li>
+                <li><strong>Consistency is King:</strong> Tracking must be done immediately upon waking to be clinically valid.</li>
+            </ul>
+        </div>
+
+        <div class="references-box">
+            <h4>References & Further Reading</h4>
+            <ul>
+                <li>Barnes, B. (1942). "Basal Temperature vs. Basal Metabolism." Journal of the American Medical Association.</li>
+                <li>Broda O. Barnes Research Foundation. "The Hypothyroid Symptom Checklist and BBT Protocol." Clinical Guidelines.</li>
+                <li>Danzi, S., & Klein, I. (2012). "Thyroid Hormone and the Cardiovascular System." Medical Clinics of North America.</li>
+                <li>Kim, B. (2008). "Thyroid Hormone as a Determinant of Energy Expenditure and the Basal Metabolic Rate." Thyroid.</li>
+                <li>Lanni, A., et al. (2003). "Thyroid Hormones and Uncoupling Proteins." FEBS Letters.</li>
+                <li>Sari, R., et al. (2019). "Heart Rate Variability in Subclinical Hypothyroidism." Journal of Clinical Endocrinology & Metabolism.</li>
+            </ul>
+        </div>
+
+        <footer class="lesson-footer">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="footer-logo">
+            <p class="brand">AccrediPro Academy: Certified Thyroid Health Coach</p>
+            <p class="copyright">&copy; 2024 AccrediPro. All rights reserved. Professional Use Only.</p>
+        </footer>
+    </div>
+</body>
+
+</html>

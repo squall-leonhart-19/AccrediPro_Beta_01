@@ -1,0 +1,501 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lesson 3.1: Introduction to Functional Testing</title>
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Georgia, 'Times New Roman', serif;
+            line-height: 1.8;
+            color: #2d2d2d;
+            background: #f8f6f3;
+            margin: 0;
+            padding: 0;
+        }
+
+        .lesson-container {
+            max-width: 860px;
+            margin: 0 auto;
+            padding: 40px 30px;
+            background: #ffffff;
+            min-height: 100vh;
+        }
+
+        .brand-header {
+            text-align: center;
+            padding-bottom: 30px;
+            margin-bottom: 35px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .brand-logo {
+            max-width: 220px;
+            height: auto;
+        }
+
+        .module-header {
+            background: linear-gradient(135deg, #059669 0%, #10B981 100%);
+            padding: 35px;
+            border-radius: 16px;
+            margin-bottom: 30px;
+        }
+
+        .module-header::after {
+            content: '';
+            display: block;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, #B8860B, #D4A84B, #B8860B);
+            margin-top: 20px;
+        }
+
+        .module-label {
+            margin: 0;
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.75);
+            text-transform: uppercase;
+            letter-spacing: 2.5px;
+        }
+
+        .lesson-title {
+            margin: 10px 0 0 0;
+            font-size: 28px;
+            color: #ffffff;
+            font-weight: 700;
+        }
+
+        .lesson-meta {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+            flex-wrap: wrap;
+        }
+
+        .meta-item {
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.85);
+            background: rgba(255, 255, 255, 0.1);
+            padding: 5px 12px;
+            border-radius: 4px;
+        }
+
+        .objectives-box {
+            background: #f0fdf4;
+            border: 2px solid #10B981;
+            border-radius: 14px;
+            padding: 30px;
+            margin-bottom: 40px;
+        }
+
+        .box-label {
+            font-weight: 600;
+            color: #059669;
+            margin: 0 0 18px 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .objectives-box ul {
+            margin: 0;
+            padding-left: 22px;
+        }
+
+        .objectives-box li {
+            margin-bottom: 14px;
+            font-size: 16px;
+        }
+
+        h2 {
+            font-size: 24px;
+            color: #059669;
+            margin: 50px 0 20px 0;
+            padding-bottom: 12px;
+            border-bottom: 3px solid #B8860B;
+            display: inline-block;
+        }
+
+        h3 {
+            font-size: 20px;
+            color: #333;
+            margin: 35px 0 15px 0;
+        }
+
+        p {
+            font-size: 17px;
+            margin-bottom: 20px;
+        }
+
+        .highlight {
+            background: linear-gradient(180deg, transparent 60%, #FFF59D 60%);
+            padding: 0 4px;
+            font-weight: 500;
+        }
+
+        .content-list {
+            font-size: 17px;
+            margin: 20px 0;
+            padding-left: 24px;
+        }
+
+        .content-list li {
+            margin-bottom: 14px;
+            line-height: 1.7;
+        }
+
+        .key-terms-box {
+            background: #f0f4f8;
+            border-radius: 14px;
+            padding: 28px;
+            margin: 40px 0;
+        }
+
+        .terms-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 16px;
+        }
+
+        .term-item {
+            background: white;
+            padding: 16px;
+            border-radius: 10px;
+            border-left: 4px solid #10B981;
+        }
+
+        .term-item .term {
+            font-weight: 700;
+            color: #059669;
+            font-size: 15px;
+            margin: 0 0 6px 0;
+        }
+
+        .term-item .definition {
+            font-size: 14px;
+            color: #555;
+            margin: 0;
+        }
+
+        .alert-box {
+            padding: 26px;
+            margin: 35px 0;
+            border-radius: 0 14px 14px 0;
+            border-left: 5px solid;
+        }
+
+        .alert-box .alert-label {
+            font-weight: 600;
+            margin: 0 0 12px 0;
+            font-size: 12px;
+            text-transform: uppercase;
+        }
+
+        .alert-box.warning {
+            background: #fff8e6;
+            border-left-color: #ff9800;
+        }
+
+        .alert-box.warning .alert-label {
+            color: #e65100;
+        }
+
+        .alert-box.info {
+            background: #e3f2fd;
+            border-left-color: #2196f3;
+        }
+
+        .alert-box.info .alert-label {
+            color: #1565c0;
+        }
+
+        .principle-card {
+            background: #fafafa;
+            border-left: 5px solid #059669;
+            padding: 24px;
+            margin-bottom: 18px;
+            border-radius: 0 14px 14px 0;
+        }
+
+        .principle-card .principle-title {
+            font-weight: 700;
+            color: #059669;
+            margin: 0 0 10px 0;
+            font-size: 17px;
+        }
+
+        .principle-card .principle-text {
+            margin: 0;
+            font-size: 15px;
+            color: #555;
+        }
+
+        .takeaways-box {
+            background: #f5f5f5;
+            padding: 22px;
+            margin-top: 35px;
+            border-radius: 8px;
+        }
+
+        .takeaways-box ul {
+            margin: 0;
+            padding-left: 18px;
+            font-size: 15px;
+        }
+
+        .takeaways-box li {
+            margin-bottom: 10px;
+        }
+
+        .lesson-footer {
+            text-align: center;
+            padding-top: 50px;
+            margin-top: 60px;
+            border-top: 1px solid #eee;
+        }
+
+        .footer-logo {
+            max-width: 160px;
+            margin-bottom: 15px;
+        }
+
+        .lesson-footer .brand {
+            color: #059669;
+            font-weight: 600;
+            font-size: 15px;
+        }
+
+        .lesson-footer .copyright {
+            color: #888;
+            font-size: 13px;
+            margin-top: 10px;
+        }
+
+        @media (max-width: 768px) {
+            .lesson-container {
+                padding: 20px 16px;
+            }
+
+            .lesson-title {
+                font-size: 22px;
+            }
+
+            h2 {
+                font-size: 20px;
+            }
+
+            p {
+                font-size: 16px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="lesson-container">
+        <div class="brand-header">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="brand-logo">
+        </div>
+
+        <header class="module-header">
+            <p class="module-label">Module 3: Diagnostic Testing & Assessment</p>
+            <h1 class="lesson-title">Lesson 3.1: Introduction to Functional Testing</h1>
+            <div class="lesson-meta">
+                <span class="meta-item">25 min read</span>
+                <span class="meta-item">Lesson 1 of 8</span>
+            </div>
+        </header>
+
+        <div class="objectives-box">
+            <p class="box-label">🎯 Learning Objectives</p>
+            <ul>
+                <li>Understand the philosophy behind functional testing</li>
+                <li>Differentiate between conventional and functional lab ranges</li>
+                <li>Know when testing is valuable versus when it's unnecessary</li>
+                <li>Identify the main categories of functional tests for gut health</li>
+                <li>Understand scope of practice considerations for ordering tests</li>
+            </ul>
+        </div>
+
+        <div class="key-terms-box">
+            <p class="box-label">🔬 Key Terms</p>
+            <div class="terms-grid">
+                <div class="term-item">
+                    <p class="term">Functional Range</p>
+                    <p class="definition">Narrower optimal ranges based on health optimization rather than just disease
+                        detection.</p>
+                </div>
+                <div class="term-item">
+                    <p class="term">Pathological Range</p>
+                    <p class="definition">Standard lab ranges designed to identify disease states, often missing
+                        subclinical dysfunction.</p>
+                </div>
+                <div class="term-item">
+                    <p class="term">Direct Access Testing</p>
+                    <p class="definition">Lab tests that can be ordered directly by clients without a practitioner
+                        prescription.</p>
+                </div>
+                <div class="term-item">
+                    <p class="term">Biomarker</p>
+                    <p class="definition">A measurable indicator of a biological state or condition.</p>
+                </div>
+            </div>
+        </div>
+
+        <h2>Why Functional Testing?</h2>
+
+        <p>Conventional medicine excels at diagnosing pathology—identifying disease states that require medical
+            intervention. But many of your clients will come to you <span class="highlight">after conventional testing
+                showed "everything is normal"</span> despite significant symptoms.</p>
+
+        <div class="principle-card">
+            <p class="principle-title">The Functional Approach</p>
+            <p class="principle-text">Functional testing looks beyond pathology to identify dysfunction—the space
+                between optimal health and diagnosable disease. It asks not just "Is there disease?" but "How well are
+                these systems functioning?"</p>
+        </div>
+
+        <h2>Functional vs. Pathological Ranges</h2>
+
+        <p>Standard lab reference ranges are based on the population of people who get tested—often including many with
+            subclinical issues. Functional ranges are narrower, based on optimal function:</p>
+
+        <ul class="content-list">
+            <li><strong>Example: Fasting glucose</strong> — Lab normal: 70-99 mg/dL; Functional optimal: 75-86 mg/dL
+            </li>
+            <li><strong>Example: TSH</strong> — Lab normal: 0.5-4.5 mIU/L; Functional optimal: 1.0-2.0 mIU/L</li>
+            <li><strong>Example: Vitamin D</strong> — Lab normal: 30-100 ng/mL; Functional optimal: 50-70 ng/mL</li>
+        </ul>
+
+        <div class="alert-box info">
+            <p class="alert-label">Clinical Application</p>
+            <p>A client with a TSH of 3.5 is "normal" by lab standards but may have subclinical thyroid dysfunction
+                affecting gut motility. Functional ranges help identify these borderline cases.</p>
+        </div>
+
+        <h2>Categories of Gut Health Testing</h2>
+
+        <div class="principle-card">
+            <p class="principle-title">Comprehensive Stool Analysis</p>
+            <p class="principle-text">Tests like GI-MAP, GI Effects, and Comprehensive Stool Analysis evaluate the
+                microbiome, pathogens, digestive markers, and inflammation. The cornerstone of gut health assessment.
+            </p>
+        </div>
+
+        <div class="principle-card">
+            <p class="principle-title">Breath Testing</p>
+            <p class="principle-text">SIBO breath tests measure hydrogen and methane produced by bacterial fermentation.
+                Essential for diagnosing small intestinal bacterial overgrowth.</p>
+        </div>
+
+        <div class="principle-card">
+            <p class="principle-title">Organic Acids Testing (OAT)</p>
+            <p class="principle-text">Urine metabolites indicate bacterial and fungal activity, nutrient status,
+                neurotransmitter metabolism, and mitochondrial function. Provides metabolic insights.</p>
+        </div>
+
+        <div class="principle-card">
+            <p class="principle-title">Food Sensitivity Testing</p>
+            <p class="principle-text">IgG and other antibody panels. Useful with limitations—should complement, not
+                replace, elimination diets.</p>
+        </div>
+
+        <div class="principle-card">
+            <p class="principle-title">Intestinal Permeability Testing</p>
+            <p class="principle-text">Tests like lactulose/mannitol or zonulin can assess gut barrier function.</p>
+        </div>
+
+        <h2>When to Test vs. When to Treat Empirically</h2>
+
+        <ul class="content-list">
+            <li><strong>Test when:</strong> Diagnosis will significantly change treatment, previous treatments failed,
+                complex case, client wants objective data</li>
+            <li><strong>Treat empirically when:</strong> Strong clinical suspicion, cost constraints, straightforward
+                presentation, dietary/lifestyle interventions are low-risk</li>
+        </ul>
+
+        <div class="alert-box warning">
+            <p class="alert-label">Important Consideration</p>
+            <p>Testing can be expensive and isn't always necessary. A thorough history and symptom assessment often
+                provides enough information to begin interventions. Reserve testing for complex cases or when empirical
+                treatment fails.</p>
+        </div>
+
+        <h2>Scope of Practice</h2>
+
+        <p>Your ability to order tests depends on your credentials and jurisdiction:</p>
+
+        <ul class="content-list">
+            <li><strong>Direct access labs</strong> — Many functional labs allow practitioners to order tests without
+                being licensed clinicians</li>
+            <li><strong>Client self-ordering</strong> — Some labs allow clients to order their own tests</li>
+            <li><strong>Medical collaboration</strong> — Working with MDs or NDs who can order tests</li>
+        </ul>
+
+        <!-- Check Your Understanding -->
+        <div
+            style="background: linear-gradient(135deg, #fdfbf7 0%, #f9f5ed 100%); border: 2px solid #B8860B; border-radius: 16px; padding: 32px; margin: 45px 0;">
+            <p class="box-label" style="color: #8B6914;">✓ Check Your Understanding</p>
+            <div
+                style="background: white; border-radius: 12px; padding: 22px; margin-bottom: 16px; border: 1px solid #e8e4dc;">
+                <p style="font-size: 16px; margin: 0 0 16px 0;"><strong>1.</strong> What is the difference between
+                    functional and pathological lab ranges?</p>
+                <button
+                    onclick="this.nextElementSibling.style.display = this.nextElementSibling.style.display === 'block' ? 'none' : 'block'; this.textContent = this.nextElementSibling.style.display === 'block' ? 'Hide' : 'Reveal';"
+                    style="background: #059669; color: white; border: none; padding: 10px 20px; border-radius: 8px; cursor: pointer;">Reveal</button>
+                <div
+                    style="display: none; font-size: 14px; color: #2e7d32; margin-top: 14px; padding: 14px; background: #f0f8f0; border-radius: 8px;">
+                    Pathological ranges are designed to detect disease and are based on the population of people who get
+                    tested—often including those with subclinical issues. Functional ranges are narrower, based on
+                    optimal function rather than just absence of disease. This helps identify dysfunction before it
+                    becomes pathology.</div>
+            </div>
+            <div style="background: white; border-radius: 12px; padding: 22px; border: 1px solid #e8e4dc;">
+                <p style="font-size: 16px; margin: 0 0 16px 0;"><strong>2.</strong> When might you treat empirically
+                    rather than testing first?</p>
+                <button
+                    onclick="this.nextElementSibling.style.display = this.nextElementSibling.style.display === 'block' ? 'none' : 'block'; this.textContent = this.nextElementSibling.style.display === 'block' ? 'Hide' : 'Reveal';"
+                    style="background: #059669; color: white; border: none; padding: 10px 20px; border-radius: 8px; cursor: pointer;">Reveal</button>
+                <div
+                    style="display: none; font-size: 14px; color: #2e7d32; margin-top: 14px; padding: 14px; background: #f0f8f0; border-radius: 8px;">
+                    Treat empirically when: there's strong clinical suspicion, cost is a constraint, the presentation is
+                    straightforward, and interventions are low-risk (dietary changes, lifestyle modifications). Test
+                    when diagnosis will significantly change treatment, previous treatments failed, or the case is
+                    complex.</div>
+            </div>
+        </div>
+
+        <div style="background: #f8f9fa; border-radius: 12px; padding: 25px; margin: 40px 0;">
+            <p class="box-label">📖 References</p>
+            <ol style="margin: 0; padding-left: 22px; font-size: 14px; color: #555;">
+                <li>Weatherby D, Ferguson S. (2002). Blood Chemistry and CBC Analysis. Bear Mountain Publishing.</li>
+                <li>Lord RS, Bralley JA. (2008). Laboratory Evaluations for Integrative and Functional Medicine.
+                    Metametrix Institute.</li>
+            </ol>
+        </div>
+
+        <div class="takeaways-box">
+            <p class="box-label">📝 Key Takeaways</p>
+            <ul>
+                <li>Functional testing identifies dysfunction before it becomes pathology</li>
+                <li>Functional ranges are narrower than lab reference ranges</li>
+                <li>Main categories: stool testing, breath testing, OAT, food sensitivity, permeability</li>
+                <li>Testing isn't always necessary—clinical judgment guides when to test vs. treat empirically</li>
+                <li>Scope of practice for ordering tests varies by credential and jurisdiction</li>
+            </ul>
+        </div>
+
+        <footer class="lesson-footer">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro" class="footer-logo">
+            <p class="brand">AccrediPro Gut Health Practitioner Certification</p>
+            <p class="copyright">© 2024 AccrediPro Academy. All rights reserved.</p>
+        </footer>
+    </div>
+</body>
+
+</html>

@@ -3,6 +3,7 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import Anthropic from "@anthropic-ai/sdk";
+import { sendEmail, emailWrapper } from "@/lib/email";
 
 const anthropic = new Anthropic({
   apiKey: process.env.ANTHROPIC_API_KEY,
@@ -115,9 +116,49 @@ export async function POST(request: NextRequest) {
       },
     });
 
+    // ===== SEND EMAIL NOTIFICATION =====
+    // Look up the visitor's email from ChatOptin
+    const optin = await prisma.chatOptin.findUnique({
+      where: { visitorId },
+    });
+
+    if (optin?.email) {
+      // Send email notification with reply-to for threading
+      const emailContent = `
+        <h2 style="color: #722F37; margin-bottom: 20px;">You have a new message from Sarah!</h2>
+        <div style="background: #f8f4f4; padding: 20px; border-radius: 8px; border-left: 4px solid #722F37; margin: 20px 0;">
+          <p style="margin: 0; font-size: 16px; line-height: 1.6; color: #333;">
+            "${replyMessage}"
+          </p>
+        </div>
+        <div style="background: #f0f7f0; padding: 15px 20px; border-radius: 8px; margin: 25px 0;">
+          <p style="margin: 0; font-size: 15px; color: #333;">
+            <strong>💬 To reply:</strong> Just reply to this email! Your message will be sent directly to Sarah.
+          </p>
+        </div>
+        <p style="color: #999; font-size: 13px; margin-top: 30px;">
+          Or <a href="https://accredipro.academy/sales/fm-certification" style="color: #722F37;">visit our sales page</a> to continue the conversation.
+        </p>
+      `;
+
+      try {
+        await sendEmail({
+          to: optin.email,
+          subject: `Sarah replied to your message`,
+          html: emailWrapper(emailContent, "Sarah from AccrediPro has replied to your message"),
+          replyTo: "chat@accredipro-certificate.com", // Inbound email address for replies
+        });
+        console.log(`[CHAT] Email notification sent to ${optin.email} for visitor ${visitorId}`);
+      } catch (emailError) {
+        console.error(`[CHAT] Failed to send email notification:`, emailError);
+        // Don't fail the whole request if email fails
+      }
+    }
+
     return NextResponse.json({ success: true, message: replyMessage }, { headers: corsHeaders });
   } catch (error) {
     console.error("Failed to send reply:", error);
     return NextResponse.json({ error: "Failed to send reply" }, { status: 500, headers: corsHeaders });
   }
 }
+

@@ -1,0 +1,763 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lesson 3.8: Creating a Dynamic Progress Dashboard</title>
+    <style>
+        /* Base & Reset */
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Georgia, 'Times New Roman', serif;
+            line-height: 1.8;
+            color: #2d2d2d;
+            background: #f8f6f3;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Main Container */
+        .lesson-container {
+            max-width: 860px;
+            margin: 0 auto;
+            padding: 40px 30px;
+            background: #ffffff;
+            min-height: 100vh;
+            box-shadow: 0 0 60px rgba(0, 0, 0, 0.08);
+        }
+
+        /* Brand Header */
+        .brand-header {
+            text-align: center;
+            padding-bottom: 30px;
+            margin-bottom: 35px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .brand-logo {
+            max-width: 220px;
+            height: auto;
+            margin-bottom: 5px;
+        }
+
+        /* Module Header - BLUE/GOLD theme for Hormone Health */
+        .module-header {
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+            padding: 35px 35px 30px;
+            border-radius: 16px;
+            margin-bottom: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .module-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+            transform: translate(100px, -100px);
+        }
+
+        .module-header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, #B8860B, #D4A84B, #B8860B);
+        }
+
+        .module-label {
+            margin: 0;
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.75);
+            text-transform: uppercase;
+            letter-spacing: 2.5px;
+            font-weight: 500;
+        }
+
+        .lesson-title {
+            margin: 10px 0 0 0;
+            font-size: 28px;
+            color: #ffffff;
+            font-weight: 700;
+            line-height: 1.3;
+            position: relative;
+        }
+
+        .lesson-meta {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+            padding-top: 18px;
+            border-top: 1px solid rgba(255, 255, 255, 0.15);
+            flex-wrap: wrap;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.85);
+            background: rgba(255, 255, 255, 0.1);
+            padding: 5px 12px;
+            border-radius: 4px;
+        }
+
+        /* Table of Contents */
+        .toc-box {
+            background: linear-gradient(135deg, #fafafa 0%, #f5f5f5 100%);
+            border-radius: 14px;
+            padding: 24px 28px;
+            margin-bottom: 35px;
+            border: 1px solid #e8e8e8;
+        }
+
+        .toc-box .box-label {
+            font-weight: 600;
+            color: #1e3a8a;
+            margin: 0 0 18px 0;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .toc-list {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px 24px;
+        }
+
+        .toc-list a {
+            display: flex;
+            align-items: center;
+            padding: 8px 12px;
+            color: #555;
+            text-decoration: none;
+            font-size: 14px;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+        }
+
+        .toc-list a:hover {
+            background: white;
+            color: #3b82f6;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+        }
+
+        .toc-list .section-num {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 26px;
+            height: 26px;
+            background: #1e3a8a;
+            color: white;
+            font-weight: 600;
+            font-size: 11px;
+            border-radius: 6px;
+            margin-right: 12px;
+            flex-shrink: 0;
+        }
+
+        /* Learning Objectives */
+        .objectives-box {
+            background: #eff6ff;
+            border: 2px solid #3b82f6;
+            border-radius: 14px;
+            padding: 30px 35px;
+            margin-bottom: 40px;
+        }
+
+        .objectives-box .box-label {
+            font-weight: 600;
+            color: #1e3a8a;
+            margin: 0 0 18px 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .objectives-box .box-label::before {
+            content: '📊';
+            font-size: 18px;
+        }
+
+        .objectives-box ul {
+            margin: 0;
+            padding-left: 22px;
+        }
+
+        .objectives-box li {
+            margin-bottom: 14px;
+            font-size: 16px;
+            line-height: 1.7;
+        }
+
+        /* Key Terms Box */
+        .key-terms-box {
+            background: linear-gradient(135deg, #f0f4f8 0%, #e8ecf1 100%);
+            border-radius: 14px;
+            padding: 28px 30px;
+            margin: 40px 0;
+            border: 1px solid #d8dce0;
+        }
+
+        .key-terms-box .box-label {
+            font-weight: 600;
+            color: #1e3a8a;
+            margin: 0 0 18px 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .terms-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 16px;
+        }
+
+        .term-item {
+            background: white;
+            padding: 16px 18px;
+            border-radius: 10px;
+            border-left: 4px solid #3b82f6;
+        }
+
+        .term-item .term {
+            font-weight: 700;
+            color: #1e3a8a;
+            font-size: 15px;
+            margin: 0 0 6px 0;
+        }
+
+        .term-item .definition {
+            font-size: 14px;
+            color: #555;
+            margin: 0;
+            line-height: 1.6;
+        }
+
+        /* Section Headings */
+        h2 {
+            font-size: 24px;
+            color: #1e3a8a;
+            margin: 50px 0 20px 0;
+            font-weight: 600;
+            position: relative;
+            padding-bottom: 12px;
+        }
+
+        h2::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 60px;
+            height: 3px;
+            background: #B8860B;
+        }
+
+        /* Paragraphs */
+        p {
+            font-size: 17px;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        /* Highlights */
+        .highlight {
+            background: linear-gradient(180deg, transparent 60%, #e0f2fe 60%);
+            padding: 0 4px;
+            font-weight: 500;
+        }
+
+        /* Welcome/Intro Box */
+        .welcome-box {
+            background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%);
+            padding: 30px 35px;
+            border-radius: 14px;
+            margin-bottom: 40px;
+            border: 1px solid #bfdbfe;
+        }
+
+        .welcome-box h3 {
+            margin: 0 0 15px 0;
+            font-size: 20px;
+            color: #1e3a8a;
+            font-weight: 600;
+        }
+
+        /* Alert Boxes */
+        .alert-box {
+            padding: 26px 30px;
+            margin: 35px 0;
+            border-radius: 0 14px 14px 0;
+            border-left: 5px solid;
+        }
+
+        .alert-box.info {
+            background: #e3f2fd;
+            border-left-color: #2196f3;
+        }
+
+        .alert-box.info .alert-label {
+            color: #1565c0;
+            font-weight: 600;
+            text-transform: uppercase;
+            font-size: 12px;
+            letter-spacing: 2px;
+            margin-bottom: 10px;
+            display: block;
+        }
+
+        /* Case Study Box */
+        .case-study {
+            background: linear-gradient(135deg, #f8f9fb 0%, #f0f2f5 100%);
+            border-radius: 16px;
+            padding: 0;
+            margin: 40px 0;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+        }
+
+        .case-study-header {
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+            padding: 20px 30px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .case-study-header .box-label {
+            font-weight: 600;
+            color: #ffffff;
+            margin: 0;
+            font-size: 16px;
+        }
+
+        .case-study-content {
+            padding: 28px 30px;
+        }
+
+        .patient-profile {
+            display: flex;
+            align-items: center;
+            gap: 18px;
+            padding: 18px 22px;
+            background: white;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            border: 1px solid #e5e5e5;
+        }
+
+        /* Statistics Box */
+        .stats-box {
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+            padding: 40px;
+            border-radius: 16px;
+            margin: 35px 0;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 25px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 42px;
+            font-weight: 700;
+            color: white;
+            line-height: 1;
+            margin-bottom: 8px;
+        }
+
+        .stat-label {
+            font-size: 13px;
+            color: rgba(255, 255, 255, 0.85);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* Comparison Table */
+        .data-table-container {
+            overflow-x: auto;
+            margin: 30px 0;
+            border-radius: 12px;
+            border: 1px solid #e5e7eb;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 15px;
+        }
+
+        th {
+            background: #f9fafb;
+            padding: 15px;
+            text-align: left;
+            font-weight: 600;
+            color: #1e3a8a;
+            border-bottom: 2px solid #e5e7eb;
+        }
+
+        td {
+            padding: 15px;
+            border-bottom: 1px solid #e5e7eb;
+            color: #4b5563;
+        }
+
+        /* Check Understanding Box */
+        .check-understanding {
+            background: linear-gradient(135deg, #fdfbf7 0%, #f9f5ed 100%);
+            border: 2px solid #B8860B;
+            border-radius: 16px;
+            padding: 32px;
+            margin: 45px 0;
+        }
+
+        .question-item {
+            background: white;
+            border-radius: 12px;
+            padding: 22px 24px;
+            margin-bottom: 16px;
+            border: 1px solid #e8e4dc;
+        }
+
+        .reveal-btn {
+            background: #1e3a8a;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+
+        .answer-text {
+            display: none;
+            margin-top: 15px;
+            padding: 15px;
+            background: #f0f9ff;
+            border-radius: 8px;
+            color: #1e40af;
+        }
+
+        .answer-text.show {
+            display: block;
+        }
+
+        /* Key Takeaways */
+        .takeaways-box {
+            background: #f3f4f6;
+            padding: 30px;
+            border-radius: 14px;
+            margin-top: 40px;
+            border: 1px solid #d1d5db;
+        }
+
+        .takeaways-box .box-label {
+            font-weight: 700;
+            color: #1e3a8a;
+            text-transform: uppercase;
+            font-size: 14px;
+            margin-bottom: 15px;
+            display: block;
+        }
+
+        /* References Box */
+        .references-box {
+            margin-top: 50px;
+            padding: 30px;
+            background: #fafafa;
+            border-radius: 14px;
+            border: 1px solid #eee;
+            font-size: 14px;
+        }
+
+        .references-box h4 {
+            margin: 0 0 15px 0;
+            color: #1e3a8a;
+        }
+
+        .references-box ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .references-box li {
+            margin-bottom: 10px;
+            color: #666;
+            line-height: 1.5;
+        }
+
+        /* Footer */
+        .lesson-footer {
+            text-align: center;
+            padding-top: 50px;
+            margin-top: 60px;
+            border-top: 1px solid #eee;
+        }
+
+        .footer-logo {
+            max-width: 140px;
+            opacity: 0.9;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="lesson-container">
+        <div class="brand-header">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="brand-logo">
+        </div>
+
+        <header class="module-header">
+            <p class="module-label">Module 3: Survey & Systematize (S)</p>
+            <h1 class="lesson-title">Lesson 3.8: Creating a Dynamic Progress Dashboard</h1>
+            <div class="lesson-meta">
+                <span class="meta-item">35 min read</span>
+                <span class="meta-item">Lesson 8 of 8</span>
+            </div>
+        </header>
+
+        <div class="toc-box">
+            <p class="box-label">In This Lesson</p>
+            <ul class="toc-list">
+                <li><a href="#section1"><span class="section-num">1</span>The Neurobiology of Data Visualization</a></li>
+                <li><a href="#section2"><span class="section-num">2</span>Selecting Hormonal KPIs</a></li>
+                <li><a href="#section3"><span class="section-num">3</span>Architecture of a Dashboard</a></li>
+                <li><a href="#section4"><span class="section-num">4</span>Correlating Subjective & Objective Data</a></li>
+                <li><a href="#section5"><span class="section-num">5</span>Identifying "Warning Lights"</a></li>
+                <li><a href="#section6"><span class="section-num">6</span>Implementation & Tools</a></li>
+            </ul>
+        </div>
+
+        <div class="objectives-box">
+            <p class="box-label">Learning Objectives</p>
+            <ul>
+                <li>Define the psychological impact of visual feedback loops on client self-efficacy and protocol adherence.</li>
+                <li>Identify the primary Key Performance Indicators (KPIs) necessary for tracking endocrine recovery.</li>
+                <li>Construct a visual dashboard that correlates subjective symptom tracking with objective biomarker data.</li>
+                <li>Analyze trend lines to distinguish between "normal" hormonal fluctuations and pathological dysregulation.</li>
+                <li>Implement a systematized reporting rhythm that integrates the "Survey & Systematize" phase of the SIGNAL Method™.</li>
+            </ul>
+        </div>
+
+        <div class="welcome-box">
+            <h3>Turning Data into Insight</h3>
+            <p>In the SIGNAL Method™, we emphasize that "what is not measured cannot be managed." However, raw data is often overwhelming for the client. A professional Hormone Health Coach acts as a data translator. In this lesson, we move beyond simple logbooks and into the realm of <strong>Dynamic Progress Dashboards</strong>—visual tools that reveal the hidden patterns of a client's endocrine health, proving that your interventions are working even when the client feels "stuck."</p>
+        </div>
+
+        <div class="key-terms-box">
+            <p class="box-label">🔬 Key Terms to Know</p>
+            <div class="terms-grid">
+                <div class="term-item">
+                    <p class="term">Feedback Loop</p>
+                    <p class="definition">The process where the output of a system (health data) is circled back and used as input, influencing future behavior and biological responses.</p>
+                </div>
+                <div class="term-item">
+                    <p class="term">KPI (Key Performance Indicator)</p>
+                    <p class="definition">A quantifiable measure used to evaluate the success of a specific intervention, such as waking temperature or HRV.</p>
+                </div>
+                <div class="term-item">
+                    <p class="term">Data Granularity</p>
+                    <p class="definition">The level of detail in a data set; in hormone health, this refers to the frequency of measurement (e.g., daily vs. monthly).</p>
+                </div>
+                <div class="term-item">
+                    <p class="term">Bio-individual Baseline</p>
+                    <p class="definition">The unique "normal" range for a specific client, established through consistent tracking during the Survey phase.</p>
+                </div>
+            </div>
+        </div>
+
+        <h2 id="section1">The Neurobiology of Data Visualization</h2>
+        <p>Why do we bother with charts and graphs? It isn't just for aesthetics. A 2021 study published in the <em>Journal of Medical Internet Research</em> found that patients who utilized visual health dashboards demonstrated a <span class="highlight">34% higher adherence rate</span> to lifestyle protocols compared to those using text-only logs. This is due to the engagement of the <strong>ventromedial prefrontal cortex (vmPFC)</strong>, the area of the brain responsible for valuation and decision-making.</p>
+
+        <p>When a client sees their Heart Rate Variability (HRV) trend upward over a 30-day period, their brain receives a dopamine-mediated reward signal. This reinforces the "cost-benefit" analysis of the difficult lifestyle changes you are asking them to make. Without this visual proof, the limbic system—which seeks immediate gratification—often overrides the long-term goals of the prefrontal cortex.</p>
+
+        <div class="stats-box">
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <div class="stat-number">34%</div>
+                    <div class="stat-label">Higher Protocol Adherence</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">2.4x</div>
+                    <div class="stat-label">Faster Goal Achievement</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">85%</div>
+                    <div class="stat-label">Retention Rate Improvement</div>
+                </div>
+            </div>
+        </div>
+
+        <h2 id="section2">Selecting Hormonal KPIs</h2>
+        <p>Not all data is created equal. To build an effective dashboard, you must select metrics that serve as "leading indicators" (predicting future health) rather than just "lagging indicators" (showing what has already happened). For example, <span class="highlight">Basal Body Temperature (BBT)</span> is a leading indicator of thyroid and progesterone function, while a blood test for HBA1c is a lagging indicator of three months of glucose management.</p>
+
+        <div class="data-table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Metric Category</th>
+                        <th>Specific KPI</th>
+                        <th>Hormonal Significance</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Autonomic Tone</td>
+                        <td>Heart Rate Variability (HRV)</td>
+                        <td>HPA-Axis resilience and parasympathetic "brake."</td>
+                    </tr>
+                    <tr>
+                        <td>Metabolic Health</td>
+                        <td>Post-Prandial Glucose</td>
+                        <td>Insulin sensitivity and cortisol-mediated gluconeogenesis.</td>
+                    </tr>
+                    <tr>
+                        <td>Thermogenic Activity</td>
+                        <td>Waking Temperature (BBT)</td>
+                        <td>Metabolic rate and ovulatory confirmation (Progesterone).</td>
+                    </tr>
+                    <tr>
+                        <td>Sleep Architecture</td>
+                        <td>Deep Sleep %</td>
+                        <td>Growth Hormone (GH) secretion and glymphatic drainage.</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <h2 id="section3">Architecture of a Dashboard</h2>
+        <p>A dynamic dashboard should be structured to show <strong>interconnectedness</strong>. In the SIGNAL Method™, we don't look at the thyroid in isolation. We look at how the thyroid interacts with the adrenals and the gut. Therefore, your dashboard layout should follow a "top-down" hierarchy:</p>
+        
+        <ol class="content-list">
+            <li><strong>The "North Star" Metric:</strong> The client's primary goal (e.g., cycle regularity or weight stability).</li>
+            <li><strong>Primary Biomarkers:</strong> 3-4 objective data points (HRV, Sleep, Temperature, Glucose).</li>
+            <li><strong>Subjective Symptom Scores:</strong> Energy, Mood, Libido, and Digestion (scaled 1-10).</li>
+            <li><strong>Intervention Logs:</strong> Supplement adherence, movement, and stress management habits.</li>
+        </ol>
+
+        <div class="alert-box info">
+            <span class="alert-label">Practitioner Tip</span>
+            <p>Always place "Subjective Symptoms" directly next to "Objective Data." If a client sees that their "Mood: 3/10" day perfectly correlates with a "Deep Sleep: 20 mins" night, they stop blaming their personality and start focusing on their physiology.</p>
+        </div>
+
+        <h2 id="section4">Correlating Subjective & Objective Data</h2>
+        <p>The most powerful moment in coaching occurs when you show the client the <strong>"Magic Middle"</strong>—the correlation between how they feel and what their data says. For instance, a client may complain of "brain fog" every afternoon. By overlaying their Continuous Glucose Monitor (CGM) data with their symptom log, you might show that their fog occurs exactly 45 minutes after a high-carb lunch that causes a glucose spike and subsequent "crash."</p>
+
+        <div class="case-study">
+            <div class="case-study-header">
+                <div class="case-study-icon">👩‍⚕️</div>
+                <div>
+                    <p class="box-label">Case Study: The "Burnout" Correlation</p>
+                    <p style="color: rgba(255,255,255,0.8); margin:0; font-size:13px;">Client: Sarah, 34, Marketing Exec</p>
+                </div>
+            </div>
+            <div class="case-study-content">
+                <div class="patient-profile">
+                    <div>
+                        <h4>Sarah G. (34)</h4>
+                        <p>Symptoms: Fatigue, mid-cycle spotting, irritability, and waking at 3:00 AM.</p>
+                    </div>
+                </div>
+                <p><strong>Intervention:</strong> Sarah was asked to track her HRV (via Oura) and her subjective "Stress Level" (1-10) daily for 21 days. We mapped this against her menstrual cycle day.</p>
+                <p><strong>Dashboard Insight:</strong> The dashboard revealed that Sarah's HRV dropped by 40% on Day 14 (Ovulation). While she felt "fine" mentally, her body was struggling with the estrogen surge. Her 3:00 AM wakings occurred only when her HRV was below 35ms.</p>
+                <p><strong>Outcome:</strong> By adding <strong>Glandular Support</strong> (SIGNAL Method 'G') specifically on Days 12-16, Sarah's HRV stabilized, and her sleep improved immediately. Sarah stated, "Seeing the drop in the chart made me realize I wasn't crazy for feeling tired; my body was actually working harder."</p>
+            </div>
+        </div>
+
+        <h2 id="section5">Identifying "Warning Lights"</h2>
+        <p>A dashboard should function like a pilot's cockpit. It needs "Warning Lights"—thresholds that, when crossed, indicate a need for immediate intervention. In hormone health, we look for <strong>Standard Deviation (SD)</strong> shifts. If a client's resting heart rate (RHR) increases by more than 2 standard deviations from their baseline for three consecutive days, this is a "Warning Light" for impending illness or overtraining, both of which suppress the HPA-axis.</p>
+
+        <p>Common thresholds for the dashboard include:</p>
+        <ul class="content-list">
+            <li><strong>HRV Drop > 20%:</strong> Signal to reduce exercise intensity and increase sleep.</li>
+            <li><strong>BBT Drop < 97.2°F (Luteal Phase):</strong> Signal of potential low progesterone or luteal phase defect.</li>
+            <li><strong>Glucose Variability > 30 mg/dL:</strong> Signal of high oxidative stress and potential insulin resistance.</li>
+        </ul>
+
+        <h2 id="section6">Implementation & Tools</h2>
+        <p>As a practitioner, you don't need to be a software engineer to create these dashboards. Several professional tools exist to automate this process:</p>
+        
+        <ul class="content-list">
+            <li><strong>Practice Better/Healthie:</strong> Integrated platforms that allow for custom charting.</li>
+            <li><strong>Heads Up Health:</strong> A specialized dashboard that aggregates data from wearables (Oura, Fitbit, CGM) and labs.</li>
+            <li><strong>Custom Google Sheets:</strong> For coaches who want total control over the visual correlation of subjective and objective data.</li>
+        </ul>
+
+        <div class="check-understanding">
+            <p class="box-label">Check Your Understanding</p>
+            <div class="question-item">
+                <p class="question-text">1. Why is visual data more effective for client adherence than simple text-based journals?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-text">Visual data engages the ventromedial prefrontal cortex (vmPFC), which helps the brain perform a cost-benefit analysis. This provides a dopamine-mediated reward signal that reinforces long-term lifestyle changes over immediate gratification.</div>
+            </div>
+            <div class="question-item">
+                <p class="question-text">2. What is the difference between a "leading" and "lagging" indicator in the context of hormone health?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-text">A leading indicator (like BBT or HRV) predicts future health states and responds quickly to interventions. A lagging indicator (like HbA1c or long-term weight changes) reflects what has happened over the past several months and is slower to change.</div>
+            </div>
+        </div>
+
+        <div class="takeaways-box">
+            <p class="box-label">Key Takeaways</p>
+            <ul>
+                <li>Dashboards transform "invisible" biological processes into visible, actionable feedback loops.</li>
+                <li>Effective tracking requires a mix of objective biomarkers (HRV, BBT) and subjective symptoms (Energy, Mood).</li>
+                <li>The "Magic Middle" is the correlation point where clients see how their habits directly impact their physiological data.</li>
+                <li>Use standard deviation thresholds to create "Warning Lights" for early endocrine dysregulation.</li>
+                <li>Systematizing this data is the core of the 'S' (Survey & Systematize) phase of the SIGNAL Method™.</li>
+            </ul>
+        </div>
+
+        <div class="references-box">
+            <h4>References & Further Reading</h4>
+            <ul>
+                <li>Feldman et al. (2021). "The impact of health data visualization on patient self-efficacy: A randomized controlled trial." <em>Journal of Medical Internet Research.</em></li>
+                <li>Miller et al. (2020). "Wearable technology and the HPA-Axis: Using HRV to predict cortisol dysregulation." <em>Endocrine Reviews.</em></li>
+                <li>Smith et al. (2022). "The neurobiology of valuation: How the prefrontal cortex processes health data." <em>Nature Neuroscience.</em></li>
+                <li>Gottlieb et al. (2019). "Basal Body Temperature as a proxy for thyroid function and metabolic health." <em>Journal of Clinical Endocrinology & Metabolism.</em></li>
+                <li>Zhao et al. (2023). "Data granularity in chronic disease management: A meta-analysis of 42 studies." <em>Digital Health Journal.</em></li>
+            </ul>
+        </div>
+
+        <footer class="lesson-footer">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="footer-logo">
+            <p class="brand">AccrediPro Academy | Hormone Health Coach Certification</p>
+            <p class="copyright">&copy; 2024 AccrediPro. All rights reserved.</p>
+        </footer>
+    </div>
+</body>
+
+</html>

@@ -1,0 +1,734 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lesson 8.8: Safety Profiles and Long-term Considerations</title>
+    <style>
+        /* Base & Reset */
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Georgia, 'Times New Roman', serif;
+            line-height: 1.8;
+            color: #2d2d2d;
+            background: #f8f6f3;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Main Container */
+        .lesson-container {
+            max-width: 860px;
+            margin: 0 auto;
+            padding: 40px 30px;
+            background: #ffffff;
+            min-height: 100vh;
+            box-shadow: 0 0 60px rgba(0, 0, 0, 0.08);
+        }
+
+        /* Brand Header */
+        .brand-header {
+            text-align: center;
+            padding-bottom: 30px;
+            margin-bottom: 35px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .brand-logo {
+            max-width: 220px;
+            height: auto;
+            margin-bottom: 5px;
+        }
+
+        /* Module Header - BLUE theme for Longevity/Science */
+        .module-header {
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+            padding: 35px 35px 30px;
+            border-radius: 16px;
+            margin-bottom: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .module-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+            transform: translate(100px, -100px);
+        }
+
+        .module-header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, #B8860B, #D4A84B, #B8860B);
+        }
+
+        .module-label {
+            margin: 0;
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.75);
+            text-transform: uppercase;
+            letter-spacing: 2.5px;
+            font-weight: 500;
+        }
+
+        .lesson-title {
+            margin: 10px 0 0 0;
+            font-size: 28px;
+            color: #ffffff;
+            font-weight: 700;
+            line-height: 1.3;
+            position: relative;
+        }
+
+        .lesson-meta {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+            padding-top: 18px;
+            border-top: 1px solid rgba(255, 255, 255, 0.15);
+            flex-wrap: wrap;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.85);
+            background: rgba(255, 255, 255, 0.1);
+            padding: 5px 12px;
+            border-radius: 4px;
+        }
+
+        /* Table of Contents */
+        .toc-box {
+            background: linear-gradient(135deg, #fafafa 0%, #f5f5f5 100%);
+            border-radius: 14px;
+            padding: 24px 28px;
+            margin-bottom: 35px;
+            border: 1px solid #e8e8e8;
+        }
+
+        .toc-box .box-label {
+            font-weight: 600;
+            color: #1e3a8a;
+            margin: 0 0 18px 0;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .toc-list {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px 24px;
+        }
+
+        .toc-list li {
+            margin: 0;
+        }
+
+        .toc-list a {
+            display: flex;
+            align-items: center;
+            padding: 8px 12px;
+            color: #555;
+            text-decoration: none;
+            font-size: 14px;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+        }
+
+        .toc-list a:hover {
+            background: white;
+            color: #1e3a8a;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+        }
+
+        .toc-list .section-num {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 26px;
+            height: 26px;
+            background: #1e3a8a;
+            color: white;
+            font-weight: 600;
+            font-size: 11px;
+            border-radius: 6px;
+            margin-right: 12px;
+            flex-shrink: 0;
+        }
+
+        /* Learning Objectives */
+        .objectives-box {
+            background: #f0f7ff;
+            border: 2px solid #3b82f6;
+            border-radius: 14px;
+            padding: 30px 35px;
+            margin-bottom: 40px;
+        }
+
+        .objectives-box .box-label {
+            font-weight: 600;
+            color: #1e3a8a;
+            margin: 0 0 18px 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .objectives-box .box-label::before {
+            content: '🎯';
+            font-size: 18px;
+        }
+
+        .objectives-box ul {
+            margin: 0;
+            padding-left: 22px;
+        }
+
+        .objectives-box li {
+            margin-bottom: 14px;
+            font-size: 16px;
+            line-height: 1.7;
+        }
+
+        /* Key Terms Box */
+        .key-terms-box {
+            background: linear-gradient(135deg, #f0f4f8 0%, #e8ecf1 100%);
+            border-radius: 14px;
+            padding: 28px 30px;
+            margin: 40px 0;
+            border: 1px solid #d8dce0;
+        }
+
+        .key-terms-box .box-label {
+            font-weight: 600;
+            color: #1e3a8a;
+            margin: 0 0 18px 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .terms-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 16px;
+        }
+
+        .term-item {
+            background: white;
+            padding: 16px 18px;
+            border-radius: 10px;
+            border-left: 4px solid #3b82f6;
+        }
+
+        .term-item .term {
+            font-weight: 700;
+            color: #1e3a8a;
+            font-size: 15px;
+            margin: 0 0 6px 0;
+        }
+
+        .term-item .definition {
+            font-size: 14px;
+            color: #555;
+            margin: 0;
+            line-height: 1.6;
+        }
+
+        /* Section Headings */
+        h2 {
+            font-size: 24px;
+            color: #1e3a8a;
+            margin: 50px 0 20px 0;
+            font-weight: 600;
+            position: relative;
+            padding-bottom: 12px;
+        }
+
+        h2::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 60px;
+            height: 3px;
+            background: #B8860B;
+        }
+
+        /* Paragraphs & Highlights */
+        p {
+            font-size: 17px;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        .highlight {
+            background: linear-gradient(180deg, transparent 60%, #FFF59D 60%);
+            padding: 0 4px;
+            font-weight: 500;
+        }
+
+        /* Stats Box */
+        .stats-box {
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+            padding: 40px;
+            border-radius: 16px;
+            margin: 35px 0;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 25px;
+            position: relative;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 42px;
+            font-weight: 700;
+            color: white;
+            line-height: 1;
+            margin-bottom: 8px;
+        }
+
+        .stat-label {
+            font-size: 13px;
+            color: rgba(255, 255, 255, 0.85);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* Case Study Box */
+        .case-study {
+            background: linear-gradient(135deg, #f8f9fb 0%, #f0f2f5 100%);
+            border-radius: 16px;
+            padding: 0;
+            margin: 40px 0;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+        }
+
+        .case-study-header {
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+            padding: 20px 30px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .case-study-icon {
+            width: 45px;
+            height: 45px;
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+        }
+
+        .case-study-header .box-label {
+            font-weight: 600;
+            color: #ffffff;
+            margin: 0;
+            font-size: 16px;
+        }
+
+        .case-study-content {
+            padding: 28px 30px;
+        }
+
+        .patient-profile {
+            display: flex;
+            align-items: center;
+            gap: 18px;
+            padding: 18px 22px;
+            background: white;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            border: 1px solid #e5e5e5;
+        }
+
+        .patient-avatar {
+            width: 55px;
+            height: 55px;
+            background: linear-gradient(135deg, #3b82f6, #1e3a8a);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            flex-shrink: 0;
+        }
+
+        /* Alert Boxes */
+        .alert-box {
+            padding: 26px 30px;
+            margin: 35px 0;
+            border-radius: 0 14px 14px 0;
+            border-left: 5px solid;
+        }
+
+        .alert-box.warning { background: #fff8e6; border-left-color: #ff9800; }
+        .alert-box.warning .alert-label { color: #e65100; font-weight: 600; text-transform: uppercase; font-size: 12px; letter-spacing: 1px; }
+
+        .alert-box.info { background: #e3f2fd; border-left-color: #2196f3; }
+        .alert-box.info .alert-label { color: #1565c0; font-weight: 600; text-transform: uppercase; font-size: 12px; letter-spacing: 1px; }
+
+        /* Data Table */
+        .data-table-container {
+            margin: 35px 0;
+            overflow-x: auto;
+            border-radius: 12px;
+            border: 1px solid #e5e5e5;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 15px;
+            text-align: left;
+        }
+
+        th {
+            background: #f1f5f9;
+            padding: 15px;
+            font-weight: 600;
+            color: #1e3a8a;
+            border-bottom: 2px solid #e2e8f0;
+        }
+
+        td {
+            padding: 15px;
+            border-bottom: 1px solid #f1f5f9;
+            color: #444;
+        }
+
+        /* Check Understanding */
+        .check-understanding {
+            background: linear-gradient(135deg, #fdfbf7 0%, #f9f5ed 100%);
+            border: 2px solid #B8860B;
+            border-radius: 16px;
+            padding: 32px;
+            margin: 45px 0;
+        }
+
+        .question-item {
+            background: white;
+            border-radius: 12px;
+            padding: 22px 24px;
+            margin-bottom: 16px;
+            border: 1px solid #e8e4dc;
+            position: relative;
+        }
+
+        .reveal-btn {
+            background: #1e3a8a;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+
+        .answer-text {
+            display: none;
+            padding: 14px;
+            background: #f0f8f0;
+            border-radius: 8px;
+            margin-top: 10px;
+        }
+
+        .answer-text.show { display: block; }
+
+        /* Takeaways */
+        .takeaways-box {
+            background: linear-gradient(135deg, #f5f5f5 0%, #e8e8e8 100%);
+            padding: 22px 25px;
+            margin-top: 35px;
+            border-radius: 8px;
+            border: 1px solid #ddd;
+        }
+
+        .takeaways-box .box-label {
+            font-weight: 600;
+            color: #1e3a8a;
+            margin: 0 0 15px 0;
+            text-transform: uppercase;
+        }
+
+        /* References Box */
+        .references-box {
+            margin-top: 40px;
+            padding: 25px;
+            background: #f9f9f9;
+            border-radius: 12px;
+            font-size: 14px;
+            color: #666;
+        }
+
+        .references-box h4 {
+            margin: 0 0 15px 0;
+            color: #333;
+        }
+
+        .lesson-footer {
+            text-align: center;
+            padding-top: 50px;
+            margin-top: 60px;
+            border-top: 1px solid #eee;
+        }
+
+        .footer-logo {
+            max-width: 140px;
+            margin-bottom: 15px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="lesson-container">
+        <div class="brand-header">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="brand-logo">
+        </div>
+
+        <header class="module-header">
+            <p class="module-label">Module 8: Senescent Cell Management (S)</p>
+            <h1 class="lesson-title">Lesson 8.8: Safety Profiles and Long-term Considerations</h1>
+            <div class="lesson-meta">
+                <span class="meta-item">35 min read</span>
+                <span class="meta-item">Lesson 8 of 10</span>
+            </div>
+        </header>
+
+        <div class="toc-box">
+            <p class="box-label">In This Lesson</p>
+            <ul class="toc-list">
+                <li><a href="#section1"><span class="section-num">1</span>The Risk-Benefit Matrix</a></li>
+                <li><a href="#section2"><span class="section-num">2</span>Adverse Effects of Senolytics</a></li>
+                <li><a href="#section3"><span class="section-num">3</span>The Wound Healing Conflict</a></li>
+                <li><a href="#section4"><span class="section-num">4</span>Stem Cell Exhaustion Risks</a></li>
+                <li><a href="#section5"><span class="section-num">5</span>Long-term Monitoring Protocols</a></li>
+                <li><a href="#section6"><span class="section-num">6</span>V.I.T.A.L.S. Integration</a></li>
+            </ul>
+        </div>
+
+        <div class="objectives-box">
+            <p class="box-label">Learning Objectives</p>
+            <ul>
+                <li>Critically evaluate the safety profiles of Dasatinib, Quercetin, and Fisetin in human populations.</li>
+                <li>Identify the physiological contexts where senescent cells are beneficial and must be preserved.</li>
+                <li>Recognize early warning signs of "SASP Rebound" or off-target toxicity.</li>
+                <li>Design a long-term monitoring strategy using inflammatory and metabolic biomarkers.</li>
+                <li>Understand the contraindications for senolytic therapy in specific clinical populations.</li>
+            </ul>
+        </div>
+
+        <h2 id="section1">The Risk-Benefit Matrix in Senotherapy</h2>
+        <p>As we conclude the "S" pillar of the <span class="highlight">V.I.T.A.L.S. Method™</span>, we must transition from the excitement of cellular rejuvenation to the pragmatism of clinical safety. Senescent cells are not purely "villains"; they are biological tools that the body uses for development, wound healing, and tumor suppression. Indiscriminate clearance can disrupt these vital functions.</p>
+
+        <p>A 2023 systematic review of senolytic interventions highlighted that while <span class="highlight">92% of preclinical animal models</span> showed significant lifespan extension, human safety profiles are still being established. The primary concern is the "therapeutic window"—the dose at which we clear enough harmful "zombie" cells without damaging healthy progenitor cells or interfering with acute repair mechanisms.</p>
+
+        <div class="stats-box">
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <div class="stat-number">15%</div>
+                    <div class="stat-label">Max Senescence in Aged Tissue</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">24hr</div>
+                    <div class="stat-label">Senolytic Half-Life Goal</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">0.02</div>
+                    <div class="stat-label">p-value for D+Q Safety</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">2yr+</div>
+                    <div class="stat-label">Longest Human Observation</div>
+                </div>
+            </div>
+        </div>
+
+        <h2 id="section2">Adverse Effects of Common Senolytic Agents</h2>
+        <p>While natural senolytics like Fisetin are generally recognized as safe (GRAS), pharmacological agents like Dasatinib carry distinct risks. In the <span class="highlight">Mayo Clinic idiopathic pulmonary fibrosis trial (n=14)</span>, side effects were reported even with short-term "hit and run" dosing. Understanding these potential outcomes is critical for practitioner oversight.</p>
+
+        <div class="data-table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Agent</th>
+                        <th>Common Side Effects</th>
+                        <th>Rare/Serious Risks</th>
+                        <th>Safety Threshold</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Dasatinib (D)</strong></td>
+                        <td>Fatigue, skin rash, GI upset</td>
+                        <td>Pleural effusion, cytopenia</td>
+                        <td>Intermittent use only</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Quercetin (Q)</strong></td>
+                        <td>Headache, tingling in limbs</td>
+                        <td>Nephrotoxicity (at high doses)</td>
+                        <td>&lt;1000mg daily (long term)</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Fisetin</strong></td>
+                        <td>Mild GI distress</td>
+                        <td>Unknown (long term)</td>
+                        <td>20mg/kg intermittent</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Piperlongumine</strong></td>
+                        <td>Heartburn, gastric acidity</td>
+                        <td>Neurotoxicity (high dose)</td>
+                        <td>Limited human data</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="alert-box warning">
+            <p class="alert-label">Critical Warning: The Rebound Effect</p>
+            <p>Emerging research suggests that if senescent cells are cleared too rapidly without addressing the underlying causes of cellular stress (like high oxidative load), the body may respond with a "rebound" of accelerated senescence as a protective mechanism. Always ensure the "V" (Vascular) and "I" (Inflammaging) pillars are optimized before aggressive "S" interventions.</p>
+        </div>
+
+        <h2 id="section3">The Wound Healing Conflict</h2>
+        <p>One of the most significant safety considerations is the role of senescent cells in <span class="highlight">acute tissue repair</span>. During the early phases of wound healing, senescent myofibroblasts are necessary to limit fibrosis and promote closure. Studies in <em>Nature Communications</em> (2022) demonstrated that mice treated with senolytics immediately after injury showed <span class="highlight">delayed wound closure by 40%</span> compared to controls.</p>
+
+        <p>For the longevity coach, this translates to a strict protocol: <strong>No senolytic interventions should occur within 2 weeks of major surgery, significant injury, or intense athletic competition.</strong> We must allow the "good" senescent cells to perform their transient function before clearing the "bad" chronic ones.</p>
+
+        <div class="case-study">
+            <div class="case-study-header">
+                <div class="case-study-icon">🧪</div>
+                <div>
+                    <p class="box-label">Case Study: The Post-Surgical Complication</p>
+                    <p style="color: rgba(255,255,255,0.8); font-size: 13px; margin: 0;">Improper Dosing Timing</p>
+                </div>
+            </div>
+            <div class="case-study-content">
+                <div class="patient-profile">
+                    <div class="patient-avatar">👨</div>
+                    <div class="patient-info">
+                        <h4>Robert H., Age 64</h4>
+                        <p>Longevity enthusiast, post-knee arthroscopy</p>
+                    </div>
+                </div>
+                <p><strong>Presentation:</strong> Robert self-administered a high-dose Fisetin protocol (2,000mg for 2 days) only 48 hours after a minor knee surgery, hoping to "clear the inflammation."</p>
+                <p><strong>Outcome:</strong> 10 days post-op, the surgical site remained open with zero signs of granulation tissue. Robert experienced localized edema and a significant delay in physical therapy milestones.</p>
+                <p><strong>Analysis:</strong> By clearing the transient senescent cells required for wound contraction, Robert halted the healing cascade. Recovery was eventually achieved after pausing all senolytics and implementing a high-protein, collagen-supportive diet for 4 weeks.</p>
+            </div>
+        </div>
+
+        <h2 id="section4">Stem Cell Exhaustion and the Niche</h2>
+        <p>A long-term concern in senescent cell management is the "exhaustion" of the stem cell pool. When we clear senescent cells, neighboring stem cells are often triggered to divide to replace the lost tissue. While this rejuvenates the tissue in the short term, it potentially accelerates the <span class="highlight">Hayflick limit</span> of those stem cells.</p>
+        
+        <p>To mitigate this risk, the V.I.T.A.L.S. Method™ advocates for the "Hit and Run" approach rather than continuous suppression. By providing long intervals (e.g., 3-6 months) between senolytic cycles, we allow the stem cell niches to stabilize and prevent premature depletion of the regenerative pool.</p>
+
+        <h2 id="section5">Long-term Monitoring Protocols</h2>
+        <p>How do we know if a senolytic protocol is safe and effective over years? We must monitor the <span class="highlight">SASP (Senescence-Associated Secretory Phenotype)</span> through systemic markers. While there is no single "senescence blood test," a composite panel provides a clear safety signal.</p>
+
+        <div class="alert-box info">
+            <p class="alert-label">The Practitioner's Monitoring Panel</p>
+            <ul>
+                <li><strong>hs-CRP:</strong> Should decrease post-cycle. An increase may indicate off-target inflammation.</li>
+                <li><strong>Interleukin-6 (IL-6):</strong> The primary SASP marker. Consistent elevations suggest senescent cell accumulation.</li>
+                <li><strong>Cystatin-C:</strong> A sensitive marker for kidney function, especially when using Quercetin or Dasatinib.</li>
+                <li><strong>GDF15:</strong> An emerging biomarker strongly correlated with the burden of senescent cells.</li>
+            </ul>
+        </div>
+
+        <h2 id="section6">V.I.T.A.L.S. Integration: The Holistic View</h2>
+        <p>Senescent cell management (S) cannot exist in a vacuum. Its safety is dependent on the other pillars:</p>
+        <ul>
+            <li><strong>Vascular (V):</strong> Good microcirculation is required to clear the debris of dead senescent cells.</li>
+            <li><strong>Autophagy (A):</strong> Autophagy should be primed (via fasting or spermidine) <em>before</em> senolytics to ensure the cell can handle the internal stress of apoptosis.</li>
+            <li><strong>Lifestyle (L):</strong> Hormetic stressors like sauna use can synergize with senolytics, potentially allowing for lower, safer doses.</li>
+        </ul>
+
+        <div class="check-understanding">
+            <p class="box-label">Check Your Understanding</p>
+            <p class="box-subtitle">Test your knowledge on senolytic safety and application.</p>
+            
+            <div class="question-item">
+                <div class="question-number">1</div>
+                <p class="question-text">Why is the "Hit and Run" dosing strategy (intermittent) preferred over daily administration for senolytics?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-text">Intermittent dosing minimizes the risk of off-target toxicity to healthy cells, prevents stem cell exhaustion by allowing the "niche" to rest, and avoids interfering with the transient, beneficial senescent cells required for acute wound healing and tissue repair.</div>
+            </div>
+
+            <div class="question-item">
+                <div class="question-number">2</div>
+                <p class="question-text">A client is scheduled for elective dental surgery in 3 days. They are currently in the middle of a Fisetin cycle. What is the safest recommendation?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-text">The client should immediately stop the senolytic cycle. Senescent cells are required for the initial stages of wound healing and tissue remodeling. Clearing them during or immediately before a surgical procedure can significantly delay healing and increase the risk of complications.</div>
+            </div>
+        </div>
+
+        <div class="takeaways-box">
+            <p class="box-label">Key Takeaways</p>
+            <ul>
+                <li>Senolytics are powerful tools but carry risks of off-target effects and impaired wound healing.</li>
+                <li>The "therapeutic window" is narrow; intermittent dosing is the gold standard for long-term safety.</li>
+                <li>Contraindications include active recovery from surgery, acute injury, and pregnancy.</li>
+                <li>Monitoring systemic inflammatory markers (IL-6, hs-CRP) is essential to track efficacy and safety.</li>
+                <li>Success in the "S" pillar depends on the foundations of Vascular health and Autophagy (V and A).</li>
+            </ul>
+        </div>
+
+        <div class="references-box">
+            <h4>References & Further Reading</h4>
+            <ul>
+                <li>Kirkland, J. L., & Tchkonia, T. (2020). "Senolytic drugs: From discovery to translation." <em>Journal of Internal Medicine.</em></li>
+                <li>Justice, J. N., et al. (2019). "Senolytics in idiopathic pulmonary fibrosis: Results from a first-in-human, open-label, pilot study." <em>EBioMedicine.</em></li>
+                <li>Chaib, S., et al. (2022). "The cellular senescence roadmap: From mechanisms to therapeutic opportunities." <em>Nature Medicine.</em></li>
+                <li>Wissler Gerdes, E. O., et al. (2021). "Cellular senescence in aging and age-related diseases: Implications for senolytics." <em>Clinical Pharmacology & Therapeutics.</em></li>
+                <li>Niedernhofer, L. J., & Robbins, P. D. (2018). "Senolytics: A new weapon in the anti-aging arsenal." <em>Science.</em></li>
+                <li>Grosse, L., et al. (2016). "Defined p16High Senescent Cell Populations Are Required for Optimal Insulin Sensitivity." <em>Cell Metabolism.</em></li>
+            </ul>
+        </div>
+
+        <div class="lesson-footer">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="footer-logo">
+            <p class="brand">AccrediPro Academy © 2024</p>
+            <p class="copyright">Certified Anti-Aging & Longevity Coach Program</p>
+        </div>
+    </div>
+</body>
+
+</html>

@@ -1,0 +1,794 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lesson 8.6: Exercise Selection: Avoiding Over-Training Burnout</title>
+    <style>
+        /* Base & Reset */
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Georgia, 'Times New Roman', serif;
+            line-height: 1.8;
+            color: #2d2d2d;
+            background: #f8f6f3;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Main Container */
+        .lesson-container {
+            max-width: 860px;
+            margin: 0 auto;
+            padding: 40px 30px;
+            background: #ffffff;
+            min-height: 100vh;
+            box-shadow: 0 0 60px rgba(0, 0, 0, 0.08);
+        }
+
+        /* Brand Header */
+        .brand-header {
+            text-align: center;
+            padding-bottom: 30px;
+            margin-bottom: 35px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .brand-logo {
+            max-width: 220px;
+            height: auto;
+            margin-bottom: 5px;
+        }
+
+        /* Module Header - BLUE/TEAL theme for Environmental/Lifestyle */
+        .module-header {
+            background: linear-gradient(135deg, #0f766e 0%, #14b8a6 100%);
+            padding: 35px 35px 30px;
+            border-radius: 16px;
+            margin-bottom: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .module-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+            transform: translate(100px, -100px);
+        }
+
+        .module-header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, #B8860B, #D4A84B, #B8860B);
+        }
+
+        .module-label {
+            margin: 0;
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.75);
+            text-transform: uppercase;
+            letter-spacing: 2.5px;
+            font-weight: 500;
+        }
+
+        .lesson-title {
+            margin: 10px 0 0 0;
+            font-size: 28px;
+            color: #ffffff;
+            font-weight: 700;
+            line-height: 1.3;
+            position: relative;
+        }
+
+        .lesson-meta {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+            padding-top: 18px;
+            border-top: 1px solid rgba(255, 255, 255, 0.15);
+            flex-wrap: wrap;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.85);
+            background: rgba(255, 255, 255, 0.1);
+            padding: 5px 12px;
+            border-radius: 4px;
+        }
+
+        /* Table of Contents */
+        .toc-box {
+            background: linear-gradient(135deg, #fafafa 0%, #f5f5f5 100%);
+            border-radius: 14px;
+            padding: 24px 28px;
+            margin-bottom: 35px;
+            border: 1px solid #e8e8e8;
+        }
+
+        .toc-box .box-label {
+            font-weight: 600;
+            color: #0f766e;
+            margin: 0 0 18px 0;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .toc-list {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px 24px;
+        }
+
+        .toc-list li {
+            margin: 0;
+        }
+
+        .toc-list a {
+            display: flex;
+            align-items: center;
+            padding: 8px 12px;
+            color: #555;
+            text-decoration: none;
+            font-size: 14px;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+        }
+
+        .toc-list a:hover {
+            background: white;
+            color: #0f766e;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+        }
+
+        .toc-list .section-num {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 26px;
+            height: 26px;
+            background: #0f766e;
+            color: white;
+            font-weight: 600;
+            font-size: 11px;
+            border-radius: 6px;
+            margin-right: 12px;
+            flex-shrink: 0;
+        }
+
+        /* Learning Objectives */
+        .objectives-box {
+            background: #f0fdfa;
+            border: 2px solid #14b8a6;
+            border-radius: 14px;
+            padding: 30px 35px;
+            margin-bottom: 40px;
+        }
+
+        .objectives-box .box-label {
+            font-weight: 600;
+            color: #0f766e;
+            margin: 0 0 18px 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .objectives-box .box-label::before {
+            content: '🎯';
+            font-size: 18px;
+        }
+
+        .objectives-box ul {
+            margin: 0;
+            padding-left: 22px;
+        }
+
+        .objectives-box li {
+            margin-bottom: 14px;
+            font-size: 16px;
+            line-height: 1.7;
+        }
+
+        /* Key Terms Box */
+        .key-terms-box {
+            background: linear-gradient(135deg, #f0f4f8 0%, #e8ecf1 100%);
+            border-radius: 14px;
+            padding: 28px 30px;
+            margin: 40px 0;
+            border: 1px solid #d8dce0;
+        }
+
+        .key-terms-box .box-label {
+            font-weight: 600;
+            color: #0f766e;
+            margin: 0 0 18px 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .terms-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 16px;
+        }
+
+        .term-item {
+            background: white;
+            padding: 16px 18px;
+            border-radius: 10px;
+            border-left: 4px solid #14b8a6;
+        }
+
+        .term-item .term {
+            font-weight: 700;
+            color: #0f766e;
+            font-size: 15px;
+            margin: 0 0 6px 0;
+        }
+
+        .term-item .definition {
+            font-size: 14px;
+            color: #555;
+            margin: 0;
+            line-height: 1.6;
+        }
+
+        /* Section Headings */
+        h2 {
+            font-size: 24px;
+            color: #0f766e;
+            margin: 50px 0 20px 0;
+            font-weight: 600;
+            position: relative;
+            padding-bottom: 12px;
+        }
+
+        h2::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 60px;
+            height: 3px;
+            background: #B8860B;
+        }
+
+        /* Paragraphs & Highlights */
+        p {
+            font-size: 17px;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        .highlight {
+            background: linear-gradient(180deg, transparent 60%, #ccfbf1 60%);
+            padding: 0 4px;
+            font-weight: 500;
+        }
+
+        /* Welcome Box */
+        .welcome-box {
+            background: linear-gradient(135deg, #f0fdfa 0%, #f0fdfa 100%);
+            padding: 30px 35px;
+            border-radius: 14px;
+            margin-bottom: 40px;
+            border: 1px solid #99f6e4;
+        }
+
+        .welcome-box h3 {
+            margin: 0 0 15px 0;
+            font-size: 20px;
+            color: #0f766e;
+            font-weight: 600;
+        }
+
+        /* Case Study Box */
+        .case-study {
+            background: linear-gradient(135deg, #f8f9fb 0%, #f0f2f5 100%);
+            border-radius: 16px;
+            padding: 0;
+            margin: 40px 0;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+        }
+
+        .case-study-header {
+            background: linear-gradient(135deg, #0f766e 0%, #14b8a6 100%);
+            padding: 20px 30px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .case-study-icon {
+            width: 45px;
+            height: 45px;
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+        }
+
+        .case-study-header .box-label {
+            font-weight: 600;
+            color: #ffffff;
+            margin: 0;
+            font-size: 16px;
+        }
+
+        .case-study-content {
+            padding: 28px 30px;
+        }
+
+        .patient-profile {
+            display: flex;
+            align-items: center;
+            gap: 18px;
+            padding: 18px 22px;
+            background: white;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            border: 1px solid #e5e5e5;
+        }
+
+        .patient-avatar {
+            width: 55px;
+            height: 55px;
+            background: linear-gradient(135deg, #14b8a6, #0f766e);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            color: white;
+        }
+
+        /* Statistics Box */
+        .stats-box {
+            background: linear-gradient(135deg, #0f766e 0%, #14b8a6 100%);
+            padding: 40px;
+            border-radius: 16px;
+            margin: 35px 0;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 25px;
+            position: relative;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 42px;
+            font-weight: 700;
+            color: white;
+            line-height: 1;
+            margin-bottom: 8px;
+        }
+
+        .stat-label {
+            font-size: 13px;
+            color: rgba(255, 255, 255, 0.85);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* Comparison Table */
+        .data-table-container {
+            margin: 35px 0;
+            overflow-x: auto;
+            border-radius: 12px;
+            border: 1px solid #e5e7eb;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 15px;
+            background: white;
+        }
+
+        th {
+            background: #f9fafb;
+            padding: 15px;
+            text-align: left;
+            font-weight: 600;
+            color: #0f766e;
+            border-bottom: 2px solid #e5e7eb;
+        }
+
+        td {
+            padding: 15px;
+            border-bottom: 1px solid #f3f4f6;
+            color: #4b5563;
+        }
+
+        /* Check Understanding Box */
+        .check-understanding {
+            background: linear-gradient(135deg, #fdfbf7 0%, #f9f5ed 100%);
+            border: 2px solid #B8860B;
+            border-radius: 16px;
+            padding: 32px;
+            margin: 45px 0;
+        }
+
+        .check-understanding .box-label {
+            font-weight: 600;
+            color: #8B6914;
+            margin: 0 0 8px 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .question-item {
+            background: white;
+            border-radius: 12px;
+            padding: 22px 24px;
+            margin-bottom: 16px;
+            border: 1px solid #e8e4dc;
+            position: relative;
+        }
+
+        .question-number {
+            position: absolute;
+            top: -12px;
+            left: 20px;
+            background: #0f766e;
+            color: white;
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            font-size: 13px;
+        }
+
+        .reveal-btn {
+            background: #0f766e;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-size: 14px;
+            cursor: pointer;
+            transition: background 0.2s ease;
+        }
+
+        .answer-text {
+            display: none;
+            font-size: 14px;
+            color: #065f46;
+            margin: 14px 0 0 0;
+            padding: 14px;
+            background: #f0fdf4;
+            border-radius: 8px;
+        }
+
+        .answer-text.show {
+            display: block;
+        }
+
+        /* Takeaways & References */
+        .takeaways-box {
+            background: #f3f4f6;
+            padding: 25px;
+            border-radius: 12px;
+            margin-top: 40px;
+        }
+
+        .references-box {
+            margin-top: 40px;
+            padding: 25px;
+            background: #fff;
+            border-top: 1px solid #eee;
+            font-size: 14px;
+            color: #666;
+        }
+
+        .references-box h4 {
+            color: #333;
+            margin-bottom: 15px;
+        }
+
+        /* Footer */
+        .lesson-footer {
+            text-align: center;
+            padding-top: 50px;
+            margin-top: 60px;
+            border-top: 1px solid #eee;
+        }
+
+        .footer-logo {
+            max-width: 140px;
+            opacity: 0.9;
+            margin-bottom: 10px;
+        }
+
+        @media (max-width: 768px) {
+            .lesson-container { padding: 20px 16px; }
+            .toc-list { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="lesson-container">
+        <div class="brand-header">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="brand-logo">
+        </div>
+
+        <header class="module-header">
+            <p class="module-label">Module 8: THRIVE Phase E: Environmental & Lifestyle Detox</p>
+            <h1 class="lesson-title">Lesson 8.6: Exercise Selection: Avoiding Over-Training Burnout</h1>
+            <div class="lesson-meta">
+                <span class="meta-item">30 min read</span>
+                <span class="meta-item">Lesson 6 of 8</span>
+            </div>
+        </header>
+
+        <!-- Table of Contents -->
+        <div class="toc-box">
+            <p class="box-label">In This Lesson</p>
+            <ul class="toc-list">
+                <li><a href="#section1"><span class="section-num">1</span>The Exercise-Thyroid Paradox</a></li>
+                <li><a href="#section2"><span class="section-num">2</span>Cortisol, T3, and Reverse T3</a></li>
+                <li><a href="#section3"><span class="section-num">3</span>Overtraining Syndrome (OTS)</a></li>
+                <li><a href="#section4"><span class="section-num">4</span>Thyroid-Centric Movement Hierarchy</a></li>
+                <li><a href="#section5"><span class="section-num">5</span>Monitoring Recovery: HRV & RPE</a></li>
+                <li><a href="#section6"><span class="section-num">6</span>Programming for Resilience</a></li>
+            </ul>
+        </div>
+
+        <!-- Learning Objectives -->
+        <div class="objectives-box">
+            <p class="box-label">Learning Objectives</p>
+            <ul>
+                <li>Explain the physiological mechanism by which excessive exercise suppresses T3 production.</li>
+                <li>Identify the clinical "Red Flags" of exercise-induced thyroid burnout in clients.</li>
+                <li>Differentiate between "Stimulatory" and "Depletory" movement patterns.</li>
+                <li>Implement a thyroid-safe exercise hierarchy based on the client's current metabolic capacity.</li>
+                <li>Utilize Heart Rate Variability (HRV) and other bio-markers to adjust exercise intensity.</li>
+            </ul>
+        </div>
+
+        <!-- Welcome Box -->
+        <div class="welcome-box">
+            <h3>The "No Pain, No Gain" Myth</h3>
+            <p>In the world of thyroid restoration, the common fitness mantra "No Pain, No Gain" is not just incorrect—it is physiologically dangerous. For a client with a compromised HPT (Hypothalamic-Pituitary-Thyroid) axis, high-intensity exercise can act as a potent "Lifestyle Toxin." In Phase E of the THRIVE Method™, we focus on <strong>Lifestyle Detox</strong>, which includes removing depletory exercise habits that keep Reverse T3 high and cellular energy low. This lesson will teach you how to prescribe movement that heals rather than harms.</p>
+        </div>
+
+        <h2 id="section1">The Exercise-Thyroid Paradox</h2>
+
+        <p>Clients struggling with thyroid-related weight gain often resort to "chronic cardio" or high-intensity interval training (HIIT) in a desperate attempt to jumpstart their metabolism. However, research indicates that for those with underlying hypothyroidism or Hashimoto’s, <span class="highlight">strenuous exercise can actually lower metabolic rate</span> by inducing a state of "Euthyroid Sick Syndrome" or Non-Thyroidal Illness Syndrome (NTIS).</p>
+
+        <p>A landmark 2021 study involving female athletes demonstrated that when energy availability is low (common in thyroid clients who also restrict calories), even moderate exercise volume led to a significant decrease in circulating <strong>Free T3</strong> levels within just 48 hours. This is a survival mechanism: the body perceives the exercise stress as a famine or threat and shuts down the "expensive" metabolic processes governed by the thyroid.</p>
+
+        <!-- Statistics Box -->
+        <div class="stats-box">
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <div class="stat-number">25%</div>
+                    <div class="stat-label">Drop in T3 after HIIT</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">42%</div>
+                    <div class="stat-label">Increase in rT3</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">2x</div>
+                    <div class="stat-label">Cortisol in Overtrained</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">72h</div>
+                    <div class="stat-label">Recovery for Hashi's</div>
+                </div>
+            </div>
+        </div>
+
+        <h2 id="section2">Cortisol, T3, and Reverse T3: The Mechanism</h2>
+
+        <p>The primary driver of exercise-induced thyroid dysfunction is the <span class="highlight">HPA-HPT Cross-Talk</span>. Strenuous exercise increases the production of Corticotropin-Releasing Hormone (CRH) and Cortisol. While cortisol is necessary for acute energy mobilization, chronic elevation has three devastating effects on thyroid physiology:</p>
+
+        <ol class="content-list">
+            <li><strong>Inhibition of TSH:</strong> High cortisol suppresses the pituitary gland’s production of TSH, leading to lower overall thyroid hormone output.</li>
+            <li><strong>Conversion Blockage:</strong> Cortisol inhibits the 5'-deiodinase enzyme, which is responsible for converting inactive T4 into active T3 in the liver and peripheral tissues.</li>
+            <li><strong>Reverse T3 Dominance:</strong> Instead of producing T3, the body diverts T4 into <strong>Reverse T3 (rT3)</strong>. rT3 acts as a "brake" on the cell, sitting in the thyroid receptor sites and blocking active T3 from entering.</li>
+        </ol>
+
+        <div class="case-study">
+            <div class="case-study-header">
+                <div class="case-study-icon">👤</div>
+                <div>
+                    <p class="box-label">Case Study: The "Cardio Trap"</p>
+                    <p style="margin:0; font-size:12px; color:rgba(255,255,255,0.8)">Exercise-Induced Metabolic Stall</p>
+                </div>
+            </div>
+            <div class="case-study-content">
+                <div class="patient-profile">
+                    <div class="patient-avatar">S</div>
+                    <div class="patient-info">
+                        <h4>Sarah J., Age 38</h4>
+                        <p>Diagnosed Hashimoto's | Symptoms: Weight gain, insomnia, crashing at 3 PM.</p>
+                    </div>
+                </div>
+                <p><strong>Initial Protocol:</strong> Sarah was performing 45 minutes of OrangeTheory (HIIT) 5 days per week and maintaining a 1,400-calorie diet. Despite this, she gained 8 lbs in 3 months.</p>
+                <p><strong>Biomarkers:</strong> Her Free T3 was 2.4 pg/mL (Low-Normal), and her Reverse T3 was 28 ng/dL (High). Her Cortisol-to-DHEA ratio was severely elevated.</p>
+                <p><strong>Intervention:</strong> We transitioned Sarah to Phase E Lifestyle Detox. We replaced HIIT with 3 days of heavy, slow resistance training (30 mins) and daily 20-minute "Thyroid Walks" in nature. We increased her caloric intake to 1,900 calories.</p>
+                <p><strong>Outcome:</strong> Within 6 weeks, her Reverse T3 dropped to 14 ng/dL. She lost 6 lbs of body fat, and her sleep quality improved from 4/10 to 9/10. Her Free T3 rose to 3.2 pg/mL without changing her medication dose.</p>
+            </div>
+        </div>
+
+        <h2 id="section3">Identifying Overtraining Syndrome (OTS)</h2>
+
+        <p>As a Thyroid Coach, you must be able to distinguish between "healthy soreness" and "metabolic burnout." Overtraining Syndrome in thyroid clients often presents as a paradoxical set of symptoms where the client is "tired but wired."</p>
+
+        <div class="data-table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>System</th>
+                        <th>Signs of Healthy Adaptation</th>
+                        <th>Red Flags of Thyroid Burnout</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Sleep</strong></td>
+                        <td>Improved quality, easy onset.</td>
+                        <td>Insomnia, night sweats, waking at 3 AM.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Mood</strong></td>
+                        <td>Endorphin "high," mental clarity.</td>
+                        <td>Irritability, anxiety, "brain fog" post-workout.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Appetite</strong></td>
+                        <td>Steady, controlled hunger.</td>
+                        <td>Intense sugar/salt cravings, or loss of appetite.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Body Comp</strong></td>
+                        <td>Increased muscle tone, fat loss.</td>
+                        <td>Fluid retention (puffiness), "belly fat" accumulation.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Recovery</strong></td>
+                        <td>Soreness resolves in 24-48 hours.</td>
+                        <td>Lingering fatigue, joint pain, frequent colds.</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <h2 id="section4">The Thyroid-Safe Movement Hierarchy</h2>
+
+        <p>In the THRIVE Method™, we prioritize movement based on its <strong>hormetic effect</strong>—the "Goldilocks" zone where the stress is enough to trigger adaptation but not enough to cause thyroid suppression. We use a bottom-up approach:</p>
+
+        <div class="principle-card">
+            <p class="principle-title">Level 1: Non-Exercise Activity Thermogenesis (NEAT)</p>
+            <p class="principle-text">The foundation of thyroid health. This includes walking, gardening, and light movement. Walking at a pace where you can still hold a conversation keeps cortisol low while improving insulin sensitivity. <strong>Target: 8,000–10,000 steps daily.</strong></p>
+        </div>
+
+        <div class="principle-card">
+            <p class="principle-title">Level 2: Restorative Movement</p>
+            <p class="principle-text">Yoga, Pilates, and Tai Chi. These activities stimulate the <strong>Parasympathetic Nervous System</strong> (vagus nerve), which is essential for thyroid hormone utilization at the cellular level. <strong>Target: 2-3 sessions per week.</strong></p>
+        </div>
+
+        <div class="principle-card">
+            <p class="principle-title">Level 3: Functional Resistance Training</p>
+            <p class="principle-text">Strength training is the "Metabolic Engine." Muscle tissue contains a high density of thyroid receptors. However, it must be performed with long rest periods (2-3 minutes) to prevent excessive lactic acid and cortisol buildup. <strong>Target: 2-3 days per week, max 45 minutes.</strong></p>
+        </div>
+
+        <div class="principle-card">
+            <p class="principle-title">Level 4: Controlled Intensity (HIIT/Sprints)</p>
+            <p class="principle-text">Only for clients in the final stages of THRIVE with stable biomarkers. Sessions should be limited to 10-15 minutes once per week to avoid rT3 spikes.</p>
+        </div>
+
+        <h2 id="section5">Monitoring Recovery: HRV & RPE</h2>
+
+        <p>Subjective feelings can be deceptive. We recommend clients use <strong>Heart Rate Variability (HRV)</strong> as a quantitative measure of their Autonomic Nervous System status. A sudden drop in HRV (measured via Oura, Whoop, or Apple Watch) indicates that the "Lifestyle Detox" is failing and exercise intensity must be reduced.</p>
+
+        <p>Additionally, we use the <strong>Rate of Perceived Exertion (RPE)</strong> scale of 1-10. For most thyroid clients in Phase E, we want to stay in the <span class="highlight">RPE 5-7 range</span>. If a client feels "wiped out" for more than 2 hours after a workout, they have exceeded their metabolic threshold, and their next session should be downgraded to Level 1 (Walking).</p>
+
+        <h2 id="section6">Programming for Resilience</h2>
+
+        <p>When designing a program, remember the <strong>Immune Modulation (Phase I)</strong> aspect of THRIVE. Since Hashimoto’s is autoimmune, excessive exercise can trigger a "flare" by increasing systemic inflammation (IL-6 and TNF-alpha). A thyroid-safe program should follow a "Step-Load" progression:</p>
+
+        <ul class="content-list">
+            <li><strong>Week 1-2:</strong> Focus purely on NEAT and mobility. Stabilize the HPA axis.</li>
+            <li><strong>Week 3-4:</strong> Introduce bodyweight resistance training (2 days/week).</li>
+            <li><strong>Week 5-6:</strong> Add external loading (weights) but keep repetitions in the 8-12 range (hypertrophy) rather than 1-5 (central nervous system heavy).</li>
+            <li><strong>The "Deload" Principle:</strong> Every 4th week should be a "Restorative Week," where all resistance training is replaced with walking and yoga to allow the thyroid gland to "catch up."</li>
+        </ul>
+
+        <!-- Check Your Understanding -->
+        <div class="check-understanding">
+            <p class="box-label">Knowledge Check</p>
+            <p class="box-subtitle">Test your mastery of exercise selection for thyroid health.</p>
+
+            <div class="question-item">
+                <div class="question-number">1</div>
+                <p class="question-text">Which enzyme is inhibited by high cortisol, leading to a decrease in active T3 production during overtraining?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <p class="answer-text">The <strong>5'-deiodinase</strong> enzyme. This enzyme is responsible for removing an iodine atom from T4 to create active T3. High cortisol shifts the body's preference toward the 5-deiodinase enzyme, which creates inactive Reverse T3 (rT3).</p>
+            </div>
+
+            <div class="question-item">
+                <div class="question-number">2</div>
+                <p class="question-text">A client reports they feel great <i>during</i> their 60-minute spin class but need a 2-hour nap immediately afterward. What does this indicate?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <p class="answer-text">This is a classic sign of <strong>Adrenal Compensation</strong>. The client is running on "stress hormones" (adrenaline/cortisol) during the workout, but once the stimulus stops, their underlying thyroid/metabolic depletion is revealed. This is a clear indicator to reduce exercise duration and intensity.</p>
+            </div>
+        </div>
+
+        <!-- Takeaways -->
+        <div class="takeaways-box">
+            <p class="box-label">Key Takeaways</p>
+            <ul>
+                <li><strong>More is not better:</strong> Excessive exercise volume is a "Lifestyle Toxin" that increases Reverse T3 and blocks cellular metabolism.</li>
+                <li><strong>Cortisol is the culprit:</strong> High-intensity training triggers the HPA axis to suppress the HPT axis, lowering Free T3 levels.</li>
+                <li><strong>Prioritize Strength & NEAT:</strong> Walking and slow resistance training provide the best metabolic "ROI" for thyroid clients.</li>
+                <li><strong>Listen to the crash:</strong> Post-workout fatigue lasting more than 2 hours is a clinical sign of exercise-induced burnout.</li>
+                <li><strong>Phase E Goal:</strong> Create an environment where the body feels safe enough to maintain a high metabolic rate.</li>
+            </ul>
+        </div>
+
+        <!-- References -->
+        <div class="references-box">
+            <h4>References & Further Reading</h4>
+            <p>1. Hackney, A. C. et al. (2021). "Thyroid Hormones and the Exercise-Intensity Threshold: A Meta-Analysis." <i>Journal of Clinical Endocrinology & Metabolism.</i></p>
+            <p>2. Ciloglu, F. et al. (2015). "Exercise intensity and its effects on thyroid hormones." <i>Neuroendocrinology Letters.</i></p>
+            <p>3. Mastorakos, G. et al. (2018). "Exercise and the Stress System: The HPA and HPT Axis Connection." <i>Hormones (Athens).</i></p>
+            <p>4. Paoli, A. et al. (2012). "High-Intensity Interval Training vs. Resistance Training: Impact on Thyroid Function in Sedentary Women." <i>Journal of Strength and Conditioning Research.</i></p>
+            <p>5. Bansal, A. et al. (2019). "The Role of Cortisol in Peripheral Thyroid Hormone Metabolism." <i>Thyroid Research & Practice.</i></p>
+            <p>6. He, J. et al. (2022). "Non-thyroidal illness syndrome in athletes: The impact of overtraining on the T3/rT3 ratio." <i>Frontiers in Endocrinology.</i></p>
+        </div>
+
+        <footer class="lesson-footer">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="footer-logo">
+            <p class="brand">AccrediPro Academy © 2024</p>
+            <p class="copyright">Certified Thyroid Health Coach Program | THRIVE Method™ Phase E</p>
+        </footer>
+    </div>
+</body>
+
+</html>

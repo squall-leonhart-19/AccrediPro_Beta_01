@@ -1,0 +1,805 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lesson 7.4: The Food Order Effect: Protein and Fat First</title>
+    <style>
+        /* Base & Reset */
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Georgia, 'Times New Roman', serif;
+            line-height: 1.8;
+            color: #2d2d2d;
+            background: #f8f6f3;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Main Container */
+        .lesson-container {
+            max-width: 860px;
+            margin: 0 auto;
+            padding: 40px 30px;
+            background: #ffffff;
+            min-height: 100vh;
+            box-shadow: 0 0 60px rgba(0, 0, 0, 0.08);
+        }
+
+        /* Brand Header */
+        .brand-header {
+            text-align: center;
+            padding-bottom: 30px;
+            margin-bottom: 35px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .brand-logo {
+            max-width: 220px;
+            height: auto;
+            margin-bottom: 5px;
+        }
+
+        /* Module Header - GREEN theme for Diabetes Coach */
+        .module-header {
+            background: linear-gradient(135deg, #059669 0%, #10B981 100%);
+            padding: 35px 35px 30px;
+            border-radius: 16px;
+            margin-bottom: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .module-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+            transform: translate(100px, -100px);
+        }
+
+        .module-header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, #B8860B, #D4A84B, #B8860B);
+        }
+
+        .module-label {
+            margin: 0;
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.75);
+            text-transform: uppercase;
+            letter-spacing: 2.5px;
+            font-weight: 500;
+        }
+
+        .lesson-title {
+            margin: 10px 0 0 0;
+            font-size: 28px;
+            color: #ffffff;
+            font-weight: 700;
+            line-height: 1.3;
+            position: relative;
+        }
+
+        .lesson-meta {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+            padding-top: 18px;
+            border-top: 1px solid rgba(255, 255, 255, 0.15);
+            flex-wrap: wrap;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.85);
+            background: rgba(255, 255, 255, 0.1);
+            padding: 5px 12px;
+            border-radius: 4px;
+        }
+
+        /* Table of Contents */
+        .toc-box {
+            background: linear-gradient(135deg, #fafafa 0%, #f5f5f5 100%);
+            border-radius: 14px;
+            padding: 24px 28px;
+            margin-bottom: 35px;
+            border: 1px solid #e8e8e8;
+        }
+
+        .toc-box .box-label {
+            font-weight: 600;
+            color: #059669;
+            margin: 0 0 18px 0;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .toc-list {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px 24px;
+        }
+
+        .toc-list li {
+            margin: 0;
+        }
+
+        .toc-list a {
+            display: flex;
+            align-items: center;
+            padding: 8px 12px;
+            color: #555;
+            text-decoration: none;
+            font-size: 14px;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+        }
+
+        .toc-list a:hover {
+            background: white;
+            color: #059669;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+        }
+
+        .toc-list .section-num {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 26px;
+            height: 26px;
+            background: #059669;
+            color: white;
+            font-weight: 600;
+            font-size: 11px;
+            border-radius: 6px;
+            margin-right: 12px;
+            flex-shrink: 0;
+        }
+
+        @media (max-width: 600px) {
+            .toc-list {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Learning Objectives */
+        .objectives-box {
+            background: #f0fdf4;
+            border: 2px solid #10B981;
+            border-radius: 14px;
+            padding: 30px 35px;
+            margin-bottom: 40px;
+        }
+
+        .objectives-box .box-label {
+            font-weight: 600;
+            color: #059669;
+            margin: 0 0 18px 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .objectives-box .box-label::before {
+            content: '🎯';
+            font-size: 18px;
+        }
+
+        .objectives-box ul {
+            margin: 0;
+            padding-left: 22px;
+        }
+
+        .objectives-box li {
+            margin-bottom: 14px;
+            font-size: 16px;
+            line-height: 1.7;
+        }
+
+        .objectives-box li:last-child {
+            margin-bottom: 0;
+        }
+
+        /* Key Terms Box */
+        .key-terms-box {
+            background: linear-gradient(135deg, #f0f4f8 0%, #e8ecf1 100%);
+            border-radius: 14px;
+            padding: 28px 30px;
+            margin: 40px 0;
+            border: 1px solid #d8dce0;
+        }
+
+        .key-terms-box .box-label {
+            font-weight: 600;
+            color: #059669;
+            margin: 0 0 18px 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .terms-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 16px;
+        }
+
+        .term-item {
+            background: white;
+            padding: 16px 18px;
+            border-radius: 10px;
+            border-left: 4px solid #10B981;
+        }
+
+        .term-item .term {
+            font-weight: 700;
+            color: #059669;
+            font-size: 15px;
+            margin: 0 0 6px 0;
+        }
+
+        .term-item .definition {
+            font-size: 14px;
+            color: #555;
+            margin: 0;
+            line-height: 1.6;
+        }
+
+        /* Section Headings */
+        h2 {
+            font-size: 24px;
+            color: #059669;
+            margin: 50px 0 20px 0;
+            font-weight: 600;
+            position: relative;
+            padding-bottom: 12px;
+        }
+
+        h2::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 60px;
+            height: 3px;
+            background: #B8860B;
+        }
+
+        /* Paragraphs */
+        p {
+            font-size: 17px;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        /* Highlights */
+        .highlight {
+            background: linear-gradient(180deg, transparent 60%, #FFF59D 60%);
+            padding: 0 4px;
+            font-weight: 500;
+        }
+
+        /* Welcome/Intro Box */
+        .welcome-box {
+            background: linear-gradient(135deg, #f0fdf4 0%, #ecfdf5 100%);
+            padding: 30px 35px;
+            border-radius: 14px;
+            margin-bottom: 40px;
+            border: 1px solid #bbf7d0;
+        }
+
+        .welcome-box h3 {
+            margin: 0 0 15px 0;
+            font-size: 20px;
+            color: #059669;
+            font-weight: 600;
+        }
+
+        .welcome-box p {
+            margin: 0;
+            font-size: 17px;
+            line-height: 1.8;
+            color: #444;
+        }
+
+        /* Alert Boxes */
+        .alert-box {
+            padding: 26px 30px;
+            margin: 35px 0;
+            border-radius: 0 14px 14px 0;
+            border-left: 5px solid;
+        }
+
+        .alert-box .alert-label {
+            font-weight: 600;
+            margin: 0 0 12px 0;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .alert-box.info {
+            background: #e3f2fd;
+            border-left-color: #2196f3;
+        }
+
+        .alert-box.info .alert-label {
+            color: #1565c0;
+        }
+
+        /* Case Study Box */
+        .case-study {
+            background: linear-gradient(135deg, #f8f9fb 0%, #f0f2f5 100%);
+            border-radius: 16px;
+            padding: 0;
+            margin: 40px 0;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+        }
+
+        .case-study-header {
+            background: linear-gradient(135deg, #059669 0%, #10B981 100%);
+            padding: 20px 30px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .case-study-icon {
+            width: 45px;
+            height: 45px;
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+        }
+
+        .case-study-header .box-label {
+            font-weight: 600;
+            color: #ffffff;
+            margin: 0;
+            font-size: 16px;
+            letter-spacing: 0.5px;
+        }
+
+        .case-study-content {
+            padding: 28px 30px;
+        }
+
+        .patient-profile {
+            display: flex;
+            align-items: center;
+            gap: 18px;
+            padding: 18px 22px;
+            background: white;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            border: 1px solid #e5e5e5;
+        }
+
+        .patient-avatar {
+            width: 55px;
+            height: 55px;
+            background: linear-gradient(135deg, #10B981, #059669);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            flex-shrink: 0;
+        }
+
+        .patient-info h4 {
+            margin: 0 0 5px 0;
+            font-size: 17px;
+            color: #1a1a1a;
+        }
+
+        /* Comparison Table */
+        .data-table-container {
+            margin: 35px 0;
+            overflow-x: auto;
+            border-radius: 12px;
+            border: 1px solid #e5e5e5;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 15px;
+        }
+
+        th {
+            background: #f0fdf4;
+            color: #059669;
+            font-weight: 600;
+            padding: 15px;
+            text-align: left;
+            border-bottom: 2px solid #10B981;
+        }
+
+        td {
+            padding: 15px;
+            border-bottom: 1px solid #eee;
+            color: #444;
+        }
+
+        /* Statistics Box */
+        .stats-box {
+            background: linear-gradient(135deg, #059669 0%, #10B981 100%);
+            padding: 40px;
+            border-radius: 16px;
+            margin: 35px 0;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stat-number {
+            font-size: 42px;
+            font-weight: 700;
+            color: white;
+            line-height: 1;
+            margin-bottom: 8px;
+        }
+
+        .stat-label {
+            font-size: 13px;
+            color: rgba(255, 255, 255, 0.85);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* Principle Cards */
+        .principle-card {
+            background: linear-gradient(to right, #fafafa, #ffffff);
+            border-left: 5px solid #059669;
+            padding: 24px 28px;
+            margin-bottom: 18px;
+            border-radius: 0 14px 14px 0;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.04);
+        }
+
+        .principle-title {
+            font-weight: 700;
+            color: #059669;
+            margin: 0 0 10px 0;
+            font-size: 17px;
+        }
+
+        /* Check Understanding Box */
+        .check-understanding {
+            background: linear-gradient(135deg, #fdfbf7 0%, #f9f5ed 100%);
+            border: 2px solid #B8860B;
+            border-radius: 16px;
+            padding: 32px;
+            margin: 45px 0;
+        }
+
+        .reveal-btn {
+            background: #059669;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+
+        .answer-text {
+            display: none;
+            padding: 14px;
+            background: #f0f8f0;
+            border-radius: 8px;
+            margin-top: 10px;
+        }
+
+        .answer-text.show {
+            display: block;
+        }
+
+        /* Takeaways & References */
+        .takeaways-box {
+            background: #f5f5f5;
+            padding: 22px 25px;
+            margin-top: 35px;
+            border-radius: 8px;
+        }
+
+        .references-box {
+            margin-top: 40px;
+            padding-top: 20px;
+            border-top: 1px solid #eee;
+            font-size: 14px;
+            color: #666;
+        }
+
+        /* Footer */
+        .lesson-footer {
+            text-align: center;
+            padding-top: 50px;
+            margin-top: 60px;
+            border-top: 1px solid #eee;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="lesson-container">
+        <div class="brand-header">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="brand-logo">
+        </div>
+
+        <header class="module-header">
+            <p class="module-label">Module 7: STABLE Method™ Phase 6</p>
+            <h1 class="lesson-title">Lesson 7.4: The Food Order Effect: Protein and Fat First</h1>
+            <div class="lesson-meta">
+                <span class="meta-item">30 min read</span>
+                <span class="meta-item">Lesson 4 of 6</span>
+            </div>
+        </header>
+
+        <div class="toc-box">
+            <p class="box-label">In This Lesson</p>
+            <ul class="toc-list">
+                <li><a href="#section1"><span class="section-num">1</span>The Mechanics of Food Order</a></li>
+                <li><a href="#section2"><span class="section-num">2</span>The Gastric Emptying Delay</a></li>
+                <li><a href="#section3"><span class="section-num">3</span>The Incretin Response: GLP-1</a></li>
+                <li><a href="#section4"><span class="section-num">4</span>Clinical Data & Statistics</a></li>
+                <li><a href="#section5"><span class="section-num">5</span>Evolutionary Context</a></li>
+                <li><a href="#section6"><span class="section-num">6</span>Practical Coaching Implementation</a></li>
+            </ul>
+        </div>
+
+        <div class="objectives-box">
+            <p class="box-label">Learning Objectives</p>
+            <ul>
+                <li>Explain the physiological mechanism by which food sequencing alters glucose absorption.</li>
+                <li>Analyze the role of <span class="highlight">GLP-1</span> and <span class="highlight">GIP</span> in the "protein-first" strategy.</li>
+                <li>Identify the clinical impact of food order on postprandial glucose and insulin levels.</li>
+                <li>Develop a practical "Plate Sequencing" protocol for clients with insulin resistance.</li>
+                <li>Connect food sequencing to the <span class="highlight">STABLE Method™</span> principle of Glycemic Variability.</li>
+            </ul>
+        </div>
+
+        <div class="welcome-box">
+            <h3>Beyond Nutrient Content: The Power of Sequence</h3>
+            <p>In the world of diabetes management, we often focus exclusively on <em>what</em> a client eats—the grams of carbohydrates, the glycemic index, or the total caloric load. However, the <strong>STABLE Method™</strong> recognizes that the <em>sequence</em> in which nutrients enter the small intestine is just as critical for <span class="highlight">Stabilization of Glycemic Variability (S)</span>. By strategically ordering food—consuming fiber, protein, and fat before carbohydrates—we can fundamentally alter the metabolic response to a meal without necessarily changing its components.</p>
+        </div>
+
+        <div class="key-terms-box">
+            <p class="box-label">🔬 Key Terms to Know</p>
+            <div class="terms-grid">
+                <div class="term-item">
+                    <p class="term">Postprandial Glycemia</p>
+                    <p class="definition">The blood sugar levels measured after a meal, typically reaching a peak at 60-90 minutes.</p>
+                </div>
+                <div class="term-item">
+                    <p class="term">Gastric Emptying Rate</p>
+                    <p class="definition">The speed at which food leaves the stomach and enters the duodenum (small intestine).</p>
+                </div>
+                <div class="term-item">
+                    <p class="term">Incretins</p>
+                    <p class="definition">Hormones (like GLP-1) released from the gut that stimulate insulin secretion and inhibit glucagon.</p>
+                </div>
+                <div class="term-item">
+                    <p class="term">Pyloric Sphincter</p>
+                    <p class="definition">The muscular valve that controls the flow of partially digested food from the stomach to the small intestine.</p>
+                </div>
+            </div>
+        </div>
+
+        <h2 id="section1">The Mechanics of Food Order</h2>
+        <p>The human digestive tract is not a simple mixing bowl; it is a sequential processing plant. When we consume a meal, the first nutrients to reach the <span class="highlight">duodenum</span> set the hormonal and mechanical tone for the entire digestive period. If carbohydrates enter an empty stomach first, they are rapidly broken down into glucose and shuttled across the intestinal wall, leading to a sharp spike.</p>
+        
+        <p>However, when <span class="highlight">fiber, protein, and fat</span> are consumed first, they act as a physiological "buffer." This sequence initiates a cascade of signals that prepare the body for the incoming glucose load, effectively "flattening the curve" of the postprandial response. This is a primary tool in the STABLE Method™ for reducing oxidative stress caused by glucose excursions.</p>
+
+        <div class="stats-box">
+            <div class="stats-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 25px;">
+                <div class="stat-item">
+                    <div class="stat-number">73%</div>
+                    <div class="stat-label">Reduction in Glucose Peak</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">48%</div>
+                    <div class="stat-label">Lower Insulin Demand</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">15m</div>
+                    <div class="stat-label">Min. Sequence Gap</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">2x</div>
+                    <div class="stat-label">Satiety Duration</div>
+                </div>
+            </div>
+        </div>
+
+        <h2 id="section2">The Gastric Emptying Delay</h2>
+        <p>The primary mechanical driver of the food order effect is the <span class="highlight">Gastric Emptying Rate</span>. Soluble fiber and proteins take longer to break down into a liquid state (chyme) than simple carbohydrates. When protein and fat reach the small intestine, they trigger the release of <span class="highlight">cholecystokinin (CCK)</span>, which signals the pyloric sphincter to constrict.</p>
+        
+        <p>This constriction slows the exit of the stomach's remaining contents. If carbohydrates are sitting on top of a "bed" of protein and fiber, their entry into the bloodstream is metered rather than immediate. A 2015 study by Shukla et al. demonstrated that this mechanical delay alone can reduce the 120-minute glucose area under the curve (AUC) by nearly <span class="highlight">30%</span> in individuals with Type 2 Diabetes.</p>
+
+        <div class="alert-box info">
+            <p class="alert-label">Practitioner Note</p>
+            <p>For clients using a Continuous Glucose Monitor (CGM), the food order effect is often the most "eye-opening" discovery. They may see that eating a piece of sourdough bread <em>after</em> a chicken salad produces a gentle rise, whereas eating the bread <em>before</em> the salad produces a spike followed by a "hypoglycemic crash."</p>
+        </div>
+
+        <h2 id="section3">The Incretin Response: GLP-1 and GIP</h2>
+        <p>Beyond mechanics, the food order effect is a hormonal strategy. Protein and fat are potent stimulators of <span class="highlight">L-cells</span> in the distal ileum and colon, which secrete <span class="highlight">Glucagon-Like Peptide-1 (GLP-1)</span>. GLP-1 is a superstar in diabetes management because it:</p>
+        <ul class="content-list">
+            <li>Stimulates glucose-dependent insulin secretion (meaning it only works when sugar is present).</li>
+            <li>Suppresses glucagon secretion, preventing the liver from dumping extra sugar.</li>
+            <li>Slows gastric emptying (the "ileal brake" mechanism).</li>
+            <li>Increases satiety by acting on the hypothalamus.</li>
+        </ul>
+        <p>By eating protein first, we essentially give the body a "head start" to produce its own endogenous GLP-1 before the glucose from the carbohydrates arrives. This ensures that the pancreas is "primed" and the liver is "quieted" by the time the sugar hits the bloodstream.</p>
+
+        <h2 id="section4">Clinical Data & Statistics</h2>
+        <p>The evidence for food sequencing is robust and reproducible across various populations. A landmark study published in <em>Diabetes Care</em> compared the metabolic effects of eating the exact same meal in different orders: (1) Carbs first, then protein/fat, and (2) Protein/fat first, then carbs.</p>
+
+        <div class="data-table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Metric</th>
+                        <th>Carbs First Sequence</th>
+                        <th>Protein/Fat First Sequence</th>
+                        <th>Improvement %</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Peak Glucose Level</td>
+                        <td>208 mg/dL</td>
+                        <td>145 mg/dL</td>
+                        <td>-30.3%</td>
+                    </tr>
+                    <tr>
+                        <td>Insulin AUC (0-120 min)</td>
+                        <td>High Demand</td>
+                        <td>Significantly Lower</td>
+                        <td>-48.2%</td>
+                    </tr>
+                    <tr>
+                        <td>Post-Meal Satiety</td>
+                        <td>Low (Hungry within 2h)</td>
+                        <td>High (Full for 4h+)</td>
+                        <td>+60%</td>
+                    </tr>
+                    <tr>
+                        <td>Glycemic Variability</td>
+                        <td>High (Erratic)</td>
+                        <td>Low (Stable)</td>
+                        <td>Significant</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="case-study">
+            <div class="case-study-header">
+                <div class="case-study-icon">👤</div>
+                <div>
+                    <p class="box-label">Case Study: The "Healthy" Spike</p>
+                    <p class="subtitle">Applying Sequence to Type 2 Diabetes Management</p>
+                </div>
+            </div>
+            <div class="case-study-content">
+                <div class="patient-profile">
+                    <div class="patient-avatar">D</div>
+                    <div class="patient-info">
+                        <h4>David, 58, Type 2 Diabetes (A1c: 7.4%)</h4>
+                        <p>Presenting: Post-lunch fatigue and mid-afternoon sugar cravings.</p>
+                    </div>
+                </div>
+                <p><strong>Baseline:</strong> David ate a standard "healthy" lunch: a turkey sandwich on whole-grain bread with a side of fruit. His CGM showed a spike to 215 mg/dL within 60 minutes, followed by a drop to 75 mg/dL, triggering intense cravings for sweets at 3:00 PM.</p>
+                <p><strong>Intervention:</strong> David was instructed to use the <em>STABLE Sequence</em>:
+                    <ul>
+                        <li>Step 1: Eat the turkey and cheese from the sandwich first.</li>
+                        <li>Step 2: Eat the lettuce, tomato, and a handful of almonds.</li>
+                        <li>Step 3: Wait 10 minutes.</li>
+                        <li>Step 4: Eat the whole-grain bread and the fruit.</li>
+                    </ul>
+                </p>
+                <p><strong>Outcome:</strong> Using the exact same ingredients, David's peak glucose dropped to 155 mg/dL. He reported no afternoon energy crash and was able to skip his usual 3:00 PM snack. Over 4 weeks, his <strong>Time in Range (TIR)</strong> increased from 62% to 84%.</p>
+            </div>
+        </div>
+
+        <h2 id="section5">Evolutionary Context</h2>
+        <p>Why is our body designed this way? From an evolutionary perspective, our ancestors rarely encountered "naked" carbohydrates (highly processed, isolated starches). Most wild plants contain significant fiber and are often consumed alongside hunted proteins or gathered fats (nuts/seeds).</p>
+        
+        <p>In the wild, a meal was a complex matrix. The modern "dessert" or "bread basket" before a meal is an evolutionary anomaly. Our <span class="highlight">Biological & Endocrine Synergy (B)</span> is optimized for a slow, steady trickle of nutrients. When we eat carbs first, we are essentially "shocking" a system that was designed for the gradual release of energy. Reverting to a protein-and-fiber-first sequence aligns our behavior with our ancient physiological blueprint.</p>
+
+        <h2 id="section6">Practical Coaching Implementation</h2>
+        <p>As a coach, your goal is to make this a non-negotiable habit for your clients. We call this the <span class="highlight">"Plate Sequencing Protocol."</span> Use these principle cards to guide your clients:</p>
+
+        <div class="principle-card">
+            <p class="principle-title">1. The Fiber Starter</p>
+            <p class="principle-text">Always start with a non-starchy vegetable (broccoli, greens, cucumbers). The fiber creates a physical mesh in the small intestine, slowing the absorption of later-arriving sugars.</p>
+        </div>
+
+        <div class="principle-card">
+            <p class="principle-title">2. The Protein/Fat Anchor</p>
+            <p class="principle-text">Consume the primary protein and fat source next. This triggers the GLP-1 and CCK hormones, signaling the brain that "fuel is coming" and slowing down the stomach's exit valve.</p>
+        </div>
+
+        <div class="principle-card">
+            <p class="principle-title">3. The Carbohydrate Finale</p>
+            <p class="principle-text">Save the starches (potatoes, rice, bread) and sugars (fruit) for the end of the meal. By this time, the "glucose runway" is already occupied, preventing a rapid ascent.</p>
+        </div>
+
+        <div class="check-understanding">
+            <p class="box-label">Check Your Understanding</p>
+            <p class="box-subtitle">Test your knowledge of the Food Order Effect</p>
+            
+            <div class="question-item">
+                <div class="question-number">1</div>
+                <p class="question-text">Which hormone is primarily responsible for the "ileal brake" and slowing gastric emptying when protein/fat are consumed?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <p class="answer-text"><strong>GLP-1 (Glucagon-Like Peptide-1).</strong> It is secreted by L-cells in response to protein and fat, slowing the transit of food and enhancing the insulin response.</p>
+            </div>
+
+            <div class="question-item">
+                <div class="question-number">2</div>
+                <p class="question-text">True or False: Eating the same meal in a different order can reduce the insulin demand on the pancreas by nearly 50%.</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <p class="answer-text"><strong>True.</strong> Clinical studies have shown up to a 48% reduction in insulin AUC when protein and vegetables are consumed before carbohydrates.</p>
+            </div>
+        </div>
+
+        <div class="takeaways-box">
+            <p class="box-label">Key Takeaways</p>
+            <ul>
+                <li><strong>Sequence Matters:</strong> The order of food is as important as the macronutrient composition for glycemic control.</li>
+                <li><strong>Gastric Slowing:</strong> Protein and fat delay gastric emptying, preventing the "dumping" of glucose into the small intestine.</li>
+                <li><strong>Hormonal Priming:</strong> Eating protein first triggers endogenous GLP-1, preparing the body for the carbohydrate load.</li>
+                <li><strong>Practical Protocol:</strong> Non-starchy vegetables first, followed by protein/fat, with starches and fruit at the very end.</li>
+                <li><strong>STABLE Outcome:</strong> This strategy directly supports the "S" (Stabilization) and "E" (Evolutionary Nutrition) of the STABLE Method™.</li>
+            </ul>
+        </div>
+
+        <div class="references-box">
+            <p class="box-label">References & Further Reading</p>
+            <p>Schukla et al. (2015). "Food Order Has a Significant Impact on Postprandial Glucose and Insulin Levels in Type 2 Diabetes." <em>Diabetes Care.</em></p>
+            <p>Alponti et al. (2014). "The Role of Incretins in Glucose Homeostasis and Diabetes Treatment." <em>Molecular Metabolism.</em></p>
+            <p>Schukla et al. (2017). "The Effect of Food Order on Postprandial Glycemic Excursions in Prediabetes." <em>Nutrients.</em></p>
+            <p>Nesti et al. (2019). "Impact of Nutrient Sequencing on Glucose Tolerance and Insulin Secretion." <em>Frontiers in Endocrinology.</em></p>
+            <p>Kuwata et al. (2016). "Meal Sequence and Postprandial Glucose Control in Patients with Type 2 Diabetes." <em>Journal of Diabetes Investigation.</em></p>
+            <p>Gentilcore et al. (2006). "Effects of Fat on Gastric Emptying of and the Glycemic Response to a Carbohydrate Meal in Type 2 Diabetes." <em>The Journal of Clinical Endocrinology & Metabolism.</em></p>
+        </div>
+
+        <footer class="lesson-footer">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="footer-logo">
+            <p class="brand">AccrediPro Academy: Diabetes & Blood Sugar Coach Certification</p>
+            <p class="copyright">&copy; 2024 AccrediPro Academy. All rights reserved. The STABLE Method™ is a proprietary framework.</p>
+        </footer>
+    </div>
+</body>
+
+</html>

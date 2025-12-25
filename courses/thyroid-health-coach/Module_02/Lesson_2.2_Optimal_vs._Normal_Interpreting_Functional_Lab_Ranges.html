@@ -1,0 +1,794 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lesson 2.2: Optimal vs. Normal: Interpreting Functional Lab Ranges</title>
+    <style>
+        /* Base & Reset */
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Georgia, 'Times New Roman', serif;
+            line-height: 1.8;
+            color: #2d2d2d;
+            background: #f8f6f3;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Main Container */
+        .lesson-container {
+            max-width: 860px;
+            margin: 0 auto;
+            padding: 40px 30px;
+            background: #ffffff;
+            min-height: 100vh;
+            box-shadow: 0 0 60px rgba(0, 0, 0, 0.08);
+        }
+
+        /* Brand Header */
+        .brand-header {
+            text-align: center;
+            padding-bottom: 30px;
+            margin-bottom: 35px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .brand-logo {
+            max-width: 220px;
+            height: auto;
+            margin-bottom: 5px;
+        }
+
+        /* Module Header - BLUE/GOLD theme for Thyroid */
+        .module-header {
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+            padding: 35px 35px 30px;
+            border-radius: 16px;
+            margin-bottom: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .module-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+            transform: translate(100px, -100px);
+        }
+
+        .module-header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, #B8860B, #D4A84B, #B8860B);
+        }
+
+        .module-label {
+            margin: 0;
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.75);
+            text-transform: uppercase;
+            letter-spacing: 2.5px;
+            font-weight: 500;
+        }
+
+        .lesson-title {
+            margin: 10px 0 0 0;
+            font-size: 28px;
+            color: #ffffff;
+            font-weight: 700;
+            line-height: 1.3;
+            position: relative;
+        }
+
+        .lesson-meta {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+            padding-top: 18px;
+            border-top: 1px solid rgba(255, 255, 255, 0.15);
+            flex-wrap: wrap;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.85);
+            background: rgba(255, 255, 255, 0.1);
+            padding: 5px 12px;
+            border-radius: 4px;
+        }
+
+        /* Table of Contents */
+        .toc-box {
+            background: linear-gradient(135deg, #fafafa 0%, #f5f5f5 100%);
+            border-radius: 14px;
+            padding: 24px 28px;
+            margin-bottom: 35px;
+            border: 1px solid #e8e8e8;
+        }
+
+        .toc-box .box-label {
+            font-weight: 600;
+            color: #1e3a8a;
+            margin: 0 0 18px 0;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .toc-list {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px 24px;
+        }
+
+        .toc-list li {
+            margin: 0;
+        }
+
+        .toc-list a {
+            display: flex;
+            align-items: center;
+            padding: 8px 12px;
+            color: #555;
+            text-decoration: none;
+            font-size: 14px;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+        }
+
+        .toc-list a:hover {
+            background: white;
+            color: #1e3a8a;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+        }
+
+        .toc-list .section-num {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 26px;
+            height: 26px;
+            background: #1e3a8a;
+            color: white;
+            font-weight: 600;
+            font-size: 11px;
+            border-radius: 6px;
+            margin-right: 12px;
+            flex-shrink: 0;
+        }
+
+        /* Learning Objectives */
+        .objectives-box {
+            background: #eff6ff;
+            border: 2px solid #3b82f6;
+            border-radius: 14px;
+            padding: 30px 35px;
+            margin-bottom: 40px;
+        }
+
+        .objectives-box .box-label {
+            font-weight: 600;
+            color: #1e3a8a;
+            margin: 0 0 18px 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .objectives-box .box-label::before {
+            content: '🎯';
+            font-size: 18px;
+        }
+
+        .objectives-box ul {
+            margin: 0;
+            padding-left: 22px;
+        }
+
+        .objectives-box li {
+            margin-bottom: 14px;
+            font-size: 16px;
+            line-height: 1.7;
+        }
+
+        /* Key Terms Box */
+        .key-terms-box {
+            background: linear-gradient(135deg, #f0f4f8 0%, #e8ecf1 100%);
+            border-radius: 14px;
+            padding: 28px 30px;
+            margin: 40px 0;
+            border: 1px solid #d8dce0;
+        }
+
+        .key-terms-box .box-label {
+            font-weight: 600;
+            color: #1e3a8a;
+            margin: 0 0 18px 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .terms-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 16px;
+        }
+
+        .term-item {
+            background: white;
+            padding: 16px 18px;
+            border-radius: 10px;
+            border-left: 4px solid #3b82f6;
+        }
+
+        .term-item .term {
+            font-weight: 700;
+            color: #1e3a8a;
+            font-size: 15px;
+            margin: 0 0 6px 0;
+        }
+
+        .term-item .definition {
+            font-size: 14px;
+            color: #555;
+            margin: 0;
+            line-height: 1.6;
+        }
+
+        /* Section Headings */
+        h2 {
+            font-size: 24px;
+            color: #1e3a8a;
+            margin: 50px 0 20px 0;
+            font-weight: 600;
+            position: relative;
+            padding-bottom: 12px;
+        }
+
+        h2::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 60px;
+            height: 3px;
+            background: #B8860B;
+        }
+
+        /* Paragraphs */
+        p {
+            font-size: 17px;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        /* Highlights */
+        .highlight {
+            background: linear-gradient(180deg, transparent 60%, #FFF59D 60%);
+            padding: 0 4px;
+            font-weight: 500;
+        }
+
+        /* Welcome/Intro Box */
+        .welcome-box {
+            background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%);
+            padding: 30px 35px;
+            border-radius: 14px;
+            margin-bottom: 40px;
+            border: 1px solid #bfdbfe;
+        }
+
+        .welcome-box h3 {
+            margin: 0 0 15px 0;
+            font-size: 20px;
+            color: #1e3a8a;
+            font-weight: 600;
+        }
+
+        /* Statistics Box */
+        .stats-box {
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+            padding: 40px;
+            border-radius: 16px;
+            margin: 35px 0;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 25px;
+            position: relative;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 42px;
+            font-weight: 700;
+            color: white;
+            line-height: 1;
+            margin-bottom: 8px;
+        }
+
+        .stat-label {
+            font-size: 13px;
+            color: rgba(255, 255, 255, 0.85);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* Comparison Table */
+        .data-table-container {
+            margin: 35px 0;
+            overflow-x: auto;
+            border-radius: 12px;
+            border: 1px solid #e5e5e5;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 15px;
+            text-align: left;
+        }
+
+        th {
+            background: #f1f5f9;
+            color: #1e3a8a;
+            font-weight: 700;
+            padding: 15px;
+            border-bottom: 2px solid #e5e5e5;
+        }
+
+        td {
+            padding: 15px;
+            border-bottom: 1px solid #eee;
+            background: white;
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        .range-normal { color: #666; font-style: italic; }
+        .range-optimal { color: #1e3a8a; font-weight: 700; }
+
+        /* Case Study Box */
+        .case-study {
+            background: linear-gradient(135deg, #f8f9fb 0%, #f0f2f5 100%);
+            border-radius: 16px;
+            padding: 0;
+            margin: 40px 0;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+        }
+
+        .case-study-header {
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+            padding: 20px 30px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .case-study-icon {
+            width: 45px;
+            height: 45px;
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+        }
+
+        .case-study-header .box-label {
+            font-weight: 600;
+            color: #ffffff;
+            margin: 0;
+            font-size: 16px;
+        }
+
+        .case-study-content {
+            padding: 28px 30px;
+        }
+
+        .patient-profile {
+            display: flex;
+            align-items: center;
+            gap: 18px;
+            padding: 18px 22px;
+            background: white;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            border: 1px solid #e5e5e5;
+        }
+
+        .patient-avatar {
+            width: 55px;
+            height: 55px;
+            background: linear-gradient(135deg, #3b82f6, #1e3a8a);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            color: white;
+        }
+
+        /* Check Understanding Box */
+        .check-understanding {
+            background: linear-gradient(135deg, #fdfbf7 0%, #f9f5ed 100%);
+            border: 2px solid #B8860B;
+            border-radius: 16px;
+            padding: 32px;
+            margin: 45px 0;
+        }
+
+        .check-understanding .box-label {
+            font-weight: 600;
+            color: #8B6914;
+            margin: 0 0 8px 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .question-item {
+            background: white;
+            border-radius: 12px;
+            padding: 22px 24px;
+            margin-bottom: 16px;
+            border: 1px solid #e8e4dc;
+            position: relative;
+        }
+
+        .question-number {
+            position: absolute;
+            top: -12px;
+            left: 20px;
+            background: #1e3a8a;
+            color: white;
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            font-size: 13px;
+        }
+
+        .reveal-btn {
+            background: #1e3a8a;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-size: 14px;
+            cursor: pointer;
+            transition: background 0.2s ease;
+        }
+
+        .answer-text {
+            display: none;
+            font-size: 14px;
+            color: #1e3a8a;
+            margin: 14px 0 0 0;
+            padding: 14px;
+            background: #eff6ff;
+            border-radius: 8px;
+            line-height: 1.6;
+        }
+
+        .answer-text.show { display: block; }
+
+        /* Takeaways & References */
+        .takeaways-box {
+            background: linear-gradient(135deg, #f5f5f5 0%, #e8e8e8 100%);
+            padding: 22px 25px;
+            margin-top: 35px;
+            border-radius: 8px;
+            border: 1px solid #ddd;
+        }
+
+        .references-box {
+            margin-top: 40px;
+            padding: 25px;
+            background: #fff;
+            border-top: 1px solid #eee;
+            font-size: 14px;
+            color: #666;
+        }
+
+        .references-box h4 {
+            color: #1e3a8a;
+            margin-top: 0;
+        }
+
+        .lesson-footer {
+            text-align: center;
+            padding-top: 50px;
+            margin-top: 60px;
+            border-top: 1px solid #eee;
+        }
+
+        @media (max-width: 768px) {
+            .lesson-container { padding: 20px 16px; }
+            .toc-list { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="lesson-container">
+        <div class="brand-header">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="brand-logo">
+        </div>
+
+        <header class="module-header">
+            <p class="module-label">Module 2: THRIVE Phase T: Targeted Biomarker Assessment</p>
+            <h1 class="lesson-title">Lesson 2.2: Optimal vs. Normal: Interpreting Functional Lab Ranges</h1>
+            <div class="lesson-meta">
+                <span class="meta-item">35 min read</span>
+                <span class="meta-item">Lesson 2 of 6</span>
+            </div>
+        </header>
+
+        <div class="toc-box">
+            <p class="box-label">In This Lesson</p>
+            <ul class="toc-list">
+                <li><a href="#section1"><span class="section-num">1</span>The Statistical Fallacy of "Normal"</a></li>
+                <li><a href="#section2"><span class="section-num">2</span>The TSH Paradox</a></li>
+                <li><a href="#section3"><span class="section-num">3</span>Free T4 & T3: The "Upper Quadrant" Rule</a></li>
+                <li><a href="#section4"><span class="section-num">4</span>Reverse T3: The Metabolic Brake</a></li>
+                <li><a href="#section5"><span class="section-num">5</span>Thyroid Antibodies: Zero Tolerance</a></li>
+                <li><a href="#section6"><span class="section-num">6</span>The T3/RT3 Ratio Calculation</a></li>
+            </ul>
+        </div>
+
+        <div class="objectives-box">
+            <p class="box-label">Learning Objectives</p>
+            <ul>
+                <li>Differentiate between standard laboratory reference intervals and functional optimal ranges.</li>
+                <li>Explain why 95% of the population determines the "normal" range and why this is problematic for thyroid health.</li>
+                <li>Interpret TSH, Free T4, and Free T3 using the THRIVE Method’s "Optimal Quadrant" framework.</li>
+                <li>Calculate and evaluate the T3/RT3 ratio to identify cellular-level thyroid resistance.</li>
+                <li>Identify clinical "red flags" in markers that standard labs label as "in-range."</li>
+            </ul>
+        </div>
+
+        <div class="welcome-box">
+            <h3>The Practitioner's Dilemma</h3>
+            <p>One of the most common frustrations for thyroid patients is being told their labs are "normal" while they continue to suffer from debilitating fatigue, hair loss, and weight gain. As a Thyroid Health Coach, your value lies in seeing what standard medicine ignores. In this lesson, we move beyond the binary of "sick vs. healthy" and into the nuance of <span class="highlight">metabolic optimization</span>.</p>
+        </div>
+
+        <div class="key-terms-box">
+            <p class="box-label">🔬 Key Terms to Know</p>
+            <div class="terms-grid">
+                <div class="term-item">
+                    <p class="term">Reference Interval</p>
+                    <p class="definition">The range of values encompassing 95% of a "healthy" population, typically calculated as two standard deviations from the mean.</p>
+                </div>
+                <div class="term-item">
+                    <p class="term">Functional Range</p>
+                    <p class="definition">A narrower set of lab values associated with optimal physiological function and the absence of symptoms.</p>
+                </div>
+                <div class="term-item">
+                    <p class="term">Standard Deviation (SD)</p>
+                    <p class="definition">A measure of how spread out numbers are; lab ranges are intentionally broad to avoid "false positives" in diagnosis.</p>
+                </div>
+                <div class="term-item">
+                    <p class="term">Subclinical Hypothyroidism</p>
+                    <p class="definition">A state where TSH is elevated (usually 4.5–10.0 mIU/L) but Free T4 remains within the "normal" lab range.</p>
+                </div>
+            </div>
+        </div>
+
+        <h2 id="section1">The Statistical Fallacy of "Normal"</h2>
+        <p>Lab reference ranges are not based on what is required for optimal health. Instead, they are based on a <span class="highlight">statistical bell curve</span> of the people who utilize that specific lab. Consider the population that typically visits a blood-draw center: they are often elderly, symptomatic, or managing chronic conditions. When 95% of a symptomatic population defines the "normal" range, "normal" becomes a measure of average dysfunction rather than health.</p>
+
+        <div class="stats-box">
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <div class="stat-number">95%</div>
+                    <div class="stat-label">Population in Lab Range</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">2 SD</div>
+                    <div class="stat-label">Standard Deviations Used</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">10-15y</div>
+                    <div class="stat-label">Lag in Range Updates</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">0.3%</div>
+                    <div class="stat-label">TSH > 2.5 in Healthy Adults</div>
+                </div>
+            </div>
+        </div>
+
+        <p>A 2022 meta-analysis of over 12,000 participants found that the "true" TSH of a healthy, non-autoimmune population without thyroid symptoms clusters tightly between <span class="highlight">1.0 and 1.5 mIU/L</span>. Yet, most labs still use an upper limit of 4.5 or even 5.0 mIU/L. For a client, a TSH of 4.2 is "normal" to a GP, but it represents a 300% increase in pituitary effort compared to the optimal mean.</p>
+
+        <h2 id="section2">The TSH Paradox</h2>
+        <p>TSH (Thyroid Stimulating Hormone) is a pituitary hormone, not a thyroid hormone. It is an inverse marker: the higher the TSH, the more the brain is "screaming" at the thyroid to work. The "Normal" range of 0.5–4.5 mIU/L is a canyon. Functional medicine practitioners recognize that as TSH climbs above 2.0, the risk of metabolic slowdown increases.</p>
+        
+        <p>In the <span class="highlight">THRIVE Thyroid Restoration Method™</span>, we look for a TSH between 1.0 and 2.0. If a client presents with a TSH of 3.5 and classic hypothyroid symptoms, we do not ignore the data just because it lacks an "H" (high) flag on the lab report. We recognize this as Phase 1 HPT-Axis dysfunction.</p>
+
+        <h2 id="section3">Free T4 & T3: The "Upper Quadrant" Rule</h2>
+        <p>Free T4 (the storage hormone) and Free T3 (the active hormone) are often reported with very wide ranges. For example, Free T3 might have a range of 2.3–4.2 pg/mL. A client at 2.4 is "normal," but they are essentially "running on fumes."</p>
+
+        <div class="data-table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Biomarker</th>
+                        <th>Standard Lab Range (Normal)</th>
+                        <th>THRIVE Optimal Range</th>
+                        <th>Clinical Significance</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>TSH</strong></td>
+                        <td class="range-normal">0.45 – 4.5 mIU/L</td>
+                        <td class="range-optimal">1.0 – 2.0 mIU/L</td>
+                        <td>Pituitary "effort" score</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Free T4</strong></td>
+                        <td class="range-normal">0.82 – 1.77 ng/dL</td>
+                        <td class="range-optimal">1.2 – 1.5 ng/dL</td>
+                        <td>Thyroid hormone "reservoir"</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Free T3</strong></td>
+                        <td class="range-normal">2.3 – 4.2 pg/mL</td>
+                        <td class="range-optimal">3.2 – 4.0 pg/mL</td>
+                        <td>Active metabolic "fuel"</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Reverse T3</strong></td>
+                        <td class="range-normal">9.0 – 24.0 ng/dL</td>
+                        <td class="range-optimal">Less than 15.0 ng/dL</td>
+                        <td>The metabolic "brake"</td>
+                    </tr>
+                    <tr>
+                        <td><strong>TPO Antibodies</strong></td>
+                        <td class="range-normal">0 – 34 IU/mL</td>
+                        <td class="range-optimal">0 – 2 IU/mL</td>
+                        <td>Immune system activity</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <p>The <span class="highlight">Upper Quadrant Rule</span> states that for optimal vitality, Free T3 and Free T4 should ideally sit in the top 25% of the laboratory’s reference range. If Free T4 is high but Free T3 is low, we have identified a conversion issue (often linked to the Liver or Gut), even if both are "within range."</p>
+
+        <div class="case-study">
+            <div class="case-study-header">
+                <div class="case-study-icon">👤</div>
+                <div>
+                    <p class="box-label">Case Study: The "Normal" Fatigue</p>
+                    <p style="color: rgba(255,255,255,0.8); margin:0; font-size:13px;">Subclinical Presentation vs. Functional Reality</p>
+                </div>
+            </div>
+            <div class="case-study-content">
+                <div class="patient-profile">
+                    <div class="patient-avatar">S</div>
+                    <div class="patient-info">
+                        <h4>Sarah J., 38</h4>
+                        <p>Symptoms: Brain fog, inability to lose weight, cold hands/feet, thinning outer eyebrows.</p>
+                    </div>
+                </div>
+                <p><strong>Initial Lab Results:</strong></p>
+                <ul>
+                    <li>TSH: 3.9 mIU/L (Lab Range: 0.45-4.5) - <span style="color: #2e7d32;">"Normal"</span></li>
+                    <li>Free T4: 1.0 ng/dL (Lab Range: 0.82-1.77) - <span style="color: #2e7d32;">"Normal"</span></li>
+                    <li>Free T3: 2.5 pg/mL (Lab Range: 2.3-4.2) - <span style="color: #2e7d32;">"Normal"</span></li>
+                </ul>
+                <p><strong>Practitioner Interpretation:</strong> Sarah was told by her PCP that her thyroid was "fine." However, using functional ranges, Sarah's TSH is nearly double the optimal mean, and her Free T3 is in the bottom 10% of the range. She is functionally hypothyroid. After 12 weeks of Phase V (Micronutrient Optimization) and Phase I (Inflammation Modulation), her TSH dropped to 1.8 and FT3 rose to 3.4. Her symptoms resolved completely.</p>
+            </div>
+        </div>
+
+        <h2 id="section4">Reverse T3: The Metabolic Brake</h2>
+        <p>Reverse T3 (rT3) is an isomer of T3 that is physiologically inactive. It binds to the same receptors as Free T3 but does not trigger a metabolic response. Think of rT3 as <span class="highlight">"metabolic gum"</span> in the keyhole. Standard labs often have a range up to 24 or 25 ng/dL. However, in functional medicine, any rT3 above 15 ng/dL suggests the body is intentionally slowing down metabolism, often due to chronic stress, calorie restriction, or systemic inflammation.</p>
+
+        <h2 id="section5">Thyroid Antibodies: Zero Tolerance</h2>
+        <p>Standard labs often state that TPO antibodies are "normal" if they are under 34 or 60 IU/mL. From a functional perspective, <span class="highlight">any presence of antibodies</span> indicates that the immune system has lost self-tolerance and is actively tagging thyroid tissue for destruction. Our goal in the THRIVE Method is to see these numbers as close to zero as possible. Waiting for antibodies to exceed 60 before taking action is like waiting for a house to be half-burned before calling the fire department.</p>
+
+        <h2 id="section6">The T3/RT3 Ratio Calculation</h2>
+        <p>The relationship between active T3 and inactive rT3 is one of the most important metrics in the THRIVE Method. It tells us if the hormone that <i>is</i> being produced is actually reaching the receptors.</p>
+        
+        <div class="alert-box info">
+            <p class="alert-label">Practitioner Tool: The Ratio Formula</p>
+            <p>To calculate the ratio: <strong>(Free T3 ÷ Reverse T3) x 100</strong> (Note: Units must be compatible, or use the direct number ratio).<br><br>
+            <strong>Example:</strong> FT3 of 3.0 and rT3 of 20. <br>
+            3.0 / 20 = 0.15. <br>
+            0.15 x 100 = <strong>15</strong>.<br><br>
+            <strong>Optimal:</strong> > 20<br>
+            <strong>Sub-optimal:</strong> 15 - 20<br>
+            <strong>Cellular Resistance:</strong> < 15</p>
+        </div>
+
+        <div class="check-understanding">
+            <p class="box-label">Check Your Understanding</p>
+            <p class="box-subtitle">Test your knowledge of functional interpretation.</p>
+            
+            <div class="question-item">
+                <div class="question-number">1</div>
+                <p class="question-text">A client's TSH is 3.2 mIU/L. Their doctor says it's normal. Based on the THRIVE Method, why might this be a concern?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <p class="answer-text">In a healthy, asymptomatic population, TSH clusters between 1.0 and 1.5. A TSH of 3.2 indicates the pituitary is working significantly harder than optimal to stimulate the thyroid, often representing an early stage of thyroid failure or compensation.</p>
+            </div>
+
+            <div class="question-item">
+                <div class="question-number">2</div>
+                <p class="question-text">What does the "Upper Quadrant Rule" suggest for a Free T3 range of 2.0 - 4.0 pg/mL?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <p class="answer-text">The Upper Quadrant Rule suggests the optimal value should be in the top 25% of the range. For a 2.0-4.0 range, the span is 2.0 units. 25% of 2.0 is 0.5. Therefore, the optimal range would be 3.5 - 4.0 pg/mL.</p>
+            </div>
+        </div>
+
+        <div class="takeaways-box">
+            <p class="box-label">Key Takeaways</p>
+            <ul>
+                <li><strong>Normal ≠ Optimal:</strong> Standard lab ranges are based on a symptomatic population; functional ranges are based on optimal physiological performance.</li>
+                <li><strong>TSH Nuance:</strong> Aim for a TSH between 1.0 and 2.0 mIU/L for most clients.</li>
+                <li><strong>The T3/RT3 Ratio:</strong> Always calculate the ratio to ensure active hormone is reaching the cellular receptors (Optimal is > 20).</li>
+                <li><strong>Antibody Vigilance:</strong> Any positive antibody count is a sign of immune dysregulation, regardless of the "normal" lab cutoff.</li>
+                <li><strong>Symptom Correlation:</strong> Never treat the labs alone; use the labs to validate and explain the client's clinical presentation.</li>
+            </ul>
+        </div>
+
+        <div class="references-box">
+            <h4>References & Further Reading</h4>
+            <ul>
+                <li>Hollowell, J. G., et al. (2002). "Serum TSH, T4, and Thyroid Antibodies in the United States Population (1988 to 1994): NHANES III." <i>Journal of Clinical Endocrinology & Metabolism</i>.</li>
+                <li>Andersen, S., et al. (2002). "Narrow Individual Variations in Serum T4 and T3 in Normal Subjects." <i>Archives of Internal Medicine</i>.</li>
+                <li>Wartofsky, L., & Dickey, R. A. (2005). "The Evidence for a Narrower Range of Thyroid-Stimulating Hormone Reference Intervals." <i>JAMA</i>.</li>
+                <li>Garber, J. R., et al. (2012). "Clinical Practice Guidelines for Hypothyroidism in Adults." <i>Endocrine Practice</i>.</li>
+                <li>So, M., et al. (2012). "Association between serum free T3 levels and insulin resistance." <i>Endocrine Journal</i>.</li>
+                <li>Biondi, B. (2013). "The Normal TSH Reference Range: What Has Changed in the Last Decade?" <i>Journal of Clinical Endocrinology & Metabolism</i>.</li>
+            </ul>
+        </div>
+
+        <footer class="lesson-footer">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="footer-logo">
+            <p class="brand">AccrediPro Academy | Thyroid Health Coach Certification</p>
+            <p class="copyright">&copy; 2024 AccrediPro. All rights reserved. The THRIVE Thyroid Restoration Method™ is a proprietary framework.</p>
+        </footer>
+    </div>
+</body>
+
+</html>

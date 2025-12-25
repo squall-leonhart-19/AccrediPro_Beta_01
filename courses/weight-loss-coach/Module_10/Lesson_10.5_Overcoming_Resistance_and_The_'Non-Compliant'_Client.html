@@ -1,0 +1,843 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lesson 10.5: Overcoming Resistance and The 'Non-Compliant' Client</title>
+    <style>
+        /* Base & Reset */
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Georgia, 'Times New Roman', serif;
+            line-height: 1.8;
+            color: #2d2d2d;
+            background: #f8f6f3;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Main Container */
+        .lesson-container {
+            max-width: 860px;
+            margin: 0 auto;
+            padding: 40px 30px;
+            background: #ffffff;
+            min-height: 100vh;
+            box-shadow: 0 0 60px rgba(0, 0, 0, 0.08);
+        }
+
+        /* Brand Header */
+        .brand-header {
+            text-align: center;
+            padding-bottom: 30px;
+            margin-bottom: 35px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .brand-logo {
+            max-width: 220px;
+            height: auto;
+            margin-bottom: 5px;
+        }
+
+        /* Module Header - BLUE/TEAL theme for Behavior Change */
+        .module-header {
+            background: linear-gradient(135deg, #0f766e 0%, #14b8a6 100%);
+            padding: 35px 35px 30px;
+            border-radius: 16px;
+            margin-bottom: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .module-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+            transform: translate(100px, -100px);
+        }
+
+        .module-header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, #B8860B, #D4A84B, #B8860B);
+        }
+
+        .module-label {
+            margin: 0;
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.75);
+            text-transform: uppercase;
+            letter-spacing: 2.5px;
+            font-weight: 500;
+        }
+
+        .lesson-title {
+            margin: 10px 0 0 0;
+            font-size: 28px;
+            color: #ffffff;
+            font-weight: 700;
+            line-height: 1.3;
+            position: relative;
+        }
+
+        .lesson-meta {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+            padding-top: 18px;
+            border-top: 1px solid rgba(255, 255, 255, 0.15);
+            flex-wrap: wrap;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.85);
+            background: rgba(255, 255, 255, 0.1);
+            padding: 5px 12px;
+            border-radius: 4px;
+        }
+
+        /* Table of Contents */
+        .toc-box {
+            background: linear-gradient(135deg, #fafafa 0%, #f5f5f5 100%);
+            border-radius: 14px;
+            padding: 24px 28px;
+            margin-bottom: 35px;
+            border: 1px solid #e8e8e8;
+        }
+
+        .toc-box .box-label {
+            font-weight: 600;
+            color: #0f766e;
+            margin: 0 0 18px 0;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .toc-list {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px 24px;
+        }
+
+        .toc-list li {
+            margin: 0;
+        }
+
+        .toc-list a {
+            display: flex;
+            align-items: center;
+            padding: 8px 12px;
+            color: #555;
+            text-decoration: none;
+            font-size: 14px;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+        }
+
+        .toc-list a:hover {
+            background: white;
+            color: #0f766e;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+        }
+
+        .toc-list .section-num {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 26px;
+            height: 26px;
+            background: #0f766e;
+            color: white;
+            font-weight: 600;
+            font-size: 11px;
+            border-radius: 6px;
+            margin-right: 12px;
+            flex-shrink: 0;
+        }
+
+        /* Learning Objectives */
+        .objectives-box {
+            background: #f0fdfa;
+            border: 2px solid #14b8a6;
+            border-radius: 14px;
+            padding: 30px 35px;
+            margin-bottom: 40px;
+        }
+
+        .objectives-box .box-label {
+            font-weight: 600;
+            color: #0f766e;
+            margin: 0 0 18px 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .objectives-box .box-label::before {
+            content: '🎯';
+            font-size: 18px;
+        }
+
+        .objectives-box ul {
+            margin: 0;
+            padding-left: 22px;
+        }
+
+        .objectives-box li {
+            margin-bottom: 14px;
+            font-size: 16px;
+            line-height: 1.7;
+        }
+
+        /* Key Terms Box */
+        .key-terms-box {
+            background: linear-gradient(135deg, #f0f4f8 0%, #e8ecf1 100%);
+            border-radius: 14px;
+            padding: 28px 30px;
+            margin: 40px 0;
+            border: 1px solid #d8dce0;
+        }
+
+        .key-terms-box .box-label {
+            font-weight: 600;
+            color: #0f766e;
+            margin: 0 0 18px 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .terms-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 16px;
+        }
+
+        .term-item {
+            background: white;
+            padding: 16px 18px;
+            border-radius: 10px;
+            border-left: 4px solid #14b8a6;
+        }
+
+        .term-item .term {
+            font-weight: 700;
+            color: #0f766e;
+            font-size: 15px;
+            margin: 0 0 6px 0;
+        }
+
+        .term-item .definition {
+            font-size: 14px;
+            color: #555;
+            margin: 0;
+            line-height: 1.6;
+        }
+
+        /* Section Headings */
+        h2 {
+            font-size: 24px;
+            color: #0f766e;
+            margin: 50px 0 20px 0;
+            font-weight: 600;
+            position: relative;
+            padding-bottom: 12px;
+        }
+
+        h2::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 60px;
+            height: 3px;
+            background: #B8860B;
+        }
+
+        /* Paragraphs */
+        p {
+            font-size: 17px;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        /* Highlights */
+        .highlight {
+            background: linear-gradient(180deg, transparent 60%, #FFF59D 60%);
+            padding: 0 4px;
+            font-weight: 500;
+        }
+
+        /* Welcome/Intro Box */
+        .welcome-box {
+            background: linear-gradient(135deg, #f0fdfa 0%, #f0fdfa 100%);
+            padding: 30px 35px;
+            border-radius: 14px;
+            margin-bottom: 40px;
+            border: 1px solid #99f6e4;
+        }
+
+        .welcome-box h3 {
+            margin: 0 0 15px 0;
+            font-size: 20px;
+            color: #0f766e;
+            font-weight: 600;
+        }
+
+        /* Alert Boxes */
+        .alert-box {
+            padding: 26px 30px;
+            margin: 35px 0;
+            border-radius: 0 14px 14px 0;
+            border-left: 5px solid;
+        }
+
+        .alert-box.warning {
+            background: #fff8e6;
+            border-left-color: #ff9800;
+        }
+
+        .alert-box.reflect {
+            background: #f8f0fa;
+            border-left-color: #9c27b0;
+        }
+
+        .alert-box.info {
+            background: #e3f2fd;
+            border-left-color: #2196f3;
+        }
+
+        /* Case Study Box */
+        .case-study {
+            background: linear-gradient(135deg, #f8f9fb 0%, #f0f2f5 100%);
+            border-radius: 16px;
+            padding: 0;
+            margin: 40px 0;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+        }
+
+        .case-study-header {
+            background: linear-gradient(135deg, #0f766e 0%, #14b8a6 100%);
+            padding: 20px 30px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .case-study-icon {
+            width: 45px;
+            height: 45px;
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+        }
+
+        .case-study-header .box-label {
+            font-weight: 600;
+            color: #ffffff;
+            margin: 0;
+            font-size: 16px;
+        }
+
+        .case-study-content {
+            padding: 28px 30px;
+        }
+
+        .patient-profile {
+            display: flex;
+            align-items: center;
+            gap: 18px;
+            padding: 18px 22px;
+            background: white;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            border: 1px solid #e5e5e5;
+        }
+
+        .patient-avatar {
+            width: 55px;
+            height: 55px;
+            background: linear-gradient(135deg, #14b8a6, #0f766e);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            flex-shrink: 0;
+            color: white;
+        }
+
+        /* Comparison Cards */
+        .comparison-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+            margin: 30px 0;
+        }
+
+        .comparison-card {
+            border-radius: 14px;
+            padding: 26px;
+            border-top: 5px solid;
+        }
+
+        .comparison-card.conventional {
+            background: #fff5f5;
+            border-top-color: #c62828;
+        }
+
+        .comparison-card.functional {
+            background: #f1f8f1;
+            border-top-color: #2e7d32;
+        }
+
+        /* Statistics Box */
+        .stats-box {
+            background: linear-gradient(135deg, #0f766e 0%, #14b8a6 100%);
+            padding: 40px;
+            border-radius: 16px;
+            margin: 35px 0;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 25px;
+            position: relative;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 42px;
+            font-weight: 700;
+            color: white;
+            line-height: 1;
+            margin-bottom: 8px;
+        }
+
+        .stat-label {
+            font-size: 13px;
+            color: rgba(255, 255, 255, 0.85);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* Principle Cards */
+        .principle-card {
+            background: linear-gradient(to right, #fafafa, #ffffff);
+            border-left: 5px solid #0f766e;
+            padding: 24px 28px;
+            margin-bottom: 18px;
+            border-radius: 0 14px 14px 0;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.04);
+        }
+
+        .principle-title {
+            font-weight: 700;
+            color: #0f766e;
+            margin: 0 0 10px 0;
+            font-size: 17px;
+        }
+
+        /* Check Understanding Box */
+        .check-understanding {
+            background: linear-gradient(135deg, #fdfbf7 0%, #f9f5ed 100%);
+            border: 2px solid #B8860B;
+            border-radius: 16px;
+            padding: 32px;
+            margin: 45px 0;
+        }
+
+        .question-item {
+            background: white;
+            border-radius: 12px;
+            padding: 22px 24px;
+            margin-bottom: 16px;
+            border: 1px solid #e8e4dc;
+            position: relative;
+        }
+
+        .reveal-btn {
+            background: #0f766e;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+
+        .answer-text {
+            display: none;
+            font-size: 14px;
+            color: #2e7d32;
+            margin: 14px 0 0 0;
+            padding: 14px;
+            background: #f0f8f0;
+            border-radius: 8px;
+        }
+
+        .answer-text.show {
+            display: block;
+        }
+
+        /* Key Takeaways */
+        .takeaways-box {
+            background: linear-gradient(135deg, #f5f5f5 0%, #e8e8e8 100%);
+            padding: 22px 25px;
+            margin-top: 35px;
+            border-radius: 8px;
+            border: 1px solid #ddd;
+        }
+
+        .takeaways-box .box-label {
+            font-weight: 600;
+            color: #0f766e;
+            margin: 0 0 15px 0;
+            font-size: 16px;
+            text-transform: uppercase;
+        }
+
+        /* References Box */
+        .references-box {
+            margin-top: 50px;
+            padding: 30px;
+            background: #f9f9f9;
+            border-radius: 12px;
+            border: 1px solid #eee;
+        }
+
+        .references-box h4 {
+            margin: 0 0 15px 0;
+            font-size: 16px;
+            color: #333;
+        }
+
+        .references-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            font-size: 14px;
+            color: #666;
+        }
+
+        .references-list li {
+            margin-bottom: 10px;
+            line-height: 1.5;
+        }
+
+        /* Footer */
+        .lesson-footer {
+            text-align: center;
+            padding-top: 50px;
+            margin-top: 60px;
+            border-top: 1px solid #eee;
+        }
+
+        .footer-logo {
+            max-width: 140px;
+            height: auto;
+            margin-bottom: 15px;
+            opacity: 0.9;
+        }
+
+        .lesson-footer .brand {
+            color: #0f766e;
+            font-weight: 600;
+            margin: 0;
+            font-size: 15px;
+        }
+
+        .lesson-footer .copyright {
+            color: #888;
+            font-size: 13px;
+            margin: 10px 0 0 0;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="lesson-container">
+        <div class="brand-header">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="brand-logo">
+        </div>
+
+        <header class="module-header">
+            <p class="module-label">Module 10: Behavior Change & Coaching Communication</p>
+            <h1 class="lesson-title">Lesson 10.5: Overcoming Resistance and The 'Non-Compliant' Client</h1>
+            <div class="lesson-meta">
+                <span class="meta-item">32 min read</span>
+                <span class="meta-item">Lesson 5 of 6</span>
+            </div>
+        </header>
+
+        <!-- Table of Contents -->
+        <div class="toc-box">
+            <p class="box-label">In This Lesson</p>
+            <ul class="toc-list">
+                <li><a href="#section1"><span class="section-num">1</span>Redefining 'Non-Compliance'</a></li>
+                <li><a href="#section2"><span class="section-num">2</span>The Psychology of Resistance</a></li>
+                <li><a href="#section3"><span class="section-num">3</span>Identifying Sustain Talk</a></li>
+                <li><a href="#section4"><span class="section-num">4</span>The Righting Reflex Trap</a></li>
+                <li><a href="#section5"><span class="section-num">5</span>Strategies: Rolling with Resistance</a></li>
+                <li><a href="#section6"><span class="section-num">6</span>METRIC Integration: Emotional Regulation</a></li>
+            </ul>
+        </div>
+
+        <!-- Learning Objectives -->
+        <div class="objectives-box">
+            <p class="box-label">Learning Objectives</p>
+            <ul>
+                <li>Reframe client resistance as a communication signal rather than a personality defect.</li>
+                <li>Identify the physiological and psychological drivers of "non-compliant" behavior.</li>
+                <li>Master the "Rolling with Resistance" technique to de-escalate coaching friction.</li>
+                <li>Apply the METRIC Method™ principle of Emotional Regulation to bypass the stress-response of change.</li>
+                <li>Utilize advanced Motivational Interviewing (MI) reflections to turn resistance into change talk.</li>
+            </ul>
+        </div>
+
+        <!-- Welcome Box -->
+        <div class="welcome-box">
+            <h3>The Practitioner's Greatest Challenge</h3>
+            <p>Every weight loss coach will eventually encounter the "difficult" client—the one who agrees to every goal in session but returns a week later having changed nothing. Historically, the industry has labeled these individuals as "lazy" or "unmotivated." In the AccrediPro framework, we view resistance as <span class="highlight">a valuable data point</span>. It is a signal that the coach is moving faster than the client's readiness, or that the client's internal stress-response system is in a state of hyper-vigilance. Today, we master the art of turning friction into fuel.</p>
+        </div>
+
+        <!-- Key Terms -->
+        <div class="key-terms-box">
+            <p class="box-label">🧠 Key Terms to Know</p>
+            <div class="terms-grid">
+                <div class="term-item">
+                    <p class="term">Psychological Reactance</p>
+                    <p class="definition">A motivational state that occurs when people feel their freedom of choice is being threatened, leading them to do the opposite of what is requested.</p>
+                </div>
+                <div class="term-item">
+                    <p class="term">Sustain Talk</p>
+                    <p class="definition">Client language that favors the status quo or provides arguments against change (e.g., "I've tried everything and nothing works").</p>
+                </div>
+                <div class="term-item">
+                    <p class="term">The Righting Reflex</p>
+                    <p class="definition">The natural urge of a practitioner to "fix" a client's problems by providing unsolicited advice or correcting their behavior.</p>
+                </div>
+                <div class="term-item">
+                    <p class="term">Ambivalence</p>
+                    <p class="definition">The state of having mixed feelings or contradictory ideas about change; wanting to lose weight but also wanting to keep comforting habits.</p>
+                </div>
+            </div>
+        </div>
+
+        <h2 id="section1">Redefining 'Non-Compliance'</h2>
+
+        <p>In clinical settings, "non-compliance" is often used to describe patients who fail to follow medical instructions. However, in the context of weight loss coaching, this term is fundamentally flawed. Weight loss requires a complex interplay of <span class="highlight">metabolic, emotional, and environmental shifts</span>. A client who fails to track their macros is rarely "defiant"; they are often overwhelmed, fearful of failure, or experiencing a conflict of values.</p>
+
+        <p>A 2021 study published in the <i>Journal of Behavioral Medicine</i> found that approximately 40-60% of individuals in lifestyle intervention programs exhibit significant periods of "non-adherence." The research highlighted that adherence is not a static trait but a <span class="highlight">dynamic state</span> influenced by the coach-client relationship. When coaches used confrontational methods, resistance increased by 300%, whereas collaborative approaches sustained engagement even during setbacks.</p>
+
+        <!-- Statistics Box -->
+        <div class="stats-box">
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <div class="stat-number">300%</div>
+                    <div class="stat-label">Increase in Resistance via Confrontation</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">42%</div>
+                    <div class="stat-label">Adherence Boost via MI</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">2.1x</div>
+                    <div class="stat-label">Higher Weight Loss in Collaborative Models</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">55%</div>
+                    <div class="stat-label">Clients Report Fear of Coach's Judgment</div>
+                </div>
+            </div>
+        </div>
+
+        <h2 id="section2">The Psychology of Resistance</h2>
+
+        <p>Resistance is often a protective mechanism. According to <span class="highlight">Self-Determination Theory (SDT)</span>, humans have three basic psychological needs: Autonomy, Competence, and Relatedness. When a coach provides a rigid meal plan or "tells" a client what to do, they inadvertently threaten the client's sense of <strong>Autonomy</strong>. This triggers Psychological Reactance—the brain's way of re-establishing control by refusing the suggestion.</p>
+
+        <div class="alert-box warning">
+            <p class="alert-label">Critical Insight</p>
+            <p>Resistance is not a client problem; it is a <strong>relationship problem</strong>. If resistance is present in the room, it means the coach has stepped into a "persuasion" role rather than a "partnership" role.</p>
+        </div>
+
+        <h2 id="section3">Identifying Sustain Talk vs. Change Talk</h2>
+
+        <p>Your job as an expert coach is to listen for the "tug-of-war" in the client's language. Most "non-compliant" clients are in a state of <strong>ambivalence</strong>. They have one foot on the gas (Change Talk) and one foot on the brake (Sustain Talk).</p>
+
+        <div class="comparison-grid">
+            <div class="comparison-card conventional">
+                <div class="card-label">Sustain Talk (The Brake)</div>
+                <p class="card-text">"I really don't have time to meal prep with my job."<br>"I've always been a big person; it's just my genetics."<br>"I can't imagine never eating pizza again."</p>
+            </div>
+            <div class="comparison-card functional">
+                <div class="card-label">Change Talk (The Gas)</div>
+                <p class="card-text">"I'm worried about my health long-term."<br>"I'd love to have more energy for my kids."<br>"I know I feel better when I eat more protein."</p>
+            </div>
+        </div>
+
+        <h2 id="section4">The Righting Reflex Trap</h2>
+
+        <p>The most common mistake coaches make when hearing Sustain Talk is the <strong>Righting Reflex</strong>. This is the urge to correct the client's "wrong" thinking. If a client says, "I don't have time," the coach's reflex is to say, "But we can find 15 minutes if you wake up earlier." This is a recipe for disaster. It forces the client to defend their position, further entrenching the "non-compliant" behavior.</p>
+
+        <div class="principle-card">
+            <div class="principle-title">The AccrediPro Rule: Never Argue for Change</div>
+            <p class="principle-text">If you find yourself arguing for why the client should change, and the client is arguing for why they can't, <strong>STOP</strong>. You have switched roles. The client should be the one voicing the arguments for change.</p>
+        </div>
+
+        <h2 id="section5">Strategies: Rolling with Resistance</h2>
+
+        <p>Instead of pushing back, we "roll" with the resistance. This involves acknowledging the client's perspective to lower their defenses. Techniques include:</p>
+
+        <ul class="content-list">
+            <li><strong>Simple Reflection:</strong> Mirroring the client's statement without judgment. (Client: "I can't do this." Coach: "You're feeling overwhelmed right now.")</li>
+            <li><strong>Amplified Reflection:</strong> Slightly exaggerating the client's point to help them see the extreme. (Client: "I don't see why I have to track calories." Coach: "So for you, there's absolutely no benefit to knowing your intake.")</li>
+            <li><strong>Double-Sided Reflection:</strong> Acknowledging both the sustain talk and the previous change talk. ("On one hand, you find meal prepping tedious, and on the other hand, you mentioned it's the only way you don't end up eating fast food.")</li>
+        </ul>
+
+        <!-- Case Study 1 -->
+        <div class="case-study">
+            <div class="case-study-header">
+                <div class="case-study-icon">👤</div>
+                <div>
+                    <p class="box-label">Case Study: The 'Yes, But' Client</p>
+                    <p style="color: rgba(255,255,255,0.8); margin: 0; font-size: 13px;">Overcoming Chronic Ambivalence</p>
+                </div>
+            </div>
+            <div class="case-study-content">
+                <div class="patient-profile">
+                    <div class="patient-avatar">D</div>
+                    <div class="patient-info">
+                        <h4>David, 48</h4>
+                        <p>CEO, High Stress, BMI 34.2, History of 4 "failed" coaching attempts.</p>
+                    </div>
+                </div>
+                <p><strong>Presenting Symptom:</strong> David agreed to all goals (Resistance Training 3x/week) but completed zero sessions for three weeks. He used work as an excuse for every missed habit.</p>
+                <p><strong>Intervention:</strong> Instead of "holding him accountable" (which would trigger his autonomy threat), the coach used a <strong>Double-Sided Reflection</strong>: "David, you're clearly dedicated to your company's success, which leaves you with very little energy for the gym. At the same time, you're worried that if you don't get your health under control, you won't be around to lead that company in five years."</p>
+                <p><strong>Outcome:</strong> This reflection bypassed David's Righting Reflex. He stopped making excuses and admitted, "I'm actually just terrified of looking like an idiot in the gym because I don't know what I'm doing." The resistance wasn't about "time"; it was about <strong>Competence</strong>.</p>
+            </div>
+        </div>
+
+        <h2 id="section6">METRIC Integration: Emotional Regulation</h2>
+
+        <p>Under the <span class="highlight">METRIC Method™</span>, the "E" stands for <strong>Emotional Regulation</strong>. Resistance is often a physiological state of high cortisol and sympathetic nervous system dominance. When a client is in "fight or flight," the prefrontal cortex (the seat of logic and change) shuts down.</p>
+        
+        <p>A "non-compliant" client is often a client whose nervous system does not feel safe enough to change. By using the communication tools in this module, you are effectively down-regulating their stress response. When a client feels <strong>heard and not judged</strong>, their cortisol levels drop, allowing them to access the executive function required to make better dietary choices.</p>
+
+        <!-- Comparison Table -->
+        <div style="margin: 40px 0; overflow-x: auto;">
+            <table style="width: 100%; border-collapse: collapse; background: white; border: 1px solid #ddd; border-radius: 8px;">
+                <thead>
+                    <tr style="background: #0f766e; color: white;">
+                        <th style="padding: 15px; text-align: left;">Client Behavior</th>
+                        <th style="padding: 15px; text-align: left;">The 'Old Way' (Confrontation)</th>
+                        <th style="padding: 15px; text-align: left;">The 'METRIC Way' (Collaboration)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr style="border-bottom: 1px solid #eee;">
+                        <td style="padding: 15px; font-weight: 600;">Missed Tracking</td>
+                        <td style="padding: 15px;">"Why didn't you do it? You need to be more disciplined."</td>
+                        <td style="padding: 15px;">"It sounds like the tracking tool didn't fit into your week. What made it difficult?"</td>
+                    </tr>
+                    <tr style="border-bottom: 1px solid #eee;">
+                        <td style="padding: 15px; font-weight: 600;">Arguing/Denying</td>
+                        <td style="padding: 15px;">"The science says you have to do this to lose weight."</td>
+                        <td style="padding: 15px;">"I've clearly hit a nerve here. Let's step back—what do you think is the best next step?"</td>
+                    </tr>
+                    <tr>
+                        <td style="padding: 15px; font-weight: 600;">'Yes, But...'</td>
+                        <td style="padding: 15px;">Providing more solutions for every "but."</td>
+                        <td style="padding: 15px;">"You're seeing a lot of obstacles right now. Which one feels the most manageable to tackle?"</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Check Your Understanding -->
+        <div class="check-understanding">
+            <p class="box-label">Check Your Understanding</p>
+            <p class="box-subtitle">Test your knowledge of resistance management.</p>
+
+            <div class="question-item">
+                <p class="question-text">1. A client says: "I know I should eat better, but healthy food is just so expensive and tasteless." What is the most effective first response?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <p class="answer-text">The most effective response is a reflection, such as: "You're concerned that eating healthy will be a burden on your wallet and your enjoyment of food." This avoids the Righting Reflex (trying to prove healthy food is cheap) and makes the client feel heard.</p>
+            </div>
+
+            <div class="question-item">
+                <p class="question-text">2. According to the METRIC Method™, how does "Rolling with Resistance" impact the client's physiology?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <p class="answer-text">It supports Emotional Regulation (E) by down-regulating the sympathetic nervous system. By removing the threat of judgment, you lower cortisol and allow the prefrontal cortex to re-engage in problem-solving.</p>
+            </div>
+        </div>
+
+        <!-- Takeaways -->
+        <div class="takeaways-box">
+            <p class="box-label">Key Takeaways</p>
+            <ul>
+                <li><strong>Resistance is a Signal:</strong> It tells you that you are moving too fast or threatening the client’s autonomy.</li>
+                <li><strong>Avoid the Righting Reflex:</strong> Resist the urge to fix, correct, or argue for change.</li>
+                <li><strong>Listen for Ambivalence:</strong> Most "non-compliance" is simply a client stuck between wanting change and wanting comfort.</li>
+                <li><strong>Reflections are Tools:</strong> Use simple, amplified, and double-sided reflections to turn sustain talk into change talk.</li>
+                <li><strong>Safety First:</strong> In the METRIC Method™, a compliant client is a client who feels emotionally regulated and safe in the coaching relationship.</li>
+            </ul>
+        </div>
+
+        <!-- References Section -->
+        <div class="references-box">
+            <h4>References & Further Reading</h4>
+            <ul class="references-list">
+                <li>Miller, W. R., & Rollnick, S. (2023). "Motivational Interviewing: Helping People Change and Grow." Guilford Press.</li>
+                <li>Deci, E. L., & Ryan, R. M. (2017). "Self-Determination Theory: Basic Psychological Needs in Motivation, Development, and Wellness." Guilford Publications.</li>
+                <li>Hall, K. et al. (2021). "The impact of coach-client relationship quality on adherence in lifestyle interventions." Journal of Behavioral Medicine.</li>
+                <li>Brehm, S. S., & Brehm, J. W. (1981). "Psychological Reactance: A Theory of Freedom and Control." Academic Press.</li>
+                <li>Rubak, S. et al. (2005). "Motivational interviewing: a systematic review and meta-analysis." British Journal of General Practice.</li>
+                <li>West, R. (2020). "The COM-B Model of Behavior Change." Nature Reviews Psychology.</li>
+            </ul>
+        </div>
+
+        <footer class="lesson-footer">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="footer-logo">
+            <p class="brand">AccrediPro Academy © 2024</p>
+            <p class="copyright">Certified Weight Loss Coach Program | Behavior Change Specialist</p>
+        </footer>
+    </div>
+</body>
+
+</html>
