@@ -137,7 +137,7 @@ export async function POST(request: NextRequest) {
           </p>
         </div>
         <p style="color: #999; font-size: 13px; margin-top: 30px;">
-          Or <a href="https://accredipro.academy/sales/fm-certification" style="color: #722F37;">visit our sales page</a> to continue the conversation.
+          Or <a href="https://sarah.accredipro.academy/checkout-fm-certification" style="color: #722F37;">visit our sales page</a> to continue the conversation.
         </p>
       `;
 
