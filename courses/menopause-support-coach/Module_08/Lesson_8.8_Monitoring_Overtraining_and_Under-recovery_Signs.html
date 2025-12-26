@@ -1,0 +1,781 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lesson 8.8: Monitoring Overtraining and Under-recovery Signs</title>
+    <style>
+        /* Base & Reset */
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Georgia, 'Times New Roman', serif;
+            line-height: 1.8;
+            color: #2d2d2d;
+            background: #f8f6f3;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Main Container */
+        .lesson-container {
+            max-width: 860px;
+            margin: 0 auto;
+            padding: 40px 30px;
+            background: #ffffff;
+            min-height: 100vh;
+            box-shadow: 0 0 60px rgba(0, 0, 0, 0.08);
+        }
+
+        /* Brand Header */
+        .brand-header {
+            text-align: center;
+            padding-bottom: 30px;
+            margin-bottom: 35px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .brand-logo {
+            max-width: 220px;
+            height: auto;
+            margin-bottom: 5px;
+        }
+
+        /* Module Header - PURPLE/GOLD theme for Menopause */
+        .module-header {
+            background: linear-gradient(135deg, #6b21a8 0%, #9333ea 100%);
+            padding: 35px 35px 30px;
+            border-radius: 16px;
+            margin-bottom: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .module-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+            transform: translate(100px, -100px);
+        }
+
+        .module-header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, #B8860B, #D4A84B, #B8860B);
+        }
+
+        .module-label {
+            margin: 0;
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.75);
+            text-transform: uppercase;
+            letter-spacing: 2.5px;
+            font-weight: 500;
+        }
+
+        .lesson-title {
+            margin: 10px 0 0 0;
+            font-size: 28px;
+            color: #ffffff;
+            font-weight: 700;
+            line-height: 1.3;
+            position: relative;
+        }
+
+        .lesson-meta {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+            padding-top: 18px;
+            border-top: 1px solid rgba(255, 255, 255, 0.15);
+            flex-wrap: wrap;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.85);
+            background: rgba(255, 255, 255, 0.1);
+            padding: 5px 12px;
+            border-radius: 4px;
+        }
+
+        /* Table of Contents */
+        .toc-box {
+            background: linear-gradient(135deg, #fafafa 0%, #f5f5f5 100%);
+            border-radius: 14px;
+            padding: 24px 28px;
+            margin-bottom: 35px;
+            border: 1px solid #e8e8e8;
+        }
+
+        .toc-box .box-label {
+            font-weight: 600;
+            color: #6b21a8;
+            margin: 0 0 18px 0;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .toc-list {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px 24px;
+        }
+
+        .toc-list li {
+            margin: 0;
+        }
+
+        .toc-list a {
+            display: flex;
+            align-items: center;
+            padding: 8px 12px;
+            color: #555;
+            text-decoration: none;
+            font-size: 14px;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+        }
+
+        .toc-list a:hover {
+            background: white;
+            color: #6b21a8;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+        }
+
+        .toc-list .section-num {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 26px;
+            height: 26px;
+            background: #6b21a8;
+            color: white;
+            font-weight: 600;
+            font-size: 11px;
+            border-radius: 6px;
+            margin-right: 12px;
+            flex-shrink: 0;
+        }
+
+        /* Learning Objectives */
+        .objectives-box {
+            background: #f5f3ff;
+            border: 2px solid #8b5cf6;
+            border-radius: 14px;
+            padding: 30px 35px;
+            margin-bottom: 40px;
+        }
+
+        .objectives-box .box-label {
+            font-weight: 600;
+            color: #6b21a8;
+            margin: 0 0 18px 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .objectives-box .box-label::before {
+            content: '🎯';
+            font-size: 18px;
+        }
+
+        .objectives-box ul {
+            margin: 0;
+            padding-left: 22px;
+        }
+
+        .objectives-box li {
+            margin-bottom: 14px;
+            font-size: 16px;
+            line-height: 1.7;
+        }
+
+        /* Key Terms Box */
+        .key-terms-box {
+            background: linear-gradient(135deg, #f0f4f8 0%, #e8ecf1 100%);
+            border-radius: 14px;
+            padding: 28px 30px;
+            margin: 40px 0;
+            border: 1px solid #d8dce0;
+        }
+
+        .key-terms-box .box-label {
+            font-weight: 600;
+            color: #6b21a8;
+            margin: 0 0 18px 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .terms-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 16px;
+        }
+
+        .term-item {
+            background: white;
+            padding: 16px 18px;
+            border-radius: 10px;
+            border-left: 4px solid #8b5cf6;
+        }
+
+        .term-item .term {
+            font-weight: 700;
+            color: #6b21a8;
+            font-size: 15px;
+            margin: 0 0 6px 0;
+        }
+
+        .term-item .definition {
+            font-size: 14px;
+            color: #555;
+            margin: 0;
+            line-height: 1.6;
+        }
+
+        /* Section Headings */
+        h2 {
+            font-size: 24px;
+            color: #6b21a8;
+            margin: 50px 0 20px 0;
+            font-weight: 600;
+            position: relative;
+            padding-bottom: 12px;
+        }
+
+        h2::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 60px;
+            height: 3px;
+            background: #B8860B;
+        }
+
+        /* Paragraphs */
+        p {
+            font-size: 17px;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        /* Highlights */
+        .highlight {
+            background: linear-gradient(180deg, transparent 60%, #f3e8ff 60%);
+            padding: 0 4px;
+            font-weight: 500;
+            color: #6b21a8;
+        }
+
+        /* Welcome/Intro Box */
+        .welcome-box {
+            background: linear-gradient(135deg, #f5f3ff 0%, #ede9fe 100%);
+            padding: 30px 35px;
+            border-radius: 14px;
+            margin-bottom: 40px;
+            border: 1px solid #ddd6fe;
+        }
+
+        .welcome-box h3 {
+            margin: 0 0 15px 0;
+            font-size: 20px;
+            color: #6b21a8;
+            font-weight: 600;
+        }
+
+        /* Alert Boxes */
+        .alert-box {
+            padding: 26px 30px;
+            margin: 35px 0;
+            border-radius: 0 14px 14px 0;
+            border-left: 5px solid;
+        }
+
+        .alert-box .alert-label {
+            font-weight: 600;
+            margin: 0 0 12px 0;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .alert-box.warning {
+            background: #fff8e6;
+            border-left-color: #ff9800;
+        }
+
+        .alert-box.warning .alert-label {
+            color: #e65100;
+        }
+
+        /* Case Study Box */
+        .case-study {
+            background: linear-gradient(135deg, #f8f9fb 0%, #f0f2f5 100%);
+            border-radius: 16px;
+            padding: 0;
+            margin: 40px 0;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+        }
+
+        .case-study-header {
+            background: linear-gradient(135deg, #6b21a8 0%, #9333ea 100%);
+            padding: 20px 30px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .case-study-icon {
+            width: 45px;
+            height: 45px;
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+        }
+
+        .case-study-header .box-label {
+            font-weight: 600;
+            color: #ffffff;
+            margin: 0;
+            font-size: 16px;
+        }
+
+        .case-study-content {
+            padding: 28px 30px;
+        }
+
+        .patient-profile {
+            display: flex;
+            align-items: center;
+            gap: 18px;
+            padding: 18px 22px;
+            background: white;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            border: 1px solid #e5e5e5;
+        }
+
+        .patient-avatar {
+            width: 55px;
+            height: 55px;
+            background: linear-gradient(135deg, #a855f7, #6b21a8);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            flex-shrink: 0;
+        }
+
+        /* Statistics Box */
+        .stats-box {
+            background: linear-gradient(135deg, #6b21a8 0%, #9333ea 100%);
+            padding: 40px;
+            border-radius: 16px;
+            margin: 35px 0;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 25px;
+            position: relative;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 42px;
+            font-weight: 700;
+            color: white;
+            line-height: 1;
+            margin-bottom: 8px;
+        }
+
+        .stat-label {
+            font-size: 13px;
+            color: rgba(255, 255, 255, 0.85);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* Data Table */
+        .data-table-container {
+            overflow-x: auto;
+            margin: 30px 0;
+            border-radius: 12px;
+            border: 1px solid #e5e5e5;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 15px;
+        }
+
+        th {
+            background: #f3e8ff;
+            color: #6b21a8;
+            padding: 15px;
+            text-align: left;
+            border-bottom: 2px solid #ddd6fe;
+        }
+
+        td {
+            padding: 15px;
+            border-bottom: 1px solid #eee;
+        }
+
+        /* Check Understanding Box */
+        .check-understanding {
+            background: linear-gradient(135deg, #fdfbf7 0%, #f9f5ed 100%);
+            border: 2px solid #B8860B;
+            border-radius: 16px;
+            padding: 32px;
+            margin: 45px 0;
+        }
+
+        .check-understanding .box-label {
+            font-weight: 600;
+            color: #8B6914;
+            margin: 0 0 8px 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .question-item {
+            background: white;
+            border-radius: 12px;
+            padding: 22px 24px;
+            margin-bottom: 16px;
+            border: 1px solid #e8e4dc;
+            position: relative;
+        }
+
+        .reveal-btn {
+            background: #6b21a8;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-size: 14px;
+            cursor: pointer;
+            transition: background 0.2s ease;
+        }
+
+        .answer-text {
+            display: none;
+            font-size: 14px;
+            color: #4c1d95;
+            margin: 14px 0 0 0;
+            padding: 14px;
+            background: #f5f3ff;
+            border-radius: 8px;
+        }
+
+        .answer-text.show {
+            display: block;
+        }
+
+        /* Takeaways & References */
+        .takeaways-box {
+            background: #f3f4f6;
+            padding: 25px;
+            border-radius: 12px;
+            margin-top: 40px;
+        }
+
+        .references-box {
+            margin-top: 40px;
+            padding: 25px;
+            border-top: 1px solid #eee;
+            font-size: 14px;
+            color: #666;
+        }
+
+        .lesson-footer {
+            text-align: center;
+            padding-top: 50px;
+            margin-top: 60px;
+            border-top: 1px solid #eee;
+        }
+
+        .footer-logo {
+            max-width: 140px;
+            opacity: 0.8;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="lesson-container">
+        <div class="brand-header">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="brand-logo">
+        </div>
+
+        <header class="module-header">
+            <p class="module-label">Module 8: Movement and Strength Training</p>
+            <h1 class="lesson-title">Lesson 8.8: Monitoring Overtraining and Under-recovery Signs</h1>
+            <div class="lesson-meta">
+                <span class="meta-item">30 min read</span>
+                <span class="meta-item">Lesson 8 of 8</span>
+            </div>
+        </header>
+
+        <div class="toc-box">
+            <p class="box-label">In This Lesson</p>
+            <ul class="toc-list">
+                <li><a href="#section1"><span class="section-num">1</span>The Vulnerability of Menopause</a></li>
+                <li><a href="#section2"><span class="section-num">2</span>The Estrogen-Recovery Gap</a></li>
+                <li><a href="#section3"><span class="section-num">3</span>Physiological Red Flags</a></li>
+                <li><a href="#section4"><span class="section-num">4</span>Psychological Indicators</a></li>
+                <li><a href="#section5"><span class="section-num">5</span>Objective Monitoring (HRV)</a></li>
+                <li><a href="#section6"><span class="section-num">6</span>Implementing the Deload</a></li>
+            </ul>
+        </div>
+
+        <div class="objectives-box">
+            <p class="box-label">Learning Objectives</p>
+            <ul>
+                <li>Understand why the menopausal transition increases the risk of overtraining syndrome.</li>
+                <li>Identify the physiological and psychological markers of under-recovery in mature female clients.</li>
+                <li>Utilize Heart Rate Variability (HRV) and Resting Heart Rate (RHR) as objective coaching tools.</li>
+                <li>Distinguish between functional overreaching and non-functional overtraining.</li>
+                <li>Design evidence-based recovery and "deload" protocols using the VITAL Method™.</li>
+            </ul>
+        </div>
+
+        <div class="welcome-box">
+            <h3>The Fine Line Between Progress and Burnout</h3>
+            <p>In our previous lessons, we established that <span class="highlight">heavy resistance training</span> is the gold standard for menopausal health. However, as a coach, your greatest challenge isn't just getting clients to move—it’s preventing them from moving too much. During the menopausal transition, the margin for error narrows. What was a "standard" workout in their 30s can become a significant systemic stressor in their 50s. This lesson focuses on the "A" in the VITAL Method™: Adrenal & Stress Resilience.</p>
+        </div>
+
+        <div class="key-terms-box">
+            <p class="box-label">🔬 Key Terms to Know</p>
+            <div class="terms-grid">
+                <div class="term-item">
+                    <p class="term">Allostatic Load</p>
+                    <p class="definition">The cumulative wear and tear on the body's systems (nervous, endocrine, immune) due to chronic stress exposure.</p>
+                </div>
+                <div class="term-item">
+                    <p class="term">Sympathetic Dominance</p>
+                    <p class="definition">A state where the "fight or flight" nervous system remains active, preventing the "rest and digest" phase required for muscle repair.</p>
+                </div>
+                <div class="term-item">
+                    <p class="term">Heart Rate Variability (HRV)</p>
+                    <p class="definition">The variation in time between consecutive heartbeats; a high HRV indicates a robust, recovered autonomic nervous system.</p>
+                </div>
+                <div class="term-item">
+                    <p class="term">Non-Functional Overreaching</p>
+                    <p class="definition">A state where performance stagnates or decreases, and recovery takes weeks rather than days to resolve.</p>
+                </div>
+            </div>
+        </div>
+
+        <h2 id="section1">The Vulnerability of Menopause</h2>
+        <p>In the female body, estrogen is more than a reproductive hormone; it is a powerful <span class="highlight">anabolic and anti-inflammatory agent</span>. As estrogen levels fluctuate and eventually decline, the body’s ability to recover from high-intensity mechanical stress is compromised. A 2021 study involving 1,200 peri- and post-menopausal women found that recovery times from eccentric exercise were up to 30% longer compared to pre-menopausal cohorts.</p>
+        
+        <p>Furthermore, the "Adrenal & Stress Resilience" pillar of the VITAL Method™ highlights that when the ovaries cease production of sex hormones, the adrenal glands are tasked with producing "back-up" hormones. If a client is constantly overtraining, the adrenals prioritize cortisol production over the delicate balance of DHEA and progesterone, leading to a state of chronic exhaustion often mistaken for "just getting older."</p>
+
+        <div class="stats-box">
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <div class="stat-number">30%</div>
+                    <div class="stat-label">Slower Muscle Repair</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">2.5x</div>
+                    <div class="stat-label">Higher Cortisol Risk</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">64%</div>
+                    <div class="stat-label">Sleep Disturbance Rate</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">14d</div>
+                    <div class="stat-label">Avg Recovery for NFO</div>
+                </div>
+            </div>
+        </div>
+
+        <h2 id="section2">The Estrogen-Recovery Gap</h2>
+        <p>The primary mechanism behind under-recovery in menopause is the loss of estrogen’s protective effect on <span class="highlight">satellite cell activation</span>. Satellite cells are the "stem cells" of muscles; they are responsible for repairing the micro-tears caused by strength training. Without sufficient estrogen, these cells are less responsive, meaning the same workout that built muscle at age 35 may cause muscle wasting (sarcopenia) at age 55 if recovery isn't prioritized.</p>
+
+        <div class="data-table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Marker</th>
+                        <th>Functional Overreaching (Normal)</th>
+                        <th>Non-Functional Overtraining (Warning)</th>
+                        <th>Overtraining Syndrome (Danger)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Performance</strong></td>
+                        <td>Temporary plateau</td>
+                        <td>Noticeable decline</td>
+                        <td>Severe inability to finish sets</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Recovery Time</strong></td>
+                        <td>24–72 hours</td>
+                        <td>1–3 weeks</td>
+                        <td>Months</td>
+                    </tr>
+                    <li><strong>Sleep</strong></td>
+                        <td>Deep, restorative</td>
+                        <td>"Tired but wired"</td>
+                        <td>Chronic insomnia/night sweats</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Mood</strong></td>
+                        <td>Motivated</td>
+                        <td>Irritable/Anxious</td>
+                        <td>Depressive/Apathetic</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <h2 id="section3">Physiological Red Flags</h2>
+        <p>Coaches must look beyond the gym floor to assess recovery. In the menopausal client, physiological red flags often manifest as an exacerbation of vasomotor symptoms. If a client reports a sudden <span class="highlight">increase in hot flash frequency</span> or intensity, it is often a sign of hypothalamic stress caused by excessive exercise volume.</p>
+
+        <p>Key physiological markers include:</p>
+        <ul class="content-list">
+            <li><strong>Elevated Resting Heart Rate:</strong> A consistent increase of 5-10 beats per minute (BPM) over the client's baseline.</li>
+            <li><strong>Persistent Muscle Soreness (DOMS):</strong> Soreness that lasts beyond 72 hours, indicating systemic inflammation.</li>
+            <li><strong>Frequent Minor Illnesses:</strong> A "leaky" immune system, often resulting in recurrent upper respiratory infections.</li>
+            <li><strong>Altered Hunger Cues:</strong> Either a total loss of appetite or intense sugar cravings (driven by cortisol-induced glucose spikes).</li>
+        </ul>
+
+        <div class="alert-box warning">
+            <p class="alert-label">Coach's Warning: The "Menopause Middle" Paradox</p>
+            <p>Many women respond to menopausal weight gain by increasing cardio and decreasing calories. This creates a "low energy availability" (LEA) state. In a 2023 meta-analysis, LEA was shown to increase cortisol by 42% in menopausal women, actually <strong>promoting</strong> abdominal fat storage despite the high activity levels.</p>
+        </div>
+
+        <h2 id="section4">Psychological Indicators</h2>
+        <p>The brain often shows signs of under-recovery before the muscles do. Because estrogen and progesterone influence neurotransmitters like serotonin and GABA, the overtrained menopausal client will experience significant mood disruptions.</p>
+
+        <div class="case-study">
+            <div class="case-study-header">
+                <div class="case-study-icon">👩‍💼</div>
+                <div>
+                    <p class="box-label">Case Study: The "HIIT Addict"</p>
+                    <p style="color: white; margin: 0; font-size: 13px;">Managing Allostatic Load</p>
+                </div>
+            </div>
+            <div class="case-study-content">
+                <div class="patient-profile">
+                    <div class="patient-avatar">D</div>
+                    <div class="patient-info">
+                        <h4>Deborah, 51</h4>
+                        <p>Perimenopausal | Corporate Executive | 6 days/week HIIT</p>
+                    </div>
+                </div>
+                <p><strong>Presentation:</strong> Deborah complained of "brain fog," losing her temper at work, and weight gain around her midsection despite "working harder than ever."</p>
+                <p><strong>Intervention:</strong> We implemented the VITAL Method™ Adrenal Resilience pillar. We reduced HIIT to 2 days/week, added 3 days of heavy lifting with 3-minute rest periods, and mandated a 9:00 PM "screens off" rule.</p>
+                <p><strong>Outcome:</strong> Within 4 weeks, Deborah's HRV increased from an average of 32ms to 54ms. Her brain fog cleared, and she lost 2 inches from her waistline as her cortisol levels stabilized.</p>
+            </div>
+        </div>
+
+        <h2 id="section5">Objective Monitoring (HRV)</h2>
+        <p>While subjective feedback is vital, objective data provides an unbiased view of the nervous system. <span class="highlight">Heart Rate Variability (HRV)</span> is the most accessible tool for this. A high HRV suggests that the parasympathetic nervous system (recovery) is winning. A low HRV suggests sympathetic dominance (stress).</p>
+
+        <p>For menopausal clients, we look for "The Trend, Not the Day." A single day of low HRV isn't a concern, but a 3-day downward trend requires an immediate adjustment to the training plan. Research by Dr. Stacy Sims suggests that women in the late perimenopausal stage may see more erratic HRV readings due to fluctuating estrogen; therefore, comparing a client's HRV to their own 7-day rolling average is the only accurate way to monitor.</p>
+
+        <h2 id="section6">Implementing the Deload</h2>
+        <p>The "Deload" is a scheduled week of reduced intensity and volume designed to let the body catch up on repair. In the VITAL Method™, we recommend a <span class="highlight">3:1 or 2:1 loading ratio</span> for menopausal clients (3 weeks of hard training, 1 week of deloading), compared to the 4:1 ratio often used for younger athletes.</p>
+
+        <p><strong>How to Deload effectively:</strong></p>
+        <ul class="content-list">
+            <li><strong>Reduce Volume:</strong> Keep the weights heavy (to maintain bone stimulus) but cut the number of sets in half.</li>
+            <li><strong>Increase Rest:</strong> Extend rest periods between sets to 3-5 minutes to minimize the cortisol response.</li>
+            <li><strong>Focus on Mobility:</strong> Replace one lifting session with restorative yoga or dedicated mobility work.</li>
+            <li><strong>Prioritize Sleep:</strong> During the deload week, the goal is 8+ hours of sleep to facilitate the "L" (Lifestyle Longevity) pillar.</li>
+        </ul>
+
+        <div class="check-understanding">
+            <p class="box-label">Check Your Understanding</p>
+            
+            <div class="question-item">
+                <p class="question-text">Why does the decline in estrogen make a menopausal woman more prone to overtraining?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-text">Estrogen acts as an anti-inflammatory and anabolic agent. Its decline reduces the activation of satellite cells responsible for muscle repair, meaning the body takes longer to recover from the same stimulus.</div>
+            </div>
+
+            <div class="question-item">
+                <p class="question-text">A client's HRV has dropped for three consecutive days, and she reports increased night sweats. What is the appropriate coaching intervention?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-text">This indicates a state of non-functional overreaching or sympathetic dominance. The coach should implement an immediate "deload" or recovery week, reducing training volume and focusing on parasympathetic activities (walking, sleep, hydration).</div>
+            </div>
+        </div>
+
+        <div class="takeaways-box">
+            <p class="box-label">Key Takeaways</p>
+            <ul>
+                <li>Recovery is an active process that requires more time as estrogen levels decline.</li>
+                <li>Increased hot flashes and night sweats are often physiological signals of excessive training stress.</li>
+                <li>Objective data (HRV/RHR) should be used alongside subjective mood and sleep tracking.</li>
+                <li>The VITAL Method™ emphasizes a 3:1 or 2:1 training-to-recovery ratio to protect adrenal health.</li>
+                <li>Heavy weights are still necessary during deloads, but volume (sets/reps) must be significantly reduced.</li>
+            </ul>
+        </div>
+
+        <div class="references-box">
+            <p style="font-weight: 600; color: #333; margin-bottom: 10px;">References & Further Reading</p>
+            <p>1. Sims, S. T. et al. (2021). "Exercise and Habitual Physical Activity for Postmenopausal Women." <i>Frontiers in Network Physiology.</i></p>
+            <p>2. NAMS (2022). "The 2022 Hormone Therapy Position Statement of The North American Menopause Society." <i>Menopause Journal.</i></p>
+            <p>3. D'Eon, T. M. et al. (2022). "The Role of Estrogen in Muscle Repair and Regeneration." <i>Sports Medicine and Health Science.</i></p>
+            <p>4. Hausswirth, C. & Mujika, I. (2023). "Recovery for Performance in Sport." <i>Human Kinetics.</i> (Special focus on the aging athlete).</p>
+            <p>5. Moore, D. R. et al. (2023). "Protein Requirements for the Menopausal Athlete." <i>British Journal of Sports Medicine.</i></p>
+            <p>6. Smith-Ryan, A. E. et al. (2022). "Metabolic Adaptations to Training in the Menopausal Transition." <i>Nutrients.</i></p>
+        </div>
+
+        <footer class="lesson-footer">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="footer-logo">
+            <p class="brand">AccrediPro Academy Certified Menopause Support Coach</p>
+            <p class="copyright">&copy; 2024 AccrediPro Academy. All rights reserved. Confidential Certification Material.</p>
+        </footer>
+    </div>
+</body>
+
+</html>

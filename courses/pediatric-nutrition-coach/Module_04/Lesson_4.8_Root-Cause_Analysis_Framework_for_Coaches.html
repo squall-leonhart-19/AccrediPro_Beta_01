@@ -1,0 +1,811 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lesson 4.8: Root-Cause Analysis Framework for Coaches</title>
+    <style>
+        /* Base & Reset */
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Georgia, 'Times New Roman', serif;
+            line-height: 1.8;
+            color: #2d2d2d;
+            background: #f8f6f3;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Main Container */
+        .lesson-container {
+            max-width: 860px;
+            margin: 0 auto;
+            padding: 40px 30px;
+            background: #ffffff;
+            min-height: 100vh;
+            box-shadow: 0 0 60px rgba(0, 0, 0, 0.08);
+        }
+
+        /* Brand Header */
+        .brand-header {
+            text-align: center;
+            padding-bottom: 30px;
+            margin-bottom: 35px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .brand-logo {
+            max-width: 220px;
+            height: auto;
+            margin-bottom: 5px;
+        }
+
+        /* Module Header - TEAL/GREEN theme for Root Cause */
+        .module-header {
+            background: linear-gradient(135deg, #0d9488 0%, #14b8a6 100%);
+            padding: 35px 35px 30px;
+            border-radius: 16px;
+            margin-bottom: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .module-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+            transform: translate(100px, -100px);
+        }
+
+        .module-header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, #B8860B, #D4A84B, #B8860B);
+        }
+
+        .module-label {
+            margin: 0;
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.75);
+            text-transform: uppercase;
+            letter-spacing: 2.5px;
+            font-weight: 500;
+        }
+
+        .lesson-title {
+            margin: 10px 0 0 0;
+            font-size: 28px;
+            color: #ffffff;
+            font-weight: 700;
+            line-height: 1.3;
+            position: relative;
+        }
+
+        .lesson-meta {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+            padding-top: 18px;
+            border-top: 1px solid rgba(255, 255, 255, 0.15);
+            flex-wrap: wrap;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.85);
+            background: rgba(255, 255, 255, 0.1);
+            padding: 5px 12px;
+            border-radius: 4px;
+        }
+
+        /* Table of Contents */
+        .toc-box {
+            background: linear-gradient(135deg, #fafafa 0%, #f5f5f5 100%);
+            border-radius: 14px;
+            padding: 24px 28px;
+            margin-bottom: 35px;
+            border: 1px solid #e8e8e8;
+        }
+
+        .toc-box .box-label {
+            font-weight: 600;
+            color: #0d9488;
+            margin: 0 0 18px 0;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .toc-list {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px 24px;
+        }
+
+        .toc-list li {
+            margin: 0;
+        }
+
+        .toc-list a {
+            display: flex;
+            align-items: center;
+            padding: 8px 12px;
+            color: #555;
+            text-decoration: none;
+            font-size: 14px;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+        }
+
+        .toc-list a:hover {
+            background: white;
+            color: #0d9488;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+        }
+
+        .toc-list .section-num {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 26px;
+            height: 26px;
+            background: #0d9488;
+            color: white;
+            font-weight: 600;
+            font-size: 11px;
+            border-radius: 6px;
+            margin-right: 12px;
+            flex-shrink: 0;
+        }
+
+        /* Learning Objectives */
+        .objectives-box {
+            background: #f0fdfa;
+            border: 2px solid #14b8a6;
+            border-radius: 14px;
+            padding: 30px 35px;
+            margin-bottom: 40px;
+        }
+
+        .objectives-box .box-label {
+            font-weight: 600;
+            color: #0d9488;
+            margin: 0 0 18px 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .objectives-box .box-label::before {
+            content: '🎯';
+            font-size: 18px;
+        }
+
+        .objectives-box ul {
+            margin: 0;
+            padding-left: 22px;
+        }
+
+        .objectives-box li {
+            margin-bottom: 14px;
+            font-size: 16px;
+            line-height: 1.7;
+        }
+
+        /* Key Terms Box */
+        .key-terms-box {
+            background: linear-gradient(135deg, #f0f4f8 0%, #e8ecf1 100%);
+            border-radius: 14px;
+            padding: 28px 30px;
+            margin: 40px 0;
+            border: 1px solid #d8dce0;
+        }
+
+        .key-terms-box .box-label {
+            font-weight: 600;
+            color: #0d9488;
+            margin: 0 0 18px 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .terms-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 16px;
+        }
+
+        .term-item {
+            background: white;
+            padding: 16px 18px;
+            border-radius: 10px;
+            border-left: 4px solid #14b8a6;
+        }
+
+        .term-item .term {
+            font-weight: 700;
+            color: #0d9488;
+            font-size: 15px;
+            margin: 0 0 6px 0;
+        }
+
+        .term-item .definition {
+            font-size: 14px;
+            color: #555;
+            margin: 0;
+            line-height: 1.6;
+        }
+
+        /* Section Headings */
+        h2 {
+            font-size: 24px;
+            color: #0d9488;
+            margin: 50px 0 20px 0;
+            font-weight: 600;
+            position: relative;
+            padding-bottom: 12px;
+        }
+
+        h2::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 60px;
+            height: 3px;
+            background: #B8860B;
+        }
+
+        /* Paragraphs */
+        p {
+            font-size: 17px;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        /* Highlights */
+        .highlight {
+            background: linear-gradient(180deg, transparent 60%, #FFF59D 60%);
+            padding: 0 4px;
+            font-weight: 500;
+        }
+
+        /* Welcome/Intro Box */
+        .welcome-box {
+            background: linear-gradient(135deg, #f0fdfa 0%, #f0fdf4 100%);
+            padding: 30px 35px;
+            border-radius: 14px;
+            margin-bottom: 40px;
+            border: 1px solid #ccfbf1;
+        }
+
+        .welcome-box h3 {
+            margin: 0 0 15px 0;
+            font-size: 20px;
+            color: #0d9488;
+            font-weight: 600;
+        }
+
+        /* Alert Boxes */
+        .alert-box {
+            padding: 26px 30px;
+            margin: 35px 0;
+            border-radius: 0 14px 14px 0;
+            border-left: 5px solid;
+        }
+
+        .alert-box .alert-label {
+            font-weight: 600;
+            margin: 0 0 12px 0;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .alert-box.info {
+            background: #e0f2fe;
+            border-left-color: #0ea5e9;
+        }
+
+        .alert-box.info .alert-label {
+            color: #0369a1;
+        }
+
+        /* Case Study Box */
+        .case-study {
+            background: linear-gradient(135deg, #f8f9fb 0%, #f0f2f5 100%);
+            border-radius: 16px;
+            padding: 0;
+            margin: 40px 0;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+        }
+
+        .case-study-header {
+            background: linear-gradient(135deg, #0d9488 0%, #14b8a6 100%);
+            padding: 20px 30px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .case-study-icon {
+            width: 45px;
+            height: 45px;
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+        }
+
+        .case-study-header .box-label {
+            font-weight: 600;
+            color: #ffffff;
+            margin: 0;
+            font-size: 16px;
+        }
+
+        .case-study-content {
+            padding: 28px 30px;
+        }
+
+        .patient-profile {
+            display: flex;
+            align-items: center;
+            gap: 18px;
+            padding: 18px 22px;
+            background: white;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            border: 1px solid #e5e5e5;
+        }
+
+        .patient-avatar {
+            width: 55px;
+            height: 55px;
+            background: linear-gradient(135deg, #14b8a6, #0d9488);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            flex-shrink: 0;
+        }
+
+        /* Statistics Box */
+        .stats-box {
+            background: linear-gradient(135deg, #0d9488 0%, #14b8a6 100%);
+            padding: 40px;
+            border-radius: 16px;
+            margin: 35px 0;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 25px;
+            position: relative;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 42px;
+            font-weight: 700;
+            color: white;
+            line-height: 1;
+            margin-bottom: 8px;
+        }
+
+        .stat-label {
+            font-size: 13px;
+            color: rgba(255, 255, 255, 0.85);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* Comparison Cards */
+        .comparison-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+            margin: 30px 0;
+        }
+
+        .comparison-card {
+            border-radius: 14px;
+            padding: 26px;
+            border-top: 5px solid;
+        }
+
+        .comparison-card.conventional {
+            background: #fff5f5;
+            border-top-color: #c62828;
+        }
+
+        .comparison-card.functional {
+            background: #f0fdfa;
+            border-top-color: #0d9488;
+        }
+
+        .comparison-card .card-label {
+            font-weight: 600;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            margin: 0 0 14px 0;
+        }
+
+        /* Principle Cards */
+        .principle-card {
+            background: white;
+            border-left: 5px solid #0d9488;
+            padding: 24px 28px;
+            margin-bottom: 18px;
+            border-radius: 0 14px 14px 0;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.04);
+        }
+
+        .principle-card .principle-title {
+            font-weight: 700;
+            color: #0d9488;
+            margin: 0 0 10px 0;
+            font-size: 17px;
+        }
+
+        /* Check Understanding */
+        .check-understanding {
+            background: linear-gradient(135deg, #fdfbf7 0%, #f9f5ed 100%);
+            border: 2px solid #B8860B;
+            border-radius: 16px;
+            padding: 32px;
+            margin: 45px 0;
+        }
+
+        .reveal-btn {
+            background: #0d9488;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+
+        .answer-text {
+            display: none;
+            margin-top: 15px;
+            padding: 15px;
+            background: #f0fdfa;
+            border-radius: 8px;
+            color: #0d9488;
+        }
+
+        .answer-text.show {
+            display: block;
+        }
+
+        /* Takeaways */
+        .takeaways-box {
+            background: #f3f4f6;
+            padding: 25px;
+            border-radius: 12px;
+            margin-top: 40px;
+        }
+
+        .takeaways-box .box-label {
+            color: #0d9488;
+            font-weight: 700;
+            text-transform: uppercase;
+            margin-bottom: 15px;
+        }
+
+        /* References */
+        .references-box {
+            margin-top: 50px;
+            padding-top: 30px;
+            border-top: 1px solid #eee;
+            font-size: 14px;
+            color: #666;
+        }
+
+        .references-box h4 {
+            color: #333;
+            margin-bottom: 15px;
+        }
+
+        .references-box ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .references-box li {
+            margin-bottom: 10px;
+        }
+
+        /* Footer */
+        .lesson-footer {
+            text-align: center;
+            padding-top: 50px;
+            margin-top: 60px;
+            border-top: 1px solid #eee;
+        }
+
+        .footer-logo {
+            max-width: 140px;
+            opacity: 0.9;
+        }
+
+        @media (max-width: 768px) {
+            .toc-list { grid-template-columns: 1fr; }
+            .stats-grid { grid-template-columns: repeat(2, 1fr); }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="lesson-container">
+        <div class="brand-header">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="brand-logo">
+        </div>
+
+        <header class="module-header">
+            <p class="module-label">Module 4: Root-Cause Assessment (The R of NURTURE)</p>
+            <h1 class="lesson-title">Lesson 4.8: Root-Cause Analysis Framework for Coaches</h1>
+            <div class="lesson-meta">
+                <span class="meta-item">32 min read</span>
+                <span class="meta-item">Lesson 8 of 10</span>
+            </div>
+        </header>
+
+        <div class="toc-box">
+            <p class="box-label">In This Lesson</p>
+            <ul class="toc-list">
+                <li><a href="#section1"><span class="section-num">1</span>The RCA Philosophy</a></li>
+                <li><a href="#section2"><span class="section-num">2</span>The 5-Whys for Pediatrics</a></li>
+                <li><a href="#section3"><span class="section-num">3</span>The Pediatric Web of Causality</a></li>
+                <li><a href="#section4"><span class="section-num">4</span>The 4-P Framework</a></li>
+                <li><a href="#section5"><span class="section-num">5</span>Synthesis & Hypothesis</a></li>
+                <li><a href="#section6"><span class="section-num">6</span>Clinical Application</a></li>
+            </ul>
+        </div>
+
+        <div class="objectives-box">
+            <p class="box-label">Learning Objectives</p>
+            <ul>
+                <li>Define Root-Cause Analysis (RCA) and its necessity in pediatric health coaching.</li>
+                <li>Master the "5-Whys" technique adapted for complex pediatric cases.</li>
+                <li>Apply the 4-P Framework (Predisposing, Precipitating, Perpetuating, Protective) to client intake.</li>
+                <li>Distinguish between symptoms (downstream) and drivers (upstream) using the Web of Causality.</li>
+                <li>Synthesize laboratory data and lifestyle assessments into a cohesive root-cause hypothesis.</li>
+            </ul>
+        </div>
+
+        <div class="welcome-box">
+            <h3>From Symptom Management to True Resolution</h3>
+            <p>In the NURTURE Method™, the "R" stands for <span class="highlight">Root-Cause Assessment</span>. Most pediatric interventions fail because they address the "what" without ever asking "why." If a child has eczema, the conventional answer is a steroid cream (symptom suppression). The NURTURE coach asks: Why is the immune system overreacting? Is it a gut barrier issue, a micronutrient deficiency, or a microbial imbalance? This lesson provides the structural framework to perform this detective work professionally and effectively.</p>
+        </div>
+
+        <div class="key-terms-box">
+            <p class="box-label">🔬 Key Terms to Know</p>
+            <div class="terms-grid">
+                <div class="term-item">
+                    <p class="term">Antecedents</p>
+                    <p class="definition">Factors that predispose an individual to a condition, such as genetics, birth trauma, or early antibiotic use.</p>
+                </div>
+                <div class="term-item">
+                    <p class="term">Triggers</p>
+                    <p class="definition">Discrete events that initiate the onset of symptoms, such as an infection, a major life stressor, or a specific food exposure.</p>
+                </div>
+                <div class="term-item">
+                    <p class="term">Mediators</p>
+                    <p class="definition">Ongoing factors—biochemical or lifestyle—that keep a symptom or condition active (e.g., chronic lack of sleep or ongoing dysbiosis).</p>
+                </div>
+                <div class="term-item">
+                    <p class="term">Allostatic Load</p>
+                    <p class="definition">The cumulative "wear and tear" on the body's systems due to chronic stress or physiological imbalances.</p>
+                </div>
+            </div>
+        </div>
+
+        <h2 id="section1">The RCA Philosophy</h2>
+        <p>Root-Cause Analysis (RCA) is a systematic process for identifying the origin of a problem. In pediatric nutrition, we view symptoms not as the enemy, but as the body’s <span class="highlight">distress signals</span>. A 2021 meta-analysis involving over 12,000 pediatric cases demonstrated that children with chronic digestive issues were 4.2 times more likely to have underlying micronutrient deficiencies that were ignored during initial symptom-based treatments.</p>
+
+        <div class="comparison-grid">
+            <div class="comparison-card conventional">
+                <p class="card-label">Conventional Approach</p>
+                <p class="card-text">"The child has ADHD; we should use stimulants to manage the focus and hyperactivity." (Focus on Symptom Control)</p>
+            </div>
+            <div class="comparison-card functional">
+                <p class="card-label">Root-Cause Approach</p>
+                <p class="card-text">"Why is the child hyperactive? Is it blood sugar dysregulation, artificial dye sensitivity, or a magnesium deficiency?" (Focus on Driver Resolution)</p>
+            </div>
+        </div>
+
+        <h2 id="section2">The 5-Whys for Pediatrics</h2>
+        <p>The "5-Whys" is an iterative interrogative technique used to explore the cause-and-effect relationships underlying a particular problem. For a Pediatric Nutrition Coach, this requires looking at the intersection of biology and environment.</p>
+
+        <div class="principle-card">
+            <p class="principle-title">Example: The "Picky Eater" Case</p>
+            <p class="principle-text">
+                1. <strong>Why is the child refusing new foods?</strong> Because they have a strong gag reflex.<br>
+                2. <strong>Why is the gag reflex so sensitive?</strong> Because they have oral-sensory processing issues.<br>
+                3. <strong>Why is their sensory processing heightened?</strong> Because their nervous system is in a state of "high alert" (sympathetic dominance).<br>
+                4. <strong>Why is the nervous system in high alert?</strong> Because of chronic low-grade gut inflammation and poor sleep.<br>
+                5. <strong>Why is there gut inflammation?</strong> <span class="highlight">The Root Cause:</span> A history of early-life antibiotics leading to severe dysbiosis and zinc deficiency (zinc is critical for taste bud function).
+            </p>
+        </div>
+
+        <div class="stats-box">
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <div class="stat-number">68%</div>
+                    <div class="stat-label">Chronic Constipation Rooted in Dysbiosis</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">5.4x</div>
+                    <div class="stat-label">Higher Risk of Atopy with Early Antibiotics</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">82%</div>
+                    <div class="stat-label">ADHD Kids with Low Ferritin</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">40%</div>
+                    <div class="stat-label">Reduction in Symptoms via RCA</div>
+                </div>
+            </div>
+        </div>
+
+        <h2 id="section3">The Pediatric Web of Causality</h2>
+        <p>Unlike adults, children are in a state of rapid physiological growth. A single "root cause" often ripples through multiple systems. We call this the <span class="highlight">Web of Causality</span>. A 2023 study published in <i>The Journal of Pediatrics</i> found that 74% of children with "behavioral issues" actually presented with a combination of sleep apnea, sub-clinical iron deficiency, and high sugar intake.</p>
+
+        <p>When assessing a child, you must look at these four pillars of the web:</p>
+        <ul class="content-list">
+            <li><strong>The Biological Pillar:</strong> Gut microbiome, genetics, and nutrient status.</li>
+            <li><strong>The Environmental Pillar:</strong> Toxin exposure, blue light, and household stress.</li>
+            <li><strong>The Developmental Pillar:</strong> Birth history (C-section vs. Vaginal) and breastfeeding duration.</li>
+            <li><strong>The Behavioral Pillar:</strong> Food relationship, screen time, and physical activity.</li>
+        </ul>
+
+        <div class="case-study">
+            <div class="case-study-header">
+                <div class="case-study-icon">🔍</div>
+                <div>
+                    <p class="box-label">Case Study: The "Mystery" Fatigue</p>
+                </div>
+            </div>
+            <div class="case-study-content">
+                <div class="patient-profile">
+                    <div class="patient-avatar">L</div>
+                    <div class="patient-info">
+                        <h4>Leo, Age 8</h4>
+                        <p>Symptoms: Chronic fatigue, dark circles under eyes, irritability, and frequent colds.</p>
+                    </div>
+                </div>
+                <p><strong>Initial Assessment:</strong> Leo's mother thought he was "just lazy" or depressed. Conventional blood work was "normal."</p>
+                <p><strong>RCA Framework Applied:</strong>
+                    <ul>
+                        <li><strong>Antecedents:</strong> Born via C-section, multiple ear infections as a toddler (antibiotics).</li>
+                        <li><strong>Triggers:</strong> Moved to a new house 6 months ago (potential mold or dust).</li>
+                        <li><strong>Mediators:</strong> High-carb diet and 3 hours of iPad use before bed.</li>
+                    </ul>
+                </p>
+                <p><strong>Outcome:</strong> Root cause identified as <span class="highlight">Mitochondrial Dysfunction</span> secondary to chronic mold exposure and iron sequestration from low-grade inflammation. After environmental remediation and iron-rich nutrient density, energy levels normalized within 45 days.</p>
+            </div>
+        </div>
+
+        <h2 id="section4">The 4-P Framework</h2>
+        <p>To organize your findings, use the 4-P Framework. This allows you to present a clear "story" to the parents, increasing their compliance with your recommendations.</p>
+
+        <div class="principle-card">
+            <p class="principle-title">1. Predisposing Factors (The Soil)</p>
+            <p class="principle-text">What was the child's starting point? This includes genetic SNPs (like MTHFR), maternal health during pregnancy, and delivery method.</p>
+        </div>
+
+        <div class="principle-card">
+            <p class="principle-title">2. Precipitating Factors (The Spark)</p>
+            <p class="principle-text">What set the current symptoms in motion? A viral infection, a round of antibiotics, or a stressful family transition (divorce, moving).</p>
+        </div>
+
+        <div class="principle-card">
+            <p class="principle-title">3. Perpetuating Factors (The Fuel)</p>
+            <p class="principle-text">What is keeping the child sick today? A pro-inflammatory diet, lack of outdoor time, or ongoing gut dysbiosis.</p>
+        </div>
+
+        <div class="principle-card">
+            <p class="principle-title">4. Protective Factors (The Shield)</p>
+            <p class="principle-text">What is working well? Strong family bond, interest in sports, or a willingness to try "hero foods." Leverage these for the intervention.</p>
+        </div>
+
+        <h2 id="section5">Synthesis & Hypothesis</h2>
+        <p>Once you have gathered your data (from labs, 3-day food diaries, and the 4-P framework), you must form a hypothesis. A hypothesis is a <span class="highlight">working theory</span> of why the child is experiencing their current symptoms. It should follow this structure:</p>
+
+        <div class="alert-box info">
+            <p class="alert-label">The RCA Synthesis Template</p>
+            <p>"Based on the <strong>Antecedents</strong> (C-section birth), the <strong>Trigger</strong> (recent viral infection), and current <strong>Mediators</strong> (low fiber intake and high screen time), we hypothesize that the primary driver is <strong>Intestinal Permeability</strong> leading to <strong>Systemic Inflammation</strong>, which is manifesting as the child's current <strong>Skin Rashes and Irritability</strong>."</p>
+        </div>
+
+        <h2 id="section6">Clinical Application</h2>
+        <p>As a coach, your role is not to diagnose, but to <span class="highlight">assess and address</span>. When you present your root-cause hypothesis to a parent, you move from being a "food police" to a "health partner." You aren't just telling them to "eat more broccoli"; you are explaining that broccoli provides the sulforaphane needed to support the Phase II detoxification that is currently sluggish in their child.</p>
+
+        <div class="check-understanding">
+            <p class="box-label">Check Your Understanding</p>
+            <p class="box-subtitle">Test your knowledge of the Root-Cause Framework</p>
+
+            <div class="question-item">
+                <div class="question-number">1</div>
+                <p class="question-text">A child has chronic eczema. Using the 4-P Framework, where would "maternal antibiotic use during pregnancy" be categorized?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <p class="answer-text">It is a <strong>Predisposing Factor</strong> (Antecedent). It sets the stage for the child's initial microbiome seeding but is not the immediate trigger for the rash.</p>
+            </div>
+
+            <div class="question-item">
+                <div class="question-number">2</div>
+                <p class="question-text">True or False: The "5-Whys" technique should always lead to a nutritional deficiency.</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <p class="answer-text"><strong>False.</strong> The root cause may be environmental (mold), emotional (anxiety), or structural (sleep apnea), though these often have nutritional consequences.</p>
+            </div>
+        </div>
+
+        <div class="takeaways-box">
+            <p class="box-label">Key Takeaways</p>
+            <ul>
+                <li>Symptoms are downstream signals; root causes are upstream drivers.</li>
+                <li>The 5-Whys technique helps peel back layers of "behavioral" issues to find biological origins.</li>
+                <li>The 4-P Framework (Predisposing, Precipitating, Perpetuating, Protective) is the gold standard for case organization.</li>
+                <li>Never assess a child in isolation; use the "Web of Causality" to see how gut, brain, and environment interact.</li>
+                <li>A root-cause hypothesis is essential for creating targeted, bio-individual NURTURE Method™ protocols.</li>
+            </ul>
+        </div>
+
+        <div class="references-box">
+            <h4>References & Further Reading</h4>
+            <ul>
+                <li>Bland, J. S. (2017). "The Functional Medicine Approach to Pediatric Chronic Disease." <i>Integrative Medicine: A Clinician's Journal.</i></li>
+                <li>Fasano, A. (2020). "All disease begins in the (leaky) gut: role of zonulin-mediated gut permeability." <i>F1000Research.</i></li>
+                <li>Jones, D. S., et al. (2021). "The Functional Medicine Matrix in Pediatric Practice." <i>Journal of Functional Medicine.</i></li>
+                <li>Miller, G. W. (2022). "The Exposome: A New Paradigm for Pediatric Root-Cause Analysis." <i>Annual Review of Public Health.</i></li>
+                <li>O’Mahony, S. M., et al. (2023). "Early life stress and the gut microbiome: Root causes of neurodevelopmental shifts." <i>Frontiers in Cellular Neuroscience.</i></li>
+                <li>Sears, M. E. (2021). "The Medical Detective: Root Cause Analysis in Pediatric Environmental Health." <i>Journal of Environmental and Public Health.</i></li>
+            </ul>
+        </div>
+
+        <footer class="lesson-footer">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="footer-logo">
+            <p class="brand">AccrediPro Academy | Pediatric Nutrition Coach Certification</p>
+            <p class="copyright">&copy; 2024 AccrediPro. All rights reserved. Intellectual Property of The NURTURE Method™.</p>
+        </footer>
+    </div>
+</body>
+
+</html>

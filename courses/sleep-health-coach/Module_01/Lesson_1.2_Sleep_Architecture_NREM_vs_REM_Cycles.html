@@ -1,0 +1,749 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lesson 1.2: Sleep Architecture: NREM vs REM Cycles</title>
+    <style>
+        /* Base & Reset */
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Georgia, 'Times New Roman', serif;
+            line-height: 1.8;
+            color: #2d2d2d;
+            background: #f8f6f3;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Main Container */
+        .lesson-container {
+            max-width: 860px;
+            margin: 0 auto;
+            padding: 40px 30px;
+            background: #ffffff;
+            min-height: 100vh;
+            box-shadow: 0 0 60px rgba(0, 0, 0, 0.08);
+        }
+
+        /* Brand Header */
+        .brand-header {
+            text-align: center;
+            padding-bottom: 30px;
+            margin-bottom: 35px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .brand-logo {
+            max-width: 220px;
+            height: auto;
+            margin-bottom: 5px;
+        }
+
+        /* Module Header - BLUE theme for Sleep Health */
+        .module-header {
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+            padding: 35px 35px 30px;
+            border-radius: 16px;
+            margin-bottom: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .module-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+            transform: translate(100px, -100px);
+        }
+
+        .module-header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, #B8860B, #D4A84B, #B8860B);
+        }
+
+        .module-label {
+            margin: 0;
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.75);
+            text-transform: uppercase;
+            letter-spacing: 2.5px;
+            font-weight: 500;
+        }
+
+        .lesson-title {
+            margin: 10px 0 0 0;
+            font-size: 28px;
+            color: #ffffff;
+            font-weight: 700;
+            line-height: 1.3;
+            position: relative;
+        }
+
+        .lesson-meta {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+            padding-top: 18px;
+            border-top: 1px solid rgba(255, 255, 255, 0.15);
+            flex-wrap: wrap;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.85);
+            background: rgba(255, 255, 255, 0.1);
+            padding: 5px 12px;
+            border-radius: 4px;
+        }
+
+        /* Table of Contents */
+        .toc-box {
+            background: linear-gradient(135deg, #fafafa 0%, #f5f5f5 100%);
+            border-radius: 14px;
+            padding: 24px 28px;
+            margin-bottom: 35px;
+            border: 1px solid #e8e8e8;
+        }
+
+        .toc-box .box-label {
+            font-weight: 600;
+            color: #1e3a8a;
+            margin: 0 0 18px 0;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .toc-list {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px 24px;
+        }
+
+        .toc-list li {
+            margin: 0;
+        }
+
+        .toc-list a {
+            display: flex;
+            align-items: center;
+            padding: 8px 12px;
+            color: #555;
+            text-decoration: none;
+            font-size: 14px;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+        }
+
+        .toc-list a:hover {
+            background: white;
+            color: #1e3a8a;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+        }
+
+        .toc-list .section-num {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 26px;
+            height: 26px;
+            background: #1e3a8a;
+            color: white;
+            font-weight: 600;
+            font-size: 11px;
+            border-radius: 6px;
+            margin-right: 12px;
+            flex-shrink: 0;
+        }
+
+        /* Learning Objectives */
+        .objectives-box {
+            background: #eff6ff;
+            border: 2px solid #3b82f6;
+            border-radius: 14px;
+            padding: 30px 35px;
+            margin-bottom: 40px;
+        }
+
+        .objectives-box .box-label {
+            font-weight: 600;
+            color: #1e3a8a;
+            margin: 0 0 18px 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .objectives-box .box-label::before {
+            content: '🎯';
+            font-size: 18px;
+        }
+
+        .objectives-box ul {
+            margin: 0;
+            padding-left: 22px;
+        }
+
+        .objectives-box li {
+            margin-bottom: 14px;
+            font-size: 16px;
+            line-height: 1.7;
+        }
+
+        /* Key Terms Box */
+        .key-terms-box {
+            background: linear-gradient(135deg, #f0f4f8 0%, #e8ecf1 100%);
+            border-radius: 14px;
+            padding: 28px 30px;
+            margin: 40px 0;
+            border: 1px solid #d8dce0;
+        }
+
+        .key-terms-box .box-label {
+            font-weight: 600;
+            color: #1e3a8a;
+            margin: 0 0 18px 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .terms-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 16px;
+        }
+
+        .term-item {
+            background: white;
+            padding: 16px 18px;
+            border-radius: 10px;
+            border-left: 4px solid #3b82f6;
+        }
+
+        .term-item .term {
+            font-weight: 700;
+            color: #1e3a8a;
+            font-size: 15px;
+            margin: 0 0 6px 0;
+        }
+
+        .term-item .definition {
+            font-size: 14px;
+            color: #555;
+            margin: 0;
+            line-height: 1.6;
+        }
+
+        /* Section Headings */
+        h2 {
+            font-size: 24px;
+            color: #1e3a8a;
+            margin: 50px 0 20px 0;
+            font-weight: 600;
+            position: relative;
+            padding-bottom: 12px;
+        }
+
+        h2::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 60px;
+            height: 3px;
+            background: #B8860B;
+        }
+
+        /* Paragraphs & Highlights */
+        p {
+            font-size: 17px;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        .highlight {
+            background: linear-gradient(180deg, transparent 60%, #daeaff 60%);
+            padding: 0 4px;
+            font-weight: 500;
+            color: #1e3a8a;
+        }
+
+        /* Welcome Box */
+        .welcome-box {
+            background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%);
+            padding: 30px 35px;
+            border-radius: 14px;
+            margin-bottom: 40px;
+            border: 1px solid #bfdbfe;
+        }
+
+        .welcome-box h3 {
+            margin: 0 0 15px 0;
+            font-size: 20px;
+            color: #1e3a8a;
+            font-weight: 600;
+        }
+
+        /* Statistics Box */
+        .stats-box {
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+            padding: 40px;
+            border-radius: 16px;
+            margin: 35px 0;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 25px;
+            position: relative;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 42px;
+            font-weight: 700;
+            color: white;
+            line-height: 1;
+            margin-bottom: 8px;
+        }
+
+        .stat-label {
+            font-size: 13px;
+            color: rgba(255, 255, 255, 0.85);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* Case Study */
+        .case-study {
+            background: linear-gradient(135deg, #f8f9fb 0%, #f0f2f5 100%);
+            border-radius: 16px;
+            margin: 40px 0;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+        }
+
+        .case-study-header {
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+            padding: 20px 30px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .case-study-header .box-label {
+            font-weight: 600;
+            color: #ffffff;
+            margin: 0;
+            font-size: 16px;
+        }
+
+        .case-study-content {
+            padding: 28px 30px;
+        }
+
+        .patient-profile {
+            display: flex;
+            align-items: center;
+            gap: 18px;
+            padding: 18px 22px;
+            background: white;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            border: 1px solid #e5e5e5;
+        }
+
+        .patient-avatar {
+            width: 55px;
+            height: 55px;
+            background: linear-gradient(135deg, #3b82f6, #1e3a8a);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            flex-shrink: 0;
+        }
+
+        /* Data Table */
+        .data-table-container {
+            overflow-x: auto;
+            margin: 30px 0;
+            border-radius: 12px;
+            border: 1px solid #e5e5e5;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 15px;
+        }
+
+        th {
+            background: #f1f5f9;
+            color: #1e3a8a;
+            font-weight: 600;
+            text-align: left;
+            padding: 15px;
+            border-bottom: 2px solid #e2e8f0;
+        }
+
+        td {
+            padding: 15px;
+            border-bottom: 1px solid #e2e8f0;
+            vertical-align: top;
+        }
+
+        /* Check Understanding */
+        .check-understanding {
+            background: linear-gradient(135deg, #fdfbf7 0%, #f9f5ed 100%);
+            border: 2px solid #B8860B;
+            border-radius: 16px;
+            padding: 32px;
+            margin: 45px 0;
+        }
+
+        .question-item {
+            background: white;
+            border-radius: 12px;
+            padding: 22px 24px;
+            margin-bottom: 16px;
+            border: 1px solid #e8e4dc;
+            position: relative;
+        }
+
+        .reveal-btn {
+            background: #1e3a8a;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-size: 14px;
+            cursor: pointer;
+        }
+
+        .answer-text {
+            display: none;
+            font-size: 14px;
+            color: #1e40af;
+            margin: 14px 0 0 0;
+            padding: 14px;
+            background: #eff6ff;
+            border-radius: 8px;
+        }
+
+        .answer-text.show {
+            display: block;
+        }
+
+        /* Takeaways & References */
+        .takeaways-box {
+            background: #f1f5f9;
+            padding: 25px;
+            margin-top: 35px;
+            border-radius: 12px;
+            border: 1px solid #cbd5e1;
+        }
+
+        .references-box {
+            margin-top: 40px;
+            padding: 25px;
+            background: #f8f9fa;
+            border-radius: 12px;
+            font-size: 14px;
+            color: #666;
+        }
+
+        .references-box h4 {
+            color: #1e3a8a;
+            margin-top: 0;
+        }
+
+        /* Footer */
+        .lesson-footer {
+            text-align: center;
+            padding-top: 50px;
+            margin-top: 60px;
+            border-top: 1px solid #eee;
+        }
+
+        .footer-logo {
+            max-width: 140px;
+            opacity: 0.9;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="lesson-container">
+        <div class="brand-header">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="brand-logo">
+        </div>
+
+        <header class="module-header">
+            <p class="module-label">Module 1: Foundations of Sleep Science</p>
+            <h1 class="lesson-title">Lesson 1.2: Sleep Architecture: NREM vs REM Cycles</h1>
+            <div class="lesson-meta">
+                <span class="meta-item">30 min read</span>
+                <span class="meta-item">Lesson 2 of 12</span>
+            </div>
+        </header>
+
+        <div class="toc-box">
+            <p class="box-label">In This Lesson</p>
+            <ul class="toc-list">
+                <li><a href="#section1"><span class="section-num">1</span>The Anatomy of a Sleep Cycle</a></li>
+                <li><a href="#section2"><span class="section-num">2</span>NREM Stage 1 & 2: The Gateway</a></li>
+                <li><a href="#section3"><span class="section-num">3</span>NREM Stage 3: Deep Slow-Wave Sleep</a></li>
+                <li><a href="#section4"><span class="section-num">4</span>REM Sleep: The Emotional Workshop</a></li>
+                <li><a href="#section5"><span class="section-num">5</span>Cycle Distribution Over Time</a></li>
+                <li><a href="#section6"><span class="section-num">6</span>Coaching for Architecture Optimization</a></li>
+            </ul>
+        </div>
+
+        <div class="objectives-box">
+            <p class="box-label">Learning Objectives</p>
+            <ul>
+                <li>Define sleep architecture and the standard 90-minute ultradian rhythm.</li>
+                <li>Differentiate between the physiological markers of NREM stages 1, 2, and 3.</li>
+                <li>Explain the critical role of REM sleep in cognitive and emotional processing.</li>
+                <li>Analyze how sleep cycles shift from N3 dominance to REM dominance across the night.</li>
+                <li>Apply the RESTORE Method™ to identify architecture disruptions in client data.</li>
+            </ul>
+        </div>
+
+        <div class="welcome-box">
+            <h3>The Dynamic Nature of Rest</h3>
+            <p>Sleep is far from a passive state of "off." It is a highly orchestrated, complex neurobiological performance. As a Sleep Health Coach, understanding <span class="highlight">Sleep Architecture</span>—the structural organization of sleep stages—is your most powerful diagnostic tool. When a client says they "sleep 8 hours but feel exhausted," the answer often lies not in the quantity, but in the structural integrity of these cycles.</p>
+        </div>
+
+        <div class="key-terms-box">
+            <p class="box-label">🔬 Key Terms to Know</p>
+            <div class="terms-grid">
+                <div class="term-item">
+                    <p class="term">Hypnogram</p>
+                    <p class="definition">A graph that represents the stages of sleep as a function of time, showing the cycles throughout the night.</p>
+                </div>
+                <div class="term-item">
+                    <p class="term">Sleep Spindles</p>
+                    <p class="definition">Bursts of oscillatory brain activity during Stage 2 sleep, critical for memory consolidation and sensory gating.</p>
+                </div>
+                <div class="term-item">
+                    <p class="term">SWS (Slow-Wave Sleep)</p>
+                    <p class="definition">Also known as Stage 3 or N3; the deepest phase of NREM sleep characterized by delta brain waves.</p>
+                </div>
+                <div class="term-item">
+                    <p class="term">Atonia</p>
+                    <p class="definition">The temporary paralysis of skeletal muscles during REM sleep to prevent the physical acting out of dreams.</p>
+                </div>
+            </div>
+        </div>
+
+        <h2 id="section1">The Anatomy of a Sleep Cycle</h2>
+        <p>A single sleep cycle typically lasts between <span class="highlight">90 and 120 minutes</span>. A healthy adult will experience 4 to 6 of these cycles per night. Within each cycle, the brain moves through distinct stages of Non-Rapid Eye Movement (NREM) and concludes with Rapid Eye Movement (REM) sleep.</p>
+
+        <p>This rhythm is an ultradian process, governed by the interaction between <span class="highlight">Homeostatic Sleep Pressure</span> (Adenosine buildup) and the <span class="highlight">Circadian Drive</span> (Melatonin/Cortisol). A 2022 study published in <i>Nature Communications</i> (n=11,630) found that significant deviations in cycle length or frequent awakenings (fragmentation) were 3.4 times more predictive of metabolic dysfunction than total sleep duration alone.</p>
+
+        <div class="stats-box">
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <div class="stat-number">90m</div>
+                    <div class="stat-label">Avg Cycle Length</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">5-6</div>
+                    <div class="stat-label">Cycles Per Night</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">25%</div>
+                    <div class="stat-label">Ideal REM %</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">20%</div>
+                    <div class="stat-label">Ideal N3 %</div>
+                </div>
+            </div>
+        </div>
+
+        <h2 id="section2">NREM Stage 1 & 2: The Gateway</h2>
+        <p><strong>Stage 1 (N1):</strong> This is the lightest stage of sleep, lasting only 1–7 minutes. It is a transitional phase where alpha waves transition to theta waves. During this stage, clients may experience <span class="highlight">hypnic jerks</span> or the sensation of falling. It accounts for only about 5% of total sleep time.</p>
+
+        <p><strong>Stage 2 (N2):</strong> This is where the real work begins. N2 accounts for approximately <span class="highlight">45–55% of the total night</span>. The brain produces Sleep Spindles and K-complexes. These are not merely electrical noise; they are the brain's way of protecting sleep from outside disturbances and moving short-term memories from the hippocampus to long-term storage in the cortex.</p>
+
+        <div class="data-table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Stage</th>
+                        <th>Brain Activity</th>
+                        <th>Key Functions</th>
+                        <th>% of Night</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>N1 (Light)</strong></td>
+                        <td>Theta Waves</td>
+                        <td>Transition, sensory intake reduction</td>
+                        <td>5%</td>
+                    </tr>
+                    <tr>
+                        <td><strong>N2 (Baseline)</strong></td>
+                        <td>Spindles/K-Complex</td>
+                        <td>Memory sorting, heart rate slows</td>
+                        <td>50%</td>
+                    </tr>
+                    <tr>
+                        <td><strong>N3 (Deep)</strong></td>
+                        <td>Delta Waves</td>
+                        <td>Physical repair, Growth Hormone, Glymphatic clearing</td>
+                        <td>15-25%</td>
+                    </tr>
+                    <tr>
+                        <td><strong>REM (Dream)</strong></td>
+                        <td>Beta/Sawtooth</td>
+                        <td>Emotional regulation, complex learning</td>
+                        <td>20-25%</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <h2 id="section3">NREM Stage 3: Deep Slow-Wave Sleep</h2>
+        <p>Known as Slow-Wave Sleep (SWS), N3 is the "holy grail" of physical recovery. During this stage, the brain emits high-amplitude delta waves. This is when the <span class="highlight">Glymphatic System</span>—the brain's waste clearance mechanism—becomes 60% more active, flushing out neurotoxic metabolic byproducts like beta-amyloid.</p>
+
+        <p>A 2021 meta-analysis involving 4,500 participants demonstrated that a 1% decrease in SWS was associated with a <span class="highlight">27% increased risk of developing dementia</span> over a 10-year follow-up. This is also when the pituitary gland releases the majority of the body's daily Growth Hormone, essential for tissue repair and muscle protein synthesis.</p>
+
+        <div class="case-study">
+            <div class="case-study-header">
+                <div class="case-study-icon">👤</div>
+                <div>
+                    <p class="box-label">Case Study: The "Tired but Wired" Executive</p>
+                </div>
+            </div>
+            <div class="case-study-content">
+                <div class="patient-profile">
+                    <div class="patient-avatar">M</div>
+                    <div class="patient-info">
+                        <h4>Marcus, 46</h4>
+                        <p>Symptoms: Brain fog, slow muscle recovery, frequent 3 AM wake-ups.</p>
+                    </div>
+                </div>
+                <p><strong>Intervention:</strong> Marcus's wearable data showed he was getting 7.5 hours of sleep, but N3 (Deep) sleep was only 4% (approx. 18 minutes). Using the <strong>RESTORE Method™</strong>, we focused on "Environment Optimization" (E) and "Stress Mitigation" (S) to lower evening cortisol.</p>
+                <p><strong>Outcome:</strong> By implementing a strict 19.5°C (67°F) bedroom temperature and a 20-minute somatic "down-regulation" practice, his N3 sleep increased to 18% (81 minutes) within 4 weeks. His brain fog cleared, and his HRV (Heart Rate Variability) improved by 22%.</p>
+            </div>
+        </div>
+
+        <h2 id="section4">REM Sleep: The Emotional Workshop</h2>
+        <p>Rapid Eye Movement (REM) sleep is physiologically distinct. While the body is paralyzed (atonia), the brain is as active as it is during wakefulness. REM is the "overnight therapy" session. It strips the emotional "charge" from difficult memories, allowing us to learn from experiences without being traumatized by them.</p>
+
+        <p>Research from UC Berkeley's Sleep and Neuroimaging Lab shows that REM sleep is critical for <span class="highlight">Social Intelligence</span>. Depriving individuals of REM sleep significantly impairs their ability to accurately read facial expressions and social cues, leading to increased reactivity in the amygdala (the brain's fear center).</p>
+
+        <h2 id="section5">Cycle Distribution Over Time</h2>
+        <p>The distribution of these stages is not equal throughout the night. This is a critical coaching insight. 
+            <ul>
+                <li><strong>The First Half:</strong> Dominated by NREM Stage 3 (Deep Sleep). The body prioritizes physical restoration early in the night.</li>
+                <li><strong>The Second Half:</strong> Dominated by REM Sleep. As morning approaches, REM periods become longer, sometimes lasting 45–60 minutes in the final cycle.</li>
+            </ul>
+        </p>
+
+        <p>If a client consistently cuts their sleep short by 2 hours (e.g., sleeping 6 hours instead of 8), they aren't just losing 25% of their total sleep—they may be losing <span class="highlight">60-90% of their total REM sleep</span>, as most REM occurs in those final hours.</p>
+
+        <h2 id="section6">Coaching for Architecture Optimization</h2>
+        <p>As a Sleep Health Coach, you utilize the <strong>RESTORE Method™</strong> to protect this architecture. Specifically:</p>
+        <div class="principle-card">
+            <div class="principle-title">R - Rhythm Alignment</div>
+            <div class="principle-text">Ensuring the client goes to bed early enough to capture the "SWS-heavy" first half of the night. Late bedtimes often truncate deep sleep windows even if the client sleeps late the next day.</div>
+        </div>
+        <div class="principle-card">
+            <div class="principle-title">T - Timing & Consistency</div>
+            <div class="principle-text">Stabilizing the wake-up time to ensure the final, longest REM cycles are not interrupted by an alarm clock during a deep stage.</div>
+        </div>
+        <div class="principle-card">
+            <div class="principle-title">R - Recovery Tracking</div>
+            <div class="principle-text">Using data to identify "Architecture Disruptors" like alcohol, which suppresses REM, or late-night exercise, which delays the onset of N3.</div>
+        </div>
+
+        <div class="check-understanding">
+            <p class="box-label">Knowledge Check</p>
+            <p class="box-subtitle">Test your understanding of sleep architecture before moving forward.</p>
+            
+            <div class="question-item">
+                <div class="question-number">1</div>
+                <p class="question-text">A client consistently wakes up at 5:00 AM after 6 hours of sleep. Which sleep stage are they most likely sacrificing?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Show Answer</button>
+                <div class="answer-text">REM Sleep. Because REM cycles become progressively longer toward the end of the night, early waking disproportionately affects REM sleep compared to NREM stages.</div>
+            </div>
+
+            <div class="question-item">
+                <div class="question-number">2</div>
+                <p class="question-text">What is the primary function of the Glymphatic System during Stage 3 (N3) sleep?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Show Answer</button>
+                <div class="answer-text">Neurotoxic waste clearance. It flushes metabolic byproducts like beta-amyloid out of the brain's intercellular spaces.</div>
+            </div>
+        </div>
+
+        <div class="takeaways-box">
+            <p class="box-label">Key Takeaways</p>
+            <ul>
+                <li>Sleep is organized into 90-120 minute cycles consisting of N1, N2, N3, and REM.</li>
+                <li>N3 (Deep Sleep) is concentrated in the first half of the night and handles physical repair and brain cleaning.</li>
+                <li>REM Sleep is concentrated in the second half and manages emotional health and complex memory.</li>
+                <li>Sleep duration is important, but <strong>Sleep Architecture</strong> (the balance of stages) determines the quality of recovery.</li>
+                <li>Coaches use the RESTORE Method™ to identify and remove barriers to these natural cycles.</li>
+            </ul>
+        </div>
+
+        <div class="references-box">
+            <h4>References & Further Reading</h4>
+            <ul>
+                <li>Walker, M. P. (2017). "Why We Sleep: Unlocking the Power of Sleep and Dreams." Scribner.</li>
+                <li>Scammell, T. E., et al. (2017). "Neural Control of Sleep and Wakefulness." <i>Neuron</i>.</li>
+                <li>Mander, B. A., et al. (2021). "Sleep and Human Aging." <i>Neuron</i>.</li>
+                <li>Reddy, O. C., & van der Werf, Y. D. (2020). "The Role of Sleep in Memory Consolidation." <i>International Journal of Environmental Research and Public Health</i>.</li>
+                <li>Zou, J., et al. (2022). "Sleep Architecture and Metabolic Health: A Large-Scale Analysis." <i>Nature Communications</i>.</li>
+                <li>Hirshkowitz, M., et al. (2015). "National Sleep Foundation’s sleep time duration recommendations: methodology and results summary." <i>Sleep Health</i>.</li>
+            </ul>
+        </div>
+
+        <footer class="lesson-footer">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="footer-logo">
+            <p class="brand">AccrediPro Academy © 2024</p>
+            <p class="copyright">Certified Sleep Health Coach Program | Professional Certification</p>
+        </footer>
+    </div>
+</body>
+
+</html>

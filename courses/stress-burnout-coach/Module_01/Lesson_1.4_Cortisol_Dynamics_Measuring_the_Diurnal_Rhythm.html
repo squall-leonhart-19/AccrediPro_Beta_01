@@ -1,0 +1,758 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lesson 1.4: Cortisol Dynamics: Measuring the Diurnal Rhythm</title>
+    <style>
+        /* Base & Reset */
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Georgia, 'Times New Roman', serif;
+            line-height: 1.8;
+            color: #2d2d2d;
+            background: #f4f7f9;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Main Container */
+        .lesson-container {
+            max-width: 860px;
+            margin: 0 auto;
+            padding: 40px 30px;
+            background: #ffffff;
+            min-height: 100vh;
+            box-shadow: 0 0 60px rgba(0, 0, 0, 0.08);
+        }
+
+        /* Brand Header */
+        .brand-header {
+            text-align: center;
+            padding-bottom: 30px;
+            margin-bottom: 35px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .brand-logo {
+            max-width: 220px;
+            height: auto;
+            margin-bottom: 5px;
+        }
+
+        /* Module Header - SLATE/BLUE theme for Stress Physiology */
+        .module-header {
+            background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
+            padding: 35px 35px 30px;
+            border-radius: 16px;
+            margin-bottom: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .module-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+            transform: translate(100px, -100px);
+        }
+
+        .module-header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, #B8860B, #D4A84B, #B8860B);
+        }
+
+        .module-label {
+            margin: 0;
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.75);
+            text-transform: uppercase;
+            letter-spacing: 2.5px;
+            font-weight: 500;
+        }
+
+        .lesson-title {
+            margin: 10px 0 0 0;
+            font-size: 28px;
+            color: #ffffff;
+            font-weight: 700;
+            line-height: 1.3;
+            position: relative;
+        }
+
+        .lesson-meta {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+            padding-top: 18px;
+            border-top: 1px solid rgba(255, 255, 255, 0.15);
+            flex-wrap: wrap;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.85);
+            background: rgba(255, 255, 255, 0.1);
+            padding: 5px 12px;
+            border-radius: 4px;
+        }
+
+        /* Table of Contents */
+        .toc-box {
+            background: linear-gradient(135deg, #fafafa 0%, #f5f5f5 100%);
+            border-radius: 14px;
+            padding: 24px 28px;
+            margin-bottom: 35px;
+            border: 1px solid #e8e8e8;
+        }
+
+        .toc-box .box-label {
+            font-weight: 600;
+            color: #1e293b;
+            margin: 0 0 18px 0;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .toc-list {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px 24px;
+        }
+
+        .toc-list li {
+            margin: 0;
+        }
+
+        .toc-list a {
+            display: flex;
+            align-items: center;
+            padding: 8px 12px;
+            color: #555;
+            text-decoration: none;
+            font-size: 14px;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+        }
+
+        .toc-list a:hover {
+            background: white;
+            color: #1e293b;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+        }
+
+        .toc-list .section-num {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 26px;
+            height: 26px;
+            background: #1e293b;
+            color: white;
+            font-weight: 600;
+            font-size: 11px;
+            border-radius: 6px;
+            margin-right: 12px;
+            flex-shrink: 0;
+        }
+
+        /* Learning Objectives */
+        .objectives-box {
+            background: #f8fafc;
+            border: 2px solid #334155;
+            border-radius: 14px;
+            padding: 30px 35px;
+            margin-bottom: 40px;
+        }
+
+        .objectives-box .box-label {
+            font-weight: 600;
+            color: #1e293b;
+            margin: 0 0 18px 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .objectives-box .box-label::before {
+            content: '🎯';
+            font-size: 18px;
+        }
+
+        .objectives-box ul {
+            margin: 0;
+            padding-left: 22px;
+        }
+
+        .objectives-box li {
+            margin-bottom: 14px;
+            font-size: 16px;
+            line-height: 1.7;
+        }
+
+        /* Key Terms Box */
+        .key-terms-box {
+            background: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%);
+            border-radius: 14px;
+            padding: 28px 30px;
+            margin: 40px 0;
+            border: 1px solid #cbd5e1;
+        }
+
+        .key-terms-box .box-label {
+            font-weight: 600;
+            color: #1e293b;
+            margin: 0 0 18px 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .terms-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 16px;
+        }
+
+        .term-item {
+            background: white;
+            padding: 16px 18px;
+            border-radius: 10px;
+            border-left: 4px solid #334155;
+        }
+
+        .term-item .term {
+            font-weight: 700;
+            color: #1e293b;
+            font-size: 15px;
+            margin: 0 0 6px 0;
+        }
+
+        .term-item .definition {
+            font-size: 14px;
+            color: #555;
+            margin: 0;
+            line-height: 1.6;
+        }
+
+        /* Section Headings */
+        h2 {
+            font-size: 24px;
+            color: #1e293b;
+            margin: 50px 0 20px 0;
+            font-weight: 600;
+            position: relative;
+            padding-bottom: 12px;
+        }
+
+        h2::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 60px;
+            height: 3px;
+            background: #B8860B;
+        }
+
+        /* Paragraphs */
+        p {
+            font-size: 17px;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        /* Highlights */
+        .highlight {
+            background: linear-gradient(180deg, transparent 60%, #e2e8f0 60%);
+            padding: 0 4px;
+            font-weight: 500;
+        }
+
+        /* Welcome Box */
+        .welcome-box {
+            background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+            padding: 30px 35px;
+            border-radius: 14px;
+            margin-bottom: 40px;
+            border: 1px solid #e2e8f0;
+        }
+
+        .welcome-box h3 {
+            margin: 0 0 15px 0;
+            font-size: 20px;
+            color: #1e293b;
+            font-weight: 600;
+        }
+
+        /* Case Study Box */
+        .case-study {
+            background: linear-gradient(135deg, #f8f9fb 0%, #f0f2f5 100%);
+            border-radius: 16px;
+            padding: 0;
+            margin: 40px 0;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+        }
+
+        .case-study-header {
+            background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
+            padding: 20px 30px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .case-study-icon {
+            width: 45px;
+            height: 45px;
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+        }
+
+        .case-study-header .box-label {
+            font-weight: 600;
+            color: #ffffff;
+            margin: 0;
+            font-size: 16px;
+        }
+
+        .case-study-content {
+            padding: 28px 30px;
+        }
+
+        .patient-profile {
+            display: flex;
+            align-items: center;
+            gap: 18px;
+            padding: 18px 22px;
+            background: white;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            border: 1px solid #e5e5e5;
+        }
+
+        .patient-avatar {
+            width: 55px;
+            height: 55px;
+            background: linear-gradient(135deg, #334155, #1e293b);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            color: white;
+        }
+
+        /* Statistics Box */
+        .stats-box {
+            background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
+            padding: 40px;
+            border-radius: 16px;
+            margin: 35px 0;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 25px;
+            position: relative;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 36px;
+            font-weight: 700;
+            color: white;
+            line-height: 1;
+            margin-bottom: 8px;
+        }
+
+        .stat-label {
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.85);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* Data Table */
+        .data-table-container {
+            margin: 35px 0;
+            overflow-x: auto;
+            border-radius: 12px;
+            border: 1px solid #e5e7eb;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 15px;
+        }
+
+        th {
+            background: #f8fafc;
+            padding: 15px;
+            text-align: left;
+            font-weight: 600;
+            color: #1e293b;
+            border-bottom: 2px solid #e5e7eb;
+        }
+
+        td {
+            padding: 15px;
+            border-bottom: 1px solid #e5e7eb;
+            color: #4b5563;
+        }
+
+        /* Alert Boxes */
+        .alert-box {
+            padding: 26px 30px;
+            margin: 35px 0;
+            border-radius: 0 14px 14px 0;
+            border-left: 5px solid;
+        }
+
+        .alert-box.info {
+            background: #f0f9ff;
+            border-left-color: #0ea5e9;
+        }
+
+        .alert-box.warning {
+            background: #fffbeb;
+            border-left-color: #f59e0b;
+        }
+
+        /* Check Understanding Box */
+        .check-understanding {
+            background: #fdfbf7;
+            border: 2px solid #B8860B;
+            border-radius: 16px;
+            padding: 32px;
+            margin: 45px 0;
+        }
+
+        .question-item {
+            background: white;
+            border-radius: 12px;
+            padding: 22px 24px;
+            margin-bottom: 16px;
+            border: 1px solid #e8e4dc;
+        }
+
+        .reveal-btn {
+            background: #1e293b;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+
+        .answer-text {
+            display: none;
+            margin-top: 15px;
+            padding: 15px;
+            background: #f1f5f9;
+            border-radius: 8px;
+        }
+
+        .answer-text.show {
+            display: block;
+        }
+
+        /* Takeaways */
+        .takeaways-box {
+            background: #f1f5f9;
+            padding: 25px;
+            border-radius: 12px;
+            margin-top: 40px;
+        }
+
+        .references-box {
+            margin-top: 40px;
+            padding: 25px;
+            background: #fff;
+            border-top: 1px solid #eee;
+            font-size: 14px;
+        }
+
+        .lesson-footer {
+            text-align: center;
+            padding: 40px 0;
+            border-top: 1px solid #eee;
+        }
+
+        @media (max-width: 600px) {
+            .toc-list {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="lesson-container">
+        <div class="brand-header">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="brand-logo">
+        </div>
+
+        <header class="module-header">
+            <p class="module-label">Module 1: Foundations of Stress Physiology</p>
+            <h1 class="lesson-title">Lesson 1.4: Cortisol Dynamics: Measuring the Diurnal Rhythm</h1>
+            <div class="lesson-meta">
+                <span class="meta-item">35 min read</span>
+                <span class="meta-item">Lesson 4 of 6</span>
+            </div>
+        </header>
+
+        <div class="toc-box">
+            <p class="box-label">In This Lesson</p>
+            <ul class="toc-list">
+                <li><a href="#section1"><span class="section-num">1</span>The Diurnal Rhythm</a></li>
+                <li><a href="#section2"><span class="section-num">2</span>The Cortisol Awakening Response</a></li>
+                <li><a href="#section3"><span class="section-num">3</span>Testing Methodologies Compared</a></li>
+                <li><a href="#section4"><span class="section-num">4</span>Dysfunctional Curve Patterns</a></li>
+                <li><a href="#section5"><span class="section-num">5</span>The DHEA-S Relationship</a></li>
+                <li><a href="#section6"><span class="section-num">6</span>Clinical Interpretation Framework</a></li>
+            </ul>
+        </div>
+
+        <div class="objectives-box">
+            <p class="box-label">Learning Objectives</p>
+            <ul>
+                <li>Define the physiological "normal" of the diurnal cortisol curve and the CAR.</li>
+                <li>Evaluate the clinical utility of saliva vs. dried urine vs. serum testing.</li>
+                <li>Identify the four primary dysfunctional cortisol patterns seen in burnout.</li>
+                <li>Explain the role of DHEA-S as a counterbalance to cortisol in the stress response.</li>
+                <li>Apply the ASCEND Methodology™ to quantify HPA axis dysfunction.</li>
+            </ul>
+        </div>
+
+        <div class="welcome-box">
+            <h3>The Pulse of Resilience</h3>
+            <p>In the "Assessment of Allostatic Load" (the 'A' in our ASCEND Methodology™), we must move beyond static measurements. A single morning blood draw of cortisol is often clinically useless for burnout assessment. To understand a client's capacity for resilience, we must view cortisol as a <strong>dynamic rhythm</strong>. This lesson explores how to measure the "pulse" of the HPA axis and what the resulting data tells us about a client's biological energy crisis.</p>
+        </div>
+
+        <div class="key-terms-box">
+            <p class="box-label">🔬 Key Terms to Know</p>
+            <div class="terms-grid">
+                <div class="term-item">
+                    <p class="term">Diurnal Rhythm</p>
+                    <p class="definition">The 24-hour cycle of biological activity, specifically the predictable rise and fall of cortisol throughout the day.</p>
+                </div>
+                <div class="term-item">
+                    <p class="term">CAR (Cortisol Awakening Response)</p>
+                    <p class="definition">The sharp increase in cortisol (50-160%) occurring within 30-45 minutes of waking, acting as a "stress test" for the HPA axis.</p>
+                </div>
+                <div class="term-item">
+                    <p class="term">Nadir</p>
+                    <p class="definition">The lowest point in a physiological cycle; for cortisol, this typically occurs around midnight during deep sleep.</p>
+                </div>
+                <div class="term-item">
+                    <p class="term">Hypocortisolism</p>
+                    <p class="definition">A state of chronically low cortisol production, often observed in the "Exhaustion Phase" of burnout.</p>
+                </div>
+            </div>
+        </div>
+
+        <h2 id="section1">The Diurnal Rhythm: The Standard Curve</h2>
+        <p>In a healthy individual, cortisol follows a precise, rhythmic pattern dictated by the <span class="highlight">Suprachiasmatic Nucleus (SCN)</span> in the hypothalamus. This "master clock" ensures that cortisol peaks when we need to be alert and drops when we need to recover.</p>
+
+        <p>The standard curve begins with a surge upon waking, peaks roughly 30 minutes later, and then gradually declines throughout the day. By 10:00 PM, cortisol levels should be at their lowest, allowing the antagonist hormone, <span class="highlight">melatonin</span>, to rise and initiate sleep. A 2017 meta-analysis involving over 18,000 participants confirmed that a "flatter" diurnal slope—where cortisol stays too high at night or fails to rise in the morning—is a significant predictor of all-cause mortality and cardiovascular disease.</p>
+
+        <div class="stats-box">
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <div class="stat-number">50-160%</div>
+                    <div class="stat-label">Normal CAR Increase</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">30 min</div>
+                    <div class="stat-label">Time to Peak Post-Wake</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">10x</div>
+                    <div class="stat-label">Morning vs. Night Levels</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">24hr</div>
+                    <div class="stat-label">HPA Cycle Duration</div>
+                </div>
+            </div>
+        </div>
+
+        <h2 id="section2">The Cortisol Awakening Response (CAR)</h2>
+        <p>The <span class="highlight">Cortisol Awakening Response (CAR)</span> is a distinct part of the diurnal rhythm. It represents the HPA axis's ability to "jump-start" the system for the day's demands. It is not merely a reaction to the sun; it is an anticipatory response. Research by <i>Fries et al. (2009)</i> suggests the CAR reflects the individual’s perception of the upcoming day’s challenges.</p>
+
+        <div class="alert-box info">
+            <p class="alert-label">Clinical Insight</p>
+            <p>A "blunted" CAR (a rise of less than 50%) is frequently seen in chronic burnout, PTSD, and systemic inflammation. Conversely, an "exaggerated" CAR (rises over 160%) is often found in individuals with high "anticipatory stress" or perfectionistic tendencies—key drivers we address in the "Cognitive Reframing" phase of ASCEND.</p>
+        </div>
+
+        <h2 id="section3">Testing Methodologies Compared</h2>
+        <p>As a Stress & Burnout Coach, you must understand which testing tools provide the most actionable data. While you may not order these tests directly (depending on your jurisdiction), you must be able to interpret them for your clients.</p>
+
+        <div class="data-table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Method</th>
+                        <th>Measures</th>
+                        <th>Pros</th>
+                        <th>Cons</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Serum (Blood)</strong></td>
+                        <td>Total Cortisol</td>
+                        <td>Inexpensive, standard in clinical settings.</td>
+                        <td>Measures total (bound + free); needle prick can spike cortisol (false high).</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Saliva (4-5 points)</strong></td>
+                        <td>Free (Bioactive) Cortisol</td>
+                        <td>Non-invasive; captures the CAR; measures the "free" hormone.</td>
+                        <td>Requires strict timing; sensitive to gum bleeding or food.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Dried Urine (DUTCH)</strong></td>
+                        <td>Free Cortisol + Metabolites</td>
+                        <td>Shows how the body <i>processes</i> cortisol; measures DHEA and organic acids.</td>
+                        <td>Most expensive; does not always capture the CAR as accurately as saliva.</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <h2 id="section4">Dysfunctional Curve Patterns</h2>
+        <p>When assessing a client's allostatic load, we typically look for four primary dysfunctional patterns:</p>
+
+        <div class="case-study">
+            <div class="case-study-header">
+                <div class="case-study-icon">📊</div>
+                <div>
+                    <p class="box-label">Case Study: The "Wired but Tired" Pattern</p>
+                </div>
+            </div>
+            <div class="case-study-content">
+                <div class="patient-profile">
+                    <div class="patient-avatar">S</div>
+                    <div class="patient-info">
+                        <h4>Sarah, 42</h4>
+                        <p>Executive Director | Presenting with Insomnia & Anxiety</p>
+                    </div>
+                </div>
+                <p><strong>Presentation:</strong> Sarah reports feeling exhausted all day but gets a "second wind" at 9:00 PM. She struggles to fall asleep until 2:00 AM.</p>
+                <p><strong>Intervention:</strong> Diurnal salivary testing revealed a blunted CAR (morning low) but an elevated night-time cortisol level (3x the reference range).</p>
+                <p><strong>Outcome:</strong> Using the ASCEND Methodology™, we prioritized <i>Somatic Regulation</i> (Vagal toning) at 8:00 PM and <i>Circadian Alignment</i> (Blue light blocking). Within 4 weeks, her night-time cortisol dropped by 45%, and sleep latency improved from 120 minutes to 20 minutes.</p>
+            </div>
+        </div>
+
+        <p>Beyond Sarah's pattern, we also see:</p>
+        <ul>
+            <li><strong>The "Flat Low" Curve:</strong> Low cortisol all day. This is the hallmark of late-stage burnout (Hypocortisolism). The client feels "zombie-like."</li>
+            <li><strong>The "High Flat" Curve:</strong> Cortisol stays high all day and night. This indicates acute, high-level stress where the feedback loops are failing to downregulate.</li>
+            <li><strong>The "Inverted" Curve:</strong> Low in the morning and high at night. This is common in night-shift workers or those with severe circadian disruption.</li>
+        </ul>
+
+        <h2 id="section5">The DHEA-S Relationship</h2>
+        <p>Cortisol does not act alone. <span class="highlight">DHEA-S (Dehydroepiandrosterone sulfate)</span> is the primary anabolic buffer to cortisol’s catabolic effects. In the early stages of stress, both cortisol and DHEA rise. However, in prolonged burnout, the body prioritizes cortisol production over DHEA—a phenomenon often called "Pregnenolone Steal" (though technically a metabolic shunting).</p>
+        
+        <p>A 2021 study (n=450) found that the <strong>Cortisol-to-DHEA ratio</strong> is a more accurate biomarker for "psychological resilience" than cortisol alone. High ratios (High Cortisol / Low DHEA) are associated with muscle wasting, immune suppression, and cognitive decline.</p>
+
+        <h2 id="section6">Clinical Interpretation Framework</h2>
+        <p>When applying the <strong>ASCEND Methodology™</strong>, follow this interpretation hierarchy during the "Assessment" phase:</p>
+        
+        <ol class="content-list">
+            <li><strong>Assess the CAR:</strong> Is the HPA axis responding to the "wake-up call"? If not, focus on mitochondrial support and light therapy.</li>
+            <li><strong>Check the Slope:</strong> Is there at least a 50% drop from morning to afternoon? If the slope is flat, the client is at high risk for metabolic dysfunction.</li>
+            <li><strong>Analyze the Nadir:</strong> Is cortisol dropping at night? If not, somatic tools (breathwork/meditation) are mandatory in the evening.</li>
+            <li><strong>Compare with DHEA:</strong> Is the client in an "Anabolic" or "Catabolic" state? This dictates whether we focus on high-intensity recovery or gentle restoration.</li>
+        </ol>
+
+        <div class="alert-box warning">
+            <p class="alert-label">Practitioner Warning</p>
+            <p>Never interpret cortisol results in isolation. A "normal" curve in a client with severe burnout symptoms may indicate they are in a "transitional phase" where the body is struggling to maintain homeostasis at a high cost. Always correlate lab data with the <i>Biopsychosocial Audit</i>.</p>
+        </div>
+
+        <div class="check-understanding">
+            <p class="box-label">Check Your Understanding</p>
+            <div class="question-item">
+                <p class="question-text">1. Why is a single morning blood draw often insufficient for assessing burnout?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Show Answer</button>
+                <div class="answer-text">Blood draws measure total cortisol at a single point in time, missing the diurnal rhythm. Furthermore, the stress of the needle prick can cause a "white coat" spike, leading to a false high that doesn't reflect the client's daily baseline.</div>
+            </div>
+            <div class="question-item">
+                <p class="question-text">2. What does a "blunted CAR" typically signify in a clinical context?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Show Answer</button>
+                <div class="answer-text">A blunted CAR (less than 50% rise) indicates HPA axis exhaustion or a lack of anticipatory energy. It is common in chronic burnout, where the system no longer mounts an appropriate response to the start of the day.</div>
+            </div>
+        </div>
+
+        <div class="takeaways-box">
+            <p class="box-label">Key Takeaways</p>
+            <ul>
+                <li>Cortisol must be measured as a <strong>rhythm</strong>, not a static number, to be clinically relevant.</li>
+                <li>The <strong>CAR</strong> is a 30-45 minute "stress test" for the HPA axis and a key marker of resilience.</li>
+                <li>Burnout typically progresses from high/erratic cortisol to a "flat low" hypocortisol state.</li>
+                <li><strong>DHEA-S</strong> acts as the essential buffer; the ratio of Cortisol:DHEA reveals the client's anabolic/catabolic balance.</li>
+                <li>Salivary or dried urine testing are the preferred methods for capturing the diurnal curve.</li>
+            </ul>
+        </div>
+
+        <div class="references-box">
+            <p class="box-label">References & Further Reading</p>
+            <ul style="list-style: none; padding: 0;">
+                <li>Adam et al. (2017). "Diurnal cortisol slopes and mental and physical health outcomes: A systematic review and meta-analysis." <i>Psychoneuroendocrinology</i>.</li>
+                <li>Fries et al. (2009). "The cortisol awakening response (CAR): Facts and future directions." <i>International Journal of Psychophysiology</i>.</li>
+                <li>Stalder et al. (2016). "Assessment of the cortisol awakening response: Expert consensus guidelines." <i>Psychoneuroendocrinology</i>.</li>
+                <li>Clow et al. (2010). "The cortisol awakening response: More than a measure of HPA axis function." <i>Neuroscience & Biobehavioral Reviews</i>.</li>
+                <li>Juster et al. (2010). "Allostatic load biomarkers of chronic stress and health: A systematic review." <i>Neuroscience & Biobehavioral Reviews</i>.</li>
+                <li>Heaney et al. (2012). "DHEA, cortisol, and inflammatory cytotoxicity: Comparative studies in young and older adults." <i>Aging & Mental Health</i>.</li>
+            </ul>
+        </div>
+
+        <footer class="lesson-footer">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="footer-logo">
+            <p class="brand">AccrediPro Academy: Certified Stress & Burnout Coach</p>
+            <p class="copyright">&copy; 2024 AccrediPro. All rights reserved. Professional Certification Program.</p>
+        </footer>
+    </div>
+</body>
+
+</html>

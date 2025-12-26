@@ -1,0 +1,612 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lesson 9.7: Adjusting Macros Based on Training Phase (Periodization)</title>
+    <style>
+        /* Base & Reset */
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Georgia, 'Times New Roman', serif;
+            line-height: 1.8;
+            color: #2d2d2d;
+            background: #f8f6f3;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Main Container */
+        .lesson-container {
+            max-width: 860px;
+            margin: 0 auto;
+            padding: 40px 30px;
+            background: #ffffff;
+            min-height: 100vh;
+            box-shadow: 0 0 60px rgba(0, 0, 0, 0.08);
+        }
+
+        /* Brand Header */
+        .brand-header {
+            text-align: center;
+            padding-bottom: 30px;
+            margin-bottom: 35px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .brand-logo {
+            max-width: 220px;
+            height: auto;
+            margin-bottom: 5px;
+        }
+
+        /* Module Header - BLUE/NAVY theme for Sports/Performance */
+        .module-header {
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+            padding: 35px 35px 30px;
+            border-radius: 16px;
+            margin-bottom: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .module-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+            transform: translate(100px, -100px);
+        }
+
+        .module-header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, #B8860B, #D4A84B, #B8860B);
+        }
+
+        .module-label {
+            margin: 0;
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.75);
+            text-transform: uppercase;
+            letter-spacing: 2.5px;
+            font-weight: 500;
+        }
+
+        .lesson-title {
+            margin: 10px 0 0 0;
+            font-size: 28px;
+            color: #ffffff;
+            font-weight: 700;
+            line-height: 1.3;
+            position: relative;
+        }
+
+        .lesson-meta {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+            padding-top: 18px;
+            border-top: 1px solid rgba(255, 255, 255, 0.15);
+            flex-wrap: wrap;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.85);
+            background: rgba(255, 255, 255, 0.1);
+            padding: 5px 12px;
+            border-radius: 4px;
+        }
+
+        /* Table of Contents */
+        .toc-box {
+            background: linear-gradient(135deg, #fafafa 0%, #f5f5f5 100%);
+            border-radius: 14px;
+            padding: 24px 28px;
+            margin-bottom: 35px;
+            border: 1px solid #e8e8e8;
+        }
+
+        .toc-box .box-label {
+            font-weight: 600;
+            color: #1e3a8a;
+            margin: 0 0 18px 0;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .toc-list {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px 24px;
+        }
+
+        .toc-list a {
+            display: flex;
+            align-items: center;
+            padding: 8px 12px;
+            color: #555;
+            text-decoration: none;
+            font-size: 14px;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+        }
+
+        .toc-list a:hover {
+            background: white;
+            color: #1e3a8a;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+        }
+
+        .toc-list .section-num {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 26px;
+            height: 26px;
+            background: #1e3a8a;
+            color: white;
+            font-weight: 600;
+            font-size: 11px;
+            border-radius: 6px;
+            margin-right: 12px;
+            flex-shrink: 0;
+        }
+
+        /* Learning Objectives */
+        .objectives-box {
+            background: #eff6ff;
+            border: 2px solid #3b82f6;
+            border-radius: 14px;
+            padding: 30px 35px;
+            margin-bottom: 40px;
+        }
+
+        .objectives-box .box-label {
+            font-weight: 600;
+            color: #1e3a8a;
+            margin: 0 0 18px 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .objectives-box .box-label::before {
+            content: '🎯';
+            font-size: 18px;
+        }
+
+        .objectives-box ul {
+            margin: 0;
+            padding-left: 22px;
+        }
+
+        .objectives-box li {
+            margin-bottom: 14px;
+            font-size: 16px;
+            line-height: 1.7;
+        }
+
+        /* Key Terms Box */
+        .key-terms-box {
+            background: linear-gradient(135deg, #f0f4f8 0%, #e8ecf1 100%);
+            border-radius: 14px;
+            padding: 28px 30px;
+            margin: 40px 0;
+            border: 1px solid #d8dce0;
+        }
+
+        .key-terms-box .box-label {
+            font-weight: 600;
+            color: #1e3a8a;
+            margin: 0 0 18px 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .terms-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 16px;
+        }
+
+        .term-item {
+            background: white;
+            padding: 16px 18px;
+            border-radius: 10px;
+            border-left: 4px solid #3b82f6;
+        }
+
+        .term-item .term {
+            font-weight: 700;
+            color: #1e3a8a;
+            font-size: 15px;
+            margin: 0 0 6px 0;
+        }
+
+        /* Section Headings */
+        h2 {
+            font-size: 24px;
+            color: #1e3a8a;
+            margin: 50px 0 20px 0;
+            font-weight: 600;
+            position: relative;
+            padding-bottom: 12px;
+        }
+
+        h2::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 60px;
+            height: 3px;
+            background: #B8860B;
+        }
+
+        /* Statistics Box */
+        .stats-box {
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+            padding: 40px;
+            border-radius: 16px;
+            margin: 35px 0;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stat-number {
+            font-size: 42px;
+            font-weight: 700;
+            color: white;
+            line-height: 1;
+            margin-bottom: 8px;
+        }
+
+        .stat-label {
+            font-size: 13px;
+            color: rgba(255, 255, 255, 0.85);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* Case Study Box */
+        .case-study {
+            background: linear-gradient(135deg, #f8f9fb 0%, #f0f2f5 100%);
+            border-radius: 16px;
+            margin: 40px 0;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+        }
+
+        .case-study-header {
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+            padding: 20px 30px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .case-study-content {
+            padding: 28px 30px;
+        }
+
+        /* Tables */
+        .data-table-container {
+            overflow-x: auto;
+            margin: 30px 0;
+            border-radius: 12px;
+            border: 1px solid #e5e7eb;
+        }
+
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 15px;
+            text-align: left;
+        }
+
+        .data-table th {
+            background: #f1f5f9;
+            padding: 15px;
+            font-weight: 600;
+            color: #1e3a8a;
+            border-bottom: 2px solid #e5e7eb;
+        }
+
+        .data-table td {
+            padding: 15px;
+            border-bottom: 1px solid #f3f4f6;
+        }
+
+        .data-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        /* Highlights */
+        .highlight {
+            background: linear-gradient(180deg, transparent 60%, #FFF59D 60%);
+            padding: 0 4px;
+            font-weight: 500;
+        }
+
+        /* Check Understanding */
+        .check-understanding {
+            background: linear-gradient(135deg, #fdfbf7 0%, #f9f5ed 100%);
+            border: 2px solid #B8860B;
+            border-radius: 16px;
+            padding: 32px;
+            margin: 45px 0;
+        }
+
+        .reveal-btn {
+            background: #1e3a8a;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+
+        .answer-text {
+            display: none;
+            padding: 15px;
+            background: #f0f8f0;
+            border-radius: 8px;
+            margin-top: 10px;
+        }
+
+        .answer-text.show {
+            display: block;
+        }
+
+        /* Takeaways */
+        .takeaways-box {
+            background: #f3f4f6;
+            padding: 25px;
+            border-radius: 12px;
+            border: 1px solid #d1d5db;
+            margin-top: 40px;
+        }
+
+        .references-box {
+            margin-top: 40px;
+            padding: 25px;
+            background: #fff;
+            border: 1px solid #eee;
+            border-radius: 12px;
+            font-size: 14px;
+        }
+
+        .footer-logo {
+            max-width: 140px;
+            opacity: 0.8;
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="lesson-container">
+        <div class="brand-header">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="brand-logo">
+        </div>
+
+        <header class="module-header">
+            <p class="module-label">Module 9: Data-Driven Recovery & Adjustment</p>
+            <h1 class="lesson-title">Lesson 9.7: Adjusting Macros Based on Training Phase (Periodization)</h1>
+            <div class="lesson-meta">
+                <span class="meta-item">35 min read</span>
+                <span class="meta-item">Lesson 7 of 10</span>
+            </div>
+        </header>
+
+        <div class="toc-box">
+            <p class="box-label">In This Lesson</p>
+            <ul class="toc-list">
+                <li><a href="#section1"><span class="section-num">1</span>The Periodization Philosophy</a></li>
+                <li><a href="#section2"><span class="section-num">2</span>Carbohydrate Periodization</a></li>
+                <li><a href="#section3"><span class="section-num">3</span>Protein: The Structural Anchor</a></li>
+                <li><a href="#section4"><span class="section-num">4</span>Fats and Hormonal Health</a></li>
+                <li><a href="#section5"><span class="section-num">5</span>The Deload & Transition Phase</a></li>
+                <li><a href="#section6"><span class="section-num">6</span>Data-Driven Adjustments</a></li>
+            </ul>
+        </div>
+
+        <div class="objectives-box">
+            <p class="box-label">Learning Objectives</p>
+            <ul>
+                <li>Define nutritional periodization within the F.U.E.L.E.D. Performance Framework™.</li>
+                <li>Quantify carbohydrate adjustments based on glycolytic demand across training cycles.</li>
+                <li>Determine protein requirements for tissue repair during high-volume vs. high-intensity phases.</li>
+                <li>Implement fat manipulation strategies to support hormonal health and energy density.</li>
+                <li>Apply data-driven adjustments based on training volume (TSS) and recovery markers.</li>
+            </ul>
+        </div>
+
+        <h2 id="section1">The Philosophy of Periodized Nutrition</h2>
+        <p>In the world of elite athletics, the concept of "flat" nutrition—consuming the same macronutrient ratios every day regardless of training load—is considered obsolete. To achieve peak performance, an athlete's nutritional intake must mirror the physiological demands of their training program. This is the essence of the <span class="highlight">"D" (Data-Driven Recovery & Adjustment)</span> in the F.U.E.L.E.D. framework.</p>
+        
+        <p>Nutritional periodization is the strategic use of specific nutrition interventions to enhance the adaptations targeted by a particular training phase. A 2019 position stand by the International Society of Sports Nutrition (ISSN) emphasized that "periodizing nutrition to support the specific goals of a training block can prevent overtraining and optimize body composition." Without these adjustments, athletes risk <span class="highlight">Low Energy Availability (LEA)</span> during peak volume or unnecessary fat gain during deloads.</p>
+
+        <div class="stats-box">
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 25px; text-align: center;">
+                <div class="stat-item">
+                    <div class="stat-number">40%</div>
+                    <div class="stat-label">Performance Drop in LEA</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">3-12g</div>
+                    <div class="stat-label">Carb range per kg/BW</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">1.6-2.4g</div>
+                    <div class="stat-label">Protein range per kg/BW</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">25%</div>
+                    <div class="stat-label">Injury reduction with periodization</div>
+                </div>
+            </div>
+        </div>
+
+        <h2 id="section2">Carbohydrate Periodization: Fueling the Work Required</h2>
+        <p>Carbohydrates are the most volatile macronutrient in a periodized plan. Their requirement is directly proportional to the glycolytic demand of the training session. A "high-volume" hypertrophy phase requires significantly more glucose for glycogen resynthesis than a "taper" phase focused on neuromuscular power.</p>
+
+        <p>The "Fuel for the Work Required" paradigm suggests that on days with low intensity or volume, carbohydrate intake should be reduced to promote fat oxidation and metabolic flexibility. Conversely, during high-intensity interval training (HIIT) or long-duration endurance sessions, intake must spike to maintain <span class="highlight">glycogen thresholds</span>. A 2021 study published in <i>Nutrients</i> found that athletes who adjusted carb intake daily based on Training Stress Score (TSS) maintained 12% higher power output over a 12-week macrocycle compared to those on static high-carb diets.</p>
+
+        <div class="data-table-container">
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>Training Phase</th>
+                        <th>Training Goal</th>
+                        <th>Carbohydrate (g/kg)</th>
+                        <th>Protein (g/kg)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Base/Off-Season</strong></td>
+                        <td>Aerobic Capacity/Hypertrophy</td>
+                        <td>3 - 5g</td>
+                        <td>1.6 - 2.0g</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Pre-Season</strong></td>
+                        <td>High Volume/Metabolic Conditioning</td>
+                        <td>6 - 8g</td>
+                        <td>1.8 - 2.2g</td>
+                    </tr>
+                    <tr>
+                        <td><strong>In-Season/Peak</strong></td>
+                        <td>Competition/Power Maintenance</td>
+                        <td>8 - 12g</td>
+                        <td>1.4 - 1.8g</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Deload/Recovery</strong></td>
+                        <td>Inflammation Reduction</td>
+                        <td>2 - 3g</td>
+                        <td>2.0 - 2.4g</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <h2 id="section3">Protein: The Structural Anchor</h2>
+        <p>While carbohydrates fluctuate wildly, protein remains the "anchor" of the nutritional plan. However, even protein requirements are not static. During phases of high muscle damage (eccentric-heavy hypertrophy) or when an athlete is in a caloric deficit (weight making or body recomposition), protein requirements increase to preserve Lean Body Mass (LBM).</p>
+
+        <p>A meta-analysis by Morton et al. (2018) involving 1,863 participants identified 1.6g/kg as the breakpoint for muscle protein synthesis in most athletes. However, in the context of <span class="highlight">periodization</span>, we often push this to 2.2g/kg or higher during "overreaching" weeks to support systemic recovery and immune function. During the deload phase, keeping protein high while dropping calories (from carbs/fats) ensures that the athlete recovers without gaining excess adipose tissue.</p>
+
+        <div class="case-study">
+            <div class="case-study-header">
+                <div class="box-label">Case Study: The Combat Athlete Transition</div>
+            </div>
+            <div class="case-study-content">
+                <p><strong>Athlete:</strong> Marcus, 28, MMA Fighter (Lightweight Division).<br>
+                <strong>Transition:</strong> Moving from "General Preparation" (Hypertrophy) to "Fight Camp" (High Intensity/Weight Cut).</p>
+                <ul>
+                    <li><strong>Phase 1 (General Prep):</strong> Macros were set at 4g/kg Carbs, 1.8g/kg Protein. Training was 4 days/week lifting, 2 days/week grappling.</li>
+                    <li><strong>Phase 2 (Fight Camp):</strong> Training increased to 10 sessions/week. Carbohydrates were increased to 6g/kg on sparring days and dropped to 2g/kg on technical days. Protein was bumped to 2.2g/kg to mitigate muscle loss during the weight descent.</li>
+                    <li><strong>Outcome:</strong> Marcus maintained his power-to-weight ratio, entering the fight at 8% body fat with zero reported "crashing" or fatigue markers.</li>
+                </ul>
+            </div>
+        </div>
+
+        <h2 id="section4">Fats and Hormonal Health</h2>
+        <p>Fats often play the role of the "energy buffer." In phases where carbohydrate intake is exceptionally high, fat intake may be lowered to keep total calories within the athlete's TDEE. However, coaches must be cautious: dropping fats below <span class="highlight">0.6g/kg for extended periods</span> can disrupt the endocrine system, specifically lowering testosterone and fat-soluble vitamin absorption (A, D, E, K).</p>
+
+        <p>During the off-season or base phase, higher fat intakes (1.0 - 1.5g/kg) can be beneficial for providing energy density and supporting joint health through Omega-3 fatty acids. This phase is often used to improve metabolic flexibility—the body's ability to switch between using fats and carbohydrates as fuel sources.</p>
+
+        <h2 id="section5">The Deload & Transition Phase</h2>
+        <p>The most common mistake in sports nutrition is failing to adjust macros during a deload week. If an athlete reduces training volume by 50% but maintains "peak" intake, they will inevitably enter a significant caloric surplus. This is often where unwanted weight gain occurs.</p>
+        
+        <p>During a deload, the focus shifts from <i>performance</i> to <i>repair</i>. This requires:
+        <ul class="content-list">
+            <li><strong>Reduced Carbohydrates:</strong> Since glycogen depletion is minimal, high carb intake is unnecessary.</li>
+            <li><strong>Maintained or Increased Protein:</strong> To provide the amino acids necessary for repairing micro-trauma.</li>
+            <li><strong>Anti-inflammatory Fats:</strong> Increasing the ratio of Omega-3 to Omega-6 to help resolve systemic inflammation.</li>
+        </ul></p>
+
+        <h2 id="section6">Data-Driven Adjustments: Using Metrics</h2>
+        <p>How do we know when to deviate from the planned periodization? We look at the data. If an athlete’s <span class="highlight">Heart Rate Variability (HRV)</span> shows a significant trend downward and their RPE (Rate of Perceived Exertion) for standard sessions is climbing, it is a data-driven signal to increase energy availability (specifically carbohydrates and total calories) regardless of the phase.</p>
+
+        <p>Using the <strong>F.U.E.L.E.D. Recovery Log</strong>, a coach should look for the "Red Flag Trio":
+        <ol class="content-list">
+            <li>Poor Sleep Quality (< 6 hours or frequent waking).</li>
+            <li>High Morning RPE for life stress.</li>
+            <li>Loss of Morning Appetite (a sign of sympathetic nervous system dominance).</li>
+        </ol>
+        If these are present, the coach must "bump" the macros—often adding 50-100g of carbohydrates—to provide the physiological safety signal the body needs to recover.</p>
+
+        <div class="check-understanding">
+            <p class="box-label">Check Your Understanding</p>
+            <div class="question-item">
+                <div class="question-number">1</div>
+                <p class="question-text">An endurance athlete is entering a 1-week "Taper" before a marathon. Their training volume has dropped by 60%, but intensity remains high. How should you adjust their carbohydrates compared to their peak volume weeks?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-text">During the taper, total daily carbohydrates may stay high (8-10g/kg) for the final 48-72 hours to ensure "Carbo-loading" (supercompensation of glycogen), despite the lower volume. However, in the early part of the taper week, carbs should be moderated to avoid excessive weight gain from water retention associated with glycogen storage.</div>
+            </div>
+            <div class="question-item">
+                <div class="question-number">2</div>
+                <p class="question-text">Why is protein often increased during a "Deload" phase even though training volume is lower?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-text">Protein is kept high (2.0-2.4g/kg) during a deload to support the repair of cumulative tissue damage from the previous high-volume block and to provide higher satiety as carbohydrate and total caloric intake are typically reduced.</div>
+            </div>
+        </div>
+
+        <div class="takeaways-box">
+            <p class="box-label">Key Takeaways</p>
+            <ul>
+                <li><strong>Dynamic Fueling:</strong> Macros must evolve with training cycles; static plans lead to stagnation or overtraining.</li>
+                <li><strong>Carb Volatility:</strong> Adjust carbohydrates based on the glycolytic demand of the specific training phase (3g/kg up to 12g/kg).</li>
+                <li><strong>Protein Stability:</strong> Keep protein as the structural anchor, increasing it during deficits or high-damage phases.</li>
+                <li><strong>Deload Management:</strong> Use deload weeks to reduce carbs/fats while maintaining protein to facilitate recovery without fat gain.</li>
+                <li><strong>Listen to the Data:</strong> Use HRV, RPE, and sleep data to "nudge" macros up or down within the planned phase.</li>
+            </ul>
+        </div>
+
+        <div class="references-box">
+            <p class="box-label">References & Further Reading</p>
+            <p>Burke, L. M., et al. (2018). "Fuel for the Work Required: A Theoretical Framework for Case-specific Nutrition in Elite Sport." <i>International Journal of Sport Nutrition and Exercise Metabolism.</i></p>
+            <p>Morton, R. W., et al. (2018). "A systematic review, meta-analysis and meta-regression of the effect of protein supplementation on resistance training-induced gains in muscle mass and strength." <i>British Journal of Sports Medicine.</i></p>
+            <p>Impey, S. G., et al. (2018). "Fuel for the Work Required: A Practical Approach to Amalgamating Train-Low Paradigm for Endurance Performance." <i>Sports Medicine.</i></p>
+            <p>Kerksick, C. M., et al. (2018). "ISSN exercise & sports nutrition review update: research & recommendations." <i>Journal of the International Society of Sports Nutrition.</i></p>
+            <p>Stellingwerff, T., et al. (2019). "Contemporary Periodization of Nutrition to Train, Condition, and Compete." <i>International Journal of Sports Physiology and Performance.</i></p>
+            <p>Thomas, D. T., et al. (2016). "American College of Sports Medicine Joint Position Statement. Nutrition and Athletic Performance." <i>Medicine and Science in Sports and Exercise.</i></p>
+        </div>
+
+        <footer class="lesson-footer">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="footer-logo">
+            <p class="brand">AccrediPro Academy - Sports Nutrition Certification</p>
+            <p class="copyright">&copy; 2024 AccrediPro. All rights reserved. The F.U.E.L.E.D. Performance Framework™ is a proprietary methodology.</p>
+        </footer>
+    </div>
+</body>
+
+</html>

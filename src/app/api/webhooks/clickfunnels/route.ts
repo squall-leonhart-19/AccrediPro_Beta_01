@@ -103,7 +103,8 @@ async function sendPurchaseToMeta(params: {
 
 // Product ID to Course slug mapping
 // Add your ClickFunnels product IDs here
-const PRODUCT_COURSE_MAP: Record<string, string> = {
+// Note: Pro Accelerator uses array for multi-course enrollment
+const PRODUCT_COURSE_MAP: Record<string, string | string[]> = {
   // FM Mini Diploma ($27)
   "fm-mini-diploma": "integrative-health-functional-medicine-mini-diploma",
   "fm_mini_diploma": "integrative-health-functional-medicine-mini-diploma",
@@ -121,11 +122,11 @@ const PRODUCT_COURSE_MAP: Record<string, string> = {
   "integrative": "functional-medicine-complete-certification",
   "integrative health": "functional-medicine-complete-certification",
 
-  // OTO1: Pro Accelerator ($397)
-  "fm-pro-accelerator": "fm-pro-accelerator",
-  "fm_pro_accelerator": "fm-pro-accelerator",
-  "accelerator": "fm-pro-accelerator",
-  "pro-accelerator": "fm-pro-accelerator",
+  // OTO1: Pro Accelerator ($397) - enrolls in 3 courses
+  "fm-pro-accelerator": ["fm-pro-advanced-clinical", "fm-pro-master-depth", "fm-pro-practice-path"],
+  "fm_pro_accelerator": ["fm-pro-advanced-clinical", "fm-pro-master-depth", "fm-pro-practice-path"],
+  "accelerator": ["fm-pro-advanced-clinical", "fm-pro-master-depth", "fm-pro-practice-path"],
+  "pro-accelerator": ["fm-pro-advanced-clinical", "fm-pro-master-depth", "fm-pro-practice-path"],
 
   // OTO2: 10-Client Guarantee ($297)
   "fm-client-guarantee": "fm-10-client-guarantee",
@@ -438,34 +439,30 @@ export async function POST(request: NextRequest) {
       }
     }
 
-    // 2. Determine which course to enroll
-    let courseSlug = "functional-medicine-complete-certification"; // Default to main certification
+    // 2. Determine which course(s) to enroll
+    let courseSlugs: string[] = ["functional-medicine-complete-certification"]; // Default to main certification
 
     if (productId && PRODUCT_COURSE_MAP[productId]) {
-      courseSlug = PRODUCT_COURSE_MAP[productId];
+      const mapping = PRODUCT_COURSE_MAP[productId];
+      courseSlugs = Array.isArray(mapping) ? mapping : [mapping];
     } else if (productName) {
       // Try to match by product name keywords
       const lowerName = productName.toLowerCase();
 
       // Check all product keywords
-      for (const [key, slug] of Object.entries(PRODUCT_COURSE_MAP)) {
+      for (const [key, mapping] of Object.entries(PRODUCT_COURSE_MAP)) {
         if (lowerName.includes(key)) {
-          courseSlug = slug;
-          console.log(`[CF] Product "${productName}" matched keyword "${key}" -> ${slug}`);
+          courseSlugs = Array.isArray(mapping) ? mapping : [mapping];
+          console.log(`[CF] Product "${productName}" matched keyword "${key}" -> ${courseSlugs.join(', ')}`);
           break;
         }
       }
     }
 
-    console.log(`[CF] Determined course slug: ${courseSlug} for product: ${productName || productId}`);
-
-    // Find the course
-    const course = await prisma.course.findFirst({
-      where: { slug: courseSlug },
-    });
+    console.log(`[CF] Determined course slug(s): ${courseSlugs.join(', ')} for product: ${productName || productId}`);
 
     // If FM Certification purchase, check if user was in FM Preview and migrate progress
-    if (courseSlug === "fm-certification" && user) {
+    if (courseSlugs.includes("functional-medicine-complete-certification") && user) {
       const previewEnrollment = await prisma.enrollment.findFirst({
         where: {
           userId: user.id,
@@ -487,9 +484,19 @@ export async function POST(request: NextRequest) {
       }
     }
 
-    let enrollmentId: string | null = null;
+    const enrollmentIds: string[] = [];
 
-    if (course) {
+    // Enroll user in each course
+    for (const courseSlug of courseSlugs) {
+      const course = await prisma.course.findFirst({
+        where: { slug: courseSlug },
+      });
+
+      if (!course) {
+        console.log(`[CF] Course not found: ${courseSlug}`);
+        continue;
+      }
+
       // Check if already enrolled
       const existingEnrollment = await prisma.enrollment.findUnique({
         where: {
@@ -508,28 +515,30 @@ export async function POST(request: NextRequest) {
           },
         });
 
-        enrollmentId = enrollment.id;
+        enrollmentIds.push(enrollment.id);
 
-        // Auto-complete Lesson 1 since users already watched it in the preview
-        const lesson1 = await prisma.lesson.findFirst({
-          where: {
-            module: { courseId: course.id },
-            order: 0, // First lesson (0-indexed)
-          },
-        });
-
-        if (lesson1) {
-          await prisma.lessonProgress.upsert({
-            where: { userId_lessonId: { userId: user.id, lessonId: lesson1.id } },
-            update: { isCompleted: true, completedAt: new Date() },
-            create: {
-              userId: user.id,
-              lessonId: lesson1.id,
-              isCompleted: true,
-              completedAt: new Date(),
+        // Auto-complete Lesson 1 since users already watched it in the preview (only for main cert)
+        if (courseSlug === "functional-medicine-complete-certification") {
+          const lesson1 = await prisma.lesson.findFirst({
+            where: {
+              module: { courseId: course.id },
+              order: 0, // First lesson (0-indexed)
             },
           });
-          console.log(`Auto-completed Lesson 1 for ${normalizedEmail} (preview was watched)`);
+
+          if (lesson1) {
+            await prisma.lessonProgress.upsert({
+              where: { userId_lessonId: { userId: user.id, lessonId: lesson1.id } },
+              update: { isCompleted: true, completedAt: new Date() },
+              create: {
+                userId: user.id,
+                lessonId: lesson1.id,
+                isCompleted: true,
+                completedAt: new Date(),
+              },
+            });
+            console.log(`Auto-completed Lesson 1 for ${normalizedEmail} (preview was watched)`);
+          }
         }
 
         // Update course analytics
@@ -542,21 +551,23 @@ export async function POST(request: NextRequest) {
           },
         });
 
-        // Initialize user streak
-        await prisma.userStreak.upsert({
-          where: { userId: user.id },
-          update: {},
-          create: {
-            userId: user.id,
-            currentStreak: 0,
-            longestStreak: 0,
-            totalPoints: 0,
-          },
-        });
+        // Initialize user streak (only once, not per course)
+        if (enrollmentIds.length === 1) {
+          await prisma.userStreak.upsert({
+            where: { userId: user.id },
+            update: {},
+            create: {
+              userId: user.id,
+              currentStreak: 0,
+              longestStreak: 0,
+              totalPoints: 0,
+            },
+          });
+        }
 
         console.log(`Enrolled ${normalizedEmail} in course: ${course.slug}`);
       } else {
-        enrollmentId = existingEnrollment.id;
+        enrollmentIds.push(existingEnrollment.id);
         console.log(`User ${normalizedEmail} already enrolled in: ${course.slug}`);
       }
     }
@@ -603,7 +614,7 @@ export async function POST(request: NextRequest) {
           transactionId,
           amount,
           isNewUser,
-          courseSlug: course?.slug,
+          courseSlugs: courseSlugs,
           metaEventId: metaResult.eventId,
           metaSuccess: metaResult.success,
           processingTime: Date.now() - startTime,
@@ -615,14 +626,15 @@ export async function POST(request: NextRequest) {
 
     // 6. Add product-specific tags using UserTag (same as clickfunnels-purchase webhook)
     try {
-      // Product-specific tag (e.g., functional_medicine_complete_certification_purchased)
-      const productTagSlug = `${courseSlug.replace(/-/g, "_")}_purchased`;
-
-      await prisma.userTag.upsert({
-        where: { userId_tag: { userId: user.id, tag: productTagSlug } },
-        update: {},
-        create: { userId: user.id, tag: productTagSlug },
-      });
+      // Product-specific tag for each course
+      for (const slug of courseSlugs) {
+        const productTagSlug = `${slug.replace(/-/g, "_")}_purchased`;
+        await prisma.userTag.upsert({
+          where: { userId_tag: { userId: user.id, tag: productTagSlug } },
+          update: {},
+          create: { userId: user.id, tag: productTagSlug },
+        });
+      }
 
       // General purchase tag
       await prisma.userTag.upsert({
@@ -631,7 +643,7 @@ export async function POST(request: NextRequest) {
         create: { userId: user.id, tag: "clickfunnels_purchase" },
       });
 
-      console.log(`[CF] ✅ Added tags: ${productTagSlug}, clickfunnels_purchase to ${normalizedEmail}`);
+      console.log(`[CF] ✅ Added tags for courses: ${courseSlugs.join(', ')}, clickfunnels_purchase to ${normalizedEmail}`);
     } catch (tagError) {
       console.error("[CF] Failed to add tags:", tagError);
     }
@@ -642,8 +654,8 @@ export async function POST(request: NextRequest) {
         userId: user.id,
         email: user.email,
         isNewUser,
-        enrollmentId,
-        courseSlug: course?.slug,
+        enrollmentIds,
+        courseSlugs,
         transactionId,
         metaEventSent: metaResult.success,
         metaEventId: metaResult.eventId,

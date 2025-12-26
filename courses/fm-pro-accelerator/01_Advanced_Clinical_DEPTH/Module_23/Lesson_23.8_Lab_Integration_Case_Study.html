@@ -1,0 +1,566 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lesson 23.8: Lab Integration Case Study</title>
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Georgia, serif;
+            line-height: 1.8;
+            color: #2d2d2d;
+            background: #f8f6f3;
+            margin: 0;
+        }
+
+        .lesson-container {
+            max-width: 860px;
+            margin: 0 auto;
+            padding: 40px 30px;
+            background: #fff;
+            min-height: 100vh;
+        }
+
+        .module-header {
+            background: linear-gradient(135deg, #722F37, #8B3A42);
+            padding: 35px;
+            border-radius: 16px;
+            margin-bottom: 30px;
+        }
+
+        .module-label {
+            margin: 0;
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.75);
+            text-transform: uppercase;
+            letter-spacing: 2.5px;
+        }
+
+        .lesson-title {
+            margin: 10px 0 0;
+            font-size: 28px;
+            color: #fff;
+            font-weight: 700;
+        }
+
+        .meta-item {
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.85);
+            background: rgba(255, 255, 255, 0.1);
+            padding: 5px 12px;
+            border-radius: 4px;
+            display: inline-block;
+            margin: 10px 8px 0 0;
+        }
+
+        .welcome-box {
+            background: #fdfcfa;
+            padding: 30px;
+            border-radius: 14px;
+            margin-bottom: 40px;
+            border: 1px solid #e8e4dc;
+        }
+
+        .welcome-box h3 {
+            margin: 0 0 15px;
+            font-size: 20px;
+            color: #722F37;
+        }
+
+        .highlight {
+            background: linear-gradient(180deg, transparent 60%, #FFF59D 60%);
+            padding: 0 4px;
+        }
+
+        h2 {
+            font-size: 24px;
+            color: #722F37;
+            margin: 50px 0 20px;
+            font-weight: 600;
+            padding-bottom: 12px;
+            border-bottom: 3px solid #B8860B;
+        }
+
+        h3 {
+            font-size: 20px;
+            color: #333;
+            margin: 35px 0 15px;
+        }
+
+        p {
+            font-size: 17px;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        .case-header {
+            background: linear-gradient(135deg, #722F37, #8B3A42);
+            padding: 24px;
+            border-radius: 14px;
+            color: #fff;
+            margin: 30px 0;
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .case-avatar {
+            width: 70px;
+            height: 70px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 32px;
+        }
+
+        .case-info h4 {
+            margin: 0 0 5px;
+            font-size: 22px;
+        }
+
+        .case-info p {
+            margin: 0;
+            font-size: 14px;
+            opacity: 0.9;
+        }
+
+        .lab-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 13px;
+            margin: 25px 0;
+        }
+
+        .lab-table th {
+            background: #722F37;
+            color: #fff;
+            padding: 10px;
+            text-align: left;
+        }
+
+        .lab-table td {
+            padding: 10px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .lab-table .flag {
+            color: #c62828;
+            font-weight: 600;
+        }
+
+        .lab-table .optimal {
+            color: #2e7d32;
+        }
+
+        .analysis-card {
+            background: #f8f9fa;
+            border-left: 5px solid #722F37;
+            padding: 24px;
+            margin: 20px 0;
+            border-radius: 0 14px 14px 0;
+        }
+
+        .analysis-card h4 {
+            color: #722F37;
+            margin: 0 0 12px;
+            font-size: 17px;
+        }
+
+        .analysis-card ul {
+            margin: 0;
+            padding-left: 18px;
+            font-size: 14px;
+        }
+
+        .protocol-box {
+            background: #fffef5;
+            border: 2px solid #B8860B;
+            border-radius: 14px;
+            padding: 24px;
+            margin: 25px 0;
+        }
+
+        .protocol-box h4 {
+            color: #8B6914;
+            margin: 0 0 15px;
+            font-size: 16px;
+        }
+
+        .protocol-box ol {
+            margin: 0;
+            padding-left: 20px;
+            font-size: 15px;
+        }
+
+        .protocol-box li {
+            margin-bottom: 8px;
+        }
+
+        .takeaways-box {
+            background: linear-gradient(135deg, #722F37, #8B3A42);
+            padding: 35px;
+            margin-top: 50px;
+            border-radius: 16px;
+        }
+
+        .takeaways-box .box-label {
+            font-weight: 600;
+            color: #FFF59D;
+            margin: 0 0 20px;
+            font-size: 14px;
+            text-transform: uppercase;
+        }
+
+        .takeaways-box ul {
+            margin: 0;
+            padding-left: 22px;
+            color: #fff;
+        }
+
+        .takeaways-box li {
+            margin-bottom: 14px;
+            font-size: 16px;
+        }
+
+        .congrats {
+            background: linear-gradient(135deg, #B8860B, #D4A84B);
+            padding: 30px;
+            border-radius: 14px;
+            text-align: center;
+            margin: 40px 0;
+        }
+
+        .congrats h3 {
+            color: #fff;
+            margin: 0 0 10px;
+            font-size: 24px;
+        }
+
+        .congrats p {
+            color: #fff;
+            margin: 0;
+            font-size: 16px;
+        }
+
+        .lesson-footer {
+            margin-top: 50px;
+            padding-top: 30px;
+            border-top: 2px solid #722F37;
+            text-align: center;
+        }
+
+        .lesson-footer .brand {
+            color: #722F37;
+            font-weight: 600;
+            font-size: 15px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="lesson-container">
+        <header class="module-header">
+            <p class="module-label">Pro Accelerator • Module 23 Finale</p>
+            <h1 class="lesson-title">Lesson 23.8: Lab Integration Case Study</h1>
+            <span class="meta-item">⏱️ 18 min</span>
+            <span class="meta-item">📊 Lesson 8/8</span>
+            <span class="meta-item">🎯 Capstone</span>
+        </header>
+
+        <div class="welcome-box">
+            <h3>Connecting All the Dots</h3>
+            <p>This capstone lesson presents a complete case with <span class="highlight">multiple lab
+                    panels</span>—CBC, thyroid, inflammation markers, GI-MAP, and DUTCH. You'll practice synthesizing
+                information across tests to create a unified clinical picture and targeted protocol.</p>
+        </div>
+
+        <h2>Meet James: The Full Lab Panel</h2>
+
+        <div class="case-header">
+            <div class="case-avatar">👨‍💼</div>
+            <div class="case-info">
+                <h4>James T., 52 years old</h4>
+                <p>Software Engineer • Married • Chief complaints: fatigue, weight gain, brain fog, joint stiffness</p>
+            </div>
+        </div>
+
+        <h3>CBC Results</h3>
+        <table class="lab-table">
+            <tr>
+                <th>Marker</th>
+                <th>Result</th>
+                <th>Range</th>
+                <th>Assessment</th>
+            </tr>
+            <tr>
+                <td>WBC</td>
+                <td>5.2 K/μL</td>
+                <td>4.5-11.0</td>
+                <td class="optimal">Normal</td>
+            </tr>
+            <tr>
+                <td>RBC</td>
+                <td>4.8 M/μL</td>
+                <td>4.5-5.5</td>
+                <td class="optimal">Normal</td>
+            </tr>
+            <tr>
+                <td>Hemoglobin</td>
+                <td>14.2 g/dL</td>
+                <td>13.5-17.5</td>
+                <td class="optimal">Normal</td>
+            </tr>
+            <tr>
+                <td>MCV</td>
+                <td class="flag">101 fL</td>
+                <td>80-100</td>
+                <td class="flag">High - macrocytic</td>
+            </tr>
+            <tr>
+                <td>Eosinophils</td>
+                <td class="flag">6%</td>
+                <td>1-4%</td>
+                <td class="flag">Elevated</td>
+            </tr>
+            <tr>
+                <td>Neutrophil:Lymphocyte</td>
+                <td class="flag">3.8</td>
+                <td>&lt;2.5</td>
+                <td class="flag">Elevated inflammation</td>
+            </tr>
+        </table>
+
+        <h3>Thyroid Panel</h3>
+        <table class="lab-table">
+            <tr>
+                <th>Marker</th>
+                <th>Result</th>
+                <th>Range</th>
+                <th>Assessment</th>
+            </tr>
+            <tr>
+                <td>TSH</td>
+                <td>2.8 mIU/L</td>
+                <td>0.45-4.5</td>
+                <td class="optimal">Normal but higher end</td>
+            </tr>
+            <tr>
+                <td>Free T4</td>
+                <td>1.1 ng/dL</td>
+                <td>0.8-1.8</td>
+                <td class="optimal">Normal</td>
+            </tr>
+            <tr>
+                <td>Free T3</td>
+                <td class="flag">2.4 pg/mL</td>
+                <td>2.0-4.4</td>
+                <td class="flag">Low-normal (suboptimal)</td>
+            </tr>
+            <tr>
+                <td>Reverse T3</td>
+                <td class="flag">22 ng/dL</td>
+                <td>9-24</td>
+                <td class="flag">High end - stress pattern</td>
+            </tr>
+            <tr>
+                <td>TPO Antibodies</td>
+                <td>18 IU/mL</td>
+                <td>&lt;34</td>
+                <td class="optimal">Negative</td>
+            </tr>
+        </table>
+
+        <h3>Inflammation Markers</h3>
+        <table class="lab-table">
+            <tr>
+                <th>Marker</th>
+                <th>Result</th>
+                <th>Optimal</th>
+                <th>Assessment</th>
+            </tr>
+            <tr>
+                <td>hs-CRP</td>
+                <td class="flag">4.2 mg/L</td>
+                <td>&lt;1.0</td>
+                <td class="flag">Elevated inflammation</td>
+            </tr>
+            <tr>
+                <td>Homocysteine</td>
+                <td class="flag">14 μmol/L</td>
+                <td>&lt;8</td>
+                <td class="flag">Poor methylation</td>
+            </tr>
+            <tr>
+                <td>Ferritin</td>
+                <td>85 ng/mL</td>
+                <td>70-100</td>
+                <td class="optimal">Good (inflammation not falsely elevating)</td>
+            </tr>
+        </table>
+
+        <h3>GI-MAP Highlights</h3>
+        <table class="lab-table">
+            <tr>
+                <th>Marker</th>
+                <th>Result</th>
+                <th>Assessment</th>
+            </tr>
+            <tr>
+                <td>H. pylori</td>
+                <td>Negative</td>
+                <td class="optimal">Clear</td>
+            </tr>
+            <tr>
+                <td>Candida albicans</td>
+                <td class="flag">Elevated</td>
+                <td class="flag">Fungal overgrowth</td>
+            </tr>
+            <tr>
+                <td>Zonulin</td>
+                <td class="flag">High</td>
+                <td class="flag">Intestinal permeability</td>
+            </tr>
+            <tr>
+                <td>Beta-glucuronidase</td>
+                <td class="flag">Elevated</td>
+                <td class="flag">Estrogen recirculation</td>
+            </tr>
+            <tr>
+                <td>Secretory IgA</td>
+                <td class="flag">Low</td>
+                <td class="flag">Mucosal immune suppression</td>
+            </tr>
+        </table>
+
+        <h3>DUTCH Highlights</h3>
+        <table class="lab-table">
+            <tr>
+                <th>Marker</th>
+                <th>Result</th>
+                <th>Assessment</th>
+            </tr>
+            <tr>
+                <td>Cortisol (total)</td>
+                <td>Normal</td>
+                <td class="optimal">Adequate production</td>
+            </tr>
+            <tr>
+                <td>CAR (morning rise)</td>
+                <td class="flag">Blunted</td>
+                <td class="flag">HPA dysfunction</td>
+            </tr>
+            <tr>
+                <td>Evening cortisol</td>
+                <td class="flag">Elevated</td>
+                <td class="flag">Inverted curve - insomnia pattern</td>
+            </tr>
+            <tr>
+                <td>Methylation ratio</td>
+                <td class="flag">Suboptimal</td>
+                <td class="flag">Poor estrogen methylation</td>
+            </tr>
+        </table>
+
+        <h2>Clinical Integration Analysis</h2>
+
+        <div class="analysis-card">
+            <h4>🔍 Pattern Recognition</h4>
+            <ul>
+                <li><strong>Macrocytic (high MCV) + High homocysteine</strong> → B12/folate deficiency confirmed</li>
+                <li><strong>Elevated eosinophils + Candida overgrowth</strong> → Immune response to gut dysbiosis</li>
+                <li><strong>High hs-CRP + Elevated zonulin</strong> → Systemic inflammation from gut permeability</li>
+                <li><strong>Low FT3 + High RT3 + Elevated cortisol PM</strong> → Stress pattern blocking T3 conversion
+                </li>
+                <li><strong>Blunted CAR + Low SIgA</strong> → HPA axis dysfunction + mucosal immune exhaustion</li>
+                <li><strong>High beta-glucuronidase + Poor methylation</strong> → Estrogen processing issues (explains
+                    some weight)</li>
+            </ul>
+        </div>
+
+        <div class="analysis-card">
+            <h4>📊 Root Cause Hierarchy</h4>
+            <ul>
+                <li><strong>Primary Driver:</strong> Gut dysfunction (Candida, permeability, low SIgA)</li>
+                <li><strong>Secondary:</strong> HPA axis dysregulation (stress, sleep disruption)</li>
+                <li><strong>Downstream:</strong> Inflammation, poor thyroid conversion, methylation issues</li>
+                <li><strong>Contributing:</strong> B12/folate deficiency worsening methylation</li>
+            </ul>
+        </div>
+
+        <h2>The Integrated Protocol</h2>
+
+        <div class="protocol-box">
+            <h4>Phase 1 (Weeks 1-8): Foundations + Gut</h4>
+            <ol>
+                <li><strong>Address B12/Folate:</strong> Methylcobalamin 2000mcg + Methylfolate 800mcg daily</li>
+                <li><strong>Sleep/cortisol:</strong> Evening phosphatidylserine 300mg, screen shutdown 9pm</li>
+                <li><strong>Candida protocol:</strong> Anti-candida diet, caprylic acid, oregano oil</li>
+                <li><strong>Gut repair:</strong> L-glutamine 5g, zinc carnosine, probiotics after Candida cleared</li>
+            </ol>
+        </div>
+
+        <div class="protocol-box">
+            <h4>Phase 2 (Weeks 9-16): Inflammation + Thyroid Support</h4>
+            <ol>
+                <li><strong>Omega-3:</strong> 3g EPA/DHA daily for inflammation</li>
+                <li><strong>Curcumin:</strong> 1000mg bioavailable form twice daily</li>
+                <li><strong>Thyroid conversion support:</strong> Selenium 200mcg, zinc 30mg</li>
+                <li><strong>Stress recovery:</strong> Adaptogens (ashwagandha), HRV training</li>
+            </ol>
+        </div>
+
+        <div class="protocol-box">
+            <h4>Phase 3 (Weeks 17-24): Optimization + Maintenance</h4>
+            <ol>
+                <li>Retest CBC, homocysteine, hs-CRP, thyroid full panel</li>
+                <li>Consider GI-MAP retest if symptoms persist</li>
+                <li>Titrate supplements to maintenance doses</li>
+                <li>Establish long-term lifestyle habits</li>
+            </ol>
+        </div>
+
+        <h2>Expected Outcomes</h2>
+
+        <div class="analysis-card">
+            <h4>6-Month Targets</h4>
+            <ul>
+                <li>MCV normalize (85-95 fL)</li>
+                <li>Homocysteine &lt;10 (ideally &lt;8)</li>
+                <li>hs-CRP &lt;2.0 (ideally &lt;1.0)</li>
+                <li>Eosinophils normalize (&lt;4%)</li>
+                <li>Free T3 improve to 3.0+ pg/mL</li>
+                <li>Energy 7+/10, brain fog resolved, 10-15 lb weight loss</li>
+            </ul>
+        </div>
+
+        <div class="congrats">
+            <h3>🎉 Module 23 Complete!</h3>
+            <p>You've mastered Advanced Lab Interpretation. Take the quiz to test your knowledge, then proceed to Module
+                24: Specialty Populations.</p>
+        </div>
+
+        <div class="takeaways-box">
+            <p class="box-label">✨ Module 23 Complete</p>
+            <ul>
+                <li><strong>Integrate labs across panels</strong>—patterns emerge when you connect findings</li>
+                <li>Identify <span class="highlight">root cause hierarchy</span>: what's driving what?</li>
+                <li><strong>Phase protocols</strong> based on clinical priority, not every finding at once</li>
+                <li>Retest strategically to <strong>confirm progress</strong></li>
+                <li>Advanced labs (DUTCH, GI-MAP, OAT) add depth when basics don't explain symptoms</li>
+            </ul>
+        </div>
+
+        <footer class="lesson-footer">
+            <p class="brand">AccrediPro Pro Accelerator • DEPTH MASTERY™</p>
+        </footer>
+    </div>
+</body>
+
+</html>

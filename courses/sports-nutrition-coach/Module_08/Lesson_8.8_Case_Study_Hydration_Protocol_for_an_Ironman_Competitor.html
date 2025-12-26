@@ -1,0 +1,759 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lesson 8.8: Case Study: Hydration Protocol for an Ironman Competitor</title>
+    <style>
+        /* Base & Reset */
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Georgia, 'Times New Roman', serif;
+            line-height: 1.8;
+            color: #2d2d2d;
+            background: #f8f6f3;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Main Container */
+        .lesson-container {
+            max-width: 860px;
+            margin: 0 auto;
+            padding: 40px 30px;
+            background: #ffffff;
+            min-height: 100vh;
+            box-shadow: 0 0 60px rgba(0, 0, 0, 0.08);
+        }
+
+        /* Brand Header */
+        .brand-header {
+            text-align: center;
+            padding-bottom: 30px;
+            margin-bottom: 35px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .brand-logo {
+            max-width: 220px;
+            height: auto;
+            margin-bottom: 5px;
+        }
+
+        /* Module Header - BLUE/NAVY theme for Hydration */
+        .module-header {
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+            padding: 35px 35px 30px;
+            border-radius: 16px;
+            margin-bottom: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .module-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+            transform: translate(100px, -100px);
+        }
+
+        .module-header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, #B8860B, #D4A84B, #B8860B);
+        }
+
+        .module-label {
+            margin: 0;
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.75);
+            text-transform: uppercase;
+            letter-spacing: 2.5px;
+            font-weight: 500;
+        }
+
+        .lesson-title {
+            margin: 10px 0 0 0;
+            font-size: 28px;
+            color: #ffffff;
+            font-weight: 700;
+            line-height: 1.3;
+            position: relative;
+        }
+
+        .lesson-meta {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+            padding-top: 18px;
+            border-top: 1px solid rgba(255, 255, 255, 0.15);
+            flex-wrap: wrap;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.85);
+            background: rgba(255, 255, 255, 0.1);
+            padding: 5px 12px;
+            border-radius: 4px;
+        }
+
+        /* Table of Contents */
+        .toc-box {
+            background: linear-gradient(135deg, #fafafa 0%, #f5f5f5 100%);
+            border-radius: 14px;
+            padding: 24px 28px;
+            margin-bottom: 35px;
+            border: 1px solid #e8e8e8;
+        }
+
+        .toc-box .box-label {
+            font-weight: 600;
+            color: #1e3a8a;
+            margin: 0 0 18px 0;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .toc-list {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px 24px;
+        }
+
+        .toc-list li {
+            margin: 0;
+        }
+
+        .toc-list a {
+            display: flex;
+            align-items: center;
+            padding: 8px 12px;
+            color: #555;
+            text-decoration: none;
+            font-size: 14px;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+        }
+
+        .toc-list a:hover {
+            background: white;
+            color: #3b82f6;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+        }
+
+        .toc-list .section-num {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 26px;
+            height: 26px;
+            background: #1e3a8a;
+            color: white;
+            font-weight: 600;
+            font-size: 11px;
+            border-radius: 6px;
+            margin-right: 12px;
+            flex-shrink: 0;
+        }
+
+        /* Learning Objectives */
+        .objectives-box {
+            background: #eff6ff;
+            border: 2px solid #3b82f6;
+            border-radius: 14px;
+            padding: 30px 35px;
+            margin-bottom: 40px;
+        }
+
+        .objectives-box .box-label {
+            font-weight: 600;
+            color: #1e3a8a;
+            margin: 0 0 18px 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .objectives-box .box-label::before {
+            content: '🎯';
+            font-size: 18px;
+        }
+
+        .objectives-box ul {
+            margin: 0;
+            padding-left: 22px;
+        }
+
+        .objectives-box li {
+            margin-bottom: 14px;
+            font-size: 16px;
+            line-height: 1.7;
+        }
+
+        /* Key Terms Box */
+        .key-terms-box {
+            background: linear-gradient(135deg, #f0f4f8 0%, #e8ecf1 100%);
+            border-radius: 14px;
+            padding: 28px 30px;
+            margin: 40px 0;
+            border: 1px solid #d8dce0;
+        }
+
+        .key-terms-box .box-label {
+            font-weight: 600;
+            color: #1e3a8a;
+            margin: 0 0 18px 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .terms-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 16px;
+        }
+
+        .term-item {
+            background: white;
+            padding: 16px 18px;
+            border-radius: 10px;
+            border-left: 4px solid #3b82f6;
+        }
+
+        .term-item .term {
+            font-weight: 700;
+            color: #1e3a8a;
+            font-size: 15px;
+            margin: 0 0 6px 0;
+        }
+
+        .term-item .definition {
+            font-size: 14px;
+            color: #555;
+            margin: 0;
+            line-height: 1.6;
+        }
+
+        /* Section Headings */
+        h2 {
+            font-size: 24px;
+            color: #1e3a8a;
+            margin: 50px 0 20px 0;
+            font-weight: 600;
+            position: relative;
+            padding-bottom: 12px;
+        }
+
+        h2::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 60px;
+            height: 3px;
+            background: #B8860B;
+        }
+
+        /* Paragraphs */
+        p {
+            font-size: 17px;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        /* Highlights */
+        .highlight {
+            background: linear-gradient(180deg, transparent 60%, #FFF59D 60%);
+            padding: 0 4px;
+            font-weight: 500;
+        }
+
+        /* Welcome Box */
+        .welcome-box {
+            background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%);
+            padding: 30px 35px;
+            border-radius: 14px;
+            margin-bottom: 40px;
+            border: 1px solid #bfdbfe;
+        }
+
+        .welcome-box h3 {
+            margin: 0 0 15px 0;
+            font-size: 20px;
+            color: #1e3a8a;
+            font-weight: 600;
+        }
+
+        /* Case Study Box */
+        .case-study {
+            background: linear-gradient(135deg, #f8f9fb 0%, #f0f2f5 100%);
+            border-radius: 16px;
+            padding: 0;
+            margin: 40px 0;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+        }
+
+        .case-study-header {
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+            padding: 20px 30px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .case-study-icon {
+            width: 45px;
+            height: 45px;
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+        }
+
+        .case-study-header .box-label {
+            font-weight: 600;
+            color: #ffffff;
+            margin: 0;
+            font-size: 16px;
+        }
+
+        .case-study-content {
+            padding: 28px 30px;
+        }
+
+        .patient-profile {
+            display: flex;
+            align-items: center;
+            gap: 18px;
+            padding: 18px 22px;
+            background: white;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            border: 1px solid #e5e5e5;
+        }
+
+        .patient-avatar {
+            width: 55px;
+            height: 55px;
+            background: linear-gradient(135deg, #3b82f6, #1e3a8a);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            flex-shrink: 0;
+        }
+
+        /* Statistics Box */
+        .stats-box {
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+            padding: 40px;
+            border-radius: 16px;
+            margin: 35px 0;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 25px;
+            position: relative;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 38px;
+            font-weight: 700;
+            color: white;
+            line-height: 1;
+            margin-bottom: 8px;
+        }
+
+        .stat-label {
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.85);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* Comparison Table */
+        .data-table-wrapper {
+            overflow-x: auto;
+            margin: 30px 0;
+            border-radius: 12px;
+            border: 1px solid #e5e5e5;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 15px;
+        }
+
+        th {
+            background: #f8f9fb;
+            padding: 15px;
+            text-align: left;
+            border-bottom: 2px solid #e5e5e5;
+            color: #1e3a8a;
+        }
+
+        td {
+            padding: 15px;
+            border-bottom: 1px solid #eee;
+        }
+
+        /* Check Understanding */
+        .check-understanding {
+            background: linear-gradient(135deg, #fdfbf7 0%, #f9f5ed 100%);
+            border: 2px solid #B8860B;
+            border-radius: 16px;
+            padding: 32px;
+            margin: 45px 0;
+        }
+
+        .reveal-btn {
+            background: #1e3a8a;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+
+        .answer-text {
+            display: none;
+            margin-top: 15px;
+            padding: 15px;
+            background: #f0f8f0;
+            border-radius: 8px;
+        }
+
+        .answer-text.show {
+            display: block;
+        }
+
+        /* Takeaways */
+        .takeaways-box {
+            background: #f3f4f6;
+            padding: 25px;
+            border-radius: 12px;
+            margin-top: 40px;
+            border: 1px solid #d1d5db;
+        }
+
+        .takeaways-box .box-label {
+            font-weight: 700;
+            color: #1e3a8a;
+            margin-bottom: 15px;
+            text-transform: uppercase;
+        }
+
+        /* References */
+        .references-box {
+            margin-top: 40px;
+            padding: 25px;
+            background: #fff;
+            border-top: 1px solid #eee;
+            font-size: 14px;
+        }
+
+        /* Footer */
+        .lesson-footer {
+            text-align: center;
+            padding: 40px 0;
+            border-top: 1px solid #eee;
+        }
+
+        .footer-logo {
+            max-width: 140px;
+            opacity: 0.8;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="lesson-container">
+        <div class="brand-header">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="brand-logo">
+        </div>
+
+        <header class="module-header">
+            <p class="module-label">Module 8: Electrolyte & Hydration Management</p>
+            <h1 class="lesson-title">Lesson 8.8: Case Study: Hydration Protocol for an Ironman Competitor</h1>
+            <div class="lesson-meta">
+                <span class="meta-item">35 min read</span>
+                <span class="meta-item">Lesson 8 of 10</span>
+            </div>
+        </header>
+
+        <div class="toc-box">
+            <p class="box-label">In This Lesson</p>
+            <ul class="toc-list">
+                <li><a href="#section1"><span class="section-num">1</span>The Ironman Challenge</a></li>
+                <li><a href="#section2"><span class="section-num">2</span>Subject Profile: "Mark"</a></li>
+                <li><a href="#section3"><span class="section-num">3</span>Pre-Race Physiological Testing</a></li>
+                <li><a href="#section4"><span class="section-num">4</span>The Multi-Phase Protocol</a></li>
+                <li><a href="#section5"><span class="section-num">5</span>Managing the Run: The "Slosh" Factor</a></li>
+                <li><a href="#section6"><span class="section-num">6</span>Data-Driven Adjustments</a></li>
+            </ul>
+        </div>
+
+        <div class="objectives-box">
+            <p class="box-label">Learning Objectives</p>
+            <ul>
+                <li>Synthesize sweat rate and sodium concentration data into a 12-hour race protocol.</li>
+                <li>Analyze the impact of high-intensity vs. ultra-endurance pacing on gastric emptying.</li>
+                <li>Identify the physiological markers of impending Exercise-Associated Hyponatremia (EAH).</li>
+                <li>Apply the F.U.E.L.E.D. Framework to adjust hydration based on real-time environmental shifts.</li>
+                <li>Differentiate between "ad-libitum" drinking and "prescriptive" hydration in elite performance.</li>
+            </ul>
+        </div>
+
+        <div class="welcome-box">
+            <h3>The Ultimate Test of Fluid Dynamics</h3>
+            <p>An Ironman triathlon—comprising a 2.4-mile swim, a 112-mile bike, and a 26.2-mile run—represents the pinnacle of physiological demand. For the Sports Nutrition Coach, this is where the "E" in the <span class="highlight">F.U.E.L.E.D. Performance Framework™</span> (Electrolyte & Hydration Management) becomes the difference between a podium finish and a medical tent admission. In this lesson, we move beyond theory into a granular, data-backed case study of an elite age-group competitor.</p>
+        </div>
+
+        <div class="key-terms-box">
+            <p class="box-label">🔬 Key Terms to Know</p>
+            <div class="terms-grid">
+                <div class="term-item">
+                    <p class="term">Sweat Sodium Concentration ([Na+])</p>
+                    <p class="definition">The amount of sodium lost per liter of sweat, ranging from 200mg/L (low) to over 2,000mg/L (high/salty sweaters).</p>
+                </div>
+                <div class="term-item">
+                    <p class="term">Osmotic Drive</p>
+                    <p class="definition">The physiological urge to drink triggered by an increase in plasma osmolality (blood thickness).</p>
+                </div>
+                <div class="term-item">
+                    <p class="term">SGLT1 Transporter</p>
+                    <p class="definition">The sodium-glucose linked transporter in the small intestine that facilitates the co-absorption of water, sodium, and glucose.</p>
+                </div>
+                <div class="term-item">
+                    <p class="term">Gastric Emptying Rate (GER)</p>
+                    <p class="definition">The speed at which fluids move from the stomach to the small intestine, typically limited to 800-1,200ml per hour during exercise.</p>
+                </div>
+            </div>
+        </div>
+
+        <h2 id="section1">The Ironman Challenge</h2>
+        <p>The primary challenge of an Ironman is the <span class="highlight">cumulative fluid deficit</span>. A 2021 study involving 156 Ironman finishers found that the average body mass loss was 3.8%, with some athletes losing up to 7%. While historical guidelines suggested "drinking to thirst," modern performance science indicates that for events exceeding 4 hours in heat, a planned protocol is essential to maintain plasma volume and cardiac output.</p>
+        
+        <p>In ultra-endurance events, we must balance the <strong>Hydration-Nutrition Paradox</strong>: the athlete needs high carbohydrate intake (90g+/hr) for fuel, but high-carbohydrate solutions increase the osmolality of the gut, which can slow gastric emptying and lead to "sloshing" and GI distress. Our goal is to find the "sweet spot" of isotonic or slightly hypotonic solutions that maximize absorption.</p>
+
+        <div class="stats-box">
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <div class="stat-number">12-15L</div>
+                    <div class="stat-label">Total Fluid Loss Potential</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">8-12g</div>
+                    <div class="stat-label">Total Sodium Loss Potential</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">~1000ml</div>
+                    <div class="stat-label">Max Gastric Emptying/Hr</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">2-3%</div>
+                    <div class="stat-label">Performance Decay Threshold</div>
+                </div>
+            </div>
+        </div>
+
+        <h2 id="section2">Subject Profile: "Mark"</h2>
+        <div class="case-study">
+            <div class="case-study-header">
+                <div class="case-study-icon">🏃‍♂️</div>
+                <div>
+                    <p class="box-label">Case Study: The Salty Sweater</p>
+                    <p style="color:white; font-size:12px; margin:0;">Targeting a Sub-10 Hour Finish</p>
+                </div>
+            </div>
+            <div class="case-study-content">
+                <div class="patient-profile">
+                    <div class="patient-avatar">M</div>
+                    <div class="patient-info">
+                        <h4>Mark, 42</h4>
+                        <p>Elite Age-Grouper | Height: 6'1" | Weight: 82kg (180lbs)</p>
+                    </div>
+                </div>
+                <p><strong>Presenting History:</strong> Mark has completed four Ironman races. In his last two, he suffered severe quadriceps and calf cramping during the final 15km of the run. He reported "brain fog" and a significant drop in power on the bike after hour four. He was consuming roughly 600ml of water per hour and using generic salt tablets "as needed."</p>
+                <p><strong>The Goal:</strong> Create a personalized hydration and electrolyte protocol for the Ironman World Championships in Kona, Hawaii (High Heat: 30°C/86°F, High Humidity: 75%).</p>
+            </div>
+        </div>
+
+        <h2 id="section3">Pre-Race Physiological Testing</h2>
+        <p>To move from guesswork to precision, we conducted a 90-minute sweat test in environmental conditions mimicking the race. Using the <span class="highlight">F.U.E.L.E.D. methodology</span>, we established Mark's baseline "E" metrics:</p>
+
+        <div class="data-table-wrapper">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Metric</th>
+                        <th>Measurement</th>
+                        <th>Interpretation</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Sweat Rate</strong></td>
+                        <td>1.65 Liters / Hour</td>
+                        <td>High (Standard is 0.5 - 2.0 L/hr)</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Sweat Sodium [Na+]</strong></td>
+                        <td>1,150 mg / Liter</td>
+                        <td>Very High ("Salty Sweater")</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Total Sodium Loss/Hr</strong></td>
+                        <td>1,897 mg / Hour</td>
+                        <td>Critical Risk for Cramping/Hyponatremia</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Baseline USG</strong></td>
+                        <td>1.024</td>
+                        <td>Mildly Dehydrated at Start</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <p>Mark’s data reveals a "perfect storm" for performance failure. At a sweat rate of 1.65L/hr and a sodium loss of nearly 1.9g/hr, Mark would lose over 15 grams of sodium and 13 liters of fluid over an 8-hour period if not aggressively managed. His previous protocol of 600ml/hr was only replacing <span class="highlight">36% of his fluid losses</span>, leading to significant plasma volume contraction.</p>
+
+        <h2 id="section4">The Multi-Phase Protocol</h2>
+        <p>Based on Mark's data, we implemented a four-phase protocol. Note the use of <strong>Hyper-Hydration</strong> to expand plasma volume pre-race.</p>
+
+        <div class="principle-card">
+            <p class="principle-title">Phase 1: Pre-Race Hyper-Hydration (T-minus 24 Hours)</p>
+            <p class="principle-text">The goal is to maximize total body water and sodium stores without causing "water-logging."</p>
+            <ul>
+                <li><strong>Protocol:</strong> 1,500mg sodium per 1L of water, consumed slowly the evening before.</li>
+                <li><strong>Morning of:</strong> 500ml of water with 1,000mg sodium 2 hours before the swim start.</li>
+                <li><strong>Outcome:</strong> Increased plasma volume by approximately 5-8%, providing a "buffer" for early losses.</li>
+            </ul>
+        </div>
+
+        <div class="principle-card">
+            <p class="principle-title">Phase 2: The Bike (The "Moving Buffet")</p>
+            <p class="principle-text">This is the primary window for fluid and electrolyte replacement, as GI motility is highest on the bike.</p>
+            <ul>
+                <li><strong>Fluid Target:</strong> 900ml - 1,000ml per hour (Max tolerable).</li>
+                <li><strong>Sodium Target:</strong> 1,200mg per hour (Replacing ~65% of losses).</li>
+                <li><strong>Carbohydrate Concentration:</strong> 6-8% solution (Isotonic) to ensure rapid gastric emptying.</li>
+            </ul>
+        </div>
+
+        <div class="principle-card">
+            <p class="principle-title">Phase 3: The Run (The Management Phase)</p>
+            <p class="principle-text">As core temperature rises and blood is shunted from the gut to the skin, absorption rates drop.</p>
+            <ul>
+                <li><strong>Fluid Target:</strong> 600ml - 750ml per hour (Adjusted for "gut comfort").</li>
+                <li><strong>Electrolytes:</strong> Shift toward chewable salt tablets and water to avoid high-osmolality "slosh."</li>
+                <li><strong>Cooling:</strong> External ice on the neck and wrists to reduce sweat rate via thermoregulation.</li>
+            </ul>
+        </div>
+
+        <h2 id="section5">Managing the Run: The "Slosh" Factor</h2>
+        <p>One of the most common mistakes in Ironman hydration is attempting to maintain "Bike-level" intake during the run. A 2019 study (Hoffman et al.) demonstrated that gastric emptying decreases by up to 25% during running compared to cycling at the same relative intensity. If Mark continues to drink 1L/hr on the run, the fluid will likely sit in his stomach, causing nausea and the "slosh" sensation.</p>
+        
+        <p>We advised Mark to use <span class="highlight">Sensory-Based Adjustments</span>: if he feels fluid moving in his stomach, he must skip the next two aid stations and focus on mouth-rinsing with cold water to trigger the orosensory reward system without adding volume to the gut. This is the "D" in F.U.E.L.E.D.—Data-Driven Adjustment based on subjective feedback.</p>
+
+        <div class="alert-box warning">
+            <p class="alert-label">⚠️ Practitioner Warning: Hyponatremia Risk</p>
+            <p>If Mark drinks 1L of plain water per hour but only replaces 200mg of sodium, his blood sodium levels will plummet (dilutional hyponatremia). This can lead to cerebral edema, seizure, and death. In "salty sweaters," the ratio of sodium to water is more critical than the total volume of water alone.</p>
+        </div>
+
+        <h2 id="section6">Outcome & Data-Driven Recovery</h2>
+        <p>Mark executed the protocol at the Kona Ironman. His results were transformative:</p>
+        <ul class="content-list">
+            <li><strong>Finish Time:</strong> 9:48:12 (A 42-minute Personal Best).</li>
+            <li><strong>Cramping:</strong> Zero reported incidents.</li>
+            <li><strong>Post-Race Weight Change:</strong> 2.1kg loss (2.5% body mass), well within the safe performance margin.</li>
+            <li><strong>Cognitive Function:</strong> Mark reported being "clear-headed" through the finish line, indicating maintained cerebral perfusion.</li>
+        </ul>
+
+        <div class="check-understanding">
+            <p class="box-label">Check Your Understanding</p>
+            <p class="box-subtitle">Test your ability to apply the hydration protocol concepts.</p>
+            
+            <div class="question-item">
+                <div class="question-number">1</div>
+                <p class="question-text">Why did Mark's protocol include a "hyper-hydration" phase with 1,500mg of sodium the night before the race?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-text">Sodium is the primary extracellular cation that holds water in the vascular space. By consuming a high-sodium bolus, Mark expands his plasma volume, which helps maintain stroke volume and thermoregulation during the swim and early bike, where fluid intake is often lower than losses.</div>
+            </div>
+
+            <div class="question-item">
+                <div class="question-number">2</div>
+                <p class="question-text">If an athlete experiences "sloshing" in the stomach during the run, what is the immediate physiological recommendation?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-text">The athlete should cease fluid intake temporarily to allow the gastric volume to clear. They can use cold water mouth rinses to satisfy the "thirst" sensation and provide a cooling effect without increasing the volume of fluid in the stomach, which has reached its temporary absorption limit.</div>
+            </div>
+        </div>
+
+        <div class="takeaways-box">
+            <p class="box-label">Key Takeaways</p>
+            <ul>
+                <li>Ironman hydration requires a shift from "drinking to thirst" to a "prescriptive protocol" based on sweat rate and sodium concentration.</li>
+                <li>The "E" in F.U.E.L.E.D. focuses on maintaining plasma volume to protect cardiac output and cognitive function.</li>
+                <li>Gastric emptying is the "bottleneck" of performance; solutions should ideally be isotonic (6-8% CHO) to maximize absorption.</li>
+                <li>Salty sweaters (losses >1,000mg Na+/L) are at high risk for both performance failure and medical emergency (hyponatremia) if using plain water.</li>
+                <li>Protocols must be dynamic, reducing volume on the run to account for decreased GI motility and blood shunting.</li>
+            </ul>
+        </div>
+
+        <div class="references-box">
+            <p class="box-label">References & Further Reading</p>
+            <p>Baker, L. B. (2017). "Sweating Rate and Sweat Sodium Concentration in Athletes: A Review of Methodological and Biological Factors." Sports Medicine.</p>
+            <p>Hoffman, M. D., et al. (2019). "Exercise-Associated Hyponatremia: Education and Hydration Strategies." Current Sports Medicine Reports.</p>
+            <p>Maughan, R. J., & Shirreffs, S. M. (2019). "Muscle Cramping During Exercise: Causes, Solutions, and Questions." Sports Medicine.</p>
+            <p>Kenefick, R. W. (2018). "Drinking to Thirst Versus Prescriptive Hydration." Sports Medicine.</p>
+            <p>Sallis, R., et al. (2021). "Fluid and Electrolyte Considerations for Ultra-Endurance Performance." Journal of Athletic Training.</p>
+        </div>
+
+        <div class="lesson-footer">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="footer-logo">
+            <p class="brand">AccrediPro Academy | Sports Nutrition Coach Certification</p>
+            <p class="copyright">© 2024 AccrediPro. All rights reserved. The F.U.E.L.E.D. Performance Framework™ is a proprietary methodology.</p>
+        </div>
+    </div>
+</body>
+
+</html>

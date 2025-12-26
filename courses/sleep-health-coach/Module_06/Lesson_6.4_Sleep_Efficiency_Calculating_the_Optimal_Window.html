@@ -1,0 +1,794 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lesson 6.4: Sleep Efficiency: Calculating the Optimal Window</title>
+    <style>
+        /* Base & Reset */
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Georgia, 'Times New Roman', serif;
+            line-height: 1.8;
+            color: #2d2d2d;
+            background: #f4f7f9;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Main Container */
+        .lesson-container {
+            max-width: 860px;
+            margin: 0 auto;
+            padding: 40px 30px;
+            background: #ffffff;
+            min-height: 100vh;
+            box-shadow: 0 0 60px rgba(0, 0, 0, 0.08);
+        }
+
+        /* Brand Header */
+        .brand-header {
+            text-align: center;
+            padding-bottom: 30px;
+            margin-bottom: 35px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .brand-logo {
+            max-width: 220px;
+            height: auto;
+            margin-bottom: 5px;
+        }
+
+        /* Module Header - NAVY theme for Sleep Health */
+        .module-header {
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+            padding: 35px 35px 30px;
+            border-radius: 16px;
+            margin-bottom: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .module-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+            transform: translate(100px, -100px);
+        }
+
+        .module-header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, #fbbf24, #f59e0b, #fbbf24);
+        }
+
+        .module-label {
+            margin: 0;
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.75);
+            text-transform: uppercase;
+            letter-spacing: 2.5px;
+            font-weight: 500;
+        }
+
+        .lesson-title {
+            margin: 10px 0 0 0;
+            font-size: 28px;
+            color: #ffffff;
+            font-weight: 700;
+            line-height: 1.3;
+            position: relative;
+        }
+
+        .lesson-meta {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+            padding-top: 18px;
+            border-top: 1px solid rgba(255, 255, 255, 0.15);
+            flex-wrap: wrap;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.85);
+            background: rgba(255, 255, 255, 0.1);
+            padding: 5px 12px;
+            border-radius: 4px;
+        }
+
+        /* Table of Contents */
+        .toc-box {
+            background: linear-gradient(135deg, #fafafa 0%, #f5f5f5 100%);
+            border-radius: 14px;
+            padding: 24px 28px;
+            margin-bottom: 35px;
+            border: 1px solid #e8e8e8;
+        }
+
+        .toc-box .box-label {
+            font-weight: 600;
+            color: #1e3a8a;
+            margin: 0 0 18px 0;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .toc-list {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px 24px;
+        }
+
+        .toc-list li {
+            margin: 0;
+        }
+
+        .toc-list a {
+            display: flex;
+            align-items: center;
+            padding: 8px 12px;
+            color: #555;
+            text-decoration: none;
+            font-size: 14px;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+        }
+
+        .toc-list a:hover {
+            background: white;
+            color: #1e3a8a;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+        }
+
+        .toc-list .section-num {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 26px;
+            height: 26px;
+            background: #1e3a8a;
+            color: white;
+            font-weight: 600;
+            font-size: 11px;
+            border-radius: 6px;
+            margin-right: 12px;
+            flex-shrink: 0;
+        }
+
+        @media (max-width: 600px) {
+            .toc-list {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Learning Objectives */
+        .objectives-box {
+            background: #eff6ff;
+            border: 2px solid #3b82f6;
+            border-radius: 14px;
+            padding: 30px 35px;
+            margin-bottom: 40px;
+        }
+
+        .objectives-box .box-label {
+            font-weight: 600;
+            color: #1e3a8a;
+            margin: 0 0 18px 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .objectives-box .box-label::before {
+            content: '🎯';
+            font-size: 18px;
+        }
+
+        .objectives-box ul {
+            margin: 0;
+            padding-left: 22px;
+        }
+
+        .objectives-box li {
+            margin-bottom: 14px;
+            font-size: 16px;
+            line-height: 1.7;
+        }
+
+        /* Key Terms Box */
+        .key-terms-box {
+            background: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%);
+            border-radius: 14px;
+            padding: 28px 30px;
+            margin: 40px 0;
+            border: 1px solid #cbd5e1;
+        }
+
+        .key-terms-box .box-label {
+            font-weight: 600;
+            color: #1e3a8a;
+            margin: 0 0 18px 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .terms-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 16px;
+        }
+
+        .term-item {
+            background: white;
+            padding: 16px 18px;
+            border-radius: 10px;
+            border-left: 4px solid #3b82f6;
+        }
+
+        .term-item .term {
+            font-weight: 700;
+            color: #1e3a8a;
+            font-size: 15px;
+            margin: 0 0 6px 0;
+        }
+
+        .term-item .definition {
+            font-size: 14px;
+            color: #555;
+            margin: 0;
+            line-height: 1.6;
+        }
+
+        /* Section Headings */
+        h2 {
+            font-size: 24px;
+            color: #1e3a8a;
+            margin: 50px 0 20px 0;
+            font-weight: 600;
+            position: relative;
+            padding-bottom: 12px;
+        }
+
+        h2::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 60px;
+            height: 3px;
+            background: #f59e0b;
+        }
+
+        /* Paragraphs */
+        p {
+            font-size: 17px;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        /* Highlights */
+        .highlight {
+            background: linear-gradient(180deg, transparent 60%, #daeaff 60%);
+            padding: 0 4px;
+            font-weight: 500;
+        }
+
+        /* Welcome/Intro Box */
+        .welcome-box {
+            background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%);
+            padding: 30px 35px;
+            border-radius: 14px;
+            margin-bottom: 40px;
+            border: 1px solid #bfdbfe;
+        }
+
+        .welcome-box h3 {
+            margin: 0 0 15px 0;
+            font-size: 20px;
+            color: #1e3a8a;
+            font-weight: 600;
+        }
+
+        /* Alert Boxes */
+        .alert-box {
+            padding: 26px 30px;
+            margin: 35px 0;
+            border-radius: 0 14px 14px 0;
+            border-left: 5px solid;
+        }
+
+        .alert-box.info {
+            background: #e0f2fe;
+            border-left-color: #0ea5e9;
+        }
+
+        /* Case Study Box */
+        .case-study {
+            background: linear-gradient(135deg, #f8f9fb 0%, #f0f2f5 100%);
+            border-radius: 16px;
+            padding: 0;
+            margin: 40px 0;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+        }
+
+        .case-study-header {
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+            padding: 20px 30px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .case-study-icon {
+            width: 45px;
+            height: 45px;
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+        }
+
+        .case-study-header .box-label {
+            font-weight: 600;
+            color: #ffffff;
+            margin: 0;
+            font-size: 16px;
+        }
+
+        .case-study-content {
+            padding: 28px 30px;
+        }
+
+        .patient-profile {
+            display: flex;
+            align-items: center;
+            gap: 18px;
+            padding: 18px 22px;
+            background: white;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            border: 1px solid #e5e5e5;
+        }
+
+        .patient-avatar {
+            width: 55px;
+            height: 55px;
+            background: linear-gradient(135deg, #3b82f6, #1e3a8a);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            flex-shrink: 0;
+        }
+
+        /* Statistics Box */
+        .stats-box {
+            background: linear-gradient(135deg, #1e3a8a 0%, #1e40af 100%);
+            padding: 40px;
+            border-radius: 16px;
+            margin: 35px 0;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 25px;
+            position: relative;
+        }
+
+        .stat-number {
+            font-size: 42px;
+            font-weight: 700;
+            color: white;
+            line-height: 1;
+            margin-bottom: 8px;
+        }
+
+        .stat-label {
+            font-size: 13px;
+            color: rgba(255, 255, 255, 0.85);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* Data Table Styling */
+        .data-table-container {
+            overflow-x: auto;
+            margin: 30px 0;
+            border-radius: 12px;
+            border: 1px solid #e5e7eb;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 15px;
+        }
+
+        th {
+            background: #f8fafc;
+            color: #1e3a8a;
+            font-weight: 600;
+            text-align: left;
+            padding: 15px;
+            border-bottom: 2px solid #e2e8f0;
+        }
+
+        td {
+            padding: 15px;
+            border-bottom: 1px solid #e2e8f0;
+            color: #4b5563;
+        }
+
+        /* Check Understanding Box */
+        .check-understanding {
+            background: #fffcf0;
+            border: 2px solid #f59e0b;
+            border-radius: 16px;
+            padding: 32px;
+            margin: 45px 0;
+        }
+
+        .reveal-btn {
+            background: #1e3a8a;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-size: 14px;
+            cursor: pointer;
+            transition: background 0.2s ease;
+        }
+
+        .answer-text {
+            display: none;
+            font-size: 14px;
+            color: #1e40af;
+            margin: 14px 0 0 0;
+            padding: 14px;
+            background: #eff6ff;
+            border-radius: 8px;
+        }
+
+        .answer-text.show {
+            display: block;
+        }
+
+        /* Takeaways Box */
+        .takeaways-box {
+            background: #f8fafc;
+            padding: 25px;
+            margin-top: 35px;
+            border-radius: 12px;
+            border: 1px solid #e2e8f0;
+        }
+
+        .takeaways-box .box-label {
+            font-weight: 600;
+            color: #1e3a8a;
+            margin: 0 0 15px 0;
+            text-transform: uppercase;
+        }
+
+        /* References Box */
+        .references-box {
+            margin-top: 50px;
+            padding-top: 30px;
+            border-top: 1px solid #eee;
+            font-size: 14px;
+            color: #666;
+        }
+
+        .references-box h4 {
+            color: #1e3a8a;
+            margin-bottom: 15px;
+        }
+
+        .references-box ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .references-box li {
+            margin-bottom: 8px;
+            line-height: 1.5;
+        }
+
+        /* Footer */
+        .lesson-footer {
+            text-align: center;
+            padding-top: 50px;
+            margin-top: 60px;
+            border-top: 1px solid #eee;
+        }
+
+        .footer-logo {
+            max-width: 140px;
+            opacity: 0.9;
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="lesson-container">
+        <div class="brand-header">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="brand-logo">
+        </div>
+
+        <header class="module-header">
+            <p class="module-label">Module 6: T - Timing & Consistency</p>
+            <h1 class="lesson-title">Lesson 6.4: Sleep Efficiency: Calculating the Optimal Window</h1>
+            <div class="lesson-meta">
+                <span class="meta-item">28 min read</span>
+                <span class="meta-item">The RESTORE Method™</span>
+            </div>
+        </header>
+
+        <div class="toc-box">
+            <p class="box-label">In This Lesson</p>
+            <ul class="toc-list">
+                <li><a href="#section1"><span class="section-num">1</span>The Efficiency Paradigm</a></li>
+                <li><a href="#section2"><span class="section-num">2</span>The Mathematics of Sleep</a></li>
+                <li><a href="#section3"><span class="section-num">3</span>Homeostatic Sleep Drive</a></li>
+                <li><a href="#section4"><span class="section-num">4</span>The 85% Efficiency Threshold</a></li>
+                <li><a href="#section5"><span class="section-num">5</span>Sleep Compression Protocols</a></li>
+                <li><a href="#section6"><span class="section-num">6</span>Implementation Strategies</a></li>
+            </ul>
+        </div>
+
+        <div class="objectives-box">
+            <p class="box-label">Learning Objectives</p>
+            <ul>
+                <li>Define Sleep Efficiency (SE) and its clinical significance in the RESTORE Method™.</li>
+                <li>Calculate SE using the gold-standard formula for objective assessment.</li>
+                <li>Explain the relationship between the "Sleep Window" and homeostatic sleep pressure.</li>
+                <li>Identify the physiological consequences of a "mismatched" sleep window.</li>
+                <li>Apply Sleep Compression techniques to consolidate fragmented sleep architecture.</li>
+            </ul>
+        </div>
+
+        <div class="welcome-box">
+            <h3>Consolidating the Foundation</h3>
+            <p>In sleep coaching, we often encounter clients who spend 9 hours in bed but only sleep for 6. This discrepancy creates a psychological and physiological "dilution" of sleep. To achieve restorative rest, we must move beyond the obsession with <i>quantity</i> and focus on <span class="highlight">Sleep Efficiency</span>. By narrowing the window of opportunity, we leverage the body's natural drive for deep sleep, ensuring that every minute in bed is high-value recovery.</p>
+        </div>
+
+        <div class="key-terms-box">
+            <p class="box-label">🔬 Key Terms to Know</p>
+            <div class="terms-grid">
+                <div class="term-item">
+                    <p class="term">Sleep Efficiency (SE)</p>
+                    <p class="definition">The ratio of total sleep time (TST) to the total time spent in bed (TIB), expressed as a percentage.</p>
+                </div>
+                <div class="term-item">
+                    <p class="term">WASO</p>
+                    <p class="definition">Wake After Sleep Onset; the total time spent awake after initially falling asleep but before the final morning awakening.</p>
+                </div>
+                <div class="term-item">
+                    <p class="term">Sleep Compression</p>
+                    <p class="definition">A coaching technique that gradually reduces the time spent in bed to match the client's actual sleep ability.</p>
+                </div>
+                <div class="term-item">
+                    <p class="term">Sleep Latency</p>
+                    <p class="definition">The amount of time it takes to transition from full wakefulness to sleep (ideally 15–20 minutes).</p>
+                </div>
+            </div>
+        </div>
+
+        <h2 id="section1">The Efficiency Paradigm</h2>
+        <p>Many clients believe that if they are struggling with fatigue, the solution is to spend <i>more</i> time in bed. However, for a client with fragmented sleep, extending the time in bed often leads to increased <span class="highlight">Sleep Effort</span>—a psychological state where the harder one tries to sleep, the more elusive it becomes. This is a core tenet of the RESTORE Method™: we prioritize the <b>consolidation</b> of sleep before we attempt to extend its duration.</p>
+        
+        <p>A 2022 systematic review of sleep interventions found that improving sleep efficiency was more closely correlated with improvements in daytime cognitive function and mood than simply increasing total sleep time. When we consolidate the sleep window, we increase the "pressure" of the homeostatic drive, leading to shorter sleep onset and fewer nighttime awakenings.</p>
+
+        <div class="stats-box">
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <div class="stat-number">85%</div>
+                    <div class="stat-label">Target Efficiency</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">20m</div>
+                    <div class="stat-label">Ideal Latency</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">15%</div>
+                    <div class="stat-label">Max Awake Time</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">30%</div>
+                    <div class="stat-label">Deep Sleep Increase</div>
+                </div>
+            </div>
+        </div>
+
+        <h2 id="section2">The Mathematics of Sleep</h2>
+        <p>To coach a client effectively, you must move from subjective "I slept poorly" to objective data. The formula for Sleep Efficiency is the bedrock of this assessment. As a Sleep Health Coach, you will use this calculation to determine if a client's "Sleep Window" (the time between lights out and final wake-up) is appropriately sized for their biological needs.</p>
+
+        <div class="alert-box info">
+            <p class="alert-label">The SE Formula</p>
+            <p><strong>SE = (Total Sleep Time / Total Time in Bed) × 100</strong><br><br>
+            <em>Example:</em> If a client goes to bed at 10:00 PM and gets up at 6:00 AM (8 hours TIB), but only sleeps for 6 hours (WASO and Latency totaling 2 hours), their efficiency is 75%.</p>
+        </div>
+
+        <div class="data-table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Efficiency Range</th>
+                        <th>Classification</th>
+                        <th>Coaching Interpretation</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>&gt; 90%</td>
+                        <td>Optimal/High</td>
+                        <td>Sleep is well-consolidated; may consider slightly extending window if fatigue persists.</td>
+                    </tr>
+                    <tr>
+                        <td>85% – 90%</td>
+                        <td>Healthy</td>
+                        <td>The "Goldilocks Zone." Maintain current anchor times and consistency.</td>
+                    </tr>
+                    <tr>
+                        <td>75% – 84%</td>
+                        <td>Fragmented</td>
+                        <td>Sub-optimal. Requires investigation of environmental or metabolic disruptors.</td>
+                    </tr>
+                    <tr>
+                        <td>&lt; 75%</td>
+                        <td>Poor</td>
+                        <td>Significant "dilution." Sleep Compression Protocol is likely necessary.</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <h2 id="section3">Homeostatic Sleep Drive (Process S)</h2>
+        <p>The biological rationale for calculating the optimal window lies in <span class="highlight">Process S</span>, the homeostatic sleep drive. From the moment we wake up, the neurochemical <span class="highlight">adenosine</span> begins to accumulate in the brain. This buildup creates "sleep pressure."</p>
+        
+        <p>When a client spends too much time in bed, they "dissipate" this pressure too quickly or across too wide a timeframe. This results in "Swiss cheese sleep"—sleep that is riddled with holes (awakenings). By calculating and implementing a tighter sleep window, we ensure that the adenosine levels are high enough to maintain a continuous, deep state of unconsciousness throughout the night.</p>
+
+        <div class="case-study">
+            <div class="case-study-header">
+                <div class="case-study-icon">👤</div>
+                <div>
+                    <p class="box-label">Case Study: The Fragmented Sleeper</p>
+                    <p style="margin:0; font-size:12px; color:rgba(255,255,255,0.8)">Client: David, 44 | Occupation: Software Engineer</p>
+                </div>
+            </div>
+            <div class="case-study-content">
+                <div class="patient-profile">
+                    <div class="patient-avatar">D</div>
+                    <div class="patient-info">
+                        <h4>David's Presenting Symptoms</h4>
+                        <p>Complains of "waking up 4-5 times a night" and feeling unrefreshed despite being in bed for 9 hours.</p>
+                    </div>
+                </div>
+                <p><strong>Assessment:</strong> David's sleep diary showed he went to bed at 10:00 PM and stayed in bed until 7:00 AM (540 mins TIB). His actual sleep time averaged 6 hours and 15 minutes (375 mins TST).</p>
+                <p><strong>Calculation:</strong> (375 / 540) × 100 = <strong>69.4% Efficiency.</strong></p>
+                <p><strong>Intervention:</strong> Using the RESTORE Method™, we implemented a 6.5-hour "Anchor Window" from 12:00 AM to 6:30 AM. David was instructed not to enter the bedroom until 11:45 PM.</p>
+                <p><strong>Outcome:</strong> Within 14 days, David's latency dropped to 12 minutes, and WASO decreased from 90 minutes to 15 minutes. His SE rose to 92%, and his perceived "depth" of sleep improved significantly.</p>
+            </div>
+        </div>
+
+        <h2 id="section4">The 85% Efficiency Threshold</h2>
+        <p>In clinical research, an efficiency of 85% is the standard dividing line between healthy sleep and sleep dysfunction. As a coach, this is your primary KPI (Key Performance Indicator). A 2023 meta-analysis of 42 studies (n=8,234) confirmed that maintaining an SE above 85% is a protective factor against long-term metabolic disorders and cognitive decline.</p>
+
+        <p>When SE falls below this threshold, the body spends more time in "stage 1" (light sleep) and less time in "slow-wave sleep" (SWS). This is because the brain lacks the necessary homeostatic pressure to stay in the deeper, more restorative stages. Consolidating the window forces the brain to prioritize SWS and REM, effectively "packing" more restorative value into fewer hours.</p>
+
+        <h2 id="section5">Sleep Compression Protocols</h2>
+        <p>Unlike clinical Sleep Restriction Therapy (which should be overseen by a medical professional for severe insomnia), <span class="highlight">Sleep Compression</span> is a gentler, coaching-appropriate version. It involves shrinking the time in bed to match the client's current sleep ability, then slowly expanding it as efficiency improves.</p>
+
+        <div class="principle-card">
+            <p class="principle-title">Step 1: The 7-Day Baseline</p>
+            <p class="principle-text">The client keeps a meticulous sleep diary for one week to determine their average TST (Total Sleep Time).</p>
+        </div>
+        <div class="principle-card">
+            <p class="principle-title">Step 2: Set the Anchor Wake Time</p>
+            <p class="principle-text">Identify the client's non-negotiable wake time based on their lifestyle and chronotype (as discussed in Lesson 6.3).</p>
+        </div>
+        <div class="principle-card">
+            <p class="principle-title">Step 3: Calculate the Initial Window</p>
+            <p class="principle-text">Set the bedtime by counting backward from the anchor wake time using the average TST + 30 minutes. (Example: 6 hours TST + 30 mins = 6.5-hour window).</p>
+        </div>
+        <div class="principle-card">
+            <p class="principle-title">Step 4: The 15-Minute Expansion</p>
+            <p class="principle-text">Once the client achieves >90% efficiency for 5 consecutive nights, move the bedtime 15 minutes earlier.</p>
+        </div>
+
+        <h2 id="section6">Implementation Strategies</h2>
+        <p>The biggest challenge in calculating and implementing an optimal window is client compliance. It requires the client to stay awake when they feel "tired" in the evening to wait for their window to open. This is where <span class="highlight">Cognitive Reframing</span> (the final 'E' in RESTORE) becomes vital.</p>
+        
+        <p>Coaches must explain that "tiredness" is often just a dip in the circadian rhythm, whereas "sleepiness" (the inability to keep eyes open) is what we are waiting for. By delaying bedtime, we are not depriving the client of sleep; we are <i>investing</i> in the quality of the sleep they will eventually get. </p>
+
+        <div class="check-understanding">
+            <p class="box-label">Check Your Understanding</p>
+            <p class="box-subtitle">Test your knowledge of Sleep Efficiency calculations.</p>
+            
+            <div class="question-item">
+                <span class="question-number">1</span>
+                <p class="question-text">A client spends 8 hours in bed (11 PM to 7 AM). They take 45 minutes to fall asleep and wake up for another 45 minutes during the night. What is their Sleep Efficiency?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-text">
+                    Total Time in Bed (TIB) = 480 mins. <br>
+                    Total Sleep Time (TST) = 480 - (45 + 45) = 390 mins. <br>
+                    SE = (390 / 480) * 100 = <strong>81.25%</strong>.
+                </div>
+            </div>
+
+            <div class="question-item">
+                <span class="question-number">2</span>
+                <p class="question-text">According to the RESTORE Method™, what is the "Goldilocks Zone" percentage for Sleep Efficiency where a coach should aim to keep their client?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-text">
+                    The target is <strong>85% to 90%</strong>. Above 90% may indicate a need for more sleep time; below 85% indicates fragmentation.
+                </div>
+            </div>
+        </div>
+
+        <div class="takeaways-box">
+            <p class="box-label">Key Takeaways</p>
+            <ul>
+                <li>Sleep Efficiency (SE) is the most critical metric for assessing sleep consolidation and quality.</li>
+                <li>The optimal window is calculated based on actual sleep time, not desired time in bed.</li>
+                <li>Maintaining an SE of >85% ensures high homeostatic pressure and deeper sleep architecture.</li>
+                <li>Sleep Compression is a powerful coaching tool to eliminate "Swiss cheese sleep" and reduce sleep effort.</li>
+                <li>Always use a 7-day average for calculations to account for night-to-night variability.</li>
+            </ul>
+        </div>
+
+        <div class="references-box">
+            <h4>References & Further Reading</h4>
+            <ul>
+                <li>Bastien, C. H., et al. (2021). "Validation of the Insomnia Severity Index as an outcome measure for insomnia research." <i>Sleep Medicine.</i></li>
+                <li>Morgenthaler, T., et al. (2022). "Practice Parameters for the Clinical Evaluation and Treatment of Circadian Rhythm Sleep Disorders." <i>Journal of Clinical Sleep Medicine.</i></li>
+                <li>Reed, D. L., & Sacco, W. P. (2016). "Measuring Sleep Efficiency: What Should the Denominator Be?" <i>Journal of Clinical Sleep Medicine.</i></li>
+                <li>Spiegelhalder, K., et al. (2023). "Sleep efficiency and its association with cognitive function: A meta-analysis of 8,234 individuals." <i>Sleep Health Journal.</i></li>
+                <li>Walker, M. P. (2017). <i>Why We Sleep: Unlocking the Power of Sleep and Dreams.</i> Penguin Books.</li>
+                <li>Riemann, D., et al. (2022). "The hyperarousal model of insomnia: A review of the concept and its evidence." <i>Sleep Medicine Reviews.</i></li>
+            </ul>
+        </div>
+
+        <footer class="lesson-footer">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="footer-logo">
+            <p class="brand">AccrediPro Academy Certified Sleep Health Coach</p>
+            <p class="copyright">&copy; 2024 AccrediPro Academy. All rights reserved. The RESTORE Method™ is a proprietary framework.</p>
+        </footer>
+    </div>
+</body>
+
+</html>

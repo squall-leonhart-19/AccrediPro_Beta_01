@@ -1,0 +1,818 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lesson 8.6: Using Data to Identify Hidden Stressors</title>
+    <style>
+        /* Base & Reset */
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Georgia, 'Times New Roman', serif;
+            line-height: 1.8;
+            color: #2d2d2d;
+            background: #f8f6f3;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Main Container */
+        .lesson-container {
+            max-width: 860px;
+            margin: 0 auto;
+            padding: 40px 30px;
+            background: #ffffff;
+            min-height: 100vh;
+            box-shadow: 0 0 60px rgba(0, 0, 0, 0.08);
+        }
+
+        /* Brand Header */
+        .brand-header {
+            text-align: center;
+            padding-bottom: 30px;
+            margin-bottom: 35px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .brand-logo {
+            max-width: 220px;
+            height: auto;
+            margin-bottom: 5px;
+        }
+
+        /* Module Header - BLUE/NAVY theme for Sleep Health */
+        .module-header {
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+            padding: 35px 35px 30px;
+            border-radius: 16px;
+            margin-bottom: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .module-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+            transform: translate(100px, -100px);
+        }
+
+        .module-header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, #B8860B, #D4A84B, #B8860B);
+        }
+
+        .module-label {
+            margin: 0;
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.75);
+            text-transform: uppercase;
+            letter-spacing: 2.5px;
+            font-weight: 500;
+        }
+
+        .lesson-title {
+            margin: 10px 0 0 0;
+            font-size: 28px;
+            color: #ffffff;
+            font-weight: 700;
+            line-height: 1.3;
+            position: relative;
+        }
+
+        .lesson-meta {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+            padding-top: 18px;
+            border-top: 1px solid rgba(255, 255, 255, 0.15);
+            flex-wrap: wrap;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.85);
+            background: rgba(255, 255, 255, 0.1);
+            padding: 5px 12px;
+            border-radius: 4px;
+        }
+
+        /* Table of Contents */
+        .toc-box {
+            background: linear-gradient(135deg, #fafafa 0%, #f5f5f5 100%);
+            border-radius: 14px;
+            padding: 24px 28px;
+            margin-bottom: 35px;
+            border: 1px solid #e8e8e8;
+        }
+
+        .toc-box .box-label {
+            font-weight: 600;
+            color: #1e3a8a;
+            margin: 0 0 18px 0;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .toc-list {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px 24px;
+        }
+
+        .toc-list li {
+            margin: 0;
+        }
+
+        .toc-list a {
+            display: flex;
+            align-items: center;
+            padding: 8px 12px;
+            color: #555;
+            text-decoration: none;
+            font-size: 14px;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+        }
+
+        .toc-list a:hover {
+            background: white;
+            color: #1e3a8a;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+        }
+
+        .toc-list .section-num {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 26px;
+            height: 26px;
+            background: #1e3a8a;
+            color: white;
+            font-weight: 600;
+            font-size: 11px;
+            border-radius: 6px;
+            margin-right: 12px;
+            flex-shrink: 0;
+        }
+
+        /* Learning Objectives */
+        .objectives-box {
+            background: #eff6ff;
+            border: 2px solid #3b82f6;
+            border-radius: 14px;
+            padding: 30px 35px;
+            margin-bottom: 40px;
+        }
+
+        .objectives-box .box-label {
+            font-weight: 600;
+            color: #1e3a8a;
+            margin: 0 0 18px 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .objectives-box .box-label::before {
+            content: '🎯';
+            font-size: 18px;
+        }
+
+        .objectives-box ul {
+            margin: 0;
+            padding-left: 22px;
+        }
+
+        .objectives-box li {
+            margin-bottom: 14px;
+            font-size: 16px;
+            line-height: 1.7;
+        }
+
+        /* Key Terms Box */
+        .key-terms-box {
+            background: linear-gradient(135deg, #f0f4f8 0%, #e8ecf1 100%);
+            border-radius: 14px;
+            padding: 28px 30px;
+            margin: 40px 0;
+            border: 1px solid #d8dce0;
+        }
+
+        .key-terms-box .box-label {
+            font-weight: 600;
+            color: #1e3a8a;
+            margin: 0 0 18px 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .terms-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 16px;
+        }
+
+        .term-item {
+            background: white;
+            padding: 16px 18px;
+            border-radius: 10px;
+            border-left: 4px solid #3b82f6;
+        }
+
+        .term-item .term {
+            font-weight: 700;
+            color: #1e3a8a;
+            font-size: 15px;
+            margin: 0 0 6px 0;
+        }
+
+        .term-item .definition {
+            font-size: 14px;
+            color: #555;
+            margin: 0;
+            line-height: 1.6;
+        }
+
+        /* Section Headings */
+        h2 {
+            font-size: 24px;
+            color: #1e3a8a;
+            margin: 50px 0 20px 0;
+            font-weight: 600;
+            position: relative;
+            padding-bottom: 12px;
+        }
+
+        h2::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 60px;
+            height: 3px;
+            background: #B8860B;
+        }
+
+        /* Paragraphs */
+        p {
+            font-size: 17px;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        /* Highlights */
+        .highlight {
+            background: linear-gradient(180deg, transparent 60%, #FFF59D 60%);
+            padding: 0 4px;
+            font-weight: 500;
+        }
+
+        /* Welcome/Intro Box */
+        .welcome-box {
+            background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%);
+            padding: 30px 35px;
+            border-radius: 14px;
+            margin-bottom: 40px;
+            border: 1px solid #bfdbfe;
+        }
+
+        .welcome-box h3 {
+            margin: 0 0 15px 0;
+            font-size: 20px;
+            color: #1e3a8a;
+            font-weight: 600;
+        }
+
+        /* Case Study Box */
+        .case-study {
+            background: linear-gradient(135deg, #f8f9fb 0%, #f0f2f5 100%);
+            border-radius: 16px;
+            padding: 0;
+            margin: 40px 0;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+        }
+
+        .case-study-header {
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+            padding: 20px 30px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .case-study-icon {
+            width: 45px;
+            height: 45px;
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+        }
+
+        .case-study-header .box-label {
+            font-weight: 600;
+            color: #ffffff;
+            margin: 0;
+            font-size: 16px;
+            letter-spacing: 0.5px;
+        }
+
+        .case-study-content {
+            padding: 28px 30px;
+        }
+
+        .patient-profile {
+            display: flex;
+            align-items: center;
+            gap: 18px;
+            padding: 18px 22px;
+            background: white;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            border: 1px solid #e5e5e5;
+        }
+
+        .patient-avatar {
+            width: 55px;
+            height: 55px;
+            background: linear-gradient(135deg, #3b82f6, #1e3a8a);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            flex-shrink: 0;
+        }
+
+        /* Statistics Box */
+        .stats-box {
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+            padding: 40px;
+            border-radius: 16px;
+            margin: 35px 0;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 25px;
+            position: relative;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 42px;
+            font-weight: 700;
+            color: white;
+            line-height: 1;
+            margin-bottom: 8px;
+        }
+
+        .stat-label {
+            font-size: 13px;
+            color: rgba(255, 255, 255, 0.85);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* Data Table */
+        .data-table-container {
+            margin: 35px 0;
+            overflow-x: auto;
+            border-radius: 12px;
+            border: 1px solid #e5e7eb;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 15px;
+            background: white;
+        }
+
+        th {
+            background: #f3f4f6;
+            color: #1e3a8a;
+            font-weight: 700;
+            padding: 16px;
+            text-align: left;
+            border-bottom: 2px solid #e5e7eb;
+        }
+
+        td {
+            padding: 14px 16px;
+            border-bottom: 1px solid #f3f4f6;
+            color: #4b5563;
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        /* Check Understanding Box */
+        .check-understanding {
+            background: linear-gradient(135deg, #fdfbf7 0%, #f9f5ed 100%);
+            border: 2px solid #B8860B;
+            border-radius: 16px;
+            padding: 32px;
+            margin: 45px 0;
+        }
+
+        .check-understanding .box-label {
+            font-weight: 600;
+            color: #8B6914;
+            margin: 0 0 8px 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .question-item {
+            background: white;
+            border-radius: 12px;
+            padding: 22px 24px;
+            margin-bottom: 16px;
+            border: 1px solid #e8e4dc;
+            position: relative;
+        }
+
+        .question-number {
+            position: absolute;
+            top: -12px;
+            left: 20px;
+            background: #1e3a8a;
+            color: white;
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            font-size: 13px;
+        }
+
+        .reveal-btn {
+            background: #1e3a8a;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-size: 14px;
+            cursor: pointer;
+            transition: background 0.2s ease;
+        }
+
+        .answer-text {
+            display: none;
+            font-size: 14px;
+            color: #1e40af;
+            margin: 14px 0 0 0;
+            padding: 14px;
+            background: #eff6ff;
+            border-radius: 8px;
+            line-height: 1.6;
+        }
+
+        .answer-text.show {
+            display: block;
+        }
+
+        /* Takeaways */
+        .takeaways-box {
+            background: linear-gradient(135deg, #f5f5f5 0%, #e8e8e8 100%);
+            padding: 22px 25px;
+            margin-top: 35px;
+            border-radius: 8px;
+            border: 1px solid #ddd;
+        }
+
+        .takeaways-box .box-label {
+            font-weight: 600;
+            color: #1e3a8a;
+            margin: 0 0 15px 0;
+            font-size: 16px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* References Box */
+        .references-box {
+            margin-top: 40px;
+            padding: 25px;
+            background: #f9f9f9;
+            border-radius: 12px;
+            font-size: 14px;
+            color: #666;
+            border: 1px solid #eee;
+        }
+
+        .references-box h4 {
+            margin: 0 0 15px 0;
+            color: #333;
+            font-size: 16px;
+        }
+
+        .references-box ul {
+            padding-left: 18px;
+            margin: 0;
+        }
+
+        .references-box li {
+            margin-bottom: 8px;
+        }
+
+        /* Footer */
+        .lesson-footer {
+            text-align: center;
+            padding-top: 50px;
+            margin-top: 60px;
+            border-top: 1px solid #eee;
+        }
+
+        .footer-logo {
+            max-width: 140px;
+            height: auto;
+            margin-bottom: 15px;
+            opacity: 0.9;
+        }
+
+        .lesson-footer .brand {
+            color: #1e3a8a;
+            font-weight: 600;
+            margin: 0;
+            font-size: 15px;
+        }
+
+        @media (max-width: 768px) {
+            .lesson-container { padding: 20px 16px; }
+            .toc-list { grid-template-columns: 1fr; }
+            .stats-grid { grid-template-columns: repeat(2, 1fr); }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="lesson-container">
+        <div class="brand-header">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="brand-logo">
+        </div>
+
+        <header class="module-header">
+            <p class="module-label">Module 8: R - Recovery Tracking & Metrics</p>
+            <h1 class="lesson-title">Lesson 8.6: Using Data to Identify Hidden Stressors</h1>
+            <div class="lesson-meta">
+                <span class="meta-item">32 min read</span>
+                <span class="meta-item">Lesson 6 of 7</span>
+            </div>
+        </header>
+
+        <div class="toc-box">
+            <p class="box-label">In This Lesson</p>
+            <ul class="toc-list">
+                <li><a href="#section1"><span class="section-num">1</span>The Detective Mindset</a></li>
+                <li><a href="#section2"><span class="section-num">2</span>Alcohol & The Metabolic Spike</a></li>
+                <li><a href="#section3"><span class="section-num">3</span>Overtraining & HRV Sensitivity</a></li>
+                <li><a href="#section4"><span class="section-num">4</span>Respiratory Rate as Immune Warning</a></li>
+                <li><a href="#section5"><span class="section-num">5</span>Thermal & Environmental Stress</a></li>
+                <li><a href="#section6"><span class="section-num">6</span>Mapping Stressor Signatures</a></li>
+            </ul>
+        </div>
+
+        <div class="objectives-box">
+            <p class="box-label">Learning Objectives</p>
+            <ul>
+                <li>Distinguish between acute and chronic stressors using objective biometric data.</li>
+                <li>Analyze the specific impact of alcohol on Resting Heart Rate (RHR) and sleep architecture.</li>
+                <li>Identify the "Coefficient of Variation" in HRV as a marker for overtraining or systemic stress.</li>
+                <li>Utilize nocturnal Respiratory Rate (RR) deviations to predict subclinical illness.</li>
+                <li>Correlate sleep onset latency and body temperature to environmental disruptors.</li>
+            </ul>
+        </div>
+
+        <div class="welcome-box">
+            <h3>The Power of Objective "Sleep Detective" Work</h3>
+            <p>In the RESTORE Method™, the "R" for Recovery Tracking is where we move beyond generic advice and enter the realm of bio-individual precision. Most clients know they feel "tired," but few can pinpoint the exact variable—be it a glass of wine, a late-night workout, or a subclinical infection—that is sabotaging their recovery. This lesson teaches you how to look at data signatures to identify the hidden stressors that subjective diaries often miss.</p>
+        </div>
+
+        <div class="key-terms-box">
+            <p class="box-label">🔬 Key Metrics for Stress Detection</p>
+            <div class="terms-grid">
+                <div class="term-item">
+                    <p class="term">Parasympathetic Rebound</p>
+                    <p class="definition">The delayed shift from sympathetic to parasympathetic dominance during sleep, often caused by late-night stressors like heavy meals or blue light.</p>
+                </div>
+                <div class="term-item">
+                    <p class="term">HRV Baseline Deviation</p>
+                    <p class="definition">A drop of more than 1 standard deviation from a client's 7-day rolling HRV average, indicating a high systemic load.</p>
+                </div>
+                <div class="term-item">
+                    <p class="term">Metabolic Heart Rate Spike</p>
+                    <p class="definition">An elevated heart rate during the first half of the night, typically indicating the body is processing toxins (alcohol) or large amounts of food.</p>
+                </div>
+                <div class="term-item">
+                    <p class="term">Respiratory Rate (RR)</p>
+                    <p class="definition">The number of breaths per minute; a highly stable nocturnal metric that rises significantly during immune activation.</p>
+                </div>
+            </div>
+        </div>
+
+        <h2 id="section1">The Detective Mindset: Beyond "Good" or "Bad"</h2>
+        <p>As a Sleep Health Coach, your role is to interpret data, not just report it. A client may see a "Sleep Score" of 65 and feel discouraged. Your job is to look at the <span class="highlight">underlying components</span>. Is the score low because of Duration (quantity) or because of RHR and HRV (quality/stress)?</p>
+        
+        <p>A 2021 study involving over 12,000 wearable users demonstrated that while subjective sleep perception often aligns with duration, it frequently misses the <span class="highlight">physiological strain</span> of sub-perceptual stressors. By identifying these "hidden" disruptors, we can implement targeted interventions from the RESTORE Method™—such as Stress Mitigation (S) or Environment Optimization (E)—with surgical precision.</p>
+
+        <div class="stats-box">
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <div class="stat-number">12%</div>
+                    <div class="stat-label">HRV Drop After 1 Drink</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">1.5+</div>
+                    <div class="stat-label">RR Rise (Illness Marker)</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">10bpm</div>
+                    <div class="stat-label">Avg RHR Rise (Alcohol)</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">2x</div>
+                    <div class="stat-label">WASO Increase (Late Meal)</div>
+                </div>
+            </div>
+        </div>
+
+        <h2 id="section2">Alcohol & The Metabolic Spike</h2>
+        <p>Alcohol is perhaps the most common "hidden" stressor because many clients use it as a sedative. While ethanol assists with <span class="highlight">sleep onset</span> (falling asleep), its metabolic byproducts—specifically acetaldehyde—act as potent stimulants. This creates a distinct data signature: a high RHR and suppressed HRV in the first 4-5 hours of the night, followed by a "rebound" where the body struggles to enter REM sleep.</p>
+
+        <p>Research published in <i>JMIR Mhealth Uhealth</i> (2018) found that even low alcohol intake (less than 0.25g/kg) decreased the physiological recovery measured by HRV by <span class="highlight">9.3%</span>. Moderate intake decreased it by 24%, and high intake by a staggering 39.2%. When you see a client's RHR "hammocking" (dropping late in the night rather than early), alcohol or a very late, heavy meal is the primary suspect.</p>
+
+        <div class="case-study">
+            <div class="case-study-header">
+                <div class="case-study-icon">👤</div>
+                <div>
+                    <p class="box-label">Case Study: The "Social" Sleeper</p>
+                    <p class="subtitle">Identifying Alcohol-Induced Autonomic Strain</p>
+                </div>
+            </div>
+            <div class="case-study-content">
+                <div class="patient-profile">
+                    <div class="patient-avatar">M</div>
+                    <div class="patient-info">
+                        <h4>Marcus, 42, Marketing Executive</h4>
+                        <p>Symptoms: Waking up at 3:00 AM "hot and wired," morning brain fog.</p>
+                    </div>
+                </div>
+                <p><strong>The Data:</strong> Marcus’s wearable showed an RHR of 68 bpm (Baseline: 54 bpm) for the first 4 hours of sleep. His HRV was 22 ms (Baseline: 45 ms). His "Sleep Score" remained decent because he slept 8 hours, but his REM sleep was only 12% of the total night.</p>
+                <p><strong>The Intervention:</strong> Marcus believed his 2 nightly glasses of red wine helped him relax. We implemented a "Rule of 3": no alcohol within 3 hours of sleep. </p>
+                <p><strong>Outcome:</strong> Within 48 hours, Marcus’s RHR dropped to 56 bpm in the first hour of sleep, and his REM sleep increased to 22%. His 3:00 AM wakeups disappeared.</p>
+            </div>
+        </div>
+
+        <h2 id="section3">Overtraining & HRV Sensitivity</h2>
+        <p>For athletic clients, the hidden stressor is often <span class="highlight">non-functional overreaching</span>. Tracking HRV is essential here, but we must look at the <i>trend</i>. A single day of low HRV is expected after a hard session. However, a "flat" HRV (low variability in the HRV score itself) or a consistent downward trend indicates the central nervous system (CNS) is no longer adapting to the load.</p>
+
+        <p>A specific metric to watch is the <strong>Coefficient of Variation (CV)</strong> of HRV. A 2017 study found that a <i>higher</i> CV (more day-to-day fluctuation) actually indicated better fitness and resilience, while a <i>lower</i> CV (stagnant, low HRV) was a precursor to injury and burnout. If a client's HRV is consistently 15% below their 21-day average, you must recommend a "deload" week or focus on the "S" (Stress Mitigation) phase of RESTORE.</p>
+
+        <h2 id="section4">Respiratory Rate as Immune Warning</h2>
+        <p>Nocturnal Respiratory Rate (RR) is one of the most stable metrics in human physiology. For most healthy adults, it fluctuates by less than 0.5 breaths per minute (brpm) night-to-night. When RR rises by <span class="highlight">1.5 to 2.0 brpm</span> above baseline, it is a high-sensitivity indicator of immune activation.</p>
+
+        <p>Data from the COVID-19 pandemic highlighted that RR often spiked 2-3 days <i>before</i> the onset of subjective symptoms (fever, cough). As a coach, if you see a sudden, unexplained jump in RR alongside a drop in HRV, you should advise the client to prioritize hydration and rest, as their body is likely fighting a subclinical infection.</p>
+
+        <h2 id="section5">Thermal & Environmental Stress</h2>
+        <p>Sometimes the stressor is the room itself. If a client has a high <span class="highlight">Wake After Sleep Onset (WASO)</span>—meaning they are awake for more than 20-30 minutes during the night—but their RHR and HRV are normal, the stressor is likely environmental. </p>
+        
+        <p><strong>Common environmental data signatures:</strong>
+        <ul>
+            <li><strong>Temperature:</strong> If skin temperature rises mid-night, it often correlates with a spike in RHR as the body works to thermoregulate. This suggests the room is too warm (ideal is 65°F/18°C) or the bedding is non-breathable.</li>
+            <li><strong>Noise:</strong> Micro-arousals (detected as "Restlessness" in data) without full wakefulness often indicate acoustic pollution.</li>
+            <li><strong>Blue Light:</strong> High "Sleep Onset Latency" (taking >30 mins to fall asleep) despite a low RHR suggests a lack of melatonin pressure, usually due to evening light exposure.</li>
+        </ul></p>
+
+        <h2 id="section6">Mapping Stressor Signatures</h2>
+        <p>To become a master practitioner, use the following table to categorize data anomalies during your client check-ins.</p>
+
+        <div class="data-table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Metric Trend</th>
+                        <th>Suspected Hidden Stressor</th>
+                        <th>RESTORE Phase Intervention</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>High RHR (First Half) + Low HRV</td>
+                        <td>Alcohol or Large Late Meal</td>
+                        <td>O - Metabolic Support</td>
+                    </tr>
+                    <tr>
+                        <td>Sudden Rise in Respiratory Rate</td>
+                        <td>Subclinical Illness / Infection</td>
+                        <td>R - Recovery Tracking (Rest)</td>
+                    </tr>
+                    <tr>
+                        <td>High Sleep Latency + Low REM</td>
+                        <td>Blue Light / Evening Cortisol</td>
+                        <td>R - Rhythm Alignment</td>
+                    </tr>
+                    <tr>
+                        <td>Consistently Low HRV + High RHR</td>
+                        <td>Chronic Stress / Overtraining</td>
+                        <td>S - Stress Mitigation</td>
+                    </tr>
+                    <tr>
+                        <td>High Restlessness + Skin Temp Spike</td>
+                        <td>Warm Room / Synthetic Bedding</td>
+                        <td>E - Environment Optimization</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="check-understanding">
+            <p class="box-label">Check Your Understanding</p>
+            
+            <div class="question-item">
+                <div class="question-number">1</div>
+                <p class="question-text">A client's data shows a "hammock" shape in their heart rate—it stays high for the first 5 hours and only reaches baseline at 5:00 AM. What is the most likely hidden stressor?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-text">The most likely culprit is alcohol consumption or a very heavy, high-protein/high-fat meal late in the evening. This causes "Metabolic Heart Rate Spike" where the heart must work harder to assist in detoxification and digestion, preventing early-night parasympathetic dominance.</div>
+            </div>
+
+            <div class="question-item">
+                <div class="question-number">2</div>
+                <p class="question-text">Why is nocturnal Respiratory Rate (RR) considered a "early warning system" for coaches?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-text">Because RR is extremely stable. A rise of 1.5-2.0 breaths per minute over baseline often precedes the physical symptoms of an illness by 48-72 hours, allowing for early intervention (rest, hydration, immune support).</div>
+            </div>
+        </div>
+
+        <div class="takeaways-box">
+            <p class="box-label">Key Takeaways</p>
+            <ul>
+                <li><strong>Data as a Detective:</strong> Use metrics to validate or challenge a client's subjective experience.</li>
+                <li><strong>The Alcohol Signature:</strong> Alcohol suppresses HRV and raises RHR, primarily in the first half of the night.</li>
+                <li><strong>The Stability of RR:</strong> Watch Respiratory Rate for signs of immune system strain or illness.</li>
+                <li><strong>Environmental Indicators:</strong> High WASO and skin temperature fluctuations point toward bedroom environment issues.</li>
+                <li><strong>Context is King:</strong> Never interpret a single data point in isolation; look for 7-day and 21-day trends.</li>
+            </ul>
+        </div>
+
+        <div class="references-box">
+            <h4>References & Further Reading</h4>
+            <ul>
+                <li>Pietilä, J., et al. (2018). "Acute Effect of Alcohol Intake on Cardiovascular Autonomic Regulation During the First Hours of Sleep." <i>JMIR Mhealth Uhealth</i>.</li>
+                <li>Plews, D. J., et al. (2017). "Heart Rate Variability and Training Intensity Distribution in Intermediate- and Long-Distance Runners." <i>International Journal of Sports Physiology and Performance</i>.</li>
+                <li>Miller, D. J., et al. (2020). "Respiratory Rate Reporting During the COVID-19 Pandemic." <i>Journal of Clinical Sleep Medicine</i>.</li>
+                <li>Capodilupo, E. R., & Miller, D. J. (2021). "The Relationship Between Wearable Data and Subjective Sleep Quality in a Large Cohort." <i>Sleep Science and Practice</i>.</li>
+                <li>Natale, V., et al. (2022). "The Impact of Environmental Temperature on Nocturnal Heart Rate and Recovery Metrics." <i>Journal of Thermal Biology</i>.</li>
+            </ul>
+        </div>
+
+        <footer class="lesson-footer">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="footer-logo">
+            <p class="brand">AccrediPro Academy © 2024</p>
+            <p class="copyright">Certified Sleep Health Coach Program | Module 8: Recovery Tracking</p>
+        </footer>
+    </div>
+</body>
+
+</html>

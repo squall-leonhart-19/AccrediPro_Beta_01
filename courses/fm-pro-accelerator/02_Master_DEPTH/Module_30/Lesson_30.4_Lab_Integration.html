@@ -1,0 +1,1369 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lesson 30.4: Lab Data Integration for Case Analysis</title>
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Georgia, 'Times New Roman', serif;
+            line-height: 1.8;
+            color: #2d2d2d;
+            background: #f8f6f3;
+            margin: 0;
+            padding: 0;
+        }
+
+        .lesson-container {
+            max-width: 860px;
+            margin: 0 auto;
+            padding: 40px 30px;
+            background: #ffffff;
+            min-height: 100vh;
+            box-shadow: 0 0 60px rgba(0, 0, 0, 0.08);
+        }
+
+        .track-badge {
+            background: linear-gradient(135deg, #B8860B, #D4A84B);
+            color: #fff;
+            font-size: 11px;
+            padding: 6px 16px;
+            border-radius: 20px;
+            display: inline-block;
+            margin-bottom: 15px;
+            font-weight: 600;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+        }
+
+        .module-header {
+            background: linear-gradient(135deg, #722F37 0%, #8B3A42 100%);
+            padding: 35px 35px 30px;
+            border-radius: 16px;
+            margin-bottom: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .module-header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, #B8860B, #D4A84B, #B8860B);
+        }
+
+        .module-label {
+            margin: 0;
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.75);
+            text-transform: uppercase;
+            letter-spacing: 2.5px;
+            font-weight: 500;
+        }
+
+        .lesson-title {
+            margin: 10px 0 0 0;
+            font-size: 28px;
+            color: #ffffff;
+            font-weight: 700;
+            line-height: 1.3;
+        }
+
+        .lesson-meta {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+            padding-top: 18px;
+            border-top: 1px solid rgba(255, 255, 255, 0.15);
+            flex-wrap: wrap;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.85);
+            background: rgba(255, 255, 255, 0.1);
+            padding: 5px 12px;
+            border-radius: 4px;
+        }
+
+        .toc-box {
+            background: linear-gradient(135deg, #fafafa 0%, #f5f5f5 100%);
+            border-radius: 14px;
+            padding: 24px 28px;
+            margin-bottom: 35px;
+            border: 1px solid #e8e8e8;
+        }
+
+        .toc-box .box-label {
+            font-weight: 600;
+            color: #722F37;
+            margin: 0 0 18px 0;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .toc-list {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px 24px;
+        }
+
+        .toc-list a {
+            display: flex;
+            align-items: center;
+            padding: 8px 12px;
+            color: #555;
+            text-decoration: none;
+            font-size: 14px;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+        }
+
+        .toc-list a:hover {
+            background: white;
+            color: #722F37;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+        }
+
+        .toc-list .section-num {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 26px;
+            height: 26px;
+            background: #722F37;
+            color: white;
+            font-weight: 600;
+            font-size: 11px;
+            border-radius: 6px;
+            margin-right: 12px;
+            flex-shrink: 0;
+        }
+
+        .welcome-box {
+            background: linear-gradient(135deg, #fdfcfa 0%, #f9f6f1 100%);
+            padding: 30px 35px;
+            border-radius: 14px;
+            margin-bottom: 40px;
+            border: 1px solid #e8e4dc;
+        }
+
+        .welcome-box h3 {
+            margin: 0 0 15px 0;
+            font-size: 20px;
+            color: #722F37;
+            font-weight: 600;
+        }
+
+        .welcome-box p {
+            margin: 0;
+            font-size: 17px;
+            line-height: 1.8;
+            color: #444;
+        }
+
+        .objectives-box {
+            background: #fffef5;
+            border: 2px solid #B8860B;
+            border-radius: 14px;
+            padding: 30px 35px;
+            margin-bottom: 40px;
+        }
+
+        .objectives-box .box-label {
+            font-weight: 600;
+            color: #8B6914;
+            margin: 0 0 18px 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .objectives-box .box-label::before {
+            content: '🎯';
+            font-size: 18px;
+        }
+
+        .objectives-box ul {
+            margin: 0;
+            padding-left: 22px;
+        }
+
+        .objectives-box li {
+            margin-bottom: 14px;
+            font-size: 16px;
+            line-height: 1.7;
+        }
+
+        .highlight {
+            background: linear-gradient(180deg, transparent 60%, #FFF59D 60%);
+            padding: 0 4px;
+            font-weight: 500;
+        }
+
+        h2 {
+            font-size: 24px;
+            color: #722F37;
+            margin: 50px 0 20px 0;
+            font-weight: 600;
+            position: relative;
+            padding-bottom: 12px;
+        }
+
+        h2::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 60px;
+            height: 3px;
+            background: #B8860B;
+        }
+
+        h3 {
+            font-size: 20px;
+            color: #722F37;
+            margin: 35px 0 15px 0;
+            font-weight: 600;
+        }
+
+        p {
+            font-size: 17px;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        .content-list {
+            font-size: 17px;
+            margin: 20px 0;
+            padding-left: 24px;
+        }
+
+        .content-list li {
+            margin-bottom: 14px;
+            line-height: 1.7;
+        }
+
+        .case-study {
+            background: linear-gradient(135deg, #f8f9fb 0%, #f0f2f5 100%);
+            border-radius: 16px;
+            padding: 0;
+            margin-bottom: 40px;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+        }
+
+        .case-study-header {
+            background: linear-gradient(135deg, #722F37 0%, #8B3A42 100%);
+            padding: 20px 30px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .case-study-icon {
+            width: 45px;
+            height: 45px;
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+        }
+
+        .case-study-header .box-label {
+            font-weight: 600;
+            color: #ffffff;
+            margin: 0;
+            font-size: 16px;
+        }
+
+        .case-study-header .subtitle {
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 13px;
+            margin: 4px 0 0 0;
+        }
+
+        .case-study-content {
+            padding: 28px 30px;
+        }
+
+        .case-study-content p {
+            font-size: 16px;
+            margin-bottom: 18px;
+        }
+
+        .case-study-content ul {
+            margin: 18px 0;
+            padding-left: 22px;
+        }
+
+        .case-study-content li {
+            margin-bottom: 10px;
+            font-size: 15px;
+        }
+
+        .patient-profile {
+            display: flex;
+            align-items: center;
+            gap: 18px;
+            padding: 18px 22px;
+            background: white;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            border: 1px solid #e5e5e5;
+        }
+
+        .patient-avatar {
+            width: 55px;
+            height: 55px;
+            background: linear-gradient(135deg, #B8860B, #D4A84B);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            flex-shrink: 0;
+        }
+
+        .patient-info h4 {
+            margin: 0 0 5px 0;
+            font-size: 17px;
+            color: #1a1a1a;
+        }
+
+        .patient-info p {
+            margin: 0;
+            font-size: 14px;
+            color: #666;
+        }
+
+        .protocol-card {
+            background: linear-gradient(to right, #fafafa, #ffffff);
+            border-left: 5px solid #722F37;
+            padding: 24px 28px;
+            margin-bottom: 18px;
+            border-radius: 0 14px 14px 0;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.04);
+        }
+
+        .protocol-card .protocol-title {
+            font-weight: 700;
+            color: #722F37;
+            margin: 0 0 10px 0;
+            font-size: 17px;
+        }
+
+        .protocol-card .protocol-text {
+            margin: 0;
+            font-size: 15px;
+            line-height: 1.7;
+        }
+
+        .protocol-card ul {
+            margin: 12px 0 0 0;
+            padding-left: 20px;
+            font-size: 14px;
+        }
+
+        .protocol-card li {
+            margin-bottom: 8px;
+        }
+
+        .lab-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 30px 0;
+            font-size: 14px;
+        }
+
+        .lab-table th {
+            background: #722F37;
+            color: white;
+            padding: 12px 16px;
+            text-align: left;
+            font-weight: 600;
+        }
+
+        .lab-table td {
+            padding: 12px 16px;
+            border-bottom: 1px solid #e0e0e0;
+            vertical-align: top;
+        }
+
+        .lab-table tr:nth-child(even) {
+            background: #f9f9f9;
+        }
+
+        .lab-table .flag-low {
+            color: #1565C0;
+            font-weight: 600;
+        }
+
+        .lab-table .flag-high {
+            color: #C62828;
+            font-weight: 600;
+        }
+
+        .lab-table .flag-optimal {
+            color: #2E7D32;
+            font-weight: 600;
+        }
+
+        .lab-table .interpretation {
+            font-size: 13px;
+            color: #555;
+            margin-top: 6px;
+        }
+
+        .alert-box {
+            padding: 26px 30px;
+            margin: 35px 0;
+            border-radius: 0 14px 14px 0;
+            border-left: 5px solid;
+        }
+
+        .alert-box .alert-label {
+            font-weight: 600;
+            margin: 0 0 12px 0;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .alert-box p:last-child {
+            margin: 0;
+            font-size: 16px;
+            line-height: 1.7;
+        }
+
+        .alert-box.warning {
+            background: #fff8e6;
+            border-left-color: #ff9800;
+        }
+
+        .alert-box.warning .alert-label {
+            color: #e65100;
+        }
+
+        .alert-box.pro-tip {
+            background: #f0f4ff;
+            border-left-color: #3f51b5;
+        }
+
+        .alert-box.pro-tip .alert-label {
+            color: #1a237e;
+        }
+
+        .alert-box.clinical-pearl {
+            background: #fff3e0;
+            border-left-color: #ff6f00;
+        }
+
+        .alert-box.clinical-pearl .alert-label {
+            color: #e65100;
+        }
+
+        .coach-voice {
+            background: linear-gradient(135deg, #fdf8f0 0%, #faf3e8 100%);
+            border-radius: 14px;
+            padding: 28px 30px;
+            margin: 35px 0;
+            border: 1px solid #e8dfd0;
+            position: relative;
+        }
+
+        .coach-voice::before {
+            content: '"';
+            font-size: 80px;
+            color: #B8860B;
+            opacity: 0.3;
+            position: absolute;
+            top: -10px;
+            left: 15px;
+            font-family: Georgia, serif;
+        }
+
+        .coach-voice .coach-name {
+            font-weight: 600;
+            color: #722F37;
+            font-size: 14px;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .coach-voice .coach-name::before {
+            content: '👩‍🏫';
+            font-size: 20px;
+        }
+
+        .coach-voice p {
+            font-style: italic;
+            color: #555;
+            margin: 0;
+            padding-left: 20px;
+            font-size: 16px;
+            line-height: 1.8;
+        }
+
+        .key-terms-box {
+            background: linear-gradient(135deg, #f0f4f8 0%, #e8ecf1 100%);
+            border-radius: 14px;
+            padding: 28px 30px;
+            margin: 40px 0;
+            border: 1px solid #d8dce0;
+        }
+
+        .key-terms-box .box-label {
+            font-weight: 600;
+            color: #722F37;
+            margin: 0 0 18px 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .terms-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 16px;
+        }
+
+        .term-item {
+            background: white;
+            padding: 16px 18px;
+            border-radius: 10px;
+            border-left: 4px solid #B8860B;
+        }
+
+        .term-item .term {
+            font-weight: 700;
+            color: #722F37;
+            font-size: 15px;
+            margin: 0 0 6px 0;
+        }
+
+        .term-item .definition {
+            font-size: 14px;
+            color: #555;
+            margin: 0;
+            line-height: 1.6;
+        }
+
+        .studio-exercise {
+            background: linear-gradient(135deg, #e8f5e9 0%, #f1f8e9 100%);
+            border: 2px solid #4CAF50;
+            border-radius: 16px;
+            padding: 30px;
+            margin: 40px 0;
+        }
+
+        .studio-exercise .box-label {
+            font-weight: 600;
+            color: #2e7d32;
+            margin: 0 0 18px 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .studio-exercise .box-label::before {
+            content: '🎯';
+            font-size: 18px;
+        }
+
+        .studio-exercise h4 {
+            color: #1b5e20;
+            margin: 0 0 15px 0;
+            font-size: 18px;
+        }
+
+        .studio-exercise p {
+            font-size: 15px;
+            color: #333;
+        }
+
+        .studio-exercise ol,
+        .studio-exercise ul {
+            font-size: 15px;
+            padding-left: 22px;
+        }
+
+        .studio-exercise li {
+            margin-bottom: 12px;
+        }
+
+        .check-understanding {
+            background: linear-gradient(135deg, #fdfbf7 0%, #f9f5ed 100%);
+            border: 2px solid #B8860B;
+            border-radius: 16px;
+            padding: 32px;
+            margin: 45px 0;
+        }
+
+        .check-understanding .box-label {
+            font-weight: 600;
+            color: #8B6914;
+            margin: 0 0 8px 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .check-understanding .box-subtitle {
+            font-size: 15px;
+            color: #666;
+            margin: 0 0 24px 0;
+        }
+
+        .question-item {
+            background: white;
+            border-radius: 12px;
+            padding: 22px 24px;
+            margin-bottom: 16px;
+            border: 1px solid #e8e4dc;
+            position: relative;
+        }
+
+        .question-number {
+            position: absolute;
+            top: -12px;
+            left: 20px;
+            background: #722F37;
+            color: white;
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            font-size: 13px;
+        }
+
+        .question-text {
+            font-size: 16px;
+            color: #333;
+            margin: 0 0 16px 0;
+            line-height: 1.6;
+            padding-top: 4px;
+        }
+
+        .reveal-btn {
+            background: #722F37;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-size: 14px;
+            cursor: pointer;
+            font-family: inherit;
+        }
+
+        .reveal-btn:hover {
+            background: #5a252c;
+        }
+
+        .answer-text {
+            display: none;
+            font-size: 14px;
+            color: #2e7d32;
+            margin: 14px 0 0 0;
+            padding: 14px;
+            background: #f0f8f0;
+            border-radius: 8px;
+            line-height: 1.6;
+        }
+
+        .answer-text.show {
+            display: block;
+        }
+
+        .takeaways-box {
+            background: linear-gradient(135deg, #722F37 0%, #8B3A42 100%);
+            padding: 35px;
+            margin-top: 50px;
+            border-radius: 16px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .takeaways-box .box-label {
+            font-weight: 600;
+            color: #FFF59D;
+            margin: 0 0 22px 0;
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .takeaways-box .box-label::before {
+            content: '✨';
+            font-size: 18px;
+        }
+
+        .takeaways-box ul {
+            margin: 0;
+            padding-left: 22px;
+        }
+
+        .takeaways-box li {
+            margin-bottom: 16px;
+            font-size: 16px;
+            line-height: 1.7;
+            color: #ffffff;
+        }
+
+        .references-box {
+            background: #f8f9fa;
+            border-radius: 14px;
+            padding: 30px;
+            margin-top: 40px;
+        }
+
+        .references-box .box-label {
+            font-weight: 600;
+            color: #722F37;
+            margin: 0 0 20px 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .references-box ol {
+            margin: 0;
+            padding-left: 22px;
+            font-size: 13px;
+            color: #666;
+        }
+
+        .references-box li {
+            margin-bottom: 10px;
+            line-height: 1.5;
+        }
+
+        .lesson-footer {
+            margin-top: 50px;
+            padding-top: 30px;
+            border-top: 2px solid #722F37;
+            text-align: center;
+        }
+
+        .lesson-footer .brand {
+            color: #722F37;
+            font-weight: 600;
+            margin: 0;
+            font-size: 15px;
+        }
+
+        .lesson-footer .copyright {
+            color: #888;
+            font-size: 13px;
+            margin: 10px 0 0 0;
+        }
+
+        @media (max-width: 768px) {
+            .lesson-container {
+                padding: 25px 20px;
+            }
+
+            .module-header {
+                padding: 30px 25px;
+            }
+
+            .lesson-title {
+                font-size: 26px;
+            }
+
+            .toc-list {
+                grid-template-columns: 1fr;
+            }
+
+            .lab-table {
+                font-size: 12px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="lesson-container">
+
+        <header class="module-header">
+            <span class="track-badge">🎓 MASTER DEPTH TRACK</span>
+            <p class="module-label">Pro Accelerator • Master DEPTH • Module 30: Case Analysis Mastery</p>
+            <h1 class="lesson-title">Lesson 30.4: Lab Data Integration for Case Analysis</h1>
+            <div class="lesson-meta">
+                <span class="meta-item">⏱️ 22 min read</span>
+                <span class="meta-item">📊 Lesson 4 of 8</span>
+                <span class="meta-item">🔬 Lab Mastery</span>
+            </div>
+        </header>
+
+        <nav class="toc-box">
+            <p class="box-label">In This Lesson</p>
+            <ul class="toc-list">
+                <li><a href="#optimal-vs-normal"><span class="section-num">01</span>Optimal vs. Normal Ranges</a></li>
+                <li><a href="#pattern-labs"><span class="section-num">02</span>Lab Patterns by Master Pattern</a></li>
+                <li><a href="#case-labs"><span class="section-num">03</span>Complete Lab Case Analysis</a></li>
+                <li><a href="#presenting-labs"><span class="section-num">04</span>Presenting Labs in Cases</a></li>
+                <li><a href="#common-traps"><span class="section-num">05</span>Common Lab Interpretation Traps</a></li>
+                <li><a href="#studio"><span class="section-num">06</span>Studio: Lab Integration</a></li>
+            </ul>
+        </nav>
+
+        <div class="welcome-box">
+            <h3>Labs Tell Stories</h3>
+            <p>Laboratory data is powerful—but only when <span class="highlight">integrated with clinical
+                    context</span>. A lab value in isolation means little; the same value in the context of symptoms,
+                timeline, and other markers can reveal root causes. This lesson teaches you to read labs like an expert:
+                seeing patterns, understanding what's "optimal" versus merely "normal," and weaving lab findings into
+                compelling case narratives that demonstrate your clinical reasoning.</p>
+        </div>
+
+        <div class="objectives-box">
+            <p class="box-label">What You'll Master</p>
+            <ul>
+                <li>The difference between <span class="highlight">optimal ranges</span> and conventional reference
+                    ranges</li>
+                <li>Lab patterns associated with each of the 7 Master Patterns</li>
+                <li>How to integrate multiple lab findings into <strong>coherent clinical stories</strong></li>
+                <li>Presenting lab data in case analysis: what to include, what to skip</li>
+                <li>Common interpretation traps that lead to misdiagnosis</li>
+            </ul>
+        </div>
+
+        <div class="coach-voice">
+            <p class="coach-name">Sarah M., Lead Instructor</p>
+            <p>I once had a client whose TSH was 2.4—"normal" by conventional standards. She was exhausted, gaining
+                weight, constipated, losing hair. Her conventional doctor said thyroid was fine. When I reviewed her old
+                labs, I saw her TSH had been 0.9 three years earlier. A shift from 0.9 to 2.4 is significant for HER,
+                even if 2.4 is technically in range. That's when I learned: labs are only meaningful in context.
+                Individual baselines matter more than population references.</p>
+        </div>
+
+        <h2 id="optimal-vs-normal">Optimal vs. Normal Reference Ranges</h2>
+
+        <p>Conventional lab ranges are based on <span class="highlight">population statistics</span>—the range that
+            includes 95% of the people tested. But the "normal" population includes many sick people. Optimal ranges
+            represent where we see the <strong>best health outcomes</strong>.</p>
+
+        <div class="protocol-card">
+            <p class="protocol-title">Key Optimal Ranges (Functional Medicine Perspective)</p>
+            <table class="lab-table">
+                <tr>
+                    <th>Marker</th>
+                    <th>Conventional Range</th>
+                    <th>Optimal Range</th>
+                    <th>Clinical Significance</th>
+                </tr>
+                <tr>
+                    <td><strong>TSH</strong></td>
+                    <td>0.45-4.5 mIU/L</td>
+                    <td class="flag-optimal">1.0-2.0 mIU/L</td>
+                    <td class="interpretation">TSH >2.5 often symptomatic; personal baseline shift is key</td>
+                </tr>
+                <tr>
+                    <td><strong>Free T3</strong></td>
+                    <td>2.0-4.4 pg/mL</td>
+                    <td class="flag-optimal">3.0-4.0 pg/mL</td>
+                    <td class="interpretation">Low-normal = poor T4→T3 conversion; often causes fatigue</td>
+                </tr>
+                <tr>
+                    <td><strong>Fasting Glucose</strong></td>
+                    <td>70-100 mg/dL</td>
+                    <td class="flag-optimal">75-86 mg/dL</td>
+                    <td class="interpretation">>90 suggests early insulin resistance</td>
+                </tr>
+                <tr>
+                    <td><strong>Fasting Insulin</strong></td>
+                    <td>2.6-24.9 µIU/mL</td>
+                    <td class="flag-optimal">2-6 µIU/mL</td>
+                    <td class="interpretation">>7 suggests insulin resistance even with normal glucose</td>
+                </tr>
+                <tr>
+                    <td><strong>HbA1c</strong></td>
+                    <td>
+                        <5.7%< /td>
+                    <td class="flag-optimal">
+                        <5.3%< /td>
+                    <td class="interpretation">5.4-5.6 = pre-pre-diabetes; dysfunction already present</td>
+                </tr>
+                <tr>
+                    <td><strong>Vitamin D (25-OH)</strong></td>
+                    <td>30-100 ng/mL</td>
+                    <td class="flag-optimal">50-70 ng/mL</td>
+                    <td class="interpretation">30-40 is insufficient for immune/metabolic function</td>
+                </tr>
+                <tr>
+                    <td><strong>Ferritin</strong></td>
+                    <td>15-150 ng/mL (women)</td>
+                    <td class="flag-optimal">50-100 ng/mL</td>
+                    <td class="interpretation">
+                        <30 often symptomatic fatigue;>150 suggests inflammation
+                    </td>
+                </tr>
+                <tr>
+                    <td><strong>hs-CRP</strong></td>
+                    <td>
+                        <3.0 mg/L</td>
+                    <td class="flag-optimal">
+                        <1.0 mg/L</td>
+                    <td class="interpretation">1.0-3.0 = moderate inflammation; >1 increases CVD risk</td>
+                </tr>
+                <tr>
+                    <td><strong>Homocysteine</strong></td>
+                    <td>
+                        <15 µmol/L</td>
+                    <td class="flag-optimal">
+                        <7 µmol/L</td>
+                    <td class="interpretation">>8 suggests methylation issues; >12 serious CVD risk</td>
+                </tr>
+            </table>
+        </div>
+
+        <div class="alert-box pro-tip">
+            <p class="alert-label">Pro Tip: Personal Baselines</p>
+            <p>Always try to obtain prior lab results. A TSH that went from 1.0 to 2.8 over two years tells a different
+                story than a stable 2.8. Changes within "normal" range often precede frank disease. Track trajectory,
+                not just snapshots.</p>
+        </div>
+
+        <h2 id="pattern-labs">Lab Patterns by Master Pattern</h2>
+
+        <p>Each of the 7 Master Patterns has characteristic lab signatures. Learn to recognize them:</p>
+
+        <div class="protocol-card">
+            <p class="protocol-title">Pattern 1: HPA Axis Crash — Lab Clues</p>
+            <ul>
+                <li><strong>Salivary cortisol:</strong> Flattened curve—low AM (should be highest), normal/high PM
+                    (should be lowest)</li>
+                <li><strong>DHEA-S:</strong> Often low (adrenal exhaustion)</li>
+                <li><strong>Reverse T3:</strong> Elevated (stress slows thyroid conversion)</li>
+                <li><strong>Fasting glucose:</strong> May be low-normal or reactive (cortisol affects blood sugar)</li>
+                <li><strong>Sodium/potassium:</strong> Sodium may be low-normal (aldosterone affected)</li>
+            </ul>
+        </div>
+
+        <div class="protocol-card">
+            <p class="protocol-title">Pattern 2: Inflammatory Cascade — Lab Clues</p>
+            <ul>
+                <li><strong>hs-CRP:</strong> Elevated (>1.0, often >3.0)</li>
+                <li><strong>ESR:</strong> May be elevated</li>
+                <li><strong>Homocysteine:</strong> Often elevated (>8)</li>
+                <li><strong>Ferritin:</strong> Can be elevated as acute phase reactant (even with low iron)</li>
+                <li><strong>Vitamin D:</strong> Often low (consumed by immune activation)</li>
+                <li><strong>Omega-3 Index:</strong> Low (<4%)< /li>
+            </ul>
+        </div>
+
+        <div class="protocol-card">
+            <p class="protocol-title">Pattern 3: Gut-Origin — Lab Clues</p>
+            <ul>
+                <li><strong>B12:</strong> Low or low-normal (malabsorption)</li>
+                <li><strong>Iron/ferritin:</strong> Low despite adequate intake</li>
+                <li><strong>Vitamin D:</strong> Low (fat-soluble vitamin malabsorption)</li>
+                <li><strong>Zonulin:</strong> Elevated (leaky gut marker)</li>
+                <li><strong>Food sensitivity panels:</strong> Multiple new sensitivities</li>
+                <li><strong>SIBO breath test:</strong> Positive hydrogen and/or methane</li>
+                <li><strong>Stool testing:</strong> Dysbiosis, low beneficial flora, elevated inflammatory markers</li>
+            </ul>
+        </div>
+
+        <div class="protocol-card">
+            <p class="protocol-title">Pattern 4: Metabolic Dysfunction — Lab Clues</p>
+            <ul>
+                <li><strong>Fasting insulin:</strong> Elevated (>7, often >12)</li>
+                <li><strong>HOMA-IR:</strong> Elevated (>2.0)</li>
+                <li><strong>HbA1c:</strong> Creeping up (5.5-6.4 = pre-diabetes)</li>
+                <li><strong>Triglycerides:</strong> Elevated (>100)</li>
+                <li><strong>HDL:</strong> Low (<50 women, <40 men)</li>
+                <li><strong>TG:HDL ratio:</strong> >2 suggests insulin resistance; >3 confirms it</li>
+                <li><strong>Uric acid:</strong> Elevated (fructose metabolism, metabolic syndrome marker)</li>
+                <li><strong>Liver enzymes:</strong> ALT may be elevated (early fatty liver)</li>
+            </ul>
+        </div>
+
+        <div class="protocol-card">
+            <p class="protocol-title">Pattern 5: Hormonal Imbalance — Lab Clues</p>
+            <ul>
+                <li><strong>DUTCH test:</strong> Estrogen:progesterone imbalance, estrogen metabolism issues</li>
+                <li><strong>Free testosterone:</strong> Low (men or women)</li>
+                <li><strong>SHBG:</strong> May be high (insulin/liver issues) or low (PCOS pattern)</li>
+                <li><strong>FSH/LH:</strong> Ratio abnormal in PCOS; elevated in perimenopause</li>
+                <li><strong>Prolactin:</strong> Elevated (stress, pituitary issues)</li>
+                <li><strong>Morning cortisol:</strong> Affects sex hormone production (HPA affects HPG)</li>
+            </ul>
+        </div>
+
+        <div class="protocol-card">
+            <p class="protocol-title">Pattern 6: Autoimmune Trigger — Lab Clues</p>
+            <ul>
+                <li><strong>Antibodies:</strong> TPO, TG (thyroid), ANA (general), RF (rheumatoid), anti-CCP, etc.</li>
+                <li><strong>hs-CRP:</strong> Elevated</li>
+                <li><strong>ESR:</strong> Elevated</li>
+                <li><strong>Vitamin D:</strong> Often very low (<30)< /li>
+                <li><strong>GI markers:</strong> Zonulin elevated, gut inflammation (autoimmune often gut-linked)</li>
+            </ul>
+        </div>
+
+        <div class="protocol-card">
+            <p class="protocol-title">Pattern 7: Toxicity — Lab Clues</p>
+            <ul>
+                <li><strong>Heavy metals (provoked):</strong> Elevated lead, mercury, cadmium, arsenic</li>
+                <li><strong>Mycotoxins (urine):</strong> Elevated ochratoxin, trichothecenes, gliotoxin, etc.</li>
+                <li><strong>Liver enzymes:</strong> Elevated without other explanation</li>
+                <li><strong>Glutathione markers:</strong> Depleted (Organic Acids—pyroglutamic acid)</li>
+                <li><strong>Organic acids:</strong> Impaired phase I/II detoxification markers</li>
+            </ul>
+        </div>
+
+        <h2 id="case-labs">Complete Lab Case Analysis</h2>
+
+        <p>Let's walk through a full lab integration for a complex case:</p>
+
+        <div class="case-study">
+            <div class="case-study-header">
+                <div class="case-study-icon">🔬</div>
+                <div>
+                    <p class="box-label">Integrated Lab Case Study</p>
+                    <p class="subtitle">Reading the full picture</p>
+                </div>
+            </div>
+            <div class="case-study-content">
+                <div class="patient-profile">
+                    <div class="patient-avatar">👩</div>
+                    <div class="patient-info">
+                        <h4>Diane, 48 years old</h4>
+                        <p>Presenting: Fatigue, weight gain, brain fog, joint pain, new anxiety</p>
+                    </div>
+                </div>
+
+                <p><strong>Clinical picture:</strong> Fatigue worsening over 3 years. Weight gain 25 lbs despite
+                    watching diet. Brain fog daily—can't concentrate at work. Morning joint stiffness lasting 30+
+                    minutes. New anxiety in the past year. Sleep: wakes feeling unrefreshed. GI: bloating, constipation.
+                </p>
+
+                <p><strong>Lab Results:</strong></p>
+                <table class="lab-table">
+                    <tr>
+                        <th>Marker</th>
+                        <th>Result</th>
+                        <th>Ref Range</th>
+                        <th>Interpretation</th>
+                    </tr>
+                    <tr>
+                        <td>TSH</td>
+                        <td class="flag-high">3.8 mIU/L</td>
+                        <td>0.45-4.5</td>
+                        <td class="interpretation">"Normal" but suboptimal; symptoms suggest thyroid contribution</td>
+                    </tr>
+                    <tr>
+                        <td>Free T4</td>
+                        <td>1.1 ng/dL</td>
+                        <td>0.8-1.8</td>
+                        <td class="interpretation">Mid-range</td>
+                    </tr>
+                    <tr>
+                        <td>Free T3</td>
+                        <td class="flag-low">2.3 pg/mL</td>
+                        <td>2.0-4.4</td>
+                        <td class="interpretation">Low-normal—poor T4→T3 conversion</td>
+                    </tr>
+                    <tr>
+                        <td>TPO Antibodies</td>
+                        <td class="flag-high">285 IU/mL</td>
+                        <td>
+                            <35< /td>
+                        <td class="interpretation">Hashimoto's—autoimmune thyroid confirmed</td>
+                    </tr>
+                    <tr>
+                        <td>hs-CRP</td>
+                        <td class="flag-high">4.2 mg/L</td>
+                        <td>
+                            <3.0< /td>
+                        <td class="interpretation">Significant systemic inflammation</td>
+                    </tr>
+                    <tr>
+                        <td>Fasting Insulin</td>
+                        <td class="flag-high">14 µIU/mL</td>
+                        <td>2.6-24.9</td>
+                        <td class="interpretation">"Normal" but insulin resistant (should be <7)< /td>
+                    </tr>
+                    <tr>
+                        <td>HbA1c</td>
+                        <td>5.6%</td>
+                        <td>
+                            <5.7< /td>
+                        <td class="interpretation">Pre-pre-diabetes; already on trajectory</td>
+                    </tr>
+                    <tr>
+                        <td>Vitamin D</td>
+                        <td class="flag-low">28 ng/mL</td>
+                        <td>30-100</td>
+                        <td class="interpretation">Insufficient—common in autoimmune</td>
+                    </tr>
+                    <tr>
+                        <td>Ferritin</td>
+                        <td>22 ng/mL</td>
+                        <td>15-150</td>
+                        <td class="interpretation">"Normal" but suboptimal—often causes fatigue</td>
+                    </tr>
+                    <tr>
+                        <td>Homocysteine</td>
+                        <td class="flag-high">11 µmol/L</td>
+                        <td>
+                            <15< /td>
+                        <td class="interpretation">Elevated—methylation issues + CVD risk</td>
+                    </tr>
+                </table>
+
+                <p><strong>Pattern Recognition:</strong></p>
+                <ul>
+                    <li><span class="highlight">Primary: Autoimmune Trigger (Pattern 6)</span> — Hashimoto's confirmed
+                        with elevated TPO</li>
+                    <li><span class="highlight">Secondary: Inflammatory Cascade (Pattern 2)</span> — hs-CRP 4.2,
+                        homocysteine 11, low D</li>
+                    <li><span class="highlight">Secondary: Metabolic Dysfunction (Pattern 4)</span> — Insulin 14, HbA1c
+                        trending up</li>
+                </ul>
+
+                <p><strong>The Story These Labs Tell:</strong></p>
+                <p>"Diane has Hashimoto's thyroiditis driving suboptimal thyroid function (TSH elevated for her, poor
+                    T4→T3 conversion as shown by low Free T3). The autoimmune process is accompanied by significant
+                    systemic inflammation (hs-CRP 4.2) and likely gut involvement (typically upstream of Hashimoto's—yet
+                    to test). The inflammation and thyroid dysfunction have contributed to insulin resistance (fasting
+                    insulin 14 despite 'normal' glucose), explaining her weight gain despite effort. Low vitamin D and
+                    suboptimal ferritin compound the fatigue. The elevated homocysteine suggests methylation impairment,
+                    which affects neurotransmitter production—potentially contributing to her brain fog and new
+                    anxiety."</p>
+
+                <p><strong>Next Steps:</strong> GI testing (gut likely driving autoimmunity), 4-point cortisol (HPA
+                    component?), gluten elimination trial (gluten-thyroid connection).</p>
+            </div>
+        </div>
+
+        <h2 id="presenting-labs">Presenting Labs in Case Analysis</h2>
+
+        <p>When presenting labs in a case, you're not doing a data dump. You're <span class="highlight">telling a story
+                with the data as evidence</span>.</p>
+
+        <div class="protocol-card">
+            <p class="protocol-title">Lab Presentation Framework</p>
+            <ul>
+                <li><strong>Lead with the pattern:</strong> "The labs confirm an autoimmune thyroid presentation with
+                    systemic inflammation..."</li>
+                <li><strong>Highlight key findings:</strong> Only share labs that support or change your hypothesis—not
+                    every value</li>
+                <li><strong>Explain significance:</strong> For each lab you mention, briefly explain what it means:
+                    "Ferritin of 22, while technically normal, is suboptimal and commonly associated with fatigue at
+                    this level"</li>
+                <li><strong>Connect the dots:</strong> Show how lab findings relate to symptoms and to each other</li>
+                <li><strong>Avoid isolation:</strong> Never present a lab finding in isolation—always in context of the
+                    clinic picture</li>
+            </ul>
+        </div>
+
+        <h2 id="common-traps">Common Lab Interpretation Traps</h2>
+
+        <div class="alert-box warning">
+            <p class="alert-label">Trap #1: "Normal" = Optimal</p>
+            <p>Reference ranges show where 95% of tested people fall—not where people feel best. A TSH of 4.0, ferritin
+                of 18, and vitamin D of 32 are all "normal" and can all cause significant symptoms. Learn optimal ranges
+                and use them.</p>
+        </div>
+
+        <div class="alert-box warning">
+            <p class="alert-label">Trap #2: Treating the Lab, Not the Person</p>
+            <p>Labs are clues, not verdicts. A client with "perfect" labs can still be unwell (functional issue not
+                captured by standard tests). A client with "abnormal" labs may be asymptomatic. Always integrate with
+                clinical picture.</p>
+        </div>
+
+        <div class="alert-box warning">
+            <p class="alert-label">Trap #3: Single Time Point Thinking</p>
+            <p>Labs are snapshots. Hormones fluctuate (test thyroid in AM, test female hormones at right cycle day).
+                Cortisol varies throughout the day (need 4-point testing). Glucose varies by meal. Get the right tests
+                at the right times, and track trajectories over time.</p>
+        </div>
+
+        <div class="alert-box warning">
+            <p class="alert-label">Trap #4: Missing the Acute Phase Response</p>
+            <p>Inflammation distorts multiple markers: ferritin goes UP (even with low iron), albumin goes DOWN,
+                transferrin goes DOWN. If hs-CRP is elevated, interpret iron markers with caution. The inflammation must
+                be addressed to get accurate readings of other markers.</p>
+        </div>
+
+        <h2 id="studio">Studio: Lab Integration Practice</h2>
+
+        <div class="studio-exercise">
+            <p class="box-label">Practice Lab: Integrated Lab Analysis</p>
+            <h4>Your Assignment</h4>
+            <p>Review the following lab panel and complete the analysis:</p>
+
+            <p><strong>Client:</strong> Robert, 55M. Chief complaint: "Brain fog and fatigue for 6 months." History:
+                Type 2 diabetes (on metformin), high blood pressure, overweight (BMI 32). Says he's "compliant with
+                medications." Denies alcohol. Non-smoker.</p>
+
+            <p><strong>Labs:</strong></p>
+            <ul>
+                <li>Fasting Glucose: 142 mg/dL (ref 70-100)</li>
+                <li>HbA1c: 7.8% (ref <5.7)< /li>
+                <li>Fasting Insulin: 28 µIU/mL (ref 2.6-24.9)</li>
+                <li>TSH: 1.8 mIU/L (ref 0.45-4.5)</li>
+                <li>B12: 298 pg/mL (ref 200-900)</li>
+                <li>Ferritin: 312 ng/mL (ref 30-400)</li>
+                <li>hs-CRP: 5.8 mg/L (ref <3.0)< /li>
+                <li>Homocysteine: 14 µmol/L (ref <15)< /li>
+                <li>Vitamin D: 22 ng/mL (ref 30-100)</li>
+                <li>ALT: 58 U/L (ref 7-56)</li>
+            </ul>
+
+            <p><strong>Your analysis:</strong></p>
+            <ol>
+                <li>What pattern(s) do you see?</li>
+                <li>Which 3 findings are most concerning and why?</li>
+                <li>What's the likely driver of his brain fog based on these labs?</li>
+                <li>What's one important finding that's "in range" but suboptimal?</li>
+                <li>What's the connection between metformin and one of these values?</li>
+            </ol>
+        </div>
+
+        <div class="key-terms-box">
+            <p class="box-label">Key Terms to Remember</p>
+            <div class="terms-grid">
+                <div class="term-item">
+                    <p class="term">Optimal Range</p>
+                    <p class="definition">Where we see best clinical outcomes—tighter than conventional ranges and where
+                        symptoms are typically absent.</p>
+                </div>
+                <div class="term-item">
+                    <p class="term">Personal Baseline</p>
+                    <p class="definition">An individual's previous lab values, used to detect meaningful change even
+                        within "normal" range.</p>
+                </div>
+                <div class="term-item">
+                    <p class="term">Acute Phase Response</p>
+                    <p class="definition">Inflammatory state that distorts multiple lab markers—must be considered when
+                        interpreting iron, protein, and metabolic markers.</p>
+                </div>
+                <div class="term-item">
+                    <p class="term">Lab Pattern Recognition</p>
+                    <p class="definition">The skill of identifying clusters of lab abnormalities that point to specific
+                        dysfunction patterns.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="check-understanding">
+            <p class="box-label">Check Your Understanding</p>
+            <p class="box-subtitle">Test your lab integration skills:</p>
+
+            <div class="question-item">
+                <div class="question-number">1</div>
+                <p class="question-text">A client's ferritin is 180 ng/mL and hs-CRP is 6.2 mg/L. The conventional
+                    interpretation would be "ferritin normal." What's your functional interpretation?</p>
+                <button class="reveal-btn"
+                    onclick="this.nextElementSibling.classList.toggle('show'); this.textContent = this.textContent === 'Reveal Answer' ? 'Hide Answer' : 'Reveal Answer';">Reveal
+                    Answer</button>
+                <p class="answer-text">Ferritin is an acute phase reactant—it rises with inflammation. With hs-CRP of
+                    6.2, there's significant systemic inflammation, which could be artificially elevating ferritin. The
+                    client might actually be iron-deficient (low iron stores) masked by the inflammatory bump in
+                    ferritin. Order iron studies (serum iron, TIBC, transferrin saturation) and interpret ferritin
+                    cautiously. Address inflammation first, then retest.</p>
+            </div>
+
+            <div class="question-item">
+                <div class="question-number">2</div>
+                <p class="question-text">What lab findings would make you suspect insulin resistance even if fasting
+                    glucose is "normal" at 95?</p>
+                <button class="reveal-btn"
+                    onclick="this.nextElementSibling.classList.toggle('show'); this.textContent = this.textContent === 'Reveal Answer' ? 'Hide Answer' : 'Reveal Answer';">Reveal
+                    Answer</button>
+                <p class="answer-text">Fasting insulin >7 (especially >10), HOMA-IR >2.0, elevated triglycerides, low
+                    HDL, TG:HDL ratio >2. Also: HbA1c >5.3 even if under 5.7. Glucose is often the LAST thing to elevate
+                    in the insulin resistance progression—until then, the pancreas compensates by overproducing insulin.
+                    By the time glucose goes up, you've had IR for years.</p>
+            </div>
+
+            <div class="question-item">
+                <div class="question-number">3</div>
+                <p class="question-text">In the Robert case (studio), what's the connection between his metformin use
+                    and one of the lab findings?</p>
+                <button class="reveal-btn"
+                    onclick="this.nextElementSibling.classList.toggle('show'); this.textContent = this.textContent === 'Reveal Answer' ? 'Hide Answer' : 'Reveal Answer';">Reveal
+                    Answer</button>
+                <p class="answer-text">Metformin causes B12 depletion over time—it interferes with B12 absorption in the
+                    gut. Robert's B12 of 298 is "normal" by reference range but suboptimal (optimal is >500, ideally
+                    >600). B12 deficiency causes fatigue, brain fog, and neuropathy—his exact symptoms. Anyone on
+                    long-term metformin needs B12 monitoring and supplementation.</p>
+            </div>
+        </div>
+
+        <div class="takeaways-box">
+            <p class="box-label">Key Takeaways</p>
+            <ul>
+                <li><span class="highlight">"Normal" is not optimal</span>—learn functional medicine reference ranges
+                </li>
+                <li>Track <strong>personal baselines</strong>—trajectory matters more than snapshots</li>
+                <li>Each of the 7 Master Patterns has characteristic lab signatures—learn them</li>
+                <li>Present labs as <strong>evidence for your clinical story</strong>, not as data dumps</li>
+                <li>Beware the acute phase response: inflammation distorts ferritin, albumin, and other markers</li>
+                <li>Always integrate labs with clinical context—a lab in isolation means little</li>
+            </ul>
+        </div>
+
+        <div class="references-box">
+            <p class="box-label">References</p>
+            <ol>
+                <li>Weatherby, D., & Ferguson, S. (2004). <em>Blood Chemistry and CBC Analysis</em>. Bear Mountain
+                    Publishing.</li>
+                <li>Lord, R. S., & Bralley, J. A. (2012). <em>Laboratory Evaluations for Integrative and Functional
+                        Medicine</em>. Metametrix Institute.</li>
+                <li>Aroda, V. R., et al. (2016). Long-term metformin use and vitamin B12 deficiency in the Diabetes
+                    Prevention Program Outcomes Study. <em>J Clin Endocrinol Metab</em>, 101(4), 1754-1761.</li>
+                <li>Kraft, J. R. (2008). Diabetes Epidemic & You: Should Everyone Be Tested? <em>Diabetes Epidemic &
+                        You</em>.</li>
+                <li>Gabay, C., & Kushner, I. (1999). Acute-phase proteins and other systemic responses to inflammation.
+                    <em>New England Journal of Medicine</em>, 340(6), 448-454.</li>
+            </ol>
+        </div>
+
+        <footer class="lesson-footer">
+            <p class="brand">AccrediPro Pro Accelerator • DEPTH MASTERY™</p>
+            <p class="copyright">© 2024 AccrediPro. All rights reserved.</p>
+        </footer>
+
+    </div>
+</body>
+
+</html>

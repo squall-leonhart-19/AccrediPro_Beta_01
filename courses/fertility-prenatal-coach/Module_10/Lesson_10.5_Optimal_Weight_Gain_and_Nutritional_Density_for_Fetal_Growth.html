@@ -1,0 +1,788 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lesson 10.5: Optimal Weight Gain and Nutritional Density for Fetal Growth</title>
+    <style>
+        /* Base & Reset */
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Georgia, 'Times New Roman', serif;
+            line-height: 1.8;
+            color: #2d2d2d;
+            background: #f8f6f3;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Main Container */
+        .lesson-container {
+            max-width: 860px;
+            margin: 0 auto;
+            padding: 40px 30px;
+            background: #ffffff;
+            min-height: 100vh;
+            box-shadow: 0 0 60px rgba(0, 0, 0, 0.08);
+        }
+
+        /* Brand Header */
+        .brand-header {
+            text-align: center;
+            padding-bottom: 30px;
+            margin-bottom: 35px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .brand-logo {
+            max-width: 220px;
+            height: auto;
+            margin-bottom: 5px;
+        }
+
+        /* Module Header - PURPLE/GOLD theme for Prenatal */
+        .module-header {
+            background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%);
+            padding: 35px 35px 30px;
+            border-radius: 16px;
+            margin-bottom: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .module-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+            transform: translate(100px, -100px);
+        }
+
+        .module-header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, #B8860B, #D4A84B, #B8860B);
+        }
+
+        .module-label {
+            margin: 0;
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.75);
+            text-transform: uppercase;
+            letter-spacing: 2.5px;
+            font-weight: 500;
+        }
+
+        .lesson-title {
+            margin: 10px 0 0 0;
+            font-size: 28px;
+            color: #ffffff;
+            font-weight: 700;
+            line-height: 1.3;
+            position: relative;
+        }
+
+        .lesson-meta {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+            padding-top: 18px;
+            border-top: 1px solid rgba(255, 255, 255, 0.15);
+            flex-wrap: wrap;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.85);
+            background: rgba(255, 255, 255, 0.1);
+            padding: 5px 12px;
+            border-radius: 4px;
+        }
+
+        /* Table of Contents */
+        .toc-box {
+            background: linear-gradient(135deg, #fafafa 0%, #f5f5f5 100%);
+            border-radius: 14px;
+            padding: 24px 28px;
+            margin-bottom: 35px;
+            border: 1px solid #e8e8e8;
+        }
+
+        .toc-box .box-label {
+            font-weight: 600;
+            color: #4f46e5;
+            margin: 0 0 18px 0;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .toc-list {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px 24px;
+        }
+
+        .toc-list li {
+            margin: 0;
+        }
+
+        .toc-list a {
+            display: flex;
+            align-items: center;
+            padding: 8px 12px;
+            color: #555;
+            text-decoration: none;
+            font-size: 14px;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+        }
+
+        .toc-list a:hover {
+            background: white;
+            color: #4f46e5;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+        }
+
+        .toc-list .section-num {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 26px;
+            height: 26px;
+            background: #4f46e5;
+            color: white;
+            font-weight: 600;
+            font-size: 11px;
+            border-radius: 6px;
+            margin-right: 12px;
+            flex-shrink: 0;
+        }
+
+        /* Learning Objectives */
+        .objectives-box {
+            background: #f5f3ff;
+            border: 2px solid #6366f1;
+            border-radius: 14px;
+            padding: 30px 35px;
+            margin-bottom: 40px;
+        }
+
+        .objectives-box .box-label {
+            font-weight: 600;
+            color: #4f46e5;
+            margin: 0 0 18px 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .objectives-box .box-label::before {
+            content: '🎯';
+            font-size: 18px;
+        }
+
+        .objectives-box ul {
+            margin: 0;
+            padding-left: 22px;
+        }
+
+        .objectives-box li {
+            margin-bottom: 14px;
+            font-size: 16px;
+            line-height: 1.7;
+        }
+
+        /* Key Terms Box */
+        .key-terms-box {
+            background: linear-gradient(135deg, #f0f4f8 0%, #e8ecf1 100%);
+            border-radius: 14px;
+            padding: 28px 30px;
+            margin: 40px 0;
+            border: 1px solid #d8dce0;
+        }
+
+        .key-terms-box .box-label {
+            font-weight: 600;
+            color: #4f46e5;
+            margin: 0 0 18px 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .terms-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 16px;
+        }
+
+        .term-item {
+            background: white;
+            padding: 16px 18px;
+            border-radius: 10px;
+            border-left: 4px solid #6366f1;
+        }
+
+        .term-item .term {
+            font-weight: 700;
+            color: #4f46e5;
+            font-size: 15px;
+            margin: 0 0 6px 0;
+        }
+
+        .term-item .definition {
+            font-size: 14px;
+            color: #555;
+            margin: 0;
+            line-height: 1.6;
+        }
+
+        /* Section Headings */
+        h2 {
+            font-size: 24px;
+            color: #4f46e5;
+            margin: 50px 0 20px 0;
+            font-weight: 600;
+            position: relative;
+            padding-bottom: 12px;
+        }
+
+        h2::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 60px;
+            height: 3px;
+            background: #B8860B;
+        }
+
+        /* Paragraphs */
+        p {
+            font-size: 17px;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        /* Highlights */
+        .highlight {
+            background: linear-gradient(180deg, transparent 60%, #FFF59D 60%);
+            padding: 0 4px;
+            font-weight: 500;
+        }
+
+        /* Case Study Box */
+        .case-study {
+            background: linear-gradient(135deg, #f8f9fb 0%, #f0f2f5 100%);
+            border-radius: 16px;
+            padding: 0;
+            margin: 40px 0;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+        }
+
+        .case-study-header {
+            background: linear-gradient(135deg, #4f46e5 0%, #6366f1 100%);
+            padding: 20px 30px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .case-study-icon {
+            width: 45px;
+            height: 45px;
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+        }
+
+        .case-study-header .box-label {
+            font-weight: 600;
+            color: #ffffff;
+            margin: 0;
+            font-size: 16px;
+        }
+
+        .case-study-content {
+            padding: 28px 30px;
+        }
+
+        .patient-profile {
+            display: flex;
+            align-items: center;
+            gap: 18px;
+            padding: 18px 22px;
+            background: white;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            border: 1px solid #e5e5e5;
+        }
+
+        .patient-avatar {
+            width: 55px;
+            height: 55px;
+            background: linear-gradient(135deg, #6366f1, #4f46e5);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            color: white;
+        }
+
+        /* Statistics Box */
+        .stats-box {
+            background: linear-gradient(135deg, #4f46e5 0%, #6366f1 100%);
+            padding: 40px;
+            border-radius: 16px;
+            margin: 35px 0;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 25px;
+            position: relative;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 42px;
+            font-weight: 700;
+            color: white;
+            line-height: 1;
+            margin-bottom: 8px;
+        }
+
+        .stat-label {
+            font-size: 13px;
+            color: rgba(255, 255, 255, 0.85);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* Tables */
+        .data-table-container {
+            overflow-x: auto;
+            margin: 30px 0;
+            border-radius: 12px;
+            border: 1px solid #e5e5e5;
+        }
+
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 15px;
+            text-align: left;
+        }
+
+        .data-table th {
+            background: #f3f4f6;
+            padding: 15px 20px;
+            font-weight: 600;
+            color: #4f46e5;
+            border-bottom: 2px solid #e5e5e5;
+        }
+
+        .data-table td {
+            padding: 15px 20px;
+            border-bottom: 1px solid #eee;
+            color: #444;
+        }
+
+        /* Check Understanding */
+        .check-understanding {
+            background: linear-gradient(135deg, #fdfbf7 0%, #f9f5ed 100%);
+            border: 2px solid #B8860B;
+            border-radius: 16px;
+            padding: 32px;
+            margin: 45px 0;
+        }
+
+        .check-understanding .box-label {
+            font-weight: 600;
+            color: #8B6914;
+            margin: 0 0 8px 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .question-item {
+            background: white;
+            border-radius: 12px;
+            padding: 22px 24px;
+            margin-bottom: 16px;
+            border: 1px solid #e8e4dc;
+            position: relative;
+        }
+
+        .question-number {
+            position: absolute;
+            top: -12px;
+            left: 20px;
+            background: #4f46e5;
+            color: white;
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            font-size: 13px;
+        }
+
+        .reveal-btn {
+            background: #4f46e5;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-size: 14px;
+            cursor: pointer;
+            transition: background 0.2s ease;
+        }
+
+        .answer-text {
+            display: none;
+            font-size: 14px;
+            color: #2e7d32;
+            margin: 14px 0 0 0;
+            padding: 14px;
+            background: #f0f8f0;
+            border-radius: 8px;
+        }
+
+        .answer-text.show {
+            display: block;
+        }
+
+        /* Key Takeaways */
+        .takeaways-box {
+            background: linear-gradient(135deg, #f5f5f5 0%, #e8e8e8 100%);
+            padding: 22px 25px;
+            margin-top: 35px;
+            border-radius: 8px;
+            border: 1px solid #ddd;
+        }
+
+        .takeaways-box .box-label {
+            font-weight: 600;
+            color: #4f46e5;
+            margin: 0 0 15px 0;
+            font-size: 16px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* References Box */
+        .references-box {
+            margin-top: 40px;
+            padding: 25px;
+            background: #f9f9f9;
+            border-radius: 12px;
+            font-size: 14px;
+            color: #666;
+            border: 1px solid #eee;
+        }
+
+        .references-box h4 {
+            margin: 0 0 15px 0;
+            color: #333;
+            font-size: 16px;
+        }
+
+        .references-box ul {
+            padding-left: 20px;
+            margin: 0;
+        }
+
+        .references-box li {
+            margin-bottom: 8px;
+        }
+
+        /* Footer */
+        .lesson-footer {
+            text-align: center;
+            padding-top: 50px;
+            margin-top: 60px;
+            border-top: 1px solid #eee;
+        }
+
+        .footer-logo {
+            max-width: 140px;
+            height: auto;
+            margin-bottom: 15px;
+            opacity: 0.9;
+        }
+
+        .lesson-footer .brand {
+            color: #4f46e5;
+            font-weight: 600;
+            margin: 0;
+            font-size: 15px;
+        }
+
+        .lesson-footer .copyright {
+            color: #888;
+            font-size: 13px;
+            margin: 10px 0 0 0;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="lesson-container">
+        <div class="brand-header">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="brand-logo">
+        </div>
+
+        <header class="module-header">
+            <p class="module-label">Module 10: Second Trimester: Growth & Vitality</p>
+            <h1 class="lesson-title">Lesson 10.5: Optimal Weight Gain and Nutritional Density</h1>
+            <div class="lesson-meta">
+                <span class="meta-item">28 min read</span>
+                <span class="meta-item">Lesson 5 of 6</span>
+            </div>
+        </header>
+
+        <!-- Table of Contents -->
+        <div class="toc-box">
+            <p class="box-label">In This Lesson</p>
+            <ul class="toc-list">
+                <li><a href="#section1"><span class="section-num">1</span>Physiology of Growth</a></li>
+                <li><a href="#section2"><span class="section-num">2</span>BMI-Based Weight Targets</a></li>
+                <li><a href="#section3"><span class="section-num">3</span>Nutritional Density vs. Calories</a></li>
+                <li><a href="#section4"><span class="section-num">4</span>Protein: The Anabolic Driver</a></li>
+                <li><a href="#section5"><span class="section-num">5</span>Micronutrient Synergies</a></li>
+                <li><a href="#section6"><span class="section-num">6</span>The P.R.I.M.E. Application</a></li>
+            </ul>
+        </div>
+
+        <!-- Learning Objectives -->
+        <div class="objectives-box">
+            <p class="box-label">Learning Objectives</p>
+            <ul>
+                <li>Define optimal gestational weight gain (GWG) based on pre-pregnancy BMI guidelines.</li>
+                <li>Explain the physiological shift from the first trimester's "protective" phase to the second trimester's "anabolic" phase.</li>
+                <li>Identify the critical micronutrients required for fetal skeletal and neurological development.</li>
+                <li>Apply "Metabolic Mapping" to personalize nutritional interventions for varying metabolic profiles.</li>
+                <li>Distinguish between "empty calories" and "nutrient-dense" fuel in a prenatal context.</li>
+            </ul>
+        </div>
+
+        <h2 id="section1">The Physiology of Second Trimester Growth</h2>
+        <p>The second trimester marks a profound transition. While the first trimester is characterized by organogenesis and embryonic protection, the second trimester is the <span class="highlight">anabolic growth phase</span>. During this period, the placenta is fully functional, maternal blood volume increases by approximately 40-50%, and the fetus undergoes rapid <span class="highlight">hyperplasia</span> (increase in cell number) and <span class="highlight">hypertrophy</span> (increase in cell size).</p>
+
+        <p>From a metabolic perspective, the mother’s body becomes more "efficient" at storing energy. However, this efficiency can lead to excessive weight gain if the diet is high in refined carbohydrates. Under the <strong>P.R.I.M.E. Protocol™</strong>, we view this stage through the lens of <span class="highlight">Metabolic Mapping</span>, ensuring that the increase in caloric intake is matched by a proportional increase in nutrient density to support maternal tissue expansion and fetal vitality.</p>
+
+        <!-- Statistics Box -->
+        <div class="stats-box">
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <div class="stat-number">340</div>
+                    <div class="stat-label">Extra Daily Calories</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">50%</div>
+                    <div class="stat-label">Blood Volume Increase</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">1.1g</div>
+                    <div class="stat-label">Protein/kg per day</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">25lb+</div>
+                    <div class="stat-label">Avg. Total Weight Gain</div>
+                </div>
+            </div>
+        </div>
+
+        <h2 id="section2">BMI-Based Weight Targets</h2>
+        <p>Weight gain is not a "one size fits all" metric. The Institute of Medicine (IOM) and ACOG provide specific ranges based on pre-pregnancy Body Mass Index (BMI). A 2021 meta-analysis of 1.2 million pregnancies found that gaining outside these recommended ranges was associated with a <span class="highlight">32% increased risk</span> of adverse neonatal outcomes, including preterm birth and macrosomia.</p>
+
+        <div class="data-table-container">
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>Pre-Pregnancy BMI</th>
+                        <th>BMI Category</th>
+                        <th>Total Weight Gain Range</th>
+                        <th>Weekly Gain (2nd/3rd Tri)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>&lt; 18.5</td>
+                        <td>Underweight</td>
+                        <td>28 – 40 lbs (12.5 – 18 kg)</td>
+                        <td>1.0 lb (0.45 kg)</td>
+                    </tr>
+                    <tr>
+                        <td>18.5 – 24.9</td>
+                        <td>Normal Weight</td>
+                        <td>25 – 35 lbs (11.5 – 16 kg)</td>
+                        <td>1.0 lb (0.45 kg)</td>
+                    </tr>
+                    <tr>
+                        <td>25.0 – 29.9</td>
+                        <td>Overweight</td>
+                        <td>15 – 25 lbs (7 – 11.5 kg)</td>
+                        <td>0.6 lb (0.27 kg)</td>
+                    </tr>
+                    <tr>
+                        <td>&ge; 30.0</td>
+                        <td>Obese</td>
+                        <td>11 – 20 lbs (5 – 9 kg)</td>
+                        <td>0.5 lb (0.22 kg)</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <h2 id="section3">Nutritional Density vs. Calories</h2>
+        <p>The adage "eating for two" is a dangerous oversimplification. In reality, the caloric demand in the second trimester only increases by approximately <span class="highlight">340 calories per day</span>—equivalent to a large avocado or a small bowl of Greek yogurt with walnuts. However, the demand for specific micronutrients (like Iron, Folate, and Choline) increases by <span class="highlight">50% to 100%</span>.</p>
+
+        <p>This "Nutrient Gap" is where many prenatal diets fail. If a client consumes "empty calories" (high glycemic index foods, processed fats), they may meet the weight gain targets while simultaneously being <span class="highlight">functionally malnourished</span>. This can lead to gestational exhaustion, impaired fetal neurodevelopment, and poor postpartum recovery.</p>
+
+        <!-- Case Study 1 -->
+        <div class="case-study">
+            <div class="case-study-header">
+                <div class="case-study-icon">📋</div>
+                <div>
+                    <p class="box-label">Case Study: Managing Rapid Gain</p>
+                    <p style="color: rgba(255,255,255,0.8); font-size: 13px; margin: 0;">Metabolic Mapping Intervention</p>
+                </div>
+            </div>
+            <div class="case-study-content">
+                <div class="patient-profile">
+                    <div class="patient-avatar">S</div>
+                    <div class="patient-info">
+                        <h4>Sarah, Age 32</h4>
+                        <p>Pre-pregnancy BMI: 23.5 | Week 20 of Pregnancy</p>
+                    </div>
+                </div>
+                <p><strong>Presentation:</strong> Sarah gained 12 lbs between weeks 14 and 20 (double the recommended rate). She reported constant hunger, "brain fog," and mild edema. Her diet was high in "healthy" smoothies (fruit-heavy) and whole-grain crackers.</p>
+                <p><strong>Intervention:</strong> Applied <span class="highlight">Metabolic Mapping (P.R.I.M.E.)</span>. We identified a glucose-insulin mismatch. We shifted her macronutrient ratio to 30% Protein, 40% Fat, and 30% Complex Carbs. Smoothie fruit was halved and replaced with collagen peptides and almond butter.</p>
+                <p><strong>Outcome:</strong> Weight gain stabilized to 0.9 lbs/week. Brain fog resolved within 10 days. Fasting glucose (checked by her OB) remained within optimal limits (82 mg/dL).</p>
+            </div>
+        </div>
+
+        <h2 id="section4">Protein: The Anabolic Driver</h2>
+        <p>Protein is the most critical macronutrient during the second trimester. It provides the amino acids necessary for the expansion of the uterus, the development of the placenta, and the growth of fetal brain tissue. Research published in the <em>Journal of Nutrition</em> indicates that the current RDA for protein in pregnancy (0.8g/kg) is likely <span class="highlight">insufficient</span>, suggesting that 1.1g/kg to 1.5g/kg is more appropriate for optimal outcomes.</p>
+
+        <p>As a coach, you must emphasize high-quality protein sources that also provide co-factors. For example, grass-fed beef provides protein + heme iron; wild-caught salmon provides protein + DHA; eggs provide protein + choline.</p>
+
+        <h2 id="section5">Micronutrient Synergies</h2>
+        <p>Fetal growth depends on "Nutrient Synergies"—where one nutrient assists the absorption or function of another. During the second trimester, three synergies are paramount:</p>
+
+        <div class="key-terms-box">
+            <p class="box-label">⚡ Key Synergies for Growth</p>
+            <div class="terms-grid">
+                <div class="term-item">
+                    <p class="term">Calcium + Vitamin D + K2</p>
+                    <p class="definition">Crucial for the ossification of the fetal skeleton. Without K2 and D3, calcium may deposit in the placenta rather than the fetal bones.</p>
+                </div>
+                <div class="term-item">
+                    <p class="term">Iron + Vitamin C</p>
+                    <p class="definition">Essential for the expansion of maternal red blood cell mass. Vitamin C increases the absorption of non-heme iron by up to 300%.</p>
+                </div>
+                <div class="term-item">
+                    <p class="term">Choline + DHA</p>
+                    <p class="definition">Synergistic for fetal brain structure and "retinal health." DHA is the structural fat, while choline acts as the "delivery truck" across the placenta.</p>
+                </div>
+            </div>
+        </div>
+
+        <h2 id="section6">Applying the P.R.I.M.E. Protocol™</h2>
+        <p>In the context of weight and nutrition, we primarily utilize the <strong>'M' (Metabolic & Microbiome Mapping)</strong> and <strong>'I' (Inflammatory Inhibition)</strong> pillars. Excessive weight gain often triggers a pro-inflammatory state, which can lead to placental insufficiency. By mapping a client's glucose response and ensuring a diverse microbiome, we optimize nutrient partitioning—directing calories toward fetal growth rather than maternal adipose storage.</p>
+
+        <p>Environmental Equilibrium ('E') also plays a role; endocrine disruptors (BPA/Phthalates) can interfere with leptin and ghrelin signaling, making it difficult for the mother to sense satiety, leading to overeating.</p>
+
+        <!-- Check Your Understanding -->
+        <div class="check-understanding">
+            <p class="box-label">Check Your Understanding</p>
+            <p class="box-subtitle">Test your knowledge of second trimester nutritional requirements.</p>
+
+            <div class="question-item">
+                <div class="question-number">1</div>
+                <p class="question-text">A client with a pre-pregnancy BMI of 28 (Overweight) is in her 18th week. What is her recommended weekly weight gain target for the remainder of the pregnancy?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-text">According to IOM/ACOG guidelines, a client in the "Overweight" category should aim for approximately 0.6 lbs (0.27 kg) per week during the second and third trimesters.</div>
+            </div>
+
+            <div class="question-item">
+                <div class="question-number">2</div>
+                <p class="question-text">Why is the "eating for two" narrative metabolically inaccurate for the second trimester?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-text">Because the actual caloric increase required is only about 340 kcal/day, whereas the micronutrient demand increases significantly more (up to 100% for some nutrients). "Eating for two" often leads to excessive caloric intake without meeting the "nutrient density" requirements.</div>
+            </div>
+        </div>
+
+        <!-- Takeaways -->
+        <div class="takeaways-box">
+            <p class="box-label">Key Takeaways</p>
+            <ul>
+                <li><strong>Personalization is Key:</strong> Weight gain targets must be based on pre-pregnancy BMI to minimize risks like gestational diabetes and preterm birth.</li>
+                <li><strong>Protein Priority:</strong> Aim for 1.1g - 1.5g of protein per kg of body weight to support maternal and fetal tissue expansion.</li>
+                <li><strong>The 340 Rule:</strong> Caloric needs increase by only ~340 kcal in the second trimester; focus on the quality of these calories.</li>
+                <li><strong>Metabolic Mapping:</strong> Use the P.R.I.M.E. Protocol to identify insulin resistance early if weight gain exceeds targets.</li>
+                <li><strong>Synergy Matters:</strong> Combine Iron with Vitamin C and Calcium with D3/K2 for optimal bioavailability.</li>
+            </ul>
+        </div>
+
+        <!-- References -->
+        <div class="references-box">
+            <h4>References & Further Reading</h4>
+            <ul>
+                <li>Institute of Medicine (2009). "Weight Gain During Pregnancy: Reexamining the Guidelines." National Academies Press.</li>
+                <li>Blumfield et al. (2014). "A systematic review and meta-analysis of micronutrient intake during pregnancy." Nutrition Reviews.</li>
+                <li>Zhang et al. (2022). "Gestational weight gain and adverse pregnancy outcomes: A meta-analysis of 1.2 million pregnancies." Lancet Global Health.</li>
+                <li>Carlson et al. (2013). "DHA supplementation and pregnancy outcomes." American Journal of Clinical Nutrition.</li>
+                <li>Koletzko et al. (2019). "Nutrition during pregnancy, lactation and early childhood and its implications for maternal and child health." Annals of Nutrition and Metabolism.</li>
+                <li>Elango & Ball (2016). "Protein and Amino Acid Requirements during Pregnancy." Nutrients Journal.</li>
+            </ul>
+        </div>
+
+        <footer class="lesson-footer">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="footer-logo">
+            <p class="brand">AccrediPro Academy Certified Fertility & Prenatal Coach</p>
+            <p class="copyright">&copy; 2024 AccrediPro Academy. All rights reserved.</p>
+        </footer>
+    </div>
+</body>
+
+</html>

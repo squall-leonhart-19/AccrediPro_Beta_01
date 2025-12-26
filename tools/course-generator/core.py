@@ -16,9 +16,9 @@ from concurrent.futures import ThreadPoolExecutor
 import random
 import re
 
-# Load configuration
+# Load configuration from main .env (already in .gitignore)
 from dotenv import load_dotenv
-load_dotenv('config.env')
+load_dotenv('../../.env')  # Main project .env file
 
 
 @dataclass

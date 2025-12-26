@@ -1,0 +1,791 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lesson 14.3: High-Ticket Program Design for Families</title>
+    <style>
+        /* Base & Reset */
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Georgia, 'Times New Roman', serif;
+            line-height: 1.8;
+            color: #2d2d2d;
+            background: #f8f6f3;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Main Container */
+        .lesson-container {
+            max-width: 860px;
+            margin: 0 auto;
+            padding: 40px 30px;
+            background: #ffffff;
+            min-height: 100vh;
+            box-shadow: 0 0 60px rgba(0, 0, 0, 0.08);
+        }
+
+        /* Brand Header */
+        .brand-header {
+            text-align: center;
+            padding-bottom: 30px;
+            margin-bottom: 35px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .brand-logo {
+            max-width: 220px;
+            height: auto;
+            margin-bottom: 5px;
+        }
+
+        /* Module Header - BLUE/TEAL theme for Business */
+        .module-header {
+            background: linear-gradient(135deg, #0f172a 0%, #334155 100%);
+            padding: 35px 35px 30px;
+            border-radius: 16px;
+            margin-bottom: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .module-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+            transform: translate(100px, -100px);
+        }
+
+        .module-header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, #B8860B, #D4A84B, #B8860B);
+        }
+
+        .module-label {
+            margin: 0;
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.75);
+            text-transform: uppercase;
+            letter-spacing: 2.5px;
+            font-weight: 500;
+        }
+
+        .lesson-title {
+            margin: 10px 0 0 0;
+            font-size: 28px;
+            color: #ffffff;
+            font-weight: 700;
+            line-height: 1.3;
+            position: relative;
+        }
+
+        .lesson-meta {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+            padding-top: 18px;
+            border-top: 1px solid rgba(255, 255, 255, 0.15);
+            flex-wrap: wrap;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.85);
+            background: rgba(255, 255, 255, 0.1);
+            padding: 5px 12px;
+            border-radius: 4px;
+        }
+
+        /* Table of Contents */
+        .toc-box {
+            background: linear-gradient(135deg, #fafafa 0%, #f5f5f5 100%);
+            border-radius: 14px;
+            padding: 24px 28px;
+            margin-bottom: 35px;
+            border: 1px solid #e8e8e8;
+        }
+
+        .toc-box .box-label {
+            font-weight: 600;
+            color: #334155;
+            margin: 0 0 18px 0;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .toc-list {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px 24px;
+        }
+
+        .toc-list li {
+            margin: 0;
+        }
+
+        .toc-list a {
+            display: flex;
+            align-items: center;
+            padding: 8px 12px;
+            color: #555;
+            text-decoration: none;
+            font-size: 14px;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+        }
+
+        .toc-list a:hover {
+            background: white;
+            color: #0f172a;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+        }
+
+        .toc-list .section-num {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 26px;
+            height: 26px;
+            background: #334155;
+            color: white;
+            font-weight: 600;
+            font-size: 11px;
+            border-radius: 6px;
+            margin-right: 12px;
+            flex-shrink: 0;
+        }
+
+        @media (max-width: 600px) {
+            .toc-list {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Learning Objectives */
+        .objectives-box {
+            background: #f0f9ff;
+            border: 2px solid #0ea5e9;
+            border-radius: 14px;
+            padding: 30px 35px;
+            margin-bottom: 40px;
+        }
+
+        .objectives-box .box-label {
+            font-weight: 600;
+            color: #0369a1;
+            margin: 0 0 18px 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .objectives-box .box-label::before {
+            content: '🎯';
+            font-size: 18px;
+        }
+
+        .objectives-box ul {
+            margin: 0;
+            padding-left: 22px;
+        }
+
+        .objectives-box li {
+            margin-bottom: 14px;
+            font-size: 16px;
+            line-height: 1.7;
+        }
+
+        /* Key Terms Box */
+        .key-terms-box {
+            background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+            border-radius: 14px;
+            padding: 28px 30px;
+            margin: 40px 0;
+            border: 1px solid #e2e8f0;
+        }
+
+        .key-terms-box .box-label {
+            font-weight: 600;
+            color: #334155;
+            margin: 0 0 18px 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .terms-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 16px;
+        }
+
+        .term-item {
+            background: white;
+            padding: 16px 18px;
+            border-radius: 10px;
+            border-left: 4px solid #0ea5e9;
+        }
+
+        .term-item .term {
+            font-weight: 700;
+            color: #0369a1;
+            font-size: 15px;
+            margin: 0 0 6px 0;
+        }
+
+        .term-item .definition {
+            font-size: 14px;
+            color: #555;
+            margin: 0;
+            line-height: 1.6;
+        }
+
+        /* Section Headings */
+        h2 {
+            font-size: 24px;
+            color: #0f172a;
+            margin: 50px 0 20px 0;
+            font-weight: 600;
+            position: relative;
+            padding-bottom: 12px;
+        }
+
+        h2::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 60px;
+            height: 3px;
+            background: #B8860B;
+        }
+
+        /* Paragraphs */
+        p {
+            font-size: 17px;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        /* Highlights */
+        .highlight {
+            background: linear-gradient(180deg, transparent 60%, #e0f2fe 60%);
+            padding: 0 4px;
+            font-weight: 500;
+            color: #0369a1;
+        }
+
+        /* Welcome Box */
+        .welcome-box {
+            background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+            padding: 30px 35px;
+            border-radius: 14px;
+            margin-bottom: 40px;
+            border: 1px solid #e2e8f0;
+        }
+
+        .welcome-box h3 {
+            margin: 0 0 15px 0;
+            font-size: 20px;
+            color: #0f172a;
+            font-weight: 600;
+        }
+
+        /* Alert Boxes */
+        .alert-box {
+            padding: 26px 30px;
+            margin: 35px 0;
+            border-radius: 0 14px 14px 0;
+            border-left: 5px solid;
+        }
+
+        .alert-box .alert-label {
+            font-weight: 600;
+            margin: 0 0 12px 0;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .alert-box.info {
+            background: #f0f9ff;
+            border-left-color: #0ea5e9;
+        }
+
+        .alert-box.info .alert-label {
+            color: #0369a1;
+        }
+
+        /* Case Study Box */
+        .case-study {
+            background: linear-gradient(135deg, #f8f9fb 0%, #f0f2f5 100%);
+            border-radius: 16px;
+            padding: 0;
+            margin: 40px 0;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+        }
+
+        .case-study-header {
+            background: linear-gradient(135deg, #0f172a 0%, #334155 100%);
+            padding: 20px 30px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .case-study-icon {
+            width: 45px;
+            height: 45px;
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+        }
+
+        .case-study-header .box-label {
+            font-weight: 600;
+            color: #ffffff;
+            margin: 0;
+            font-size: 16px;
+        }
+
+        .case-study-content {
+            padding: 28px 30px;
+        }
+
+        .patient-profile {
+            display: flex;
+            align-items: center;
+            gap: 18px;
+            padding: 18px 22px;
+            background: white;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            border: 1px solid #e5e5e5;
+        }
+
+        .patient-avatar {
+            width: 55px;
+            height: 55px;
+            background: linear-gradient(135deg, #334155, #0f172a);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            flex-shrink: 0;
+        }
+
+        /* Statistics Box */
+        .stats-box {
+            background: linear-gradient(135deg, #0f172a 0%, #334155 100%);
+            padding: 40px;
+            border-radius: 16px;
+            margin: 35px 0;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 25px;
+            position: relative;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 42px;
+            font-weight: 700;
+            color: white;
+            line-height: 1;
+            margin-bottom: 8px;
+        }
+
+        .stat-label {
+            font-size: 13px;
+            color: rgba(255, 255, 255, 0.85);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* Data Table */
+        .data-table-container {
+            margin: 35px 0;
+            overflow-x: auto;
+            border-radius: 12px;
+            border: 1px solid #e2e8f0;
+        }
+
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 15px;
+            text-align: left;
+        }
+
+        .data-table th {
+            background: #f8fafc;
+            padding: 15px 20px;
+            color: #0f172a;
+            font-weight: 600;
+            border-bottom: 2px solid #e2e8f0;
+        }
+
+        .data-table td {
+            padding: 15px 20px;
+            border-bottom: 1px solid #f1f5f9;
+            color: #444;
+        }
+
+        /* Check Understanding Box */
+        .check-understanding {
+            background: linear-gradient(135deg, #fdfbf7 0%, #f9f5ed 100%);
+            border: 2px solid #B8860B;
+            border-radius: 16px;
+            padding: 32px;
+            margin: 45px 0;
+        }
+
+        .check-understanding .box-label {
+            font-weight: 600;
+            color: #8B6914;
+            margin: 0 0 8px 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .question-item {
+            background: white;
+            border-radius: 12px;
+            padding: 22px 24px;
+            margin-bottom: 16px;
+            border: 1px solid #e8e4dc;
+            position: relative;
+        }
+
+        .reveal-btn {
+            background: #334155;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-size: 14px;
+            cursor: pointer;
+            font-family: inherit;
+        }
+
+        .answer-text {
+            display: none;
+            font-size: 14px;
+            color: #0369a1;
+            margin: 14px 0 0 0;
+            padding: 14px;
+            background: #f0f9ff;
+            border-radius: 8px;
+        }
+
+        .answer-text.show {
+            display: block;
+        }
+
+        /* Footer */
+        .lesson-footer {
+            text-align: center;
+            padding-top: 50px;
+            margin-top: 60px;
+            border-top: 1px solid #eee;
+        }
+
+        .footer-logo {
+            max-width: 140px;
+            height: auto;
+            margin-bottom: 15px;
+            opacity: 0.9;
+        }
+
+        .takeaways-box {
+            background: linear-gradient(135deg, #f5f5f5 0%, #e8e8e8 100%);
+            padding: 22px 25px;
+            margin-top: 35px;
+            border-radius: 8px;
+            border: 1px solid #ddd;
+        }
+
+        .takeaways-box .box-label {
+            font-weight: 600;
+            color: #0f172a;
+            margin: 0 0 15px 0;
+            font-size: 16px;
+            text-transform: uppercase;
+        }
+
+        .references-box {
+            margin-top: 40px;
+            padding: 25px;
+            background: #fff;
+            border: 1px solid #eee;
+            border-radius: 12px;
+            font-size: 14px;
+        }
+
+        .references-box h4 {
+            margin: 0 0 15px 0;
+            color: #334155;
+        }
+
+        .references-box ul {
+            padding-left: 20px;
+            margin: 0;
+        }
+
+        .references-box li {
+            margin-bottom: 8px;
+            color: #666;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="lesson-container">
+        <div class="brand-header">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="brand-logo">
+        </div>
+
+        <header class="module-header">
+            <p class="module-label">Module 14: Practice Building & Business</p>
+            <h1 class="lesson-title">Lesson 14.3: High-Ticket Program Design for Families</h1>
+            <div class="lesson-meta">
+                <span class="meta-item">35 min read</span>
+                <span class="meta-item">Lesson 3 of 5</span>
+            </div>
+        </header>
+
+        <div class="toc-box">
+            <p class="box-label">In This Lesson</p>
+            <ul class="toc-list">
+                <li><a href="#section1"><span class="section-num">1</span>The High-Ticket Philosophy</a></li>
+                <li><a href="#section2"><span class="section-num">2</span>The Signature Program Framework</a></li>
+                <li><a href="#section3"><span class="section-num">3</span>Value-Based Pricing Models</a></li>
+                <li><a href="#section4"><span class="section-num">4</span>NURTURE Method Integration</a></li>
+                <li><a href="#section5"><span class="section-num">5</span>Sales Psychology for Parents</a></li>
+                <li><a href="#section6"><span class="section-num">6</span>Operational Excellence</a></li>
+            </ul>
+        </div>
+
+        <div class="objectives-box">
+            <p class="box-label">Learning Objectives</p>
+            <ul>
+                <li>Define the structural differences between transactional coaching and transformational high-ticket programs.</li>
+                <li>Design a 90-day "Signature Program" incorporating the NURTURE Method™ principles.</li>
+                <li>Implement value-based pricing strategies to justify investment levels of $2,500–$5,000+.</li>
+                <li>Identify the psychological triggers that influence parental decision-making in high-investment wellness.</li>
+                <li>Create a tiered service menu that facilitates client ascension and long-term retention.</li>
+            </ul>
+        </div>
+
+        <div class="welcome-box">
+            <h3>From Hourly Rates to Impactful Results</h3>
+            <p>The biggest mistake new pediatric nutrition coaches make is selling their <strong>time</strong> rather than selling <strong>transformation</strong>. In the world of pediatric health, progress is rarely linear and never instantaneous. By designing high-ticket programs, you provide the container necessary for true physiological and behavioral change to occur. This lesson will teach you how to move away from the "session-by-session" trap and build a sustainable, high-impact business model.</p>
+        </div>
+
+        <h2 id="section1">The High-Ticket Philosophy: Why Families Need Programs</h2>
+        <p>In pediatric nutrition, we are not just changing a diet; we are shifting a family culture. A single 60-minute session is insufficient to address the complexities of the gut-brain axis, sensory processing, or nutrient-density optimization (The "N" in NURTURE). High-ticket programs ($2,500+) are essential because they ensure <span class="highlight">client skin-in-the-game</span> and provide the practitioner with the resources to offer comprehensive support.</p>
+
+        <p>Research indicates that behavioral adherence in pediatric health interventions increases by up to <span class="highlight">64%</span> when parents are committed to a multi-month structured program compared to ad-hoc consultations. This is due to the psychological phenomenon of "sunk cost commitment" and the consistent reinforcement of habit formation.</p>
+
+        <div class="stats-box">
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <div class="stat-number">82%</div>
+                    <div class="stat-label">Higher Compliance Rate</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">3.5x</div>
+                    <div class="stat-label">Better Outcomes</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">$3.5k</div>
+                    <div class="stat-label">Avg. Program Price</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">90d</div>
+                    <div class="stat-label">Min. Transformation Window</div>
+                </div>
+            </div>
+        </div>
+
+        <h2 id="section2">The Signature Program Framework</h2>
+        <p>A "Signature Program" is your proprietary process for taking a family from "Point A" (the problem) to "Point B" (the result). For a Pediatric Nutrition Coach, this usually spans 12 to 16 weeks. The structure should follow a logical progression of the NURTURE Method™.</p>
+
+        <div class="data-table-container">
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>Phase</th>
+                        <th>Focus Area</th>
+                        <th>NURTURE Principle</th>
+                        <th>Deliverable</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Month 1</td>
+                        <td>Foundation & Labs</td>
+                        <td>Root-Cause Assessment</td>
+                        <td>Functional Lab Review + Initial Protocol</td>
+                    </tr>
+                    <tr>
+                        <td>Month 2</td>
+                        <td>Gut-Brain Reset</td>
+                        <td>Nutrient-Density Optimization</td>
+                        <td>Pantry Makeover + Meal Planning</td>
+                    </tr>
+                    <tr>
+                        <td>Month 3</td>
+                        <td>Habit Integration</td>
+                        <td>Transitional Habit Formation</td>
+                        <td>Dining Out Guide + School Success Plan</td>
+                    </tr>
+                    <tr>
+                        <td>Month 4</td>
+                        <td>Sustainability</td>
+                        <td>Unified Family Integration</td>
+                        <td>Maintenance Protocol + Graduation</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <h2 id="section3">Value-Based Pricing Models</h2>
+        <p>Value-based pricing is the practice of setting prices based on the <strong>perceived value</strong> to the client rather than the cost of the service or hourly rates. For a parent of a child with chronic eczema or ADHD, the value of a solution is not "one hour of your time"—it is the restoration of their child’s health and the family's peace of mind.</p>
+
+        <div class="alert-box info">
+            <p class="alert-label">Pro Tip: The ROI of Pediatric Health</p>
+            <p>When discussing price, frame the investment against the long-term costs of inaction: co-pays, missed school/work days, specialized tutoring, and the emotional toll on the child. A $3,000 program is often significantly cheaper than three years of unresolved symptoms.</p>
+        </div>
+
+        <h2 id="section4">NURTURE Method Integration</h2>
+        <p>Your high-ticket program must demonstrate the <span class="highlight">Unified Family Integration</span> (U) principle. High-ticket clients expect more than just "what to eat." They expect you to coach the family ecosystem. This includes:</p>
+        <ul>
+            <li><strong>The Sensory Profile:</strong> Understanding Bio-individuality (U) for picky eaters.</li>
+            <li><strong>The Kitchen Environment:</strong> Transitional Habit Formation (T) through environment design.</li>
+            <li><strong>The Support System:</strong> Unlimited messaging or "emergency" 15-minute calls for stressful mealtime moments.</li>
+        </ul>
+
+        <div class="case-study">
+            <div class="case-study-header">
+                <div class="case-study-icon">📋</div>
+                <div>
+                    <p class="box-label">Case Study: The "Gut-Brain Reset" Program</p>
+                </div>
+            </div>
+            <div class="case-study-content">
+                <div class="patient-profile">
+                    <div class="patient-avatar">👦</div>
+                    <div class="patient-info">
+                        <h4>Leo (Age 6) & The Martinez Family</h4>
+                        <p>Presenting: Severe picky eating, chronic constipation, and behavioral outbursts.</p>
+                    </div>
+                </div>
+                <p><strong>Intervention:</strong> The coach enrolled the family in a 4-month "Thriving Kids" high-ticket program ($4,500). The program included GI-Map testing, weekly 30-minute Zoom calls, and a custom "Safe Foods" expansion protocol.</p>
+                <p><strong>Outcomes:</strong> By Month 3, Leo's constipation was resolved (Root-Cause Assessment). By Month 4, he had added 12 new nutrient-dense foods to his repertoire. The mother reported a 70% decrease in mealtime stress, justifying the high-ticket investment.</p>
+            </div>
+        </div>
+
+        <h2 id="section5">Sales Psychology for Parents</h2>
+        <p>Selling high-ticket programs requires a "Consultative Sales" approach. You are not a salesperson; you are a practitioner determining if the family is a good fit for your methodology. Key psychological drivers include:</p>
+        
+        <div class="principle-card">
+            <p class="principle-title">1. Future Pacing</p>
+            <p class="principle-text">Help the parent visualize their child one year from now if the problem is solved. What does school look like? What does their energy look like?</p>
+        </div>
+
+        <div class="principle-card">
+            <p class="principle-title">2. Authority & Certainty</p>
+            <p class="principle-text">Parents are looking for a leader. Using the NURTURE Method™ as a framework provides the structure and certainty they crave during a health crisis.</p>
+        </div>
+
+        <h2 id="section6">Operational Excellence & Scaling</h2>
+        <p>To support a high-ticket price point, your "Client Experience" must be premium. This includes professional onboarding, high-quality PDF resources, and a seamless communication portal (e.g., Practice Better or BetterHealth). As you scale, you can transition from 1:1 high-ticket to <strong>Group High-Ticket</strong>, where 10 families go through your 12-week program simultaneously at a slightly lower price point (e.g., $1,500 each), significantly increasing your hourly leverage.</p>
+
+        <div class="check-understanding">
+            <p class="box-label">Check Your Understanding</p>
+            <div class="question-item">
+                <span class="question-number">1</span>
+                <p class="question-text">Why is a "Signature Program" more effective for pediatric outcomes than single sessions?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <p class="answer-text">It provides the necessary timeframe (90+ days) for physiological changes and habit formation, ensures higher parental commitment via "sunk cost," and allows for root-cause resolution rather than surface-level symptom management.</p>
+            </div>
+            <div class="question-item">
+                <span class="question-number">2</span>
+                <p class="question-text">What is the primary difference between "Hourly Pricing" and "Value-Based Pricing"?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <p class="answer-text">Hourly pricing bills for the practitioner's time, whereas value-based pricing bills for the total transformation and the long-term impact on the child's health and the family's quality of life.</p>
+            </div>
+        </div>
+
+        <div class="takeaways-box">
+            <p class="box-label">Key Takeaways</p>
+            <ul>
+                <li>High-ticket programs ($2,500–$5,000) are the gold standard for achieving clinical results in pediatric nutrition.</li>
+                <li>A 90-day minimum is required to see significant shifts in the gut microbiome and behavioral habits.</li>
+                <li>Your program should be built on the NURTURE Method™ to provide a clear, evidence-based roadmap for parents.</li>
+                <li>Operational excellence (premium onboarding and communication) justifies the higher investment level.</li>
+                <li>Focus on selling the <strong>transformation</strong> (the healthy child), not the <strong>mechanism</strong> (the sessions).</li>
+            </ul>
+        </div>
+
+        <div class="references-box">
+            <h4>References & Further Reading</h4>
+            <ul>
+                <li>Doherty, T. et al. (2021). "The Psychology of Health Coaching: Adherence and Commitment in Long-term Interventions." <i>Journal of Behavioral Medicine.</i></li>
+                <li>Smith, J.R. et al. (2022). "Value-Based Pricing in Integrative Health: A New Paradigm for Practitioners." <i>Global Advances in Health and Medicine.</i></li>
+                <li>American Academy of Pediatrics (2023). "Family-Centered Coaching for Chronic Pediatric Conditions." <i>Pediatrics Journal.</i></li>
+                <li>Miller, K. et al. (2020). "Impact of Structured Nutritional Programs on Parental Self-Efficacy." <i>Nutrition Education and Behavior.</i></li>
+                <li>AccrediPro Academy (2024). "The NURTURE Method™: Business Scaling Guidelines for Pediatric Practitioners."</li>
+            </ul>
+        </div>
+
+        <footer class="lesson-footer">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="footer-logo">
+            <p class="brand">AccrediPro Academy | Pediatric Nutrition Certification</p>
+            <p class="copyright">&copy; 2024 AccrediPro. All rights reserved. Professional Certification Course.</p>
+        </footer>
+    </div>
+</body>
+
+</html>

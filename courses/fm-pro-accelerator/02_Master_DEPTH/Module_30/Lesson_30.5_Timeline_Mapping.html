@@ -1,0 +1,1211 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lesson 30.5: Timeline Mapping & Root Cause Analysis</title>
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Georgia, 'Times New Roman', serif;
+            line-height: 1.8;
+            color: #2d2d2d;
+            background: #f8f6f3;
+            margin: 0;
+            padding: 0;
+        }
+
+        .lesson-container {
+            max-width: 860px;
+            margin: 0 auto;
+            padding: 40px 30px;
+            background: #ffffff;
+            min-height: 100vh;
+            box-shadow: 0 0 60px rgba(0, 0, 0, 0.08);
+        }
+
+        .track-badge {
+            background: linear-gradient(135deg, #B8860B, #D4A84B);
+            color: #fff;
+            font-size: 11px;
+            padding: 6px 16px;
+            border-radius: 20px;
+            display: inline-block;
+            margin-bottom: 15px;
+            font-weight: 600;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+        }
+
+        .module-header {
+            background: linear-gradient(135deg, #722F37 0%, #8B3A42 100%);
+            padding: 35px 35px 30px;
+            border-radius: 16px;
+            margin-bottom: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .module-header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, #B8860B, #D4A84B, #B8860B);
+        }
+
+        .module-label {
+            margin: 0;
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.75);
+            text-transform: uppercase;
+            letter-spacing: 2.5px;
+        }
+
+        .lesson-title {
+            margin: 10px 0 0 0;
+            font-size: 28px;
+            color: #ffffff;
+            font-weight: 700;
+            line-height: 1.3;
+        }
+
+        .lesson-meta {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+            padding-top: 18px;
+            border-top: 1px solid rgba(255, 255, 255, 0.15);
+            flex-wrap: wrap;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.85);
+            background: rgba(255, 255, 255, 0.1);
+            padding: 5px 12px;
+            border-radius: 4px;
+        }
+
+        .toc-box {
+            background: linear-gradient(135deg, #fafafa 0%, #f5f5f5 100%);
+            border-radius: 14px;
+            padding: 24px 28px;
+            margin-bottom: 35px;
+            border: 1px solid #e8e8e8;
+        }
+
+        .toc-box .box-label {
+            font-weight: 600;
+            color: #722F37;
+            margin: 0 0 18px 0;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .toc-list {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px 24px;
+        }
+
+        .toc-list a {
+            display: flex;
+            align-items: center;
+            padding: 8px 12px;
+            color: #555;
+            text-decoration: none;
+            font-size: 14px;
+            border-radius: 6px;
+        }
+
+        .toc-list .section-num {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 26px;
+            height: 26px;
+            background: #722F37;
+            color: white;
+            font-weight: 600;
+            font-size: 11px;
+            border-radius: 6px;
+            margin-right: 12px;
+        }
+
+        .welcome-box {
+            background: linear-gradient(135deg, #fdfcfa 0%, #f9f6f1 100%);
+            padding: 30px 35px;
+            border-radius: 14px;
+            margin-bottom: 40px;
+            border: 1px solid #e8e4dc;
+        }
+
+        .welcome-box h3 {
+            margin: 0 0 15px 0;
+            font-size: 20px;
+            color: #722F37;
+        }
+
+        .welcome-box p {
+            margin: 0;
+            font-size: 17px;
+            line-height: 1.8;
+            color: #444;
+        }
+
+        .objectives-box {
+            background: #fffef5;
+            border: 2px solid #B8860B;
+            border-radius: 14px;
+            padding: 30px 35px;
+            margin-bottom: 40px;
+        }
+
+        .objectives-box .box-label {
+            font-weight: 600;
+            color: #8B6914;
+            margin: 0 0 18px 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .objectives-box .box-label::before {
+            content: '🎯';
+            font-size: 18px;
+        }
+
+        .objectives-box ul {
+            margin: 0;
+            padding-left: 22px;
+        }
+
+        .objectives-box li {
+            margin-bottom: 14px;
+            font-size: 16px;
+            line-height: 1.7;
+        }
+
+        .highlight {
+            background: linear-gradient(180deg, transparent 60%, #FFF59D 60%);
+            padding: 0 4px;
+            font-weight: 500;
+        }
+
+        h2 {
+            font-size: 24px;
+            color: #722F37;
+            margin: 50px 0 20px 0;
+            font-weight: 600;
+            position: relative;
+            padding-bottom: 12px;
+        }
+
+        h2::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 60px;
+            height: 3px;
+            background: #B8860B;
+        }
+
+        h3 {
+            font-size: 20px;
+            color: #722F37;
+            margin: 35px 0 15px 0;
+            font-weight: 600;
+        }
+
+        p {
+            font-size: 17px;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        .timeline-box {
+            background: linear-gradient(135deg, #f8f9fb 0%, #f0f2f5 100%);
+            border-radius: 16px;
+            padding: 30px;
+            margin: 30px 0;
+            position: relative;
+        }
+
+        .timeline-box::before {
+            content: '';
+            position: absolute;
+            left: 50px;
+            top: 60px;
+            bottom: 30px;
+            width: 3px;
+            background: #722F37;
+        }
+
+        .timeline-event {
+            display: flex;
+            gap: 25px;
+            margin-bottom: 30px;
+            position: relative;
+        }
+
+        .timeline-event:last-child {
+            margin-bottom: 0;
+        }
+
+        .timeline-year {
+            background: #722F37;
+            color: white;
+            padding: 8px 16px;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 14px;
+            height: fit-content;
+            min-width: 70px;
+            text-align: center;
+            z-index: 1;
+        }
+
+        .timeline-content {
+            background: white;
+            padding: 20px 24px;
+            border-radius: 12px;
+            flex: 1;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+        }
+
+        .timeline-content h4 {
+            margin: 0 0 8px 0;
+            color: #722F37;
+            font-size: 16px;
+        }
+
+        .timeline-content p {
+            margin: 0;
+            font-size: 14px;
+            color: #555;
+        }
+
+        .timeline-content .trigger-tag {
+            background: #FFF3E0;
+            color: #E65100;
+            padding: 3px 10px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: 600;
+            display: inline-block;
+            margin-top: 10px;
+        }
+
+        .protocol-card {
+            background: linear-gradient(to right, #fafafa, #ffffff);
+            border-left: 5px solid #722F37;
+            padding: 24px 28px;
+            margin-bottom: 18px;
+            border-radius: 0 14px 14px 0;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.04);
+        }
+
+        .protocol-card .protocol-title {
+            font-weight: 700;
+            color: #722F37;
+            margin: 0 0 10px 0;
+            font-size: 17px;
+        }
+
+        .protocol-card ul {
+            margin: 12px 0 0 0;
+            padding-left: 20px;
+            font-size: 14px;
+        }
+
+        .protocol-card li {
+            margin-bottom: 8px;
+        }
+
+        .case-study {
+            background: linear-gradient(135deg, #f8f9fb 0%, #f0f2f5 100%);
+            border-radius: 16px;
+            padding: 0;
+            margin-bottom: 40px;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+        }
+
+        .case-study-header {
+            background: linear-gradient(135deg, #722F37 0%, #8B3A42 100%);
+            padding: 20px 30px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .case-study-icon {
+            width: 45px;
+            height: 45px;
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+        }
+
+        .case-study-header .box-label {
+            font-weight: 600;
+            color: #ffffff;
+            margin: 0;
+            font-size: 16px;
+        }
+
+        .case-study-header .subtitle {
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 13px;
+            margin: 4px 0 0 0;
+        }
+
+        .case-study-content {
+            padding: 28px 30px;
+        }
+
+        .case-study-content p {
+            font-size: 16px;
+            margin-bottom: 18px;
+        }
+
+        .case-study-content ul {
+            margin: 18px 0;
+            padding-left: 22px;
+        }
+
+        .case-study-content li {
+            margin-bottom: 10px;
+            font-size: 15px;
+        }
+
+        .patient-profile {
+            display: flex;
+            align-items: center;
+            gap: 18px;
+            padding: 18px 22px;
+            background: white;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            border: 1px solid #e5e5e5;
+        }
+
+        .patient-avatar {
+            width: 55px;
+            height: 55px;
+            background: linear-gradient(135deg, #B8860B, #D4A84B);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+        }
+
+        .patient-info h4 {
+            margin: 0 0 5px 0;
+            font-size: 17px;
+            color: #1a1a1a;
+        }
+
+        .patient-info p {
+            margin: 0;
+            font-size: 14px;
+            color: #666;
+        }
+
+        .alert-box {
+            padding: 26px 30px;
+            margin: 35px 0;
+            border-radius: 0 14px 14px 0;
+            border-left: 5px solid;
+        }
+
+        .alert-box .alert-label {
+            font-weight: 600;
+            margin: 0 0 12px 0;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .alert-box p:last-child {
+            margin: 0;
+            font-size: 16px;
+            line-height: 1.7;
+        }
+
+        .alert-box.pro-tip {
+            background: #f0f4ff;
+            border-left-color: #3f51b5;
+        }
+
+        .alert-box.pro-tip .alert-label {
+            color: #1a237e;
+        }
+
+        .alert-box.clinical-pearl {
+            background: #fff3e0;
+            border-left-color: #ff6f00;
+        }
+
+        .alert-box.clinical-pearl .alert-label {
+            color: #e65100;
+        }
+
+        .coach-voice {
+            background: linear-gradient(135deg, #fdf8f0 0%, #faf3e8 100%);
+            border-radius: 14px;
+            padding: 28px 30px;
+            margin: 35px 0;
+            border: 1px solid #e8dfd0;
+            position: relative;
+        }
+
+        .coach-voice::before {
+            content: '"';
+            font-size: 80px;
+            color: #B8860B;
+            opacity: 0.3;
+            position: absolute;
+            top: -10px;
+            left: 15px;
+            font-family: Georgia, serif;
+        }
+
+        .coach-voice .coach-name {
+            font-weight: 600;
+            color: #722F37;
+            font-size: 14px;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .coach-voice .coach-name::before {
+            content: '👩‍🏫';
+            font-size: 20px;
+        }
+
+        .coach-voice p {
+            font-style: italic;
+            color: #555;
+            margin: 0;
+            padding-left: 20px;
+            font-size: 16px;
+            line-height: 1.8;
+        }
+
+        .key-terms-box {
+            background: linear-gradient(135deg, #f0f4f8 0%, #e8ecf1 100%);
+            border-radius: 14px;
+            padding: 28px 30px;
+            margin: 40px 0;
+            border: 1px solid #d8dce0;
+        }
+
+        .key-terms-box .box-label {
+            font-weight: 600;
+            color: #722F37;
+            margin: 0 0 18px 0;
+            font-size: 13px;
+            letter-spacing: 2px;
+        }
+
+        .terms-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 16px;
+        }
+
+        .term-item {
+            background: white;
+            padding: 16px 18px;
+            border-radius: 10px;
+            border-left: 4px solid #B8860B;
+        }
+
+        .term-item .term {
+            font-weight: 700;
+            color: #722F37;
+            font-size: 15px;
+            margin: 0 0 6px 0;
+        }
+
+        .term-item .definition {
+            font-size: 14px;
+            color: #555;
+            margin: 0;
+            line-height: 1.6;
+        }
+
+        .studio-exercise {
+            background: linear-gradient(135deg, #e8f5e9 0%, #f1f8e9 100%);
+            border: 2px solid #4CAF50;
+            border-radius: 16px;
+            padding: 30px;
+            margin: 40px 0;
+        }
+
+        .studio-exercise .box-label {
+            font-weight: 600;
+            color: #2e7d32;
+            margin: 0 0 18px 0;
+            font-size: 13px;
+            letter-spacing: 2px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .studio-exercise .box-label::before {
+            content: '🎯';
+            font-size: 18px;
+        }
+
+        .studio-exercise h4 {
+            color: #1b5e20;
+            margin: 0 0 15px 0;
+            font-size: 18px;
+        }
+
+        .studio-exercise p {
+            font-size: 15px;
+            color: #333;
+        }
+
+        .studio-exercise ol,
+        .studio-exercise ul {
+            font-size: 15px;
+            padding-left: 22px;
+        }
+
+        .studio-exercise li {
+            margin-bottom: 12px;
+        }
+
+        .check-understanding {
+            background: linear-gradient(135deg, #fdfbf7 0%, #f9f5ed 100%);
+            border: 2px solid #B8860B;
+            border-radius: 16px;
+            padding: 32px;
+            margin: 45px 0;
+        }
+
+        .check-understanding .box-label {
+            font-weight: 600;
+            color: #8B6914;
+            margin: 0 0 8px 0;
+            font-size: 13px;
+            letter-spacing: 2px;
+        }
+
+        .check-understanding .box-subtitle {
+            font-size: 15px;
+            color: #666;
+            margin: 0 0 24px 0;
+        }
+
+        .question-item {
+            background: white;
+            border-radius: 12px;
+            padding: 22px 24px;
+            margin-bottom: 16px;
+            border: 1px solid #e8e4dc;
+            position: relative;
+        }
+
+        .question-number {
+            position: absolute;
+            top: -12px;
+            left: 20px;
+            background: #722F37;
+            color: white;
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            font-size: 13px;
+        }
+
+        .question-text {
+            font-size: 16px;
+            color: #333;
+            margin: 0 0 16px 0;
+            line-height: 1.6;
+            padding-top: 4px;
+        }
+
+        .reveal-btn {
+            background: #722F37;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-size: 14px;
+            cursor: pointer;
+            font-family: inherit;
+        }
+
+        .answer-text {
+            display: none;
+            font-size: 14px;
+            color: #2e7d32;
+            margin: 14px 0 0 0;
+            padding: 14px;
+            background: #f0f8f0;
+            border-radius: 8px;
+            line-height: 1.6;
+        }
+
+        .answer-text.show {
+            display: block;
+        }
+
+        .takeaways-box {
+            background: linear-gradient(135deg, #722F37 0%, #8B3A42 100%);
+            padding: 35px;
+            margin-top: 50px;
+            border-radius: 16px;
+        }
+
+        .takeaways-box .box-label {
+            font-weight: 600;
+            color: #FFF59D;
+            margin: 0 0 22px 0;
+            font-size: 14px;
+            letter-spacing: 2px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .takeaways-box .box-label::before {
+            content: '✨';
+            font-size: 18px;
+        }
+
+        .takeaways-box ul {
+            margin: 0;
+            padding-left: 22px;
+        }
+
+        .takeaways-box li {
+            margin-bottom: 16px;
+            font-size: 16px;
+            line-height: 1.7;
+            color: #ffffff;
+        }
+
+        .references-box {
+            background: #f8f9fa;
+            border-radius: 14px;
+            padding: 30px;
+            margin-top: 40px;
+        }
+
+        .references-box .box-label {
+            font-weight: 600;
+            color: #722F37;
+            margin: 0 0 20px 0;
+            font-size: 13px;
+            letter-spacing: 2px;
+        }
+
+        .references-box ol {
+            margin: 0;
+            padding-left: 22px;
+            font-size: 13px;
+            color: #666;
+        }
+
+        .references-box li {
+            margin-bottom: 10px;
+            line-height: 1.5;
+        }
+
+        .lesson-footer {
+            margin-top: 50px;
+            padding-top: 30px;
+            border-top: 2px solid #722F37;
+            text-align: center;
+        }
+
+        .lesson-footer .brand {
+            color: #722F37;
+            font-weight: 600;
+            font-size: 15px;
+        }
+
+        .lesson-footer .copyright {
+            color: #888;
+            font-size: 13px;
+            margin: 10px 0 0 0;
+        }
+
+        @media (max-width: 768px) {
+            .lesson-container {
+                padding: 25px 20px;
+            }
+
+            .toc-list {
+                grid-template-columns: 1fr;
+            }
+
+            .timeline-box::before {
+                left: 35px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="lesson-container">
+
+        <header class="module-header">
+            <span class="track-badge">🎓 MASTER DEPTH TRACK</span>
+            <p class="module-label">Pro Accelerator • Master DEPTH • Module 30: Case Analysis Mastery</p>
+            <h1 class="lesson-title">Lesson 30.5: Timeline Mapping & Root Cause Analysis</h1>
+            <div class="lesson-meta">
+                <span class="meta-item">⏱️ 20 min read</span>
+                <span class="meta-item">📊 Lesson 5 of 8</span>
+                <span class="meta-item">📅 Timeline Mastery</span>
+            </div>
+        </header>
+
+        <nav class="toc-box">
+            <p class="box-label">In This Lesson</p>
+            <ul class="toc-list">
+                <li><a href="#timeline-power"><span class="section-num">01</span>The Power of Timeline</a></li>
+                <li><a href="#building-timeline"><span class="section-num">02</span>Building the Clinical Timeline</a>
+                </li>
+                <li><a href="#triggers-mediators"><span class="section-num">03</span>Triggers, Mediators,
+                        Antecedents</a></li>
+                <li><a href="#timeline-case"><span class="section-num">04</span>Full Timeline Case Analysis</a></li>
+                <li><a href="#presenting-timeline"><span class="section-num">05</span>Presenting Timeline in Cases</a>
+                </li>
+                <li><a href="#studio"><span class="section-num">06</span>Studio: Timeline Construction</a></li>
+            </ul>
+        </nav>
+
+        <div class="welcome-box">
+            <h3>Time Reveals Causation</h3>
+            <p>The timeline is the <span class="highlight">single most diagnostic tool</span> in functional medicine.
+                When did symptoms appear? In what order? What preceded them? What made them better or worse? A
+                well-constructed timeline reveals causation that no lab test can show. This lesson teaches you to build,
+                analyze, and present clinical timelines that demonstrate your understanding of root causes.</p>
+        </div>
+
+        <div class="objectives-box">
+            <p class="box-label">What You'll Master</p>
+            <ul>
+                <li>Why timeline analysis is <span class="highlight">more diagnostic than labs</span> for complex cases
+                </li>
+                <li>The <strong>IFM Matrix</strong> framework: Antecedents, Triggers, and Mediators</li>
+                <li>How to construct a timeline that reveals <span class="highlight">hidden connections</span></li>
+                <li>Common timeline patterns and what they suggest</li>
+                <li>Presenting timeline in case analysis to demonstrate clinical thinking</li>
+            </ul>
+        </div>
+
+        <div class="coach-voice">
+            <p class="coach-name">Sarah M., Lead Instructor</p>
+            <p>I had a Hashimoto's patient who'd been treated for years with no improvement. When I finally mapped her
+                timeline, everything changed. Her symptoms started 18 months after a prolonged mold exposure at
+                work—something no one had asked about. Once we addressed the mold-triggered inflammation, her TPO
+                antibodies dropped by 60% in 6 months. The labs never would have told us about the mold. The timeline
+                did.</p>
+        </div>
+
+        <h2 id="timeline-power">The Power of Timeline Analysis</h2>
+
+        <p>In conventional medicine, doctors ask "What are your symptoms?" In functional medicine, we ask <span
+                class="highlight">"When did each symptom start, and what was happening in your life at that
+                time?"</span></p>
+
+        <div class="protocol-card">
+            <p class="protocol-title">Why Timeline Trumps Labs</p>
+            <ul>
+                <li><strong>Causation direction:</strong> Did gut issues cause fatigue, or did stress cause both?
+                    Timeline reveals sequence.</li>
+                <li><strong>Trigger identification:</strong> Labs show current state; timeline shows what triggered the
+                    change.</li>
+                <li><strong>Pattern evolution:</strong> How did the presentation develop over time? Progressive spread
+                    suggests different causes than sudden onset.</li>
+                <li><strong>Intervention response:</strong> What worked, what didn't, and when? Past response predicts
+                    future response.</li>
+                <li><strong>Hidden connections:</strong> Events that seem unrelated (a job change, a move, a
+                    relationship change) often precede health shifts.</li>
+            </ul>
+        </div>
+
+        <h2 id="building-timeline">Building the Clinical Timeline</h2>
+
+        <p>A clinical timeline maps health events across the patient's life, focusing on:</p>
+
+        <div class="protocol-card">
+            <p class="protocol-title">Timeline Construction: Key Milestones</p>
+            <ul>
+                <li><strong>Birth/early childhood:</strong> Vaginal vs. C-section, breastfed vs. formula, early
+                    antibiotics, childhood illnesses</li>
+                <li><strong>Puberty/adolescence:</strong> When? Any issues? Acne, mood, menstrual? Eating patterns?</li>
+                <li><strong>Major illnesses:</strong> Mono, infections, hospitalizations, surgeries</li>
+                <li><strong>Medications history:</strong> Antibiotics (how many courses?), birth control, PPIs, other
+                    long-term meds</li>
+                <li><strong>Major life events:</strong> Moves, job changes, relationships, deaths, trauma, financial
+                    stress</li>
+                <li><strong>Environmental exposures:</strong> Mold, chemicals, travel to endemic areas</li>
+                <li><strong>Symptom onset:</strong> When did EACH current symptom first appear? In what order?</li>
+            </ul>
+        </div>
+
+        <h2 id="triggers-mediators">The IFM Matrix: Triggers, Mediators, Antecedents</h2>
+
+        <p>The Institute for Functional Medicine uses a framework to organize timeline data:</p>
+
+        <div class="protocol-card">
+            <p class="protocol-title">Antecedents (Predisposing Factors)</p>
+            <ul>
+                <li>Genetic predispositions (family history of autoimmune, metabolic, mental health)</li>
+                <li>Prenatal/birth factors (maternal health, delivery method, early nutrition)</li>
+                <li>Early childhood factors (antibiotic exposure, diet, emotional environment)</li>
+                <li>These set the <strong>susceptibility</strong>—why this person vs. another</li>
+            </ul>
+        </div>
+
+        <div class="protocol-card">
+            <p class="protocol-title">Triggers (Precipitating Factors)</p>
+            <ul>
+                <li>Infections (viral, bacterial, parasitic)</li>
+                <li>Environmental exposures (mold, toxins, chemicals)</li>
+                <li>Physical trauma (surgery, injury, accident)</li>
+                <li>Emotional trauma (death, divorce, abuse)</li>
+                <li>Major life changes (move, job, relationship)</li>
+                <li>These are the <strong>spark</strong>—what initiated the cascade</li>
+            </ul>
+        </div>
+
+        <div class="protocol-card">
+            <p class="protocol-title">Mediators (Perpetuating Factors)</p>
+            <ul>
+                <li>Ongoing exposures (continued mold, ongoing stress)</li>
+                <li>Nutrient deficiencies perpetuated by gut dysfunction</li>
+                <li>Sleep deprivation, ongoing inflammation</li>
+                <li>Medications that mask but don't fix (PPIs perpetuating dysbiosis)</li>
+                <li>These are the <strong>fuel</strong>—what keeps the fire burning</li>
+            </ul>
+        </div>
+
+        <div class="alert-box clinical-pearl">
+            <p class="alert-label">Clinical Pearl: The Trigger Question</p>
+            <p>"What was happening in your life in the 6-12 months before your symptoms started?" This single question
+                uncovers triggers that no lab test will find. Ask it for every major symptom.</p>
+        </div>
+
+        <h2 id="timeline-case">Full Timeline Case Analysis</h2>
+
+        <div class="case-study">
+            <div class="case-study-header">
+                <div class="case-study-icon">📅</div>
+                <div>
+                    <p class="box-label">Timeline Case Study: Michelle</p>
+                    <p class="subtitle">Tracing decades to find the root</p>
+                </div>
+            </div>
+            <div class="case-study-content">
+                <div class="patient-profile">
+                    <div class="patient-avatar">👩</div>
+                    <div class="patient-info">
+                        <h4>Michelle, 42 years old</h4>
+                        <p>Presenting: Hashimoto's, fatigue, weight gain, depression, digestive issues</p>
+                    </div>
+                </div>
+
+                <p><strong>Current symptoms:</strong> Diagnosed Hashimoto's (5 years ago), chronic fatigue (8/10 most
+                    days), 40 lb weight gain over 7 years, depression (on Lexapro 2 years), IBS-C, brain fog, anxiety,
+                    joint pain.</p>
+
+                <div class="timeline-box">
+                    <div class="timeline-event">
+                        <div class="timeline-year">1981</div>
+                        <div class="timeline-content">
+                            <h4>Birth & Infancy</h4>
+                            <p>C-section delivery, formula-fed, recurrent ear infections → multiple antibiotic courses
+                                by age 2</p>
+                            <span class="trigger-tag">ANTECEDENT: Microbiome disruption</span>
+                        </div>
+                    </div>
+                    <div class="timeline-event">
+                        <div class="timeline-year">1994</div>
+                        <div class="timeline-content">
+                            <h4>Puberty (Age 13)</h4>
+                            <p>Heavy, painful periods. Started birth control at 15. Acne through teens.</p>
+                            <span class="trigger-tag">ANTECEDENT: Early hormonal issues</span>
+                        </div>
+                    </div>
+                    <div class="timeline-event">
+                        <div class="timeline-year">2005</div>
+                        <div class="timeline-content">
+                            <h4>College/Early Adulthood (Age 24)</h4>
+                            <p>Severe mononucleosis—in bed 6 weeks. "Never felt the same after." Started having IBS
+                                symptoms.</p>
+                            <span class="trigger-tag">TRIGGER: EBV infection</span>
+                        </div>
+                    </div>
+                    <div class="timeline-event">
+                        <div class="timeline-year">2012</div>
+                        <div class="timeline-content">
+                            <h4>Major Life Stress (Age 31)</h4>
+                            <p>Divorce after 5-year marriage. Working 60+ hour weeks. Sleep 5 hours/night. Started
+                                gaining weight.</p>
+                            <span class="trigger-tag">TRIGGER: Chronic stress</span>
+                        </div>
+                    </div>
+                    <div class="timeline-event">
+                        <div class="timeline-year">2015</div>
+                        <div class="timeline-content">
+                            <h4>New Home (Age 34)</h4>
+                            <p>Moved into older home. "Always smelled musty in the basement." Fatigue worsened
+                                significantly.</p>
+                            <span class="trigger-tag">TRIGGER: Mold exposure</span>
+                        </div>
+                    </div>
+                    <div class="timeline-event">
+                        <div class="timeline-year">2017</div>
+                        <div class="timeline-content">
+                            <h4>Hashimoto's Diagnosis (Age 36)</h4>
+                            <p>TPO antibodies 450. Started levothyroxine. "Didn't feel much different."</p>
+                        </div>
+                    </div>
+                    <div class="timeline-event">
+                        <div class="timeline-year">2020</div>
+                        <div class="timeline-content">
+                            <h4>Depression Diagnosis (Age 39)</h4>
+                            <p>Started Lexapro for anxiety and depression. "Took the edge off but still exhausted."</p>
+                        </div>
+                    </div>
+                    <div class="timeline-event">
+                        <div class="timeline-year">2023</div>
+                        <div class="timeline-content">
+                            <h4>Current (Age 42)</h4>
+                            <p>Presents to you with 7+ symptoms, "tired of feeling tired," conventional medicine not
+                                helping.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <p><strong>Timeline Analysis:</strong></p>
+                <ul>
+                    <li><strong>Antecedents:</strong> C-section, formula-fed, early antibiotics → microbiome disruption
+                        from infancy. Early hormonal issues suggest genetic susceptibility.</li>
+                    <li><strong>Trigger #1:</strong> EBV (mononucleosis age 24) — Known trigger for autoimmunity. "Never
+                        felt the same" = classic post-viral onset.</li>
+                    <li><strong>Trigger #2:</strong> Chronic stress (divorce, overwork) — HPA axis hit, further immune
+                        dysregulation.</li>
+                    <li><strong>Trigger #3:</strong> Mold exposure (2015 home) — Biotoxin exposure worsened
+                        inflammation, likely accelerated Hashimoto's progression.</li>
+                    <li><strong>Mediators:</strong> Ongoing mold exposure (still in house?), medication masking, poor
+                        sleep, unaddressed gut dysfunction.</li>
+                </ul>
+
+                <p><strong>Clinical Implications:</strong></p>
+                <p>This is not "Hashimoto's" as a primary diagnosis—it's a <span class="highlight">multi-hit autoimmune
+                        presentation</span> with identifiable triggers. Thyroid medication won't resolve this because it
+                    doesn't address EBV reactivation, mold biotoxin, or gut dysbiosis (microbiome compromised since
+                    infancy). The "depression" is likely neuroinflammation, not primary psychiatric—Lexapro won't fix
+                    inflammation.</p>
+
+                <p><strong>Treatment Priority Based on Timeline:</strong></p>
+                <ol>
+                    <li>Environmental assessment (is she still in mold? Consider mycotoxin testing)</li>
+                    <li>Gut restoration (fundamentally compromised; affecting everything downstream)</li>
+                    <li>EBV assessment (reactivation labs) and immune support</li>
+                    <li>HPA support (decade+ of stress)</li>
+                    <li>Thyroid optimization (once above addressed, may need T3 support)</li>
+                </ol>
+            </div>
+        </div>
+
+        <h2 id="presenting-timeline">Presenting Timeline in Case Analysis</h2>
+
+        <div class="protocol-card">
+            <p class="protocol-title">Timeline Presentation Script</p>
+            <ul>
+                <li><strong>Start with the "discovery" narrative:</strong> "When I mapped Michelle's timeline, a clear
+                    pattern emerged..."</li>
+                <li><strong>Highlight the key inflection points:</strong> "The EBV infection at 24 was her first major
+                    hit—'never felt the same after'..."</li>
+                <li><strong>Connect triggers to current symptoms:</strong> "The mold exposure in 2015 preceded her
+                    Hashimoto's diagnosis by 2 years..."</li>
+                <li><strong>Show the logic:</strong> "Given this sequence, treating only thyroid misses the upstream
+                    drivers..."</li>
+                <li><strong>Land on clinical implications:</strong> "This timeline tells us to prioritize
+                    environmental-immune-gut before optimizing thyroid."</li>
+            </ul>
+        </div>
+
+        <h2 id="studio">Studio: Timeline Construction</h2>
+
+        <div class="studio-exercise">
+            <p class="box-label">Practice Lab: Build a Clinical Timeline</p>
+            <h4>Your Assignment</h4>
+            <p>Using the following case, construct a visual timeline and identify Antecedents, Triggers, and Mediators:
+            </p>
+
+            <p><strong>Case:</strong> David, 38M. Presenting with chronic fatigue, insomnia, anxiety, and new-onset
+                digestive issues. He mentions:</p>
+            <ul>
+                <li>"I was a colicky baby, lots of antibiotics for ear infections as a kid"</li>
+                <li>"Had my tonsils and adenoids out at age 7"</li>
+                <li>"Pretty healthy through teens and 20s, worked out, felt great"</li>
+                <li>"Started a startup at 28—worked 80 hour weeks for 3 years"</li>
+                <li>"Company failed at 31, went into debt, marriage struggled"</li>
+                <li>"Traveled to India at 32, got 'Delhi belly'—never fully recovered"</li>
+                <li>"Moved to new apartment at 34—noticed it had water damage in bathroom"</li>
+                <li>"Symptoms got really bad 35-36, now can barely work"</li>
+            </ul>
+
+            <p><strong>Your task:</strong></p>
+            <ol>
+                <li>Create a visual timeline with key events and years</li>
+                <li>Label each event as Antecedent, Trigger, or Mediator</li>
+                <li>Identify which patterns (from the 7 Master Patterns) this timeline suggests</li>
+                <li>What would be your top 2 investigation priorities based on timeline alone?</li>
+            </ol>
+        </div>
+
+        <div class="key-terms-box">
+            <p class="box-label">Key Terms to Remember</p>
+            <div class="terms-grid">
+                <div class="term-item">
+                    <p class="term">Clinical Timeline</p>
+                    <p class="definition">A chronological map of health events revealing the sequence and relationship
+                        between triggers, symptoms, and interventions.</p>
+                </div>
+                <div class="term-item">
+                    <p class="term">Antecedents</p>
+                    <p class="definition">Predisposing factors that set susceptibility—genetics, early life events,
+                        developmental factors.</p>
+                </div>
+                <div class="term-item">
+                    <p class="term">Triggers</p>
+                    <p class="definition">Events that initiate a disease cascade—infections, trauma, exposures, major
+                        life events.</p>
+                </div>
+                <div class="term-item">
+                    <p class="term">Mediators</p>
+                    <p class="definition">Perpetuating factors that keep the disease process active—ongoing exposures,
+                        secondary dysfunctions.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="check-understanding">
+            <p class="box-label">Check Your Understanding</p>
+            <p class="box-subtitle">Test your timeline analysis skills:</p>
+
+            <div class="question-item">
+                <div class="question-number">1</div>
+                <p class="question-text">In Michelle's case, why is it important that the mold exposure preceded the
+                    Hashimoto's diagnosis by 2 years?</p>
+                <button class="reveal-btn"
+                    onclick="this.nextElementSibling.classList.toggle('show'); this.textContent = this.textContent === 'Reveal Answer' ? 'Hide Answer' : 'Reveal Answer';">Reveal
+                    Answer</button>
+                <p class="answer-text">Temporal sequence suggests causation. Mold exposure triggers inflammation and
+                    immune dysregulation, which can tip the autoimmune cascade. The 2-year gap is typical—autoantibodies
+                    build before diagnosis. If mold came AFTER diagnosis, it would be a mediator but not the trigger.
+                    Since it came before, it's likely a key trigger that conventional medicine completely missed.</p>
+            </div>
+
+            <div class="question-item">
+                <div class="question-number">2</div>
+                <p class="question-text">What's the clinical difference between a Trigger and a Mediator?</p>
+                <button class="reveal-btn"
+                    onclick="this.nextElementSibling.classList.toggle('show'); this.textContent = this.textContent === 'Reveal Answer' ? 'Hide Answer' : 'Reveal Answer';">Reveal
+                    Answer</button>
+                <p class="answer-text">A Trigger is the initiating event—it starts the cascade (mold exposure,
+                    infection, trauma). A Mediator is what keeps it going—ongoing exposure, secondary dysfunctions,
+                    lifestyle factors. In treatment, removing triggers is often necessary for recovery, but addressing
+                    mediators is what sustains recovery. You can sometimes address mediators without removing triggers,
+                    but outcomes are limited.</p>
+            </div>
+
+            <div class="question-item">
+                <div class="question-number">3</div>
+                <p class="question-text">Why is "C-section delivery, formula-fed, early antibiotics" significant as an
+                    antecedent in Michelle's case?</p>
+                <button class="reveal-btn"
+                    onclick="this.nextElementSibling.classList.toggle('show'); this.textContent = this.textContent === 'Reveal Answer' ? 'Hide Answer' : 'Reveal Answer';">Reveal
+                    Answer</button>
+                <p class="answer-text">All three factors disrupt early microbiome development. C-section bypasses
+                    colonization from birth canal. Formula lacks beneficial bacteria and oligosaccharides of breast
+                    milk. Antibiotics wipe out developing beneficial bacteria. Research shows these antecedents increase
+                    lifetime risk of autoimmune disease, allergies, and metabolic dysfunction. Michelle was "set up" for
+                    immune dysfunction from infancy—the triggers just activated the susceptibility.</p>
+            </div>
+        </div>
+
+        <div class="takeaways-box">
+            <p class="box-label">Key Takeaways</p>
+            <ul>
+                <li>Timeline is <span class="highlight">more diagnostic than labs</span> for identifying root causes in
+                    complex cases</li>
+                <li>Use the <strong>ATM framework</strong>: Antecedents (predisposition), Triggers (initiation),
+                    Mediators (perpetuation)</li>
+                <li>Always ask: <strong>"What was happening in your life 6-12 months before symptoms started?"</strong>
+                </li>
+                <li>Temporal sequence suggests causation—what came first is usually upstream</li>
+                <li>Present timeline as a narrative of discovery that demonstrates clinical reasoning</li>
+            </ul>
+        </div>
+
+        <div class="references-box">
+            <p class="box-label">References</p>
+            <ol>
+                <li>Institute for Functional Medicine. (2023). <em>Applying the Functional Medicine Model</em>. IFM
+                    Publications.</li>
+                <li>Vojdani, A., et al. (2014). Environmental triggers and autoimmunity. <em>Autoimmune Diseases</em>,
+                    2014, 437231.</li>
+                <li>Shoenfeld, Y., et al. (Eds.). (2015). <em>Infection and Autoimmunity</em>. Academic Press.</li>
+                <li>Fasano, A. (2020). All disease begins in the (leaky) gut. <em>Physiological Reviews</em>, 100(1),
+                    171-202.</li>
+                <li>McEwen, B. S. (2017). Neurobiological and systemic effects of chronic stress. <em>Chronic
+                        Stress</em>, 1, 1-11.</li>
+            </ol>
+        </div>
+
+        <footer class="lesson-footer">
+            <p class="brand">AccrediPro Pro Accelerator • DEPTH MASTERY™</p>
+            <p class="copyright">© 2024 AccrediPro. All rights reserved.</p>
+        </footer>
+
+    </div>
+</body>
+
+</html>

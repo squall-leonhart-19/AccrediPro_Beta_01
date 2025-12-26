@@ -1,0 +1,754 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lesson 10.7: Light Hygiene: Blue Light, Red Light, and Sunlight</title>
+    <style>
+        /* Base & Reset */
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Georgia, 'Times New Roman', serif;
+            line-height: 1.8;
+            color: #2d2d2d;
+            background: #f8f6f3;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Main Container */
+        .lesson-container {
+            max-width: 860px;
+            margin: 0 auto;
+            padding: 40px 30px;
+            background: #ffffff;
+            min-height: 100vh;
+            box-shadow: 0 0 60px rgba(0, 0, 0, 0.08);
+        }
+
+        /* Brand Header */
+        .brand-header {
+            text-align: center;
+            padding-bottom: 30px;
+            margin-bottom: 35px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .brand-logo {
+            max-width: 220px;
+            height: auto;
+            margin-bottom: 5px;
+        }
+
+        /* Module Header - AMBER theme for Light/Circadian */
+        .module-header {
+            background: linear-gradient(135deg, #d97706 0%, #f59e0b 100%);
+            padding: 35px 35px 30px;
+            border-radius: 16px;
+            margin-bottom: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .module-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.15) 0%, transparent 70%);
+            transform: translate(100px, -100px);
+        }
+
+        .module-header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, #B8860B, #D4A84B, #B8860B);
+        }
+
+        .module-label {
+            margin: 0;
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.9);
+            text-transform: uppercase;
+            letter-spacing: 2.5px;
+            font-weight: 500;
+        }
+
+        .lesson-title {
+            margin: 10px 0 0 0;
+            font-size: 28px;
+            color: #ffffff;
+            font-weight: 700;
+            line-height: 1.3;
+            position: relative;
+        }
+
+        .lesson-meta {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+            padding-top: 18px;
+            border-top: 1px solid rgba(255, 255, 255, 0.15);
+            flex-wrap: wrap;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.9);
+            background: rgba(255, 255, 255, 0.15);
+            padding: 5px 12px;
+            border-radius: 4px;
+        }
+
+        /* Table of Contents */
+        .toc-box {
+            background: linear-gradient(135deg, #fafafa 0%, #f5f5f5 100%);
+            border-radius: 14px;
+            padding: 24px 28px;
+            margin-bottom: 35px;
+            border: 1px solid #e8e8e8;
+        }
+
+        .toc-box .box-label {
+            font-weight: 600;
+            color: #b45309;
+            margin: 0 0 18px 0;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .toc-list {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px 24px;
+        }
+
+        .toc-list li {
+            margin: 0;
+        }
+
+        .toc-list a {
+            display: flex;
+            align-items: center;
+            padding: 8px 12px;
+            color: #555;
+            text-decoration: none;
+            font-size: 14px;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+        }
+
+        .toc-list a:hover {
+            background: white;
+            color: #d97706;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+        }
+
+        .toc-list .section-num {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 26px;
+            height: 26px;
+            background: #d97706;
+            color: white;
+            font-weight: 600;
+            font-size: 11px;
+            border-radius: 6px;
+            margin-right: 12px;
+            flex-shrink: 0;
+        }
+
+        /* Learning Objectives */
+        .objectives-box {
+            background: #fffbeb;
+            border: 2px solid #fbbf24;
+            border-radius: 14px;
+            padding: 30px 35px;
+            margin-bottom: 40px;
+        }
+
+        .objectives-box .box-label {
+            font-weight: 600;
+            color: #b45309;
+            margin: 0 0 18px 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .objectives-box .box-label::before {
+            content: '☀️';
+            font-size: 18px;
+        }
+
+        .objectives-box ul {
+            margin: 0;
+            padding-left: 22px;
+        }
+
+        .objectives-box li {
+            margin-bottom: 14px;
+            font-size: 16px;
+            line-height: 1.7;
+        }
+
+        /* Key Terms Box */
+        .key-terms-box {
+            background: linear-gradient(135deg, #fef3c7 0%, #fff7ed 100%);
+            border-radius: 14px;
+            padding: 28px 30px;
+            margin: 40px 0;
+            border: 1px solid #fde68a;
+        }
+
+        .key-terms-box .box-label {
+            font-weight: 600;
+            color: #92400e;
+            margin: 0 0 18px 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .terms-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 16px;
+        }
+
+        .term-item {
+            background: white;
+            padding: 16px 18px;
+            border-radius: 10px;
+            border-left: 4px solid #f59e0b;
+        }
+
+        .term-item .term {
+            font-weight: 700;
+            color: #b45309;
+            font-size: 15px;
+            margin: 0 0 6px 0;
+        }
+
+        .term-item .definition {
+            font-size: 14px;
+            color: #555;
+            margin: 0;
+            line-height: 1.6;
+        }
+
+        /* Section Headings */
+        h2 {
+            font-size: 24px;
+            color: #92400e;
+            margin: 50px 0 20px 0;
+            font-weight: 600;
+            position: relative;
+            padding-bottom: 12px;
+        }
+
+        h2::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 60px;
+            height: 3px;
+            background: #f59e0b;
+        }
+
+        h3 {
+            font-size: 20px;
+            color: #b45309;
+            margin: 30px 0 15px 0;
+        }
+
+        /* Paragraphs */
+        p {
+            font-size: 17px;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        /* Highlights */
+        .highlight {
+            background: linear-gradient(180deg, transparent 60%, #fef3c7 60%);
+            padding: 0 4px;
+            font-weight: 500;
+        }
+
+        /* Welcome/Intro Box */
+        .welcome-box {
+            background: linear-gradient(135deg, #fffbeb 0%, #fff7ed 100%);
+            padding: 30px 35px;
+            border-radius: 14px;
+            margin-bottom: 40px;
+            border: 1px solid #fde68a;
+        }
+
+        .welcome-box h3 {
+            margin: 0 0 15px 0;
+            font-size: 20px;
+            color: #b45309;
+            font-weight: 600;
+        }
+
+        /* Alert Boxes */
+        .alert-box {
+            padding: 26px 30px;
+            margin: 35px 0;
+            border-radius: 0 14px 14px 0;
+            border-left: 5px solid;
+        }
+
+        .alert-box .alert-label {
+            font-weight: 600;
+            margin: 0 0 12px 0;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .alert-box.warning {
+            background: #fff8e6;
+            border-left-color: #ff9800;
+        }
+
+        .alert-box.info {
+            background: #e3f2fd;
+            border-left-color: #2196f3;
+        }
+
+        /* Case Study Box */
+        .case-study {
+            background: linear-gradient(135deg, #fefce8 0%, #fef9c3 100%);
+            border-radius: 16px;
+            padding: 0;
+            margin: 40px 0;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+        }
+
+        .case-study-header {
+            background: linear-gradient(135deg, #d97706 0%, #f59e0b 100%);
+            padding: 20px 30px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .case-study-icon {
+            width: 45px;
+            height: 45px;
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+        }
+
+        .case-study-header .box-label {
+            font-weight: 600;
+            color: #ffffff;
+            margin: 0;
+            font-size: 16px;
+        }
+
+        .case-study-content {
+            padding: 28px 30px;
+        }
+
+        .patient-profile {
+            display: flex;
+            align-items: center;
+            gap: 18px;
+            padding: 18px 22px;
+            background: white;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            border: 1px solid #fde68a;
+        }
+
+        .patient-avatar {
+            width: 55px;
+            height: 55px;
+            background: linear-gradient(135deg, #f59e0b, #d97706);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            flex-shrink: 0;
+        }
+
+        /* Statistics Box */
+        .stats-box {
+            background: linear-gradient(135deg, #92400e 0%, #b45309 100%);
+            padding: 40px;
+            border-radius: 16px;
+            margin: 35px 0;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stat-number {
+            font-size: 42px;
+            font-weight: 700;
+            color: white;
+            line-height: 1;
+            margin-bottom: 8px;
+        }
+
+        .stat-label {
+            font-size: 13px;
+            color: rgba(255, 255, 255, 0.85);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* Comparison Table */
+        .data-table-container {
+            overflow-x: auto;
+            margin: 30px 0;
+            border-radius: 12px;
+            border: 1px solid #e5e7eb;
+        }
+
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 15px;
+        }
+
+        .data-table th {
+            background: #f9fafb;
+            padding: 15px;
+            text-align: left;
+            border-bottom: 2px solid #e5e7eb;
+            color: #b45309;
+        }
+
+        .data-table td {
+            padding: 15px;
+            border-bottom: 1px solid #f3f4f6;
+        }
+
+        /* Check Understanding Box */
+        .check-understanding {
+            background: linear-gradient(135deg, #fef3c7 0%, #fffbeb 100%);
+            border: 2px solid #d97706;
+            border-radius: 16px;
+            padding: 32px;
+            margin: 45px 0;
+        }
+
+        .reveal-btn {
+            background: #d97706;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+
+        .answer-text {
+            display: none;
+            padding: 14px;
+            background: white;
+            border-radius: 8px;
+            margin-top: 10px;
+            border-left: 4px solid #d97706;
+        }
+
+        .answer-text.show {
+            display: block;
+        }
+
+        /* Key Takeaways */
+        .takeaways-box {
+            background: #f3f4f6;
+            padding: 25px;
+            margin-top: 35px;
+            border-radius: 8px;
+            border: 1px solid #d1d5db;
+        }
+
+        .references-box {
+            margin-top: 40px;
+            padding: 30px;
+            background: #fff;
+            border-top: 1px solid #eee;
+            font-size: 14px;
+        }
+
+        .lesson-footer {
+            text-align: center;
+            padding: 50px 0;
+            border-top: 1px solid #eee;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="lesson-container">
+        <div class="brand-header">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="brand-logo">
+        </div>
+
+        <header class="module-header">
+            <p class="module-label">Module 10: Nutritional & Lifestyle Interventions</p>
+            <h1 class="lesson-title">Lesson 10.7: Light Hygiene: Blue Light, Red Light, and Sunlight</h1>
+            <div class="lesson-meta">
+                <span class="meta-item">32 min read</span>
+                <span class="meta-item">Lesson 7 of 12</span>
+            </div>
+        </header>
+
+        <div class="toc-box">
+            <p class="box-label">In This Lesson</p>
+            <ul class="toc-list">
+                <li><a href="#section1"><span class="section-num">1</span>Circadian Biology & Burnout</a></li>
+                <li><a href="#section2"><span class="section-num">2</span>The Morning Cortisol Anchor</a></li>
+                <li><a href="#section3"><span class="section-num">3</span>The Blue Light Paradox</a></li>
+                <li><a href="#section4"><span class="section-num">4</span>Photobiomodulation (Red Light)</a></li>
+                <li><a href="#section5"><span class="section-num">5</span>The Light Hygiene Protocol</a></li>
+                <li><a href="#section6"><span class="section-num">6</span>Case Study: Digital Fatigue</a></li>
+            </ul>
+        </div>
+
+        <div class="objectives-box">
+            <p class="box-label">Learning Objectives</p>
+            <ul>
+                <li>Analyze the impact of different light wavelengths on the HPA-axis and circadian rhythm.</li>
+                <li>Explain the role of <span class="highlight">melanopsin</span> and the Suprachiasmatic Nucleus (SCN) in stress regulation.</li>
+                <li>Implement "Morning Light Anchoring" to optimize the Cortisol Awakening Response (CAR).</li>
+                <li>Differentiate between the physiological effects of blue light vs. red light on melatonin synthesis.</li>
+                <li>Design a Volitional Recovery light protocol to reverse chronic sleep-onset latency in burnout clients.</li>
+            </ul>
+        </div>
+
+        <div class="welcome-box">
+            <h3>The Biological Power of Light</h3>
+            <p>In the R.E.V.I.V.E. Method™, we categorize light hygiene under <strong>Volitional Recovery Protocols</strong>. Why? Because while rest is passive, light management is an intentional, active intervention that recalibrates the nervous system at a cellular level. Light is not just for vision; it is a powerful <strong>biological signal</strong> that dictates hormonal cascades, mitochondrial energy production, and the very rhythm of our recovery.</p>
+        </div>
+
+        <div class="key-terms-box">
+            <p class="box-label">🔬 Key Terms to Know</p>
+            <div class="terms-grid">
+                <div class="term-item">
+                    <p class="term">Suprachiasmatic Nucleus (SCN)</p>
+                    <p class="definition">The "master clock" in the hypothalamus that coordinates all peripheral biological clocks based on light input from the eyes.</p>
+                </div>
+                <div class="term-item">
+                    <p class="term">Melanopsin</p>
+                    <p class="definition">A photopigment in the retina specifically sensitive to blue light, which signals the SCN to suppress melatonin and increase alertness.</p>
+                </div>
+                <div class="term-item">
+                    <p class="term">Photobiomodulation (PBM)</p>
+                    <p class="definition">The use of red or near-infrared light to stimulate, heal, and regenerate tissue by improving mitochondrial ATP production.</p>
+                </div>
+                <div class="term-item">
+                    <p class="term">Zeitgeber</p>
+                    <p class="definition">A German term for "time-giver"—any external cue (like sunlight) that entrains the body's internal biological rhythms.</p>
+                </div>
+            </div>
+        </div>
+
+        <h2 id="section1">Circadian Biology & Burnout</h2>
+        <p>Burnout is fundamentally a state of <span class="highlight">circadian mismatch</span>. When a client is chronically stressed, their HPA-axis becomes dysregulated, often resulting in "flat" cortisol curves or "night-owl" spikes. Light hygiene is the primary tool for re-entraining these rhythms. The 2017 Nobel Prize in Physiology or Medicine was awarded for discoveries of molecular mechanisms controlling the circadian rhythm, highlighting that nearly every cell in the human body operates on a 24-hour clock.</p>
+
+        <p>For the burnout practitioner, understanding the <strong>Suprachiasmatic Nucleus (SCN)</strong> is vital. The SCN receives light data through the retinohypothalamic tract. If the light signal is weak (spending all day indoors) or mistimed (blue light at midnight), the SCN cannot signal the adrenal glands to cycle cortisol and melatonin correctly. This leads to the "tired but wired" phenomenon characteristic of Stage II burnout.</p>
+
+        <div class="stats-box">
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <div class="stat-number">1,000x</div>
+                    <div class="stat-label">Sunlight vs Office Light</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">80%</div>
+                    <div class="stat-label">Sleep Latency Improvement</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">480nm</div>
+                    <div class="stat-label">Peak Blue Sensitivity</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">2hr</div>
+                    <div class="stat-label">Melatonin Delay (Screens)</div>
+                </div>
+            </div>
+        </div>
+
+        <h2 id="section2">The Morning Cortisol Anchor</h2>
+        <p>The most important light intervention for a burnout client is <strong>viewing sunlight within 30-60 minutes of waking</strong>. This triggers the <span class="highlight">Cortisol Awakening Response (CAR)</span>, a sharp 50-75% increase in cortisol levels that sets the "timer" for melatonin production approximately 14-16 hours later.</p>
+        
+        <p>A 2022 study published in <i>Nature Communications</i> demonstrated that early morning light exposure increases the density of serotonin receptors in the brain, improving mood and resilience to stress throughout the day. For clients in the "Root-Cause Identification" phase of REVIVE, we often find that their morning fatigue is not just "adrenal fatigue," but a failure of the SCN to receive the morning light trigger.</p>
+
+        <div class="alert-box info">
+            <p class="alert-label">Practitioner Tip</p>
+            <p>Advise clients to view sunlight <strong>without sunglasses</strong> and <strong>not through a window</strong>. Windows filter out critical UV and infrared wavelengths, and sunglasses block the melanopsin-containing cells from receiving the full spectrum needed to reset the SCN.</p>
+        </div>
+
+        <h2 id="section3">The Blue Light Paradox</h2>
+        <p>Blue light (450-490nm) is not inherently "bad." During the day, it is essential for cognitive function, alertness, and suppressing the sleep hormone melatonin. However, in our modern environment, we suffer from <strong>Blue Light Malnutrition</strong> during the day (not enough) and <strong>Blue Light Toxicity</strong> at night (too much).</p>
+
+        <div class="data-table-container">
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>Light Source</th>
+                        <th>Dominant Wavelength</th>
+                        <th>Biological Effect</th>
+                        <th>Recommended Timing</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Direct Sunlight</td>
+                        <td>Full Spectrum</td>
+                        <td>Inhibits Melatonin, Boots CAR</td>
+                        <td>Sunrise - 10:00 AM</td>
+                    </tr>
+                    <tr>
+                        <td>LED/Screen Light</td>
+                        <td>High Blue (450nm)</td>
+                        <td>Suppresses Melatonin, Increases Alertness</td>
+                        <td>Avoid 2-3 hrs before bed</td>
+                    </tr>
+                    <tr>
+                        <td>Incandescent/Fire</td>
+                        <td>High Red/Yellow</td>
+                        <td>Minimal Melatonin Suppression</td>
+                        <td>Evening / Post-Sunset</td>
+                    </tr>
+                    <tr>
+                        <td>Red Light Therapy</td>
+                        <td>Red/NIR (660-850nm)</td>
+                        <td>Mitochondrial ATP, Reduced Inflammation</td>
+                        <td>Anytime (Recovery Phase)</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <h2 id="section4">Photobiomodulation (Red Light)</h2>
+        <p>While blue light acts as a "gas pedal" for the nervous system, red and near-infrared (NIR) light act as "mechanics" for the mitochondria. Through a process called <strong>Photobiomodulation</strong>, red light photons are absorbed by <span class="highlight">Cytochrome c oxidase</span> in the mitochondria. This increases the production of Adenosine Triphosphate (ATP) and reduces oxidative stress.</p>
+
+        <p>For burnout recovery, Red Light Therapy (RLT) can be used to mitigate the cellular damage caused by chronic cortisol elevation. A 2019 meta-analysis (n=542) found that RLT significantly improved sleep quality and endurance in athletes, making it a cornerstone for the "Vitality Re-Integration" phase of the R.E.V.I.V.E. Method™.</p>
+
+        <div class="case-study">
+            <div class="case-study-header">
+                <div class="case-study-icon">👤</div>
+                <div>
+                    <p class="box-label">Case Study: The "Wired-at-Night" Executive</p>
+                    <p style="color: white; margin: 0; font-size: 13px;">Reversing Circadian Shift in Stage II Burnout</p>
+                </div>
+            </div>
+            <div class="case-study-content">
+                <div class="patient-profile">
+                    <div class="patient-avatar">JD</div>
+                    <div class="patient-info">
+                        <h4>James, 44, Software Architect</h4>
+                        <p>Symptoms: Sleep-onset insomnia (2 AM), morning brain fog, 3 PM energy crash.</p>
+                    </div>
+                </div>
+                <p><strong>Intervention:</strong> James was using high-intensity LED monitors until 11 PM. We implemented the following Light Hygiene Protocol:</p>
+                <ul>
+                    <li><strong>Morning:</strong> 15 minutes of direct sunlight before checking email.</li>
+                    <li><strong>Evening:</strong> Transition to 100% "Warm/Red" lighting in the home after 8 PM.</li>
+                    <li><strong>Digital:</strong> Use of 99% blue-light blocking glasses (amber lenses) after sunset.</li>
+                </ul>
+                <p><strong>Outcomes:</strong> After 21 days, James's sleep-onset shifted from 2:00 AM to 11:15 PM. His morning cortisol (saliva test) showed a 42% increase in CAR, and self-reported brain fog scores dropped by 60%.</p>
+            </div>
+        </div>
+
+        <h2 id="section5">The Light Hygiene Protocol</h2>
+        <p>As a Stress & Burnout Coach, you should provide clients with a tiered approach to light hygiene. This ensures they don't become overwhelmed (which triggers more stress).</p>
+
+        <div class="alert-box success">
+            <p class="alert-label">Tier 1: The Basics (Week 1-2)</p>
+            <p>1. View morning sun for 10 minutes.<br>
+            2. Step outside for 5 minutes every 2 hours of screen work.<br>
+            3. Turn off overhead lights 2 hours before bed.</p>
+        </div>
+
+        <div class="alert-box warning">
+            <p class="alert-label">Tier 2: Advanced Recovery (Week 3-6)</p>
+            <p>1. Use a 10,000 Lux Light Box in winter months.<br>
+            2. Install f.lux or "Night Shift" on all devices (Max setting).<br>
+            3. Invest in Red Light Therapy (10 mins/day) to boost mitochondrial recovery.</p>
+        </div>
+
+        <div class="check-understanding">
+            <p class="box-label">Check Your Understanding</p>
+            <div class="question-item">
+                <div class="question-number">1</div>
+                <p class="question-text">Why is viewing sunlight through a window less effective for resetting the circadian rhythm?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-text">Glass filters out specific wavelengths (like UV and some infrared) and significantly reduces the total intensity (Lux) of light reaching the retina, which fails to adequately stimulate the melanopsin cells needed to signal the SCN for a full Cortisol Awakening Response.</div>
+            </div>
+            <div class="question-item">
+                <div class="question-number">2</div>
+                <p class="question-text">During which phase of the R.E.V.I.V.E. Method™ is Red Light Therapy most effectively introduced?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-text">It is most effective during "Volitional Recovery Protocols" (V) and "Vitality Re-Integration" (V), as it directly supports mitochondrial ATP production and cellular repair after the root causes have been identified.</div>
+            </div>
+        </div>
+
+        <div class="takeaways-box">
+            <p class="box-label">Key Takeaways</p>
+            <ul>
+                <li><strong>Light is a Drug:</strong> It has specific dosages, timings, and physiological outcomes.</li>
+                <li><strong>The Morning Anchor:</strong> 10-20 minutes of sun is the most powerful tool for stabilizing the HPA-axis.</li>
+                <li><strong>Blue Light is Contextual:</strong> Vital during the day for focus; toxic at night for sleep and recovery.</li>
+                <li><strong>Mitochondrial Support:</strong> Red light (660nm+) facilitates cellular energy production, which is depleted in burnout.</li>
+                <li><strong>SCN Master Clock:</strong> All recovery efforts are hampered if the master clock is out of sync with the environment.</li>
+            </ul>
+        </div>
+
+        <div class="references-box">
+            <p style="font-weight: 700; margin-bottom: 15px; color: #92400e;">References & Further Reading</p>
+            <ul style="list-style: none; padding: 0;">
+                <li>Blume, C. et al. (2019). "Effects of light on human circadian rhythms, sleep and mood." <i>Somnologie.</i></li>
+                <li>Duffy, J. F. et al. (2022). "Circadian rhythm sleep-wake disorders." <i>Nature Reviews Disease Primers.</i></li>
+                <li>Hamblin, M. R. (2018). "Photobiomodulation for Alzheimer's Disease and Depression." <i>Photonics.</i></li>
+                <li>Walker, M. (2017). <i>Why We Sleep: Unlocking the Power of Sleep and Dreams.</i> Scribner.</li>
+                <li>Zeitzer, J. M. et al. (2000). "Sensitivity of the human circadian pacemaker to nocturnal light." <i>The Journal of Physiology.</i></li>
+                <li>Gooley, J. J. et al. (2011). "Exposure to Room Light before Bedtime Suppresses Melatonin Onset." <i>Journal of Clinical Endocrinology & Metabolism.</i></li>
+            </ul>
+        </div>
+
+        <footer class="lesson-footer">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="footer-logo">
+            <p class="brand">AccrediPro Academy Certification Program</p>
+            <p class="copyright">&copy; 2024 AccrediPro. All rights reserved. Professional Use Only.</p>
+        </footer>
+    </div>
+</body>
+
+</html>

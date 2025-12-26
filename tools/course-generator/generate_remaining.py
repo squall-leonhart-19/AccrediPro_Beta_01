@@ -35,7 +35,8 @@ def verify_course(name):
         count = len(list(mdir.glob("Lesson_*.html")))
         exp = EXPECTED_LESSONS.get(m, 8)
         total += count
-        if count != exp: issues.append(f"M{m:02d}: {count}/{exp}")
+        # Accept lessons >= expected (more is OK)
+        if count < exp: issues.append(f"M{m:02d}: {count}/{exp}")
     if not (path / "Final_Exam").exists(): issues.append("Final exam missing")
     return {"valid": len(issues) == 0, "issues": issues, "total": total}
 

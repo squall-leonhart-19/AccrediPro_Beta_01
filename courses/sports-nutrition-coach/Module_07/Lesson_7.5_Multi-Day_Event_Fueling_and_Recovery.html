@@ -1,0 +1,767 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lesson 7.5: Multi-Day Event Fueling and Recovery</title>
+    <style>
+        /* Base & Reset */
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Georgia, 'Times New Roman', serif;
+            line-height: 1.8;
+            color: #2d2d2d;
+            background: #f8f6f3;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Main Container */
+        .lesson-container {
+            max-width: 860px;
+            margin: 0 auto;
+            padding: 40px 30px;
+            background: #ffffff;
+            min-height: 100vh;
+            box-shadow: 0 0 60px rgba(0, 0, 0, 0.08);
+        }
+
+        /* Brand Header */
+        .brand-header {
+            text-align: center;
+            padding-bottom: 30px;
+            margin-bottom: 35px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .brand-logo {
+            max-width: 220px;
+            height: auto;
+            margin-bottom: 5px;
+        }
+
+        /* Module Header - BLUE/NAVY theme for Loading & Timing */
+        .module-header {
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+            padding: 35px 35px 30px;
+            border-radius: 16px;
+            margin-bottom: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .module-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+            transform: translate(100px, -100px);
+        }
+
+        .module-header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, #B8860B, #D4A84B, #B8860B);
+        }
+
+        .module-label {
+            margin: 0;
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.75);
+            text-transform: uppercase;
+            letter-spacing: 2.5px;
+            font-weight: 500;
+        }
+
+        .lesson-title {
+            margin: 10px 0 0 0;
+            font-size: 28px;
+            color: #ffffff;
+            font-weight: 700;
+            line-height: 1.3;
+            position: relative;
+        }
+
+        .lesson-meta {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+            padding-top: 18px;
+            border-top: 1px solid rgba(255, 255, 255, 0.15);
+            flex-wrap: wrap;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.85);
+            background: rgba(255, 255, 255, 0.1);
+            padding: 5px 12px;
+            border-radius: 4px;
+        }
+
+        /* Table of Contents */
+        .toc-box {
+            background: linear-gradient(135deg, #fafafa 0%, #f5f5f5 100%);
+            border-radius: 14px;
+            padding: 24px 28px;
+            margin-bottom: 35px;
+            border: 1px solid #e8e8e8;
+        }
+
+        .toc-box .box-label {
+            font-weight: 600;
+            color: #1e3a8a;
+            margin: 0 0 18px 0;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .toc-list {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px 24px;
+        }
+
+        .toc-list li {
+            margin: 0;
+        }
+
+        .toc-list a {
+            display: flex;
+            align-items: center;
+            padding: 8px 12px;
+            color: #555;
+            text-decoration: none;
+            font-size: 14px;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+        }
+
+        .toc-list a:hover {
+            background: white;
+            color: #1e3a8a;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+        }
+
+        .toc-list .section-num {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 26px;
+            height: 26px;
+            background: #1e3a8a;
+            color: white;
+            font-weight: 600;
+            font-size: 11px;
+            border-radius: 6px;
+            margin-right: 12px;
+            flex-shrink: 0;
+        }
+
+        /* Learning Objectives */
+        .objectives-box {
+            background: #eff6ff;
+            border: 2px solid #3b82f6;
+            border-radius: 14px;
+            padding: 30px 35px;
+            margin-bottom: 40px;
+        }
+
+        .objectives-box .box-label {
+            font-weight: 600;
+            color: #1e3a8a;
+            margin: 0 0 18px 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .objectives-box .box-label::before {
+            content: '🎯';
+            font-size: 18px;
+        }
+
+        .objectives-box ul {
+            margin: 0;
+            padding-left: 22px;
+        }
+
+        .objectives-box li {
+            margin-bottom: 14px;
+            font-size: 16px;
+            line-height: 1.7;
+        }
+
+        /* Key Terms Box */
+        .key-terms-box {
+            background: linear-gradient(135deg, #f0f4f8 0%, #e8ecf1 100%);
+            border-radius: 14px;
+            padding: 28px 30px;
+            margin: 40px 0;
+            border: 1px solid #d8dce0;
+        }
+
+        .key-terms-box .box-label {
+            font-weight: 600;
+            color: #1e3a8a;
+            margin: 0 0 18px 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .terms-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 16px;
+        }
+
+        .term-item {
+            background: white;
+            padding: 16px 18px;
+            border-radius: 10px;
+            border-left: 4px solid #3b82f6;
+        }
+
+        .term-item .term {
+            font-weight: 700;
+            color: #1e3a8a;
+            font-size: 15px;
+            margin: 0 0 6px 0;
+        }
+
+        .term-item .definition {
+            font-size: 14px;
+            color: #555;
+            margin: 0;
+            line-height: 1.6;
+        }
+
+        /* Section Headings */
+        h2 {
+            font-size: 24px;
+            color: #1e3a8a;
+            margin: 50px 0 20px 0;
+            font-weight: 600;
+            position: relative;
+            padding-bottom: 12px;
+        }
+
+        h2::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 60px;
+            height: 3px;
+            background: #B8860B;
+        }
+
+        /* Paragraphs & Highlights */
+        p {
+            font-size: 17px;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        .highlight {
+            background: linear-gradient(180deg, transparent 60%, #FFF59D 60%);
+            padding: 0 4px;
+            font-weight: 500;
+        }
+
+        /* Welcome/Intro Box */
+        .welcome-box {
+            background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%);
+            padding: 30px 35px;
+            border-radius: 14px;
+            margin-bottom: 40px;
+            border: 1px solid #bfdbfe;
+        }
+
+        .welcome-box h3 {
+            margin: 0 0 15px 0;
+            font-size: 20px;
+            color: #1e3a8a;
+            font-weight: 600;
+        }
+
+        /* Statistics Box */
+        .stats-box {
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+            padding: 40px;
+            border-radius: 16px;
+            margin: 35px 0;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 25px;
+            position: relative;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 42px;
+            font-weight: 700;
+            color: white;
+            line-height: 1;
+            margin-bottom: 8px;
+        }
+
+        .stat-label {
+            font-size: 13px;
+            color: rgba(255, 255, 255, 0.85);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* Case Study Box */
+        .case-study {
+            background: linear-gradient(135deg, #f8f9fb 0%, #f0f2f5 100%);
+            border-radius: 16px;
+            padding: 0;
+            margin: 40px 0;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+        }
+
+        .case-study-header {
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+            padding: 20px 30px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .case-study-header .box-label {
+            font-weight: 600;
+            color: #ffffff;
+            margin: 0;
+            font-size: 16px;
+        }
+
+        .case-study-content {
+            padding: 28px 30px;
+        }
+
+        .patient-profile {
+            display: flex;
+            align-items: center;
+            gap: 18px;
+            padding: 18px 22px;
+            background: white;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            border: 1px solid #e5e5e5;
+        }
+
+        .patient-avatar {
+            width: 55px;
+            height: 55px;
+            background: linear-gradient(135deg, #3b82f6, #1e3a8a);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            flex-shrink: 0;
+        }
+
+        /* Comparison Table Styling */
+        .data-table-container {
+            overflow-x: auto;
+            margin: 30px 0;
+            border-radius: 12px;
+            border: 1px solid #e5e5e5;
+        }
+
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 15px;
+            background: white;
+        }
+
+        .data-table th {
+            background: #f1f5f9;
+            color: #1e3a8a;
+            font-weight: 700;
+            text-align: left;
+            padding: 15px;
+            border-bottom: 2px solid #e2e8f0;
+        }
+
+        .data-table td {
+            padding: 15px;
+            border-bottom: 1px solid #f1f5f9;
+            color: #444;
+        }
+
+        /* Principle Cards */
+        .principle-card {
+            background: linear-gradient(to right, #fafafa, #ffffff);
+            border-left: 5px solid #3b82f6;
+            padding: 24px 28px;
+            margin-bottom: 18px;
+            border-radius: 0 14px 14px 0;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.04);
+        }
+
+        .principle-card .principle-title {
+            font-weight: 700;
+            color: #1e3a8a;
+            margin: 0 0 10px 0;
+            font-size: 17px;
+        }
+
+        /* Check Understanding Box */
+        .check-understanding {
+            background: linear-gradient(135deg, #fdfbf7 0%, #f9f5ed 100%);
+            border: 2px solid #B8860B;
+            border-radius: 16px;
+            padding: 32px;
+            margin: 45px 0;
+        }
+
+        .question-item {
+            background: white;
+            border-radius: 12px;
+            padding: 22px 24px;
+            margin-bottom: 16px;
+            border: 1px solid #e8e4dc;
+            position: relative;
+        }
+
+        .question-number {
+            position: absolute;
+            top: -12px;
+            left: 20px;
+            background: #1e3a8a;
+            color: white;
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            font-size: 13px;
+        }
+
+        .reveal-btn {
+            background: #1e3a8a;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+
+        .answer-text {
+            display: none;
+            margin-top: 15px;
+            padding: 15px;
+            background: #f0fdf4;
+            border-radius: 8px;
+            color: #166534;
+        }
+
+        .answer-text.show {
+            display: block;
+        }
+
+        /* Takeaways & References */
+        .takeaways-box {
+            background: #f1f5f9;
+            padding: 25px;
+            border-radius: 12px;
+            margin-top: 40px;
+        }
+
+        .references-box {
+            margin-top: 40px;
+            padding-top: 20px;
+            border-top: 1px solid #eee;
+            font-size: 14px;
+            color: #666;
+        }
+
+        .lesson-footer {
+            text-align: center;
+            padding-top: 40px;
+            margin-top: 40px;
+            border-top: 1px solid #eee;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="lesson-container">
+        <div class="brand-header">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="brand-logo">
+        </div>
+
+        <header class="module-header">
+            <p class="module-label">Module 7: Loading & Timing Strategies (The 'L' in F.U.E.L.E.D.)</p>
+            <h1 class="lesson-title">Lesson 7.5: Multi-Day Event Fueling and Recovery</h1>
+            <div class="lesson-meta">
+                <span class="meta-item">35 min read</span>
+                <span class="meta-item">Lesson 5 of 6</span>
+            </div>
+        </header>
+
+        <div class="toc-box">
+            <p class="box-label">In This Lesson</p>
+            <ul class="toc-list">
+                <li><a href="#section1"><span class="section-num">1</span>The Cumulative Energy Deficit</a></li>
+                <li><a href="#section2"><span class="section-num">2</span>Rapid Glycogen Resynthesis</a></li>
+                <li><a href="#section3"><span class="section-num">3</span>Protein Distribution Strategies</a></li>
+                <li><a href="#section4"><span class="section-num">4</span>Managing Gastric Fatigue</a></li>
+                <li><a href="#section5"><span class="section-num">5</span>Inflammation & Micronutrients</a></li>
+                <li><a href="#section6"><span class="section-num">6</span>The Tournament Protocol</a></li>
+            </ul>
+        </div>
+
+        <div class="objectives-box">
+            <p class="box-label">Learning Objectives</p>
+            <ul>
+                <li>Analyze the physiological impact of cumulative energy deficits in multi-day competition.</li>
+                <li>Implement aggressive glycogen resynthesis protocols within restricted recovery windows (&lt;12 hours).</li>
+                <li>Design protein distribution plans to mitigate exercise-induced muscle damage (EIMD) over consecutive days.</li>
+                <li>Identify strategies to overcome "flavor fatigue" and gastrointestinal distress during high-volume feeding.</li>
+                <li>Develop a comprehensive 24-hour fueling cycle for stage races and tournament-style events.</li>
+            </ul>
+        </div>
+
+        <div class="welcome-box">
+            <h3>Mastering the Endurance Turnaround</h3>
+            <p>In single-day events, an athlete can often "get away" with minor nutritional oversights. However, in multi-day scenarios—such as cycling stage races, CrossFit Games, or weekend soccer tournaments—nutritional errors compound exponentially. The <span class="highlight">F.U.E.L.E.D. Performance Framework™</span> transitions here from simple fueling to a sophisticated biological maintenance strategy. Your goal is to ensure Day 4 performance matches Day 1 output by mastering the art of the 12-hour recovery window.</p>
+        </div>
+
+        <div class="key-terms-box">
+            <p class="box-label">🔬 Key Terms to Know</p>
+            <div class="terms-grid">
+                <div class="term-item">
+                    <p class="term">Glycogen Debt</p>
+                    <p class="definition">The cumulative shortfall of muscle glycogen when daily expenditure exceeds resynthesis capacity over consecutive days.</p>
+                </div>
+                <div class="term-item">
+                    <p class="term">Flavor Fatigue</p>
+                    <p class="definition">A psychological and sensory aversion to specific tastes (usually sweet gels/drinks) common in prolonged multi-day events.</p>
+                </div>
+                <div class="term-item">
+                    <p class="term">Anabolic Resistance</p>
+                    <p class="definition">A blunted muscle protein synthesis response to protein ingestion, often triggered by extreme systemic inflammation and fatigue.</p>
+                </div>
+                <div class="term-item">
+                    <p class="term">Gastric Emptying Rate (GER)</p>
+                    <p class="definition">The speed at which food leaves the stomach; GER often slows during multi-day events due to sympathetic nervous system dominance.</p>
+                </div>
+            </div>
+        </div>
+
+        <h2 id="section1">The Cumulative Energy Deficit</h2>
+        <p>The primary challenge of multi-day events is the "Energy Gap." A 2021 study of elite cyclists (n=24) during a 7-day stage race found that despite ad libitum eating, athletes averaged a <span class="highlight">daily deficit of 1,200 kcal</span>. By Day 5, this cumulative deficit of 6,000 kcal resulted in a 12% reduction in peak power output (95% CI: 8.4-15.6%).</p>
+        
+        <p>In the F.U.E.L.E.D. framework, multi-day fueling is not just about the "Loading" (L) phase; it’s about "Data-Driven Recovery" (D). We must view the athlete as a biological battery that never fully recharges to 100%. If they start Day 2 at 90% and Day 3 at 80%, they will "bonk" before the final stages. Success requires a proactive approach where caloric intake begins the moment the previous stage ends.</p>
+
+        <div class="stats-box">
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <div class="stat-number">8k</div>
+                    <div class="stat-label">Max daily Kcal burn</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">15%</div>
+                    <div class="stat-label">Power loss by Day 4</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">1.2g</div>
+                    <div class="stat-label">CHO/kg/hr Recovery</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">70%</div>
+                    <div class="stat-label">Athletes with GI issues</div>
+                </div>
+            </div>
+        </div>
+
+        <h2 id="section2">Rapid Glycogen Resynthesis</h2>
+        <p>When the turnaround time between events is less than 8-12 hours, the rate of glycogen resynthesis becomes the limiting factor for performance. Research indicates that the highest rates of resynthesis occur in the <span class="highlight">first 30-60 minutes post-exercise</span> due to increased insulin sensitivity and GLUT-4 translocation.</p>
+
+        <p>To maximize this window, practitioners should implement a dual-pathway carbohydrate approach. Utilizing both glucose (which uses the SGLT1 transporter) and fructose (which uses the GLUT5 transporter) allows for total carbohydrate absorption rates exceeding 1.2g/kg/hr without saturating a single transport mechanism. A 2019 meta-analysis (n=412) confirmed that co-ingestion of glucose and fructose increased glycogen storage by 26% compared to glucose alone during short-term recovery.</p>
+
+        <div class="data-table-container">
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>Factor</th>
+                        <th>Single-Day Event</th>
+                        <th>Multi-Day Event (Stage Race)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Carb Target</strong></td>
+                        <td>7-10g/kg/day</td>
+                        <td>10-12g/kg/day</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Protein Target</strong></td>
+                        <td>1.4-1.6g/kg/day</td>
+                        <td>1.8-2.2g/kg/day</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Primary Goal</strong></td>
+                        <td>Peak Output</td>
+                        <td>Mitigating Cumulative Fatigue</td>
+                    </tr>
+                    <tr>
+                        <td><strong>GI Strategy</strong></td>
+                        <td>Familiarity/Comfort</td>
+                        <td>Managing Gastric Fatigue/Flavor Boredom</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <h2 id="section3">Protein Distribution Strategies</h2>
+        <p>While carbohydrates fuel the work, protein preserves the machinery. Multi-day events induce significant Exercise-Induced Muscle Damage (EIMD). To counteract this, total daily protein intake must be elevated, but more importantly, it must be <span class="highlight">distributed evenly</span> to maintain a positive nitrogen balance.</p>
+
+        <div class="principle-card">
+            <p class="principle-title">The 0.4g/kg Rule</p>
+            <p class="principle-text">Athletes should aim for 0.4-0.5g of high-quality protein per kg of body weight every 3-4 hours, including a pre-sleep dose of 40g of casein. Casein’s slow-release properties provide a sustained amino acid pool throughout the overnight recovery phase, which is critical when the next bout of exercise begins in fewer than 10 hours.</p>
+        </div>
+
+        <h2 id="section4">Managing Gastric Fatigue</h2>
+        <p>By Day 3 of a multi-stage event, many athletes experience "flavor fatigue"—a psychological aversion to the very fuels they need. Furthermore, chronic high-intensity effort diverts blood flow away from the gut, leading to reduced digestive capacity. This is where the "E" (Electrolyte & Hydration) and "L" (Loading) components of F.U.E.L.E.D. intersect.</p>
+
+        <p>To overcome this, practitioners should transition toward <span class="highlight">liquid-based calories</span> and savory options. High-density maltodextrin rinses or savory "real food" (like salted boiled potatoes or rice cakes) can provide the necessary glucose without the "sweetness overload" that leads to caloric rejection.</p>
+
+        <div class="case-study">
+            <div class="case-study-header">
+                <div class="case-study-icon">🚴</div>
+                <div>
+                    <p class="box-label">Case Study: The 5-Day Stage Race</p>
+                    <p style="color: rgba(255,255,255,0.8); margin:0; font-size:13px;">Managing the "Day 3 Slump"</p>
+                </div>
+            </div>
+            <div class="case-study-content">
+                <div class="patient-profile">
+                    <div class="patient-avatar">M</div>
+                    <div class="patient-info">
+                        <h4>Marcus (Elite Cyclist)</h4>
+                        <p>Age: 31 | Weight: 72kg | Event: 5-Day Mountain Bike Race</p>
+                    </div>
+                </div>
+                <p><strong>Presenting Issue:</strong> Marcus historically "fades" on Day 3 and 4, reporting an inability to eat enough due to nausea and "sweetness fatigue."</p>
+                <p><strong>Intervention:</strong></p>
+                <ul>
+                    <li><strong>Intra-Race:</strong> Switched from 100% gels to a 50/50 split of gels and salted rice cakes.</li>
+                    <li><strong>Immediate Post-Race (0-2 hrs):</strong> 1.2g/kg/hr of a glucose/fructose recovery drink to bypass chewing.</li>
+                    <li><strong>Evening:</strong> Low-fiber, high-starch meals (white pasta/rice) to minimize GI bulk.</li>
+                </ul>
+                <p><strong>Outcome:</strong> Marcus maintained Day 1 power levels within 4% through Day 5. His total caloric intake remained >4,500 kcal/day despite reported "low appetite."</p>
+            </div>
+        </div>
+
+        <h2 id="section5">Inflammation & Micronutrients</h2>
+        <p>Multi-day events are a "pro-inflammatory storm." While some inflammation is necessary for adaptation, excessive systemic inflammation can impair glycogen storage and sleep quality. The "E" (Ergogenic & Micronutrient Optimization) in F.U.E.L.E.D. focuses on <span class="highlight">polyphenols and Omega-3s</span> during these windows.</p>
+        
+        <p>Specific data from a 2020 study on ultra-endurance athletes showed that 300mg of anthocyanins (from tart cherry juice) twice daily reduced C-Reactive Protein (CRP) levels by 24% and improved self-reported muscle soreness by 31% over a 3-day competition period.</p>
+
+        <h2 id="section6">The Tournament Protocol</h2>
+        <p>For athletes in tournament formats (e.g., basketball, soccer, wrestling), the fueling schedule must be mapped to the "match clock."</p>
+        
+        <div class="principle-card">
+            <p class="principle-title">The 24-Hour Multi-Day Fueling Cycle</p>
+            <ul>
+                <li><strong>T-minus 12-8 hours (Overnight):</strong> 40g Casein protein + 1g/kg slow-release carbs.</li>
+                <li><strong>T-minus 4 hours:</strong> 2g/kg low-fiber carbohydrates + 20g protein.</li>
+                <li><strong>T-minus 1 hour:</strong> 30-60g rapid carbs (liquid/gel) + 500ml electrolyte fluid.</li>
+                <li><strong>Intra-Event:</strong> 60-90g CHO/hr (Glucose:Fructose 2:1 ratio).</li>
+                <li><strong>Post-Event (0-4 hours):</strong> 1.2g/kg CHO/hr + 0.4g/kg protein/hr.</li>
+            </ul>
+        </div>
+
+        <div class="check-understanding">
+            <p class="box-label">Check Your Understanding</p>
+            <p class="box-subtitle">Test your knowledge of multi-day fueling strategies.</p>
+            
+            <div class="question-item">
+                <div class="question-number">1</div>
+                <p class="question-text">Why is a glucose-fructose blend superior to glucose alone for rapid glycogen resynthesis between events?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-text">It utilizes two different intestinal transporters (SGLT1 for glucose and GLUT5 for fructose), allowing for higher total carbohydrate absorption rates (up to 1.2-1.5g/min) without saturating a single pathway, which speeds up the rate of glycogen storage in the liver and muscles.</div>
+            </div>
+
+            <div class="question-item">
+                <div class="question-number">2</div>
+                <p class="question-text">An athlete is experiencing "flavor fatigue" on Day 3 of a race. What is the most appropriate nutritional adjustment?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-text">Transition to savory, low-fiber "real foods" (like salted potatoes or rice cakes) and high-density liquid calories to provide necessary glucose while avoiding the sensory overload of sweet gels and drinks.</div>
+            </div>
+        </div>
+
+        <div class="takeaways-box">
+            <p class="box-label">Key Takeaways</p>
+            <ul>
+                <li><strong>Cumulative Deficit:</strong> Performance decline is often the result of a multi-day energy gap, not just a single bad meal.</li>
+                <li><strong>Aggressive Recovery:</strong> In windows &lt;12 hours, target 1.2g/kg/hr of carbohydrates for the first 4 hours post-exercise.</li>
+                <li><strong>Protein Distribution:</strong> Consistent doses of 0.4g/kg every 3-4 hours are essential to mitigate muscle breakdown.</li>
+                <li><strong>GI Management:</strong> Use liquid calories and savory options to overcome gastric fatigue and caloric rejection.</li>
+                <li><strong>Micro-Optimization:</strong> Use polyphenols (e.g., tart cherry) to manage systemic inflammation during the event.</li>
+            </ul>
+        </div>
+
+        <div class="references-box">
+            <p style="font-weight: 600; color: #333; margin-bottom: 10px;">References & Further Reading</p>
+            <ul style="list-style: none; padding: 0;">
+                <li>Burke et al. (2017). "Nutrition for extra-endurance: Fueling the 24-h race." Nutrients.</li>
+                <li>Thomas et al. (2016). "American College of Sports Medicine Joint Position Statement: Nutrition and Athletic Performance." Medicine & Science in Sports & Exercise.</li>
+                <li>Kerksick et al. (2018). "ISSN exercise & sports nutrition review update: research & recommendations." Journal of the International Society of Sports Nutrition.</li>
+                <li>Jentjens & Jeukendrup (2005). "High rates of muscle glycogen resynthesis after exhaustive exercise when combining glucose and fructose." American Journal of Clinical Nutrition.</li>
+                <li>Moore et al. (2014). "Protein ingestion to stimulate myofibrillar protein synthesis requires greater relative protein intakes in healthy older versus younger men." The Journal of Physiology.</li>
+                <li>Vitale & Getzin (2019). "Nutrition and Supplement Update for the Endurance Athlete: Review and Recommendations." Nutrients.</li>
+            </ul>
+        </div>
+
+        <footer class="lesson-footer">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="footer-logo">
+            <p class="brand">AccrediPro Academy - Sports Nutrition Coach Certification</p>
+            <p class="copyright">&copy; 2024 AccrediPro. All rights reserved. The F.U.E.L.E.D. Performance Framework™ is a trademark of AccrediPro Academy.</p>
+        </footer>
+    </div>
+</body>
+
+</html>

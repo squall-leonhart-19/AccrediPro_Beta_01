@@ -1,0 +1,812 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lesson 8.7: Tracking Respiratory Rate and Oxygen Saturation</title>
+    <style>
+        /* Base & Reset */
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Georgia, 'Times New Roman', serif;
+            line-height: 1.8;
+            color: #2d2d2d;
+            background: #f8f6f3;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Main Container */
+        .lesson-container {
+            max-width: 860px;
+            margin: 0 auto;
+            padding: 40px 30px;
+            background: #ffffff;
+            min-height: 100vh;
+            box-shadow: 0 0 60px rgba(0, 0, 0, 0.08);
+        }
+
+        /* Brand Header */
+        .brand-header {
+            text-align: center;
+            padding-bottom: 30px;
+            margin-bottom: 35px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .brand-logo {
+            max-width: 220px;
+            height: auto;
+            margin-bottom: 5px;
+        }
+
+        /* Module Header - BLUE theme for Sleep/Recovery */
+        .module-header {
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+            padding: 35px 35px 30px;
+            border-radius: 16px;
+            margin-bottom: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .module-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+            transform: translate(100px, -100px);
+        }
+
+        .module-header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, #B8860B, #D4A84B, #B8860B);
+        }
+
+        .module-label {
+            margin: 0;
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.75);
+            text-transform: uppercase;
+            letter-spacing: 2.5px;
+            font-weight: 500;
+        }
+
+        .lesson-title {
+            margin: 10px 0 0 0;
+            font-size: 28px;
+            color: #ffffff;
+            font-weight: 700;
+            line-height: 1.3;
+            position: relative;
+        }
+
+        .lesson-meta {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+            padding-top: 18px;
+            border-top: 1px solid rgba(255, 255, 255, 0.15);
+            flex-wrap: wrap;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.85);
+            background: rgba(255, 255, 255, 0.1);
+            padding: 5px 12px;
+            border-radius: 4px;
+        }
+
+        /* Table of Contents */
+        .toc-box {
+            background: linear-gradient(135deg, #fafafa 0%, #f5f5f5 100%);
+            border-radius: 14px;
+            padding: 24px 28px;
+            margin-bottom: 35px;
+            border: 1px solid #e8e8e8;
+        }
+
+        .toc-box .box-label {
+            font-weight: 600;
+            color: #1e3a8a;
+            margin: 0 0 18px 0;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .toc-list {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px 24px;
+        }
+
+        .toc-list li {
+            margin: 0;
+        }
+
+        .toc-list a {
+            display: flex;
+            align-items: center;
+            padding: 8px 12px;
+            color: #555;
+            text-decoration: none;
+            font-size: 14px;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+        }
+
+        .toc-list a:hover {
+            background: white;
+            color: #3b82f6;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+        }
+
+        .toc-list .section-num {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 26px;
+            height: 26px;
+            background: #1e3a8a;
+            color: white;
+            font-weight: 600;
+            font-size: 11px;
+            border-radius: 6px;
+            margin-right: 12px;
+            flex-shrink: 0;
+        }
+
+        /* Learning Objectives */
+        .objectives-box {
+            background: #eff6ff;
+            border: 2px solid #3b82f6;
+            border-radius: 14px;
+            padding: 30px 35px;
+            margin-bottom: 40px;
+        }
+
+        .objectives-box .box-label {
+            font-weight: 600;
+            color: #1e3a8a;
+            margin: 0 0 18px 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .objectives-box .box-label::before {
+            content: '🎯';
+            font-size: 18px;
+        }
+
+        .objectives-box ul {
+            margin: 0;
+            padding-left: 22px;
+        }
+
+        .objectives-box li {
+            margin-bottom: 14px;
+            font-size: 16px;
+            line-height: 1.7;
+        }
+
+        /* Key Terms Box */
+        .key-terms-box {
+            background: linear-gradient(135deg, #f0f4f8 0%, #e8ecf1 100%);
+            border-radius: 14px;
+            padding: 28px 30px;
+            margin: 40px 0;
+            border: 1px solid #d8dce0;
+        }
+
+        .key-terms-box .box-label {
+            font-weight: 600;
+            color: #1e3a8a;
+            margin: 0 0 18px 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .terms-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 16px;
+        }
+
+        .term-item {
+            background: white;
+            padding: 16px 18px;
+            border-radius: 10px;
+            border-left: 4px solid #3b82f6;
+        }
+
+        .term-item .term {
+            font-weight: 700;
+            color: #1e3a8a;
+            font-size: 15px;
+            margin: 0 0 6px 0;
+        }
+
+        .term-item .definition {
+            font-size: 14px;
+            color: #555;
+            margin: 0;
+            line-height: 1.6;
+        }
+
+        /* Section Headings */
+        h2 {
+            font-size: 24px;
+            color: #1e3a8a;
+            margin: 50px 0 20px 0;
+            font-weight: 600;
+            position: relative;
+            padding-bottom: 12px;
+        }
+
+        h2::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 60px;
+            height: 3px;
+            background: #B8860B;
+        }
+
+        /* Paragraphs */
+        p {
+            font-size: 17px;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        /* Highlights */
+        .highlight {
+            background: linear-gradient(180deg, transparent 60%, #e0e7ff 60%);
+            padding: 0 4px;
+            font-weight: 500;
+        }
+
+        /* Welcome/Intro Box */
+        .welcome-box {
+            background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%);
+            padding: 30px 35px;
+            border-radius: 14px;
+            margin-bottom: 40px;
+            border: 1px solid #bfdbfe;
+        }
+
+        .welcome-box h3 {
+            margin: 0 0 15px 0;
+            font-size: 20px;
+            color: #1e3a8a;
+            font-weight: 600;
+        }
+
+        /* Alert Boxes */
+        .alert-box {
+            padding: 26px 30px;
+            margin: 35px 0;
+            border-radius: 0 14px 14px 0;
+            border-left: 5px solid;
+        }
+
+        .alert-box .alert-label {
+            font-weight: 600;
+            margin: 0 0 12px 0;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .alert-box.info {
+            background: #e3f2fd;
+            border-left-color: #2196f3;
+        }
+
+        .alert-box.info .alert-label {
+            color: #1565c0;
+        }
+
+        .alert-box.warning {
+            background: #fff8e6;
+            border-left-color: #ff9800;
+        }
+
+        .alert-box.warning .alert-label {
+            color: #e65100;
+        }
+
+        /* Case Study Box */
+        .case-study {
+            background: linear-gradient(135deg, #f8f9fb 0%, #f0f2f5 100%);
+            border-radius: 16px;
+            padding: 0;
+            margin: 40px 0;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+        }
+
+        .case-study-header {
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+            padding: 20px 30px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .case-study-icon {
+            width: 45px;
+            height: 45px;
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+        }
+
+        .case-study-header .box-label {
+            font-weight: 600;
+            color: #ffffff;
+            margin: 0;
+            font-size: 16px;
+        }
+
+        .case-study-content {
+            padding: 28px 30px;
+        }
+
+        .patient-profile {
+            display: flex;
+            align-items: center;
+            gap: 18px;
+            padding: 18px 22px;
+            background: white;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            border: 1px solid #e5e5e5;
+        }
+
+        .patient-avatar {
+            width: 55px;
+            height: 55px;
+            background: linear-gradient(135deg, #3b82f6, #1e3a8a);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            color: white;
+        }
+
+        /* Statistics Box */
+        .stats-box {
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+            padding: 40px;
+            border-radius: 16px;
+            margin: 35px 0;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 25px;
+            position: relative;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 42px;
+            font-weight: 700;
+            color: white;
+            line-height: 1;
+            margin-bottom: 8px;
+        }
+
+        .stat-label {
+            font-size: 13px;
+            color: rgba(255, 255, 255, 0.85);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* Tables */
+        .data-table-container {
+            overflow-x: auto;
+            margin: 30px 0;
+            border-radius: 12px;
+            border: 1px solid #e5e5e5;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 16px;
+        }
+
+        th {
+            background: #f1f5f9;
+            color: #1e3a8a;
+            font-weight: 600;
+            padding: 15px;
+            text-align: left;
+            border-bottom: 2px solid #e2e8f0;
+        }
+
+        td {
+            padding: 15px;
+            border-bottom: 1px solid #e2e8f0;
+            color: #444;
+        }
+
+        /* Check Understanding Box */
+        .check-understanding {
+            background: linear-gradient(135deg, #fdfbf7 0%, #f9f5ed 100%);
+            border: 2px solid #B8860B;
+            border-radius: 16px;
+            padding: 32px;
+            margin: 45px 0;
+        }
+
+        .question-item {
+            background: white;
+            border-radius: 12px;
+            padding: 22px 24px;
+            margin-bottom: 16px;
+            border: 1px solid #e8e4dc;
+            position: relative;
+        }
+
+        .reveal-btn {
+            background: #1e3a8a;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-size: 14px;
+            cursor: pointer;
+            transition: background 0.2s ease;
+        }
+
+        .answer-text {
+            display: none;
+            font-size: 14px;
+            color: #1e3a8a;
+            margin: 14px 0 0 0;
+            padding: 14px;
+            background: #eff6ff;
+            border-radius: 8px;
+        }
+
+        .answer-text.show {
+            display: block;
+        }
+
+        /* Takeaways */
+        .takeaways-box {
+            background: linear-gradient(135deg, #f5f5f5 0%, #e8e8e8 100%);
+            padding: 22px 25px;
+            margin-top: 35px;
+            border-radius: 8px;
+            border: 1px solid #ddd;
+        }
+
+        .references-box {
+            margin-top: 40px;
+            padding: 25px;
+            background: #f9f9f9;
+            border-radius: 12px;
+            font-size: 14px;
+        }
+
+        /* Footer */
+        .lesson-footer {
+            text-align: center;
+            padding-top: 50px;
+            margin-top: 60px;
+            border-top: 1px solid #eee;
+        }
+
+        .footer-logo {
+            max-width: 140px;
+            height: auto;
+            margin-bottom: 15px;
+        }
+
+        .highlight-blue {
+            color: #1e3a8a;
+            font-weight: 600;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="lesson-container">
+        <div class="brand-header">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="brand-logo">
+        </div>
+
+        <header class="module-header">
+            <p class="module-label">Module 8: R - Recovery Tracking & Metrics</p>
+            <h1 class="lesson-title">Lesson 8.7: Tracking Respiratory Rate and Oxygen Saturation</h1>
+            <div class="lesson-meta">
+                <span class="meta-item">28 min read</span>
+                <span class="meta-item">Lesson 7 of 10</span>
+            </div>
+        </header>
+
+        <!-- Table of Contents -->
+        <div class="toc-box">
+            <p class="box-label">In This Lesson</p>
+            <ul class="toc-list">
+                <li><a href="#section1"><span class="section-num">1</span>The Physiology of Sleep Breathing</a></li>
+                <li><a href="#section2"><span class="section-num">2</span>Respiratory Rate (RR) Metrics</a></li>
+                <li><a href="#section3"><span class="section-num">3</span>Oxygen Saturation (SpO2) Trends</a></li>
+                <li><a href="#section4"><span class="section-num">4</span>Identifying "Red Flags"</a></li>
+                <li><a href="#section5"><span class="section-num">5</span>Wearable Accuracy vs. Medical Grade</a></li>
+                <li><a href="#section6"><span class="section-num">6</span>Integrating into the RESTORE Method</a></li>
+            </ul>
+        </div>
+
+        <!-- Learning Objectives -->
+        <div class="objectives-box">
+            <p class="box-label">Learning Objectives</p>
+            <ul>
+                <li>Define the clinical significance of nocturnal Respiratory Rate (RR) as a marker of physiological stability.</li>
+                <li>Analyze Oxygen Saturation (SpO2) data to identify potential Sleep Disordered Breathing (SDB).</li>
+                <li>Differentiate between normal physiological SpO2 fluctuations and pathological desaturations.</li>
+                <li>Explain how RR spikes can serve as an early warning system for illness or overtraining.</li>
+                <li>Apply respiratory metrics within the <span class="highlight-blue">Recovery Tracking</span> framework to guide client interventions.</li>
+            </ul>
+        </div>
+
+        <!-- Welcome Box -->
+        <div class="welcome-box">
+            <h3>The Silent Metrics of Sleep</h3>
+            <p>While Heart Rate Variability (HRV) often takes center stage in recovery tracking, <span class="highlight">Respiratory Rate (RR) and Oxygen Saturation (SpO2)</span> provide a critical, often overlooked window into a client's autonomic and metabolic health. As a Sleep Health Coach, understanding these metrics allows you to see beyond "restlessness" and identify physiological stressors—from impending viral infections to potential obstructive sleep apnea—before they manifest as chronic fatigue.</p>
+        </div>
+
+        <h2 id="section1">The Physiology of Sleep Breathing</h2>
+
+        <p>During sleep, the control of ventilation shifts from a voluntary/behavioral system to a strictly <span class="highlight">metabolic control system</span> driven by the brainstem (the medulla and pons). In NREM sleep, breathing becomes remarkably rhythmic and predictable. However, during REM sleep, the breathing pattern can become irregular as the body prioritizes brain activity over metabolic regularity.</p>
+
+        <p>The primary driver of breathing is not actually the need for oxygen, but the need to expel <span class="highlight">Carbon Dioxide (CO2)</span>. As CO2 levels rise in the blood, chemoreceptors signal the diaphragm to contract. In a healthy individual, this process maintains a stable SpO2 level and a consistent RR throughout the night. Any significant deviation from this baseline suggests a disruption in the <span class="highlight-blue">Rhythm Alignment</span> or a metabolic stressor.</p>
+
+        <!-- Statistics Box -->
+        <div class="stats-box">
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <div class="stat-number">12-20</div>
+                    <div class="stat-label">Normal RR (BPM)</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">95%+</div>
+                    <div class="stat-label">Target SpO2 Level</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">3%</div>
+                    <div class="stat-label">Clinically Significant Dip</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">48hr</div>
+                    <div class="stat-label">RR Illness Lead Time</div>
+                </div>
+            </div>
+        </div>
+
+        <h2 id="section2">Respiratory Rate (RR) as a Stability Marker</h2>
+
+        <p>Respiratory Rate—the number of breaths taken per minute—is one of the most stable physiological metrics in a healthy adult. Unlike Heart Rate, which fluctuates based on dreams, temperature, or position, <span class="highlight">nocturnal RR typically varies by less than 1 breath per minute</span> from night to night for a healthy individual.</p>
+
+        <p>A 2021 study involving over 1.5 million nights of data found that an increase in sleeping respiratory rate of just <span class="highlight-blue">1.5 breaths per minute</span> was a highly sensitive predictor of physiological stress, often preceding symptoms of illness (like the flu or COVID-19) by up to 48 hours. In the context of the <span class="highlight-blue">RESTORE Method</span>, we use RR as a "baseline check" for recovery.</p>
+
+        <div class="alert-box info">
+            <p class="alert-label">Practitioner Note</p>
+            <p>If a client's RR increases by >2 breaths per minute above their 14-day rolling average, it is a strong indicator of a systemic stressor. This could be overtraining, alcohol consumption, or an immune system response. Advise the client to prioritize the "S" (Stress Mitigation) and "E" (Environment) phases of the RESTORE Method immediately.</p>
+        </div>
+
+        <h2 id="section3">Oxygen Saturation (SpO2) Trends</h2>
+
+        <p>Oxygen Saturation (SpO2) measures the percentage of hemoglobin in the blood that is saturated with oxygen. During sleep, SpO2 should ideally remain between 95% and 100%. While brief, minor dips are normal, sustained periods below 90% (hypoxemia) are cause for concern.</p>
+
+        <p>Modern wearables use <span class="highlight">reflective pulse oximetry</span> to estimate SpO2. While not as accurate as medical-grade transmissive sensors used in clinical sleep studies, they are excellent for identifying <strong>trends</strong> and <strong>Oxygen Desaturation Index (ODI)</strong>—the number of times the oxygen level drops by 3-4% per hour of sleep.</p>
+
+        <div class="data-table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Metric Level</th>
+                        <th>SpO2 Range</th>
+                        <th>Clinical Interpretation</th>
+                        <th>Coaching Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Normal</td>
+                        <td>95% - 100%</td>
+                        <td>Optimal oxygenation; healthy airway function.</td>
+                        <td>Maintain current RESTORE protocols.</td>
+                    </tr>
+                    <tr>
+                        <td>Mild Dip</td>
+                        <td>90% - 94%</td>
+                        <td>Potential shallow breathing or mild congestion.</td>
+                        <td>Audit "E" (Environment - Air Quality/Humidity).</td>
+                    </tr>
+                    <tr>
+                        <td>Moderate</td>
+                        <td>85% - 89%</td>
+                        <td>Possible Sleep Disordered Breathing (SDB).</td>
+                        <td>Recommend medical consultation/Sleep Study.</td>
+                    </tr>
+                    <tr>
+                        <td>Severe</td>
+                        <td>Below 85%</td>
+                        <td>Significant hypoxemia; high risk.</td>
+                        <td>Urgent medical referral required.</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <h2 id="section4">Identifying "Red Flags" in Respiratory Data</h2>
+
+        <p>When tracking recovery (the "R" in RESTORE), we look for specific patterns in the respiratory data that indicate a breakdown in the body's ability to recover. These "red flags" are not diagnostic but serve as powerful indicators that the client's current lifestyle or environment is hindering their sleep health.</p>
+
+        <div class="principle-card">
+            <p class="principle-title">The "Sawtooth" Pattern</p>
+            <p class="principle-text">A sawtooth pattern in SpO2 (repeated sharp drops followed by rapid recoveries) is a classic signature of <strong>Obstructive Sleep Apnea (OSA)</strong>. This occurs when the airway collapses, oxygen levels fall, and the brain triggers a "micro-arousal" to resume breathing.</p>
+        </div>
+
+        <div class="principle-card">
+            <p class="principle-title">The Alcohol Spike</p>
+            <p class="principle-text">Alcohol is a potent respiratory depressant. It relaxes the muscles of the upper airway and reduces the brain's sensitivity to CO2. Tracking data often shows an <strong>increased RR</strong> (as the heart works harder to circulate oxygen) coupled with <strong>decreased SpO2</strong> (due to shallow breathing).</p>
+        </div>
+
+        <!-- Case Study 1 -->
+        <div class="case-study">
+            <div class="case-study-header">
+                <div class="case-study-icon">📊</div>
+                <div>
+                    <p class="box-label">Case Study: The Overtrained Athlete</p>
+                </div>
+            </div>
+            <div class="case-study-content">
+                <div class="patient-profile">
+                    <div class="patient-avatar">M</div>
+                    <div class="patient-info">
+                        <h4>Marcus, 34</h4>
+                        <p>Competitive Triathlete | Presenting with "Heavy Legs" and poor focus</p>
+                    </div>
+                </div>
+                <p><strong>Initial Data:</strong> Marcus's sleep diary showed 8 hours of sleep, but his wearable data revealed a resting heart rate (RHR) 8 beats higher than normal and a <strong>Respiratory Rate (RR) increase</strong> from 14.2 to 16.8 bpm over three days.</p>
+                <p><strong>Intervention:</strong> Using the <strong>RESTORE Method</strong>, the coach identified that Marcus was in a state of sympathetic dominance (overtraining). The coach implemented "S" (Stress Mitigation) protocols, including 4-7-8 breathing before bed, and mandated two full rest days.</p>
+                <p><strong>Outcome:</strong> Within 48 hours, Marcus's RR returned to 14.4 bpm. His subjective "heavy legs" feeling vanished, and his HRV rebounded, preventing a full-blown injury or illness.</p>
+            </div>
+        </div>
+
+        <h2 id="section5">Wearable Accuracy vs. Medical Grade</h2>
+
+        <p>It is vital to communicate to clients that consumer wearables (Oura, Whoop, Apple Watch, Garmin) are not medical devices. A 2020 validation study published in the <em>Journal of Clinical Sleep Medicine</em> compared consumer pulse oximeters to clinical polysomnography (PSG). The findings showed that while wearables are generally accurate for <strong>average</strong> SpO2, they often struggle to capture the exact nadir (lowest point) of a desaturation event.</p>
+
+        <p>However, for a Sleep Health Coach, the <span class="highlight">longitudinal trend</span> is more valuable than a single night's absolute number. We are looking for deviations from <em>their</em> normal. If a client's baseline is 97% and they suddenly spend 20 minutes at 91%, that is a significant data point regardless of the device's absolute precision.</p>
+
+        <h2 id="section6">Integrating into the RESTORE Method</h2>
+
+        <p>Respiratory tracking is the "check and balance" of the RESTORE Method. It confirms if the other pillars are working. For example:</p>
+        <ul class="content-list">
+            <li><strong>Environment (E):</strong> If SpO2 improves after adding a humidifier or air purifier, we have objective proof of environmental impact.</li>
+            <li><strong>Organic & Metabolic (O):</strong> If RR drops after a client stops eating 3 hours before bed, we see the reduction in metabolic "work" during sleep.</li>
+            <li><strong>Stress Mitigation (S):</strong> Breathwork protocols directly influence the CO2 tolerance and efficiency of nocturnal respiration.</li>
+        </ul>
+
+        <!-- Case Study 2 -->
+        <div class="case-study">
+            <div class="case-study-header">
+                <div class="case-study-icon">🌙</div>
+                <div>
+                    <p class="box-label">Case Study: The Hidden Airway Issue</p>
+                </div>
+            </div>
+            <div class="case-study-content">
+                <div class="patient-profile">
+                    <div class="patient-avatar">S</div>
+                    <div class="patient-info">
+                        <h4>Sarah, 52</h4>
+                        <p>Executive | Complaints of "Waking up with a headache" and dry mouth</p>
+                    </div>
+                </div>
+                <p><strong>The Data:</strong> Sarah's SpO2 graph showed frequent dips to 88% throughout the night, occurring roughly every 15 minutes during REM stages. Her RR was also erratic during these periods.</p>
+                <p><strong>Action:</strong> The coach recognized these as "red flags" for Sleep Disordered Breathing. Instead of adjusting sleep hygiene, the coach referred Sarah for a clinical sleep study.</p>
+                <p><strong>Outcome:</strong> Sarah was diagnosed with Moderate Obstructive Sleep Apnea. After starting CPAP therapy, her SpO2 stabilized at 98%, her morning headaches vanished, and her "Recovery" score on her wearable reached 90% for the first time in years.</p>
+            </div>
+        </div>
+
+        <!-- Check Your Understanding -->
+        <div class="check-understanding">
+            <p class="box-label">Check Your Understanding</p>
+            <p class="box-subtitle">Test your knowledge of respiratory metrics and recovery tracking.</p>
+
+            <div class="question-item">
+                <div class="question-number">1</div>
+                <p class="question-text">A client's wearable shows their Respiratory Rate (RR) has jumped from 13.5 to 15.8 bpm over the last two nights, while their HRV has plummeted. What is the most likely interpretation?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-text">The body is under significant physiological stress, likely due to an impending illness, overtraining, or acute systemic inflammation. The increased RR indicates the body is working harder to maintain homeostasis.</div>
+            </div>
+
+            <div class="question-item">
+                <div class="question-number">2</div>
+                <p class="question-text">Why is the "Sawtooth" pattern in an SpO2 graph particularly concerning for a Sleep Health Coach?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-text">A sawtooth pattern indicates repeated cycles of oxygen desaturation and rapid re-oxygenation, which is a hallmark sign of Obstructive Sleep Apnea (OSA). This requires a referral to a medical professional for diagnosis.</div>
+            </div>
+        </div>
+
+        <!-- Key Takeaways -->
+        <div class="takeaways-box">
+            <p class="box-label">Key Takeaways</p>
+            <ul>
+                <li><strong>RR Stability:</strong> Nocturnal Respiratory Rate is highly stable; deviations of >1-2 bpm are significant indicators of physiological stress.</li>
+                <li><strong>SpO2 Thresholds:</strong> Levels should remain above 95%. Dips below 90% are clinically significant and suggest impaired airway function or metabolic distress.</li>
+                <li><strong>The Bohr Effect:</strong> Breathing is driven primarily by CO2 levels, not just oxygen need. Tracking RR helps monitor this metabolic balance.</li>
+                <li><strong>Coaching Role:</strong> We use data to identify <em>trends</em> and <em>red flags</em> to guide lifestyle changes or medical referrals, not to provide clinical diagnoses.</li>
+                <li><strong>Integration:</strong> Respiratory metrics validate the success of the <strong>RESTORE Method</strong> interventions in the Environment and Stress pillars.</li>
+            </ul>
+        </div>
+
+        <!-- References Box -->
+        <div class="references-box">
+            <p class="box-label">References & Further Reading</p>
+            <ul>
+                <li>Berry et al. (2017). "The AASM Manual for the Scoring of Sleep and Associated Events." American Academy of Sleep Medicine.</li>
+                <li>Miller et al. (2021). "Respiratory Rate Monitoring via a Wrist-Worn Device for Early Detection of Viral Infection." Journal of Clinical Medicine.</li>
+                <li>Zhu et al. (2020). "Accuracy of Consumer Wearables for SpO2 Measurement: A Validation Study." Journal of Clinical Sleep Medicine.</li>
+                <li>Capodilupo et al. (2022). "The Relationship Between Nocturnal Respiratory Rate and Athletic Recovery." International Journal of Sports Physiology.</li>
+                <li>Peppard et al. (2013). "Increased Prevalence of Sleep-Disordered Breathing in Adults." American Journal of Epidemiology.</li>
+                <li>Mason et al. (2019). "The Autonomic Control of Breathing During Sleep." Frontiers in Neurology.</li>
+            </ul>
+        </div>
+
+        <footer class="lesson-footer">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="footer-logo">
+            <p class="brand">AccrediPro Academy | Sleep Health Coach Certification</p>
+            <p class="copyright">&copy; 2024 AccrediPro. All rights reserved. The RESTORE Method™ is a proprietary framework.</p>
+        </footer>
+    </div>
+</body>
+
+</html>

@@ -1,0 +1,743 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lesson 6.7: Digital Boundaries: Taming the Notification Economy</title>
+    <style>
+        /* Base & Reset */
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Georgia, 'Times New Roman', serif;
+            line-height: 1.8;
+            color: #2d2d2d;
+            background: #f8f6f3;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Main Container */
+        .lesson-container {
+            max-width: 860px;
+            margin: 0 auto;
+            padding: 40px 30px;
+            background: #ffffff;
+            min-height: 100vh;
+            box-shadow: 0 0 60px rgba(0, 0, 0, 0.08);
+        }
+
+        /* Brand Header */
+        .brand-header {
+            text-align: center;
+            padding-bottom: 30px;
+            margin-bottom: 35px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .brand-logo {
+            max-width: 220px;
+            height: auto;
+            margin-bottom: 5px;
+        }
+
+        /* Module Header - BLUE/TEAL theme for Stress & Burnout */
+        .module-header {
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            padding: 35px 35px 30px;
+            border-radius: 16px;
+            margin-bottom: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .module-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.05) 0%, transparent 70%);
+            transform: translate(100px, -100px);
+        }
+
+        .module-header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, #3b82f6, #60a5fa, #3b82f6);
+        }
+
+        .module-label {
+            margin: 0;
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.75);
+            text-transform: uppercase;
+            letter-spacing: 2.5px;
+            font-weight: 500;
+        }
+
+        .lesson-title {
+            margin: 10px 0 0 0;
+            font-size: 28px;
+            color: #ffffff;
+            font-weight: 700;
+            line-height: 1.3;
+            position: relative;
+        }
+
+        .lesson-meta {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+            padding-top: 18px;
+            border-top: 1px solid rgba(255, 255, 255, 0.15);
+            flex-wrap: wrap;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.85);
+            background: rgba(255, 255, 255, 0.1);
+            padding: 5px 12px;
+            border-radius: 4px;
+        }
+
+        /* Table of Contents */
+        .toc-box {
+            background: linear-gradient(135deg, #fafafa 0%, #f5f5f5 100%);
+            border-radius: 14px;
+            padding: 24px 28px;
+            margin-bottom: 35px;
+            border: 1px solid #e8e8e8;
+        }
+
+        .toc-box .box-label {
+            font-weight: 600;
+            color: #1e293b;
+            margin: 0 0 18px 0;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .toc-list {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px 24px;
+        }
+
+        .toc-list li {
+            margin: 0;
+        }
+
+        .toc-list a {
+            display: flex;
+            align-items: center;
+            padding: 8px 12px;
+            color: #555;
+            text-decoration: none;
+            font-size: 14px;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+        }
+
+        .toc-list a:hover {
+            background: white;
+            color: #3b82f6;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+        }
+
+        .toc-list .section-num {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 26px;
+            height: 26px;
+            background: #1e293b;
+            color: white;
+            font-weight: 600;
+            font-size: 11px;
+            border-radius: 6px;
+            margin-right: 12px;
+            flex-shrink: 0;
+        }
+
+        /* Learning Objectives */
+        .objectives-box {
+            background: #f0f9ff;
+            border: 2px solid #3b82f6;
+            border-radius: 14px;
+            padding: 30px 35px;
+            margin-bottom: 40px;
+        }
+
+        .objectives-box .box-label {
+            font-weight: 600;
+            color: #1e40af;
+            margin: 0 0 18px 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .objectives-box .box-label::before {
+            content: '🎯';
+            font-size: 18px;
+        }
+
+        .objectives-box ul {
+            margin: 0;
+            padding-left: 22px;
+        }
+
+        .objectives-box li {
+            margin-bottom: 14px;
+            font-size: 16px;
+            line-height: 1.7;
+        }
+
+        /* Key Terms Box */
+        .key-terms-box {
+            background: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%);
+            border-radius: 14px;
+            padding: 28px 30px;
+            margin: 40px 0;
+            border: 1px solid #cbd5e1;
+        }
+
+        .key-terms-box .box-label {
+            font-weight: 600;
+            color: #334155;
+            margin: 0 0 18px 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .terms-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 16px;
+        }
+
+        .term-item {
+            background: white;
+            padding: 16px 18px;
+            border-radius: 10px;
+            border-left: 4px solid #3b82f6;
+        }
+
+        .term-item .term {
+            font-weight: 700;
+            color: #1e40af;
+            font-size: 15px;
+            margin: 0 0 6px 0;
+        }
+
+        .term-item .definition {
+            font-size: 14px;
+            color: #475569;
+            margin: 0;
+            line-height: 1.6;
+        }
+
+        /* Section Headings */
+        h2 {
+            font-size: 24px;
+            color: #1e293b;
+            margin: 50px 0 20px 0;
+            font-weight: 600;
+            position: relative;
+            padding-bottom: 12px;
+        }
+
+        h2::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 60px;
+            height: 3px;
+            background: #3b82f6;
+        }
+
+        /* Paragraphs */
+        p {
+            font-size: 17px;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        /* Highlights */
+        .highlight {
+            background: linear-gradient(180deg, transparent 60%, #e0f2fe 60%);
+            padding: 0 4px;
+            font-weight: 600;
+            color: #0369a1;
+        }
+
+        /* Welcome/Intro Box */
+        .welcome-box {
+            background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+            padding: 30px 35px;
+            border-radius: 14px;
+            margin-bottom: 40px;
+            border: 1px solid #e2e8f0;
+        }
+
+        .welcome-box h3 {
+            margin: 0 0 15px 0;
+            font-size: 20px;
+            color: #1e293b;
+            font-weight: 600;
+        }
+
+        /* Alert Boxes */
+        .alert-box {
+            padding: 26px 30px;
+            margin: 35px 0;
+            border-radius: 0 14px 14px 0;
+            border-left: 5px solid;
+        }
+
+        .alert-box .alert-label {
+            font-weight: 600;
+            margin: 0 0 12px 0;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .alert-box.warning {
+            background: #fff8e6;
+            border-left-color: #ff9800;
+        }
+
+        .alert-box.warning .alert-label {
+            color: #e65100;
+        }
+
+        /* Case Study Box */
+        .case-study {
+            background: linear-gradient(135deg, #f8f9fb 0%, #f0f2f5 100%);
+            border-radius: 16px;
+            padding: 0;
+            margin: 40px 0;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+        }
+
+        .case-study-header {
+            background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
+            padding: 20px 30px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .case-study-icon {
+            width: 45px;
+            height: 45px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+        }
+
+        .case-study-header .box-label {
+            font-weight: 600;
+            color: #ffffff;
+            margin: 0;
+            font-size: 16px;
+        }
+
+        .case-study-content {
+            padding: 28px 30px;
+        }
+
+        .patient-profile {
+            display: flex;
+            align-items: center;
+            gap: 18px;
+            padding: 18px 22px;
+            background: white;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            border: 1px solid #e5e5e5;
+        }
+
+        .patient-avatar {
+            width: 55px;
+            height: 55px;
+            background: linear-gradient(135deg, #3b82f6, #1e40af);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            flex-shrink: 0;
+        }
+
+        /* Statistics Box */
+        .stats-box {
+            background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
+            padding: 40px;
+            border-radius: 16px;
+            margin: 35px 0;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 25px;
+            position: relative;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 42px;
+            font-weight: 700;
+            color: #60a5fa;
+            line-height: 1;
+            margin-bottom: 8px;
+        }
+
+        .stat-label {
+            font-size: 13px;
+            color: rgba(255, 255, 255, 0.85);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* Check Understanding Box */
+        .check-understanding {
+            background: linear-gradient(135deg, #fdfbf7 0%, #f9f5ed 100%);
+            border: 2px solid #3b82f6;
+            border-radius: 16px;
+            padding: 32px;
+            margin: 45px 0;
+        }
+
+        .question-item {
+            background: white;
+            border-radius: 12px;
+            padding: 22px 24px;
+            margin-bottom: 16px;
+            border: 1px solid #e8e4dc;
+            position: relative;
+        }
+
+        .reveal-btn {
+            background: #1e293b;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-size: 14px;
+            cursor: pointer;
+            transition: background 0.2s ease;
+        }
+
+        .answer-text {
+            display: none;
+            font-size: 14px;
+            color: #1e40af;
+            margin: 14px 0 0 0;
+            padding: 14px;
+            background: #eff6ff;
+            border-radius: 8px;
+        }
+
+        .answer-text.show {
+            display: block;
+        }
+
+        /* References & Takeaways */
+        .takeaways-box {
+            background: #f8fafc;
+            padding: 25px;
+            margin-top: 35px;
+            border-radius: 12px;
+            border: 1px solid #e2e8f0;
+        }
+
+        .references-box {
+            margin-top: 40px;
+            padding: 25px;
+            background: #ffffff;
+            border-top: 1px solid #eee;
+            font-size: 14px;
+            color: #666;
+        }
+
+        .references-box h4 {
+            margin-bottom: 15px;
+            color: #1e293b;
+        }
+
+        /* Footer */
+        .lesson-footer {
+            text-align: center;
+            padding-top: 50px;
+            margin-top: 60px;
+            border-top: 1px solid #eee;
+        }
+
+        .footer-logo {
+            max-width: 140px;
+            opacity: 0.9;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="lesson-container">
+        <div class="brand-header">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="brand-logo">
+        </div>
+
+        <header class="module-header">
+            <p class="module-label">Module 6: I: Internal & Environmental Boundaries</p>
+            <h1 class="lesson-title">Lesson 6.7: Digital Boundaries: Taming the Notification Economy</h1>
+            <div class="lesson-meta">
+                <span class="meta-item">30 min read</span>
+                <span class="meta-item">Lesson 7 of 8</span>
+            </div>
+        </header>
+
+        <div class="toc-box">
+            <p class="box-label">In This Lesson</p>
+            <ul class="toc-list">
+                <li><a href="#neurobiology"><span class="section-num">1</span>The Neurobiology of Notifications</a></li>
+                <li><a href="#cost"><span class="section-num">2</span>The Cost of Context Switching</a></li>
+                <li><a href="#economy"><span class="section-num">3</span>Understanding the Attention Economy</a></li>
+                <li><a href="#strategies"><span class="section-num">4</span>Architecting Digital Shields</a></li>
+                <li><a href="#social"><span class="section-num">5</span>Managing Social Availability</a></li>
+                <li><a href="#revive"><span class="section-num">6</span>Integration with REVIVE Method</a></li>
+            </ul>
+        </div>
+
+        <div class="objectives-box">
+            <p class="box-label">Learning Objectives</p>
+            <ul>
+                <li>Analyze the neurobiological impact of intermittent digital interruptions on the HPA-axis.</li>
+                <li>Quantify the cognitive "switching cost" and its role in accelerating practitioner burnout.</li>
+                <li>Implement a three-tier system for digital boundary architecture (Device, App, and Social level).</li>
+                <li>Apply the REVIVE Method™ to transition clients from "Passive Consumption" to "Intentional Engagement."</li>
+                <li>Design a personalized Digital Hygiene Protocol for high-performance clients.</li>
+            </ul>
+        </div>
+
+        <div class="welcome-box">
+            <h3>The Invisible Energy Leak</h3>
+            <p>In the modern landscape of burnout coaching, we often focus on heavy workloads and toxic environments. However, one of the most pervasive drivers of chronic sympathetic dominance is the <span class="highlight">Notification Economy</span>. Every "ping," "buzz," and "red badge" acts as a micro-stressor, demanding cognitive bandwidth and triggering a miniature "fight-or-flight" response. To architect a true Stress Shield (the 'I' in REVIVE), we must help clients reclaim their digital sovereignty.</p>
+        </div>
+
+        <div class="key-terms-box">
+            <p class="box-label">📱 Key Digital Boundary Terms</p>
+            <div class="terms-grid">
+                <div class="term-item">
+                    <p class="term">Attentional Residue</p>
+                    <p class="definition">The cognitive drag that occurs when switching tasks; a portion of your attention remains stuck on the previous task, reducing performance on the new one.</p>
+                </div>
+                <div class="term-item">
+                    <p class="term">Dopamine Loop</p>
+                    <p class="definition">A cycle of seeking and reward triggered by unpredictable notifications, leading to compulsive device checking behavior.</p>
+                </div>
+                <div class="term-item">
+                    <p class="term">Context Switching</p>
+                    <p class="definition">The process of shifting focus between unrelated tasks, which can consume up to 40% of an individual's productive time.</p>
+                </div>
+                <div class="term-item">
+                    <p class="term">Zeigarnik Effect</p>
+                    <p class="definition">The psychological phenomenon where uncompleted tasks (like unread emails) create intrusive thoughts and mental tension.</p>
+                </div>
+            </div>
+        </div>
+
+        <h2 id="neurobiology">The Neurobiology of Notifications</h2>
+        <p>From an evolutionary perspective, our brains are hardwired to prioritize novel information. In the ancestral environment, a sudden sound or movement could signal a predator or a food source. Today, the "ping" of a Slack message or an Instagram like exploits this same <span class="highlight">orienting response</span>. When a notification arrives, the brain releases a small burst of dopamine, encouraging us to "check" the source.</p>
+
+        <p>However, this is rarely a one-time event. A 2022 study found that the average smartphone user interacts with their device 2,617 times per day. For the burnout-prone client, this creates a state of <span class="highlight">continuous partial attention</span>. The HPA-axis remains in a state of low-grade arousal, preventing the transition to the parasympathetic recovery state (the 'E' in REVIVE: Endocrine & Autonomic Regulation).</p>
+
+        <div class="stats-box">
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <div class="stat-number">23m</div>
+                    <div class="stat-label">To Refocus After Distraction</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">80x</div>
+                    <div class="stat-label">Daily Phone Checks</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">40%</div>
+                    <div class="stat-label">Productivity Loss</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">2x</div>
+                    <div class="stat-label">Cortisol in Heavy Users</div>
+                </div>
+            </div>
+        </div>
+
+        <h2 id="cost">The Cost of Context Switching</h2>
+        <p>Clients often believe they are "multitasking" effectively. In reality, the human brain cannot multitask; it rapidly switches between tasks. Research by Gloria Mark at the University of California, Irvine, demonstrates that it takes an average of <span class="highlight">23 minutes and 15 seconds</span> to return to the original task after an interruption. If a client receives just three notifications per hour, they may never reach a state of "Deep Work" or cognitive flow.</p>
+
+        <p>This "Attentional Residue" is a primary driver of decision fatigue. By the time the workday ends, the client's cognitive reservoir is empty, not because the work was inherently difficult, but because the <span class="highlight">switching costs</span> depleted their executive function. As a coach, your role is to help them visualize these interruptions as "energy leaks" in their Stress Shield.</p>
+
+        <div class="case-study">
+            <div class="case-study-header">
+                <div class="case-study-icon">💼</div>
+                <div>
+                    <p class="box-label">Case Study: The "Always-On" Executive</p>
+                    <p style="color: rgba(255,255,255,0.7); margin:0; font-size:13px;">Digital Boundary Intervention</p>
+                </div>
+            </div>
+            <div class="case-study-content">
+                <div class="patient-profile">
+                    <div class="patient-avatar">JD</div>
+                    <div class="patient-info">
+                        <h4>Jonathan, 44</h4>
+                        <p>VP of Operations | Presenting with high anxiety and "brain fog"</p>
+                    </div>
+                </div>
+                <p><strong>The Challenge:</strong> Jonathan felt compelled to respond to every email and Slack message instantly. He reported checking his phone within 30 seconds of waking up and right before sleep. His "Screen Time" report showed 7 hours of daily use, with 150+ daily pickups.</p>
+                <p><strong>Intervention (REVIVE 'I' Phase):</strong>
+                <ul>
+                    <li><strong>Grayscale Shift:</strong> Changed phone display to grayscale to reduce the dopamine reward of colorful icons.</li>
+                    <li><strong>Communication Batching:</strong> Restricted email/Slack to three 30-minute blocks per day (10am, 1pm, 4pm).</li>
+                    <li><strong>The "Bedroom Sanctuary":</strong> Relocated the charger to the kitchen, establishing a device-free zone 60 minutes before bed.</li>
+                </ul>
+                </p>
+                <p><strong>Outcome:</strong> Within 14 days, Jonathan reported a 35% reduction in perceived stress and a significant improvement in sleep latency. His "brain fog" cleared as his prefrontal cortex was no longer being bombarded by constant switching.</p>
+            </div>
+        </div>
+
+        <h2 id="economy">Understanding the Attention Economy</h2>
+        <p>It is vital to educate clients that their digital devices are not neutral tools. They are designed by "attention engineers" using persuasive technology to maximize time-on-device. Apps utilize <span class="highlight">variable ratio reinforcement schedules</span>—the same psychological mechanism used in slot machines. When you pull down to refresh a feed, you don't know if you'll see something boring or something exciting. This uncertainty is what makes the behavior addictive.</p>
+
+        <div class="alert-box warning">
+            <p class="alert-label">Practitioner Insight</p>
+            <p>When a client says they "lack willpower" to stay off their phone, reframe it. Willpower is a finite resource. They are not fighting a lack of character; they are fighting billions of dollars of R&D designed to break their focus. The solution is <strong>Environmental Design</strong>, not more willpower.</p>
+        </div>
+
+        <h2 id="strategies">Architecting Digital Shields</h2>
+        <p>Effective digital boundaries require a multi-layered approach. We categorize these into three distinct levels of intervention:</p>
+
+        <table style="width: 100%; border-collapse: collapse; margin: 25px 0; font-size: 15px;">
+            <thead>
+                <tr style="background-color: #1e293b; color: white;">
+                    <th style="padding: 12px; text-align: left; border: 1px solid #ddd;">Level</th>
+                    <th style="padding: 12px; text-align: left; border: 1px solid #ddd;">Strategy</th>
+                    <th style="padding: 12px; text-align: left; border: 1px solid #ddd;">Desired Outcome</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td style="padding: 12px; border: 1px solid #ddd; font-weight: 600;">Hardware</td>
+                    <td style="padding: 12px; border: 1px solid #ddd;">Grayscale mode, "Do Not Disturb" schedules, physical distance.</td>
+                    <td style="padding: 12px; border: 1px solid #ddd;">Reduced physiological pull and dopamine reward.</td>
+                </tr>
+                <tr style="background-color: #f8fafc;">
+                    <td style="padding: 12px; border: 1px solid #ddd; font-weight: 600;">Software</td>
+                    <td style="padding: 12px; border: 1px solid #ddd;">Disabling non-human notifications, deleting "infinity pool" apps.</td>
+                    <td style="padding: 12px; border: 1px solid #ddd;">Elimination of micro-stressors and "pings."</td>
+                </tr>
+                <tr>
+                    <td style="padding: 12px; border: 1px solid #ddd; font-weight: 600;">Behavioral</td>
+                    <td style="padding: 12px; border: 1px solid #ddd;">Batching communications, "Slow Tech" Sundays.</td>
+                    <td style="padding: 12px; border: 1px solid #ddd;">Restoration of the prefrontal cortex and deep focus.</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <h2 id="social">Managing Social Availability</h2>
+        <p>Internal boundaries are only half the battle; <span class="highlight">external boundaries</span> involve managing the expectations of others. In an "always-on" culture, silence is often interpreted as neglect or incompetence. Coaches must help clients "train" their network.</p>
+
+        <p>This includes:
+        <ul>
+            <li><strong>The Auto-Responder Strategy:</strong> Using status messages in Slack or Email: "I am currently in Deep Work. I check messages at 11 AM and 3 PM."</li>
+            <li><strong>The "Urgency" Filter:</strong> Asking colleagues, "Is this a 'now' problem or a 'today' problem?"</li>
+            <li><strong>Closing the Loop:</strong> Proactively updating stakeholders so they don't feel the need to "check-in" (which triggers more notifications).</li>
+        </ul>
+        </p>
+
+        <div class="check-understanding">
+            <p class="box-label">Check Your Understanding</p>
+            <p class="box-subtitle">Test your knowledge of digital boundary neurobiology.</p>
+
+            <div class="question-item">
+                <p class="question-text">According to the research discussed, how long does it take the average person to return to their peak level of focus after a single digital interruption?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-text">Approximately 23 minutes and 15 seconds. This is due to "attentional residue," where the brain struggles to fully disengage from the interruption.</div>
+            </div>
+
+            <div class="question-item">
+                <p class="question-text">Which neurotransmitter system is primarily exploited by the "Notification Economy" to create compulsive checking behaviors?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-text">The Dopamine system, specifically via "variable ratio reinforcement schedules," which reward the user unpredictably.</div>
+            </div>
+        </div>
+
+        <h2 id="revive">Integration with the REVIVE Method™</h2>
+        <p>Digital boundaries are a cornerstone of the <strong>'I' (Internal & Environmental Boundaries)</strong> phase, but they directly support the <strong>'E' (Endocrine & Autonomic Regulation)</strong> phase. Without digital boundaries, the HPA-axis cannot find the "off-switch" required for the <strong>'V' (Volitional Recovery Protocols)</strong> phase. If a client is practicing somatic breathing but receives a stressful email notification mid-session, the recovery protocol is neutralized.</p>
+
+        <div class="takeaways-box">
+            <p class="box-label">Key Takeaways</p>
+            <ul>
+                <li><strong>Notifications are Micro-Stressors:</strong> Treat every digital alert as a physiological event that triggers the HPA-axis.</li>
+                <li><strong>Willpower is Not the Solution:</strong> Use Environmental Design (grayscale, physical distance, app deletion) to protect cognitive bandwidth.</li>
+                <li><strong>Switching Costs are Real:</strong> Multitasking can reduce productivity by 40% and significantly accelerate burnout.</li>
+                <li><strong>Train the Network:</strong> Set explicit expectations for availability to reduce the social pressure of "always-on" culture.</li>
+                <li><strong>The 60-Minute Rule:</strong> Establish a "Digital Sunset" 60 minutes before sleep to allow for melatonin production and CNS down-regulation.</li>
+            </ul>
+        </div>
+
+        <div class="references-box">
+            <h4>References & Further Reading</h4>
+            <ul>
+                <li>Mark, G., et al. (2008). "The Cost of Interrupted Work: More Speed and Stress." <i>Proceedings of the CHI Conference on Human Factors in Computing Systems.</i></li>
+                <li>Ward, A. F., et al. (2017). "Brain Drain: The Mere Presence of One’s Own Smartphone Reduces Available Cognitive Capacity." <i>Journal of the Association for Consumer Research.</i></li>
+                <li>Kushlev, K., et al. (2016). "Silence Your Phones: Digital Distractions, Inattention, and the Link to Burnout." <i>Computers in Human Behavior.</i></li>
+                <li>Newport, C. (2019). "Digital Minimalism: Choosing a Focused Life in a Noisy World." <i>Portfolio Penguin.</i></li>
+                <li>Wilmer, H. H., et al. (2017). "Smartphones and Cognition: A Review of Recent Research in Memory, Attention, and Executive Function." <i>Frontiers in Psychology.</i></li>
+                <li>Haidt, J. & Twenge, J. (2021). "The Impact of Social Media on Mental Health: A Meta-Analysis." <i>Nature Reviews Psychology.</i></li>
+            </ul>
+        </div>
+
+        <footer class="lesson-footer">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="footer-logo">
+            <p class="brand">AccrediPro Academy © 2024</p>
+            <p class="copyright">Certified Stress & Burnout Coach Program | Professional Grade Certification</p>
+        </footer>
+    </div>
+</body>
+
+</html>

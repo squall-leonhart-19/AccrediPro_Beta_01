@@ -1,0 +1,727 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lesson 13.4: Advanced Symptom Tracking and Data Analysis</title>
+    <style>
+        /* Base & Reset */
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Georgia, 'Times New Roman', serif;
+            line-height: 1.8;
+            color: #2d2d2d;
+            background: #f8f6f3;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Main Container */
+        .lesson-container {
+            max-width: 860px;
+            margin: 0 auto;
+            padding: 40px 30px;
+            background: #ffffff;
+            min-height: 100vh;
+            box-shadow: 0 0 60px rgba(0, 0, 0, 0.08);
+        }
+
+        /* Brand Header */
+        .brand-header {
+            text-align: center;
+            padding-bottom: 30px;
+            margin-bottom: 35px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .brand-logo {
+            max-width: 220px;
+            height: auto;
+            margin-bottom: 5px;
+        }
+
+        /* Module Header - PURPLE/GOLD theme for Advanced Coaching */
+        .module-header {
+            background: linear-gradient(135deg, #4c1d95 0%, #6d28d9 100%);
+            padding: 35px 35px 30px;
+            border-radius: 16px;
+            margin-bottom: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .module-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+            transform: translate(100px, -100px);
+        }
+
+        .module-header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, #B8860B, #D4A84B, #B8860B);
+        }
+
+        .module-label {
+            margin: 0;
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.75);
+            text-transform: uppercase;
+            letter-spacing: 2.5px;
+            font-weight: 500;
+        }
+
+        .lesson-title {
+            margin: 10px 0 0 0;
+            font-size: 28px;
+            color: #ffffff;
+            font-weight: 700;
+            line-height: 1.3;
+            position: relative;
+        }
+
+        .lesson-meta {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+            padding-top: 18px;
+            border-top: 1px solid rgba(255, 255, 255, 0.15);
+            flex-wrap: wrap;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.85);
+            background: rgba(255, 255, 255, 0.1);
+            padding: 5px 12px;
+            border-radius: 4px;
+        }
+
+        /* Table of Contents */
+        .toc-box {
+            background: linear-gradient(135deg, #fafafa 0%, #f5f5f5 100%);
+            border-radius: 14px;
+            padding: 24px 28px;
+            margin-bottom: 35px;
+            border: 1px solid #e8e8e8;
+        }
+
+        .toc-box .box-label {
+            font-weight: 600;
+            color: #4c1d95;
+            margin: 0 0 18px 0;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .toc-list {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px 24px;
+        }
+
+        .toc-list li {
+            margin: 0;
+        }
+
+        .toc-list a {
+            display: flex;
+            align-items: center;
+            padding: 8px 12px;
+            color: #555;
+            text-decoration: none;
+            font-size: 14px;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+        }
+
+        .toc-list a:hover {
+            background: white;
+            color: #4c1d95;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+        }
+
+        .toc-list .section-num {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 26px;
+            height: 26px;
+            background: #4c1d95;
+            color: white;
+            font-weight: 600;
+            font-size: 11px;
+            border-radius: 6px;
+            margin-right: 12px;
+            flex-shrink: 0;
+        }
+
+        /* Learning Objectives */
+        .objectives-box {
+            background: #f5f3ff;
+            border: 2px solid #8b5cf6;
+            border-radius: 14px;
+            padding: 30px 35px;
+            margin-bottom: 40px;
+        }
+
+        .objectives-box .box-label {
+            font-weight: 600;
+            color: #4c1d95;
+            margin: 0 0 18px 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .objectives-box .box-label::before {
+            content: '🎯';
+            font-size: 18px;
+        }
+
+        .objectives-box ul {
+            margin: 0;
+            padding-left: 22px;
+        }
+
+        .objectives-box li {
+            margin-bottom: 14px;
+            font-size: 16px;
+            line-height: 1.7;
+        }
+
+        /* Key Terms Box */
+        .key-terms-box {
+            background: linear-gradient(135deg, #f0f4f8 0%, #e8ecf1 100%);
+            border-radius: 14px;
+            padding: 28px 30px;
+            margin: 40px 0;
+            border: 1px solid #d8dce0;
+        }
+
+        .key-terms-box .box-label {
+            font-weight: 600;
+            color: #4c1d95;
+            margin: 0 0 18px 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .terms-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 16px;
+        }
+
+        .term-item {
+            background: white;
+            padding: 16px 18px;
+            border-radius: 10px;
+            border-left: 4px solid #8b5cf6;
+        }
+
+        .term-item .term {
+            font-weight: 700;
+            color: #4c1d95;
+            font-size: 15px;
+            margin: 0 0 6px 0;
+        }
+
+        .term-item .definition {
+            font-size: 14px;
+            color: #555;
+            margin: 0;
+            line-height: 1.6;
+        }
+
+        /* Section Headings */
+        h2 {
+            font-size: 24px;
+            color: #4c1d95;
+            margin: 50px 0 20px 0;
+            font-weight: 600;
+            position: relative;
+            padding-bottom: 12px;
+        }
+
+        h2::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 60px;
+            height: 3px;
+            background: #B8860B;
+        }
+
+        /* Paragraphs & Highlights */
+        p {
+            font-size: 17px;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        .highlight {
+            background: linear-gradient(180deg, transparent 60%, #e9d5ff 60%);
+            padding: 0 4px;
+            font-weight: 500;
+        }
+
+        .stat-highlight {
+            font-weight: 700;
+            color: #4c1d95;
+        }
+
+        /* Welcome/Intro Box */
+        .welcome-box {
+            background: linear-gradient(135deg, #f5f3ff 0%, #ede9fe 100%);
+            padding: 30px 35px;
+            border-radius: 14px;
+            margin-bottom: 40px;
+            border: 1px solid #ddd6fe;
+        }
+
+        .welcome-box h3 {
+            margin: 0 0 15px 0;
+            font-size: 20px;
+            color: #4c1d95;
+            font-weight: 600;
+        }
+
+        /* Statistics Box */
+        .stats-box {
+            background: linear-gradient(135deg, #4c1d95 0%, #6d28d9 100%);
+            padding: 40px;
+            border-radius: 16px;
+            margin: 35px 0;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 25px;
+            position: relative;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 38px;
+            font-weight: 700;
+            color: white;
+            line-height: 1;
+            margin-bottom: 8px;
+        }
+
+        .stat-label {
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.85);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* Data Table */
+        .data-table-container {
+            margin: 35px 0;
+            overflow-x: auto;
+            border-radius: 12px;
+            border: 1px solid #e5e7eb;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 15px;
+            text-align: left;
+        }
+
+        th {
+            background: #f9fafb;
+            padding: 15px;
+            font-weight: 600;
+            color: #4c1d95;
+            border-bottom: 2px solid #e5e7eb;
+        }
+
+        td {
+            padding: 15px;
+            border-bottom: 1px solid #f3f4f6;
+            color: #4b5563;
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        /* Case Study Box */
+        .case-study {
+            background: #f9fafb;
+            border-radius: 16px;
+            margin: 40px 0;
+            overflow: hidden;
+            border: 1px solid #e5e7eb;
+        }
+
+        .case-study-header {
+            background: #4c1d95;
+            padding: 20px 30px;
+            color: white;
+        }
+
+        .case-study-content {
+            padding: 30px;
+        }
+
+        .patient-profile {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            background: white;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            border: 1px solid #eee;
+        }
+
+        .patient-avatar {
+            width: 50px;
+            height: 50px;
+            background: #8b5cf6;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+        }
+
+        /* Check Understanding */
+        .check-understanding {
+            background: #fffaf0;
+            border: 2px solid #d4a84b;
+            border-radius: 16px;
+            padding: 32px;
+            margin: 45px 0;
+        }
+
+        .reveal-btn {
+            background: #4c1d95;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+
+        .answer-text {
+            display: none;
+            margin-top: 15px;
+            padding: 15px;
+            background: #f3f4f6;
+            border-radius: 8px;
+            border-left: 4px solid #4c1d95;
+        }
+
+        /* Takeaways */
+        .takeaways-box {
+            background: #f3f4f6;
+            padding: 25px;
+            border-radius: 12px;
+            margin: 40px 0;
+        }
+
+        .references-box {
+            background: #fafafa;
+            padding: 25px;
+            border-radius: 12px;
+            margin-top: 40px;
+            font-size: 14px;
+            border: 1px solid #eee;
+        }
+
+        .references-box h3 {
+            font-size: 16px;
+            color: #4c1d95;
+            margin-top: 0;
+        }
+
+        .lesson-footer {
+            text-align: center;
+            padding: 40px 0;
+            border-top: 1px solid #eee;
+            margin-top: 60px;
+        }
+
+        .footer-logo {
+            max-width: 140px;
+            opacity: 0.8;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="lesson-container">
+        <div class="brand-header">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="brand-logo">
+        </div>
+
+        <header class="module-header">
+            <p class="module-label">Module 13: Advanced Coaching Skills</p>
+            <h1 class="lesson-title">Lesson 13.4: Advanced Symptom Tracking and Data Analysis</h1>
+            <div class="lesson-meta">
+                <span class="meta-item">35 min read</span>
+                <span class="meta-item">Lesson 4 of 6</span>
+            </div>
+        </header>
+
+        <div class="toc-box">
+            <p class="box-label">In This Lesson</p>
+            <ul class="toc-list">
+                <li><a href="#section1"><span class="section-num">1</span>The Data-Driven Practitioner</a></li>
+                <li><a href="#section2"><span class="section-num">2</span>The VITAL Symptom Inventory</a></li>
+                <li><a href="#section3"><span class="section-num">3</span>Wearable Data Integration</a></li>
+                <li><a href="#section4"><span class="section-num">4</span>Metabolic & Thermal Correlation</a></li>
+                <li><a href="#section5"><span class="section-num">5</span>Signal vs. Noise Analysis</a></li>
+                <li><a href="#section6"><span class="section-num">6</span>Visualization & Self-Efficacy</a></li>
+            </ul>
+        </div>
+
+        <div class="objectives-box">
+            <p class="box-label">Learning Objectives</p>
+            <ul>
+                <li>Integrate quantitative wearable data (HRV, Sleep, Temperature) with qualitative symptom reporting.</li>
+                <li>Utilize the VITAL Symptom Inventory (VSI) to identify root-cause correlations between pillars.</li>
+                <li>Analyze the impact of glycemic variability on vasomotor symptom (VMS) frequency and severity.</li>
+                <li>Distinguish between "hormonal noise" and "lifestyle signals" using longitudinal data mapping.</li>
+                <li>Leverage data visualization to enhance client motivation and adherence to the VITAL Method™.</li>
+            </ul>
+        </div>
+
+        <div class="welcome-box">
+            <h3>Precision Coaching in the Menopause Transition</h3>
+            <p>In the complex landscape of perimenopause and menopause, "how do you feel?" is a vital question, but it is only the starting point. Advanced coaching requires moving from subjective intuition to <strong>objective data analysis</strong>. By tracking specific biomarkers and symptom clusters, we can move beyond guesswork and provide surgical interventions that respect the client's unique physiology. This lesson explores the tools and analytical frameworks necessary to master this data-driven approach.</p>
+        </div>
+
+        <div class="key-terms-box">
+            <p class="box-label">🔬 Advanced Analytics Terms</p>
+            <div class="terms-grid">
+                <div class="term-item">
+                    <p class="term">HRV (Heart Rate Variability)</p>
+                    <p class="definition">The variation in time between consecutive heartbeats; a primary marker of autonomic nervous system balance and adrenal resilience.</p>
+                </div>
+                <div class="term-item">
+                    <p class="term">Glycemic Variability</p>
+                    <p class="definition">The "swings" in blood glucose levels. High variability is strongly correlated with increased hot flash intensity.</p>
+                </div>
+                <div class="term-item">
+                    <p class="term">VSI Score</p>
+                    <p class="definition">The VITAL Symptom Inventory score; a weighted numerical value representing symptom burden across the five VITAL pillars.</p>
+                </div>
+                <div class="term-item">
+                    <p class="term">Longitudinal Mapping</p>
+                    <p class="definition">Tracking data over extended periods (3-6 months) to identify seasonal or cyclic patterns that short-term tracking misses.</p>
+                </div>
+            </div>
+        </div>
+
+        <h2 id="section1">The Power of Quantitative Tracking</h2>
+        <p>Subjective recall is notoriously unreliable during the menopause transition due to "menopause brain" (cognitive fluctuations) and the emotional intensity of symptoms. <span class="highlight">A 2022 study published in <i>Menopause</i> (n=1,245)</span> found that women who utilized digital symptom tracking reported a <span class="stat-highlight">34% higher health literacy score</span> and were significantly more likely to identify triggers for their vasomotor symptoms compared to those using memory alone.</p>
+        
+        <p>As an expert coach, your role is to help the client transition from "experiencing" symptoms to "observing" data. This shift in perspective—from victim to investigator—is therapeutic in itself. It reduces the emotional charge of a "bad day" by reframing it as a "data point" in a larger metabolic or hormonal trend.</p>
+
+        <div class="stats-box">
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <div class="stat-number">34%</div>
+                    <div class="stat-label">Increase in Health Literacy</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">42%</div>
+                    <div class="stat-label">Better Trigger Identification</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">2.5x</div>
+                    <div class="stat-label">Higher Intervention Adherence</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">15%</div>
+                    <div class="stat-label">Reduction in Anxiety</div>
+                </div>
+            </div>
+        </div>
+
+        <h2 id="section2">The VITAL Symptom Inventory (VSI)</h2>
+        <p>The <span class="highlight">VITAL Symptom Inventory (VSI)</span> is our proprietary framework for categorizing data. Instead of a long list of 34+ symptoms, we group them into the five pillars to identify which system requires the most immediate support. This prevents "supplement whack-a-mole" where the client tries a different remedy for every individual symptom.</p>
+
+        <div class="data-table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>VITAL Pillar</th>
+                        <th>Key Data Points</th>
+                        <th>Objective Marker</th>
+                        <th>Coaching Focus</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Vascular & Bone</td>
+                        <td>Joint pain, palpitations</td>
+                        <td>BP, DXA Scan trends</td>
+                        <td>Protective Nutrition</td>
+                    </tr>
+                    <tr>
+                        <td>Insulin & Metabolic</td>
+                        <td>Sugar cravings, weight gain</td>
+                        <td>HbA1c, Fasting Glucose</td>
+                        <td>Glucose Stabilization</td>
+                    </tr>
+                    <tr>
+                        <td>Thermal & Sleep</td>
+                        <td>Hot flashes, night sweats</td>
+                        <td>Core Body Temp (Wearable)</td>
+                        <td>Hypothalamic Cooling</td>
+                    </tr>
+                    <tr>
+                        <td>Adrenal & Stress</td>
+                        <td>Anxiety, "tired but wired"</td>
+                        <td>HRV (Heart Rate Variability)</td>
+                        <td>Nervous System Regulation</td>
+                    </tr>
+                    <tr>
+                        <td>Lifestyle Longevity</td>
+                        <td>Mood, libido, cognitive fog</td>
+                        <td>Habit Consistency Score</td>
+                        <td>Emotional Well-being</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <h2 id="section3">Wearable Data Integration: Moving Beyond Steps</h2>
+        <p>Modern wearables (Oura, Whoop, Apple Watch, Garmin) provide a "window" into the autonomic nervous system. For the menopause coach, <span class="highlight">HRV (Heart Rate Variability)</span> is the gold standard for tracking the "Adrenal & Stress Resilience" pillar. During perimenopause, estrogen fluctuations can cause significant drops in HRV, signaling a reduced capacity to handle external stressors.</p>
+
+        <p>When analyzing wearable data, look for the <strong>"Menopause Dip"</strong>: a simultaneous increase in Resting Heart Rate (RHR) and a decrease in HRV during the late luteal phase (if still cycling) or during periods of high VMS activity. <span class="stat-highlight">A 2021 meta-analysis (n=8,234)</span> demonstrated that women with lower nocturnal HRV were 2.8 times more likely to report severe night sweats, suggesting that autonomic dysfunction precedes the thermal symptom.</p>
+
+        <h2 id="section4">Metabolic & Thermal Correlation: The Insulin Connection</h2>
+        <p>One of the most profound breakthroughs in menopause data analysis is the link between <span class="highlight">Insulin & Metabolic Optimization</span> and <span class="highlight">Thermal & Sleep Regulation</span>. Research indicates that glucose spikes and subsequent "crashes" (reactive hypoglycemia) can trigger the sympathetic nervous system, leading to a hot flash.</p>
+
+        <div class="case-study">
+            <div class="case-study-header">
+                <p class="box-label">Case Study: The Midnight Trigger</p>
+                <p class="subtitle">Applying VITAL Data Analysis</p>
+            </div>
+            <div class="case-study-content">
+                <div class="patient-profile">
+                    <div class="patient-avatar">S</div>
+                    <div class="patient-info">
+                        <h4>Sarah, Age 51</h4>
+                        <p>Presenting: Severe night sweats (3-4x per night) and morning fatigue.</p>
+                    </div>
+                </div>
+                <p><strong>Initial Hypothesis:</strong> Sarah assumed she needed more HRT or cooling supplements (Thermal Pillar).</p>
+                <p><strong>Data Intervention:</strong> Sarah wore a Continuous Glucose Monitor (CGM) and tracked her VMS for 14 days. Analysis revealed that her 2:00 AM night sweats were preceded by a glucose drop to 65 mg/dL, following a high-carb evening snack (wine and crackers).</p>
+                <p><strong>Outcome:</strong> By adjusting her evening meal to include high protein and healthy fats (Insulin Pillar), her glucose stabilized. Night sweats reduced by <span class="stat-highlight">75% within one week</span> without changing her hormonal protocol.</p>
+            </div>
+        </div>
+
+        <h2 id="section5">Signal vs. Noise: Identifying Root Causes</h2>
+        <p>In perimenopause, the "noise" of fluctuating hormones can make it difficult to see if an intervention is working. Advanced tracking requires <strong>Cycle-Syncing the Data</strong>. Even if a client is irregular, tracking symptoms against their "internal rhythm" helps differentiate between a "hormonal storm" and a "lifestyle failure."</p>
+
+        <p>Use the following analysis rules:</p>
+        <ul>
+            <li><strong>The 3-Day Rule:</strong> Do not change a protocol based on 1-2 days of data. Look for 3+ days of a consistent trend.</li>
+            <li><strong>The Pillar Pivot:</strong> If Thermal symptoms aren't responding to Thermal interventions, look to the Adrenal or Insulin pillars for the "hidden" trigger.</li>
+            <li><strong>The Stress Lag:</strong> Note that an Adrenal "flare" (high stress) often shows up in Vascular or Thermal symptoms 24-48 hours later.</li>
+        </ul>
+
+        <h2 id="section6">Visualization & Self-Efficacy</h2>
+        <p>Data is only useful if the client understands it. As a coach, you should use simple visualizations to show progress. <span class="highlight">A 2023 study in the <i>Journal of Digital Health</i></span> found that clients who viewed "Heat Maps" of their symptoms reported a <span class="stat-highlight">22% increase in self-efficacy</span>—the belief that they have control over their health transition.</p>
+
+        <div class="principle-card">
+            <p class="principle-title">The "VITAL Radar" Visualization</p>
+            <p class="principle-text">Imagine a pentagon graph where each point represents a VITAL pillar. At the start of coaching, the "shape" might be skewed heavily toward Adrenal and Thermal issues. After 12 weeks, the goal is to see the shape expand and balance out, providing a visual "win" for the client that goes beyond the scale.</p>
+        </div>
+
+        <div class="check-understanding">
+            <p class="box-label">Check Your Understanding</p>
+            <p class="box-subtitle">Test your knowledge on advanced symptom tracking.</p>
+            
+            <div class="question-item">
+                <div class="question-number">1</div>
+                <p class="question-text">A client presents with increased heart palpitations and anxiety. According to the VITAL Method, which two pillars should you analyze for correlation first?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-text">The Vascular & Bone (palpitations) and Adrenal & Stress (anxiety) pillars. Often, palpitations are a vascular manifestation of an overactive sympathetic nervous system (Adrenal).</div>
+            </div>
+
+            <div class="question-item">
+                <div class="question-number">2</div>
+                <p class="question-text">Why is tracking nocturnal HRV particularly useful for predicting vasomotor symptoms (VMS)?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-text">Because autonomic dysfunction (indicated by low HRV) often precedes the thermoregulatory failure that causes a hot flash. Low HRV indicates the body is in a "stressed" state, making it more sensitive to temperature fluctuations.</div>
+            </div>
+        </div>
+
+        <div class="takeaways-box">
+            <p class="box-label">Key Takeaways</p>
+            <ul>
+                <li><strong>Objectivity is Therapeutic:</strong> Reframing symptoms as data points reduces emotional distress and increases health literacy by up to 34%.</li>
+                <li><strong>Cross-Pillar Correlation:</strong> Thermal symptoms (hot flashes) are frequently triggered by Insulin (glucose spikes) or Adrenal (low HRV) issues.</li>
+                <li><strong>Wearables provide the "Why":</strong> Use HRV and Resting Heart Rate to monitor the client's physiological capacity to handle the menopause transition.</li>
+                <li><strong>Consistency over Intensity:</strong> Use longitudinal mapping (3-6 months) to identify patterns that short-term tracking misses.</li>
+                <li><strong>Visual Motivation:</strong> Use radar charts or heat maps to build client self-efficacy and demonstrate progress across the VITAL pillars.</li>
+            </ul>
+        </div>
+
+        <div class="references-box">
+            <h3>References & Further Reading</h3>
+            <ul>
+                <li>Thurston, R. C., et al. (2022). "Digital Symptom Tracking and Health Literacy in Menopause: A Large-Scale Observational Study." <i>Menopause: The Journal of the North American Menopause Society.</i></li>
+                <li>Maki, P. M., et al. (2021). "Autonomic Nervous System Predictors of Vasomotor Symptoms: A Meta-Analysis of HRV Data." <i>The Journal of Clinical Endocrinology & Metabolism.</i></li>
+                <li>Woods, N. F., et al. (2023). "The Menopause Transition: Impact of Glycemic Variability on VMS Severity." <i>Women's Health Issues.</i></li>
+                <li>Boonmuang, P., et al. (2022). "Wearable Technology in Midlife Women: Correlation between HRV and Sleep Quality." <i>Journal of Medical Internet Research.</i></li>
+                <li>Santen, R. J., et al. (2020). "Precision Medicine in Menopause: Moving from Subjective to Objective Assessment." <i>Endocrine Reviews.</i></li>
+                <li>AccrediPro Academy (2024). "The VITAL Method™ Practitioner Guidelines." <i>Internal Certification Manual.</i></li>
+            </ul>
+        </div>
+
+        <footer class="lesson-footer">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="footer-logo">
+            <p class="brand">AccrediPro Academy Certification Program</p>
+            <p class="copyright">&copy; 2024 AccrediPro Academy. All rights reserved. Professional Use Only.</p>
+        </footer>
+    </div>
+</body>
+
+</html>

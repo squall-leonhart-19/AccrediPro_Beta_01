@@ -1,0 +1,807 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lesson 8.6: Exercise Programming for Different Menopausal Stages</title>
+    <style>
+        /* Base & Reset */
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Georgia, 'Times New Roman', serif;
+            line-height: 1.8;
+            color: #2d2d2d;
+            background: #f8f6f3;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Main Container */
+        .lesson-container {
+            max-width: 860px;
+            margin: 0 auto;
+            padding: 40px 30px;
+            background: #ffffff;
+            min-height: 100vh;
+            box-shadow: 0 0 60px rgba(0, 0, 0, 0.08);
+        }
+
+        /* Brand Header */
+        .brand-header {
+            text-align: center;
+            padding-bottom: 30px;
+            margin-bottom: 35px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .brand-logo {
+            max-width: 220px;
+            height: auto;
+            margin-bottom: 5px;
+        }
+
+        /* Module Header - PURPLE/MAROON theme for Menopause */
+        .module-header {
+            background: linear-gradient(135deg, #6b21a8 0%, #9333ea 100%);
+            padding: 35px 35px 30px;
+            border-radius: 16px;
+            margin-bottom: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .module-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+            transform: translate(100px, -100px);
+        }
+
+        .module-header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, #B8860B, #D4A84B, #B8860B);
+        }
+
+        .module-label {
+            margin: 0;
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.75);
+            text-transform: uppercase;
+            letter-spacing: 2.5px;
+            font-weight: 500;
+        }
+
+        .lesson-title {
+            margin: 10px 0 0 0;
+            font-size: 28px;
+            color: #ffffff;
+            font-weight: 700;
+            line-height: 1.3;
+            position: relative;
+        }
+
+        .lesson-meta {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+            padding-top: 18px;
+            border-top: 1px solid rgba(255, 255, 255, 0.15);
+            flex-wrap: wrap;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.85);
+            background: rgba(255, 255, 255, 0.1);
+            padding: 5px 12px;
+            border-radius: 4px;
+        }
+
+        /* Table of Contents */
+        .toc-box {
+            background: linear-gradient(135deg, #fafafa 0%, #f5f5f5 100%);
+            border-radius: 14px;
+            padding: 24px 28px;
+            margin-bottom: 35px;
+            border: 1px solid #e8e8e8;
+        }
+
+        .toc-box .box-label {
+            font-weight: 600;
+            color: #6b21a8;
+            margin: 0 0 18px 0;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .toc-list {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px 24px;
+        }
+
+        .toc-list li {
+            margin: 0;
+        }
+
+        .toc-list a {
+            display: flex;
+            align-items: center;
+            padding: 8px 12px;
+            color: #555;
+            text-decoration: none;
+            font-size: 14px;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+        }
+
+        .toc-list a:hover {
+            background: white;
+            color: #6b21a8;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+        }
+
+        .toc-list .section-num {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 26px;
+            height: 26px;
+            background: #6b21a8;
+            color: white;
+            font-weight: 600;
+            font-size: 11px;
+            border-radius: 6px;
+            margin-right: 12px;
+            flex-shrink: 0;
+        }
+
+        /* Learning Objectives */
+        .objectives-box {
+            background: #f5f3ff;
+            border: 2px solid #8b5cf6;
+            border-radius: 14px;
+            padding: 30px 35px;
+            margin-bottom: 40px;
+        }
+
+        .objectives-box .box-label {
+            font-weight: 600;
+            color: #6b21a8;
+            margin: 0 0 18px 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .objectives-box .box-label::before {
+            content: '🎯';
+            font-size: 18px;
+        }
+
+        .objectives-box ul {
+            margin: 0;
+            padding-left: 22px;
+        }
+
+        .objectives-box li {
+            margin-bottom: 14px;
+            font-size: 16px;
+            line-height: 1.7;
+        }
+
+        /* Key Terms Box */
+        .key-terms-box {
+            background: linear-gradient(135deg, #f0f4f8 0%, #e8ecf1 100%);
+            border-radius: 14px;
+            padding: 28px 30px;
+            margin: 40px 0;
+            border: 1px solid #d8dce0;
+        }
+
+        .key-terms-box .box-label {
+            font-weight: 600;
+            color: #6b21a8;
+            margin: 0 0 18px 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .terms-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 16px;
+        }
+
+        .term-item {
+            background: white;
+            padding: 16px 18px;
+            border-radius: 10px;
+            border-left: 4px solid #8b5cf6;
+        }
+
+        .term-item .term {
+            font-weight: 700;
+            color: #6b21a8;
+            font-size: 15px;
+            margin: 0 0 6px 0;
+        }
+
+        .term-item .definition {
+            font-size: 14px;
+            color: #555;
+            margin: 0;
+            line-height: 1.6;
+        }
+
+        /* Section Headings */
+        h2 {
+            font-size: 24px;
+            color: #6b21a8;
+            margin: 50px 0 20px 0;
+            font-weight: 600;
+            position: relative;
+            padding-bottom: 12px;
+        }
+
+        h2::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 60px;
+            height: 3px;
+            background: #B8860B;
+        }
+
+        /* Paragraphs */
+        p {
+            font-size: 17px;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        /* Highlights */
+        .highlight {
+            background: linear-gradient(180deg, transparent 60%, #e9d5ff 60%);
+            padding: 0 4px;
+            font-weight: 500;
+        }
+
+        /* Welcome/Intro Box */
+        .welcome-box {
+            background: linear-gradient(135deg, #f5f3ff 0%, #ede9fe 100%);
+            padding: 30px 35px;
+            border-radius: 14px;
+            margin-bottom: 40px;
+            border: 1px solid #ddd6fe;
+        }
+
+        .welcome-box h3 {
+            margin: 0 0 15px 0;
+            font-size: 20px;
+            color: #6b21a8;
+            font-weight: 600;
+        }
+
+        /* Case Study Box */
+        .case-study {
+            background: linear-gradient(135deg, #f8f9fb 0%, #f0f2f5 100%);
+            border-radius: 16px;
+            padding: 0;
+            margin: 40px 0;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+        }
+
+        .case-study-header {
+            background: linear-gradient(135deg, #6b21a8 0%, #9333ea 100%);
+            padding: 20px 30px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .case-study-icon {
+            width: 45px;
+            height: 45px;
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+        }
+
+        .case-study-header .box-label {
+            font-weight: 600;
+            color: #ffffff;
+            margin: 0;
+            font-size: 16px;
+            letter-spacing: 0.5px;
+        }
+
+        .case-study-content {
+            padding: 28px 30px;
+        }
+
+        .patient-profile {
+            display: flex;
+            align-items: center;
+            gap: 18px;
+            padding: 18px 22px;
+            background: white;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            border: 1px solid #e5e5e5;
+        }
+
+        .patient-avatar {
+            width: 55px;
+            height: 55px;
+            background: linear-gradient(135deg, #8b5cf6, #6b21a8);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            flex-shrink: 0;
+        }
+
+        /* Statistics Box */
+        .stats-box {
+            background: linear-gradient(135deg, #6b21a8 0%, #9333ea 100%);
+            padding: 40px;
+            border-radius: 16px;
+            margin: 35px 0;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stat-number {
+            font-size: 42px;
+            font-weight: 700;
+            color: white;
+            line-height: 1;
+            margin-bottom: 8px;
+        }
+
+        .stat-label {
+            font-size: 13px;
+            color: rgba(255, 255, 255, 0.85);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            text-align: center;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 25px;
+            position: relative;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        /* Data Table */
+        .data-table-container {
+            overflow-x: auto;
+            margin: 30px 0;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            border: 1px solid #e5e5e5;
+        }
+
+        th {
+            background: #6b21a8;
+            color: white;
+            padding: 15px;
+            text-align: left;
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        td {
+            padding: 15px;
+            border-bottom: 1px solid #f0f0f0;
+            font-size: 15px;
+            color: #444;
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f9f7ff;
+        }
+
+        /* Check Understanding Box */
+        .check-understanding {
+            background: linear-gradient(135deg, #fdfbf7 0%, #f9f5ed 100%);
+            border: 2px solid #B8860B;
+            border-radius: 16px;
+            padding: 32px;
+            margin: 45px 0;
+        }
+
+        .check-understanding .box-label {
+            font-weight: 600;
+            color: #8B6914;
+            margin: 0 0 8px 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .question-item {
+            background: white;
+            border-radius: 12px;
+            padding: 22px 24px;
+            margin-bottom: 16px;
+            border: 1px solid #e8e4dc;
+            position: relative;
+        }
+
+        .question-number {
+            position: absolute;
+            top: -12px;
+            left: 20px;
+            background: #6b21a8;
+            color: white;
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            font-size: 13px;
+        }
+
+        .reveal-btn {
+            background: #6b21a8;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-size: 14px;
+            cursor: pointer;
+            font-family: inherit;
+            transition: background 0.2s ease;
+        }
+
+        .answer-text {
+            display: none;
+            font-size: 14px;
+            color: #2e7d32;
+            margin: 14px 0 0 0;
+            padding: 14px;
+            background: #f0f8f0;
+            border-radius: 8px;
+            line-height: 1.6;
+        }
+
+        .answer-text.show {
+            display: block;
+        }
+
+        /* Takeaways & References */
+        .takeaways-box {
+            background: #f3f4f6;
+            padding: 25px;
+            border-radius: 12px;
+            margin-top: 40px;
+        }
+
+        .references-box {
+            margin-top: 40px;
+            padding-top: 20px;
+            border-top: 1px solid #eee;
+            font-size: 14px;
+            color: #666;
+        }
+
+        .references-box h4 {
+            color: #333;
+            margin-bottom: 10px;
+        }
+
+        .lesson-footer {
+            text-align: center;
+            padding-top: 50px;
+            margin-top: 60px;
+            border-top: 1px solid #eee;
+        }
+
+        .footer-logo {
+            max-width: 140px;
+            opacity: 0.9;
+        }
+
+        .alert-box.info {
+            background: #eff6ff;
+            border-left: 5px solid #3b82f6;
+            padding: 20px;
+            margin: 25px 0;
+            border-radius: 0 10px 10px 0;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="lesson-container">
+        <div class="brand-header">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="brand-logo">
+        </div>
+
+        <header class="module-header">
+            <p class="module-label">Module 8: Movement and Strength Training</p>
+            <h1 class="lesson-title">Lesson 8.6: Exercise Programming for Different Menopausal Stages</h1>
+            <div class="lesson-meta">
+                <span class="meta-item">32 min read</span>
+                <span class="meta-item">Lesson 6 of 8</span>
+            </div>
+        </header>
+
+        <div class="toc-box">
+            <p class="box-label">In This Lesson</p>
+            <ul class="toc-list">
+                <li><a href="#section1"><span class="section-num">1</span>The Hormonal Landscape</a></li>
+                <li><a href="#section2"><span class="section-num">2</span>Perimenopause: Managing Chaos</a></li>
+                <li><a href="#section3"><span class="section-num">3</span>Menopause: The Loading Phase</a></li>
+                <li><a href="#section4"><span class="section-num">4</span>Post-Menopause: Longevity Focus</a></li>
+                <li><a href="#section5"><span class="section-num">5</span>The VITAL Method Integration</a></li>
+                <li><a href="#section6"><span class="section-num">6</span>Case Studies & Application</a></li>
+            </ul>
+        </div>
+
+        <div class="objectives-box">
+            <p class="box-label">Learning Objectives</p>
+            <ul>
+                <li>Differentiate the physiological exercise requirements between perimenopause, menopause, and post-menopause.</li>
+                <li>Implement the VITAL Method™ to prioritize vascular health and bone integrity in programming.</li>
+                <li>Identify the specific risks of "over-training" during the perimenopausal cortisol spike.</li>
+                <li>Design a progressive resistance program that combats anabolic resistance in late-stage menopause.</li>
+                <li>Adapt cardiovascular intensity to match shifting metabolic flexibility and insulin sensitivity.</li>
+            </ul>
+        </div>
+
+        <div class="welcome-box">
+            <h3>The Evolution of the Menopausal Athlete</h3>
+            <p>One of the most significant mistakes in the fitness industry is treating the "menopausal woman" as a monolithic entity. A 42-year-old in early perimenopause has vastly different physiological needs than a 65-year-old who is ten years post-menopause. As a Menopause Support Coach, your ability to <span class="highlight">periodize exercise based on hormonal stage</span> is what separates a general trainer from a specialized practitioner. In this lesson, we will move beyond "walking and light weights" to explore high-performance programming for every stage of the transition.</p>
+        </div>
+
+        <div class="key-terms-box">
+            <p class="box-label">🔬 Key Programming Terms</p>
+            <div class="terms-grid">
+                <div class="term-item">
+                    <p class="term">Anabolic Resistance</p>
+                    <p class="definition">A decreased skeletal muscle protein synthetic response to amino acids and resistance exercise, common in post-menopause.</p>
+                </div>
+                <div class="term-item">
+                    <p class="term">Osteogenic Loading</p>
+                    <p class="definition">Brief, high-intensity mechanical loading of the bone (usually >4 times body weight) to stimulate new bone growth.</p>
+                </div>
+                <div class="term-item">
+                    <p class="term">Metabolic Flexibility</p>
+                    <p class="definition">The body's ability to switch efficiently between burning carbohydrates and burning fats as fuel sources.</p>
+                </div>
+                <div class="term-item">
+                    <p class="term">Cortisol Steal</p>
+                    <p class="definition">A colloquial term for the physiological state where high stress/cortisol demands deplete the precursors for progesterone and estrogen.</p>
+                </div>
+            </div>
+        </div>
+
+        <h2 id="section1">The Hormonal Landscape & Exercise Response</h2>
+        <p>The transition through menopause is not a linear decline; it is a series of physiological shifts. During perimenopause, <span class="highlight">estrogen levels fluctuate wildly</span>, often reaching peaks higher than in youth before crashing. In post-menopause, the lack of estrogen leads to a rapid decline in muscle satellite cell function and bone mineral density.</p>
+
+        <div class="stats-box">
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <div class="stat-number">3-5%</div>
+                    <div class="stat-label">Bone Loss Per Year (Transition)</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">1-2%</div>
+                    <div class="stat-label">Muscle Mass Loss (Post-Meno)</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">2x</div>
+                    <div class="stat-label">Increase in Insulin Resistance</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">15%</div>
+                    <div class="stat-label">Drop in BMR Post-Menopause</div>
+                </div>
+            </div>
+        </div>
+
+        <p>A 2022 meta-analysis of 14 studies (n=2,450) confirmed that resistance training is the single most effective intervention for mitigating these declines, but the <span class="highlight">type and timing</span> must be precise to avoid exacerbating symptoms like night sweats and fatigue.</p>
+
+        <h2 id="section2">Perimenopause: Managing Hormonal Chaos</h2>
+        <p>In perimenopause (typically ages 40-50), the primary challenge is <span class="highlight">cortisol management</span>. Because progesterone is often low, the body's ability to buffer stress is compromised. If a client in this stage performs excessive high-intensity steady-state cardio (HISS), she may experience "The Adrenal Trap"—where exercise actually leads to weight gain in the midsection due to chronically elevated cortisol.</p>
+
+        <div class="alert-box info">
+            <p><strong>Practitioner Tip:</strong> In perimenopause, focus on "Short and Sharp." High-Intensity Interval Training (HIIT) should be limited to 20 minutes, twice per week, to get the metabolic benefit without the cortisol "hangover."</p>
+        </div>
+
+        <h2 id="section3">Menopause (The Transition): The Loading Phase</h2>
+        <p>This is the 12-month period following the final menstrual period. This is the "critical window" for bone health. Research indicates that the most rapid bone loss occurs in the year immediately preceding and the two years following the final period. Programming must transition from "general fitness" to <span class="highlight">heavy resistance training (HRT)</span> and plyometrics.</p>
+
+        <div class="data-table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Stage</th>
+                        <th>Primary Goal</th>
+                        <th>Recommended Modality</th>
+                        <th>Avoid/Minimize</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Perimenopause</strong></td>
+                        <td>Cortisol Regulation</td>
+                        <td>Heavy Lifting & Zone 2 Cardio</td>
+                        <td>Chronic High-Intensity Cardio</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Menopause</strong></td>
+                        <td>Bone Density Preservation</td>
+                        <td>Power Training & Plyometrics</td>
+                        <td>Light-weight, high-rep "toning"</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Post-Menopause</strong></td>
+                        <td>Anabolic Resistance</td>
+                        <td>Hypertrophy & Vascular Health</td>
+                        <td>Sedentary "active recovery" only</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <h2 id="section4">Post-Menopause: Longevity and Anabolic Resistance</h2>
+        <p>Once a client is post-menopausal, the "anabolic signal" from estrogen is gone. To build or even maintain muscle, the stimulus must be greater. This is where <span class="highlight">mechanical tension</span> becomes the primary driver. We must also address the "V" in our VITAL Method: Vascular Integrity. Post-menopausal women face a significantly increased risk of cardiovascular disease as the protective effects of estrogen on the endothelium vanish.</p>
+
+        <h2 id="section5">Integrating the V.I.T.A.L. Method™</h2>
+        <p>Our methodology ensures we aren't just training for aesthetics, but for clinical outcomes:</p>
+        <ul>
+            <li><strong>V - Vascular & Bone Integrity:</strong> Incorporating multi-directional impact (jumping, hopping) to stimulate the femoral neck and lumbar spine.</li>
+            <li><strong>I - Insulin & Metabolic Optimization:</strong> Using resistance training to increase GLUT4 translocation, improving blood glucose clearance even without high insulin levels.</li>
+            <li><strong>T - Thermal & Sleep Regulation:</strong> Scheduling high-intensity work early in the day to prevent core temperature spikes that trigger night sweats.</li>
+            <li><strong>A - Adrenal & Stress Resilience:</strong> Prioritizing recovery days and "parasympathetic" movement like restorative yoga during high-symptom weeks.</li>
+            <li><strong>L - Lifestyle Longevity:</strong> Focusing on balance and proprioception to prevent falls in the later decades.</li>
+        </ul>
+
+        <h2 id="section6">Case Studies & Application</h2>
+
+        <div class="case-study">
+            <div class="case-study-header">
+                <div class="case-study-icon">👩‍💼</div>
+                <div>
+                    <p class="box-label">Case Study 1: The Perimenopausal Burnout</p>
+                    <p style="color: rgba(255,255,255,0.8); font-size: 13px; margin: 0;">Sarah, 44 | Symptoms: Insomnia, Weight Gain, Anxiety</p>
+                </div>
+            </div>
+            <div class="case-study-content">
+                <div class="patient-profile">
+                    <div class="patient-avatar">S</div>
+                    <div class="patient-info">
+                        <h4>Sarah (Early Perimenopause)</h4>
+                        <p>Current Routine: 45-minute daily runs, low-calorie diet.</p>
+                    </div>
+                </div>
+                <p><strong>Intervention:</strong> We identified that Sarah's "chronic cardio" was driving her cortisol too high, leading to "cortisol steal" and worsening her insomnia. We reduced her running to 2 days/week (Zone 2) and introduced 3 days of heavy lifting (5-8 rep range).</p>
+                <p><strong>Outcome:</strong> Within 6 weeks, Sarah reported a 40% reduction in anxiety and finally started losing the "menopause middle" as her insulin sensitivity improved (Pillar I of VITAL).</p>
+            </div>
+        </div>
+
+        <div class="case-study">
+            <div class="case-study-header">
+                <div class="case-study-icon">👵</div>
+                <div>
+                    <p class="box-label">Case Study 2: Post-Menopausal Sarcopenia</p>
+                    <p style="color: rgba(255,255,255,0.8); font-size: 13px; margin: 0;">Linda, 58 | Symptoms: Osteopenia, Loss of Strength</p>
+                </div>
+            </div>
+            <div class="case-study-content">
+                <div class="patient-profile">
+                    <div class="patient-avatar">L</div>
+                    <div class="patient-info">
+                        <h4>Linda (6 Years Post-Menopause)</h4>
+                        <p>Goal: Reverse Osteopenia diagnosis and feel "stronger."</p>
+                    </div>
+                </div>
+                <p><strong>Intervention:</strong> Focused on Pillar V (Bone Integrity). We implemented high-intensity resistance training (85% 1RM) and "odd-impact" loading (lateral hops). We also increased protein intake to 1.6g/kg to overcome anabolic resistance.</p>
+                <p><strong>Outcome:</strong> 12-month DEXA scan showed a 1.2% increase in bone mineral density in the lumbar spine—a clinically significant reversal of her previous trend.</p>
+            </div>
+        </div>
+
+        <div class="check-understanding">
+            <p class="box-label">Check Your Understanding</p>
+            <p class="box-subtitle">Test your knowledge on stage-specific programming.</p>
+
+            <div class="question-item">
+                <div class="question-number">1</div>
+                <p class="question-text">Why is high-intensity steady-state (HISS) cardio often counterproductive in perimenopause?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-text">It chronically elevates cortisol in a stage where progesterone (the cortisol buffer) is already declining, leading to central adiposity and "burnout."</div>
+            </div>
+
+            <div class="question-item">
+                <div class="question-number">2</div>
+                <p class="question-text">What is the primary driver for muscle protein synthesis in post-menopausal women who lack estrogen?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-text">High mechanical tension (heavy loads) and adequate leucine-rich protein intake are required to overcome anabolic resistance.</div>
+            </div>
+        </div>
+
+        <div class="takeaways-box">
+            <p class="box-label">Key Takeaways</p>
+            <ul>
+                <li><strong>Periodization is essential:</strong> Match the training volume and intensity to the client's current hormonal profile.</li>
+                <li><strong>Heavy lifting is non-negotiable:</strong> Both bone density and muscle mass require significant mechanical stress to maintain post-estrogen.</li>
+                <li><strong>Cortisol is the "Enemy" in Perimenopause:</strong> Prioritize recovery and short, intense bursts over long, draining sessions.</li>
+                <li><strong>VITAL Method Integration:</strong> Always link exercise choices back to Vascular health (V) and Insulin sensitivity (I).</li>
+            </ul>
+        </div>
+
+        <div class="references-box">
+            <h4>References & Further Reading</h4>
+            <ul>
+                <li>Fragala, M. S., et al. (2019). "Resistance Training for Older Adults: Position Statement From the National Strength and Conditioning Association." Journal of Strength and Conditioning Research.</li>
+                <li>Sipilä, S., et al. (2020). "Sarcopenia and Menopause: The Role of Hormones and Exercise." Current Opinion in Supportive and Palliative Care.</li>
+                <li>Ensrud, K. E., et al. (2023). "Bone Loss Across the Menopausal Transition and the Risk of Fracture." New England Journal of Medicine.</li>
+                <li>Nappi, R. E., et al. (2022). "Metabolic Health in Postmenopausal Women: The Impact of Exercise and HRT." Journal of Clinical Endocrinology & Metabolism.</li>
+                <li>Stuenkel, C. A., et al. (2015). "Treatment of Symptoms of the Menopause: An Endocrine Society Clinical Practice Guideline."</li>
+                <li>Abildgaard, J., et al. (2021). "Changes in abdominal subcutaneous adipose tissue phenotype with menopause." Journal of Clinical Endocrinology.</li>
+            </ul>
+        </div>
+
+        <footer class="lesson-footer">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="footer-logo">
+            <p class="brand">AccrediPro Academy © 2024</p>
+            <p class="copyright">Certified Menopause Support Coach Program | Module 8, Lesson 6</p>
+        </footer>
+    </div>
+</body>
+
+</html>

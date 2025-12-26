@@ -1,0 +1,778 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lesson 12.8: Creating Custom Meal Plans using the P.L.A.N.T.S. Method™</title>
+    <style>
+        /* Base & Reset */
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Georgia, 'Times New Roman', serif;
+            line-height: 1.8;
+            color: #2d2d2d;
+            background: #f8f6f3;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Main Container */
+        .lesson-container {
+            max-width: 860px;
+            margin: 0 auto;
+            padding: 40px 30px;
+            background: #ffffff;
+            min-height: 100vh;
+            box-shadow: 0 0 60px rgba(0, 0, 0, 0.08);
+        }
+
+        /* Brand Header */
+        .brand-header {
+            text-align: center;
+            padding-bottom: 30px;
+            margin-bottom: 35px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .brand-logo {
+            max-width: 220px;
+            height: auto;
+            margin-bottom: 5px;
+        }
+
+        /* Module Header - GREEN theme */
+        .module-header {
+            background: linear-gradient(135deg, #166534 0%, #22c55e 100%);
+            padding: 35px 35px 30px;
+            border-radius: 16px;
+            margin-bottom: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .module-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+            transform: translate(100px, -100px);
+        }
+
+        .module-header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, #B8860B, #D4A84B, #B8860B);
+        }
+
+        .module-label {
+            margin: 0;
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.75);
+            text-transform: uppercase;
+            letter-spacing: 2.5px;
+            font-weight: 500;
+        }
+
+        .lesson-title {
+            margin: 10px 0 0 0;
+            font-size: 28px;
+            color: #ffffff;
+            font-weight: 700;
+            line-height: 1.3;
+            position: relative;
+        }
+
+        .lesson-meta {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+            padding-top: 18px;
+            border-top: 1px solid rgba(255, 255, 255, 0.15);
+            flex-wrap: wrap;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.85);
+            background: rgba(255, 255, 255, 0.1);
+            padding: 5px 12px;
+            border-radius: 4px;
+        }
+
+        /* Table of Contents */
+        .toc-box {
+            background: linear-gradient(135deg, #fafafa 0%, #f5f5f5 100%);
+            border-radius: 14px;
+            padding: 24px 28px;
+            margin-bottom: 35px;
+            border: 1px solid #e8e8e8;
+        }
+
+        .toc-box .box-label {
+            font-weight: 600;
+            color: #166534;
+            margin: 0 0 18px 0;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .toc-list {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px 24px;
+        }
+
+        .toc-list li {
+            margin: 0;
+        }
+
+        .toc-list a {
+            display: flex;
+            align-items: center;
+            padding: 8px 12px;
+            color: #555;
+            text-decoration: none;
+            font-size: 14px;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+        }
+
+        .toc-list a:hover {
+            background: white;
+            color: #166534;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+        }
+
+        .toc-list .section-num {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 26px;
+            height: 26px;
+            background: #166534;
+            color: white;
+            font-weight: 600;
+            font-size: 11px;
+            border-radius: 6px;
+            margin-right: 12px;
+            flex-shrink: 0;
+        }
+
+        /* Learning Objectives */
+        .objectives-box {
+            background: #f0fdf4;
+            border: 2px solid #22c55e;
+            border-radius: 14px;
+            padding: 30px 35px;
+            margin-bottom: 40px;
+        }
+
+        .objectives-box .box-label {
+            font-weight: 600;
+            color: #166534;
+            margin: 0 0 18px 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .objectives-box .box-label::before {
+            content: '🎯';
+            font-size: 18px;
+        }
+
+        .objectives-box ul {
+            margin: 0;
+            padding-left: 22px;
+        }
+
+        .objectives-box li {
+            margin-bottom: 14px;
+            font-size: 16px;
+            line-height: 1.7;
+        }
+
+        /* Key Terms Box */
+        .key-terms-box {
+            background: linear-gradient(135deg, #f0f4f8 0%, #e8ecf1 100%);
+            border-radius: 14px;
+            padding: 28px 30px;
+            margin: 40px 0;
+            border: 1px solid #d8dce0;
+        }
+
+        .key-terms-box .box-label {
+            font-weight: 600;
+            color: #166534;
+            margin: 0 0 18px 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .terms-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 16px;
+        }
+
+        .term-item {
+            background: white;
+            padding: 16px 18px;
+            border-radius: 10px;
+            border-left: 4px solid #22c55e;
+        }
+
+        .term-item .term {
+            font-weight: 700;
+            color: #166534;
+            font-size: 15px;
+            margin: 0 0 6px 0;
+        }
+
+        .term-item .definition {
+            font-size: 14px;
+            color: #555;
+            margin: 0;
+            line-height: 1.6;
+        }
+
+        /* Section Headings */
+        h2 {
+            font-size: 24px;
+            color: #166534;
+            margin: 50px 0 20px 0;
+            font-weight: 600;
+            position: relative;
+            padding-bottom: 12px;
+        }
+
+        h2::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 60px;
+            height: 3px;
+            background: #B8860B;
+        }
+
+        /* Paragraphs */
+        p {
+            font-size: 17px;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        /* Highlights */
+        .highlight {
+            background: linear-gradient(180deg, transparent 60%, #FFF59D 60%);
+            padding: 0 4px;
+            font-weight: 500;
+        }
+
+        /* Welcome/Intro Box */
+        .welcome-box {
+            background: linear-gradient(135deg, #f0fdf4 0%, #ecfdf5 100%);
+            padding: 30px 35px;
+            border-radius: 14px;
+            margin-bottom: 40px;
+            border: 1px solid #bbf7d0;
+        }
+
+        .welcome-box h3 {
+            margin: 0 0 15px 0;
+            font-size: 20px;
+            color: #166534;
+            font-weight: 600;
+        }
+
+        /* Case Study Box */
+        .case-study {
+            background: linear-gradient(135deg, #f8f9fb 0%, #f0f2f5 100%);
+            border-radius: 16px;
+            padding: 0;
+            margin: 40px 0;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+        }
+
+        .case-study-header {
+            background: linear-gradient(135deg, #166534 0%, #22c55e 100%);
+            padding: 20px 30px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .case-study-icon {
+            width: 45px;
+            height: 45px;
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+        }
+
+        .case-study-header .box-label {
+            font-weight: 600;
+            color: #ffffff;
+            margin: 0;
+            font-size: 16px;
+        }
+
+        .case-study-content {
+            padding: 28px 30px;
+        }
+
+        .patient-profile {
+            display: flex;
+            align-items: center;
+            gap: 18px;
+            padding: 18px 22px;
+            background: white;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            border: 1px solid #e5e5e5;
+        }
+
+        .patient-avatar {
+            width: 55px;
+            height: 55px;
+            background: linear-gradient(135deg, #22c55e, #166534);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            flex-shrink: 0;
+        }
+
+        /* Statistics Box */
+        .stats-box {
+            background: linear-gradient(135deg, #166534 0%, #22c55e 100%);
+            padding: 40px;
+            border-radius: 16px;
+            margin: 35px 0;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 25px;
+            position: relative;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 42px;
+            font-weight: 700;
+            color: white;
+            line-height: 1;
+            margin-bottom: 8px;
+        }
+
+        .stat-label {
+            font-size: 13px;
+            color: rgba(255, 255, 255, 0.85);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* Comparison Table */
+        .data-table-container {
+            margin: 30px 0;
+            overflow-x: auto;
+            border-radius: 12px;
+            border: 1px solid #e5e5e5;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 15px;
+        }
+
+        th {
+            background: #f8fafc;
+            padding: 15px;
+            text-align: left;
+            font-weight: 600;
+            color: #166534;
+            border-bottom: 2px solid #e2e8f0;
+        }
+
+        td {
+            padding: 15px;
+            border-bottom: 1px solid #e2e8f0;
+            color: #444;
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        /* Check Understanding Box */
+        .check-understanding {
+            background: linear-gradient(135deg, #fdfbf7 0%, #f9f5ed 100%);
+            border: 2px solid #B8860B;
+            border-radius: 16px;
+            padding: 32px;
+            margin: 45px 0;
+        }
+
+        .question-item {
+            background: white;
+            border-radius: 12px;
+            padding: 22px 24px;
+            margin-bottom: 16px;
+            border: 1px solid #e8e4dc;
+            position: relative;
+        }
+
+        .reveal-btn {
+            background: #166534;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-size: 14px;
+            cursor: pointer;
+            transition: background 0.2s ease;
+        }
+
+        .answer-text {
+            display: none;
+            font-size: 14px;
+            color: #166534;
+            margin: 14px 0 0 0;
+            padding: 14px;
+            background: #f0f8f0;
+            border-radius: 8px;
+        }
+
+        .answer-text.show {
+            display: block;
+        }
+
+        /* References Box */
+        .references-box {
+            background: #f9f9f9;
+            padding: 30px;
+            border-radius: 14px;
+            margin-top: 40px;
+            font-size: 14px;
+            color: #666;
+            border: 1px solid #eee;
+        }
+
+        .references-box h4 {
+            color: #333;
+            margin-top: 0;
+        }
+
+        /* Takeaways Box */
+        .takeaways-box {
+            background: linear-gradient(135deg, #f5f5f5 0%, #e8e8e8 100%);
+            padding: 22px 25px;
+            margin-top: 35px;
+            border-radius: 8px;
+            border: 1px solid #ddd;
+        }
+
+        /* Footer */
+        .lesson-footer {
+            text-align: center;
+            padding-top: 50px;
+            margin-top: 60px;
+            border-top: 1px solid #eee;
+        }
+
+        .footer-logo {
+            max-width: 140px;
+            height: auto;
+            margin-bottom: 15px;
+            opacity: 0.9;
+        }
+
+        .lesson-footer .brand {
+            color: #166534;
+            font-weight: 600;
+            margin: 0;
+            font-size: 15px;
+        }
+
+        .lesson-footer .copyright {
+            color: #888;
+            font-size: 13px;
+            margin: 10px 0 0 0;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="lesson-container">
+        <div class="brand-header">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="brand-logo">
+        </div>
+
+        <header class="module-header">
+            <p class="module-label">Module 12: Advanced Meal Planning & Culinary Coaching</p>
+            <h1 class="lesson-title">Lesson 12.8: Creating Custom Meal Plans using the P.L.A.N.T.S. Method™</h1>
+            <div class="lesson-meta">
+                <span class="meta-item">35 min read</span>
+                <span class="meta-item">Lesson 8 of 10</span>
+            </div>
+        </header>
+
+        <!-- Table of Contents -->
+        <div class="toc-box">
+            <p class="box-label">In This Lesson</p>
+            <ul class="toc-list">
+                <li><a href="#section1"><span class="section-num">1</span>The P.L.A.N.T.S. Philosophy</a></li>
+                <li><a href="#section2"><span class="section-num">2</span>Phytonutrient Synergy (P)</a></li>
+                <li><a href="#section3"><span class="section-num">3</span>Longevity & Anti-Inflammatory (L/A)</a></li>
+                <li><a href="#section4"><span class="section-num">4</span>Nutrient Density & Therapy (N/T)</a></li>
+                <li><a href="#section5"><span class="section-num">5</span>Sustainable Integration (S)</a></li>
+                <li><a href="#section6"><span class="section-num">6</span>The Planning Workflow</a></li>
+            </ul>
+        </div>
+
+        <!-- Learning Objectives -->
+        <div class="objectives-box">
+            <p class="box-label">Learning Objectives</p>
+            <ul>
+                <li>Master the 6-pillar P.L.A.N.T.S. Method™ for high-performance meal design.</li>
+                <li>Apply the principles of phytonutrient synergy to increase nutrient bioavailability by up to 300%.</li>
+                <li>Structure plans that modulate cellular pathways like mTOR and AMPK for longevity optimization.</li>
+                <li>Utilize the Aggregate Nutrient Density Index (ANDI) to maximize micronutrient-to-calorie ratios.</li>
+                <li>Develop sustainable, behaviorally-sound meal plans that ensure long-term client adherence.</li>
+            </ul>
+        </div>
+
+        <!-- Welcome Box -->
+        <div class="welcome-box">
+            <h3>From Generic Templates to Precision Nutrition</h3>
+            <p>Standard meal planning often focuses on "hitting macros"—a reductionist approach that ignores the complex biological intelligence of whole plants. As an AccrediPro Certified Coach, you move beyond simple calorie counting. The <span class="highlight">P.L.A.N.T.S. Method™</span> is a proprietary framework designed to leverage the "food matrix" to optimize metabolic health, reduce systemic inflammation, and promote cellular longevity. In this lesson, we will deconstruct how to build a custom plan from the ground up using these advanced principles.</p>
+        </div>
+
+        <!-- Key Terms -->
+        <div class="key-terms-box">
+            <p class="box-label">🔬 Key Terms to Know</p>
+            <div class="terms-grid">
+                <div class="term-item">
+                    <p class="term">Phytonutrient Synergy</p>
+                    <p class="definition">The interaction of multiple plant compounds that produces a biological effect greater than the sum of the individual parts.</p>
+                </div>
+                <div class="term-item">
+                    <p class="term">mTOR Signaling</p>
+                    <p class="definition">The "Mammalian Target of Rapamycin," a pathway that regulates cell growth; modulating this via plant proteins is key to longevity.</p>
+                </div>
+                <div class="term-item">
+                    <p class="term">ANDI Score</p>
+                    <p class="definition">The Aggregate Nutrient Density Index, which ranks foods based on how many nutrients they deliver per calorie.</p>
+                </div>
+                <div class="term-item">
+                    <p class="term">Food Matrix</p>
+                    <p class="definition">The physical and chemical structure of food that influences how nutrients are released and absorbed during digestion.</p>
+                </div>
+            </div>
+        </div>
+
+        <h2 id="section1">The P.L.A.N.T.S. Philosophy</h2>
+        <p>Traditional meal planning is often a "copy-paste" exercise. The P.L.A.N.T.S. Method™ transforms this into a <span class="highlight">therapeutic intervention</span>. Research indicates that plant-based diets can reduce the risk of ischemic heart disease by 40% and type 2 diabetes by nearly 50%, but these outcomes are highly dependent on the <em>quality</em> and <em>composition</em> of the plant foods chosen.</p>
+
+        <p>A 2021 study involving over 12,000 participants found that those following a "healthful" plant-based diet (rich in whole grains, fruits, and vegetables) had a significantly lower risk of cardiovascular disease compared to those following an "unhealthful" plant-based diet (refined grains, juices, and sweets). The P.L.A.N.T.S. Method™ ensures your clients are always in the "healthful" category by design.</p>
+
+        <!-- Statistics Box -->
+        <div class="stats-box">
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <div class="stat-number">2.5x</div>
+                    <div class="stat-label">Higher Antioxidant Capacity</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">30g+</div>
+                    <div class="stat-label">Daily Fiber Target</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">1000</div>
+                    <div class="stat-label">Max ANDI Score</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">70%</div>
+                    <div class="stat-label">Lower CRP Levels</div>
+                </div>
+            </div>
+        </div>
+
+        <h2 id="section2">Phytonutrient Synergy (P)</h2>
+        <p>The "P" in our method stands for <span class="highlight">Phytonutrient Synergy</span>. This principle moves away from isolated vitamins and focuses on how food groups interact. For example, the bioavailability of curcumin (from turmeric) is increased by 2,000% when consumed with piperine (from black pepper).</p>
+
+        <div class="data-table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Synergy Pairing</th>
+                        <th>Mechanism</th>
+                        <th>Clinical Benefit</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Sulforaphane + Myrosinase</td>
+                        <td>Broccoli + Mustard Seed</td>
+                        <td>Enhances phase II detoxification enzymes.</td>
+                    </tr>
+                    <tr>
+                        <td>Non-Heme Iron + Vitamin C</td>
+                        <td>Lentils + Squeezed Lemon</td>
+                        <td>Increases iron absorption by up to 3x.</td>
+                    </tr>
+                    <tr>
+                        <td>Carotenoids + Healthy Fats</td>
+                        <td>Tomatoes + Avocado</td>
+                        <td>Dramatically improves lycopene absorption.</td>
+                    </tr>
+                    <tr>
+                        <td>Flavonoids + Probiotics</td>
+                        <td>Berries + Cultured Cashew Yogurt</td>
+                        <td>Gut microbes transform polyphenols into active metabolites.</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <h2 id="section3">Longevity & Anti-Inflammatory (L/A)</h2>
+        <p>Longevity Optimization (L) focuses on the <span class="highlight">mTOR/AMPK balance</span>. Excessive animal protein intake is linked to chronic mTOR activation, which can accelerate cellular aging. Plant proteins, being lower in leucine and methionine, allow for a more balanced signaling environment. Anti-Inflammatory Alignment (A) utilizes foods with high ORAC (Oxygen Radical Absorbance Capacity) scores to suppress C-reactive protein (CRP).</p>
+
+        <p>A meta-analysis of 29 trials (n=2,689) demonstrated that plant-based dietary patterns significantly reduced CRP, IL-6, and fibrinogen levels, which are primary markers of systemic inflammation. When planning, we prioritize "Power Plants" like dark leafy greens, cruciferous vegetables, and allium (garlic/onions) to target these pathways.</p>
+
+        <h2 id="section4">Nutrient Density & Therapeutic Whole Foods (N/T)</h2>
+        <p>The Nutrient-Density Focus (N) uses the <span class="highlight">ANDI Score</span>. We aim for a high "Nutrient-to-Calorie" ratio. Therapeutic Whole Foods (T) emphasizes the "Food Matrix." For instance, eating a whole apple provides a different glycemic response than drinking apple juice, even if the calories are identical. The intact fiber and cellular structure slow glucose absorption and feed the microbiome.</p>
+
+        <!-- Case Study 1 -->
+        <div class="case-study">
+            <div class="case-study-header">
+                <div class="case-study-icon">🥗</div>
+                <div>
+                    <p class="box-label">Case Study: Metabolic Recovery</p>
+                    <p style="color: rgba(255,255,255,0.8); margin: 0; font-size: 13px;">Applying P.L.A.N.T.S. to Type 2 Diabetes</p>
+                </div>
+            </div>
+            <div class="case-study-content">
+                <div class="patient-profile">
+                    <div class="patient-avatar">👨‍💼</div>
+                    <div class="patient-info">
+                        <h4>Robert, 54</h4>
+                        <p>Pre-diabetic, BMI 31, Chronic Fatigue, High CRP (4.2 mg/L)</p>
+                    </div>
+                </div>
+                <p><strong>Intervention:</strong> Robert was transitioned from a "standard vegan" diet (heavy on pasta and meat alternatives) to a P.L.A.N.T.S. Method™ plan.</p>
+                <ul>
+                    <li><strong>Phytonutrient Synergy:</strong> Added raw mustard powder to cooked cruciferous meals to reactivate sulforaphane.</li>
+                    <li><strong>Nutrient Density:</strong> Replaced white rice with sprouted quinoa and black rice (higher ANDI scores).</li>
+                    <li><strong>Therapeutic Whole Foods:</strong> Swapped fruit smoothies for whole intact fruits to improve glycemic control.</li>
+                </ul>
+                <p><strong>Outcome:</strong> After 12 weeks, Robert's HbA1c dropped from 6.1% to 5.4%. His CRP levels fell to 1.1 mg/L, indicating a 73% reduction in systemic inflammation.</p>
+            </div>
+        </div>
+
+        <h2 id="section5">Sustainable Lifestyle Integration (S)</h2>
+        <p>The final pillar is Sustainable Lifestyle Integration (S). A meal plan is only effective if the client follows it. We utilize <span class="highlight">Behavioral Habit Stacking</span>. Instead of overhauling 21 meals a week, we might start by applying P.L.A.N.T.S. principles to just "Breakfast and Snacks" for the first 14 days.</p>
+        
+        <p>Sustainability also refers to the ecological footprint. A 2023 study published in <em>Nature Food</em> showed that high-plant diets result in 75% less climate-heating emissions, water pollution, and land use than meat-rich diets. Educating clients on this "S" pillar increases intrinsic motivation and long-term adherence.</p>
+
+        <h2 id="section6">The Step-by-Step Planning Workflow</h2>
+        <p>To create a custom plan, follow this professional workflow:</p>
+        <ol class="content-list">
+            <li><strong>Assessment:</strong> Determine TDEE (Total Daily Energy Expenditure) and specific health goals (e.g., recovery, fat loss, longevity).</li>
+            <li><strong>Base Selection (N/T):</strong> Choose 3-4 "Anchor Grains" (e.g., buckwheat, farro) and "Anchor Legumes" (e.g., beluga lentils, adzuki beans).</li>
+            <li><strong>Synergy Mapping (P):</strong> Identify 5 key pairings for the week (e.g., "Turmeric + Black Pepper" in morning oats, "Lemon + Spinach" in lunch bowls).</li>
+            <li><strong>Longevity Check (L):</strong> Ensure protein sources are diverse and predominantly from whole plants rather than isolated soy/pea protein powders.</li>
+            <li><strong>Inflammation Audit (A):</strong> Ensure at least 3 servings of "Deep Pigment" foods per day (purples, deep reds, dark greens).</li>
+            <li><strong>Sustainability Check (S):</strong> Review the plan with the client to ensure prep time matches their weekly schedule.</li>
+        </ol>
+
+        <!-- Check Your Understanding -->
+        <div class="check-understanding">
+            <p class="box-label">Check Your Understanding</p>
+            <p class="box-subtitle">Test your knowledge of the P.L.A.N.T.S. Method™</p>
+
+            <div class="question-item">
+                <div class="question-number">1</div>
+                <p class="question-text">Why is adding mustard seed powder to cooked broccoli considered an application of the "P" (Phytonutrient Synergy) principle?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-text">Cooking broccoli destroys the enzyme myrosinase, which is required to convert glucoraphanin into the potent anti-cancer compound sulforaphane. Mustard seeds contain stable myrosinase, so adding them to cooked broccoli "reactivates" the synergy and increases sulforaphane production.</div>
+            </div>
+
+            <div class="question-item">
+                <div class="question-number">2</div>
+                <p class="question-text">How does the "T" (Therapeutic Whole Foods) principle differ from a standard vegan approach to carbohydrates?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-text">A standard vegan approach might allow for refined flours or juices as long as they are plant-derived. The "T" principle focuses on the "food matrix," prioritizing intact structures (like whole berries or sprouted grains) to ensure fiber-regulated metabolic responses and microbiome support.</div>
+            </div>
+        </div>
+
+        <!-- Takeaways -->
+        <div class="takeaways-box">
+            <p class="box-label">Key Takeaways</p>
+            <ul>
+                <li>The P.L.A.N.T.S. Method™ is a holistic framework that treats food as biological information rather than just fuel.</li>
+                <li>Bioavailability is not guaranteed; it must be engineered through phytonutrient synergy (e.g., Vitamin C + Iron).</li>
+                <li>Longevity is optimized by modulating the mTOR pathway through high-quality, whole-plant proteins.</li>
+                <li>Nutrient density (ANDI) and the food matrix structure are the twin pillars of metabolic health.</li>
+                <li>Long-term success depends on "S" (Sustainable Integration), matching the plan to the client's behavioral reality.</li>
+            </ul>
+        </div>
+
+        <!-- References -->
+        <div class="references-box">
+            <h4>References & Further Reading</h4>
+            <p>1. Satija et al. (2021). "Plant-Based Dietary Patterns and Cardiovascular Disease Risk." <em>Journal of the American College of Cardiology.</em></p>
+            <p>2. Haghighatdoost et al. (2017). "Association of plant-based dietary patterns with serum C-reactive protein: a systematic review and meta-analysis." <em>American Journal of Clinical Nutrition.</em></p>
+            <p>3. Longo et al. (2016). "Protein Intake, mTOR Signaling, and Longevity: A Mechanistic Review." <em>Cell Metabolism.</em></p>
+            <p>4. Fuhrman, J. (2022). "The ANDI Scoring System: A Guide to Nutrient Density in Modern Nutrition." <em>Nutritional Science Journal.</em></p>
+            <p>5. Scarborough et al. (2023). "Vegans, vegetarians, fish-eaters and meat-eaters in the UK show distinct environmental footprints." <em>Nature Food.</em></p>
+            <p>6. Prasad et al. (2014). "Curcumin and Piperine: A Review of Synergy and Bioavailability." <em>Cancer Research and Treatment.</em></p>
+        </div>
+
+        <footer class="lesson-footer">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="footer-logo">
+            <p class="brand">AccrediPro Academy Certified Course</p>
+            <p class="copyright">&copy; 2024 AccrediPro. All rights reserved. Professional Certification Division.</p>
+        </footer>
+    </div>
+</body>
+
+</html>

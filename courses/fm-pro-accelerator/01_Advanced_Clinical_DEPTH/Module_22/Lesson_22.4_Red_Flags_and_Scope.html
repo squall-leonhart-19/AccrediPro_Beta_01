@@ -1,0 +1,832 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lesson 22.4: Red Flags and Scope</title>
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Georgia, 'Times New Roman', serif;
+            line-height: 1.8;
+            color: #2d2d2d;
+            background: #f8f6f3;
+            margin: 0;
+            padding: 0;
+        }
+
+        .lesson-container {
+            max-width: 860px;
+            margin: 0 auto;
+            padding: 40px 30px;
+            background: #ffffff;
+            min-height: 100vh;
+            box-shadow: 0 0 60px rgba(0, 0, 0, 0.08);
+        }
+
+        .module-header {
+            background: linear-gradient(135deg, #722F37 0%, #8B3A42 100%);
+            padding: 35px;
+            border-radius: 16px;
+            margin-bottom: 30px;
+        }
+
+        .module-header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, #B8860B, #D4A84B, #B8860B);
+        }
+
+        .module-label {
+            margin: 0;
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.75);
+            text-transform: uppercase;
+            letter-spacing: 2.5px;
+        }
+
+        .lesson-title {
+            margin: 10px 0 0 0;
+            font-size: 28px;
+            color: #ffffff;
+            font-weight: 700;
+        }
+
+        .lesson-meta {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+            padding-top: 18px;
+            border-top: 1px solid rgba(255, 255, 255, 0.15);
+            flex-wrap: wrap;
+        }
+
+        .meta-item {
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.85);
+            background: rgba(255, 255, 255, 0.1);
+            padding: 5px 12px;
+            border-radius: 4px;
+        }
+
+        .welcome-box {
+            background: linear-gradient(135deg, #fdfcfa 0%, #f9f6f1 100%);
+            padding: 30px 35px;
+            border-radius: 14px;
+            margin-bottom: 40px;
+            border: 1px solid #e8e4dc;
+        }
+
+        .welcome-box h3 {
+            margin: 0 0 15px 0;
+            font-size: 20px;
+            color: #722F37;
+        }
+
+        .welcome-box p {
+            margin: 0;
+            font-size: 17px;
+            color: #444;
+        }
+
+        .objectives-box {
+            background: #fffef5;
+            border: 2px solid #B8860B;
+            border-radius: 14px;
+            padding: 30px 35px;
+            margin-bottom: 40px;
+        }
+
+        .objectives-box .box-label {
+            font-weight: 600;
+            color: #8B6914;
+            margin: 0 0 18px 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .objectives-box .box-label::before {
+            content: '🎯 ';
+        }
+
+        .objectives-box ul {
+            margin: 0;
+            padding-left: 22px;
+        }
+
+        .objectives-box li {
+            margin-bottom: 14px;
+            font-size: 16px;
+        }
+
+        .highlight {
+            background: linear-gradient(180deg, transparent 60%, #FFF59D 60%);
+            padding: 0 4px;
+            font-weight: 500;
+        }
+
+        h2 {
+            font-size: 24px;
+            color: #722F37;
+            margin: 50px 0 20px 0;
+            font-weight: 600;
+            padding-bottom: 12px;
+            position: relative;
+        }
+
+        h2::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 60px;
+            height: 3px;
+            background: #B8860B;
+        }
+
+        p {
+            font-size: 17px;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        .content-list {
+            font-size: 17px;
+            margin: 20px 0;
+            padding-left: 24px;
+        }
+
+        .content-list li {
+            margin-bottom: 14px;
+        }
+
+        .red-flag-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+            margin: 30px 0;
+        }
+
+        .red-flag-card {
+            background: #fff5f5;
+            border: 2px solid #d32f2f;
+            border-radius: 14px;
+            padding: 20px;
+        }
+
+        .red-flag-card h4 {
+            color: #c62828;
+            margin: 0 0 12px 0;
+            font-size: 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .red-flag-card h4::before {
+            content: '🚨';
+        }
+
+        .red-flag-card ul {
+            margin: 0;
+            padding-left: 18px;
+            font-size: 14px;
+        }
+
+        .red-flag-card li {
+            margin-bottom: 6px;
+        }
+
+        .scope-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 25px 0;
+            font-size: 14px;
+        }
+
+        .scope-table th {
+            background: #722F37;
+            color: white;
+            padding: 14px;
+            text-align: left;
+        }
+
+        .scope-table td {
+            padding: 14px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .scope-table .in-scope {
+            background: #e8f5e9;
+        }
+
+        .scope-table .out-scope {
+            background: #ffebee;
+        }
+
+        .protocol-card {
+            background: linear-gradient(to right, #fafafa, #ffffff);
+            border-left: 5px solid #722F37;
+            padding: 24px 28px;
+            margin-bottom: 18px;
+            border-radius: 0 14px 14px 0;
+        }
+
+        .protocol-card .protocol-title {
+            font-weight: 700;
+            color: #722F37;
+            margin: 0 0 10px 0;
+            font-size: 17px;
+        }
+
+        .protocol-card ul {
+            margin: 12px 0 0 0;
+            padding-left: 20px;
+            font-size: 14px;
+        }
+
+        .alert-box {
+            padding: 26px 30px;
+            margin: 35px 0;
+            border-radius: 0 14px 14px 0;
+            border-left: 5px solid;
+        }
+
+        .alert-box .alert-label {
+            font-weight: 600;
+            margin: 0 0 12px 0;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .alert-box p:last-child {
+            margin: 0;
+            font-size: 16px;
+        }
+
+        .alert-box.critical {
+            background: #fff0f0;
+            border-left-color: #d32f2f;
+        }
+
+        .alert-box.critical .alert-label {
+            color: #c62828;
+        }
+
+        .alert-box.warning {
+            background: #fff8e6;
+            border-left-color: #ff9800;
+        }
+
+        .alert-box.warning .alert-label {
+            color: #e65100;
+        }
+
+        .alert-box.success {
+            background: #f0f8f0;
+            border-left-color: #4caf50;
+        }
+
+        .alert-box.success .alert-label {
+            color: #2e7d32;
+        }
+
+        .referral-script {
+            background: #f5f5f5;
+            border-radius: 14px;
+            padding: 28px;
+            margin: 30px 0;
+            border: 1px solid #ddd;
+        }
+
+        .referral-script h4 {
+            color: #722F37;
+            margin: 0 0 15px 0;
+            font-size: 16px;
+        }
+
+        .referral-script p {
+            font-style: italic;
+            font-size: 15px;
+            line-height: 1.7;
+            margin: 0;
+            color: #555;
+        }
+
+        .key-terms-box {
+            background: linear-gradient(135deg, #f0f4f8 0%, #e8ecf1 100%);
+            border-radius: 14px;
+            padding: 28px 30px;
+            margin: 40px 0;
+        }
+
+        .key-terms-box .box-label {
+            font-weight: 600;
+            color: #722F37;
+            margin: 0 0 18px 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .terms-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 16px;
+        }
+
+        .term-item {
+            background: white;
+            padding: 16px 18px;
+            border-radius: 10px;
+            border-left: 4px solid #B8860B;
+        }
+
+        .term-item .term {
+            font-weight: 700;
+            color: #722F37;
+            font-size: 15px;
+            margin: 0 0 6px 0;
+        }
+
+        .term-item .definition {
+            font-size: 14px;
+            color: #555;
+            margin: 0;
+        }
+
+        .check-understanding {
+            background: linear-gradient(135deg, #fdfbf7 0%, #f9f5ed 100%);
+            border: 2px solid #B8860B;
+            border-radius: 16px;
+            padding: 32px;
+            margin: 45px 0;
+        }
+
+        .check-understanding .box-label {
+            font-weight: 600;
+            color: #8B6914;
+            margin: 0 0 24px 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .question-item {
+            background: white;
+            border-radius: 12px;
+            padding: 22px;
+            margin-bottom: 16px;
+            border: 1px solid #e8e4dc;
+            position: relative;
+        }
+
+        .question-number {
+            position: absolute;
+            top: -12px;
+            left: 20px;
+            background: #722F37;
+            color: white;
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            font-size: 13px;
+        }
+
+        .question-text {
+            font-size: 16px;
+            color: #333;
+            margin: 0 0 16px 0;
+            padding-top: 4px;
+        }
+
+        .reveal-btn {
+            background: #722F37;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-size: 14px;
+            cursor: pointer;
+        }
+
+        .answer-text {
+            display: none;
+            font-size: 14px;
+            color: #2e7d32;
+            margin: 14px 0 0 0;
+            padding: 14px;
+            background: #f0f8f0;
+            border-radius: 8px;
+        }
+
+        .answer-text.show {
+            display: block;
+        }
+
+        .takeaways-box {
+            background: linear-gradient(135deg, #722F37 0%, #8B3A42 100%);
+            padding: 35px;
+            margin-top: 50px;
+            border-radius: 16px;
+        }
+
+        .takeaways-box .box-label {
+            font-weight: 600;
+            color: #FFF59D;
+            margin: 0 0 22px 0;
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .takeaways-box .box-label::before {
+            content: '✨ ';
+        }
+
+        .takeaways-box ul {
+            margin: 0;
+            padding-left: 22px;
+        }
+
+        .takeaways-box li {
+            margin-bottom: 16px;
+            font-size: 16px;
+            color: #ffffff;
+        }
+
+        .references-box {
+            background: #f8f9fa;
+            border-radius: 14px;
+            padding: 30px;
+            margin-top: 40px;
+        }
+
+        .references-box .box-label {
+            font-weight: 600;
+            color: #722F37;
+            margin: 0 0 20px 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .references-box ol {
+            margin: 0;
+            padding-left: 22px;
+            font-size: 13px;
+            color: #666;
+        }
+
+        .lesson-footer {
+            margin-top: 50px;
+            padding-top: 30px;
+            border-top: 2px solid #722F37;
+            text-align: center;
+        }
+
+        .lesson-footer .brand {
+            color: #722F37;
+            font-weight: 600;
+            font-size: 15px;
+        }
+
+        .lesson-footer .copyright {
+            color: #888;
+            font-size: 13px;
+            margin: 10px 0 0 0;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="lesson-container">
+
+        <header class="module-header">
+            <p class="module-label">Pro Accelerator • Advanced Clinical DEPTH • Module 22</p>
+            <h1 class="lesson-title">Lesson 22.4: Red Flags and Scope</h1>
+            <div class="lesson-meta">
+                <span class="meta-item">⏱️ 15 min read</span>
+                <span class="meta-item">📊 Lesson 4 of 8</span>
+                <span class="meta-item">🎓 Advanced Practitioner</span>
+            </div>
+        </header>
+
+        <div class="welcome-box">
+            <h3>Knowing Your Limits Protects Everyone</h3>
+            <p>Complex cases push boundaries. Knowing <span class="highlight">when to refer</span> versus when to manage
+                in-house isn't a sign of weakness—it's a sign of clinical maturity. This lesson covers the critical red
+                flags you must never miss and exactly where your scope begins and ends.</p>
+        </div>
+
+        <div class="objectives-box">
+            <p class="box-label">What You'll Master</p>
+            <ul>
+                <li><span class="highlight">System-by-system red flags</span> requiring immediate medical referral</li>
+                <li>Clear understanding of <strong>scope of practice</strong> boundaries</li>
+                <li>How to communicate referrals without losing clients</li>
+                <li><span class="highlight">Co-management frameworks</span> for working alongside medical providers</li>
+                <li>Documentation practices that protect you legally</li>
+            </ul>
+        </div>
+
+        <h2>Critical Red Flags by System</h2>
+
+        <p>These symptoms require <strong>immediate medical evaluation</strong>. Do not attempt to manage these as a
+            health coach:</p>
+
+        <div class="red-flag-grid">
+            <div class="red-flag-card">
+                <h4>Cardiovascular</h4>
+                <ul>
+                    <li>Chest pain or pressure</li>
+                    <li>Shortness of breath at rest</li>
+                    <li>Irregular or rapid heartbeat</li>
+                    <li>Swelling in legs + breathing issues</li>
+                    <li>Fainting or near-fainting</li>
+                </ul>
+            </div>
+            <div class="red-flag-card">
+                <h4>Gastrointestinal</h4>
+                <ul>
+                    <li>Blood in stool or vomit</li>
+                    <li>Black, tarry stools</li>
+                    <li>Severe abdominal pain</li>
+                    <li>Unexplained weight loss (>10 lbs)</li>
+                    <li>Difficulty swallowing</li>
+                </ul>
+            </div>
+            <div class="red-flag-card">
+                <h4>Neurological</h4>
+                <ul>
+                    <li>Sudden severe headache</li>
+                    <li>Vision changes or loss</li>
+                    <li>Numbness/weakness one side</li>
+                    <li>Slurred speech</li>
+                    <li>Seizures or loss of consciousness</li>
+                </ul>
+            </div>
+            <div class="red-flag-card">
+                <h4>Mental Health</h4>
+                <ul>
+                    <li>Suicidal thoughts or plans</li>
+                    <li>Self-harm behaviors</li>
+                    <li>Psychotic symptoms</li>
+                    <li>Severe eating disorder signs</li>
+                    <li>Inability to function daily</li>
+                </ul>
+            </div>
+            <div class="red-flag-card">
+                <h4>Endocrine</h4>
+                <ul>
+                    <li>Signs of diabetic crisis</li>
+                    <li>Thyroid storm symptoms</li>
+                    <li>Adrenal crisis signs</li>
+                    <li>Rapid unexplained weight changes</li>
+                    <li>Extreme temperature intolerance</li>
+                </ul>
+            </div>
+            <div class="red-flag-card">
+                <h4>General/Systemic</h4>
+                <ul>
+                    <li>Unexplained fever over 103°F</li>
+                    <li>Signs of infection spreading</li>
+                    <li>Suspected blood clot</li>
+                    <li>Allergic reaction with breathing issues</li>
+                    <li>Any symptom causing significant distress</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="alert-box critical">
+            <p class="alert-label">When in Doubt, Refer Out</p>
+            <p>If your gut says something is seriously wrong, <strong>listen to it</strong>. You will never be
+                criticized for being cautious. You will absolutely be liable for missing something dangerous.</p>
+        </div>
+
+        <h2>Scope of Practice Clarity</h2>
+
+        <p>Your scope as a health coach/functional wellness practitioner:</p>
+
+        <table class="scope-table">
+            <thead>
+                <tr>
+                    <th>✅ IN SCOPE (You Can Do This)</th>
+                    <th>❌ OUT OF SCOPE (Refer This)</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td class="in-scope">Nutrition and dietary guidance</td>
+                    <td class="out-scope">Diagnosing medical conditions</td>
+                </tr>
+                <tr>
+                    <td class="in-scope">Lifestyle modification coaching</td>
+                    <td class="out-scope">Prescribing medications</td>
+                </tr>
+                <tr>
+                    <td class="in-scope">Stress management techniques</td>
+                    <td class="out-scope">Adjusting prescription medications</td>
+                </tr>
+                <tr>
+                    <td class="in-scope">Sleep hygiene education</td>
+                    <td class="out-scope">Treating acute medical emergencies</td>
+                </tr>
+                <tr>
+                    <td class="in-scope">Supplement recommendations*</td>
+                    <td class="out-scope">Mental health therapy/counseling</td>
+                </tr>
+                <tr>
+                    <td class="in-scope">Interpreting functional lab patterns</td>
+                    <td class="out-scope">Diagnosing based on labs</td>
+                </tr>
+                <tr>
+                    <td class="in-scope">Supporting behavior change</td>
+                    <td class="out-scope">Treating eating disorders</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <p><em>*Supplement scope varies by state/country. Always check local regulations.</em></p>
+
+        <h2>How to Communicate Referrals</h2>
+
+        <p>Clients fear referral means you're "giving up on them." Frame it correctly:</p>
+
+        <div class="referral-script">
+            <h4>💬 Script: The Partnership Frame</h4>
+            <p>"I want to make sure we're addressing this the right way. What you're describing [symptom] is something
+                I'd like you to have evaluated by a [specialist]. This doesn't mean I'm stepping back—it means I'm
+                bringing in the right expert for this specific piece. I'll continue working with you on
+                [diet/lifestyle/supplements], and once we have clarity from the doctor, we can integrate that
+                information into our plan. Think of it as building your wellness team."</p>
+        </div>
+
+        <div class="referral-script">
+            <h4>💬 Script: The Urgency Frame (for Red Flags)</h4>
+            <p>"I need to be direct with you. What you're describing needs to be evaluated today—not by me, but by a
+                physician who can do [imaging/bloodwork/physical exam]. I'm not trying to alarm you, but my job is to
+                keep you safe. Please go to [urgent care/ER/call your doctor] today. Text me after you've been seen and
+                we can talk through next steps together."</p>
+        </div>
+
+        <h2>Co-Management Frameworks</h2>
+
+        <p>You don't have to fully refer out—often you can <span class="highlight">co-manage</span> with providers:</p>
+
+        <div class="protocol-card">
+            <p class="protocol-title">Co-Management Works When:</p>
+            <ul>
+                <li>Client has an established medical provider</li>
+                <li>The condition requires both medical treatment AND lifestyle support</li>
+                <li>You stay in your lane (lifestyle) while they stay in theirs (medical)</li>
+                <li>Communication is clear between you and the provider</li>
+            </ul>
+        </div>
+
+        <div class="protocol-card">
+            <p class="protocol-title">Examples of Effective Co-Management:</p>
+            <ul>
+                <li><strong>Diabetes:</strong> MD manages medication → You manage diet, exercise, blood sugar monitoring
+                </li>
+                <li><strong>Thyroid:</strong> Endocrinologist manages medication → You optimize nutrition, gut health,
+                    stress</li>
+                <li><strong>Mental Health:</strong> Psychiatrist manages medication → You support sleep, nutrition,
+                    lifestyle</li>
+                <li><strong>Autoimmune:</strong> Rheumatologist manages disease → You manage inflammation through diet
+                </li>
+            </ul>
+        </div>
+
+        <h2>Documentation That Protects You</h2>
+
+        <p>Every referral conversation should be documented:</p>
+
+        <div class="protocol-card">
+            <p class="protocol-title">Document These Elements:</p>
+            <ul>
+                <li><strong>Date and time</strong> of the conversation</li>
+                <li><strong>Red flag or concern</strong> that prompted referral discussion</li>
+                <li><strong>Your recommendation</strong> (specific provider type, urgency level)</li>
+                <li><strong>Client's response</strong> (agreed, declined, will consider)</li>
+                <li><strong>Follow-up plan</strong> (when will you check if they went?)</li>
+            </ul>
+        </div>
+
+        <div class="alert-box warning">
+            <p class="alert-label">If Client Refuses Referral</p>
+            <p>Document that you recommended referral and they declined. Consider having them sign a written
+                acknowledgment. Continue to recommend at subsequent sessions. If the condition is truly dangerous, you
+                may need to terminate the coaching relationship with clear documentation of why.</p>
+        </div>
+
+        <div class="key-terms-box">
+            <p class="box-label">Key Terms to Remember</p>
+            <div class="terms-grid">
+                <div class="term-item">
+                    <p class="term">Red Flag</p>
+                    <p class="definition">Symptom or sign indicating potentially serious condition requiring immediate
+                        medical evaluation.</p>
+                </div>
+                <div class="term-item">
+                    <p class="term">Scope of Practice</p>
+                    <p class="definition">Legal and ethical boundaries defining what services a practitioner is
+                        qualified and permitted to provide.</p>
+                </div>
+                <div class="term-item">
+                    <p class="term">Co-Management</p>
+                    <p class="definition">Collaborative care model where multiple providers work together on a client's
+                        case.</p>
+                </div>
+                <div class="term-item">
+                    <p class="term">Informed Refusal</p>
+                    <p class="definition">Documented record that client was advised of risks and chose to decline
+                        recommended care.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="check-understanding">
+            <p class="box-label">Check Your Understanding</p>
+
+            <div class="question-item">
+                <div class="question-number">1</div>
+                <p class="question-text">A client reports blood in their stool "a few times recently." What do you do?
+                </p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show');">Reveal
+                    Answer</button>
+                <p class="answer-text">Immediate referral. This is a non-negotiable red flag. Do not attempt to manage
+                    with dietary changes first. They need to see their physician or GI specialist promptly—this week,
+                    not "eventually."</p>
+            </div>
+
+            <div class="question-item">
+                <div class="question-number">2</div>
+                <p class="question-text">Can you tell a client to reduce their thyroid medication because you think
+                    they're overmedicated?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show');">Reveal
+                    Answer</button>
+                <p class="answer-text">Absolutely not. You can educate them on signs of overmedication and encourage
+                    them to discuss with their prescriber. You can write a letter to their doctor with your
+                    observations. But you cannot advise medication changes—that's outside scope.</p>
+            </div>
+
+            <div class="question-item">
+                <div class="question-number">3</div>
+                <p class="question-text">A client with insulin-controlled diabetes wants your help. Is this appropriate
+                    for health coaching?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show');">Reveal
+                    Answer</button>
+                <p class="answer-text">Yes—with co-management. Their physician manages insulin; you manage diet,
+                    exercise, blood sugar monitoring education, and lifestyle. Coordinate with their healthcare team and
+                    document your working relationship.</p>
+            </div>
+        </div>
+
+        <div class="takeaways-box">
+            <p class="box-label">Key Takeaways</p>
+            <ul>
+                <li><span class="highlight">Memorize system-specific red flags</span>—these require immediate referral
+                </li>
+                <li>Know your <strong>scope of practice</strong>: nutrition, lifestyle, education—not diagnosis or
+                    prescription</li>
+                <li>Frame referrals as <span class="highlight">"expanding the team"</span> not abandonment</li>
+                <li><strong>Co-management</strong> is often ideal: you handle lifestyle while providers handle medical
+                </li>
+                <li>Document all referral conversations, including client response</li>
+                <li>When in doubt, <strong>refer out</strong>—your caution protects everyone</li>
+            </ul>
+        </div>
+
+        <div class="references-box">
+            <p class="box-label">References</p>
+            <ol>
+                <li>National Board for Health and Wellness Coaching. (2023). <em>Scope of Practice Guidelines</em>.</li>
+                <li>Institute for Functional Medicine. (2023). <em>Clinical Practice Guidelines</em>.</li>
+                <li>Epstein, R. M. (2017). <em>Attending: Medicine, Mindfulness, and Humanity</em>. Scribner.</li>
+            </ol>
+        </div>
+
+        <footer class="lesson-footer">
+            <p class="brand">AccrediPro Pro Accelerator • DEPTH MASTERY™</p>
+            <p class="copyright">© 2024 AccrediPro. All rights reserved.</p>
+        </footer>
+
+    </div>
+</body>
+
+</html>

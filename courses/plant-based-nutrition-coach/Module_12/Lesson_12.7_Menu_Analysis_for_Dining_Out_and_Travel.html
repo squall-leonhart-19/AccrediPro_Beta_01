@@ -1,0 +1,828 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lesson 12.7: Menu Analysis for Dining Out and Travel</title>
+    <style>
+        /* Base & Reset */
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Georgia, 'Times New Roman', serif;
+            line-height: 1.8;
+            color: #2d2d2d;
+            background: #f8f6f3;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Main Container */
+        .lesson-container {
+            max-width: 860px;
+            margin: 0 auto;
+            padding: 40px 30px;
+            background: #ffffff;
+            min-height: 100vh;
+            box-shadow: 0 0 60px rgba(0, 0, 0, 0.08);
+        }
+
+        /* Brand Header */
+        .brand-header {
+            text-align: center;
+            padding-bottom: 30px;
+            margin-bottom: 35px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .brand-logo {
+            max-width: 220px;
+            height: auto;
+            margin-bottom: 5px;
+        }
+
+        /* Module Header - GREEN theme for Plant-Based */
+        .module-header {
+            background: linear-gradient(135deg, #166534 0%, #22c55e 100%);
+            padding: 35px 35px 30px;
+            border-radius: 16px;
+            margin-bottom: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .module-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+            transform: translate(100px, -100px);
+        }
+
+        .module-header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, #B8860B, #D4A84B, #B8860B);
+        }
+
+        .module-label {
+            margin: 0;
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.85);
+            text-transform: uppercase;
+            letter-spacing: 2.5px;
+            font-weight: 500;
+        }
+
+        .lesson-title {
+            margin: 10px 0 0 0;
+            font-size: 28px;
+            color: #ffffff;
+            font-weight: 700;
+            line-height: 1.3;
+            position: relative;
+        }
+
+        .lesson-meta {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+            padding-top: 18px;
+            border-top: 1px solid rgba(255, 255, 255, 0.15);
+            flex-wrap: wrap;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.85);
+            background: rgba(255, 255, 255, 0.1);
+            padding: 5px 12px;
+            border-radius: 4px;
+        }
+
+        /* Table of Contents */
+        .toc-box {
+            background: linear-gradient(135deg, #fafafa 0%, #f5f5f5 100%);
+            border-radius: 14px;
+            padding: 24px 28px;
+            margin-bottom: 35px;
+            border: 1px solid #e8e8e8;
+        }
+
+        .toc-box .box-label {
+            font-weight: 600;
+            color: #166534;
+            margin: 0 0 18px 0;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .toc-list {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px 24px;
+        }
+
+        .toc-list li {
+            margin: 0;
+        }
+
+        .toc-list a {
+            display: flex;
+            align-items: center;
+            padding: 8px 12px;
+            color: #555;
+            text-decoration: none;
+            font-size: 14px;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+        }
+
+        .toc-list a:hover {
+            background: white;
+            color: #166534;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+        }
+
+        .toc-list .section-num {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 26px;
+            height: 26px;
+            background: #166534;
+            color: white;
+            font-weight: 600;
+            font-size: 11px;
+            border-radius: 6px;
+            margin-right: 12px;
+            flex-shrink: 0;
+        }
+
+        @media (max-width: 600px) {
+            .toc-list {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Learning Objectives */
+        .objectives-box {
+            background: #f0fdf4;
+            border: 2px solid #22c55e;
+            border-radius: 14px;
+            padding: 30px 35px;
+            margin-bottom: 40px;
+        }
+
+        .objectives-box .box-label {
+            font-weight: 600;
+            color: #166534;
+            margin: 0 0 18px 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .objectives-box .box-label::before {
+            content: '🎯';
+            font-size: 18px;
+        }
+
+        .objectives-box ul {
+            margin: 0;
+            padding-left: 22px;
+        }
+
+        .objectives-box li {
+            margin-bottom: 14px;
+            font-size: 16px;
+            line-height: 1.7;
+        }
+
+        /* Key Terms Box */
+        .key-terms-box {
+            background: linear-gradient(135deg, #f0f4f8 0%, #e8ecf1 100%);
+            border-radius: 14px;
+            padding: 28px 30px;
+            margin: 40px 0;
+            border: 1px solid #d8dce0;
+        }
+
+        .key-terms-box .box-label {
+            font-weight: 600;
+            color: #166534;
+            margin: 0 0 18px 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .terms-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 16px;
+        }
+
+        .term-item {
+            background: white;
+            padding: 16px 18px;
+            border-radius: 10px;
+            border-left: 4px solid #22c55e;
+        }
+
+        .term-item .term {
+            font-weight: 700;
+            color: #166534;
+            font-size: 15px;
+            margin: 0 0 6px 0;
+        }
+
+        .term-item .definition {
+            font-size: 14px;
+            color: #555;
+            margin: 0;
+            line-height: 1.6;
+        }
+
+        /* Section Headings */
+        h2 {
+            font-size: 24px;
+            color: #166534;
+            margin: 50px 0 20px 0;
+            font-weight: 600;
+            position: relative;
+            padding-bottom: 12px;
+        }
+
+        h2::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 60px;
+            height: 3px;
+            background: #B8860B;
+        }
+
+        /* Paragraphs */
+        p {
+            font-size: 17px;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        /* Highlights */
+        .highlight {
+            background: linear-gradient(180deg, transparent 60%, #FFF59D 60%);
+            padding: 0 4px;
+            font-weight: 500;
+        }
+
+        /* Welcome/Intro Box */
+        .welcome-box {
+            background: linear-gradient(135deg, #f0fdf4 0%, #ecfdf5 100%);
+            padding: 30px 35px;
+            border-radius: 14px;
+            margin-bottom: 40px;
+            border: 1px solid #bbf7d0;
+        }
+
+        .welcome-box h3 {
+            margin: 0 0 15px 0;
+            font-size: 20px;
+            color: #166534;
+            font-weight: 600;
+        }
+
+        /* Alert Boxes */
+        .alert-box {
+            padding: 26px 30px;
+            margin: 35px 0;
+            border-radius: 0 14px 14px 0;
+            border-left: 5px solid;
+        }
+
+        .alert-box.info {
+            background: #e3f2fd;
+            border-left-color: #2196f3;
+        }
+
+        .alert-box.info .alert-label {
+            color: #1565c0;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-size: 12px;
+        }
+
+        /* Case Study Box */
+        .case-study {
+            background: linear-gradient(135deg, #f8f9fb 0%, #f0f2f5 100%);
+            border-radius: 16px;
+            padding: 0;
+            margin: 40px 0;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+        }
+
+        .case-study-header {
+            background: linear-gradient(135deg, #166534 0%, #22c55e 100%);
+            padding: 20px 30px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .case-study-icon {
+            width: 45px;
+            height: 45px;
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+        }
+
+        .case-study-header .box-label {
+            font-weight: 600;
+            color: #ffffff;
+            margin: 0;
+            font-size: 16px;
+        }
+
+        .case-study-content {
+            padding: 28px 30px;
+        }
+
+        .patient-profile {
+            display: flex;
+            align-items: center;
+            gap: 18px;
+            padding: 18px 22px;
+            background: white;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            border: 1px solid #e5e5e5;
+        }
+
+        .patient-avatar {
+            width: 55px;
+            height: 55px;
+            background: linear-gradient(135deg, #22c55e, #166534);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            flex-shrink: 0;
+        }
+
+        /* Comparison Table Styles */
+        .data-table-container {
+            margin: 35px 0;
+            overflow-x: auto;
+            border-radius: 12px;
+            border: 1px solid #e5e5e5;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 15px;
+        }
+
+        th {
+            background: #f8f9fa;
+            color: #166534;
+            font-weight: 600;
+            text-align: left;
+            padding: 15px;
+            border-bottom: 2px solid #e5e5e5;
+        }
+
+        td {
+            padding: 15px;
+            border-bottom: 1px solid #eee;
+            vertical-align: top;
+        }
+
+        /* Statistics Box */
+        .stats-box {
+            background: linear-gradient(135deg, #166534 0%, #22c55e 100%);
+            padding: 40px;
+            border-radius: 16px;
+            margin: 35px 0;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 25px;
+            position: relative;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 42px;
+            font-weight: 700;
+            color: white;
+            line-height: 1;
+            margin-bottom: 8px;
+        }
+
+        .stat-label {
+            font-size: 13px;
+            color: rgba(255, 255, 255, 0.85);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* Check Understanding Box */
+        .check-understanding {
+            background: linear-gradient(135deg, #fdfbf7 0%, #f9f5ed 100%);
+            border: 2px solid #B8860B;
+            border-radius: 16px;
+            padding: 32px;
+            margin: 45px 0;
+        }
+
+        .question-item {
+            background: white;
+            border-radius: 12px;
+            padding: 22px 24px;
+            margin-bottom: 16px;
+            border: 1px solid #e8e4dc;
+            position: relative;
+        }
+
+        .reveal-btn {
+            background: #166534;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-size: 14px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+
+        .answer-text {
+            display: none;
+            padding: 15px;
+            background: #f0fdf4;
+            border-radius: 8px;
+            margin-top: 15px;
+            color: #166534;
+        }
+
+        .answer-text.show {
+            display: block;
+        }
+
+        /* Takeaways */
+        .takeaways-box {
+            background: #f3f4f6;
+            padding: 25px;
+            border-radius: 12px;
+            margin-top: 40px;
+            border: 1px solid #d1d5db;
+        }
+
+        .takeaways-box .box-label {
+            font-weight: 700;
+            color: #166534;
+            text-transform: uppercase;
+            margin-bottom: 15px;
+            display: block;
+        }
+
+        /* References Box */
+        .references-box {
+            margin-top: 50px;
+            padding-top: 30px;
+            border-top: 1px solid #eee;
+            font-size: 14px;
+            color: #666;
+        }
+
+        .references-box h4 {
+            color: #333;
+            margin-bottom: 15px;
+        }
+
+        .references-box ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .references-box li {
+            margin-bottom: 10px;
+            line-height: 1.5;
+        }
+
+        /* Footer */
+        .lesson-footer {
+            text-align: center;
+            padding-top: 50px;
+            margin-top: 60px;
+            border-top: 1px solid #eee;
+        }
+
+        .footer-logo {
+            max-width: 140px;
+            opacity: 0.9;
+            margin-bottom: 10px;
+        }
+
+        .brand-name {
+            color: #166534;
+            font-weight: 600;
+            display: block;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="lesson-container">
+        <div class="brand-header">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="brand-logo">
+        </div>
+
+        <header class="module-header">
+            <p class="module-label">Module 12: Advanced Meal Planning & Culinary Coaching</p>
+            <h1 class="lesson-title">Lesson 12.7: Menu Analysis for Dining Out and Travel</h1>
+            <div class="lesson-meta">
+                <span class="meta-item">35 min read</span>
+                <span class="meta-item">Lesson 7 of 10</span>
+            </div>
+        </header>
+
+        <!-- Table of Contents -->
+        <div class="toc-box">
+            <p class="box-label">In This Lesson</p>
+            <ul class="toc-list">
+                <li><a href="#section1"><span class="section-num">1</span>The Social Landscape of WFPB</a></li>
+                <li><a href="#section2"><span class="section-num">2</span>Decoding Menus: Hidden Ingredients</a></li>
+                <li><a href="#section3"><span class="section-num">3</span>Global Cuisines & Safe Bets</a></li>
+                <li><a href="#section4"><span class="section-num">4</span>Therapeutic Travel Protocols</a></li>
+                <li><a href="#section5"><span class="section-num">5</span>The "Art of the Ask" Communication</a></li>
+                <li><a href="#section6"><span class="section-num">6</span>Coaching Clients for Success</a></li>
+            </ul>
+        </div>
+
+        <!-- Learning Objectives -->
+        <div class="objectives-box">
+            <p class="box-label">Learning Objectives</p>
+            <ul>
+                <li>Master the identification of non-plant-based "hidden" ingredients in standard restaurant menus.</li>
+                <li>Apply the P.L.A.N.T.S. Method to select nutrient-dense options in high-risk dining environments.</li>
+                <li>Develop sophisticated communication scripts for navigating restaurant modifications without social friction.</li>
+                <li>Analyze different global cuisines to identify foundational plant-based structures and potential pitfalls.</li>
+                <li>Design a comprehensive "Travel Nutrition Protocol" for business travelers and vacationing clients.</li>
+            </ul>
+        </div>
+
+        <!-- Welcome Box -->
+        <div class="welcome-box">
+            <h3>Mastering the External Environment</h3>
+            <p>One of the greatest barriers to long-term plant-based adherence is the transition from a controlled home kitchen to the unpredictable world of social dining and travel. As an expert coach, your role is to equip clients with a "culinary radar" that allows them to navigate any menu with confidence. This lesson moves beyond simple "order a salad" advice, focusing on <span class="highlight">advanced menu analysis</span> and the strategic application of the P.L.A.N.T.S. Method in the field.</p>
+        </div>
+
+        <!-- Key Terms -->
+        <div class="key-terms-box">
+            <p class="box-label">🔬 Key Terms to Know</p>
+            <div class="terms-grid">
+                <div class="term-item">
+                    <p class="term">Cross-Contamination</p>
+                    <p class="definition">The unintentional transfer of animal fats or proteins (e.g., using the same grill for steak and asparagus) in a commercial kitchen.</p>
+                </div>
+                <div class="term-item">
+                    <p class="term">Umami Buffering</p>
+                    <p class="definition">The technique of using plant-based glutamate sources (mushrooms, fermented soy) to satisfy palate expectations in meat-centric restaurants.</p>
+                </div>
+                <div class="term-item">
+                    <p class="term">Stealth Health</p>
+                    <p class="definition">The practice of navigating social dining by selecting naturally plant-based dishes to avoid unwanted attention or "vegan interrogation."</p>
+                </div>
+                <div class="term-item">
+                    <p class="term">The "T" Principle Application</p>
+                    <p class="definition">Using Therapeutic Whole Foods (intact grains, legumes) as the anchor for restaurant meals rather than refined vegan substitutes.</p>
+                </div>
+            </div>
+        </div>
+
+        <h2 id="section1">The Social Landscape of WFPB Dining</h2>
+        <p>Dining out is rarely just about nutrition; it is a social ritual. Research indicates that individuals are significantly more likely to deviate from their dietary goals when in group settings due to <span class="highlight">normative social influence</span>. A 2021 study in the <i>Journal of Nutrition Education and Behavior</i> found that social pressure was cited as a top-three barrier for plant-based adherence.</p>
+
+        <p>Using the <b>Sustainable Lifestyle Integration (S)</b> principle of our methodology, we coach clients to view dining out as a skill to be practiced. This involves moving away from an "all or nothing" mindset. Instead, we focus on maximizing <span class="highlight">Phytonutrient Synergy (P)</span> and <span class="highlight">Nutrient Density (N)</span> within the constraints of the menu. When the environment is suboptimal, we prioritize <b>Anti-Inflammatory Alignment (A)</b> by avoiding pro-inflammatory seed oils and refined sugars which are ubiquitous in restaurant cooking.</p>
+
+        <!-- Statistics Box -->
+        <div class="stats-box">
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <div class="stat-number">200%</div>
+                    <div class="stat-label">Higher Sodium in Restaurant Meals</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">64%</div>
+                    <div class="stat-label">Growth in "Plant-Forward" Menus</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">3x</div>
+                    <div class="stat-label">Oil Usage vs. Home Cooking</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">82%</div>
+                    <div class="stat-label">Travelers Struggle with Nutrition</div>
+                </div>
+            </div>
+        </div>
+
+        <h2 id="section2">Decoding Menus: Identifying Hidden Ingredients</h2>
+        <p>A sophisticated menu analysis requires looking past the primary description. Culinary professionals often use animal-derived products as "flavor enhancers" that are not explicitly listed. For instance, a "Vegetable Soup" may use a chicken bone broth base, or "Roasted Brussels Sprouts" may be finished with honey or bacon fat.</p>
+
+        <div class="data-table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Menu Term</th>
+                        <th>Hidden Concern</th>
+                        <th>P.L.A.N.T.S. Strategy</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>"Glazed" or "Caramelized"</td>
+                        <td>Often involves butter, honey, or excessive refined sugar.</td>
+                        <td>Request "dry roasted" or sautéed in water/vegetable broth.</td>
+                    </tr>
+                    <tr>
+                        <td>"Velouté" or "Creamy"</td>
+                        <td>Usually contains heavy cream or butter-based roux.</td>
+                        <td>Inquire if thickness comes from pureed cauliflower or cashews (rare) or skip.</td>
+                    </tr>
+                    <tr>
+                        <td>"Authentic" Miso/Thai</td>
+                        <td>Frequent use of dashi (fish flakes) or fish sauce.</td>
+                        <td>Explicitly ask for "vegan dashi" or soy sauce/tamari substitution.</td>
+                    </tr>
+                    <tr>
+                        <td>"House-made" Vinaigrette</td>
+                        <td>Often contains honey or egg yolks as emulsifiers.</td>
+                        <td>Request simple balsamic and lemon or a side of avocado.</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <h2 id="section3">Global Cuisines & Safe Bets</h2>
+        <p>Different cuisines offer varying levels of "innate" plant-based compatibility. By understanding the traditional flavor profiles and staple ingredients, you can guide clients toward the most successful options.</p>
+
+        <h3>1. Mediterranean & Middle Eastern</h3>
+        <p>This is often the "Gold Standard" for dining out. Focus on <b>Therapeutic Whole Foods (T)</b> like hummus, baba ganoush, tabbouleh, and falafel (ideally baked or lightly fried). <span class="highlight">Strategy:</span> Order a "Mezze" platter to ensure a high variety of phytonutrients.</p>
+
+        <h3>2. East & Southeast Asian</h3>
+        <p>Japanese, Thai, and Vietnamese cuisines are excellent for <b>Phytonutrient Synergy (P)</b>. Tofu and edamame provide high-quality protein, while bok choy and seaweed offer trace minerals. <span class="highlight">Pitfall:</span> Fish sauce and shrimp paste are common. Always request "Vegetarian style with no fish sauce."</p>
+
+        <h3>3. Mexican & Latin American</h3>
+        <p>Beans and rice form a complete protein profile. <span class="highlight">Strategy:</span> Request "whole beans" (frijoles de la olla) instead of refried beans, which are often cooked in lard (pork fat). Load up on salsa and guacamole for <b>Anti-Inflammatory (A)</b> fats and antioxidants.</p>
+
+        <!-- Case Study -->
+        <div class="case-study">
+            <div class="case-study-header">
+                <div class="case-study-icon">💼</div>
+                <div>
+                    <p class="box-label">Case Study: The Corporate Traveler</p>
+                    <p style="color: rgba(255,255,255,0.8); margin: 0; font-size: 13px;">Managing Longevity Optimization (L) on the road.</p>
+                </div>
+            </div>
+            <div class="case-study-content">
+                <div class="patient-profile">
+                    <div class="patient-avatar">M</div>
+                    <div class="patient-info">
+                        <h4>Marcus, 48</h4>
+                        <p>Executive VP, travels 15 days/month. Goal: Reduce systemic inflammation and maintain weight.</p>
+                    </div>
+                </div>
+                <p><b>The Challenge:</b> Marcus frequently attends high-end steakhouse dinners with clients where the menu is heavily centered on animal protein and high-fat sides.</p>
+                <p><b>The Intervention:</b> We implemented a "Pre-Dining Protocol":
+                <ul>
+                    <li><b>The "Volume First" Rule:</b> Marcus consumes a high-fiber snack (apple or handful of almonds) 30 minutes before the dinner to dampen the ghrelin response.</li>
+                    <li><b>Menu Pre-Screening:</b> He identifies the "Side Dish Strategy"—ordering 3-4 vegetable-based sides (steamed asparagus, baked potato, sautéed spinach) as his main course.</li>
+                    <li><b>The "Social Buffer":</b> Ordering a sparkling water with lime immediately to satisfy the "hand-to-mouth" ritual of social drinking without the pro-inflammatory effects of alcohol.</li>
+                </ul>
+                </p>
+                <p><b>Outcome:</b> After 3 months, Marcus's CRP (C-Reactive Protein) levels dropped from 3.2 mg/L to 1.1 mg/L, and he lost 12 lbs despite his travel schedule.</p>
+            </div>
+        </div>
+
+        <h2 id="section4">Therapeutic Travel Protocols</h2>
+        <p>Travel environments (airports, gas stations, hotels) are designed for convenience, not <b>Longevity Optimization (L)</b>. To maintain the P.L.A.N.T.S. Method on the road, clients must transition from <i>passive consumers</i> to <i>active planners</i>.</p>
+
+        <div class="alert-box info">
+            <p class="alert-label">The "P.L.A.N." Travel Framework</p>
+            <p><b>P - Pack:</b> Never rely on airport food. Carry "Emergency Rations" (low-sodium nuts, roasted chickpeas, organic fruit leathers).<br>
+            <b>L - Locate:</b> Use apps like HappyCow or Yelp to map out plant-based hubs near the hotel before arrival.<br>
+            <b>A - Adjust:</b> Request a mini-fridge in hotel rooms to store fresh produce and plant milks.<br>
+            <b>N - Nourish:</b> Focus on hydration; air travel causes significant cellular dehydration which can be mistaken for hunger.</p>
+        </div>
+
+        <h2 id="section5">The "Art of the Ask": Communication Scripts</h2>
+        <p>Effective culinary coaching involves teaching clients how to speak the "language of the kitchen." Vague requests often lead to mistakes. Precision is key to ensuring <b>Anti-Inflammatory Alignment (A)</b>.</p>
+
+        <div class="principle-card">
+            <p class="principle-title">Script 1: The Allergy Frame</p>
+            <p class="principle-text">"I have a severe sensitivity to dairy and eggs. Could you please check with the chef to ensure this dish isn't finished with butter or brushed with egg wash?" <i>(Framing it as a sensitivity often triggers a higher level of kitchen scrutiny.)</i></p>
+        </div>
+
+        <div class="principle-card">
+            <p class="principle-title">Script 2: The Modification Request</p>
+            <p class="principle-text">"I love the look of the [Dish Name]. Is it possible to swap the meat for extra grilled mushrooms or a double portion of beans? I'm happy to pay the difference." <i>(Offering to pay the difference reduces server friction.)</i></p>
+        </div>
+
+        <h2 id="section6">Coaching Clients for Success</h2>
+        <p>Your goal as a coach is to build <b>self-efficacy</b>. During your sessions, perform "Menu Mock-Ups." Pull up a local restaurant's website and have the client walk you through their analysis based on the P.L.A.N.T.S. Method.</p>
+        
+        <p>Focus on the <span class="highlight">Aggregate Nutrient Density Index (ANDI)</span> even when dining out. If the main course is lower in density (e.g., pasta), encourage the client to add a side of cruciferous vegetables or a large garden salad to "buffer" the meal with micronutrients and fiber.</p>
+
+        <!-- Check Understanding -->
+        <div class="check-understanding">
+            <p class="box-label">Check Your Understanding</p>
+            <p class="box-subtitle">Test your knowledge on menu analysis and travel nutrition.</p>
+
+            <div class="question-item">
+                <div class="question-number">1</div>
+                <p class="question-text">A client is at a Thai restaurant. What is the most critical "hidden" ingredient they should ask about regarding the curry or stir-fry?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-text">The most critical ingredient is fish sauce (nam pla) or shrimp paste (kapi). Even if a dish is marked "vegetarian," these are traditionally used for umami. The client should request soy sauce or tamari as a substitute and ensure the curry paste itself is vegan.</div>
+            </div>
+
+            <div class="question-item">
+                <div class="question-number">2</div>
+                <p class="question-text">Using the P.L.A.N.T.S. Method, why might we advise a client to avoid "Vegan Mac and Cheese" at a restaurant in favor of a "Quinoa Grain Bowl"?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-text">This applies the "T" (Therapeutic Whole Foods) and "N" (Nutrient Density) principles. Restaurant vegan mac is usually made with refined flour and highly processed coconut-oil-based cheeses (low nutrient density, high saturated fat). The grain bowl utilizes intact structures (quinoa, legumes, veggies) which better support metabolic health and glycemic control.</div>
+            </div>
+        </div>
+
+        <!-- Key Takeaways -->
+        <div class="takeaways-box">
+            <p class="box-label">Key Takeaways</p>
+            <ul>
+                <li><b>Pre-Screening is Vital:</b> Always analyze menus online before arrival to reduce "decision fatigue" and social pressure.</li>
+                <li><b>Identify Hidden Animal Products:</b> Look for terms like "glazed," "dashi," "lard," and "velouté."</li>
+                <li><b>Prioritize "T" and "N":</b> Focus on whole grains, legumes, and cruciferous vegetables rather than processed vegan substitutes.</li>
+                <li><b>Master Communication:</b> Use precision in requests and consider the "allergy frame" for higher kitchen compliance.</li>
+                <li><b>Travel Requires Proactivity:</b> Successful travel nutrition is 80% preparation (packing snacks, locating markets) and 20% execution.</li>
+            </ul>
+        </div>
+
+        <!-- References -->
+        <div class="references-box">
+            <h4>References & Further Reading</h4>
+            <ul>
+                <li>Thornton et al. (2021). "Social Influence and Dietary Adherence in Plant-Based Populations." <i>Journal of Nutrition Education and Behavior.</i></li>
+                <li>Saelens et al. (2022). "Nutritional Analysis of Restaurant vs. Home-Prepared Meals: A Meta-Analysis." <i>American Journal of Preventive Medicine.</i></li>
+                <li>Greger, M. (2020). "How Not to Diet: The Science of Sustainable Weight Loss." Flatiron Books.</li>
+                <li>Gardner et al. (2023). "The Impact of Travel on Dietary Patterns and Metabolic Health." <i>Nutrients.</i></li>
+                <li>World Health Organization (2022). "Healthy Diet Fact Sheet: Navigating Urban Food Environments."</li>
+            </ul>
+        </div>
+
+        <footer class="lesson-footer">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="footer-logo">
+            <p class="brand-name">AccrediPro Academy Certified Plant-Based Nutrition Coach</p>
+            <p class="copyright">&copy; 2024 AccrediPro Academy. All rights reserved.</p>
+        </footer>
+    </div>
+</body>
+
+</html>

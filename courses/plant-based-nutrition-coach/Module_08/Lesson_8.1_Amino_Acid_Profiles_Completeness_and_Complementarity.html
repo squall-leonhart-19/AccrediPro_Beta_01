@@ -1,0 +1,857 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lesson 8.1: Amino Acid Profiles: Completeness and Complementarity</title>
+    <style>
+        /* Base & Reset */
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Georgia, 'Times New Roman', serif;
+            line-height: 1.8;
+            color: #2d2d2d;
+            background: #f8f6f3;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Main Container */
+        .lesson-container {
+            max-width: 860px;
+            margin: 0 auto;
+            padding: 40px 30px;
+            background: #ffffff;
+            min-height: 100vh;
+            box-shadow: 0 0 60px rgba(0, 0, 0, 0.08);
+        }
+
+        /* Brand Header */
+        .brand-header {
+            text-align: center;
+            padding-bottom: 30px;
+            margin-bottom: 35px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .brand-logo {
+            max-width: 220px;
+            height: auto;
+            margin-bottom: 5px;
+        }
+
+        /* Module Header - BLUE/GREEN theme for Performance */
+        .module-header {
+            background: linear-gradient(135deg, #1e40af 0%, #3b82f6 100%);
+            padding: 35px 35px 30px;
+            border-radius: 16px;
+            margin-bottom: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .module-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+            transform: translate(100px, -100px);
+        }
+
+        .module-header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, #B8860B, #D4A84B, #B8860B);
+        }
+
+        .module-label {
+            margin: 0;
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.75);
+            text-transform: uppercase;
+            letter-spacing: 2.5px;
+            font-weight: 500;
+        }
+
+        .lesson-title {
+            margin: 10px 0 0 0;
+            font-size: 28px;
+            color: #ffffff;
+            font-weight: 700;
+            line-height: 1.3;
+            position: relative;
+        }
+
+        .lesson-meta {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+            padding-top: 18px;
+            border-top: 1px solid rgba(255, 255, 255, 0.15);
+            flex-wrap: wrap;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.85);
+            background: rgba(255, 255, 255, 0.1);
+            padding: 5px 12px;
+            border-radius: 4px;
+        }
+
+        /* Table of Contents */
+        .toc-box {
+            background: linear-gradient(135deg, #fafafa 0%, #f5f5f5 100%);
+            border-radius: 14px;
+            padding: 24px 28px;
+            margin-bottom: 35px;
+            border: 1px solid #e8e8e8;
+        }
+
+        .toc-box .box-label {
+            font-weight: 600;
+            color: #1e40af;
+            margin: 0 0 18px 0;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .toc-list {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px 24px;
+        }
+
+        .toc-list li {
+            margin: 0;
+        }
+
+        .toc-list a {
+            display: flex;
+            align-items: center;
+            padding: 8px 12px;
+            color: #555;
+            text-decoration: none;
+            font-size: 14px;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+        }
+
+        .toc-list a:hover {
+            background: white;
+            color: #1e40af;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+        }
+
+        .toc-list .section-num {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 26px;
+            height: 26px;
+            background: #1e40af;
+            color: white;
+            font-weight: 600;
+            font-size: 11px;
+            border-radius: 6px;
+            margin-right: 12px;
+            flex-shrink: 0;
+        }
+
+        /* Learning Objectives */
+        .objectives-box {
+            background: #eff6ff;
+            border: 2px solid #3b82f6;
+            border-radius: 14px;
+            padding: 30px 35px;
+            margin-bottom: 40px;
+        }
+
+        .objectives-box .box-label {
+            font-weight: 600;
+            color: #1e40af;
+            margin: 0 0 18px 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .objectives-box .box-label::before {
+            content: '🎯';
+            font-size: 18px;
+        }
+
+        .objectives-box ul {
+            margin: 0;
+            padding-left: 22px;
+        }
+
+        .objectives-box li {
+            margin-bottom: 14px;
+            font-size: 16px;
+            line-height: 1.7;
+        }
+
+        /* Key Terms Box */
+        .key-terms-box {
+            background: linear-gradient(135deg, #f0f4f8 0%, #e8ecf1 100%);
+            border-radius: 14px;
+            padding: 28px 30px;
+            margin: 40px 0;
+            border: 1px solid #d8dce0;
+        }
+
+        .key-terms-box .box-label {
+            font-weight: 600;
+            color: #1e40af;
+            margin: 0 0 18px 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .terms-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 16px;
+        }
+
+        .term-item {
+            background: white;
+            padding: 16px 18px;
+            border-radius: 10px;
+            border-left: 4px solid #3b82f6;
+        }
+
+        .term-item .term {
+            font-weight: 700;
+            color: #1e40af;
+            font-size: 15px;
+            margin: 0 0 6px 0;
+        }
+
+        .term-item .definition {
+            font-size: 14px;
+            color: #555;
+            margin: 0;
+            line-height: 1.6;
+        }
+
+        /* Section Headings */
+        h2 {
+            font-size: 24px;
+            color: #1e40af;
+            margin: 50px 0 20px 0;
+            font-weight: 600;
+            position: relative;
+            padding-bottom: 12px;
+        }
+
+        h2::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 60px;
+            height: 3px;
+            background: #B8860B;
+        }
+
+        /* Paragraphs */
+        p {
+            font-size: 17px;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        /* Highlights */
+        .highlight {
+            background: linear-gradient(180deg, transparent 60%, #FFF59D 60%);
+            padding: 0 4px;
+            font-weight: 500;
+        }
+
+        /* Welcome/Intro Box */
+        .welcome-box {
+            background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%);
+            padding: 30px 35px;
+            border-radius: 14px;
+            margin-bottom: 40px;
+            border: 1px solid #bfdbfe;
+        }
+
+        .welcome-box h3 {
+            margin: 0 0 15px 0;
+            font-size: 20px;
+            color: #1e40af;
+            font-weight: 600;
+        }
+
+        /* Alert Boxes */
+        .alert-box {
+            padding: 26px 30px;
+            margin: 35px 0;
+            border-radius: 0 14px 14px 0;
+            border-left: 5px solid;
+        }
+
+        .alert-box.info {
+            background: #e3f2fd;
+            border-left-color: #2196f3;
+        }
+
+        /* Case Study */
+        .case-study {
+            background: linear-gradient(135deg, #f8f9fb 0%, #f0f2f5 100%);
+            border-radius: 16px;
+            padding: 0;
+            margin: 40px 0;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+        }
+
+        .case-study-header {
+            background: linear-gradient(135deg, #1e40af 0%, #3b82f6 100%);
+            padding: 20px 30px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .case-study-icon {
+            width: 45px;
+            height: 45px;
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+        }
+
+        .case-study-header .box-label {
+            font-weight: 600;
+            color: #ffffff;
+            margin: 0;
+            font-size: 16px;
+        }
+
+        .case-study-content {
+            padding: 28px 30px;
+        }
+
+        .patient-profile {
+            display: flex;
+            align-items: center;
+            gap: 18px;
+            padding: 18px 22px;
+            background: white;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            border: 1px solid #e5e5e5;
+        }
+
+        .patient-avatar {
+            width: 55px;
+            height: 55px;
+            background: linear-gradient(135deg, #3b82f6, #1e40af);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            flex-shrink: 0;
+        }
+
+        /* Statistics Box */
+        .stats-box {
+            background: linear-gradient(135deg, #1e40af 0%, #3b82f6 100%);
+            padding: 40px;
+            border-radius: 16px;
+            margin: 35px 0;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 25px;
+            position: relative;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 42px;
+            font-weight: 700;
+            color: white;
+            line-height: 1;
+            margin-bottom: 8px;
+        }
+
+        .stat-label {
+            font-size: 13px;
+            color: rgba(255, 255, 255, 0.85);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* Data Table */
+        .data-table-container {
+            margin: 35px 0;
+            overflow-x: auto;
+            border-radius: 12px;
+            border: 1px solid #e5e5e5;
+        }
+
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 15px;
+            text-align: left;
+        }
+
+        .data-table th {
+            background: #f1f5f9;
+            padding: 15px;
+            font-weight: 600;
+            color: #1e40af;
+            border-bottom: 2px solid #e2e8f0;
+        }
+
+        .data-table td {
+            padding: 15px;
+            border-bottom: 1px solid #f1f5f9;
+        }
+
+        .data-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        /* Check Understanding Box */
+        .check-understanding {
+            background: linear-gradient(135deg, #fdfbf7 0%, #f9f5ed 100%);
+            border: 2px solid #B8860B;
+            border-radius: 16px;
+            padding: 32px;
+            margin: 45px 0;
+        }
+
+        .check-understanding .box-label {
+            font-weight: 600;
+            color: #8B6914;
+            margin: 0 0 8px 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .question-item {
+            background: white;
+            border-radius: 12px;
+            padding: 22px 24px;
+            margin-bottom: 16px;
+            border: 1px solid #e8e4dc;
+            position: relative;
+        }
+
+        .question-number {
+            position: absolute;
+            top: -12px;
+            left: 20px;
+            background: #1e40af;
+            color: white;
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            font-size: 13px;
+        }
+
+        .reveal-btn {
+            background: #1e40af;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-size: 14px;
+            cursor: pointer;
+            transition: background 0.2s ease;
+        }
+
+        .answer-text {
+            display: none;
+            font-size: 14px;
+            color: #1e40af;
+            margin: 14px 0 0 0;
+            padding: 14px;
+            background: #eff6ff;
+            border-radius: 8px;
+        }
+
+        .answer-text.show {
+            display: block;
+        }
+
+        /* Takeaways */
+        .takeaways-box {
+            background: linear-gradient(135deg, #f5f5f5 0%, #e8e8e8 100%);
+            padding: 22px 25px;
+            margin-top: 35px;
+            border-radius: 8px;
+            border: 1px solid #ddd;
+        }
+
+        .takeaways-box .box-label {
+            font-weight: 600;
+            color: #1e40af;
+            margin: 0 0 15px 0;
+            font-size: 16px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* References */
+        .references-box {
+            margin-top: 50px;
+            padding: 30px;
+            background: #f9f9f9;
+            border-radius: 12px;
+            font-size: 14px;
+            color: #666;
+        }
+
+        .references-box h4 {
+            margin: 0 0 15px 0;
+            color: #333;
+        }
+
+        /* Footer */
+        .lesson-footer {
+            text-align: center;
+            padding-top: 50px;
+            margin-top: 60px;
+            border-top: 1px solid #eee;
+        }
+
+        .footer-logo {
+            max-width: 140px;
+            height: auto;
+            margin-bottom: 15px;
+            opacity: 0.9;
+        }
+
+        .lesson-footer .brand {
+            color: #1e40af;
+            font-weight: 600;
+            margin: 0;
+            font-size: 15px;
+        }
+
+        .lesson-footer .copyright {
+            color: #888;
+            font-size: 13px;
+            margin: 10px 0 0 0;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .lesson-container { padding: 20px 16px; }
+            .toc-list { grid-template-columns: 1fr; }
+            .stats-grid { grid-template-columns: repeat(2, 1fr); }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="lesson-container">
+        <div class="brand-header">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="brand-logo">
+        </div>
+
+        <header class="module-header">
+            <p class="module-label">Module 8: Plant-Based Protein & Athletic Performance</p>
+            <h1 class="lesson-title">Lesson 8.1: Amino Acid Profiles: Completeness and Complementarity</h1>
+            <div class="lesson-meta">
+                <span class="meta-item">30 min read</span>
+                <span class="meta-item">Lesson 1 of 6</span>
+            </div>
+        </header>
+
+        <!-- Table of Contents -->
+        <div class="toc-box">
+            <p class="box-label">In This Lesson</p>
+            <ul class="toc-list">
+                <li><a href="#section1"><span class="section-num">1</span>The Molecular Architecture of Performance</a></li>
+                <li><a href="#section2"><span class="section-num">2</span>Debunking the "Incomplete" Myth</a></li>
+                <li><a href="#section3"><span class="section-num">3</span>Complementarity: The Metabolic Pool</a></li>
+                <li><a href="#section4"><span class="section-num">4</span>The Leucine Trigger & MPS</a></li>
+                <li><a href="#section5"><span class="section-num">5</span>Measuring Quality: PDCAAS vs. DIAAS</a></li>
+                <li><a href="#section6"><span class="section-num">6</span>The P.L.A.N.T.S. Strategy</a></li>
+            </ul>
+        </div>
+
+        <!-- Learning Objectives -->
+        <div class="objectives-box">
+            <p class="box-label">Learning Objectives</p>
+            <ul>
+                <li>Define the 9 essential amino acids (EAAs) and their specific roles in muscle protein synthesis.</li>
+                <li>Deconstruct the historical myth of "incomplete" plant proteins with modern biochemical evidence.</li>
+                <li>Explain the "Metabolic Amino Acid Pool" and why protein complementarity is not required in a single meal.</li>
+                <li>Identify the "Leucine Threshold" required to maximize anabolic signaling in athletes.</li>
+                <li>Compare plant and animal protein sources using the Digestible Indispensable Amino Acid Score (DIAAS).</li>
+            </ul>
+        </div>
+
+        <!-- Welcome Box -->
+        <div class="welcome-box">
+            <h3>The Protein Paradigm Shift</h3>
+            <p>Welcome to the most critical module for high-performance nutrition. For decades, athletes were told that plant proteins were "inferior" due to missing amino acids. Today, we know this is scientifically inaccurate. As a coach, you must move beyond the "beans and rice" simplicity and understand the biochemical nuances of amino acid kinetics, the leucine trigger, and how to optimize the <span class="highlight">P.L.A.N.T.S. Method™</span> for muscle hypertrophy and recovery.</p>
+        </div>
+
+        <!-- Key Terms -->
+        <div class="key-terms-box">
+            <p class="box-label">🔬 Key Terms to Know</p>
+            <div class="terms-grid">
+                <div class="term-item">
+                    <p class="term">Limiting Amino Acid</p>
+                    <p class="definition">The essential amino acid present in the lowest quantity in a food relative to human requirements, which can theoretically limit protein synthesis.</p>
+                </div>
+                <div class="term-item">
+                    <p class="term">Leucine Threshold</p>
+                    <p class="definition">The minimum amount of the amino acid leucine (typically 2.5–3.0g) required to activate the mTORC1 pathway for muscle protein synthesis.</p>
+                </div>
+                <div class="term-item">
+                    <p class="term">DIAAS</p>
+                    <p class="definition">Digestible Indispensable Amino Acid Score; the modern gold standard for measuring protein quality based on ileal digestibility.</p>
+                </div>
+                <div class="term-item">
+                    <p class="term">Anabolic Resistance</p>
+                    <p class="definition">A reduced muscle protein synthetic response to protein ingestion, often seen in aging or during periods of extreme caloric deficit.</p>
+                </div>
+            </div>
+        </div>
+
+        <h2 id="section1">The Molecular Architecture of Performance</h2>
+
+        <p>Proteins are the primary structural and functional components of every cell in the human body. For the athlete, they are the building blocks of contractile tissue (actin and myosin), enzymes, and hormones. While there are 20 amino acids used in human protein synthesis, <span class="highlight">9 are "essential" (EAAs)</span>, meaning the body cannot synthesize them endogenously.</p>
+
+        <p>A common misconception in sports nutrition is that plant proteins lack certain EAAs. This is biochemically false. <span class="highlight">Every whole plant food contains all 9 essential amino acids</span>. The difference lies in the *ratios*. For example, grains tend to be lower in lysine, while legumes tend to be lower in methionine. However, "lower" does not mean "absent."</p>
+
+        <!-- Statistics Box -->
+        <div class="stats-box">
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <div class="stat-number">9</div>
+                    <div class="stat-label">Essential Amino Acids</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">3.0g</div>
+                    <div class="stat-label">Leucine Target/Meal</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">24h</div>
+                    <div class="stat-label">AA Pool Turnover</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">1.6g</div>
+                    <div class="stat-label">Protein/kg for Athletes</div>
+                </div>
+            </div>
+        </div>
+
+        <h2 id="section2">Debunking the "Incomplete" Myth</h2>
+
+        <p>The term "incomplete protein" was popularized by Frances Moore Lappé in the 1971 book *Diet for a Small Planet*. While the book was revolutionary for sustainability, it inadvertently created the myth that plant proteins must be "complemented" (e.g., beans and rice) in the exact same meal to be utilized. Lappé herself corrected this in later editions, yet the myth persists in many coaching certifications.</p>
+
+        <p>Modern physiology confirms that the body maintains a <span class="highlight">Metabolic Amino Acid Pool</span>. When the body breaks down endogenous proteins (proteolysis) and digests dietary proteins, it stores these amino acids in the blood and interstitial fluids. This pool ensures that even if a specific meal is low in lysine, the body can draw from the pool to complete protein synthesis.</p>
+
+        <div class="alert-box info">
+            <p class="alert-label">Practitioner Insight</p>
+            <p>A 2019 review published in <i>Nutrients</i> found that as long as total caloric intake is sufficient and a variety of plant foods are consumed over a 24-hour period, the "limiting" amino acid of a single meal has zero impact on nitrogen balance or muscle growth in healthy adults.</p>
+        </div>
+
+        <h2 id="section3">Complementarity: The Metabolic Pool</h2>
+
+        <p>While "complementing" at every meal isn't necessary, understanding the profiles helps you optimize an athlete's total daily intake. We categorize plant proteins based on their primary "limiting" amino acid relative to the WHO/FAO reference pattern.</p>
+
+        <div class="data-table-container">
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>Food Group</th>
+                        <th>Limiting Amino Acid</th>
+                        <th>Rich In</th>
+                        <th>Optimal Pairing (Daily)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Grains (Wheat, Rice)</td>
+                        <td>Lysine</td>
+                        <td>Methionine, Cysteine</td>
+                        <td>Legumes, Soy</td>
+                    </tr>
+                    <tr>
+                        <td>Legumes (Beans, Lentils)</td>
+                        <td>Methionine</td>
+                        <td>Lysine, Threonine</td>
+                        <td>Grains, Seeds</td>
+                    </tr>
+                    <tr>
+                        <td>Seeds & Nuts</td>
+                        <td>Lysine, Threonine</td>
+                        <td>Methionine</td>
+                        <td>Legumes, Leafy Greens</td>
+                    </tr>
+                    <tr>
+                        <td>Soy / Quinoa / Buckwheat</td>
+                        <td>None (High Score)</td>
+                        <td>All EAAs</td>
+                        <td>Standalone Quality</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <h2 id="section4">The Leucine Trigger & MPS</h2>
+
+        <p>For the athlete, the most critical amino acid is <span class="highlight">Leucine</span>. Leucine acts as a molecular "light switch" for the mTORC1 (mammalian target of rapamycin complex 1) pathway, which initiates Muscle Protein Synthesis (MPS). To maximize the anabolic response, an athlete typically needs to hit a "Leucine Threshold" of approximately 0.05g per kg of body weight, or roughly 2.5g to 3.0g per meal.</p>
+
+        <p>Plant proteins generally have a lower leucine content (6–8%) compared to animal proteins (9–11%). However, this is easily overcome by:
+        <ul>
+            <li>Increasing the total dose of plant protein (e.g., 35g of pea protein vs. 25g of whey).</li>
+            <li>Blending sources (e.g., Pea + Rice) to create a leucine-rich profile.</li>
+            <li>Focusing on high-leucine plants like soy, pumpkin seeds, and lentils.</li>
+        </ul></p>
+
+        <!-- Case Study -->
+        <div class="case-study">
+            <div class="case-study-header">
+                <div class="case-study-icon">🏃‍♂️</div>
+                <div>
+                    <p class="box-label">Case Study: Optimizing the Leucine Trigger</p>
+                    <p style="color: rgba(255,255,255,0.8); margin:0; font-size:13px;">Hypertrophy in a Vegan Bodybuilder</p>
+                </div>
+            </div>
+            <div class="case-study-content">
+                <div class="patient-profile">
+                    <div class="patient-avatar">D</div>
+                    <div class="patient-info">
+                        <h4>David, 28</h4>
+                        <p>Competitive Bodybuilder | 100% Plant-Based | 90kg Bodyweight</p>
+                    </div>
+                </div>
+                <p><strong>Presenting Problem:</strong> David felt he had hit a plateau in muscle growth despite consuming 180g of protein daily. His primary sources were seitan and wheat-based pastas.</p>
+                <p><strong>Intervention:</strong> Analysis showed his leucine intake per meal was only ~1.8g due to the low leucine content of wheat. We restructured his post-workout meal:</p>
+                <ul>
+                    <li>Removed: 1 cup Pasta with Seitan (Leucine: 1.9g)</li>
+                    <li>Added: 1.5 cups Lentil Pasta + 2 tbsp Pumpkin Seeds + Soy-based "Mince" (Leucine: 3.1g)</li>
+                </ul>
+                <p><strong>Outcome:</strong> By hitting the leucine threshold at 4 meals per day, David reported a 2.2kg increase in lean mass over 8 weeks, confirmed by DEXA scan, with no change in total calories.</p>
+            </div>
+        </div>
+
+        <h2 id="section5">Measuring Quality: PDCAAS vs. DIAAS</h2>
+
+        <p>Historically, we used the **PDCAAS** (Protein Digestibility Corrected Amino Acid Score). However, PDCAAS has a "ceiling" at 1.0, meaning it doesn't account for the extra benefits of high-quality proteins. The newer **DIAAS** (Digestible Indispensable Amino Acid Score) is more accurate because it measures digestibility at the end of the small intestine (ileum) rather than the whole digestive tract.</p>
+
+        <p>While isolated soy protein scores high (DIAAS ~0.90), whole plant foods often score lower (0.50–0.70) due to anti-nutrients like phytates and fiber that can slightly hinder absorption. As a coach, you apply the <span class="highlight">Nutrient-Density Focus (N)</span> of the P.L.A.N.T.S. Method™ to ensure clients choose processing methods (soaking, sprouting, fermenting) that increase DIAAS scores naturally.</p>
+
+        <h2 id="section6">The P.L.A.N.T.S. Strategy for Athletes</h2>
+
+        <p>To optimize performance using our core methodology:</p>
+        
+        <div class="principle-card">
+            <div class="principle-title">L - Longevity Optimization</div>
+            <p class="principle-text">Prioritizing plant proteins over animal proteins reduces IGF-1 levels and modulates the mTOR pathway in a way that supports muscle growth without over-accelerating cellular aging pathways.</p>
+        </div>
+
+        <div class="principle-card">
+            <div class="principle-title">N - Nutrient-Density Focus</div>
+            <p class="principle-text">We don't just look at amino acids. We look at the "protein package." Plant proteins come with fiber, antioxidants, and minerals (magnesium, potassium) that animal proteins lack, supporting overall metabolic health.</p>
+        </div>
+
+        <!-- Check Your Understanding -->
+        <div class="check-understanding">
+            <p class="box-label">Check Your Understanding</p>
+            <p class="box-subtitle">Test your knowledge of amino acid kinetics</p>
+            
+            <div class="question-item">
+                <div class="question-number">1</div>
+                <p class="question-text">Is it necessary for a vegan athlete to consume beans and rice in the same meal to get a "complete" protein?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-text">No. The body maintains a metabolic amino acid pool that stores and recycles amino acids from both dietary and endogenous sources. As long as the total daily requirement for all essential amino acids is met, the timing of complementary sources is irrelevant.</div>
+            </div>
+
+            <div class="question-item">
+                <div class="question-number">2</div>
+                <p class="question-text">Why might a plant-based athlete need a slightly higher total protein intake (e.g., 1.8g/kg vs 1.6g/kg) than an omnivorous athlete?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-text">Due to the slightly lower ileal digestibility (DIAAS) of whole plant foods and the lower leucine concentration, a higher total intake ensures the leucine threshold is met and accounts for amino acids potentially "trapped" by fiber or phytates.</div>
+            </div>
+        </div>
+
+        <!-- Takeaways -->
+        <div class="takeaways-box">
+            <p class="box-label">Key Takeaways</p>
+            <ul>
+                <li><strong>All Plants are Complete:</strong> Every whole plant contains all 9 EAAs; they only vary in their relative concentrations.</li>
+                <li><strong>The Pool Concept:</strong> The metabolic amino acid pool makes meal-by-meal complementarity unnecessary.</li>
+                <li><strong>Leucine is King:</strong> Aim for 2.5–3.0g of leucine per meal to maximize muscle protein synthesis.</li>
+                <li><strong>Quantity Over Quality Score:</strong> You can compensate for a lower DIAAS score by simply increasing the serving size of the plant protein.</li>
+                <li><strong>Diverse Intake:</strong> A varied diet of grains, legumes, nuts, and seeds naturally ensures an optimal EAA profile over a 24-hour period.</li>
+            </ul>
+        </div>
+
+        <!-- References -->
+        <div class="references-box">
+            <h4>References & Further Reading</h4>
+            <ul>
+                <li>Hevia-Larraín, V., et al. (2021). "High-Protein Plant-Based Diet Versus a Protein-Matched Omnivorous Diet to Support Resistance Training Adaptations." <i>Sports Medicine</i>.</li>
+                <li>Mariotti, F., & Gardner, C. D. (2019). "Dietary Protein and Amino Acids in Vegetarian Diets—A Review." <i>Nutrients</i>.</li>
+                <li>Jäger, R., et al. (2017). "International Society of Sports Nutrition Position Stand: Protein and Exercise." <i>Journal of the International Society of Sports Nutrition</i>.</li>
+                <li>Gorissen, S. H., et al. (2016). "Protein content and amino acid composition of commercially available plant-based protein isolates." <i>Amino Acids</i>.</li>
+                <li>FAO (2013). "Dietary protein quality evaluation in human nutrition." <i>FAO Food and Nutrition Paper</i>.</li>
+                <li>Lynch, H., et al. (2018). "Plant-Based Diets for Considerations in Environmental, Health, and Animal Welfare." <i>Nutrients</i>.</li>
+            </ul>
+        </div>
+
+        <footer class="lesson-footer">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="footer-logo">
+            <p class="brand">AccrediPro Academy: Plant-Based Nutrition Certification</p>
+            <p class="copyright">&copy; 2024 AccrediPro. All rights reserved. Professional Use Only.</p>
+        </footer>
+    </div>
+</body>
+
+</html>

@@ -1,0 +1,794 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lesson 12.5: Recipe Modification: Turning Traditional Dishes Plant-Based</title>
+    <style>
+        /* Base & Reset */
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Georgia, 'Times New Roman', serif;
+            line-height: 1.8;
+            color: #2d2d2d;
+            background: #f8f6f3;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Main Container */
+        .lesson-container {
+            max-width: 860px;
+            margin: 0 auto;
+            padding: 40px 30px;
+            background: #ffffff;
+            min-height: 100vh;
+            box-shadow: 0 0 60px rgba(0, 0, 0, 0.08);
+        }
+
+        /* Brand Header */
+        .brand-header {
+            text-align: center;
+            padding-bottom: 30px;
+            margin-bottom: 35px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .brand-logo {
+            max-width: 220px;
+            height: auto;
+            margin-bottom: 5px;
+        }
+
+        /* Module Header - GREEN theme */
+        .module-header {
+            background: linear-gradient(135deg, #166534 0%, #22c55e 100%);
+            padding: 35px 35px 30px;
+            border-radius: 16px;
+            margin-bottom: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .module-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+            transform: translate(100px, -100px);
+        }
+
+        .module-header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, #B8860B, #D4A84B, #B8860B);
+        }
+
+        .module-label {
+            margin: 0;
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.85);
+            text-transform: uppercase;
+            letter-spacing: 2.5px;
+            font-weight: 500;
+        }
+
+        .lesson-title {
+            margin: 10px 0 0 0;
+            font-size: 28px;
+            color: #ffffff;
+            font-weight: 700;
+            line-height: 1.3;
+            position: relative;
+        }
+
+        .lesson-meta {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+            padding-top: 18px;
+            border-top: 1px solid rgba(255, 255, 255, 0.15);
+            flex-wrap: wrap;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.85);
+            background: rgba(255, 255, 255, 0.1);
+            padding: 5px 12px;
+            border-radius: 4px;
+        }
+
+        /* Table of Contents */
+        .toc-box {
+            background: linear-gradient(135deg, #fafafa 0%, #f5f5f5 100%);
+            border-radius: 14px;
+            padding: 24px 28px;
+            margin-bottom: 35px;
+            border: 1px solid #e8e8e8;
+        }
+
+        .toc-box .box-label {
+            font-weight: 600;
+            color: #166534;
+            margin: 0 0 18px 0;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .toc-list {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px 24px;
+        }
+
+        .toc-list li {
+            margin: 0;
+        }
+
+        .toc-list a {
+            display: flex;
+            align-items: center;
+            padding: 8px 12px;
+            color: #555;
+            text-decoration: none;
+            font-size: 14px;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+        }
+
+        .toc-list a:hover {
+            background: white;
+            color: #166534;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+        }
+
+        .toc-list .section-num {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 26px;
+            height: 26px;
+            background: #166534;
+            color: white;
+            font-weight: 600;
+            font-size: 11px;
+            border-radius: 6px;
+            margin-right: 12px;
+            flex-shrink: 0;
+        }
+
+        /* Learning Objectives */
+        .objectives-box {
+            background: #f0fdf4;
+            border: 2px solid #22c55e;
+            border-radius: 14px;
+            padding: 30px 35px;
+            margin-bottom: 40px;
+        }
+
+        .objectives-box .box-label {
+            font-weight: 600;
+            color: #166534;
+            margin: 0 0 18px 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .objectives-box .box-label::before {
+            content: '🎯';
+            font-size: 18px;
+        }
+
+        .objectives-box ul {
+            margin: 0;
+            padding-left: 22px;
+        }
+
+        .objectives-box li {
+            margin-bottom: 14px;
+            font-size: 16px;
+            line-height: 1.7;
+        }
+
+        /* Key Terms Box */
+        .key-terms-box {
+            background: linear-gradient(135deg, #f0f4f8 0%, #e8ecf1 100%);
+            border-radius: 14px;
+            padding: 28px 30px;
+            margin: 40px 0;
+            border: 1px solid #d8dce0;
+        }
+
+        .key-terms-box .box-label {
+            font-weight: 600;
+            color: #166534;
+            margin: 0 0 18px 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .terms-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 16px;
+        }
+
+        .term-item {
+            background: white;
+            padding: 16px 18px;
+            border-radius: 10px;
+            border-left: 4px solid #22c55e;
+        }
+
+        .term-item .term {
+            font-weight: 700;
+            color: #166534;
+            font-size: 15px;
+            margin: 0 0 6px 0;
+        }
+
+        .term-item .definition {
+            font-size: 14px;
+            color: #555;
+            margin: 0;
+            line-height: 1.6;
+        }
+
+        /* Section Headings */
+        h2 {
+            font-size: 24px;
+            color: #166534;
+            margin: 50px 0 20px 0;
+            font-weight: 600;
+            position: relative;
+            padding-bottom: 12px;
+        }
+
+        h2::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 60px;
+            height: 3px;
+            background: #B8860B;
+        }
+
+        /* Paragraphs */
+        p {
+            font-size: 17px;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        /* Highlights */
+        .highlight {
+            background: linear-gradient(180deg, transparent 60%, #FFF59D 60%);
+            padding: 0 4px;
+            font-weight: 500;
+        }
+
+        /* Welcome/Intro Box */
+        .welcome-box {
+            background: linear-gradient(135deg, #f0fdf4 0%, #ecfdf5 100%);
+            padding: 30px 35px;
+            border-radius: 14px;
+            margin-bottom: 40px;
+            border: 1px solid #bbf7d0;
+        }
+
+        .welcome-box h3 {
+            margin: 0 0 15px 0;
+            font-size: 20px;
+            color: #166534;
+            font-weight: 600;
+        }
+
+        /* Case Study Box */
+        .case-study {
+            background: linear-gradient(135deg, #f8f9fb 0%, #f0f2f5 100%);
+            border-radius: 16px;
+            padding: 0;
+            margin: 40px 0;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+        }
+
+        .case-study-header {
+            background: linear-gradient(135deg, #166534 0%, #22c55e 100%);
+            padding: 20px 30px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .case-study-icon {
+            width: 45px;
+            height: 45px;
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+        }
+
+        .case-study-header .box-label {
+            font-weight: 600;
+            color: #ffffff;
+            margin: 0;
+            font-size: 16px;
+        }
+
+        .case-study-content {
+            padding: 28px 30px;
+        }
+
+        .patient-profile {
+            display: flex;
+            align-items: center;
+            gap: 18px;
+            padding: 18px 22px;
+            background: white;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            border: 1px solid #e5e5e5;
+        }
+
+        .patient-avatar {
+            width: 55px;
+            height: 55px;
+            background: linear-gradient(135deg, #22c55e, #166534);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            flex-shrink: 0;
+            color: white;
+        }
+
+        /* Statistics Box */
+        .stats-box {
+            background: linear-gradient(135deg, #166534 0%, #22c55e 100%);
+            padding: 40px;
+            border-radius: 16px;
+            margin: 35px 0;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 25px;
+            position: relative;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 42px;
+            font-weight: 700;
+            color: white;
+            line-height: 1;
+            margin-bottom: 8px;
+        }
+
+        .stat-label {
+            font-size: 13px;
+            color: rgba(255, 255, 255, 0.85);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* Comparison Table */
+        .data-table-container {
+            margin: 35px 0;
+            overflow-x: auto;
+            border-radius: 12px;
+            border: 1px solid #e5e5e5;
+        }
+
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 15px;
+            text-align: left;
+        }
+
+        .data-table th {
+            background: #f1f8f1;
+            color: #166534;
+            padding: 15px;
+            font-weight: 600;
+            border-bottom: 2px solid #22c55e;
+        }
+
+        .data-table td {
+            padding: 15px;
+            border-bottom: 1px solid #eee;
+            color: #444;
+        }
+
+        .data-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        /* Check Understanding Box */
+        .check-understanding {
+            background: linear-gradient(135deg, #fdfbf7 0%, #f9f5ed 100%);
+            border: 2px solid #B8860B;
+            border-radius: 16px;
+            padding: 32px;
+            margin: 45px 0;
+        }
+
+        .check-understanding .box-label {
+            font-weight: 600;
+            color: #8B6914;
+            margin: 0 0 8px 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .question-item {
+            background: white;
+            border-radius: 12px;
+            padding: 22px 24px;
+            margin-bottom: 16px;
+            border: 1px solid #e8e4dc;
+            position: relative;
+        }
+
+        .reveal-btn {
+            background: #166534;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-size: 14px;
+            cursor: pointer;
+            font-family: inherit;
+        }
+
+        .answer-text {
+            display: none;
+            font-size: 14px;
+            color: #166534;
+            margin: 14px 0 0 0;
+            padding: 14px;
+            background: #f0f8f0;
+            border-radius: 8px;
+        }
+
+        .answer-text.show {
+            display: block;
+        }
+
+        /* Takeaways & References */
+        .takeaways-box {
+            background: #f1f8f1;
+            padding: 30px;
+            margin-top: 45px;
+            border-radius: 12px;
+            border-left: 5px solid #166534;
+        }
+
+        .references-box {
+            margin-top: 40px;
+            padding-top: 25px;
+            border-top: 1px solid #eee;
+            font-size: 14px;
+            color: #666;
+        }
+
+        .references-box h4 {
+            color: #166534;
+            margin-bottom: 15px;
+        }
+
+        .references-box ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .references-box li {
+            margin-bottom: 8px;
+        }
+
+        /* Footer */
+        .lesson-footer {
+            text-align: center;
+            padding: 50px 0;
+            margin-top: 60px;
+            border-top: 1px solid #eee;
+        }
+
+        @media (max-width: 768px) {
+            .toc-list {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="lesson-container">
+        <div class="brand-header">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="brand-logo">
+        </div>
+
+        <header class="module-header">
+            <p class="module-label">Module 12: Advanced Meal Planning & Culinary Coaching</p>
+            <h1 class="lesson-title">Lesson 12.5: Recipe Modification: Turning Traditional Dishes Plant-Based</h1>
+            <div class="lesson-meta">
+                <span class="meta-item">35 min read</span>
+                <span class="meta-item">Lesson 5 of 8</span>
+            </div>
+        </header>
+
+        <!-- Table of Contents -->
+        <div class="toc-box">
+            <p class="box-label">In This Lesson</p>
+            <ul class="toc-list">
+                <li><a href="#section1"><span class="section-num">1</span>The Psychology of Familiarity</a></li>
+                <li><a href="#section2"><span class="section-num">2</span>The Umami Gap & Flavor Profiling</a></li>
+                <li><a href="#section3"><span class="section-num">3</span>Protein Mimicry: Texture & Mouthfeel</a></li>
+                <li><a href="#section4"><span class="section-num">4</span>Dairy Deconstruction: Emulsions</a></li>
+                <li><a href="#section5"><span class="section-num">5</span>Egg Substitution Science</a></li>
+                <li><a href="#section6"><span class="section-num">6</span>P.L.A.N.T.S. Method Integration</a></li>
+            </ul>
+        </div>
+
+        <!-- Learning Objectives -->
+        <div class="objectives-box">
+            <p class="box-label">Learning Objectives</p>
+            <ul>
+                <li>Master the culinary science behind replicating "meat-like" textures using whole plant foods.</li>
+                <li>Identify and apply high-umami plant ingredients to replace the savory depth of animal proteins.</li>
+                <li>Deconstruct dairy-based sauces and dressings into nutrient-dense, plant-derived emulsions.</li>
+                <li>Utilize the P.L.A.N.T.S. Method to ensure modified recipes maintain therapeutic nutrient density.</li>
+                <li>Develop coaching strategies to help clients transition their favorite cultural and comfort foods.</li>
+            </ul>
+        </div>
+
+        <!-- Welcome Box -->
+        <div class="welcome-box">
+            <h3>Bridging the Gap Between Health and Heritage</h3>
+            <p>One of the greatest barriers to long-term plant-based adherence is the perceived loss of cultural identity and comfort. As a coach, your ability to "veganize" a client's grandmother’s lasagna or a traditional beef stew isn't just a culinary skill—it is a <span class="highlight">behavioral intervention</span>. By deconstructing the molecular components of traditional dishes (fat, salt, acid, umami, and texture) and reconstructing them with whole plants, you provide a bridge to health that doesn't require abandoning one's history.</p>
+        </div>
+
+        <!-- Key Terms -->
+        <div class="key-terms-box">
+            <p class="box-label">🔬 Key Terms to Know</p>
+            <div class="terms-grid">
+                <div class="term-item">
+                    <p class="term">Umami</p>
+                    <p class="definition">The "fifth taste," characterized by a savory richness caused by glutamates and nucleotides found in mushrooms, miso, and sea vegetables.</p>
+                </div>
+                <div class="term-item">
+                    <p class="term">Maillard Reaction</p>
+                    <p class="definition">A chemical reaction between amino acids and reducing sugars that gives browned food its distinctive flavor; critical in plant-based searing.</p>
+                </div>
+                <div class="term-item">
+                    <p class="term">Aquafaba</p>
+                    <p class="definition">The viscous liquid from cooked chickpeas that mimics the functional properties of egg whites in foaming and binding.</p>
+                </div>
+                <div class="term-item">
+                    <p class="term">Food Matrix</p>
+                    <p class="definition">The complex assembly of nutrients and non-nutrients in whole foods that dictates how they are digested and absorbed.</p>
+                </div>
+            </div>
+        </div>
+
+        <h2 id="section1">The Psychology of Familiarity</h2>
+        <p>Research in the <i>Journal of Sensory Studies</i> indicates that "food neophobia"—the fear of new foods—is a significant hurdle in dietary transitions. When we modify a recipe, we are not just changing ingredients; we are managing the client's sensory expectations. A 2021 study found that plant-based meals are rated significantly higher by omnivores when they are presented as <span class="highlight">versions of familiar dishes</span> rather than entirely new concepts.</p>
+
+        <p>Your goal is to match the "flavor profile" and "mouthfeel" of the original. If a client loves the chewiness of steak, a soft tofu substitute will fail. If they crave the creamy richness of Alfredo, a thin vegetable broth won't satisfy. We must look at the <span class="highlight">Therapeutic Whole Foods (T)</span> principle of the P.L.A.N.T.S. Method to find intact structures that mimic these experiences.</p>
+
+        <!-- Statistics Box -->
+        <div class="stats-box">
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <div class="stat-number">84%</div>
+                    <div class="stat-label">Vegans/Vegetarians who return to meat</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">1st</div>
+                    <div class="stat-label">Reason for relapse: Taste/Cravings</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">3.5x</div>
+                    <div class="stat-label">Higher fiber in PB modifications</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">0mg</div>
+                    <div class="stat-label">Cholesterol in plant versions</div>
+                </div>
+            </div>
+        </div>
+
+        <h2 id="section2">The Umami Gap & Flavor Profiling</h2>
+        <p>Animal products are naturally high in glutamic acid, providing that deep, savory "umami" punch. When meat is removed, the dish often tastes "flat." To fix this, we must layer plant-based umami sources. A 2019 meta-analysis (n=12 studies) showed that synergy between <span class="highlight">glutamates</span> (found in tomatoes/miso) and <span class="highlight">guanylates</span> (found in dried mushrooms) can increase perceived savory intensity by up to 8 times.</p>
+
+        <div class="data-table-container">
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>Traditional Ingredient</th>
+                        <th>Umami Substitute</th>
+                        <th>Nutrient Synergy (P.L.A.N.T.S.)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Beef Broth</td>
+                        <td>Dried Porcini + Tamari + Miso</td>
+                        <td>Polyphenols + Fermented Bioactives</td>
+                    </tr>
+                    <tr>
+                        <td>Parmesan Cheese</td>
+                        <td>Nutritional Yeast + Toasted Walnuts</td>
+                        <td>B-Vitamins + Omega-3 Fatty Acids</td>
+                    </tr>
+                    <tr>
+                        <td>Anchovies/Fish Sauce</td>
+                        <td>Capers + Nori + Umeboshi Vinegar</td>
+                        <td>Iodine + Probiotic Organic Acids</td>
+                    </tr>
+                    <tr>
+                        <td>Bacon Bits</td>
+                        <td>Smoked Paprika + Shiitake + Liquid Smoke</td>
+                        <td>Lentinan (Immune support)</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <h2 id="section3">Protein Mimicry: Texture & Mouthfeel</h2>
+        <p>The "bite" of a dish is often more important than the flavor. To replicate the fibrous texture of meat, we leverage the cellular structure of plants—the "T" in our P.L.A.N.T.S. Method (Therapeutic Whole Foods). For example, <span class="highlight">Young Green Jackfruit</span> has a cellular matrix that, when shredded, mimics pulled pork or chicken. However, jackfruit is low in protein (approx. 2g per cup), so as a coach, you must suggest pairing it with a high-protein legume to maintain nutritional balance.</p>
+
+        <p>For ground meat applications (tacos, bolognese), a 50/50 blend of <span class="highlight">walnuts and lentils</span> provides both the fat/crunch of meat and the soft protein density. A 2022 study in <i>Nutrients</i> found that this specific combination improved post-prandial glycemic response compared to traditional beef, while scoring 92% as high on "satiety scales."</p>
+
+        <!-- Case Study 1 -->
+        <div class="case-study">
+            <div class="case-study-header">
+                <div class="case-study-icon">🥗</div>
+                <div>
+                    <p class="box-label">Case Study: The "Beef" Stew Transformation</p>
+                    <p style="color: rgba(255,255,255,0.8); margin:0; font-size:13px;">Applying Umami Synergy and Texture Engineering</p>
+                </div>
+            </div>
+            <div class="case-study-content">
+                <div class="patient-profile">
+                    <div class="patient-avatar">M</div>
+                    <div class="patient-info">
+                        <h4>Marcus, 54</h4>
+                        <p>Chronic Hypertension; Struggling to give up Sunday "Pot Roast" tradition.</p>
+                    </div>
+                </div>
+                <p><strong>Intervention:</strong> We replaced beef chunks with large, seared "scallops" of King Oyster Mushroom stems and hydrated Soy Curls. The broth was fortified with a paste of tomato paste, balsamic vinegar, and dark miso.</p>
+                <p><strong>Culinary Techniques Used:</strong>
+                <ul>
+                    <li><strong>Dry Searing:</strong> Browning mushrooms to trigger the Maillard reaction without oil.</li>
+                    <li><strong>Layering:</strong> Adding miso at the <i>end</i> to preserve probiotic enzymes (Anti-Inflammatory Alignment).</li>
+                </ul>
+                </p>
+                <p><strong>Outcome:</strong> Marcus reported 90% satisfaction compared to the original. His systolic blood pressure decreased by 14mmHg over 8 weeks, partly due to the removal of saturated fat and the 12g of extra fiber per serving.</p>
+            </div>
+        </div>
+
+        <h2 id="section4">Dairy Deconstruction: Emulsions</h2>
+        <p>Dairy provides fat (creaminess) and lactic acid (tang). To replicate this, we use <span class="highlight">Cashew Cream</span> or <span class="highlight">Sunflower Seed Butter</span> as a base. Cashews are unique because they lack a strong "nutty" flavor and are high in monounsaturated fats, which emulsify perfectly into a smooth liquid. To achieve the "cheesy" tang, we introduce fermentation (Rejuvelac) or organic acids (lemon juice, apple cider vinegar).</p>
+
+        <p>From a <span class="highlight">Longevity Optimization (L)</span> perspective, replacing heavy cream (high in palmitic acid) with nut-based emulsions reduces the activation of pro-inflammatory markers like TLR4. A 2020 clinical trial showed that replacing dairy fat with plant fats resulted in a 10% reduction in LDL cholesterol in just 4 weeks.</p>
+
+        <h2 id="section5">Egg Substitution Science</h2>
+        <p>Eggs serve four primary functions: binding, leavening, moisture, and emulsification. You cannot use a "flax egg" for everything. You must identify the function of the egg in the original recipe first.</p>
+
+        <div class="principle-card">
+            <div class="principle-title">1. Binding (The Glue)</div>
+            <p class="principle-text">Used in burgers or cookies. Best substitutes: <strong>Flax meal or Chia seeds</strong> (1 tbsp meal + 3 tbsp water). The mucilage creates a gel that holds structures together.</p>
+        </div>
+
+        <div class="principle-card">
+            <div class="principle-title">2. Leavening (The Lift)</div>
+            <p class="principle-text">Used in cakes/muffins. Best substitute: <strong>Aquafaba</strong> or a combination of baking soda and apple cider vinegar. The CO2 bubbles created provide the necessary rise.</p>
+        </div>
+
+        <div class="principle-card">
+            <div class="principle-title">3. Moisture & Fat</div>
+            <p class="principle-text">Used in brownies or quick breads. Best substitutes: <strong>Applesauce, mashed banana, or silken tofu</strong>. These provide weight and crumb without the cholesterol.</p>
+        </div>
+
+        <h2 id="section6">P.L.A.N.T.S. Method Integration</h2>
+        <p>When modifying recipes, always filter your choices through the <strong>P.L.A.N.T.S. Method</strong> to ensure the dish remains a health-promoting tool, not just a "veganized" version of junk food.</p>
+
+        <p><strong>Phytonutrient Synergy (P):</strong> If making a plant-based "Cream of Tomato" soup, use cashew cream (fat) to increase the bioavailability of the lycopene (carotenoid) in the tomatoes. Fat is required for the absorption of fat-soluble phytonutrients.</p>
+
+        <p><strong>Anti-Inflammatory Alignment (A):</strong> Replace white flour in traditional roux with chickpea flour or oat flour. Use turmeric and black pepper (piperine) in "egg" scrambles to modulate inflammatory cytokines while providing the yellow color of eggs.</p>
+
+        <!-- Check Your Understanding -->
+        <div class="check-understanding">
+            <p class="box-label">Knowledge Check</p>
+            <p class="box-subtitle">Test your mastery of recipe modification science.</p>
+
+            <div class="question-item">
+                <div class="question-number">1</div>
+                <p class="question-text">A client wants to make a plant-based Alfredo sauce but is allergic to nuts. Which whole-food ingredient would provide the best creamy "mouthfeel" while adhering to the Nutrient-Density Focus (N)?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-text">Steamed cauliflower blended with white beans (cannellini). The cauliflower provides the bulk and neutral flavor, while the beans provide the creamy starch and protein, significantly increasing the ANDI score of the dish.</div>
+            </div>
+
+            <div class="question-item">
+                <div class="question-number">2</div>
+                <p class="question-text">Why is the combination of dried shiitake mushrooms and tomato paste considered an "Umami Bomb" in recipe modification?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-text">It utilizes Umami Synergy. Tomatoes are high in free glutamates, while dried shiitakes are high in guanylates. When combined, these compounds bind to taste receptors more effectively than either alone, creating a savory depth that mimics slow-cooked meat.</div>
+            </div>
+        </div>
+
+        <!-- Takeaways -->
+        <div class="takeaways-box">
+            <p class="box-label">Key Takeaways for the Coach</p>
+            <ul>
+                <li><strong>Texture First:</strong> Match the "bite" of the original dish using intact plant structures (mushrooms, legumes, nuts) to satisfy sensory expectations.</li>
+                <li><strong>Layer Umami:</strong> Use miso, tamari, nutritional yeast, and sea vegetables to fill the savory void left by animal proteins.</li>
+                <li><strong>Function Matters:</strong> Choose egg substitutes based on whether the recipe requires binding, leavening, or moisture.</li>
+                <li><strong>Nutrient Density:</strong> Use the P.L.A.N.T.S. Method to ensure modifications improve the client's health markers (e.g., adding fiber, reducing saturated fat).</li>
+                <li><strong>Cultural Sensitivity:</strong> Treat recipe modification as a way to preserve a client's heritage while upgrading their cellular health.</li>
+            </ul>
+        </div>
+
+        <!-- References -->
+        <div class="references-box">
+            <h4>References & Further Reading</h4>
+            <ul>
+                <li>He et al. (2021). "The Psychology of Plant-Based Food Choice: A Systematic Review." <i>Appetite Journal.</i></li>
+                <li>Gupta et al. (2019). "Synergistic effects of glutamates and nucleotides on savory perception in plant-based diets." <i>Journal of Food Science.</i></li>
+                <li>Gardner et al. (2020). "Effect of Plant-Based Meat Alternatives on LDL Cholesterol: The SWAP-MEAT Randomized Crossover Trial." <i>American Journal of Clinical Nutrition.</i></li>
+                <li>Slavin, J. (2022). "Fiber and Satiety: Comparing Whole Plant Matrices to Animal Proteins." <i>Nutrients.</i></li>
+                <li>Spence, C. (2021). "Gastrophysics: The New Science of Eating and the Plant-Based Transition." <i>International Journal of Gastronomy and Food Science.</i></li>
+                <li>Vargas et al. (2023). "Maillard Reaction Products in Plant-Based Cooking: Health Implications and Flavor Development." <i>Molecular Nutrition & Food Research.</i></li>
+            </ul>
+        </div>
+
+        <footer class="lesson-footer">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="footer-logo">
+            <p class="brand">AccrediPro Academy © 2024</p>
+            <p class="copyright">Certified Plant-Based Nutrition Coach Program</p>
+        </footer>
+    </div>
+</body>
+
+</html>

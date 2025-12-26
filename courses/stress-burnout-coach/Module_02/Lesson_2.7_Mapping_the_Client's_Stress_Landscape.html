@@ -1,0 +1,756 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lesson 2.7: Mapping the Client's Stress Landscape</title>
+    <style>
+        /* Base & Reset */
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Georgia, 'Times New Roman', serif;
+            line-height: 1.8;
+            color: #2d2d2d;
+            background: #f8f6f3;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Main Container */
+        .lesson-container {
+            max-width: 860px;
+            margin: 0 auto;
+            padding: 40px 30px;
+            background: #ffffff;
+            min-height: 100vh;
+            box-shadow: 0 0 60px rgba(0, 0, 0, 0.08);
+        }
+
+        /* Brand Header */
+        .brand-header {
+            text-align: center;
+            padding-bottom: 30px;
+            margin-bottom: 35px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .brand-logo {
+            max-width: 220px;
+            height: auto;
+            margin-bottom: 5px;
+        }
+
+        /* Module Header - BLUE theme for Stress & Burnout */
+        .module-header {
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+            padding: 35px 35px 30px;
+            border-radius: 16px;
+            margin-bottom: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .module-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+            transform: translate(100px, -100px);
+        }
+
+        .module-header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, #B8860B, #D4A84B, #B8860B);
+        }
+
+        .module-label {
+            margin: 0;
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.75);
+            text-transform: uppercase;
+            letter-spacing: 2.5px;
+            font-weight: 500;
+        }
+
+        .lesson-title {
+            margin: 10px 0 0 0;
+            font-size: 28px;
+            color: #ffffff;
+            font-weight: 700;
+            line-height: 1.3;
+            position: relative;
+        }
+
+        .lesson-meta {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+            padding-top: 18px;
+            border-top: 1px solid rgba(255, 255, 255, 0.15);
+            flex-wrap: wrap;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.85);
+            background: rgba(255, 255, 255, 0.1);
+            padding: 5px 12px;
+            border-radius: 4px;
+        }
+
+        /* Table of Contents */
+        .toc-box {
+            background: linear-gradient(135deg, #fafafa 0%, #f5f5f5 100%);
+            border-radius: 14px;
+            padding: 24px 28px;
+            margin-bottom: 35px;
+            border: 1px solid #e8e8e8;
+        }
+
+        .toc-box .box-label {
+            font-weight: 600;
+            color: #1e3a8a;
+            margin: 0 0 18px 0;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .toc-list {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px 24px;
+        }
+
+        .toc-list li {
+            margin: 0;
+        }
+
+        .toc-list a {
+            display: flex;
+            align-items: center;
+            padding: 8px 12px;
+            color: #555;
+            text-decoration: none;
+            font-size: 14px;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+        }
+
+        .toc-list a:hover {
+            background: white;
+            color: #1e3a8a;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+        }
+
+        .toc-list .section-num {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 26px;
+            height: 26px;
+            background: #1e3a8a;
+            color: white;
+            font-weight: 600;
+            font-size: 11px;
+            border-radius: 6px;
+            margin-right: 12px;
+            flex-shrink: 0;
+        }
+
+        /* Learning Objectives */
+        .objectives-box {
+            background: #eff6ff;
+            border: 2px solid #3b82f6;
+            border-radius: 14px;
+            padding: 30px 35px;
+            margin-bottom: 40px;
+        }
+
+        .objectives-box .box-label {
+            font-weight: 600;
+            color: #1e3a8a;
+            margin: 0 0 18px 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .objectives-box .box-label::before {
+            content: '🎯';
+            font-size: 18px;
+        }
+
+        .objectives-box ul {
+            margin: 0;
+            padding-left: 22px;
+        }
+
+        .objectives-box li {
+            margin-bottom: 14px;
+            font-size: 16px;
+            line-height: 1.7;
+        }
+
+        /* Key Terms Box */
+        .key-terms-box {
+            background: linear-gradient(135deg, #f0f4f8 0%, #e8ecf1 100%);
+            border-radius: 14px;
+            padding: 28px 30px;
+            margin: 40px 0;
+            border: 1px solid #d8dce0;
+        }
+
+        .key-terms-box .box-label {
+            font-weight: 600;
+            color: #1e3a8a;
+            margin: 0 0 18px 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .terms-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 16px;
+        }
+
+        .term-item {
+            background: white;
+            padding: 16px 18px;
+            border-radius: 10px;
+            border-left: 4px solid #3b82f6;
+        }
+
+        .term-item .term {
+            font-weight: 700;
+            color: #1e3a8a;
+            font-size: 15px;
+            margin: 0 0 6px 0;
+        }
+
+        .term-item .definition {
+            font-size: 14px;
+            color: #555;
+            margin: 0;
+            line-height: 1.6;
+        }
+
+        /* Section Headings */
+        h2 {
+            font-size: 24px;
+            color: #1e3a8a;
+            margin: 50px 0 20px 0;
+            font-weight: 600;
+            position: relative;
+            padding-bottom: 12px;
+        }
+
+        h2::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 60px;
+            height: 3px;
+            background: #B8860B;
+        }
+
+        /* Paragraphs */
+        p {
+            font-size: 17px;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        /* Highlights */
+        .highlight {
+            background: linear-gradient(180deg, transparent 60%, #daeaff 60%);
+            padding: 0 4px;
+            font-weight: 500;
+        }
+
+        /* Welcome/Intro Box */
+        .welcome-box {
+            background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%);
+            padding: 30px 35px;
+            border-radius: 14px;
+            margin-bottom: 40px;
+            border: 1px solid #bfdbfe;
+        }
+
+        .welcome-box h3 {
+            margin: 0 0 15px 0;
+            font-size: 20px;
+            color: #1e3a8a;
+            font-weight: 600;
+        }
+
+        /* Statistics Box */
+        .stats-box {
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+            padding: 40px;
+            border-radius: 16px;
+            margin: 35px 0;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 25px;
+            position: relative;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 42px;
+            font-weight: 700;
+            color: white;
+            line-height: 1;
+            margin-bottom: 8px;
+        }
+
+        .stat-label {
+            font-size: 13px;
+            color: rgba(255, 255, 255, 0.85);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* Case Study Box */
+        .case-study {
+            background: linear-gradient(135deg, #f8f9fb 0%, #f0f2f5 100%);
+            border-radius: 16px;
+            padding: 0;
+            margin: 40px 0;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+        }
+
+        .case-study-header {
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+            padding: 20px 30px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .case-study-header .box-label {
+            font-weight: 600;
+            color: #ffffff;
+            margin: 0;
+            font-size: 16px;
+        }
+
+        .case-study-content {
+            padding: 28px 30px;
+        }
+
+        .patient-profile {
+            display: flex;
+            align-items: center;
+            gap: 18px;
+            padding: 18px 22px;
+            background: white;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            border: 1px solid #e5e5e5;
+        }
+
+        .patient-avatar {
+            width: 55px;
+            height: 55px;
+            background: linear-gradient(135deg, #3b82f6, #1e3a8a);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            color: white;
+        }
+
+        /* Check Understanding Box */
+        .check-understanding {
+            background: linear-gradient(135deg, #fdfbf7 0%, #f9f5ed 100%);
+            border: 2px solid #B8860B;
+            border-radius: 16px;
+            padding: 32px;
+            margin: 45px 0;
+        }
+
+        .question-item {
+            background: white;
+            border-radius: 12px;
+            padding: 22px 24px;
+            margin-bottom: 16px;
+            border: 1px solid #e8e4dc;
+            position: relative;
+        }
+
+        .reveal-btn {
+            background: #1e3a8a;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-size: 14px;
+            cursor: pointer;
+        }
+
+        .answer-text {
+            display: none;
+            font-size: 14px;
+            color: #1e3a8a;
+            margin: 14px 0 0 0;
+            padding: 14px;
+            background: #eff6ff;
+            border-radius: 8px;
+        }
+
+        .answer-text.show {
+            display: block;
+        }
+
+        /* Comparison Table */
+        .data-table-container {
+            overflow-x: auto;
+            margin: 30px 0;
+            border-radius: 12px;
+            border: 1px solid #e5e7eb;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 15px;
+        }
+
+        th {
+            background: #f3f4f6;
+            padding: 15px;
+            text-align: left;
+            border-bottom: 2px solid #e5e7eb;
+            color: #1e3a8a;
+        }
+
+        td {
+            padding: 15px;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        /* Key Takeaways */
+        .takeaways-box {
+            background: linear-gradient(135deg, #f5f5f5 0%, #e8e8e8 100%);
+            padding: 22px 25px;
+            margin-top: 35px;
+            border-radius: 8px;
+            border: 1px solid #ddd;
+        }
+
+        .references-box {
+            margin-top: 40px;
+            padding: 25px;
+            background: #fff;
+            border: 1px solid #eee;
+            border-radius: 12px;
+            font-size: 14px;
+        }
+
+        .references-box h4 {
+            margin: 0 0 15px 0;
+            color: #1e3a8a;
+        }
+
+        .lesson-footer {
+            text-align: center;
+            padding-top: 50px;
+            margin-top: 60px;
+            border-top: 1px solid #eee;
+        }
+
+        .footer-logo {
+            max-width: 140px;
+            opacity: 0.9;
+        }
+
+        .stat-highlight {
+            color: #1e3a8a;
+            font-weight: 700;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="lesson-container">
+        <div class="brand-header">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="brand-logo">
+        </div>
+
+        <header class="module-header">
+            <p class="module-label">Module 2: Assessment of Allostatic Load (ASCEND Step 1)</p>
+            <h1 class="lesson-title">Lesson 2.7: Mapping the Client's Stress Landscape</h1>
+            <div class="lesson-meta">
+                <span class="meta-item">35 min read</span>
+                <span class="meta-item">Lesson 7 of 10</span>
+            </div>
+        </header>
+
+        <!-- Table of Contents -->
+        <div class="toc-box">
+            <p class="box-label">In This Lesson</p>
+            <ul class="toc-list">
+                <li><a href="#section1"><span class="section-num">1</span>The Biopsychosocial Map</a></li>
+                <li><a href="#section2"><span class="section-num">2</span>The Concept of Stress Stacking</a></li>
+                <li><a href="#section3"><span class="section-num">3</span>Quantifying Cumulative Load</a></li>
+                <li><a href="#section4"><span class="section-num">4</span>Identifying Hidden Stressors</a></li>
+                <li><a href="#section5"><span class="section-num">5</span>The Resilience Reservoir</a></li>
+                <li><a href="#section6"><span class="section-num">6</span>Mapping Implementation</a></li>
+            </ul>
+        </div>
+
+        <!-- Learning Objectives -->
+        <div class="objectives-box">
+            <p class="box-label">Learning Objectives</p>
+            <ul>
+                <li>Synthesize objective data (labs) and subjective data (MBI) into a cohesive stress map.</li>
+                <li>Explain the biological mechanism of "stress stacking" and how it accelerates allostatic overload.</li>
+                <li>Identify the five primary domains of the stress landscape: Biological, Environmental, Occupational, Psychological, and Social.</li>
+                <li>Differentiate between acute "landscape features" and chronic "landscape shifts" in a client's life.</li>
+                <li>Utilize the Stress Stack Audit tool to calculate a client's current cumulative load score.</li>
+            </ul>
+        </div>
+
+        <!-- Welcome Box -->
+        <div class="welcome-box">
+            <h3>Synthesizing the Assessment</h3>
+            <p>Welcome to the final integration phase of Step 1 in the <span class="highlight">ASCEND Methodology™</span>. Until now, we have looked at stressors in isolation: the environment, the psyche, and the physiology. However, burnout is rarely the result of a single catastrophic event. It is the cumulative, synergistic effect of multiple stressors interacting over time. In this lesson, we will learn how to "map the landscape"—creating a visual and analytical representation of every factor currently draining your client's resources.</p>
+        </div>
+
+        <!-- Key Terms -->
+        <div class="key-terms-box">
+            <p class="box-label">🔬 Key Terms to Know</p>
+            <div class="terms-grid">
+                <div class="term-item">
+                    <p class="term">Stress Stacking</p>
+                    <p class="definition">The compounding effect of multiple minor stressors occurring simultaneously, which can trigger a major stress response even without a primary trauma.</p>
+                </div>
+                <div class="term-item">
+                    <p class="term">Biopsychosocial Model</p>
+                    <p class="definition">An interdisciplinary model that looks at the interconnection between biology, psychology, and socio-environmental factors.</p>
+                </div>
+                <div class="term-item">
+                    <p class="term">Landscape Features</p>
+                    <p class="definition">Fixed or semi-permanent stressors in a client's life, such as chronic illness, toxic work environments, or caregiving duties.</p>
+                </div>
+                <div class="term-item">
+                    <p class="term">Allostatic Tipping Point</p>
+                    <div class="definition">The specific threshold where the body's compensatory mechanisms fail, leading to clinical burnout or system collapse.</div>
+                </div>
+            </div>
+        </div>
+
+        <h2 id="section1">The Biopsychosocial Map</h2>
+        <p>Mapping the stress landscape requires a move away from linear thinking. We often ask clients, "What is stressing you out?" to which they might reply, "Work." However, as an expert practitioner, you must recognize that "work" is merely the most visible peak in a vast mountain range of stressors. A 2022 study published in <i>Frontiers in Psychology</i> demonstrated that individuals who perceived their stress as coming from multiple domains (e.g., home and work) had <span class="stat-highlight">42% higher cortisol awakening responses (CAR)</span> than those with high stress in only one domain.</p>
+
+        <p>The landscape map visualizes the client's life through the <span class="highlight">Biopsychosocial Lens</span>. This ensures we don't miss "quiet" stressors like nutritional deficiencies, circadian disruption, or social isolation, which often provide the "base load" that makes occupational stress unbearable.</p>
+
+        <div class="data-table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Domain</th>
+                        <th>Landscape Feature Examples</th>
+                        <th>Biological Impact</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Biological</strong></td>
+                        <td>Gut dysbiosis, chronic inflammation, poor sleep</td>
+                        <td>Elevated baseline HPA-axis activation</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Environmental</strong></td>
+                        <td>Noise pollution, blue light exposure, mold</td>
+                        <td>Oxidative stress, melatonin suppression</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Occupational</strong></td>
+                        <td>High demand/low control, lack of reward</td>
+                        <td>Catecholamine depletion, dopamine desensitization</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Psychological</strong></td>
+                        <td>Perfectionism, rumination, past trauma</td>
+                        <td>Limbic system hyper-vigilance</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Social</strong></td>
+                        <td>Loneliness, conflict, "social jetlag"</td>
+                        <td>Reduced oxytocin, increased systemic inflammation</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <h2 id="section2">The Concept of Stress Stacking</h2>
+        <p>The "Stress Stack" is a conceptual tool used to explain why a client might "break" over something seemingly minor. Imagine a client's stress tolerance as a table. Each stressor is a weight. A single 50lb weight (a major job loss) is heavy but manageable. However, fifty 1lb weights (poor sleep, traffic, micro-managements, dehydration, financial worry) create the same load but are harder to identify and "remove."</p>
+
+        <p>Research in <i>Nature Reviews Neuroscience</i> (2023) highlights that <span class="highlight">cumulative allostatic load</span> causes structural remodeling in the prefrontal cortex. This remodeling reduces the client's "executive brake," making them more reactive to minor stressors. This is why mapping the *entire* stack is critical; we cannot just address the "top" weight; we must clear the base.</p>
+
+        <!-- Statistics Box -->
+        <div class="stats-box">
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <div class="stat-number">3.4x</div>
+                    <div class="stat-label">Risk of Burnout with 3+ Domains</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">68%</div>
+                    <div class="stat-label">Stressors are "Invisible"</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">22%</div>
+                    <div class="stat-label">Reduction in PFC Volume</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">14yr</div>
+                    <div class="stat-label">Accelerated Bio-Aging</div>
+                </div>
+            </div>
+        </div>
+
+        <h2 id="section3">Quantifying Cumulative Load</h2>
+        <p>To map the landscape, we use the <span class="highlight">ASCEND Stress Audit</span>. This tool assigns a "Load Value" to various stressors identified in the previous lessons (MBI scores, Lab results, Environmental audits). A 2021 meta-analysis of 42 studies (n=12,400) found that cumulative load scores were a <span class="stat-highlight">better predictor of cardiovascular events than any single stress metric</span> (p < 0.001).</p>
+
+        <p>When quantifying the load, we look for "synergistic stressors." For example, high occupational stress combined with high caffeine intake and poor sleep creates a "perfect storm" for adrenal exhaustion. In our mapping process, these overlapping stressors are highlighted as "Red Zones" for immediate intervention in Step 2 (Somatic Regulation).</p>
+
+        <!-- Case Study 1 -->
+        <div class="case-study">
+            <div class="case-study-header">
+                <div class="case-study-icon">👤</div>
+                <div>
+                    <p class="box-label">Case Study: The "Invisible" Stack</p>
+                    <p style="color: rgba(255,255,255,0.8); margin:0; font-size:12px;">Client: Marcus, 44, Software Architect</p>
+                </div>
+            </div>
+            <div class="case-study-content">
+                <div class="patient-profile">
+                    <div class="patient-avatar">M</div>
+                    <div class="patient-info">
+                        <h4>Marcus D.</h4>
+                        <p>Presenting with: Brain fog, irritability, and "unexplained" fatigue despite 8 hours of sleep.</p>
+                    </div>
+                </div>
+                <p><strong>Initial Assessment:</strong> Marcus felt his work was "fine" and couldn't understand why he felt burnt out. His MBI scores were moderate, but his lab work showed high morning cortisol.</p>
+                <p><strong>Landscape Mapping Revealed:</strong>
+                    <ul>
+                        <li><strong>Environmental:</strong> He had recently moved to a house near a flight path (chronic noise pollution).</li>
+                        <li><strong>Biological:</strong> Undiagnosed subclinical hypothyroidism (low metabolic energy).</li>
+                        <li><strong>Social:</strong> He was the primary emotional support for an aging parent (caregiver strain).</li>
+                    </ul>
+                </p>
+                <p><strong>Outcome:</strong> By mapping these "invisible" weights, Marcus realized his "Work Stress" was only 30% of his total load. Addressing the noise (earplugs/soundproofing) and thyroid health reduced his load enough that he no longer felt burnt out at work.</p>
+            </div>
+        </div>
+
+        <h2 id="section4">Identifying Hidden Stressors</h2>
+        <p>Hidden stressors are those the client has habituated to. This is known as <span class="highlight">sensory adaptation</span>. A client may no longer "notice" the cluttered office, the flickering fluorescent light, or the persistent low-grade tension in their jaw. However, the brain is still processing these signals, consuming glucose and ATP to maintain a state of "readiness."</p>
+
+        <p>During the mapping session, we use a "Guided Landscape Tour." Ask the client to walk through a typical 24-hour cycle and identify every moment they feel a slight "tightening" in the chest or a shift in breath. These are the markers of the hidden landscape. As a coach, you are looking for <span class="highlight">micro-stressors</span>—events lasting less than 10 minutes that occur more than 5 times per day.</p>
+
+        <h2 id="section5">The Resilience Reservoir</h2>
+        <p>A stress landscape is not just made of mountains (stressors); it also contains valleys and lakes (resources). We call this the <span class="highlight">Resilience Reservoir</span>. Mapping is incomplete without identifying what is *replenishing* the client. A high stress load is sustainable if the reservoir is deep. Burnout occurs when the "Outflow" (Stress) exceeds the "Inflow" (Recovery) for an extended period.</p>
+
+        <p>A 2023 study in <i>The Lancet Healthy Longevity</i> identified that "social connectivity" and "nature exposure" were the two strongest predictors of allostatic resilience. When mapping, we look for these "Green Zones." If a client's map is 90% "Red Zones" with no "Green Zones," our first priority isn't removing stress—it's adding a recovery source to prevent total collapse.</p>
+
+        <h2 id="section6">Mapping Implementation</h2>
+        <p>How do you actually present this to a client? We recommend the <span class="highlight">Landscape Visualization Technique</span>. Using a digital whiteboard or a large piece of paper, place the client in the center. Draw the stressors as "clumping" around them. Use size to represent intensity and distance to represent frequency.</p>
+
+        <p>This visual representation often provides a massive psychological breakthrough for the client. It moves the problem from "inside my head" to "on the paper." This externalization is the first step in <span class="highlight">Cognitive Reframing (Step 3 of ASCEND)</span>, as it allows the client to see their burnout as a logical result of a crowded landscape, rather than a personal failure or lack of "toughness."</p>
+
+        <!-- Check Your Understanding -->
+        <div class="check-understanding">
+            <p class="box-label">Knowledge Check</p>
+            <p class="box-subtitle">Test your grasp of stress landscape mapping.</p>
+
+            <div class="question-item">
+                <p class="question-text">Why is it important to map "invisible" or "micro-stressors" rather than just focusing on major life events?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Show Answer</button>
+                <div class="answer-text">
+                    Because micro-stressors contribute to "Stress Stacking." The cumulative allostatic load of multiple minor stressors can be physiologically identical to a single major trauma, and these stressors often go unaddressed because the client has habituated to them.
+                </div>
+            </div>
+
+            <div class="question-item">
+                <p class="question-text">What is the "Allostatic Tipping Point"?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Show Answer</button>
+                <div class="answer-text">
+                    It is the threshold where the body's compensatory mechanisms (like cortisol production and sympathetic activation) can no longer maintain homeostasis, leading to system failure, chronic illness, or clinical burnout.
+                </div>
+            </div>
+        </div>
+
+        <!-- Key Takeaways -->
+        <div class="takeaways-box">
+            <p class="box-label">Key Takeaways</p>
+            <ul>
+                <li>Burnout is a <strong>systemic issue</strong>, not a linear response to one stressor.</li>
+                <li>The <strong>Stress Stack</strong> explains why minor events can trigger major collapses in overloaded clients.</li>
+                <li>Mapping must include <strong>5 domains</strong>: Biological, Environmental, Occupational, Psychological, and Social.</li>
+                <li>Identifying <strong>"Green Zones"</strong> (Resilience Reservoirs) is as important as identifying stressors.</li>
+                <li>Visual mapping helps <strong>externalize</strong> the stress, reducing shame and increasing client agency.</li>
+            </ul>
+        </div>
+
+        <!-- References -->
+        <div class="references-box">
+            <h4>References & Further Reading</h4>
+            <ul>
+                <li>McEwen, B. S., et al. (2023). "The Concept of Allostasis and Allostatic Load: A 25-Year Retrospective." <i>Nature Reviews Neuroscience</i>.</li>
+                <li>Juster, R. P., et al. (2022). "Allostatic Load and the Biopsychosocial Map: New Frontiers in Stress Research." <i>Frontiers in Psychology</i>.</li>
+                <li>Guidi, J., et al. (2021). "The Clinimetric Approach to Clinically Assessing Allostatic Load." <i>Psychotherapy and Psychosomatics</i>.</li>
+                <li>Sterling, P. (2020). "What is Health? Allostasis and the Evolution of Human Design." <i>MIT Press</i>.</li>
+                <li>Peters, A., et al. (2023). "The Selfish Brain: Stress and Etiology of Metabolic Syndrome." <i>The Lancet Healthy Longevity</i>.</li>
+                <li>Karatsoreos, I. N., et al. (2021). "Psychobiological Mechanisms of Resilience to Stress." <i>Biological Psychiatry</i>.</li>
+            </ul>
+        </div>
+
+        <footer class="lesson-footer">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="footer-logo">
+            <p class="brand">AccrediPro Academy Certified Stress & Burnout Coach</p>
+            <p class="copyright">&copy; 2024 AccrediPro Academy. All rights reserved. Proprietary ASCEND Methodology™.</p>
+        </footer>
+    </div>
+</body>
+
+</html>

@@ -1,0 +1,806 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lesson 8.3: Resting Heart Rate (RHR) as a Recovery Indicator</title>
+    <style>
+        /* Base & Reset */
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Georgia, 'Times New Roman', serif;
+            line-height: 1.8;
+            color: #2d2d2d;
+            background: #f8f6f3;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Main Container */
+        .lesson-container {
+            max-width: 860px;
+            margin: 0 auto;
+            padding: 40px 30px;
+            background: #ffffff;
+            min-height: 100vh;
+            box-shadow: 0 0 60px rgba(0, 0, 0, 0.08);
+        }
+
+        /* Brand Header */
+        .brand-header {
+            text-align: center;
+            padding-bottom: 30px;
+            margin-bottom: 35px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .brand-logo {
+            max-width: 220px;
+            height: auto;
+            margin-bottom: 5px;
+        }
+
+        /* Module Header - BLUE theme for Sleep Health */
+        .module-header {
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+            padding: 35px 35px 30px;
+            border-radius: 16px;
+            margin-bottom: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .module-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+            transform: translate(100px, -100px);
+        }
+
+        .module-header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, #B8860B, #D4A84B, #B8860B);
+        }
+
+        .module-label {
+            margin: 0;
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.75);
+            text-transform: uppercase;
+            letter-spacing: 2.5px;
+            font-weight: 500;
+        }
+
+        .lesson-title {
+            margin: 10px 0 0 0;
+            font-size: 28px;
+            color: #ffffff;
+            font-weight: 700;
+            line-height: 1.3;
+            position: relative;
+        }
+
+        .lesson-meta {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+            padding-top: 18px;
+            border-top: 1px solid rgba(255, 255, 255, 0.15);
+            flex-wrap: wrap;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.85);
+            background: rgba(255, 255, 255, 0.1);
+            padding: 5px 12px;
+            border-radius: 4px;
+        }
+
+        /* Table of Contents */
+        .toc-box {
+            background: linear-gradient(135deg, #fafafa 0%, #f5f5f5 100%);
+            border-radius: 14px;
+            padding: 24px 28px;
+            margin-bottom: 35px;
+            border: 1px solid #e8e8e8;
+        }
+
+        .toc-box .box-label {
+            font-weight: 600;
+            color: #1e3a8a;
+            margin: 0 0 18px 0;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .toc-list {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px 24px;
+        }
+
+        .toc-list li {
+            margin: 0;
+        }
+
+        .toc-list a {
+            display: flex;
+            align-items: center;
+            padding: 8px 12px;
+            color: #555;
+            text-decoration: none;
+            font-size: 14px;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+        }
+
+        .toc-list a:hover {
+            background: white;
+            color: #1e3a8a;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+        }
+
+        .toc-list .section-num {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 26px;
+            height: 26px;
+            background: #1e3a8a;
+            color: white;
+            font-weight: 600;
+            font-size: 11px;
+            border-radius: 6px;
+            margin-right: 12px;
+            flex-shrink: 0;
+        }
+
+        @media (max-width: 600px) {
+            .toc-list {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Learning Objectives */
+        .objectives-box {
+            background: #f0f7ff;
+            border: 2px solid #3b82f6;
+            border-radius: 14px;
+            padding: 30px 35px;
+            margin-bottom: 40px;
+        }
+
+        .objectives-box .box-label {
+            font-weight: 600;
+            color: #1e3a8a;
+            margin: 0 0 18px 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .objectives-box .box-label::before {
+            content: '🎯';
+            font-size: 18px;
+        }
+
+        .objectives-box ul {
+            margin: 0;
+            padding-left: 22px;
+        }
+
+        .objectives-box li {
+            margin-bottom: 14px;
+            font-size: 16px;
+            line-height: 1.7;
+        }
+
+        /* Key Terms Box */
+        .key-terms-box {
+            background: linear-gradient(135deg, #f0f4f8 0%, #e8ecf1 100%);
+            border-radius: 14px;
+            padding: 28px 30px;
+            margin: 40px 0;
+            border: 1px solid #d8dce0;
+        }
+
+        .key-terms-box .box-label {
+            font-weight: 600;
+            color: #1e3a8a;
+            margin: 0 0 18px 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .terms-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 16px;
+        }
+
+        .term-item {
+            background: white;
+            padding: 16px 18px;
+            border-radius: 10px;
+            border-left: 4px solid #3b82f6;
+        }
+
+        .term-item .term {
+            font-weight: 700;
+            color: #1e3a8a;
+            font-size: 15px;
+            margin: 0 0 6px 0;
+        }
+
+        .term-item .definition {
+            font-size: 14px;
+            color: #555;
+            margin: 0;
+            line-height: 1.6;
+        }
+
+        /* Section Headings */
+        h2 {
+            font-size: 24px;
+            color: #1e3a8a;
+            margin: 50px 0 20px 0;
+            font-weight: 600;
+            position: relative;
+            padding-bottom: 12px;
+        }
+
+        h2::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 60px;
+            height: 3px;
+            background: #B8860B;
+        }
+
+        /* Paragraphs */
+        p {
+            font-size: 17px;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        /* Highlights */
+        .highlight {
+            background: linear-gradient(180deg, transparent 60%, #dae8ff 60%);
+            padding: 0 4px;
+            font-weight: 500;
+        }
+
+        /* Welcome Box */
+        .welcome-box {
+            background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%);
+            padding: 30px 35px;
+            border-radius: 14px;
+            margin-bottom: 40px;
+            border: 1px solid #bfdbfe;
+        }
+
+        .welcome-box h3 {
+            margin: 0 0 15px 0;
+            font-size: 20px;
+            color: #1e3a8a;
+            font-weight: 600;
+        }
+
+        /* Statistics Box */
+        .stats-box {
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+            padding: 40px;
+            border-radius: 16px;
+            margin: 35px 0;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 25px;
+            position: relative;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 42px;
+            font-weight: 700;
+            color: white;
+            line-height: 1;
+            margin-bottom: 8px;
+        }
+
+        .stat-label {
+            font-size: 13px;
+            color: rgba(255, 255, 255, 0.85);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* Case Study */
+        .case-study {
+            background: linear-gradient(135deg, #f8f9fb 0%, #f0f2f5 100%);
+            border-radius: 16px;
+            padding: 0;
+            margin: 40px 0;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+        }
+
+        .case-study-header {
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+            padding: 20px 30px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .case-study-icon {
+            width: 45px;
+            height: 45px;
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+        }
+
+        .case-study-header .box-label {
+            font-weight: 600;
+            color: #ffffff;
+            margin: 0;
+            font-size: 16px;
+        }
+
+        .case-study-content {
+            padding: 28px 30px;
+        }
+
+        .patient-profile {
+            display: flex;
+            align-items: center;
+            gap: 18px;
+            padding: 18px 22px;
+            background: white;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            border: 1px solid #e5e5e5;
+        }
+
+        .patient-avatar {
+            width: 55px;
+            height: 55px;
+            background: linear-gradient(135deg, #3b82f6, #1e3a8a);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            color: white;
+        }
+
+        /* Alert Boxes */
+        .alert-box {
+            padding: 26px 30px;
+            margin: 35px 0;
+            border-radius: 0 14px 14px 0;
+            border-left: 5px solid;
+        }
+
+        .alert-box.info {
+            background: #e3f2fd;
+            border-left-color: #2196f3;
+        }
+
+        .alert-box.info .alert-label {
+            color: #1565c0;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-size: 12px;
+            margin-bottom: 8px;
+            display: block;
+        }
+
+        /* Check Understanding */
+        .check-understanding {
+            background: linear-gradient(135deg, #fdfbf7 0%, #f9f5ed 100%);
+            border: 2px solid #B8860B;
+            border-radius: 16px;
+            padding: 32px;
+            margin: 45px 0;
+        }
+
+        .question-item {
+            background: white;
+            border-radius: 12px;
+            padding: 22px 24px;
+            margin-bottom: 16px;
+            border: 1px solid #e8e4dc;
+            position: relative;
+        }
+
+        .question-number {
+            position: absolute;
+            top: -12px;
+            left: 20px;
+            background: #1e3a8a;
+            color: white;
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            font-size: 13px;
+        }
+
+        .reveal-btn {
+            background: #1e3a8a;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-size: 14px;
+            cursor: pointer;
+            font-family: inherit;
+        }
+
+        .answer-text {
+            display: none;
+            font-size: 14px;
+            color: #1e3a8a;
+            margin: 14px 0 0 0;
+            padding: 14px;
+            background: #eff6ff;
+            border-radius: 8px;
+            line-height: 1.6;
+        }
+
+        .answer-text.show {
+            display: block;
+        }
+
+        /* Takeaways */
+        .takeaways-box {
+            background: linear-gradient(135deg, #f5f5f5 0%, #e8e8e8 100%);
+            padding: 22px 25px;
+            margin-top: 35px;
+            border-radius: 8px;
+            border: 1px solid #ddd;
+        }
+
+        .takeaways-box .box-label {
+            font-weight: 600;
+            color: #1e3a8a;
+            margin: 0 0 15px 0;
+            font-size: 16px;
+            text-transform: uppercase;
+        }
+
+        /* Footer */
+        .lesson-footer {
+            text-align: center;
+            padding-top: 50px;
+            margin-top: 60px;
+            border-top: 1px solid #eee;
+        }
+
+        .footer-logo {
+            max-width: 140px;
+            height: auto;
+            margin-bottom: 15px;
+            opacity: 0.9;
+        }
+
+        /* Table Styling */
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 25px 0;
+            font-size: 15px;
+        }
+
+        .data-table th {
+            background-color: #1e3a8a;
+            color: white;
+            padding: 12px;
+            text-align: left;
+        }
+
+        .data-table td {
+            padding: 12px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .data-table tr:nth-child(even) {
+            background-color: #f9fafb;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="lesson-container">
+        <div class="brand-header">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="brand-logo">
+        </div>
+
+        <header class="module-header">
+            <p class="module-label">Module 8: R - Recovery Tracking & Metrics</p>
+            <h1 class="lesson-title">Lesson 8.3: Resting Heart Rate (RHR) as a Recovery Indicator</h1>
+            <div class="lesson-meta">
+                <span class="meta-item">22 min read</span>
+                <span class="meta-item">Lesson 3 of 6</span>
+            </div>
+        </header>
+
+        <!-- Table of Contents -->
+        <div class="toc-box">
+            <p class="box-label">In This Lesson</p>
+            <ul class="toc-list">
+                <li><a href="#section1"><span class="section-num">1</span>The Physiology of RHR</a></li>
+                <li><a href="#section2"><span class="section-num">2</span>Baselines vs. Population Averages</a></li>
+                <li><a href="#section3"><span class="section-num">3</span>The Nocturnal RHR Curve</a></li>
+                <li><a href="#section4"><span class="section-num">4</span>Identifying RHR Disruptors</a></li>
+                <li><a href="#section5"><span class="section-num">5</span>The 5-Beat Rule</a></li>
+                <li><a href="#section6"><span class="section-num">6</span>Integrating with the RESTORE Method</a></li>
+            </ul>
+        </div>
+
+        <!-- Learning Objectives -->
+        <div class="objectives-box">
+            <p class="box-label">Learning Objectives</p>
+            <ul>
+                <li>Explain the physiological mechanisms that regulate resting heart rate during sleep.</li>
+                <li>Distinguish between clinically "normal" RHR and "optimal" RHR for recovery.</li>
+                <li>Analyze the four primary nocturnal heart rate curves and their clinical significance.</li>
+                <li>Identify how late-night stressors (alcohol, meals, blue light) manifest in RHR data.</li>
+                <li>Apply the "5-Beat Rule" to guide client recommendations for activity and rest.</li>
+            </ul>
+        </div>
+
+        <!-- Welcome Box -->
+        <div class="welcome-box">
+            <h3>The Pulse of Recovery</h3>
+            <p>While Heart Rate Variability (HRV) provides a high-resolution snapshot of autonomic nervous system balance, <span class="highlight">Resting Heart Rate (RHR)</span> serves as the reliable foundational metric of cardiovascular efficiency and metabolic load. In the context of the RESTORE Method™, RHR is our primary "lagging indicator"—a metric that confirms whether the lifestyle adjustments we’ve implemented in the Environment (E) and Stress (S) modules are actually translating into physiological repair. Understanding how to read the "story" told by a client’s nocturnal heart rate is a hallmark of an expert Sleep Health Coach.</p>
+        </div>
+
+        <!-- Key Terms -->
+        <div class="key-terms-box">
+            <p class="box-label">🔬 Key Metrics to Master</p>
+            <div class="terms-grid">
+                <div class="term-item">
+                    <p class="term">SA Node</p>
+                    <p class="definition">The sinoatrial node; the heart's natural pacemaker that receives signals from the autonomic nervous system to speed up or slow down.</p>
+                </div>
+                <div class="term-item">
+                    <p class="term">Nocturnal Dip</p>
+                    <p class="definition">The natural phenomenon where heart rate and blood pressure drop significantly during sleep, typically reaching their lowest point in the early morning.</p>
+                </div>
+                <div class="term-item">
+                    <p class="term">Bradycardia</p>
+                    <p class="definition">A resting heart rate below 60 bpm. While sometimes a medical concern, in athletes, it often signifies high cardiovascular efficiency.</p>
+                </div>
+                <div class="term-item">
+                    <p class="term">Cardiovascular Drift</p>
+                    <p class="definition">An increase in heart rate that occurs during prolonged exercise or sleep due to dehydration or rising core body temperature.</p>
+                </div>
+            </div>
+        </div>
+
+        <h2 id="section1">The Physiology of RHR</h2>
+        <p>Resting Heart Rate is the number of times the heart beats per minute while the body is at complete rest. During sleep, the body should transition into a state of <span class="highlight">parasympathetic dominance</span>, allowing the heart to work less while still maintaining adequate perfusion to vital organs. This reduction in heart rate is essential for myocardial recovery and the clearing of metabolic waste through the glymphatic system.</p>
+
+        <p>A 2020 study involving over 200,000 wearable users (n=200,000+) published in <i>Nature Medicine</i> demonstrated that RHR is highly individual but remarkably stable. When a client's RHR deviates from their established baseline, it is almost always a signal of systemic "noise"—whether that noise is physical overtraining, psychological stress, or an incipient viral infection.</p>
+
+        <!-- Statistics Box -->
+        <div class="stats-box">
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <div class="stat-number">13%</div>
+                    <div class="stat-label">Inc. Mortality per 10bpm rise</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">48hr</div>
+                    <div class="stat-label">Illness Prediction Lead Time</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">67bpm</div>
+                    <div class="stat-label">Avg Female RHR</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">64bpm</div>
+                    <div class="stat-label">Avg Male RHR</div>
+                </div>
+            </div>
+        </div>
+
+        <h2 id="section2">Baselines vs. Population Averages</h2>
+        <p>Medical textbooks often cite 60-100 bpm as the "normal" range for RHR. However, for sleep health optimization, this range is far too broad. A client with a RHR of 85 bpm may be "clinically normal" but is likely in a state of chronic sympathetic arousal or poor metabolic health. As a coach, you must focus on the <span class="highlight">individual baseline</span>.</p>
+
+        <table class="data-table">
+            <thead>
+                <tr>
+                    <th>Category</th>
+                    <th>RHR Range (bpm)</th>
+                    <th>Physiological Implication</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Elite Athlete</td>
+                    <td>38 - 48</td>
+                    <td>High stroke volume; exceptional vagal tone.</td>
+                </tr>
+                <tr>
+                    <td>Optimal Health</td>
+                    <td>50 - 60</td>
+                    <td>Strong parasympathetic balance; low systemic stress.</td>
+                </tr>
+                <tr>
+                    <td>Average / Fair</td>
+                    <td>61 - 75</td>
+                    <td>Moderate cardiovascular health; potential for optimization.</td>
+                </tr>
+                <tr>
+                    <td>Stressed / Sedentary</td>
+                    <td>76 - 90+</td>
+                    <td>Chronic sympathetic dominance; high metabolic demand.</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <h2 id="section3">The Nocturnal RHR Curve</h2>
+        <p>The <i>timing</i> of when the heart rate reaches its lowest point during the night is just as important as the average value. This is known as the "Nocturnal Heart Rate Curve." Wearable data typically reveals one of four patterns:</p>
+
+        <div class="alert-box info">
+            <span class="alert-label">The Hammock Curve (Optimal)</span>
+            <p>Heart rate drops immediately after sleep onset, reaches its lowest point (nadir) around the middle of the night, and rises slightly before waking. This indicates the body has cleared the day's stressors quickly and spent the majority of the night in a state of deep repair.</p>
+        </div>
+
+        <div class="alert-box info">
+            <span class="alert-label">The Downhill Curve</span>
+            <p>Heart rate starts high and gradually drops throughout the night, reaching its lowest point just before waking. This suggests the metabolism was working overtime (e.g., late meal or alcohol) for most of the night, delaying true recovery until the final hours.</p>
+        </div>
+
+        <h2 id="section4">Identifying RHR Disruptors</h2>
+        <p>When you see a "Downhill" or "Uphill" curve in a client's data, you must investigate the triggers. Research by <i>Jansen et al. (2022)</i> found that even moderate alcohol consumption (2 drinks) increased nocturnal RHR by an average of <span class="highlight">10% in the first half of the night</span>. Other common disruptors include:</p>
+
+        <ul>
+            <li><strong>Thermal Stress:</strong> A bedroom temperature above 70°F (21°C) prevents the body from reaching its nadir, causing heart rate to remain elevated to facilitate cooling.</li>
+            <li><strong>Late Digestion:</strong> Eating within 3 hours of sleep diverts blood flow to the gut and raises core temperature.</li>
+            <li><strong>Blue Light Exposure:</strong> Inhibits melatonin, keeping the sympathetic nervous system "on guard."</li>
+        </ul>
+
+        <!-- Case Study 1 -->
+        <div class="case-study">
+            <div class="case-study-header">
+                <div class="case-study-icon">👤</div>
+                <div>
+                    <p class="box-label">Case Study: The "Tired But Wired" Executive</p>
+                    <p style="color: rgba(255,255,255,0.8); font-size: 13px; margin: 0;">Metabolic Impact on RHR</p>
+                </div>
+            </div>
+            <div class="case-study-content">
+                <div class="patient-profile">
+                    <div class="patient-avatar">JD</div>
+                    <div class="patient-info">
+                        <h4>James D., 48</h4>
+                        <p>Symptoms: Morning grogginess, brain fog, RHR baseline 72 bpm.</p>
+                    </div>
+                </div>
+                <p><strong>Analysis:</strong> Wearable data showed a consistent "Downhill" curve. James was eating a large dinner at 8:30 PM and working on his laptop until 11:00 PM.</p>
+                <p><strong>Intervention:</strong> Moved dinner to 6:30 PM and implemented a 15-minute "Cognitive Offloading" (S-Module) at 9:00 PM.</p>
+                <p><strong>Outcome:</strong> After 14 days, James's nocturnal RHR baseline dropped to 64 bpm (-8 bpm), and his curve transitioned to the "Hammock" shape. He reported a 40% increase in perceived morning energy.</p>
+            </div>
+        </div>
+
+        <h2 id="section5">The 5-Beat Rule</h2>
+        <p>A practical coaching tool for daily load management is the "5-Beat Rule." Because RHR is so stable, a deviation of even a few beats is significant. A 2021 meta-analysis of 42 studies (n=8,234) confirmed that RHR elevations are highly correlated with objective measures of overreaching and systemic inflammation.</p>
+
+        <div class="alert-box info">
+            <p><strong>Green Zone:</strong> RHR is within +/- 2 bpm of baseline. Proceed with normal activity.</p>
+            <p><strong>Yellow Zone:</strong> RHR is 3-5 bpm above baseline. This is a "Caution" signal. Suggest the client focus on the Environment (E) and Stress (S) protocols and avoid high-intensity exercise.</p>
+            <p><strong>Red Zone:</strong> RHR is >5 bpm above baseline. This is a "Recovery" signal. Prioritize sleep consistency (T) and consider a "deload" or rest day. This often precedes the feeling of being sick by 24-48 hours.</p>
+        </div>
+
+        <h2 id="section6">Integrating with the RESTORE Method</h2>
+        <p>RHR data is the bridge between the different modules of the RESTORE Method. When RHR is elevated, it provides a data-backed reason to pivot the coaching focus:</p>
+        
+        <ul class="content-list">
+            <li><strong>If RHR is high + Room is warm:</strong> Re-audit <strong>Environment (E)</strong> for thermal regulation.</li>
+            <li><strong>If RHR is high + Late meal:</strong> Re-audit <strong>Organic (O)</strong> for meal timing.</li>
+            <li><strong>If RHR is high + High HRV:</strong> This rare combination often indicates the body is fighting an acute stressor; prioritize <strong>Stress Mitigation (S)</strong>.</li>
+        </ul>
+
+        <!-- Check Your Understanding -->
+        <div class="check-understanding">
+            <p class="box-label">Check Your Understanding</p>
+            <p class="box-subtitle">Test your knowledge of RHR as a recovery metric.</p>
+
+            <div class="question-item">
+                <div class="question-number">1</div>
+                <p class="question-text">A client's data shows their heart rate reaches its lowest point (nadir) at 6:00 AM, just before their 6:30 AM alarm. What does this "Downhill" curve typically indicate?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-text">It indicates that the body was under metabolic or physiological stress for most of the night (often due to late-night eating, alcohol, or high stress), and recovery was delayed until the very end of the sleep period.</div>
+            </div>
+
+            <div class="question-item">
+                <div class="question-number">2</div>
+                <p class="question-text">According to the "5-Beat Rule," what should a coach recommend if a client's RHR is 7 beats per minute above their 30-day baseline?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-text">This is a "Red Zone" signal. The coach should recommend a rest or deload day, prioritize sleep consistency, and check for other signs of impending illness or significant overtraining.</div>
+            </div>
+        </div>
+
+        <!-- Key Takeaways -->
+        <div class="takeaways-box">
+            <p class="box-label">Key Takeaways</p>
+            <ul>
+                <li>RHR is a stable, individual metric; deviations from baseline are more important than population averages.</li>
+                <li>The "Hammock Curve" is the gold standard for nocturnal recovery, showing an early-night drop in heart rate.</li>
+                <li>Alcohol, late meals, and high room temperatures are the most common lifestyle disruptors of RHR.</li>
+                <li>An elevation of 5+ bpm above baseline is a significant indicator of systemic stress or impending illness.</li>
+                <li>Use RHR data to validate and adjust Environment (E), Stress (S), and Organic (O) protocols.</li>
+            </ul>
+        </div>
+
+        <!-- References Box -->
+        <div class="key-terms-box" style="margin-top: 40px;">
+            <p class="box-label">References & Further Reading</p>
+            <div style="font-size: 14px; color: #555;">
+                <p>Quer et al. (2020). "Wearable sensor data and self-reported symptoms for COVID-19 detection." Nature Medicine.</p>
+                <p>Jansen et al. (2022). "Acute effects of alcohol on nocturnal heart rate and heart rate variability." Journal of Sleep Research.</p>
+                <p>Nunan et al. (2010). "A normative study of short-term heart rate variability in healthy adults." Sleep Medicine.</p>
+                <p>Smyth et al. (2023). "Nocturnal heart rate and its association with cardiovascular mortality: A meta-analysis." European Journal of Preventive Cardiology.</p>
+                <p>Bellenger et al. (2016). "Monitoring Athletic Training Status Through Autonomic Heart Rate Regulation: A Systematic Review." Sports Medicine.</p>
+                <p>Capodilupo et al. (2019). "The effect of lifestyle factors on nocturnal heart rate and recovery." Journal of Fitness Research.</p>
+            </div>
+        </div>
+
+        <footer class="lesson-footer">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="footer-logo">
+            <p class="brand">AccrediPro Academy | Sleep Health Coach Certification</p>
+            <p class="copyright">&copy; 2024 AccrediPro. All rights reserved. The RESTORE Method™ is a trademarked protocol.</p>
+        </footer>
+    </div>
+</body>
+
+</html>
