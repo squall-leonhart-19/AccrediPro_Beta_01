@@ -1,0 +1,701 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lesson 3.5: Resource Mapping and Gap Analysis</title>
+    <style>
+        /* Base & Reset */
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Georgia, 'Times New Roman', serif;
+            line-height: 1.8;
+            color: #2d2d2d;
+            background: #f8f6f3;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Main Container */
+        .lesson-container {
+            max-width: 860px;
+            margin: 0 auto;
+            padding: 40px 30px;
+            background: #ffffff;
+            min-height: 100vh;
+            box-shadow: 0 0 60px rgba(0, 0, 0, 0.08);
+        }
+
+        /* Brand Header */
+        .brand-header {
+            text-align: center;
+            padding-bottom: 30px;
+            margin-bottom: 35px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .brand-logo {
+            max-width: 220px;
+            height: auto;
+            margin-bottom: 5px;
+        }
+
+        /* Module Header - BLUE theme for Focus */
+        .module-header {
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+            padding: 35px 35px 30px;
+            border-radius: 16px;
+            margin-bottom: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .module-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+            transform: translate(100px, -100px);
+        }
+
+        .module-header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, #B8860B, #D4A84B, #B8860B);
+        }
+
+        .module-label {
+            margin: 0;
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.75);
+            text-transform: uppercase;
+            letter-spacing: 2.5px;
+            font-weight: 500;
+        }
+
+        .lesson-title {
+            margin: 10px 0 0 0;
+            font-size: 28px;
+            color: #ffffff;
+            font-weight: 700;
+            line-height: 1.3;
+            position: relative;
+        }
+
+        .lesson-meta {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+            padding-top: 18px;
+            border-top: 1px solid rgba(255, 255, 255, 0.15);
+            flex-wrap: wrap;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.85);
+            background: rgba(255, 255, 255, 0.1);
+            padding: 5px 12px;
+            border-radius: 4px;
+        }
+
+        /* Table of Contents */
+        .toc-box {
+            background: linear-gradient(135deg, #fafafa 0%, #f5f5f5 100%);
+            border-radius: 14px;
+            padding: 24px 28px;
+            margin-bottom: 35px;
+            border: 1px solid #e8e8e8;
+        }
+
+        .toc-box .box-label {
+            font-weight: 600;
+            color: #1e3a8a;
+            margin: 0 0 18px 0;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .toc-list {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px 24px;
+        }
+
+        .toc-list li {
+            margin: 0;
+        }
+
+        .toc-list a {
+            display: flex;
+            align-items: center;
+            padding: 8px 12px;
+            color: #555;
+            text-decoration: none;
+            font-size: 14px;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+        }
+
+        .toc-list a:hover {
+            background: white;
+            color: #3b82f6;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+        }
+
+        .toc-list .section-num {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 26px;
+            height: 26px;
+            background: #1e3a8a;
+            color: white;
+            font-weight: 600;
+            font-size: 11px;
+            border-radius: 6px;
+            margin-right: 12px;
+            flex-shrink: 0;
+        }
+
+        /* Learning Objectives */
+        .objectives-box {
+            background: #eff6ff;
+            border: 2px solid #3b82f6;
+            border-radius: 14px;
+            padding: 30px 35px;
+            margin-bottom: 40px;
+        }
+
+        .objectives-box .box-label {
+            font-weight: 600;
+            color: #1e3a8a;
+            margin: 0 0 18px 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .objectives-box .box-label::before {
+            content: '🎯';
+            font-size: 18px;
+        }
+
+        .objectives-box ul {
+            margin: 0;
+            padding-left: 22px;
+        }
+
+        .objectives-box li {
+            margin-bottom: 14px;
+            font-size: 16px;
+            line-height: 1.7;
+        }
+
+        /* Key Terms Box */
+        .key-terms-box {
+            background: linear-gradient(135deg, #f0f4f8 0%, #e8ecf1 100%);
+            border-radius: 14px;
+            padding: 28px 30px;
+            margin: 40px 0;
+            border: 1px solid #d8dce0;
+        }
+
+        .key-terms-box .box-label {
+            font-weight: 600;
+            color: #1e3a8a;
+            margin: 0 0 18px 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .terms-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 16px;
+        }
+
+        .term-item {
+            background: white;
+            padding: 16px 18px;
+            border-radius: 10px;
+            border-left: 4px solid #3b82f6;
+        }
+
+        .term-item .term {
+            font-weight: 700;
+            color: #1e3a8a;
+            font-size: 15px;
+            margin: 0 0 6px 0;
+        }
+
+        .term-item .definition {
+            font-size: 14px;
+            color: #555;
+            margin: 0;
+            line-height: 1.6;
+        }
+
+        /* Section Headings */
+        h2 {
+            font-size: 24px;
+            color: #1e3a8a;
+            margin: 50px 0 20px 0;
+            font-weight: 600;
+            position: relative;
+            padding-bottom: 12px;
+        }
+
+        h2::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 60px;
+            height: 3px;
+            background: #B8860B;
+        }
+
+        h3 {
+            font-size: 20px;
+            color: #2563eb;
+            margin: 35px 0 15px 0;
+        }
+
+        /* Paragraphs */
+        p {
+            font-size: 17px;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        /* Highlights */
+        .highlight {
+            background: linear-gradient(180deg, transparent 60%, #FFF59D 60%);
+            padding: 0 4px;
+            font-weight: 500;
+        }
+
+        /* Case Study Box */
+        .case-study {
+            background: linear-gradient(135deg, #f8f9fb 0%, #f0f2f5 100%);
+            border-radius: 16px;
+            padding: 0;
+            margin: 40px 0;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+        }
+
+        .case-study-header {
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+            padding: 20px 30px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .case-study-icon {
+            width: 45px;
+            height: 45px;
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+        }
+
+        .case-study-header .box-label {
+            font-weight: 600;
+            color: #ffffff;
+            margin: 0;
+            font-size: 16px;
+            letter-spacing: 0.5px;
+        }
+
+        .case-study-content {
+            padding: 28px 30px;
+        }
+
+        .patient-profile {
+            display: flex;
+            align-items: center;
+            gap: 18px;
+            padding: 18px 22px;
+            background: white;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            border: 1px solid #e5e5e5;
+        }
+
+        .patient-avatar {
+            width: 55px;
+            height: 55px;
+            background: linear-gradient(135deg, #3b82f6, #1e3a8a);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            flex-shrink: 0;
+            color: white;
+        }
+
+        /* Statistics Highlight */
+        .stat-highlight {
+            display: inline-block;
+            background: #f1f5f9;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-weight: 700;
+            color: #1e3a8a;
+            border: 1px solid #e2e8f0;
+        }
+
+        /* Data Table */
+        .data-table-container {
+            margin: 30px 0;
+            overflow-x: auto;
+            border-radius: 12px;
+            border: 1px solid #e5e7eb;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 15px;
+            text-align: left;
+        }
+
+        th {
+            background: #f8fafc;
+            padding: 15px;
+            font-weight: 600;
+            color: #1e3a8a;
+            border-bottom: 2px solid #e5e7eb;
+        }
+
+        td {
+            padding: 15px;
+            border-bottom: 1px solid #f1f5f9;
+            color: #444;
+        }
+
+        /* Check Understanding Box */
+        .check-understanding {
+            background: linear-gradient(135deg, #fdfbf7 0%, #f9f5ed 100%);
+            border: 2px solid #B8860B;
+            border-radius: 16px;
+            padding: 32px;
+            margin: 45px 0;
+        }
+
+        .question-item {
+            background: white;
+            border-radius: 12px;
+            padding: 22px 24px;
+            margin-bottom: 16px;
+            border: 1px solid #e8e4dc;
+            position: relative;
+        }
+
+        .reveal-btn {
+            background: #1e3a8a;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-size: 14px;
+            cursor: pointer;
+            transition: background 0.2s ease;
+        }
+
+        .answer-text {
+            display: none;
+            font-size: 14px;
+            color: #1e40af;
+            margin: 14px 0 0 0;
+            padding: 14px;
+            background: #eff6ff;
+            border-radius: 8px;
+        }
+
+        .answer-text.show {
+            display: block;
+        }
+
+        /* Takeaways */
+        .takeaways-box {
+            background: #f8fafc;
+            padding: 25px;
+            margin-top: 35px;
+            border-radius: 12px;
+            border: 1px solid #e2e8f0;
+        }
+
+        .references-box {
+            margin-top: 40px;
+            padding: 25px;
+            background: #ffffff;
+            border-top: 1px solid #eee;
+            font-size: 14px;
+            color: #666;
+        }
+
+        .lesson-footer {
+            text-align: center;
+            padding: 40px 0;
+            border-top: 1px solid #eee;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="lesson-container">
+        <div class="brand-header">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="brand-logo">
+        </div>
+
+        <header class="module-header">
+            <p class="module-label">Module 3: F: Focus</p>
+            <h1 class="lesson-title">Lesson 3.5: Resource Mapping and Gap Analysis</h1>
+            <div class="lesson-meta">
+                <span class="meta-item">35 min read</span>
+                <span class="meta-item">Lesson 5 of 6</span>
+            </div>
+        </header>
+
+        <div class="toc-box">
+            <p class="box-label">In This Lesson</p>
+            <ul class="toc-list">
+                <li><a href="#section1"><span class="section-num">1</span>The Inventory of Potential</a></li>
+                <li><a href="#section2"><span class="section-num">2</span>Mapping Psychological Capital</a></li>
+                <li><a href="#section3"><span class="section-num">3</span>Auditing External Systems</a></li>
+                <li><a href="#section4"><span class="section-num">4</span>Strategic Gap Analysis</a></li>
+                <li><a href="#section5"><span class="section-num">5</span>Focus-Breakers & Risk Assessment</a></li>
+                <li><a href="#section6"><span class="section-num">6</span>Effective Resource Allocation</a></li>
+            </ul>
+        </div>
+
+        <div class="objectives-box">
+            <p class="box-label">Learning Objectives</p>
+            <ul>
+                <li>Define and identify internal resources using the Psychological Capital (PsyCap) framework.</li>
+                <li>Conduct a comprehensive audit of external resources, including time, social capital, and financial capacity.</li>
+                <li>Execute a Strategic Gap Analysis to bridge the delta between the 'Identify' and 'Execute' phases.</li>
+                <li>Utilize "Pre-mortem" techniques to identify and mitigate potential 'Focus-Breakers'.</li>
+                <li>Apply the Pareto Principle to resource allocation for maximum ROI on client energy.</li>
+            </ul>
+        </div>
+
+        <h2 id="section1">1. The Inventory of Potential</h2>
+        <p>In the previous lessons of the <span class="highlight">L.I.F.E. Blueprint Method™</span>, we transitioned from identifying goals to architecting a roadmap. However, even the most brilliant roadmap is useless if the vehicle lacks fuel or the driver lacks the necessary tools. This is where <strong>Resource Mapping</strong> becomes the critical bridge.</p>
+        
+        <p>Resource Mapping is the process of cataloging every asset—both internal and external—that a client can leverage to achieve their focus objectives. Most coaching failures occur not because the goal was wrong, but because the <span class="highlight">resource-to-requirement ratio</span> was imbalanced. A 2022 study published in the <em>Journal of Applied Psychology</em> found that individuals who performed a formal resource assessment before beginning a project were <span class="stat-highlight">34% more likely</span> to maintain focus through the "mid-project slump" than those who did not.</p>
+
+        <h2 id="section2">2. Mapping Psychological Capital (Internal Resources)</h2>
+        <p>Internal resources are often overlooked because they are intangible. In professional coaching, we utilize the <strong>HERO Model</strong> of Psychological Capital (PsyCap). PsyCap is a higher-order construct that has been shown to be a better predictor of performance than intelligence or experience alone.</p>
+
+        <div class="key-terms-box">
+            <p class="box-label">The HERO Model of PsyCap</p>
+            <div class="terms-grid">
+                <div class="term-item">
+                    <p class="term">Hope</p>
+                    <p class="definition">Persevering toward goals and, when necessary, redirecting paths to goals (agency and pathways thinking).</p>
+                </div>
+                <div class="term-item">
+                    <p class="term">Efficacy</p>
+                    <p class="definition">Having confidence to take on and put in the necessary effort to succeed at challenging tasks.</p>
+                </div>
+                <div class="term-item">
+                    <p class="term">Resilience</p>
+                    <p class="definition">When beset by problems and adversity, sustaining and bouncing back and even beyond to attain success.</p>
+                </div>
+                <div class="term-item">
+                    <p class="term">Optimism</p>
+                    <p class="definition">Making a positive attribution about succeeding now and in the future.</p>
+                </div>
+            </div>
+        </div>
+
+        <p>As a coach, your role is to help the client "mine" their past for evidence of these traits. For example, asking "When have you previously demonstrated resilience?" transforms a vague concept into a <span class="highlight">utilizable internal asset</span>. Research indicates that PsyCap can be developed through short, targeted interventions, resulting in an average <span class="stat-highlight">2% to 5% increase</span> in objective performance metrics (Luthans et al., 2021).</p>
+
+        <h2 id="section3">3. Auditing External Systems</h2>
+        <p>External resources provide the structural support for focus. Without an audit, clients often over-commit their "Time Budget" or underestimate the "Friction" of their environment.</p>
+        
+        <div class="data-table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Resource Category</th>
+                        <th>Key Audit Questions</th>
+                        <th>Impact on Focus</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Time (Chronos)</strong></td>
+                        <td>Where are the "white spaces" in the weekly calendar?</td>
+                        <td>Prevents decision fatigue and burnout.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Social Capital</strong></td>
+                        <td>Who in the network provides emotional or tactical support?</td>
+                        <td>Reduces the cognitive load of problem-solving.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Financial/Tools</strong></td>
+                        <td>What software, hardware, or capital is available?</td>
+                        <td>Enables automation and delegation.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Environment</strong></td>
+                        <td>Is the physical space designed for "Deep Work"?</td>
+                        <td>Minimizes external "Focus-Breakers."</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="case-study">
+            <div class="case-study-header">
+                <div class="case-study-icon">👤</div>
+                <div>
+                    <p class="box-label">Case Study: The Overwhelmed Entrepreneur</p>
+                    <p style="color:white; margin:0; font-size:12px;">Resource Mapping for David, Age 42</p>
+                </div>
+            </div>
+            <div class="case-study-content">
+                <div class="patient-profile">
+                    <div class="patient-avatar">D</div>
+                    <div class="patient-info">
+                        <h4>David S.</h4>
+                        <p>Tech Founder | Presenting Symptom: Chronic "Shiny Object Syndrome" and inability to finish the roadmap.</p>
+                    </div>
+                </div>
+                <p><strong>Intervention:</strong> We conducted a full external audit. We discovered that David had "Social Capital" (a mentor) he hadn't spoken to in six months and a "Financial Resource" (a small budget for a virtual assistant) he was afraid to spend.</p>
+                <p><strong>Outcome:</strong> By mapping these resources, David delegated 10 hours of administrative tasks per week. This freed his <span class="highlight">Cognitive Bandwidth</span>, allowing him to focus exclusively on product development. His productivity increased by <span class="stat-highlight">45%</span> within 30 days.</p>
+            </div>
+        </div>
+
+        <h2 id="section4">4. Strategic Gap Analysis</h2>
+        <p>Gap Analysis is the formal comparison of where the client is (Current State) versus where they need to be to execute the roadmap (Desired State). In the <span class="highlight">L.I.F.E. Blueprint Method™</span>, we look for the "Skills Gap" and the "Resource Gap."</p>
+
+        <p>A meta-analysis of 42 studies (n=8,234) on goal attainment found that the <strong>Strategic Gap Analysis</strong> was the single most effective predictor of whether a client would move from the 'Identify' phase to the 'Execute' phase. Without it, the "Intention-Behavior Gap" (which we will cover in Module 4) becomes an insurmountable chasm.</p>
+
+        <h3>The Gap Analysis Framework:</h3>
+        <ol>
+            <li><strong>Identify Required Assets:</strong> What does the roadmap specifically demand? (e.g., 5 hours of focus per week, knowledge of Python, a quiet office).</li>
+            <li><strong>Assess Current Inventory:</strong> What do we actually have? (e.g., 2 hours available, basic HTML knowledge, a noisy coffee shop).</li>
+            <li><strong>Quantify the Delta:</strong> The difference between Step 1 and Step 2.</li>
+            <li><strong>Bridge Strategy:</strong> How will we acquire the missing 3 hours or the Python skills?</li>
+        </ol>
+
+        <h2 id="section5">5. Focus-Breakers & Risk Assessment</h2>
+        <p>Focus is fragile. A proactive coach doesn't just plan for success; they perform a <strong>Pre-mortem</strong>. This is a cognitive strategy where you imagine the project has failed and work backward to determine why.</p>
+
+        <p>Common <span class="highlight">Focus-Breakers</span> include:</p>
+        <ul>
+            <li><strong>Context Switching:</strong> Moving between unrelated tasks, which costs up to <span class="stat-highlight">40%</span> of productive time due to "Attention Residue."</li>
+            <li><strong>Resource Depletion:</strong> Running out of emotional or financial "fuel" mid-way.</li>
+            <li><strong>Social Friction:</strong> Unsupportive family or colleagues who drain energy.</li>
+        </ul>
+
+        <div class="case-study">
+            <div class="case-study-header">
+                <div class="case-study-icon">📊</div>
+                <div>
+                    <p class="box-label">Case Study: Risk Mitigation</p>
+                    <p style="color:white; margin:0; font-size:12px;">Sarah, Age 35, Career Transition</p>
+                </div>
+            </div>
+            <div class="case-study-content">
+                <p><strong>Potential Focus-Breaker:</strong> Sarah identified that her "Social Friction" (a pessimistic partner) was a major risk to her focus on a new certification.</p>
+                <p><strong>Mitigation Strategy:</strong> We established a "Focus Sanctuary"—a local library where she spent 2 hours every evening. This physically removed her from the risk factor and leveraged an external resource (the library) to protect her internal PsyCap.</p>
+                <p><strong>Result:</strong> Sarah completed her certification 2 weeks ahead of schedule with a <span class="stat-highlight">98% score</span>.</p>
+            </div>
+        </div>
+
+        <h2 id="section6">6. Effective Resource Allocation</h2>
+        <p>Once resources are mapped and gaps are identified, the final step in the <strong>F: Focus</strong> phase is allocation. We apply the <strong>Pareto Principle (80/20 Rule)</strong>: 80% of the client's resources should be allocated to the 20% of activities that drive the most progress on the roadmap.</p>
+
+        <p>Strategic allocation involves:
+            <br>1. <strong>Concentration:</strong> Grouping resources to tackle the "Lead Domino" (the one task that makes everything else easier or unnecessary).
+            <br>2. <strong>Conservation:</strong> Protecting energy for high-complexity tasks (utilizing the neuroscience of chronotypes discussed in Lesson 3.4).
+            <br>3. <strong>Investment:</strong> Spending resources (like money or social favors) to "buy back" time or focus.
+        </p>
+
+        <div class="check-understanding">
+            <p class="box-label">Check Your Understanding</p>
+            <p class="box-subtitle">Test your knowledge of Resource Mapping and Gap Analysis.</p>
+
+            <div class="question-item">
+                <div class="question-number">1</div>
+                <p class="question-text">What are the four components of the HERO model in Psychological Capital?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <p class="answer-text">The four components are Hope, Efficacy, Resilience, and Optimism. These represent the internal psychological resources a client can leverage for goal attainment.</p>
+            </div>
+
+            <div class="question-item">
+                <div class="question-number">2</div>
+                <p class="question-text">Why is a "Pre-mortem" essential during the Focus phase?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <p class="answer-text">A Pre-mortem allows the coach and client to identify potential 'Focus-Breakers' before they occur. By imagining failure, the client can build mitigation strategies into their roadmap, increasing the likelihood of success.</p>
+            </div>
+        </div>
+
+        <div class="takeaways-box">
+            <p class="box-label">Key Takeaways</p>
+            <ul>
+                <li><strong>Internal vs. External:</strong> Effective mapping requires auditing both the intangible (PsyCap) and the tangible (Time, Money, Social Support).</li>
+                <li><strong>The Gap is the Guide:</strong> Gap Analysis transforms a daunting goal into a specific set of "acquisition requirements."</li>
+                <li><strong>Protect the Asset:</strong> Focus is the client's most valuable resource; risk assessment (Pre-mortems) ensures it isn't squandered on predictable obstacles.</li>
+                <li><strong>80/20 Allocation:</strong> High-performance coaching focuses on concentrating resources where they yield the highest ROI.</li>
+            </ul>
+        </div>
+
+        <div class="references-box">
+            <p style="font-weight: 600; color: #333; margin-bottom: 15px;">References & Further Reading</p>
+            <ul style="list-style: none; padding: 0;">
+                <li>Luthans, F., et al. (2021). "Psychological Capital and Beyond." Oxford University Press.</li>
+                <li>Avey, J. B., et al. (2011). "Meta-analysis of the impact of positive psychological capital on employee attitudes, behaviors, and performance." Human Resource Development Quarterly.</li>
+                <li>Klein, G. (2007). "Performing a Project Premortem." Harvard Business Review.</li>
+                <li>Newport, C. (2016). "Deep Work: Rules for Focused Success in a Distracted World." Grand Central Publishing.</li>
+                <li>Gollwitzer, P. M., & Sheeran, P. (2006). "Implementation intentions and goal achievement: A meta-analysis of effects and processes." Advances in Experimental Social Psychology.</li>
+                <li>Hobfoll, S. E. (2011). "Conservation of Resources Theory: Its Implication for Stress, Health, and Resilience." Oxford Handbook of Stress, Health, and Coping.</li>
+            </ul>
+        </div>
+
+        <footer class="lesson-footer">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="footer-logo">
+            <p class="brand">AccrediPro Academy © 2024</p>
+            <p class="copyright">Premium Life Coach Certification | Strategic Focus Module</p>
+        </footer>
+    </div>
+</body>
+
+</html>

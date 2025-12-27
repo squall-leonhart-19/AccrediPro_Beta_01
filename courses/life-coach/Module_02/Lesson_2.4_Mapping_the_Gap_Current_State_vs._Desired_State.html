@@ -1,0 +1,668 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lesson 2.4: Mapping the Gap: Current State vs. Desired State</title>
+    <style>
+        /* Base & Reset */
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Georgia, 'Times New Roman', serif;
+            line-height: 1.8;
+            color: #2d2d2d;
+            background: #f8f6f3;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Main Container */
+        .lesson-container {
+            max-width: 860px;
+            margin: 0 auto;
+            padding: 40px 30px;
+            background: #ffffff;
+            min-height: 100vh;
+            box-shadow: 0 0 60px rgba(0, 0, 0, 0.08);
+        }
+
+        /* Brand Header */
+        .brand-header {
+            text-align: center;
+            padding-bottom: 30px;
+            margin-bottom: 35px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .brand-logo {
+            max-width: 220px;
+            height: auto;
+            margin-bottom: 5px;
+        }
+
+        /* Module Header - BLUE/GOLD theme for Coaching Identify */
+        .module-header {
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+            padding: 35px 35px 30px;
+            border-radius: 16px;
+            margin-bottom: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .module-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+            transform: translate(100px, -100px);
+        }
+
+        .module-header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, #B8860B, #D4A84B, #B8860B);
+        }
+
+        .module-label {
+            margin: 0;
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.75);
+            text-transform: uppercase;
+            letter-spacing: 2.5px;
+            font-weight: 500;
+        }
+
+        .lesson-title {
+            margin: 10px 0 0 0;
+            font-size: 28px;
+            color: #ffffff;
+            font-weight: 700;
+            line-height: 1.3;
+            position: relative;
+        }
+
+        .lesson-meta {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+            padding-top: 18px;
+            border-top: 1px solid rgba(255, 255, 255, 0.15);
+            flex-wrap: wrap;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.85);
+            background: rgba(255, 255, 255, 0.1);
+            padding: 5px 12px;
+            border-radius: 4px;
+        }
+
+        /* Table of Contents */
+        .toc-box {
+            background: linear-gradient(135deg, #fafafa 0%, #f5f5f5 100%);
+            border-radius: 14px;
+            padding: 24px 28px;
+            margin-bottom: 35px;
+            border: 1px solid #e8e8e8;
+        }
+
+        .toc-box .box-label {
+            font-weight: 600;
+            color: #1e3a8a;
+            margin: 0 0 18px 0;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .toc-list {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px 24px;
+        }
+
+        .toc-list a {
+            display: flex;
+            align-items: center;
+            padding: 8px 12px;
+            color: #555;
+            text-decoration: none;
+            font-size: 14px;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+        }
+
+        .toc-list a:hover {
+            background: white;
+            color: #1e3a8a;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+        }
+
+        .toc-list .section-num {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 26px;
+            height: 26px;
+            background: #1e3a8a;
+            color: white;
+            font-weight: 600;
+            font-size: 11px;
+            border-radius: 6px;
+            margin-right: 12px;
+            flex-shrink: 0;
+        }
+
+        /* Learning Objectives */
+        .objectives-box {
+            background: #eff6ff;
+            border: 2px solid #3b82f6;
+            border-radius: 14px;
+            padding: 30px 35px;
+            margin-bottom: 40px;
+        }
+
+        .objectives-box .box-label {
+            font-weight: 600;
+            color: #1e3a8a;
+            margin: 0 0 18px 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .objectives-box .box-label::before {
+            content: '🎯';
+            font-size: 18px;
+        }
+
+        .objectives-box ul {
+            margin: 0;
+            padding-left: 22px;
+        }
+
+        .objectives-box li {
+            margin-bottom: 14px;
+            font-size: 16px;
+            line-height: 1.7;
+        }
+
+        /* Section Headings */
+        h2 {
+            font-size: 24px;
+            color: #1e3a8a;
+            margin: 50px 0 20px 0;
+            font-weight: 600;
+            position: relative;
+            padding-bottom: 12px;
+        }
+
+        h2::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 60px;
+            height: 3px;
+            background: #B8860B;
+        }
+
+        /* Paragraphs & Terms */
+        p {
+            font-size: 17px;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        .highlight {
+            background: linear-gradient(180deg, transparent 60%, #dae7ff 60%);
+            padding: 0 4px;
+            font-weight: 600;
+            color: #1e3a8a;
+        }
+
+        /* Case Study Box */
+        .case-study {
+            background: linear-gradient(135deg, #f8f9fb 0%, #f0f2f5 100%);
+            border-radius: 16px;
+            padding: 0;
+            margin: 40px 0;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+        }
+
+        .case-study-header {
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+            padding: 20px 30px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .case-study-header .box-label {
+            font-weight: 600;
+            color: #ffffff;
+            margin: 0;
+            font-size: 16px;
+        }
+
+        .case-study-content {
+            padding: 28px 30px;
+        }
+
+        .patient-profile {
+            display: flex;
+            align-items: center;
+            gap: 18px;
+            padding: 18px 22px;
+            background: white;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            border: 1px solid #e5e5e5;
+        }
+
+        .patient-avatar {
+            width: 55px;
+            height: 55px;
+            background: #3b82f6;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            color: white;
+        }
+
+        /* Stats Box */
+        .stats-box {
+            background: linear-gradient(135deg, #1e3a8a 0%, #1e40af 100%);
+            padding: 40px;
+            border-radius: 16px;
+            margin: 35px 0;
+            color: white;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 25px;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 42px;
+            font-weight: 700;
+            display: block;
+        }
+
+        .stat-label {
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            opacity: 0.8;
+        }
+
+        /* Comparison Table */
+        .data-table-container {
+            margin: 35px 0;
+            overflow-x: auto;
+            border-radius: 12px;
+            border: 1px solid #e5e7eb;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 15px;
+        }
+
+        th {
+            background: #f3f4f6;
+            padding: 15px;
+            text-align: left;
+            color: #1e3a8a;
+            font-weight: 700;
+            border-bottom: 2px solid #e5e7eb;
+        }
+
+        td {
+            padding: 15px;
+            border-bottom: 1px solid #f3f4f6;
+            vertical-align: top;
+        }
+
+        /* Principle Cards */
+        .principle-card {
+            background: white;
+            border-left: 5px solid #3b82f6;
+            padding: 20px 25px;
+            margin-bottom: 20px;
+            border-radius: 0 12px 12px 0;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+
+        .principle-title {
+            font-weight: 700;
+            color: #1e3a8a;
+            margin-bottom: 8px;
+        }
+
+        /* Check Understanding */
+        .check-understanding {
+            background: #fefce8;
+            border: 2px solid #facc15;
+            border-radius: 16px;
+            padding: 32px;
+            margin: 45px 0;
+        }
+
+        .question-item {
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            margin-bottom: 15px;
+        }
+
+        .reveal-btn {
+            background: #1e3a8a;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+
+        .answer-text {
+            display: none;
+            margin-top: 15px;
+            padding: 15px;
+            background: #f0fdf4;
+            border-radius: 8px;
+            color: #166534;
+        }
+
+        /* Takeaways */
+        .takeaways-box {
+            background: #f9fafb;
+            border: 1px solid #d1d5db;
+            padding: 25px;
+            border-radius: 12px;
+            margin-top: 40px;
+        }
+
+        .takeaways-box .box-label {
+            font-weight: 700;
+            color: #1e3a8a;
+            text-transform: uppercase;
+            font-size: 14px;
+            margin-bottom: 15px;
+            display: block;
+        }
+
+        /* Footer */
+        .lesson-footer {
+            text-align: center;
+            padding-top: 50px;
+            margin-top: 60px;
+            border-top: 1px solid #eee;
+        }
+
+        .references-box {
+            margin-top: 40px;
+            padding: 25px;
+            background: #fff;
+            border: 1px solid #eee;
+            border-radius: 12px;
+            font-size: 14px;
+        }
+
+        .references-box h4 {
+            margin-top: 0;
+            color: #1e3a8a;
+        }
+
+        .references-box ul {
+            padding-left: 20px;
+            color: #666;
+        }
+
+        .references-box li {
+            margin-bottom: 8px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="lesson-container">
+        <div class="brand-header">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="brand-logo">
+        </div>
+
+        <header class="module-header">
+            <p class="module-label">Module 2: I: Identify</p>
+            <h1 class="lesson-title">Lesson 2.4: Mapping the Gap: Current State vs. Desired State</h1>
+            <div class="lesson-meta">
+                <span class="meta-item">35 min read</span>
+                <span class="meta-item">Lesson 4 of 4</span>
+            </div>
+        </header>
+
+        <div class="toc-box">
+            <p class="box-label">In This Lesson</p>
+            <ul class="toc-list">
+                <li><a href="#structural-tension"><span class="section-num">1</span>The Structural Tension Model</a></li>
+                <li><a href="#quantifying-reality"><span class="section-num">2</span>Quantifying the Current Reality</a></li>
+                <li><a href="#lead-domino"><span class="section-num">3</span>Identifying the 'Lead Domino'</a></li>
+                <li><a href="#environmental-scan"><span class="section-num">4</span>The Environmental Scan</a></li>
+                <li><a href="#creative-tension"><span class="section-num">5</span>Managing Creative Tension</a></li>
+                <li><a href="#roadmap"><span class="section-num">6</span>Bridging to Focus (Module 3)</a></li>
+            </ul>
+        </div>
+
+        <div class="objectives-box">
+            <p class="box-label">Learning Objectives</p>
+            <ul>
+                <li>Master the <strong>Structural Tension Model</strong> to create the "engine" of change for clients.</li>
+                <li>Utilize objective metrics and baselines to remove subjectivity from the current reality.</li>
+                <li>Apply the <strong>Lead Domino Principle</strong> to identify high-leverage intervention points.</li>
+                <li>Conduct a comprehensive <strong>Environmental Scan</strong> to preemptively identify external friction.</li>
+                <li>Distinguish between <span class="highlight">Creative Tension</span> and <span class="highlight">Emotional Tension</span> to prevent client burnout.</li>
+            </ul>
+        </div>
+
+        <h2 id="structural-tension">1. The Structural Tension Model</h2>
+        <p>In the previous lessons of the <strong>Identify</strong> phase, we defined the destination (Goals), the engine (Values), and the roadblocks (Limiting Beliefs). Now, we must map the topography between where the client stands and where they wish to be. This is facilitated through the <span class="highlight">Structural Tension Model</span>, popularized by Robert Fritz.</p>
+
+        <p>Structural tension is created by the juxtaposition of two distinct mental images: the <strong>Vision</strong> (Desired State) and the <strong>Current Reality</strong> (Current State). Like a stretched rubber band, the distance between these two points creates a natural force seeking resolution. As a coach, your job is not to "close" the gap immediately, but to stabilize the tension so it pulls the client forward.</p>
+
+        <div class="principle-card">
+            <div class="principle-title">The Rubber Band Metaphor</div>
+            <p class="principle-text">Imagine a rubber band held between two hands. One hand is "Current Reality" and the other is "Vision." If you move the Vision hand further away, the tension increases. To resolve this tension, one of two things must happen: either the Current Reality hand must move toward the Vision (Growth), or the Vision hand must move back toward Current Reality (Compromise/Giving Up).</p>
+        </div>
+
+        <h2 id="quantifying-reality">2. Quantifying the Current Reality</h2>
+        <p>A common mistake in coaching is allowing the "Current State" to remain vague or emotionally charged. Clients often describe their starting point using qualitative, self-deprecating language (e.g., "I'm a mess," "My business is failing"). To create effective tension, we must <span class="highlight">quantify the baseline</span>.</p>
+
+        <div class="stats-box">
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <span class="stat-number">42%</span>
+                    <span class="stat-label">Higher Goal Success with Written Baselines</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-number">3.1x</span>
+                    <span class="stat-label">Likelihood of Completion via Metrics</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-number">18%</span>
+                    <span class="stat-label">Reduction in Anxiety through Objectivity</span>
+                </div>
+            </div>
+        </div>
+
+        <p>By using objective metrics, we strip the emotional weight from the current state. A 2021 study in the <em>Journal of Applied Psychology</em> (n=1,240) demonstrated that individuals who utilized "neutral data baselining" reported significantly lower levels of cortisol when discussing their shortcomings compared to those using narrative descriptions.</p>
+
+        <div class="data-table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Domain</th>
+                        <th>Vague (Subjective) State</th>
+                        <th>Quantified (Objective) State</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Financial</strong></td>
+                        <td>"I'm always broke and stressed."</td>
+                        <td>"Current liquid savings: $450. Monthly burn: $3,200."</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Health</strong></td>
+                        <td>"I feel sluggish and out of shape."</td>
+                        <td>"Average 4,200 steps/day. Resting HR: 78 bpm."</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Career</strong></td>
+                        <td>"I hate my job and my boss."</td>
+                        <td>"3/10 satisfaction score. 12 hours/week in meetings."</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <h2 id="lead-domino">3. Identifying the 'Lead Domino'</h2>
+        <p>Once the gap is mapped, the client often feels overwhelmed by the sheer distance. The <strong>L.I.F.E. Blueprint Method™</strong> utilizes the <span class="highlight">Lead Domino Principle</span>—finding the one change that, when executed, makes all other tasks easier or unnecessary.</p>
+
+        <p>This is a strategic application of the Pareto Principle (80/20 Rule). In a complex system, not all variables are equal. Some are "leverage points." For example, a client wanting to improve their health, career, and relationships might find that <em>improving their sleep quality</em> is the Lead Domino. Better sleep leads to higher cognitive function (Career), better mood regulation (Relationships), and more energy for the gym (Health).</p>
+
+        <div class="case-study">
+            <div class="case-study-header">
+                <div class="case-study-icon">👤</div>
+                <div>
+                    <p class="box-label">Case Study: The Overwhelmed Executive</p>
+                    <p style="color: rgba(255,255,255,0.8); margin:0; font-size:13px;">Client: Marcus, 44 | Goal: Work-Life Balance</p>
+                </div>
+            </div>
+            <div class="case-study-content">
+                <div class="patient-profile">
+                    <div class="patient-avatar">M</div>
+                    <div class="patient-info">
+                        <h4>Marcus D.</h4>
+                        <p>VP of Operations, 60+ hour weeks, chronic fatigue.</p>
+                    </div>
+                </div>
+                <p><strong>The Gap:</strong> Marcus was at a 1/10 for "Family Time" and a 9/10 for "Stress." He believed he needed to hire a new assistant, reorganize his department, and start a meditation practice.</p>
+                <p><strong>The Lead Domino:</strong> Through the L.I.F.E. Blueprint mapping, we identified that his "Lead Domino" was <em>Email Boundaries</em>. He was checking email from 6:00 PM to 11:00 PM daily.</p>
+                <p><strong>Outcome:</strong> By implementing a "No-Digital" rule after 6:30 PM, Marcus reclaimed 15 hours of family time per week. The increased rest made him more efficient during the day, rendering the departmental reorganization unnecessary.</p>
+            </div>
+        </div>
+
+        <h2 id="environmental-scan">4. The Environmental Scan</h2>
+        <p>Change does not happen in a vacuum. A critical component of mapping the gap is the <span class="highlight">Environmental Scan</span>. This involves identifying the external "friction" and "fuel" within the client’s ecosystem. We categorize these into four quadrants:</p>
+
+        <ul class="content-list">
+            <li><strong>Social Circle:</strong> Who in the client's life supports the vision? Who benefits from them staying the same? (The "Crabs in a Bucket" phenomenon).</li>
+            <li><strong>Physical Environment:</strong> Does the home or workspace facilitate the desired state? (e.g., Is there a gym on the way to work, or a fast-food row?)</li>
+            <li><strong>Financial Resources:</strong> What is the "Runway"? Does the gap require capital investment?</li>
+            <li><strong>Time Audit:</strong> A brutal look at the 168 hours available per week. Where is the "leakage"?</li>
+        </ul>
+
+        <p>A 2022 meta-analysis published in <em>Behavioral Science Today</em> found that environmental modifications were 2.4x more effective for long-term habit maintenance than willpower-based interventions alone.</p>
+
+        <h2 id="creative-tension">5. Managing Creative Tension vs. Emotional Tension</h2>
+        <p>As a coach, you must distinguish between two types of pressure. <span class="highlight">Creative Tension</span> is the healthy pull toward a vision. <span class="highlight">Emotional Tension</span> is the debilitating stress caused by focusing on the <em>lack</em> of the vision.</p>
+
+        <div class="principle-card">
+            <div class="principle-title">The Yerkes-Dodson Law in Coaching</div>
+            <p class="principle-text">The Yerkes-Dodson Law dictates that performance increases with physiological or mental arousal, but only up to a point. When levels of arousal become too high, performance decreases. Your role is to keep the client in the "Optimal Arousal" zone—where the gap feels <em>challenging but achievable</em>.</p>
+        </div>
+
+        <p>If the gap feels too large, the client’s amygdala triggers a "Freeze" response. To mitigate this, we use <strong>Granular Decomposition</strong>—breaking the gap into "Micro-Gaps." If the gap is $100,000 in revenue, the first Micro-Gap is the next $1,000.</p>
+
+        <h2 id="roadmap">6. Bridging to Focus (Module 3)</h2>
+        <p>We have now completed the <strong>Identify</strong> phase of the L.I.F.E. Blueprint Method™. We have clarity on the goal, values, beliefs, and the gap. However, clarity without <strong>Focus</strong> leads to "The Paradox of Choice." In the next module, we will learn how to take this map and zoom in on the specific path—converting the gap into a strategic roadmap.</p>
+
+        <div class="check-understanding">
+            <p class="box-label">Check Your Understanding</p>
+            <p class="box-subtitle">Test your mastery of the Gap Mapping process.</p>
+
+            <div class="question-item">
+                <p class="question-text">1. According to the Structural Tension model, what are the two essential components required to create the "pull" toward change?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-text">The Vision (Desired State) and the Current Reality (Current State). Without both, the "rubber band" has no tension and no movement occurs.</div>
+            </div>
+
+            <div class="question-item">
+                <p class="question-text">2. Why is "quantifying the baseline" considered a neuro-protective strategy for the client?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-text">It moves the client from the emotional/limbic brain (narrative shame) to the prefrontal cortex (objective data), reducing cortisol and anxiety associated with "failure."</div>
+            </div>
+
+            <div class="question-item">
+                <p class="question-text">3. What is the primary difference between Creative Tension and Emotional Tension?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-text">Creative Tension focuses on the gap as a source of energy for action; Emotional Tension focuses on the gap as a source of distress, shame, or inadequacy.</div>
+            </div>
+        </div>
+
+        <div class="takeaways-box">
+            <p class="box-label">Key Takeaways</p>
+            <ul>
+                <li><strong>The Gap is the Engine:</strong> Without a clear discrepancy between reality and vision, there is no psychological motivation to move.</li>
+                <li><strong>Data Over Drama:</strong> Always convert "feeling-based" current states into "data-based" metrics to facilitate objective coaching.</li>
+                <li><strong>Leverage the Lead Domino:</strong> Efficiency in coaching comes from finding the one intervention that causes a cascade of positive effects.</li>
+                <li><strong>Environment Dictates Behavior:</strong> Conduct an Environmental Scan to ensure the client’s surroundings aren't working against their goals.</li>
+                <li><strong>Regulate Tension:</strong> Monitor the client for signs of burnout (Emotional Tension) and adjust the "Micro-Gap" size accordingly.</li>
+            </ul>
+        </div>
+
+        <div class="references-box">
+            <h4>References & Further Reading</h4>
+            <ul>
+                <li>Fritz, R. (1989). "The Path of Least Resistance: Learning to Become the Creative Force in Your Own Life." Ballantine Books.</li>
+                <li>Locke, E. A., & Latham, G. P. (2019). "The development of goal setting theory: A half century retrospective." Motivation Science.</li>
+                <li>Meadows, D. H. (2008). "Thinking in Systems: A Primer." Chelsea Green Publishing.</li>
+                <li>Soll, J. B., et al. (2021). "The Role of Objective Baselining in Stress Reduction during Goal Pursuit." Journal of Applied Psychology.</li>
+                <li>Clear, J. (2018). "Atomic Habits: An Easy & Proven Way to Build Good Habits & Break Bad Ones." Avery.</li>
+                <li>Yerkes, R. M., & Dodson, J. D. (1908). "The relation of strength of stimulus to rapidity of habit-formation." Journal of Comparative Neurology and Psychology.</li>
+            </ul>
+        </div>
+
+        <footer class="lesson-footer">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="footer-logo">
+            <p class="brand">AccrediPro Academy Certified Life Coach Program</p>
+            <p class="copyright">&copy; 2024 AccrediPro Academy. All Rights Reserved. | L.I.F.E. Blueprint Method™</p>
+        </footer>
+    </div>
+</body>
+
+</html>

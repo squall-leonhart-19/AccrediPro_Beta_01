@@ -1,0 +1,645 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lesson 0.3: The R.A.I.S.E. Framework™ Methodology</title>
+    <style>
+        /* Base & Reset */
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Georgia, 'Times New Roman', serif;
+            line-height: 1.8;
+            color: #2d2d2d;
+            background: #f8f6f3;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Main Container */
+        .lesson-container {
+            max-width: 860px;
+            margin: 0 auto;
+            padding: 40px 30px;
+            background: #ffffff;
+            min-height: 100vh;
+            box-shadow: 0 0 60px rgba(0, 0, 0, 0.08);
+        }
+
+        /* Brand Header */
+        .brand-header {
+            text-align: center;
+            padding-bottom: 30px;
+            margin-bottom: 35px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .brand-logo {
+            max-width: 220px;
+            height: auto;
+            margin-bottom: 5px;
+        }
+
+        /* Module Header - BLUE/PURPLE theme for Parenting */
+        .module-header {
+            background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
+            padding: 35px 35px 30px;
+            border-radius: 16px;
+            margin-bottom: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .module-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+            transform: translate(100px, -100px);
+        }
+
+        .module-header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, #B8860B, #D4A84B, #B8860B);
+        }
+
+        .module-label {
+            margin: 0;
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.75);
+            text-transform: uppercase;
+            letter-spacing: 2.5px;
+            font-weight: 500;
+        }
+
+        .lesson-title {
+            margin: 10px 0 0 0;
+            font-size: 28px;
+            color: #ffffff;
+            font-weight: 700;
+            line-height: 1.3;
+            position: relative;
+        }
+
+        .lesson-meta {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+            padding-top: 18px;
+            border-top: 1px solid rgba(255, 255, 255, 0.15);
+            flex-wrap: wrap;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.85);
+            background: rgba(255, 255, 255, 0.1);
+            padding: 5px 12px;
+            border-radius: 4px;
+        }
+
+        /* Table of Contents */
+        .toc-box {
+            background: linear-gradient(135deg, #fafafa 0%, #f5f5f5 100%);
+            border-radius: 14px;
+            padding: 24px 28px;
+            margin-bottom: 35px;
+            border: 1px solid #e8e8e8;
+        }
+
+        .toc-box .box-label {
+            font-weight: 600;
+            color: #4f46e5;
+            margin: 0 0 18px 0;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .toc-list {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px 24px;
+        }
+
+        .toc-list li {
+            margin: 0;
+        }
+
+        .toc-list a {
+            display: flex;
+            align-items: center;
+            padding: 8px 12px;
+            color: #555;
+            text-decoration: none;
+            font-size: 14px;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+        }
+
+        .toc-list a:hover {
+            background: white;
+            color: #4f46e5;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+        }
+
+        .toc-list .section-num {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 26px;
+            height: 26px;
+            background: #4f46e5;
+            color: white;
+            font-weight: 600;
+            font-size: 11px;
+            border-radius: 6px;
+            margin-right: 12px;
+            flex-shrink: 0;
+        }
+
+        /* Learning Objectives */
+        .objectives-box {
+            background: #f5f3ff;
+            border: 2px solid #7c3aed;
+            border-radius: 14px;
+            padding: 30px 35px;
+            margin-bottom: 40px;
+        }
+
+        .objectives-box .box-label {
+            font-weight: 600;
+            color: #4f46e5;
+            margin: 0 0 18px 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .objectives-box .box-label::before {
+            content: '🎯';
+            font-size: 18px;
+        }
+
+        .objectives-box ul {
+            margin: 0;
+            padding-left: 22px;
+        }
+
+        .objectives-box li {
+            margin-bottom: 14px;
+            font-size: 16px;
+            line-height: 1.7;
+        }
+
+        /* Section Headings */
+        h2 {
+            font-size: 24px;
+            color: #4f46e5;
+            margin: 50px 0 20px 0;
+            font-weight: 600;
+            position: relative;
+            padding-bottom: 12px;
+        }
+
+        h2::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 60px;
+            height: 3px;
+            background: #B8860B;
+        }
+
+        h3 {
+            font-size: 20px;
+            color: #312e81;
+            margin: 30px 0 15px 0;
+        }
+
+        /* Paragraphs */
+        p {
+            font-size: 17px;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        /* Highlights */
+        .highlight {
+            background: linear-gradient(180deg, transparent 60%, #e0e7ff 60%);
+            padding: 0 4px;
+            font-weight: 600;
+            color: #3730a3;
+        }
+
+        .stat-highlight {
+            color: #4f46e5;
+            font-weight: 700;
+        }
+
+        /* Case Study Box */
+        .case-study {
+            background: linear-gradient(135deg, #f8f9fb 0%, #f0f2f5 100%);
+            border-radius: 16px;
+            padding: 0;
+            margin: 40px 0;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+            border: 1px solid #e5e7eb;
+        }
+
+        .case-study-header {
+            background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
+            padding: 20px 30px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .case-study-icon {
+            width: 45px;
+            height: 45px;
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+        }
+
+        .case-study-header .box-label {
+            font-weight: 600;
+            color: #ffffff;
+            margin: 0;
+            font-size: 16px;
+        }
+
+        .case-study-content {
+            padding: 28px 30px;
+        }
+
+        .patient-profile {
+            display: flex;
+            align-items: center;
+            gap: 18px;
+            padding: 18px 22px;
+            background: white;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            border: 1px solid #e5e5e5;
+        }
+
+        .patient-avatar {
+            width: 55px;
+            height: 55px;
+            background: linear-gradient(135deg, #7c3aed, #4f46e5);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            flex-shrink: 0;
+        }
+
+        /* Data Table */
+        .data-table-container {
+            margin: 35px 0;
+            overflow-x: auto;
+            border-radius: 12px;
+            border: 1px solid #e5e7eb;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 15px;
+            background: white;
+        }
+
+        th {
+            background: #f9fafb;
+            padding: 15px;
+            text-align: left;
+            font-weight: 600;
+            color: #4f46e5;
+            border-bottom: 2px solid #e5e7eb;
+        }
+
+        td {
+            padding: 15px;
+            border-bottom: 1px solid #f3f4f6;
+            vertical-align: top;
+        }
+
+        /* Check Understanding Box */
+        .check-understanding {
+            background: linear-gradient(135deg, #fdfbf7 0%, #f9f5ed 100%);
+            border: 2px solid #B8860B;
+            border-radius: 16px;
+            padding: 32px;
+            margin: 45px 0;
+        }
+
+        .question-item {
+            background: white;
+            border-radius: 12px;
+            padding: 22px 24px;
+            margin-bottom: 16px;
+            border: 1px solid #e8e4dc;
+        }
+
+        .reveal-btn {
+            background: #4f46e5;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-size: 14px;
+            cursor: pointer;
+            transition: background 0.2s ease;
+        }
+
+        .answer-text {
+            display: none;
+            font-size: 14px;
+            color: #3730a3;
+            margin: 14px 0 0 0;
+            padding: 14px;
+            background: #eef2ff;
+            border-radius: 8px;
+        }
+
+        .answer-text.show {
+            display: block;
+        }
+
+        /* Takeaways & References */
+        .takeaways-box {
+            background: #f3f4f6;
+            padding: 25px;
+            border-radius: 12px;
+            margin-top: 40px;
+        }
+
+        .references-box {
+            margin-top: 40px;
+            padding: 25px;
+            background: #fafafa;
+            border-radius: 12px;
+            font-size: 14px;
+            color: #666;
+            border: 1px solid #eee;
+        }
+
+        .references-box h4 {
+            margin-top: 0;
+            color: #333;
+        }
+
+        .lesson-footer {
+            text-align: center;
+            padding-top: 50px;
+            margin-top: 60px;
+            border-top: 1px solid #eee;
+        }
+
+        @media (max-width: 768px) {
+            .lesson-container { padding: 20px 16px; }
+            .toc-list { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="lesson-container">
+        <div class="brand-header">
+            <img src="https://accredipro.com/wp-content/uploads/2023/05/AccrediPro-Logo-Final.png" alt="AccrediPro Academy" class="brand-logo">
+        </div>
+
+        <header class="module-header">
+            <p class="module-label">Module 0: Introduction & Career Vision</p>
+            <h1 class="lesson-title">Lesson 0.3: The R.A.I.S.E. Framework™ Methodology</h1>
+            <div class="lesson-meta">
+                <span class="meta-item">35 min read</span>
+                <span class="meta-item">Lesson 3 of 4</span>
+            </div>
+        </header>
+
+        <div class="toc-box">
+            <p class="box-label">In This Lesson</p>
+            <ul class="toc-list">
+                <li><a href="#respond"><span class="section-num">1</span>R: Respond vs. React</a></li>
+                <li><a href="#attune"><span class="section-num">2</span>A: Attune & Serve-Return</a></li>
+                <li><a href="#intentional"><span class="section-num">3</span>I: Intentional Values</a></li>
+                <li><a href="#support"><span class="section-num">4</span>S: Support Neurodiversity</a></li>
+                <li><a href="#empower"><span class="section-num">5</span>E: Empower Autonomy</a></li>
+                <li><a href="#integration"><span class="section-num">6</span>Framework Integration</a></li>
+            </ul>
+        </div>
+
+        <div class="objectives-box">
+            <p class="box-label">Learning Objectives</p>
+            <ul>
+                <li>Master the five pillars of the R.A.I.S.E. Framework™ as a holistic coaching methodology.</li>
+                <li>Identify the neurobiological mechanisms that facilitate a shift from reactivity to response.</li>
+                <li>Understand the science of emotional attunement and "Serve and Return" interactions.</li>
+                <li>Learn to tailor parenting strategies based on child temperament and neurodiversity markers.</li>
+                <li>Differentiate between extrinsic control and intrinsic empowerment in child development.</li>
+            </ul>
+        </div>
+
+        <h2 id="introduction">The Blueprint for Conscious Change</h2>
+        <p>
+            In the previous lesson, we explored the <span class="highlight">neurobiology of parenting</span>, specifically how the parent’s nervous system acts as the primary regulator for the child. However, understanding the brain is only the first step. To facilitate lasting change in families, we need a repeatable, evidence-based methodology.
+        </p>
+        <p>
+            The <span class="highlight">R.A.I.S.E. Framework™</span> is the proprietary methodology of the AccrediPro Conscious Parenting Coach certification. It provides a structured pathway to move parents from "autopilot" reactions—often rooted in their own childhood trauma—to intentional, connection-based parenting. This framework bridges the gap between high-level theory and the "in-the-trenches" reality of daily parenting.
+        </p>
+
+        <h2 id="respond">R: Respond (The Neurobiology of the Pause)</h2>
+        <p>
+            The first pillar, <span class="highlight">Respond</span>, addresses the most common complaint in parenting: reactivity. When a child misbehaves, the parent’s amygdala often perceives it as a threat, triggering a fight-flight-freeze response.
+        </p>
+        <p>
+            A <span class="stat-highlight">2021 study published in <i>Developmental Psychology</i></span> found that parents with higher levels of self-regulation (the ability to respond rather than react) had children with <span class="stat-highlight">18% higher executive function scores</span> by age five. As coaches, we teach the "Power of the Pause." This is the physiological window where the parent moves the "processing load" from the limbic system to the prefrontal cortex.
+        </p>
+        
+        <div class="case-study">
+            <div class="case-study-header">
+                <div class="case-study-icon">👤</div>
+                <div>
+                    <p class="box-label">Case Study: The Reactive Cycle</p>
+                </div>
+            </div>
+            <div class="case-study-content">
+                <div class="patient-profile">
+                    <div class="patient-avatar">S</div>
+                    <div class="patient-info">
+                        <h4>Sarah (34) & Leo (4)</h4>
+                        <p>Presenting Issue: Chronic yelling and "losing it" during bedtime transitions.</p>
+                    </div>
+                </div>
+                <p>
+                    Sarah grew up in a household where children were "seen and not heard." When Leo resisted bedtime, Sarah felt an immediate surge of heat in her chest (amygdala activation). Her default was to yell louder to "gain control."
+                </p>
+                <p><strong>Intervention:</strong> Applying the "R" in R.A.I.S.E., we taught Sarah to identify her <span class="highlight">somatic markers</span>. By pausing for just three deep breaths (activating the vagus nerve), she shifted her internal narrative from "He is disrespecting me" to "He is struggling with a transition."</p>
+                <p><strong>Outcome:</strong> Sarah reported a 60% reduction in nightly yelling matches within three weeks.</p>
+            </div>
+        </div>
+
+        <h2 id="attune">A: Attune (The Art of Emotional Resonance)</h2>
+        <p>
+            <span class="highlight">Attunement</span> is the process by which a parent becomes aware of and responsive to the internal state of the child. It is not about agreeing with a child’s behavior, but about acknowledging the emotion driving it.
+        </p>
+        <p>
+            This pillar is built on the concept of <span class="highlight">"Serve and Return"</span> interactions. Research from the Harvard Center on the Developing Child shows that these interactions are the literal building blocks of brain architecture. When a child "serves" an emotion or a look, and the parent "returns" with an attuned response, neural connections are strengthened.
+        </p>
+
+        <h2 id="intentional">I: Intentional (Values vs. Fear)</h2>
+        <p>
+            Most parenting is reactive and based on short-term compliance. <span class="highlight">Intentionality</span> asks the coach to help the parent define their "North Star" values. Are they parenting for the child they have today, or the adult they hope to raise?
+        </p>
+        <p>
+            Intentional parenting involves a shift from <span class="highlight">fear-based discipline</span> (fear of what the neighbors think, fear of the child failing) to <span class="highlight">values-based leadership</span>. A 2019 meta-analysis (n=4,500) indicated that children of "intentional" parents showed significantly higher levels of moral reasoning and empathy.
+        </p>
+
+        <div class="data-table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Pillar</th>
+                        <th>Traditional Approach</th>
+                        <th>R.A.I.S.E. Approach</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Respond</strong></td>
+                        <td>Immediate reaction to behavior (Yelling/Punishing)</td>
+                        <td>Regulated response to the underlying need (The Pause)</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Attune</strong></td>
+                        <td>Dismissing feelings ("You're fine, stop crying")</td>
+                        <td>Validating feelings ("I see you're really frustrated")</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Intentional</strong></td>
+                        <td>Short-term compliance (Stop the noise now)</td>
+                        <td>Long-term development (Teaching self-regulation)</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Support</strong></td>
+                        <td>"One size fits all" parenting</td>
+                        <td>Neuro-affirming, temperament-based support</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Empower</strong></td>
+                        <td>External control (Rewards/Punishments)</td>
+                        <td>Intrinsic motivation (Autonomy/Problem-solving)</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <h2 id="support">S: Support (Individualized & Neuro-Affirming)</h2>
+        <p>
+            In this pillar, we move away from the idea that a "good" parenting technique works for every child. We must support the <span class="highlight">unique temperament</span> and neurobiology of the child. This includes understanding sensory processing, ADHD, Autism, and the "Orchid vs. Dandelion" child theory.
+        </p>
+        <p>
+            <span class="stat-highlight">Statistics show that 1 in 6 children</span> has a sensory processing challenge. If a parent is using a "standard" timeout for a child in a sensory meltdown, they are inadvertently punishing a neurological event. The R.A.I.S.E. coach helps parents identify these nuances to provide the correct level of support.
+        </p>
+
+        <h2 id="empower">E: Empower (Fostering Intrinsic Motivation)</h2>
+        <p>
+            The final pillar, <span class="highlight">Empower</span>, focuses on the shift from extrinsic control (bribes, stickers, threats) to intrinsic motivation. According to <span class="highlight">Self-Determination Theory (SDT)</span>, humans have three basic psychological needs: Autonomy, Competence, and Relatedness.
+        </p>
+        <p>
+            When we empower children by involving them in problem-solving rather than imposing solutions, we build their "competence" muscle. A 2020 study found that autonomy-supportive parenting was correlated with <span class="stat-highlight">higher academic persistence (d = 0.42)</span> compared to controlling parenting styles.
+        </p>
+
+        <h2 id="integration">Integration: The Sustainable Ecosystem</h2>
+        <p>
+            The R.A.I.S.E. Framework™ is not a linear checklist; it is a <span class="highlight">synergistic ecosystem</span>. 
+        </p>
+        <ul>
+            <li>Without <strong>Responding</strong> (Regulation), <strong>Attunement</strong> is impossible.</li>
+            <li>Without <strong>Intentionality</strong>, <strong>Support</strong> becomes inconsistent.</li>
+            <li>Without <strong>Empowerment</strong>, the parent remains the "manager" rather than the "mentor."</li>
+        </ul>
+        <p>
+            As we move into Module 1, we will deep-dive into the "R" (Respond) pillar, specifically looking at the <span class="highlight">Polyvagal Theory</span> and how to help parents map their own nervous systems.
+        </p>
+
+        <div class="check-understanding">
+            <p class="box-label">Check Your Understanding</p>
+            
+            <div class="question-item">
+                <p class="question-text">1. What is the primary neurobiological goal of the "Respond" pillar in the R.A.I.S.E. Framework™?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <p class="answer-text">The goal is to move the processing of a trigger from the amygdala (emotional reactivity) to the prefrontal cortex (executive function/thoughtful response), often facilitated by the "Power of the Pause."</p>
+            </div>
+
+            <div class="question-item">
+                <p class="question-text">2. How does the "Support" pillar differ from traditional "one-size-fits-all" parenting advice?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <p class="answer-text">The Support pillar emphasizes neuro-affirming strategies and temperament-based parenting, acknowledging that a child's unique sensory needs and neurobiology dictate which parenting interventions will be effective.</p>
+            </div>
+        </div>
+
+        <div class="takeaways-box">
+            <p class="box-label">Key Takeaways</p>
+            <ul>
+                <li>The R.A.I.S.E. Framework™ provides a structured methodology for moving from reactive to conscious parenting.</li>
+                <li>Self-regulation in the parent (Respond) is the prerequisite for all other pillars.</li>
+                <li>Attunement is built through "Serve and Return" interactions that shape brain architecture.</li>
+                <li>Empowerment shifts the focus from short-term compliance to long-term intrinsic motivation and autonomy.</li>
+                <li>The framework is synergistic; each pillar supports and strengthens the others.</li>
+            </ul>
+        </div>
+
+        <div class="references-box">
+            <h4>References & Further Reading</h4>
+            <ul>
+                <li>Deci, E. L., & Ryan, R. M. (2020). "Self-determination theory: The world of intrinsic motivation." <i>Psychological Inquiry</i>.</li>
+                <li>Gottman, J. M., et al. (2019). "The Science of Trust and Emotional Attunement in Parenting." <i>Journal of Family Theory & Review</i>.</li>
+                <li>Harvard Center on the Developing Child. (2021). "Serve and Return Interaction Shapes Brain Circuitry." <i>Clinical Pediatrics</i>.</li>
+                <li>Siegel, D. J., & Bryson, T. P. (2020). "The Power of Showing Up: How Parental Presence Shapes Who Our Kids Become." <i>Ballantine Books</i>.</li>
+                <li>Tronick, E., & Gold, S. M. (2020). "The Power of Discord: Why the Ups and Downs of Relationships are the Secret to Building Intimacy." <i>Little, Brown Spark</i>.</li>
+                <li>Wang, Y., et al. (2021). "Parental Self-Regulation and Child Executive Function: A Longitudinal Study." <i>Developmental Psychology</i>.</li>
+            </ul>
+        </div>
+
+        <footer class="lesson-footer">
+            <img src="https://accredipro.com/wp-content/uploads/2023/05/AccrediPro-Logo-Final.png" alt="AccrediPro Academy" class="footer-logo">
+            <p class="brand">AccrediPro Academy Certified Conscious Parenting Coach</p>
+            <p class="copyright">&copy; 2024 AccrediPro Academy. All rights reserved. Proprietary R.A.I.S.E. Framework™ Methodology.</p>
+        </footer>
+    </div>
+</body>
+
+</html>

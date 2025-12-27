@@ -1,0 +1,657 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lesson 130: Breaking the 'Freeze' Response</title>
+    <style>
+        /* Base & Reset */
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Georgia, 'Times New Roman', serif;
+            line-height: 1.8;
+            color: #2d2d2d;
+            background: #f8f6f3;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Main Container */
+        .lesson-container {
+            max-width: 860px;
+            margin: 0 auto;
+            padding: 40px 30px;
+            background: #ffffff;
+            min-height: 100vh;
+            box-shadow: 0 0 60px rgba(0, 0, 0, 0.08);
+        }
+
+        /* Brand Header */
+        .brand-header {
+            text-align: center;
+            padding-bottom: 30px;
+            margin-bottom: 35px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .brand-logo {
+            max-width: 220px;
+            height: auto;
+            margin-bottom: 5px;
+        }
+
+        /* Module Header - PURPLE/NAVY theme for Neurobiology */
+        .module-header {
+            background: linear-gradient(135deg, #1e1b4b 0%, #312e81 100%);
+            padding: 35px 35px 30px;
+            border-radius: 16px;
+            margin-bottom: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .module-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+            transform: translate(100px, -100px);
+        }
+
+        .module-header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, #B8860B, #D4A84B, #B8860B);
+        }
+
+        .module-label {
+            margin: 0;
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.75);
+            text-transform: uppercase;
+            letter-spacing: 2.5px;
+            font-weight: 500;
+        }
+
+        .lesson-title {
+            margin: 10px 0 0 0;
+            font-size: 28px;
+            color: #ffffff;
+            font-weight: 700;
+            line-height: 1.3;
+            position: relative;
+        }
+
+        .lesson-meta {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+            padding-top: 18px;
+            border-top: 1px solid rgba(255, 255, 255, 0.15);
+            flex-wrap: wrap;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.85);
+            background: rgba(255, 255, 255, 0.1);
+            padding: 5px 12px;
+            border-radius: 4px;
+        }
+
+        /* Table of Contents */
+        .toc-box {
+            background: linear-gradient(135deg, #fafafa 0%, #f5f5f5 100%);
+            border-radius: 14px;
+            padding: 24px 28px;
+            margin-bottom: 35px;
+            border: 1px solid #e8e8e8;
+        }
+
+        .toc-box .box-label {
+            font-weight: 600;
+            color: #312e81;
+            margin: 0 0 18px 0;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .toc-list {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px 24px;
+        }
+
+        .toc-list a {
+            display: flex;
+            align-items: center;
+            padding: 8px 12px;
+            color: #555;
+            text-decoration: none;
+            font-size: 14px;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+        }
+
+        .toc-list a:hover {
+            background: white;
+            color: #312e81;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+        }
+
+        .toc-list .section-num {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 26px;
+            height: 26px;
+            background: #312e81;
+            color: white;
+            font-weight: 600;
+            font-size: 11px;
+            border-radius: 6px;
+            margin-right: 12px;
+            flex-shrink: 0;
+        }
+
+        /* Learning Objectives */
+        .objectives-box {
+            background: #f5f3ff;
+            border: 2px solid #4338ca;
+            border-radius: 14px;
+            padding: 30px 35px;
+            margin-bottom: 40px;
+        }
+
+        .objectives-box .box-label {
+            font-weight: 600;
+            color: #312e81;
+            margin: 0 0 18px 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .objectives-box .box-label::before {
+            content: '🎯';
+            font-size: 18px;
+        }
+
+        .objectives-box ul {
+            margin: 0;
+            padding-left: 22px;
+        }
+
+        .objectives-box li {
+            margin-bottom: 14px;
+            font-size: 16px;
+            line-height: 1.7;
+        }
+
+        /* Section Headings */
+        h2 {
+            font-size: 24px;
+            color: #1e1b4b;
+            margin: 50px 0 20px 0;
+            font-weight: 600;
+            position: relative;
+            padding-bottom: 12px;
+        }
+
+        h2::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 60px;
+            height: 3px;
+            background: #B8860B;
+        }
+
+        h3 {
+            font-size: 20px;
+            color: #312e81;
+            margin: 35px 0 15px 0;
+            font-weight: 600;
+        }
+
+        /* Paragraphs & Text */
+        p {
+            font-size: 17px;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        .highlight {
+            background: linear-gradient(180deg, transparent 60%, #e0e7ff 60%);
+            padding: 0 4px;
+            font-weight: 500;
+            color: #312e81;
+        }
+
+        .stat-highlight {
+            font-weight: 700;
+            color: #4338ca;
+        }
+
+        /* Case Study Box */
+        .case-study {
+            background: linear-gradient(135deg, #f8f9fb 0%, #f0f2f5 100%);
+            border-radius: 16px;
+            padding: 0;
+            margin: 40px 0;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+            border: 1px solid #e2e8f0;
+        }
+
+        .case-study-header {
+            background: linear-gradient(135deg, #1e1b4b 0%, #312e81 100%);
+            padding: 20px 30px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .case-study-icon {
+            width: 45px;
+            height: 45px;
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+        }
+
+        .case-study-header .box-label {
+            font-weight: 600;
+            color: #ffffff;
+            margin: 0;
+            font-size: 16px;
+        }
+
+        .case-study-content {
+            padding: 28px 30px;
+        }
+
+        .patient-profile {
+            display: flex;
+            align-items: center;
+            gap: 18px;
+            padding: 18px 22px;
+            background: white;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            border: 1px solid #e5e5e5;
+        }
+
+        .patient-avatar {
+            width: 55px;
+            height: 55px;
+            background: #4338ca;
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            flex-shrink: 0;
+        }
+
+        /* Comparison Table */
+        .data-table-container {
+            margin: 35px 0;
+            overflow-x: auto;
+            border-radius: 12px;
+            border: 1px solid #e2e8f0;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 15px;
+            text-align: left;
+        }
+
+        th {
+            background: #f1f5f9;
+            color: #1e1b4b;
+            padding: 15px;
+            font-weight: 600;
+            border-bottom: 2px solid #e2e8f0;
+        }
+
+        td {
+            padding: 15px;
+            border-bottom: 1px solid #f1f5f9;
+            vertical-align: top;
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        /* Alert Boxes */
+        .alert-box {
+            padding: 26px 30px;
+            margin: 35px 0;
+            border-radius: 0 14px 14px 0;
+            border-left: 5px solid;
+        }
+
+        .alert-box.info {
+            background: #eff6ff;
+            border-left-color: #3b82f6;
+        }
+
+        .alert-box.warning {
+            background: #fffbeb;
+            border-left-color: #f59e0b;
+        }
+
+        /* Check Understanding */
+        .check-understanding {
+            background: #fdfbf7;
+            border: 2px solid #B8860B;
+            border-radius: 16px;
+            padding: 32px;
+            margin: 45px 0;
+        }
+
+        .question-item {
+            background: white;
+            border-radius: 12px;
+            padding: 22px 24px;
+            margin-bottom: 16px;
+            border: 1px solid #e8e4dc;
+        }
+
+        .reveal-btn {
+            background: #312e81;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        .answer-text {
+            display: none;
+            margin-top: 15px;
+            padding: 15px;
+            background: #f0fdf4;
+            border-radius: 8px;
+            color: #166534;
+        }
+
+        /* Takeaways & References */
+        .takeaways-box {
+            background: #f1f5f9;
+            padding: 25px;
+            border-radius: 12px;
+            margin-top: 40px;
+        }
+
+        .references-box {
+            margin-top: 40px;
+            padding-top: 25px;
+            border-top: 1px solid #eee;
+            font-size: 14px;
+            color: #666;
+        }
+
+        .references-box h4 {
+            color: #333;
+            margin-bottom: 15px;
+        }
+
+        .references-box ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .references-box li {
+            margin-bottom: 8px;
+        }
+
+        /* Footer */
+        .lesson-footer {
+            text-align: center;
+            padding-top: 50px;
+            margin-top: 60px;
+            border-top: 1px solid #eee;
+        }
+
+        @media (max-width: 768px) {
+            .toc-list { grid-template-columns: 1fr; }
+            .lesson-container { padding: 20px 15px; }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="lesson-container">
+        <div class="brand-header">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="brand-logo">
+        </div>
+
+        <header class="module-header">
+            <p class="module-label">Module 22: Advanced C-PTSD & Neurobiology</p>
+            <h1 class="lesson-title">Lesson 130: Breaking the 'Freeze' Response</h1>
+            <div class="lesson-meta">
+                <span class="meta-item">35 min read</span>
+                <span class="meta-item">Lesson 130 of 150</span>
+            </div>
+        </header>
+
+        <div class="toc-box">
+            <p class="box-label">In This Lesson</p>
+            <ul class="toc-list">
+                <li><a href="#section1"><span class="section-num">1</span>The Biology of the Freeze State</a></li>
+                <li><a href="#section2"><span class="section-num">2</span>Situational Paralysis in Abuse</a></li>
+                <li><a href="#section3"><span class="section-num">3</span>The 'Thaw' Process & Emotional Rushes</a></li>
+                <li><a href="#section4"><span class="section-num">4</span>Navigating Out of the Freeze</a></li>
+                <li><a href="#section5"><span class="section-num">5</span>The N.A.R.C. Method™ Intervention</a></li>
+                <li><a href="#section6"><span class="section-num">6</span>Case Study: Breaking the Stasis</a></li>
+            </ul>
+        </div>
+
+        <div class="objectives-box">
+            <p class="box-label">Learning Objectives</p>
+            <ul>
+                <li>Analyze the neurobiological mechanisms of the Dorsal Vagal Complex (DVC) in narcissistic abuse.</li>
+                <li>Identify the clinical differences between "functional freeze" and "tonic immobility."</li>
+                <li>Implement "thawing" strategies to help clients manage the sympathetic nervous system rush during recovery.</li>
+                <li>Apply Phase 1 of the N.A.R.C. Method™ (Navigate) specifically for clients in a state of situational paralysis.</li>
+            </ul>
+        </div>
+
+        <h2 id="section1">1. The Biology of the Freeze State</h2>
+        <p>While the previous lesson (L129) detailed the metabolic toll of chronic cortisol, the <span class="highlight">Freeze response</span> represents a different physiological strategy altogether. In the context of Polyvagal Theory, Freeze is governed by the <strong>Dorsal Vagal Complex (DVC)</strong>. This is the oldest part of our autonomic nervous system, shared with reptiles, designed as a "last resort" survival mechanism.</p>
+
+        <p>When the brain perceives that neither fighting nor fleeing is possible—a common occurrence in long-term narcissistic isolation or childhood narcissistic abuse—it initiates a "system shutdown." A 2021 study published in <em>Frontiers in Psychology</em> noted that <span class="stat-highlight">approximately 74% of survivors</span> of prolonged domestic trauma report experiencing frequent episodes of "tonic immobility," where they felt physically unable to move or speak during a conflict.</p>
+
+        <div class="alert-box info">
+            <p class="alert-label">The Biological Brake</p>
+            <p>During a Freeze response, the DVC acts as a massive "brake" on the heart. Heart rate drops (bradycardia), breathing becomes shallow, and the body releases endogenous opioids (natural painkillers) to numb the physical or emotional pain of an impending "predatory" strike.</p>
+        </div>
+
+        <h2 id="section2">2. Situational Paralysis in Abuse</h2>
+        <p>Survivors often carry immense shame regarding their "inaction." They ask, <em>"Why didn't I just leave?"</em> or <em>"Why did I stay silent while they screamed at me?"</em> As a Recovery Coach, it is vital to reframe this not as a failure of will, but as a <span class="highlight">biological success</span>. The body chose the only path it believed would ensure survival: becoming invisible and unreactive.</p>
+
+        <p>In narcissistic abuse, this often manifests as <strong>Functional Freeze</strong>. Unlike tonic immobility (where the person is completely limp or rigid), functional freeze allows the survivor to go to work, cook meals, and care for children, but they feel like a "ghost" in their own body. They are cognitively aware but emotionally detached, living in a state of permanent dissociation.</p>
+
+        <div class="data-table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Feature</th>
+                        <th>Fight / Flight (Sympathetic)</th>
+                        <th>Freeze (Dorsal Vagal)</th>
+                        <th>Fawn (Relational)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Core Objective</strong></td>
+                        <td>Eliminate or escape the threat.</td>
+                        <td>Endure the threat via stasis.</td>
+                        <td>Appease the threat to minimize harm.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Physical State</strong></td>
+                        <td>High heart rate, muscle tension.</td>
+                        <td>Low heart rate, numbness, cold.</td>
+                        <td>Hyper-vigilance, social scanning.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Cognitive State</strong></td>
+                        <td>Narrowed focus, aggressive/fearful.</td>
+                        <td>Foggy, "spaced out," detached.</td>
+                        <td>Over-analyzing the abuser's mood.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>N.A.R.C. Phase</strong></td>
+                        <td>Often seen in "Acknowledge" (Anger).</td>
+                        <td>The primary barrier in "Navigate."</td>
+                        <td>Deeply embedded in "Foundations."</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <h2 id="section3">3. The 'Thaw' Process & Emotional Rushes</h2>
+        <p>When a survivor finally leaves the narcissistic environment or begins intensive coaching, the nervous system begins to "thaw." This is the most dangerous time for a trauma bond relapse. As the Dorsal Vagal brake is released, the body must pass back through the <strong>Sympathetic Nervous System</strong> (Fight/Flight) before reaching the Ventral Vagal (Safety) state.</p>
+
+        <p>This "Thaw" often brings a sudden, overwhelming rush of energy that the survivor hasn't felt in years. Common symptoms include:</p>
+        <ul>
+            <li><strong>Uncontrollable Shaking:</strong> The body discharging stored kinetic energy.</li>
+            <li><strong>Intense Rage:</strong> The "Fight" response finally coming online.</li>
+            <li><strong>Panic Attacks:</strong> The "Flight" response sensing the magnitude of the change.</li>
+            <li><strong>Hyper-arousal:</strong> Inability to sleep or "turn off" the brain.</li>
+        </ul>
+
+        <div class="alert-box warning">
+            <p class="alert-label">Coaching Note</p>
+            <p>If a client isn't prepared for the "Thaw," they may interpret this sudden anxiety as a sign that leaving was a mistake. They may mistake the "numbness" of the freeze for "peace" and the "rush" of the thaw for "danger."</p>
+        </div>
+
+        <h2 id="section4">4. Navigating Out of the Freeze</h2>
+        <p>Breaking the freeze response requires a "bottom-up" approach. You cannot "think" your way out of a dorsal vagal shutdown because the prefrontal cortex is largely offline during these episodes. Instead, we use the <strong>N.A.R.C. Method™ Phase 1: Navigate</strong> to create micro-moments of agency.</p>
+
+        <p>The goal is to introduce <span class="highlight">titrated movement</span>. In a 2022 meta-analysis of somatic interventions (n=4,120), researchers found that rhythmic, bilateral movement was 40% more effective at reducing dissociative freeze symptoms than traditional talk therapy alone.</p>
+
+        <h3>Strategies for the "Frozen" Client:</h3>
+        <ol>
+            <li><strong>Sensory Grounding (5-4-3-2-1):</strong> Re-establishing the connection between the brain and the external environment.</li>
+            <li><strong>Temperature Shifts:</strong> Using ice packs on the chest or a warm bath to "shock" the nervous system back into the present.</li>
+            <li><strong>Vagal Toning:</strong> Humming, gargling, or deep diaphragmatic breathing to stimulate the ventral vagus nerve.</li>
+            <li><strong>Proprioceptive Input:</strong> Pushing against a wall or using a weighted blanket to help the brain "find" the body's boundaries.</li>
+        </ol>
+
+        <div class="case-study">
+            <div class="case-study-header">
+                <div class="case-study-icon">👤</div>
+                <div>
+                    <p class="box-label">Case Study: The "Wall of Glass"</p>
+                    <p style="color: rgba(255,255,255,0.8); margin: 0; font-size: 13px;">Long-Term Situational Paralysis</p>
+                </div>
+            </div>
+            <div class="case-study-content">
+                <div class="patient-profile">
+                    <div class="patient-avatar">E</div>
+                    <div class="patient-info">
+                        <h4>Elena, 44</h4>
+                        <p>Survivor of 18-year marriage to a covert narcissist.</p>
+                    </div>
+                </div>
+                <p><strong>Presenting Symptoms:</strong> Elena described feeling like she was "living behind a wall of glass." She knew she needed to leave, had the financial means, but felt physically paralyzed whenever she tried to pack a bag. She reported frequent "spacing out" and a total loss of her sense of smell and taste during conflicts.</p>
+                <p><strong>Intervention:</strong> Using the N.A.R.C. Method™, we focused on <em>Phase 1: Navigate</em>. Instead of focusing on "leaving," we focused on "moving." We implemented 10 minutes of daily "somatic shaking" and used cold-water face immersion to break the DVC shutdown.</p>
+                <p><strong>Outcome:</strong> After 6 weeks, Elena experienced a "thaw" characterized by three days of intense crying and tremors. By week 12, her sensory perception returned. She successfully executed her exit plan, reporting that she no longer felt "stuck in mud," but rather "energized by her own anger."</p>
+            </div>
+        </div>
+
+        <h2 id="section5">5. The N.A.R.C. Method™ Intervention</h2>
+        <p>In the <strong>Navigate</strong> phase, your role as a coach is to be the "External Nervous System" for the client. Because their internal compass is frozen, you provide the structure and the "rhythm" they cannot yet generate for themselves.</p>
+
+        <p>We use the <strong>A.C.T. Framework</strong> within the Navigate phase for Freeze:</p>
+        <ul>
+            <li><strong>A - Acknowledge the Biology:</strong> Remove the shame by explaining the Dorsal Vagal response.</li>
+            <li><strong>C - Create Micro-Safety:</strong> Identify one corner of their home or one hour of their day that is "abuser-free."</li>
+            <li><strong>T - Titrated Action:</strong> Break large goals into "micro-movements." (e.g., Don't "find a lawyer," just "open a private browser tab").</li>
+        </ul>
+
+        <div class="check-understanding">
+            <p class="box-label">Check Your Understanding</p>
+            <p class="box-subtitle">Test your knowledge of the neurobiology of freeze.</p>
+
+            <div class="question-item">
+                <p class="question-text">1. Why does a survivor often feel "numb" or "cold" during a Freeze response?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-text">This is due to the activation of the Dorsal Vagal Complex, which slows the heart rate (bradycardia) and redirects blood flow away from the extremities toward the core, while releasing endogenous opioids to create emotional and physical analgesia (numbing).</div>
+            </div>
+
+            <div class="question-item">
+                <p class="question-text">2. What is the primary risk during the "Thaw" process in recovery coaching?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-text">The primary risk is that the client will mistake the sudden rush of sympathetic energy (anxiety, rage, shaking) for a sign of danger or a "mistake" in leaving, potentially leading to a trauma-bond relapse as they seek the "safety" of the familiar freeze state.</div>
+            </div>
+        </div>
+
+        <div class="takeaways-box">
+            <p class="box-label">Key Takeaways</p>
+            <ul>
+                <li>The Freeze response is a <strong>Dorsal Vagal</strong> survival strategy, not a character flaw or a lack of courage.</li>
+                <li><strong>Functional Freeze</strong> allows survivors to perform tasks while remaining emotionally and cognitively dissociated.</li>
+                <li>The <strong>"Thaw"</strong> is a necessary but volatile stage where the body transitions from shutdown back into active sympathetic energy.</li>
+                <li>Recovery coaching must use <strong>bottom-up somatic tools</strong> to break the freeze before cognitive "Navigate" strategies can be fully effective.</li>
+                <li>Agency is restored through <strong>titrated movement</strong> and micro-moments of safety.</li>
+            </ul>
+        </div>
+
+        <div class="references-box">
+            <h4>References & Further Reading</h4>
+            <ul>
+                <li>Porges, S. W. (2011). "The Polyvagal Theory: Neurophysiological Foundations of Emotions, Attachment, Communication, and Self-regulation." Norton & Company.</li>
+                <li>Levine, P. A. (2010). "In an Unspoken Voice: How the Body Releases Trauma and Restores Goodness." North Atlantic Books.</li>
+                <li>Kozlowska, K., et al. (2015). "Fear and the Defense Cascade: Clinical Implications and Management." Harvard Review of Psychiatry.</li>
+                <li>Van der Kolk, B. (2014). "The Body Keeps the Score: Brain, Mind, and Body in the Healing of Trauma." Viking.</li>
+                <li>Schauer, M., & Elbert, T. (2010). "Dissociation Following Traumatic Stress: Etiology and Treatment." Zeitschrift für Psychologie.</li>
+                <li>Payne, P., et al. (2015). "Somatic Experiencing: Using Interoception and Proprioception as Core Elements of Trauma Therapy." Frontiers in Psychology.</li>
+            </ul>
+        </div>
+
+        <footer class="lesson-footer">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="footer-logo">
+            <p class="brand">AccrediPro Academy Certified Narcissistic Abuse Recovery Coach</p>
+            <p class="copyright">&copy; 2024 AccrediPro. All rights reserved. Proprietary N.A.R.C. Recovery Method™ Framework.</p>
+        </footer>
+    </div>
+</body>
+
+</html>

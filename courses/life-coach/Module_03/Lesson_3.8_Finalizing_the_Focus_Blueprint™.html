@@ -1,0 +1,715 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lesson 3.8: Finalizing the Focus Blueprint™</title>
+    <style>
+        /* Base & Reset */
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Georgia, 'Times New Roman', serif;
+            line-height: 1.8;
+            color: #2d2d2d;
+            background: #f8f6f3;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Main Container */
+        .lesson-container {
+            max-width: 860px;
+            margin: 0 auto;
+            padding: 40px 30px;
+            background: #ffffff;
+            min-height: 100vh;
+            box-shadow: 0 0 60px rgba(0, 0, 0, 0.08);
+        }
+
+        /* Brand Header */
+        .brand-header {
+            text-align: center;
+            padding-bottom: 30px;
+            margin-bottom: 35px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .brand-logo {
+            max-width: 220px;
+            height: auto;
+            margin-bottom: 5px;
+        }
+
+        /* Module Header - BLUE theme for Focus */
+        .module-header {
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+            padding: 35px 35px 30px;
+            border-radius: 16px;
+            margin-bottom: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .module-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+            transform: translate(100px, -100px);
+        }
+
+        .module-header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, #B8860B, #D4A84B, #B8860B);
+        }
+
+        .module-label {
+            margin: 0;
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.75);
+            text-transform: uppercase;
+            letter-spacing: 2.5px;
+            font-weight: 500;
+        }
+
+        .lesson-title {
+            margin: 10px 0 0 0;
+            font-size: 28px;
+            color: #ffffff;
+            font-weight: 700;
+            line-height: 1.3;
+            position: relative;
+        }
+
+        .lesson-meta {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+            padding-top: 18px;
+            border-top: 1px solid rgba(255, 255, 255, 0.15);
+            flex-wrap: wrap;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.85);
+            background: rgba(255, 255, 255, 0.1);
+            padding: 5px 12px;
+            border-radius: 4px;
+        }
+
+        /* Table of Contents */
+        .toc-box {
+            background: linear-gradient(135deg, #fafafa 0%, #f5f5f5 100%);
+            border-radius: 14px;
+            padding: 24px 28px;
+            margin-bottom: 35px;
+            border: 1px solid #e8e8e8;
+        }
+
+        .toc-box .box-label {
+            font-weight: 600;
+            color: #1e3a8a;
+            margin: 0 0 18px 0;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .toc-list {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px 24px;
+        }
+
+        .toc-list li {
+            margin: 0;
+        }
+
+        .toc-list a {
+            display: flex;
+            align-items: center;
+            padding: 8px 12px;
+            color: #555;
+            text-decoration: none;
+            font-size: 14px;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+        }
+
+        .toc-list a:hover {
+            background: white;
+            color: #1e3a8a;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+        }
+
+        .toc-list .section-num {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 26px;
+            height: 26px;
+            background: #1e3a8a;
+            color: white;
+            font-weight: 600;
+            font-size: 11px;
+            border-radius: 6px;
+            margin-right: 12px;
+            flex-shrink: 0;
+        }
+
+        /* Learning Objectives */
+        .objectives-box {
+            background: #f0f7ff;
+            border: 2px solid #3b82f6;
+            border-radius: 14px;
+            padding: 30px 35px;
+            margin-bottom: 40px;
+        }
+
+        .objectives-box .box-label {
+            font-weight: 600;
+            color: #1e3a8a;
+            margin: 0 0 18px 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .objectives-box .box-label::before {
+            content: '🎯';
+            font-size: 18px;
+        }
+
+        .objectives-box ul {
+            margin: 0;
+            padding-left: 22px;
+        }
+
+        .objectives-box li {
+            margin-bottom: 14px;
+            font-size: 16px;
+            line-height: 1.7;
+        }
+
+        /* Key Terms Box */
+        .key-terms-box {
+            background: linear-gradient(135deg, #f0f4f8 0%, #e8ecf1 100%);
+            border-radius: 14px;
+            padding: 28px 30px;
+            margin: 40px 0;
+            border: 1px solid #d8dce0;
+        }
+
+        .key-terms-box .box-label {
+            font-weight: 600;
+            color: #1e3a8a;
+            margin: 0 0 18px 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .terms-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 16px;
+        }
+
+        .term-item {
+            background: white;
+            padding: 16px 18px;
+            border-radius: 10px;
+            border-left: 4px solid #3b82f6;
+        }
+
+        .term-item .term {
+            font-weight: 700;
+            color: #1e3a8a;
+            font-size: 15px;
+            margin: 0 0 6px 0;
+        }
+
+        .term-item .definition {
+            font-size: 14px;
+            color: #555;
+            margin: 0;
+            line-height: 1.6;
+        }
+
+        /* Section Headings */
+        h2 {
+            font-size: 24px;
+            color: #1e3a8a;
+            margin: 50px 0 20px 0;
+            font-weight: 600;
+            position: relative;
+            padding-bottom: 12px;
+        }
+
+        h2::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 60px;
+            height: 3px;
+            background: #B8860B;
+        }
+
+        /* Paragraphs */
+        p {
+            font-size: 17px;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        /* Highlights */
+        .highlight {
+            background: linear-gradient(180deg, transparent 60%, #FFF59D 60%);
+            padding: 0 4px;
+            font-weight: 500;
+        }
+
+        /* Statistics Box */
+        .stats-box {
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+            padding: 40px;
+            border-radius: 16px;
+            margin: 35px 0;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 25px;
+            position: relative;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 42px;
+            font-weight: 700;
+            color: white;
+            line-height: 1;
+            margin-bottom: 8px;
+        }
+
+        .stat-label {
+            font-size: 13px;
+            color: rgba(255, 255, 255, 0.85);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* Case Study Box */
+        .case-study {
+            background: linear-gradient(135deg, #f8f9fb 0%, #f0f2f5 100%);
+            border-radius: 16px;
+            padding: 0;
+            margin: 40px 0;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+        }
+
+        .case-study-header {
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+            padding: 20px 30px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .case-study-icon {
+            width: 45px;
+            height: 45px;
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+        }
+
+        .case-study-header .box-label {
+            font-weight: 600;
+            color: #ffffff;
+            margin: 0;
+            font-size: 16px;
+        }
+
+        .case-study-content {
+            padding: 28px 30px;
+        }
+
+        .patient-profile {
+            display: flex;
+            align-items: center;
+            gap: 18px;
+            padding: 18px 22px;
+            background: white;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            border: 1px solid #e5e5e5;
+        }
+
+        .patient-avatar {
+            width: 55px;
+            height: 55px;
+            background: linear-gradient(135deg, #3b82f6, #1e3a8a);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            flex-shrink: 0;
+        }
+
+        /* Data Table */
+        .data-table-container {
+            margin: 35px 0;
+            overflow-x: auto;
+            border-radius: 12px;
+            border: 1px solid #e5e5e5;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 15px;
+            background: white;
+        }
+
+        th {
+            background: #f1f5f9;
+            color: #1e3a8a;
+            font-weight: 600;
+            text-align: left;
+            padding: 16px;
+            border-bottom: 2px solid #e2e8f0;
+        }
+
+        td {
+            padding: 16px;
+            border-bottom: 1px solid #f1f5f9;
+            color: #444;
+        }
+
+        /* Check Understanding */
+        .check-understanding {
+            background: linear-gradient(135deg, #fdfbf7 0%, #f9f5ed 100%);
+            border: 2px solid #B8860B;
+            border-radius: 16px;
+            padding: 32px;
+            margin: 45px 0;
+        }
+
+        .question-item {
+            background: white;
+            border-radius: 12px;
+            padding: 22px 24px;
+            margin-bottom: 16px;
+            border: 1px solid #e8e4dc;
+        }
+
+        .reveal-btn {
+            background: #1e3a8a;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-family: inherit;
+        }
+
+        .answer-text {
+            display: none;
+            padding: 14px;
+            background: #f0f7ff;
+            border-radius: 8px;
+            margin-top: 10px;
+        }
+
+        .answer-text.show {
+            display: block;
+        }
+
+        /* Takeaways */
+        .takeaways-box {
+            background: linear-gradient(135deg, #f5f5f5 0%, #e8e8e8 100%);
+            padding: 22px 25px;
+            margin-top: 35px;
+            border-radius: 8px;
+            border: 1px solid #ddd;
+        }
+
+        .takeaways-box .box-label {
+            font-weight: 600;
+            color: #1e3a8a;
+            margin: 0 0 15px 0;
+            font-size: 16px;
+            text-transform: uppercase;
+        }
+
+        .references-box {
+            margin-top: 40px;
+            padding: 25px;
+            background: #fff;
+            border: 1px solid #eee;
+            border-radius: 12px;
+        }
+
+        .references-box h4 {
+            margin: 0 0 15px 0;
+            color: #1e3a8a;
+        }
+
+        .references-box ul {
+            list-style: none;
+            padding: 0;
+            font-size: 14px;
+            color: #666;
+        }
+
+        .references-box li {
+            margin-bottom: 8px;
+        }
+
+        .footer-logo {
+            max-width: 140px;
+            margin-bottom: 10px;
+        }
+
+        .lesson-footer {
+            text-align: center;
+            padding: 40px 0;
+            border-top: 1px solid #eee;
+            margin-top: 40px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="lesson-container">
+        <div class="brand-header">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="brand-logo">
+        </div>
+
+        <header class="module-header">
+            <p class="module-label">Module 3: F: Focus</p>
+            <h1 class="lesson-title">Lesson 3.8: Finalizing the Focus Blueprint™</h1>
+            <div class="lesson-meta">
+                <span class="meta-item">30 min read</span>
+                <span class="meta-item">Lesson 8 of 8</span>
+            </div>
+        </header>
+
+        <div class="toc-box">
+            <p class="box-label">In This Lesson</p>
+            <ul class="toc-list">
+                <li><a href="#section1"><span class="section-num">1</span>The Blueprint Synthesis</a></li>
+                <li><a href="#section2"><span class="section-num">2</span>The Psychology of Commitment</a></li>
+                <li><a href="#section3"><span class="section-num">3</span>Defining Focus-Specific KPIs</a></li>
+                <li><a href="#section4"><span class="section-num">4</span>The Verbal Contract Protocol</a></li>
+                <li><a href="#section5"><span class="section-num">5</span>The 5-Point Focus Review</a></li>
+                <li><a href="#section6"><span class="section-num">6</span>Transitioning to Execute</a></li>
+            </ul>
+        </div>
+
+        <div class="objectives-box">
+            <p class="box-label">Learning Objectives</p>
+            <ul>
+                <li>Synthesize roadmap, priorities, and resources into the unified Focus Blueprint™.</li>
+                <li>Leverage behavioral psychology to secure high-integrity client "Buy-In."</li>
+                <li>Establish measurable Lead Measures (KPIs) to track strategic progress.</li>
+                <li>Apply the "Verbal Contract" technique to activate the consistency principle.</li>
+                <li>Conduct a final audit to ensure the strategy is robust, realistic, and resilient.</li>
+            </ul>
+        </div>
+
+        <h2 id="section1">1. The Blueprint Synthesis: From Planning to Architecture</h2>
+        <p>In the previous seven lessons of this module, we have dismantled the client's vision and rebuilt it into a strategic framework. We have mapped resources, analyzed gaps, and defined micro-actions. However, a collection of strategies is not yet a <span class="highlight">Focus Blueprint™</span>. Synthesis is the process of unifying these disparate elements into a singular, coherent document that serves as the client’s "North Star."</p>
+        
+        <p>The synthesis phase requires the coach to help the client see the "connective tissue" between their daily actions and their long-term identity. Without this synthesis, the client may suffer from "fragmented focus," where they complete tasks but fail to see how they contribute to the overarching goal. This phenomenon often leads to the <span class="highlight">Intention-Behavior Gap</span>, which we will explore deeply in Module 4.</p>
+
+        <div class="stats-box">
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <div class="stat-number">42%</div>
+                    <div class="stat-label">Higher Goal Success</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">33%</div>
+                    <div class="stat-label">Accountability Boost</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">2.5x</div>
+                    <div class="stat-label">Clarity Increase</div>
+                </div>
+            </div>
+        </div>
+
+        <h2 id="section2">2. The Neuroscience of Commitment & Ownership</h2>
+        <p>Finalizing the blueprint is not merely an administrative task; it is a psychological intervention. According to the <span class="highlight">Endowment Effect</span>, individuals value things more highly if they feel a sense of ownership over them. In coaching, this means the Focus Blueprint™ must be perceived as the <em>client's</em> creation, not the coach's prescription.</p>
+        
+        <p>Neuroscientifically, when a client actively participates in finalizing their plan, the <span class="highlight">Prefrontal Cortex (PFC)</span>—the seat of executive function—is more engaged. This engagement is critical for overriding the amygdala’s fear response when the "Execute" phase begins. By securing "Buy-In" now, we are essentially "pre-loading" the willpower necessary for the challenges ahead.</p>
+
+        <div class="case-study">
+            <div class="case-study-header">
+                <div class="case-study-icon">👤</div>
+                <div>
+                    <p class="box-label">Case Study: The Fragmented Founder</p>
+                    <p style="color: rgba(255,255,255,0.8); margin:0; font-size:13px;">Client: James, 38 | Objective: Scale Business without Burnout</p>
+                </div>
+            </div>
+            <div class="case-study-content">
+                <p><strong>Presenting Symptoms:</strong> James had a 50-item to-do list but felt he was "treading water." He had high motivation but low strategic focus.</p>
+                <p><strong>Intervention:</strong> Using the Focus Blueprint™ synthesis, we narrowed his 50 items down to 3 "Keystone Priorities." We mapped these to specific resources (a new virtual assistant) and defined lead measures for each.</p>
+                <p><strong>Outcome:</strong> James reported a 60% reduction in perceived stress within two weeks. By finalizing the blueprint, he eliminated "decision fatigue" because his daily actions were pre-decided.</p>
+            </div>
+        </div>
+
+        <h2 id="section3">3. Establishing Focus-Specific KPIs</h2>
+        <p>A blueprint without measurement is just a wish. In the L.I.F.E. Blueprint Method™, we distinguish between <span class="highlight">Lag Measures</span> (the end result) and <span class="highlight">Lead Measures</span> (the predictive actions). The Focus Blueprint™ focuses almost exclusively on Lead Measures.</p>
+
+        <div class="data-table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Metric Type</th>
+                        <th>Definition</th>
+                        <th>Example (Health Goal)</th>
+                        <th>Role in Focus Blueprint™</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Lag Measure</strong></td>
+                        <td>The ultimate goal you are chasing.</td>
+                        <td>Losing 15 pounds.</td>
+                        <td>The Destination.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Lead Measure</strong></td>
+                        <td>Predictive, influenceable actions.</td>
+                        <td>Walking 10k steps daily.</td>
+                        <td>The Daily Focus.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Process KPI</strong></td>
+                        <td>Consistency of the system.</td>
+                        <td>Tracking meals 7/7 days.</td>
+                        <td>The Integrity Check.</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <h2 id="section4">4. The Verbal Contract Protocol</h2>
+        <p>The "Verbal Contract" is a high-level coaching tool designed to trigger the <span class="highlight">Consistency Principle</span>. Robert Cialdini, a renowned psychologist, posits that once we make a stand or take a commitment, we encounter personal and interpersonal pressures to behave consistently with that commitment.</p>
+        
+        <p>To execute the Verbal Contract, the coach asks: <em>"We have finalized this Blueprint. On a scale of 1-10, how committed are you to the specific actions we've laid out for the next 14 days?"</em> If the answer is less than a 9, the blueprint is not yet final; it is too ambitious or lacks sufficient resources. We must adjust until the client gives a "Hell Yes" commitment.</p>
+
+        <h2 id="section5">5. The 5-Point Focus Review Checklist</h2>
+        <p>Before moving to "Module 4: Execute," every coach must run the Focus Blueprint™ through this rigorous audit. This ensures the strategy is not just a "paper plan" but a functional reality.</p>
+
+        <div class="principle-card">
+            <div class="principle-title">1. The Simplicity Test</div>
+            <p class="principle-text">Can the client explain the top 3 priorities of this blueprint in under 30 seconds? Complexity is the enemy of execution.</p>
+        </div>
+        <div class="principle-card">
+            <div class="principle-title">2. The Friction Audit</div>
+            <p class="principle-text">Have we identified the primary environmental friction points? (e.g., if the goal is gym at 6 AM, are the clothes laid out?)</p>
+        </div>
+        <div class="principle-card">
+            <div class="principle-title">3. The Resource Alignment</div>
+            <p class="principle-text">Does the client have the 3 T's (Time, Talent, Treasure) required to sustain this specific focus for 90 days?</p>
+        </div>
+        <div class="principle-card">
+            <div class="principle-title">4. The "If-Then" Contingency</div>
+            <p class="principle-text">Are there 2-3 "Implementation Intentions" for when things go wrong? (e.g., "If I miss my morning run, then I will do 20 burpees at lunch.")</p>
+        </div>
+        <div class="principle-card">
+            <div class="principle-title">5. The Emotional Resonance</div>
+            <p class="principle-text">Does the finalized plan feel like a "burden" or a "relief"? A successful Focus Blueprint™ should feel like a weight being lifted.</p>
+        </div>
+
+        <h2 id="section6">6. Transitioning to 'E: Execute'</h2>
+        <p>As we conclude Module 3, we stand at the threshold of action. We have <strong>Listened</strong> to the client's deep desires, <strong>Identified</strong> the blocks and goals, and <strong>Focused</strong> the strategy into a sharp, actionable blueprint. However, as Peter Drucker famously noted, <em>"Plans are only good intentions unless they immediately degenerate into hard work."</em></p>
+        
+        <p>The transition to the "Execute" phase is where many coaching relationships fail. This is because the "Focus" phase is intellectual and exciting, while "Execute" is physical and often mundane. In the next module, we will learn how to bridge the <span class="highlight">Intention-Behavior Gap</span> using behavioral triggers, habit stacking, and radical accountability frameworks.</p>
+
+        <div class="check-understanding">
+            <p class="box-label">Check Your Understanding</p>
+            <div class="question-item">
+                <p class="question-text">Why is a "Verbal Contract" more effective than a simple written agreement in a coaching session?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-text">The Verbal Contract activates the "Consistency Principle." Human beings have a deep-seated psychological need to be (and appear to be) consistent with what they have publicly declared, especially to an authority figure or coach.</div>
+            </div>
+            <div class="question-item">
+                <p class="question-text">What is the primary difference between a Lag Measure and a Lead Measure in the Focus Blueprint™?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-text">A Lag Measure is the end result (e.g., revenue), which you cannot directly control. A Lead Measure is the predictive action (e.g., 10 sales calls) that you <em>can</em> directly control and track daily.</div>
+            </div>
+        </div>
+
+        <div class="takeaways-box">
+            <p class="box-label">Key Takeaways</p>
+            <ul>
+                <li>The Focus Blueprint™ is the synthesis of roadmap, resources, and micro-actions into a singular "North Star."</li>
+                <li>Ownership is key: Use the Endowment Effect to ensure the client feels the plan is theirs.</li>
+                <li>Always prioritize Lead Measures (KPIs) over Lag Measures to maintain daily momentum.</li>
+                <li>The "Verbal Contract" should only be finalized when the client is at a 9/10 or 10/10 commitment level.</li>
+                <li>Foreshadowing the Execute phase helps the client prepare for the shift from "thinking" to "doing."</li>
+            </ul>
+        </div>
+
+        <div class="references-box">
+            <h4>References & Further Reading</h4>
+            <ul>
+                <li>Matthews, G. (2015). "The Impact of Commitment and Accountability on Goal Achievement." Dominican University Research.</li>
+                <li>Cialdini, R. (2001). "Harnessing the Science of Persuasion." Harvard Business Review.</li>
+                <li>Gollwitzer, P. M. (1999). "Implementation intentions: Strong effects of simple plans." American Psychologist.</li>
+                <li>Locke, E. A., & Latham, G. P. (2002). "Building a practically useful theory of goal setting and task motivation." American Psychologist.</li>
+                <li>Harkin, B., et al. (2016). "Does monitoring goal progress promote goal attainment? A meta-analysis." Psychological Bulletin.</li>
+                <li>Duhigg, C. (2012). "The Power of Habit: Why We Do What We Do in Life and Business." Random House.</li>
+            </ul>
+        </div>
+
+        <div class="lesson-footer">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="footer-logo">
+            <p class="brand">AccrediPro Academy Certified Life Coach Program</p>
+            <p class="copyright">&copy; 2024 AccrediPro Academy. All rights reserved. Intellectual Property of the L.I.F.E. Blueprint Method™.</p>
+        </div>
+    </div>
+</body>
+
+</html>

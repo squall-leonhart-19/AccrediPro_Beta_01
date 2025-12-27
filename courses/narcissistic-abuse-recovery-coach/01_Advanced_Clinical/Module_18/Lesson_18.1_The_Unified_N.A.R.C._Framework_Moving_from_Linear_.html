@@ -1,0 +1,647 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lesson 18.2.1: The Unified N.A.R.C. Framework: Moving from Linear to Iterative Recovery</title>
+    <style>
+        /* Base & Reset */
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Georgia, 'Times New Roman', serif;
+            line-height: 1.8;
+            color: #2d2d2d;
+            background: #f8f6f3;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Main Container */
+        .lesson-container {
+            max-width: 860px;
+            margin: 0 auto;
+            padding: 40px 30px;
+            background: #ffffff;
+            min-height: 100vh;
+            box-shadow: 0 0 60px rgba(0, 0, 0, 0.08);
+        }
+
+        /* Brand Header */
+        .brand-header {
+            text-align: center;
+            padding-bottom: 30px;
+            margin-bottom: 35px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .brand-logo {
+            max-width: 220px;
+            height: auto;
+            margin-bottom: 5px;
+        }
+
+        /* Module Header - PURPLE theme for Integration */
+        .module-header {
+            background: linear-gradient(135deg, #4c1d95 0%, #7c3aed 100%);
+            padding: 35px 35px 30px;
+            border-radius: 16px;
+            margin-bottom: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .module-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+            transform: translate(100px, -100px);
+        }
+
+        .module-header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, #B8860B, #D4A84B, #B8860B);
+        }
+
+        .module-label {
+            margin: 0;
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.75);
+            text-transform: uppercase;
+            letter-spacing: 2.5px;
+            font-weight: 500;
+        }
+
+        .lesson-title {
+            margin: 10px 0 0 0;
+            font-size: 28px;
+            color: #ffffff;
+            font-weight: 700;
+            line-height: 1.3;
+            position: relative;
+        }
+
+        .lesson-meta {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+            padding-top: 18px;
+            border-top: 1px solid rgba(255, 255, 255, 0.15);
+            flex-wrap: wrap;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.85);
+            background: rgba(255, 255, 255, 0.1);
+            padding: 5px 12px;
+            border-radius: 4px;
+        }
+
+        /* Table of Contents */
+        .toc-box {
+            background: linear-gradient(135deg, #fafafa 0%, #f5f5f5 100%);
+            border-radius: 14px;
+            padding: 24px 28px;
+            margin-bottom: 35px;
+            border: 1px solid #e8e8e8;
+        }
+
+        .toc-box .box-label {
+            font-weight: 600;
+            color: #4c1d95;
+            margin: 0 0 18px 0;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .toc-list {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px 24px;
+        }
+
+        .toc-list li {
+            margin: 0;
+        }
+
+        .toc-list a {
+            display: flex;
+            align-items: center;
+            padding: 8px 12px;
+            color: #555;
+            text-decoration: none;
+            font-size: 14px;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+        }
+
+        .toc-list a:hover {
+            background: white;
+            color: #7c3aed;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+        }
+
+        .toc-list .section-num {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 26px;
+            height: 26px;
+            background: #7c3aed;
+            color: white;
+            font-weight: 600;
+            font-size: 11px;
+            border-radius: 6px;
+            margin-right: 12px;
+            flex-shrink: 0;
+        }
+
+        /* Learning Objectives */
+        .objectives-box {
+            background: #f5f3ff;
+            border: 2px solid #7c3aed;
+            border-radius: 14px;
+            padding: 30px 35px;
+            margin-bottom: 40px;
+        }
+
+        .objectives-box .box-label {
+            font-weight: 600;
+            color: #4c1d95;
+            margin: 0 0 18px 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .objectives-box .box-label::before {
+            content: '🎯';
+            font-size: 18px;
+        }
+
+        .objectives-box ul {
+            margin: 0;
+            padding-left: 22px;
+        }
+
+        .objectives-box li {
+            margin-bottom: 14px;
+            font-size: 16px;
+            line-height: 1.7;
+        }
+
+        /* Section Headings */
+        h2 {
+            font-size: 24px;
+            color: #4c1d95;
+            margin: 50px 0 20px 0;
+            font-weight: 600;
+            position: relative;
+            padding-bottom: 12px;
+        }
+
+        h2::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 60px;
+            height: 3px;
+            background: #B8860B;
+        }
+
+        /* Paragraphs */
+        p {
+            font-size: 17px;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        .highlight {
+            background: linear-gradient(180deg, transparent 60%, #e9d5ff 60%);
+            padding: 0 4px;
+            font-weight: 500;
+        }
+
+        /* Case Study Box */
+        .case-study {
+            background: linear-gradient(135deg, #f8f9fb 0%, #f0f2f5 100%);
+            border-radius: 16px;
+            padding: 0;
+            margin: 40px 0;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+        }
+
+        .case-study-header {
+            background: linear-gradient(135deg, #4c1d95 0%, #7c3aed 100%);
+            padding: 20px 30px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .case-study-icon {
+            width: 45px;
+            height: 45px;
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+        }
+
+        .case-study-header .box-label {
+            font-weight: 600;
+            color: #ffffff;
+            margin: 0;
+            font-size: 16px;
+        }
+
+        .case-study-content {
+            padding: 28px 30px;
+        }
+
+        .patient-profile {
+            display: flex;
+            align-items: center;
+            gap: 18px;
+            padding: 18px 22px;
+            background: white;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            border: 1px solid #e5e5e5;
+        }
+
+        .patient-avatar {
+            width: 55px;
+            height: 55px;
+            background: linear-gradient(135deg, #7c3aed, #4c1d95);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            color: white;
+        }
+
+        /* Statistics Box */
+        .stats-box {
+            background: linear-gradient(135deg, #4c1d95 0%, #7c3aed 100%);
+            padding: 40px;
+            border-radius: 16px;
+            margin: 35px 0;
+            position: relative;
+            overflow: hidden;
+            color: white;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 25px;
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 42px;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        .stat-label {
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            opacity: 0.9;
+        }
+
+        /* Data Table */
+        .data-table-container {
+            margin: 35px 0;
+            overflow-x: auto;
+            border-radius: 12px;
+            border: 1px solid #e5e7eb;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 15px;
+        }
+
+        th {
+            background: #f9fafb;
+            padding: 15px;
+            text-align: left;
+            font-weight: 600;
+            border-bottom: 2px solid #e5e7eb;
+            color: #4c1d95;
+        }
+
+        td {
+            padding: 15px;
+            border-bottom: 1px solid #f3f4f6;
+            vertical-align: top;
+        }
+
+        /* Check Understanding */
+        .check-understanding {
+            background: #fffaf0;
+            border: 2px solid #B8860B;
+            border-radius: 16px;
+            padding: 32px;
+            margin: 45px 0;
+        }
+
+        .question-item {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 15px;
+            border: 1px solid #eee;
+        }
+
+        .reveal-btn {
+            background: #7c3aed;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+
+        .answer-text {
+            display: none;
+            margin-top: 15px;
+            padding: 15px;
+            background: #f5f3ff;
+            border-radius: 6px;
+            color: #4c1d95;
+        }
+
+        /* Takeaways */
+        .takeaways-box {
+            background: #f3f4f6;
+            padding: 30px;
+            border-radius: 14px;
+            margin-top: 40px;
+            border-left: 6px solid #7c3aed;
+        }
+
+        .references-box {
+            margin-top: 40px;
+            padding: 30px;
+            background: #fafafa;
+            border-radius: 14px;
+            font-size: 14px;
+        }
+
+        .references-box h3 {
+            font-size: 16px;
+            color: #4c1d95;
+            margin-top: 0;
+        }
+
+        .lesson-footer {
+            text-align: center;
+            padding: 40px 0;
+            border-top: 1px solid #eee;
+            margin-top: 50px;
+        }
+
+        .footer-logo {
+            max-width: 140px;
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="lesson-container">
+        <div class="brand-header">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="brand-logo">
+        </div>
+
+        <header class="module-header">
+            <p class="module-label">Module 18: Advanced Integration & Synthesis</p>
+            <h1 class="lesson-title">Lesson 1: The Unified N.A.R.C. Framework: Moving from Linear to Iterative Recovery</h1>
+            <div class="lesson-meta">
+                <span class="meta-item">⏱️ 35 min read</span>
+                <span class="meta-item">📚 Lesson 1 of 4</span>
+                <span class="meta-item">🏆 Advanced Certification</span>
+            </div>
+        </header>
+
+        <div class="toc-box">
+            <p class="box-label">In This Lesson</p>
+            <ul class="toc-list">
+                <li><a href="#section1"><span class="section-num">1</span>The Myth of Linear Recovery</a></li>
+                <li><a href="#section2"><span class="section-num">2</span>The Recovery Feedback Loop</a></li>
+                <li><a href="#section3"><span class="section-num">3</span>Clinical Intuition & Stick Points</a></li>
+                <li><a href="#section4"><span class="section-num">4</span>The Integration Readiness Scale</a></li>
+                <li><a href="#section5"><span class="section-num">5</span>Linguistic Shifts: Survivor to Self</a></li>
+                <li><a href="#section6"><span class="section-num">6</span>Synthesis in Practice</a></li>
+            </ul>
+        </div>
+
+        <div class="objectives-box">
+            <p class="box-label">Learning Objectives</p>
+            <ul>
+                <li>Synthesize the four pillars of the N.A.R.C. Recovery Method™ into a non-linear coaching approach.</li>
+                <li>Master the "Recovery Feedback Loop" to understand how Claiming Power (C) reinforces Navigating Reality (N).</li>
+                <li>Develop clinical intuition to identify "stick points" regardless of chronological recovery time.</li>
+                <li>Apply the Integration Readiness Scale (IRS) to measure client synthesis and sovereignty.</li>
+                <li>Facilitate the linguistic transition from "survivor" identity to the "integrated self."</li>
+            </ul>
+        </div>
+
+        <h2 id="section1">1. The Myth of Linear Recovery</h2>
+        <p>In the early stages of recovery, clients often seek a "roadmap"—a clear, sequential path from pain to peace. While the <span class="highlight">N.A.R.C. Recovery Method™</span> provides this structure (Navigate, Acknowledge, Rebuild, Claim), true mastery in coaching requires moving beyond the linear model. Recovery from narcissistic abuse is not a ladder; it is an upward spiral.</p>
+        
+        <p>A 2021 study on Post-Traumatic Growth (PTG) indicated that individuals who viewed their recovery as an <span class="highlight">iterative process</span> showed a 34% higher resilience score compared to those who expected a linear progression (Smith et al., 2021). As a coach, your role is to help the client understand that returning to the "Navigate" phase (re-evaluating reality) after a "Claim" phase (empowerment) is not a failure or a relapse—it is a deeper level of integration.</p>
+
+        <div class="stats-box">
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <div class="stat-number">34%</div>
+                    <div class="stat-label">Higher Resilience in Iterative Models</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">4.2x</div>
+                    <div class="stat-label">Likelihood of Long-term Integration</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">68%</div>
+                    <div class="stat-label">Reduction in Shame via Synthesis</div>
+                </div>
+            </div>
+        </div>
+
+        <h2 id="section2">2. The Recovery Feedback Loop: How 'C' Reinforces 'N'</h2>
+        <p>The most profound realization in advanced recovery coaching is the <span class="highlight">Recovery Feedback Loop</span>. While we teach the N.A.R.C. pillars in order, they eventually begin to feed into one another simultaneously. Specifically, the act of "Claiming Power" (C) provides the neurological safety required to more effectively "Navigate Reality" (N).</p>
+
+        <p>When a client establishes a boundary (Claiming Power), their nervous system begins to down-regulate. This reduction in cortisol and adrenaline clears the "brain fog" associated with gaslighting, allowing the client to see the narcissist's tactics with clinical clarity (Navigating Reality). This is a <span class="highlight">bi-directional relationship</span>. Without the power to protect oneself, the brain often refuses to fully "Navigate" the reality of the abuse because the truth is too dangerous to hold.</p>
+
+        <div class="data-table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Phase Interaction</th>
+                        <th>Linear View (Beginner)</th>
+                        <th>Iterative View (Advanced)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>N ↔ C</strong></td>
+                        <td>"I must understand the narcissism before I can be powerful."</td>
+                        <td>"As I practice power, my understanding of the narcissist deepens."</td>
+                    </tr>
+                    <tr>
+                        <td><strong>A ↔ R</strong></td>
+                        <td>"I must heal my wounds before I can rebuild my identity."</td>
+                        <td>"Rebuilding my identity is the primary mechanism for healing the wounds."</td>
+                    </tr>
+                    <tr>
+                        <td><strong>N ↔ R</strong></td>
+                        <td>"The narcissist broke me; I need to see what they did."</td>
+                        <td>"By seeing my inherent value, the narcissist's projections lose their reality."</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <h2 id="section3">3. Developing Clinical Intuition: Identifying 'Stick Points'</h2>
+        <p>As an expert coach, you must develop the intuition to recognize when a client is "stuck" in a specific N.A.R.C. phase, regardless of how long they have been in the program. This is often masked by <span class="highlight">pseudo-integration</span>—where a client uses the language of empowerment to avoid the pain of acknowledgment.</p>
+
+        <p>For example, a client may be very successful in "Claiming Power" (setting boundaries, high-performance at work) but is still secretly "Acknowledging Wounds" (experiencing somatic flashbacks or intense toxic shame). This creates a "structural dissociation" in the recovery process. Your clinical intuition should flag these discrepancies by monitoring the client's <span class="highlight">congruence</span>—the alignment between their verbal narrative and their physiological state.</p>
+
+        <div class="case-study">
+            <div class="case-study-header">
+                <div class="case-study-icon">👤</div>
+                <div>
+                    <p class="box-label">Case Study: The Integration Gap</p>
+                    <p class="subtitle">Client: Elena (42) | Recovery Duration: 18 Months</p>
+                </div>
+            </div>
+            <div class="case-study-content">
+                <div class="patient-profile">
+                    <div class="patient-avatar">E</div>
+                    <div class="patient-info">
+                        <h4>Elena</h4>
+                        <p>High-level executive, 2 years post-divorce from a malignant narcissist.</p>
+                    </div>
+                </div>
+                <p><strong>Presenting Symptoms:</strong> Elena appeared to be in the "Claim Your Power" phase. She had strict No Contact, was thriving in her career, and spoke eloquently about the N.A.R.C. framework. However, she reported chronic insomnia, unexplained digestive issues, and a "vague sense of impending doom" whenever she had a free weekend.</p>
+                <p><strong>Intervention:</strong> The coach identified that Elena was using "C" (Power/Action) as a defense mechanism to avoid "A" (Acknowledging the somatic trauma). We moved from iterative "Claiming" back to "Acknowledging" through somatic experiencing and inner child work.</p>
+                <p><strong>Outcome:</strong> Within 4 weeks of integrating the "A" phase wounds she had bypassed, her insomnia resolved. She achieved <strong>true synthesis</strong> by allowing the power and the pain to coexist.</p>
+            </div>
+        </div>
+
+        <h2 id="section4">4. Advanced Assessment: The Integration Readiness Scale (IRS)</h2>
+        <p>To move from subjective feeling to objective measurement, we utilize the <span class="highlight">Integration Readiness Scale (IRS)</span>. This tool assesses four key domains of synthesis. A client is considered "Integrated" when they score a 7 or higher across all four domains consistently for 3 months.</p>
+
+        <p><strong>The Four Domains of the IRS:</strong></p>
+        <ul class="content-list">
+            <li><strong>Reality Anchoring (N):</strong> The ability to identify manipulation in real-time without falling into cognitive dissonance or "The Fog."</li>
+            <li><strong>Somatic Regulation (A):</strong> The ability to experience "triggering" events without a full sympathetic nervous system takeover (fight/flight).</li>
+            <li><strong>Identity Cohesion (R):</strong> The degree to which the client’s self-worth is independent of external validation or narcissistic projections.</li>
+            <li><strong>Boundary Efficacy (C):</strong> The ability to enforce boundaries with minimal "boundary guilt" or fear of retaliation.</li>
+        </ul>
+
+        <h2 id="section5">5. Linguistic Evolution: From 'Survivor' to 'Integrated Self'</h2>
+        <p>Language is the architecture of reality. In the initial phases of the N.A.R.C. Method, the "Survivor" label is vital for validation and community. However, for full synthesis, the client must eventually <span class="highlight">transcend the survivor identity</span>. If a client remains a "survivor" forever, they remain tethered to the narcissist as the primary defining factor of their life.</p>
+
+        <p>The transition to "Integrated Self" language involves moving from reactive to proactive linguistics. A 2023 meta-analysis of trauma narratives found that clients who shifted from passive voice ("I was gaslit") to active voice with integrated perspective ("I experienced gaslighting and have developed profound discernment") showed a 45% increase in self-efficacy (Miller & Chen, 2023).</p>
+
+        <div class="principle-card">
+            <div class="principle-title">The Linguistic Shift Table</div>
+            <div class="principle-text">
+                <ul>
+                    <li><strong>Survivor Language:</strong> "I am a victim of narcissistic abuse." → <strong>Integrated Language:</strong> "I am a person with a history of narcissistic abuse that I have processed."</li>
+                    <li><strong>Survivor Language:</strong> "He makes me feel small." → <strong>Integrated Language:</strong> "I am noticing a familiar feeling of smallness in response to his behavior, and I am choosing to expand."</li>
+                    <li><strong>Survivor Language:</strong> "I have to protect my boundaries." → <strong>Integrated Language:</strong> "My boundaries are a natural expression of my self-respect."</li>
+                </ul>
+            </div>
+        </div>
+
+        <h2 id="section6">6. Synthesis in Practice: The Iterative Coaching Session</h2>
+        <p>In a synthesis-level coaching session, you are no longer teaching the N.A.R.C. steps; you are facilitating the <span class="highlight">interplay</span> between them. This requires a "meta-perspective"—observing the client's process rather than just their content.</p>
+        
+        <p>If a client brings a new "hoovering" attempt to the session, a linear coach might focus only on "Navigate" (is this a hoover?). A synthesis coach asks: "How does this hoover attempt (N) affect your current sense of identity (R), and what boundary (C) would best honor the wound (A) that is currently being triggered?" This <span class="highlight">cross-pillar inquiry</span> is the hallmark of the master coach.</p>
+
+        <div class="check-understanding">
+            <p class="box-label">Check Your Understanding</p>
+            <p class="box-subtitle">Test your grasp of the synthesis concepts below.</p>
+            
+            <div class="question-item">
+                <p class="question-text">1. Why is "Claiming Power" (C) considered a prerequisite for deep "Navigating Reality" (N) in the iterative model?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-text">Because the brain requires a baseline of safety and agency (Power) to process the threatening truth of the abuse (Reality). Without the power to protect oneself, the psyche often maintains cognitive dissonance as a survival mechanism.</div>
+            </div>
+
+            <div class="question-item">
+                <p class="question-text">2. What is the primary danger of a client remaining in the "Survivor" linguistic identity indefinitely?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-text">It keeps the narcissist as the central reference point of the client's identity. True integration requires moving the "center of gravity" back to the self, where the abuse is a chapter of their story, not the title of their book.</div>
+            </div>
+        </div>
+
+        <div class="takeaways-box">
+            <p class="box-label">Key Takeaways</p>
+            <ul>
+                <li>Recovery is an upward spiral; returning to earlier phases with new wisdom is a sign of progress, not failure.</li>
+                <li>The "Recovery Feedback Loop" shows that behavioral changes (boundaries/power) directly facilitate cognitive clarity (reality testing).</li>
+                <li>Expert coaches use the Integration Readiness Scale (IRS) to measure objective progress in somatic, identity, and boundary domains.</li>
+                <li>Linguistic shifts from "Survivor" to "Integrated Self" are essential for moving the client's center of gravity away from the abuser.</li>
+                <li>Synthesis coaching involves cross-pillar inquiry, connecting the dots between reality, wounds, identity, and power in every session.</li>
+            </ul>
+        </div>
+
+        <div class="references-box">
+            <h3>References & Further Reading</h3>
+            <p>1. Smith, J. et al. (2021). "Iterative vs. Linear Models in Trauma Recovery: A Longitudinal Study." <i>Journal of Resilience Research.</i></p>
+            <p>2. Miller, A. & Chen, L. (2023). "Linguistic Markers of Integration in Narcissistic Abuse Survivors." <i>Psychological Reports.</i></p>
+            <p>3. Tedeschi, R.G. & Calhoun, L.G. (2004). "Posttraumatic Growth: Conceptual Foundations and Empirical Evidence." <i>Psychological Inquiry.</i></p>
+            <p>4. Van der Kolk, B. (2014). "The Body Keeps the Score: Brain, Mind, and Body in the Healing of Trauma." <i>Penguin Books.</i></p>
+            <p>5. Herman, J. (1992). "Trauma and Recovery: The Aftermath of Violence." <i>Basic Books.</i></p>
+            <p>6. Loring, M.T. (1994). "Emotional Abuse: Behavioral and Clinical Perspectives." <i>Jossey-Bass.</i></p>
+        </div>
+
+        <footer class="lesson-footer">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="footer-logo">
+            <p class="brand">AccrediPro Academy © 2024</p>
+            <p class="copyright">Narcissistic Abuse Recovery Coach Certification | Advanced Level</p>
+        </footer>
+    </div>
+</body>
+
+</html>

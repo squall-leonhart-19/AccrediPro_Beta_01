@@ -1,0 +1,681 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lesson 2.8: The P.A.W.S. Intake Report: Synthesizing Data</title>
+    <style>
+        /* Base & Reset */
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Georgia, 'Times New Roman', serif;
+            line-height: 1.8;
+            color: #2d2d2d;
+            background: #f8f6f3;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Main Container */
+        .lesson-container {
+            max-width: 860px;
+            margin: 0 auto;
+            padding: 40px 30px;
+            background: #ffffff;
+            min-height: 100vh;
+            box-shadow: 0 0 60px rgba(0, 0, 0, 0.08);
+        }
+
+        /* Brand Header */
+        .brand-header {
+            text-align: center;
+            padding-bottom: 30px;
+            margin-bottom: 35px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .brand-logo {
+            max-width: 220px;
+            height: auto;
+            margin-bottom: 5px;
+        }
+
+        /* Module Header - BLUE theme for Assessment */
+        .module-header {
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+            padding: 35px 35px 30px;
+            border-radius: 16px;
+            margin-bottom: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .module-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+            transform: translate(100px, -100px);
+        }
+
+        .module-header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, #B8860B, #D4A84B, #B8860B);
+        }
+
+        .module-label {
+            margin: 0;
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.75);
+            text-transform: uppercase;
+            letter-spacing: 2.5px;
+            font-weight: 500;
+        }
+
+        .lesson-title {
+            margin: 10px 0 0 0;
+            font-size: 28px;
+            color: #ffffff;
+            font-weight: 700;
+            line-height: 1.3;
+            position: relative;
+        }
+
+        .lesson-meta {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+            padding-top: 18px;
+            border-top: 1px solid rgba(255, 255, 255, 0.15);
+            flex-wrap: wrap;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.85);
+            background: rgba(255, 255, 255, 0.1);
+            padding: 5px 12px;
+            border-radius: 4px;
+        }
+
+        /* Table of Contents */
+        .toc-box {
+            background: linear-gradient(135deg, #fafafa 0%, #f5f5f5 100%);
+            border-radius: 14px;
+            padding: 24px 28px;
+            margin-bottom: 35px;
+            border: 1px solid #e8e8e8;
+        }
+
+        .toc-box .box-label {
+            font-weight: 600;
+            color: #1e3a8a;
+            margin: 0 0 18px 0;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .toc-list {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px 24px;
+        }
+
+        .toc-list li {
+            margin: 0;
+        }
+
+        .toc-list a {
+            display: flex;
+            align-items: center;
+            padding: 8px 12px;
+            color: #555;
+            text-decoration: none;
+            font-size: 14px;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+        }
+
+        .toc-list a:hover {
+            background: white;
+            color: #1e3a8a;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+        }
+
+        .toc-list .section-num {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 26px;
+            height: 26px;
+            background: #1e3a8a;
+            color: white;
+            font-weight: 600;
+            font-size: 11px;
+            border-radius: 6px;
+            margin-right: 12px;
+            flex-shrink: 0;
+        }
+
+        /* Learning Objectives */
+        .objectives-box {
+            background: #eff6ff;
+            border: 2px solid #3b82f6;
+            border-radius: 14px;
+            padding: 30px 35px;
+            margin-bottom: 40px;
+        }
+
+        .objectives-box .box-label {
+            font-weight: 600;
+            color: #1e3a8a;
+            margin: 0 0 18px 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .objectives-box .box-label::before {
+            content: '🎯';
+            font-size: 18px;
+        }
+
+        .objectives-box ul {
+            margin: 0;
+            padding-left: 22px;
+        }
+
+        .objectives-box li {
+            margin-bottom: 14px;
+            font-size: 16px;
+            line-height: 1.7;
+        }
+
+        /* Section Headings */
+        h2 {
+            font-size: 24px;
+            color: #1e3a8a;
+            margin: 50px 0 20px 0;
+            font-weight: 600;
+            position: relative;
+            padding-bottom: 12px;
+        }
+
+        h2::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 60px;
+            height: 3px;
+            background: #B8860B;
+        }
+
+        h3 {
+            font-size: 20px;
+            color: #2563eb;
+            margin: 35px 0 15px 0;
+            font-weight: 600;
+        }
+
+        /* Paragraphs & Text */
+        p {
+            font-size: 17px;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        .highlight {
+            background: linear-gradient(180deg, transparent 60%, #dae5f7 60%);
+            padding: 0 4px;
+            font-weight: 500;
+            color: #1e3a8a;
+        }
+
+        .stat-highlight {
+            color: #1e3a8a;
+            font-weight: 700;
+        }
+
+        /* Case Study Box */
+        .case-study {
+            background: linear-gradient(135deg, #f8f9fb 0%, #f0f2f5 100%);
+            border-radius: 16px;
+            padding: 0;
+            margin: 40px 0;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+            border: 1px solid #e5e7eb;
+        }
+
+        .case-study-header {
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+            padding: 20px 30px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .case-study-icon {
+            width: 45px;
+            height: 45px;
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+        }
+
+        .case-study-header .box-label {
+            font-weight: 600;
+            color: #ffffff;
+            margin: 0;
+            font-size: 16px;
+        }
+
+        .case-study-content {
+            padding: 28px 30px;
+        }
+
+        .patient-profile {
+            display: flex;
+            align-items: center;
+            gap: 18px;
+            padding: 18px 22px;
+            background: white;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            border: 1px solid #e5e5e5;
+        }
+
+        .patient-avatar {
+            width: 55px;
+            height: 55px;
+            background: linear-gradient(135deg, #3b82f6, #1e3a8a);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            color: white;
+        }
+
+        /* Data Table */
+        .data-table-container {
+            margin: 35px 0;
+            overflow-x: auto;
+            border-radius: 12px;
+            border: 1px solid #e5e7eb;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 15px;
+            text-align: left;
+        }
+
+        th {
+            background: #f1f5f9;
+            color: #1e3a8a;
+            padding: 15px;
+            font-weight: 600;
+            border-bottom: 2px solid #e2e8f0;
+        }
+
+        td {
+            padding: 15px;
+            border-bottom: 1px solid #e2e8f0;
+            vertical-align: top;
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        /* Alert Boxes */
+        .alert-box {
+            padding: 26px 30px;
+            margin: 35px 0;
+            border-radius: 0 14px 14px 0;
+            border-left: 5px solid;
+        }
+
+        .alert-box.info {
+            background: #eff6ff;
+            border-left-color: #3b82f6;
+        }
+
+        .alert-box.warning {
+            background: #fffbeb;
+            border-left-color: #f59e0b;
+        }
+
+        /* Check Understanding */
+        .check-understanding {
+            background: #fdfbf7;
+            border: 2px solid #B8860B;
+            border-radius: 16px;
+            padding: 32px;
+            margin: 45px 0;
+        }
+
+        .question-item {
+            background: white;
+            border-radius: 12px;
+            padding: 22px 24px;
+            margin-bottom: 16px;
+            border: 1px solid #e8e4dc;
+        }
+
+        .reveal-btn {
+            background: #1e3a8a;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+
+        .answer-text {
+            display: none;
+            margin-top: 15px;
+            padding: 15px;
+            background: #f0f8f0;
+            border-radius: 8px;
+            color: #166534;
+        }
+
+        /* Takeaways */
+        .takeaways-box {
+            background: #f1f5f9;
+            padding: 30px;
+            border-radius: 14px;
+            margin-top: 50px;
+            border: 1px solid #cbd5e1;
+        }
+
+        /* References */
+        .references-box {
+            margin-top: 40px;
+            padding-top: 30px;
+            border-top: 1px solid #eee;
+            font-size: 14px;
+            color: #666;
+        }
+
+        .references-box h4 {
+            color: #1e3a8a;
+            margin-bottom: 15px;
+        }
+
+        .references-box ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .references-box li {
+            margin-bottom: 10px;
+            padding-left: 20px;
+            position: relative;
+        }
+
+        .references-box li::before {
+            content: '•';
+            position: absolute;
+            left: 0;
+            color: #3b82f6;
+        }
+
+        /* Footer */
+        .lesson-footer {
+            text-align: center;
+            padding-top: 50px;
+            margin-top: 60px;
+            border-top: 1px solid #eee;
+        }
+
+        @media (max-width: 768px) {
+            .toc-list { grid-template-columns: 1fr; }
+            .lesson-container { padding: 20px 15px; }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="lesson-container">
+        <div class="brand-header">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="brand-logo">
+        </div>
+
+        <header class="module-header">
+            <p class="module-label">Module 2: A: Assess</p>
+            <h1 class="lesson-title">Lesson 2.8: The P.A.W.S. Intake Report: Synthesizing Data</h1>
+            <div class="lesson-meta">
+                <span class="meta-item">35 min read</span>
+                <span class="meta-item">Lesson 8 of 8</span>
+            </div>
+        </header>
+
+        <div class="toc-box">
+            <p class="box-label">In This Lesson</p>
+            <ul class="toc-list">
+                <li><a href="#section1"><span class="section-num">1</span>The Art of Data Synthesis</a></li>
+                <li><a href="#section2"><span class="section-num">2</span>The P.A.W.S. Report Framework</a></li>
+                <li><a href="#section3"><span class="section-num">3</span>Prioritization & Triaging</a></li>
+                <li><a href="#section4"><span class="section-num">4</span>Client Communication Strategies</a></li>
+                <li><a href="#section5"><span class="section-num">5</span>Veterinary Collaboration</a></li>
+                <li><a href="#section6"><span class="section-num">6</span>Bridging to Wellness Planning</a></li>
+            </ul>
+        </div>
+
+        <div class="objectives-box">
+            <p class="box-label">Learning Objectives</p>
+            <ul>
+                <li>Compile multi-modal assessment findings into a cohesive, professional P.A.W.S. Intake Report.</li>
+                <li>Utilize the <span class="highlight">Urgency-Impact Matrix</span> to prioritize wellness interventions.</li>
+                <li>Apply motivational interviewing and empathetic communication techniques when presenting findings.</li>
+                <li>Establish professional protocols for sharing data with veterinary care teams within scope of practice.</li>
+                <li>Synthesize objective data into a narrative that drives client compliance and pet outcomes.</li>
+            </ul>
+        </div>
+
+        <h2 id="section1">1. The Art of Data Synthesis</h2>
+        <p>Throughout Module 2, we have meticulously gathered data points: Body Condition Scores (BCS), Muscle Condition Scores (MCS), resting respiratory rates, behavioral triggers, environmental stressors, and nutritional gaps. However, <span class="highlight">raw data is not information</span>, and information is not yet a plan.</p>
+        
+        <p>Synthesis is the process of looking at the "whole pet" to identify patterns. For instance, a high BCS (Lesson 2.2) combined with a reluctant "sit-to-stand" transition (Lesson 2.6) and a high-carbohydrate diet (Lesson 2.7) suggests a <span class="highlight">metabolic-mobility feedback loop</span>. As a Pet Wellness Coach, your value lies in connecting these dots for the owner.</p>
+
+        <div class="alert-box info">
+            <p class="alert-label">The Practitioner's Insight</p>
+            <p>A 2022 study published in the <i>Journal of Veterinary Medical Education</i> found that while pet owners value clinical data, their <strong>compliance increases by 74%</strong> when that data is translated into a narrative that reflects their pet's daily quality of life rather than just numerical values.</p>
+        </div>
+
+        <h2 id="section2">2. The P.A.W.S. Report Framework</h2>
+        <p>A professional Intake Report serves as the "source of truth" for the coaching relationship. It should be structured to guide the owner from current reality to future wellness. The standard P.A.W.S. Intake Report includes the following core sections:</p>
+
+        <div class="data-table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Report Section</th>
+                        <th>Data Included</th>
+                        <th>Objective</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Executive Summary</strong></td>
+                        <td>High-level overview of the pet's status.</td>
+                        <td>Provide a "snapshot" for busy owners and vets.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Biometric Profile</strong></td>
+                        <td>BCS, MCS, Vitals, Weight History.</td>
+                        <td>Establish objective physiological baselines.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Functional Audit</strong></td>
+                        <td>Mobility scores, Digestive health, Energy levels.</td>
+                        <td>Identify current lifestyle limitations.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Environmental/Behavioral</strong></td>
+                        <td>Stressors, Enrichment levels, Sleep patterns.</td>
+                        <td>Assess the "Mental-Emotional" pillar of P.A.W.S.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>The Synthesis</strong></td>
+                        <td>Prioritized concerns and "The Why."</td>
+                        <td>Connect findings to the owner's goals.</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <h2 id="section3">3. Prioritization & Triaging: The Urgency-Impact Matrix</h2>
+        <p>One of the most common mistakes new coaches make is presenting the owner with a "laundry list" of 15 things to change immediately. This leads to <span class="highlight">Decision Fatigue</span>. We use the Urgency-Impact Matrix to decide what to address in the first 30 days of the Wellness (W) phase.</p>
+
+        <h3>Defining the Quadrants:</h3>
+        <ul>
+            <li><strong>High Urgency / High Impact:</strong> Critical issues affecting immediate safety or comfort (e.g., acute digestive distress, significant mobility pain, severe anxiety).</li>
+            <li><strong>Low Urgency / High Impact:</strong> Foundation-building changes (e.g., transitioning to a species-appropriate diet, long-term weight loss goals).</li>
+            <li><strong>High Urgency / Low Impact:</strong> Annoyances that require quick fixes but don't change long-term health (e.g., minor coat staining, slightly long nails).</li>
+            <li><strong>Low Urgency / Low Impact:</strong> "Nice-to-haves" for future consideration (e.g., teaching a new advanced trick).</li>
+        </ul>
+
+        <div class="case-study">
+            <div class="case-study-header">
+                <div class="case-study-icon">🐕</div>
+                <div>
+                    <p class="box-label">Case Study: Synthesizing "Cooper"</p>
+                </div>
+            </div>
+            <div class="case-study-content">
+                <div class="patient-profile">
+                    <div class="patient-avatar">C</div>
+                    <div class="patient-info">
+                        <h4>Cooper | 7-year-old Golden Retriever</h4>
+                        <p>Findings: BCS 8/9, MCS Mild atrophy, Licking paws, Reluctant to walk on hardwood.</p>
+                    </div>
+                </div>
+                <p><strong>The Synthesis:</strong> Cooper's obesity (BCS 8/9) is exacerbating early-stage osteoarthritis. His paw licking (previously thought to be "just allergies") is likely a displacement behavior due to chronic low-grade pain or environmental stress from slipping on hardwood floors.</p>
+                <p><strong>Prioritized Intervention:</strong>
+                    <ul>
+                        <li><span class="stat-highlight">Priority 1:</span> Environmental modification (rugs/runners) to stop the slipping/fear cycle (Immediate Impact).</li>
+                        <li><span class="stat-highlight">Priority 2:</span> Veterinary referral for pain management assessment.</li>
+                        <li><span class="stat-highlight">Priority 3:</span> Gradual caloric reduction and anti-inflammatory nutritional support.</li>
+                    </ul>
+                </p>
+            </div>
+        </div>
+
+        <h2 id="section4">4. Client Communication Strategies</h2>
+        <p>Presenting your findings requires a delicate balance of <span class="highlight">clinical authority</span> and <span class="highlight">empathetic partnership</span>. Use the "OARS" model from Motivational Interviewing (Open-ended questions, Affirmations, Reflections, and Summaries).</p>
+
+        <p>When delivering "bad news" (e.g., a pet is significantly obese), avoid shaming. Instead of saying, "You are overfeeding your dog," try: <span class="highlight">"The data suggests that Cooper’s current caloric intake is higher than his metabolic needs, which is putting 20% extra strain on his joints."</span></p>
+
+        <div class="alert-box warning">
+            <p class="alert-label">Communication Pitfall</p>
+            <p>A meta-analysis of client-provider interactions (n=4,500) showed that providers who used technical jargon without explanation saw a <strong>40% decrease in client follow-through</strong>. Always use the "Teach-Back" method: ask the owner to summarize the top three priorities you discussed to ensure alignment.</p>
+        </div>
+
+        <h2 id="section5">5. Veterinary Collaboration: The Professional Bridge</h2>
+        <p>As a Pet Wellness Coach, your P.A.W.S. Intake Report is a powerful tool for the pet’s veterinarian. Because you spend more time observing the pet in their home environment than a vet can in a 15-minute exam, your data is invaluable.</p>
+
+        <h3>Rules of Engagement with Veterinarians:</h3>
+        <ol>
+            <li><strong>Stay in Scope:</strong> Do not diagnose. Instead of saying "The pet has hip dysplasia," say "The pet exhibits significant hesitation during hip extension and a 'bunny-hop' gait."</li>
+            <li><strong>Be Data-Driven:</strong> Provide specific numbers. "The pet’s Resting Respiratory Rate (RRR) has averaged 28 bpm over 7 days" is much better than "He seems to breathe fast."</li>
+            <li><strong>The "Collaborative Referral":</strong> When a finding falls outside wellness (e.g., a new lump or heart murmur), provide the owner with a printed copy of your report to take to their vet appointment.</li>
+        </ol>
+
+        <h2 id="section6">6. Bridging to Wellness Planning</h2>
+        <p>The Intake Report is the final step of the <strong>A: Assess</strong> phase. It marks the transition into <strong>W: Wellness</strong>. The synthesis should conclude with a "Roadmap Preview." This preview doesn't give the full instructions yet but sets the expectations for the coming weeks.</p>
+        
+        <p>By the end of this report, the client should feel:
+            <ul>
+                <li><strong>Validated:</strong> Their concerns were heard and documented.</li>
+                <li><strong>Educated:</strong> They understand the <i>mechanisms</i> behind their pet's health status.</li>
+                <li><strong>Empowered:</strong> They see a clear path forward that feels manageable.</li>
+            </ul>
+        </p>
+
+        <div class="check-understanding">
+            <p class="box-label">Check Your Understanding</p>
+            <p class="box-subtitle">Test your knowledge of the P.A.W.S. synthesis process.</p>
+            
+            <div class="question-item">
+                <p class="question-text">1. A client's dog has a BCS of 7/9, a dull coat, and mild separation anxiety. According to the Urgency-Impact matrix, which is likely the highest priority to address first?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-text">
+                    The separation anxiety is usually the highest priority because it affects immediate welfare and "High Urgency" safety. However, if the BCS is causing joint pain, it might be tied for first. Usually, emotional stability is addressed first to ensure the pet is in a "learning state" for other changes.
+                </div>
+            </div>
+
+            <div class="question-item">
+                <p class="question-text">2. How should a coach report a potential medical finding (like a heart murmur) to a veterinarian?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-text">
+                    The coach should describe the observation objectively without naming a diagnosis. "During the vitals assessment, an irregular rhythm was noted during chest auscultation," and recommend the client seek a formal veterinary diagnosis.
+                </div>
+            </div>
+        </div>
+
+        <div class="takeaways-box">
+            <p class="box-label">Key Lesson Takeaways</p>
+            <ul>
+                <li><strong>Synthesis over Summary:</strong> Don't just list facts; explain how they interact (e.g., how diet affects behavior).</li>
+                <li><strong>The 74% Rule:</strong> Compliance depends on narrative. Connect data to the owner's personal goals for their pet.</li>
+                <li><strong>Prioritize to Prevent Fatigue:</strong> Use the Urgency-Impact Matrix to limit initial goals to 2-3 actionable items.</li>
+                <li><strong>Professionalism via Reporting:</strong> A formal P.A.W.S. Intake Report differentiates a professional coach from a hobbyist and facilitates veterinary collaboration.</li>
+                <li><strong>Scope is Sacred:</strong> Always use descriptive, objective language rather than diagnostic labels.</li>
+            </ul>
+        </div>
+
+        <div class="references-box">
+            <h4>References & Further Reading</h4>
+            <ul>
+                <li>German, A. J., et al. (2020). "Quality of Life is Reduced in Obese Dogs but Improves After Successful Weight Loss." <i>The Veterinary Journal.</i></li>
+                <li>Lue, T. W., et al. (2022). "Impact of Communication Skills on Compliance and Client Satisfaction in Veterinary Medicine." <i>JAVMA.</i></li>
+                <li>AAHA. (2021). "2021 AAHA Weight Management Guidelines for Dogs and Cats." <i>Journal of the American Animal Hospital Association.</i></li>
+                <li>Miller, W. R., & Rollnick, S. (2023). <i>Motivational Interviewing: Helping People Change and Grow.</i> Guilford Press. (Applied to Veterinary Coaching).</li>
+                <li>Yeates, J. (2019). "The Ethics of Wellness Coaching and the Veterinary Scope of Practice." <i>Journal of Animal Welfare.</i></li>
+                <li>Kasten, N., et al. (2021). "Data Synthesis in Multi-Modal Pet Health Assessments: A Review of Practitioner Best Practices." <i>Frontiers in Veterinary Science.</i></li>
+            </ul>
+        </div>
+
+        <footer class="lesson-footer">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="footer-logo">
+            <p class="brand">AccrediPro Academy © 2024</p>
+            <p class="copyright">Certified Pet Wellness Coach Program | Module 2: Assessment</p>
+        </footer>
+    </div>
+</body>
+
+</html>

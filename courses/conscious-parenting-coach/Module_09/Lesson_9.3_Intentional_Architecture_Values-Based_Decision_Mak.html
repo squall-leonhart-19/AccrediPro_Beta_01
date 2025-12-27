@@ -1,0 +1,555 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lesson 9.3: Intentional Architecture: Values-Based Decision Making</title>
+    <style>
+        /* Base & Reset */
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Georgia, 'Times New Roman', serif;
+            line-height: 1.8;
+            color: #2d2d2d;
+            background: #f4f7f9;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Main Container */
+        .lesson-container {
+            max-width: 860px;
+            margin: 0 auto;
+            padding: 40px 30px;
+            background: #ffffff;
+            min-height: 100vh;
+            box-shadow: 0 0 60px rgba(0, 0, 0, 0.05);
+        }
+
+        /* Brand Header */
+        .brand-header {
+            text-align: center;
+            padding-bottom: 30px;
+            margin-bottom: 35px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .brand-logo {
+            max-width: 220px;
+            height: auto;
+            margin-bottom: 5px;
+        }
+
+        /* Module Header - BLUE/GOLD theme for Conscious Parenting */
+        .module-header {
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+            padding: 35px 35px 30px;
+            border-radius: 16px;
+            margin-bottom: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .module-header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, #d4af37, #f1c40f, #d4af37);
+        }
+
+        .module-label {
+            margin: 0;
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.75);
+            text-transform: uppercase;
+            letter-spacing: 2.5px;
+            font-weight: 500;
+        }
+
+        .lesson-title {
+            margin: 10px 0 0 0;
+            font-size: 28px;
+            color: #ffffff;
+            font-weight: 700;
+            line-height: 1.3;
+        }
+
+        .lesson-meta {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+            padding-top: 18px;
+            border-top: 1px solid rgba(255, 255, 255, 0.15);
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.85);
+            background: rgba(255, 255, 255, 0.1);
+            padding: 5px 12px;
+            border-radius: 4px;
+        }
+
+        /* Table of Contents */
+        .toc-box {
+            background: #f8fafc;
+            border-radius: 14px;
+            padding: 24px 28px;
+            margin-bottom: 35px;
+            border: 1px solid #e2e8f0;
+        }
+
+        .toc-box .box-label {
+            font-weight: 600;
+            color: #1e3a8a;
+            margin: 0 0 18px 0;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            border-bottom: 1px solid #e2e8f0;
+            padding-bottom: 10px;
+        }
+
+        .toc-list {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px 24px;
+        }
+
+        .toc-list a {
+            color: #475569;
+            text-decoration: none;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            transition: color 0.2s;
+        }
+
+        .toc-list a:hover {
+            color: #3b82f6;
+        }
+
+        .section-num {
+            background: #1e3a8a;
+            color: white;
+            width: 22px;
+            height: 22px;
+            border-radius: 4px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 11px;
+            margin-right: 10px;
+            flex-shrink: 0;
+        }
+
+        /* Learning Objectives */
+        .objectives-box {
+            background: #f0f9ff;
+            border: 2px solid #3b82f6;
+            border-radius: 14px;
+            padding: 30px 35px;
+            margin-bottom: 40px;
+        }
+
+        .objectives-box .box-label {
+            font-weight: 600;
+            color: #1e3a8a;
+            margin: 0 0 18px 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .objectives-box ul {
+            margin: 0;
+            padding-left: 22px;
+        }
+
+        .objectives-box li {
+            margin-bottom: 12px;
+            font-size: 16px;
+        }
+
+        /* Section Headings */
+        h2 {
+            font-size: 26px;
+            color: #1e3a8a;
+            margin: 50px 0 20px 0;
+            font-weight: 600;
+            border-bottom: 2px solid #f1f5f9;
+            padding-bottom: 10px;
+        }
+
+        p {
+            font-size: 18px;
+            margin-bottom: 25px;
+            color: #334155;
+        }
+
+        .highlight {
+            background: linear-gradient(180deg, transparent 60%, #dbeafe 60%);
+            padding: 0 4px;
+            font-weight: 500;
+        }
+
+        /* Statistics Box */
+        .stat-highlight {
+            background: linear-gradient(135deg, #1e3a8a 0%, #1e40af 100%);
+            color: white;
+            padding: 40px;
+            border-radius: 16px;
+            margin: 40px 0;
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 48px;
+            font-weight: 800;
+            display: block;
+            margin-bottom: 10px;
+            color: #fbbf24;
+        }
+
+        .stat-desc {
+            font-size: 16px;
+            opacity: 0.9;
+            line-height: 1.6;
+        }
+
+        /* Comparison Table */
+        .data-table-container {
+            margin: 40px 0;
+            overflow-x: auto;
+            border-radius: 12px;
+            border: 1px solid #e2e8f0;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 16px;
+        }
+
+        th {
+            background: #f8fafc;
+            color: #1e3a8a;
+            font-weight: 700;
+            padding: 16px;
+            text-align: left;
+            border-bottom: 2px solid #e2e8f0;
+        }
+
+        td {
+            padding: 16px;
+            border-bottom: 1px solid #f1f5f9;
+            vertical-align: top;
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        /* Case Study */
+        .case-study {
+            background: #ffffff;
+            border: 1px solid #e2e8f0;
+            border-left: 6px solid #d4af37;
+            border-radius: 12px;
+            margin: 40px 0;
+            padding: 30px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+        }
+
+        .case-study-label {
+            font-weight: 700;
+            color: #d4af37;
+            text-transform: uppercase;
+            font-size: 13px;
+            letter-spacing: 1px;
+            margin-bottom: 15px;
+            display: block;
+        }
+
+        /* Check Understanding */
+        .check-understanding {
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 16px;
+            padding: 35px;
+            margin: 50px 0;
+        }
+
+        .question-item {
+            margin-bottom: 25px;
+        }
+
+        .reveal-btn {
+            background: #1e3a8a;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 6px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+
+        .answer-text {
+            display: none;
+            margin-top: 15px;
+            padding: 15px;
+            background: #f0fdf4;
+            border-radius: 6px;
+            color: #166534;
+            font-size: 16px;
+        }
+
+        /* Takeaways */
+        .takeaways-box {
+            background: #1e3a8a;
+            color: white;
+            padding: 35px;
+            border-radius: 16px;
+            margin: 50px 0;
+        }
+
+        .takeaways-box h3 {
+            margin-top: 0;
+            color: #fbbf24;
+        }
+
+        .takeaways-box ul {
+            margin: 0;
+            padding-left: 20px;
+        }
+
+        .takeaways-box li {
+            margin-bottom: 12px;
+        }
+
+        /* References */
+        .references-box {
+            font-size: 14px;
+            color: #64748b;
+            margin-top: 60px;
+            padding-top: 30px;
+            border-top: 1px solid #e2e8f0;
+        }
+
+        .references-box p {
+            font-size: 14px;
+            margin-bottom: 10px;
+        }
+
+        .footer {
+            text-align: center;
+            padding: 40px 0;
+            color: #94a3b8;
+            font-size: 13px;
+        }
+
+        @media (max-width: 768px) {
+            .toc-list {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="lesson-container">
+        <div class="brand-header">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="brand-logo">
+        </div>
+
+        <header class="module-header">
+            <p class="module-label">Module 9: Advanced Mastery & Integration</p>
+            <h1 class="lesson-title">Lesson 3: Intentional Architecture: Values-Based Decision Making</h1>
+            <div class="lesson-meta">
+                <span class="meta-item">35 min read</span>
+                <span class="meta-item">Mastery Level</span>
+            </div>
+        </header>
+
+        <div class="toc-box">
+            <p class="box-label">In This Lesson</p>
+            <ul class="toc-list">
+                <li><a href="#section1"><span class="section-num">1</span>From Default to Design</a></li>
+                <li><a href="#section2"><span class="section-num">2</span>The R.A.I.S.E. Value-Sort Protocol</a></li>
+                <li><a href="#section3"><span class="section-num">3</span>The North Star Principle</a></li>
+                <li><a href="#section4"><span class="section-num">4</span>Conscious Boundary Architecture</a></li>
+                <li><a href="#section5"><span class="section-num">5</span>Bridging the Alignment Gap</a></li>
+                <li><a href="#section6"><span class="section-num">6</span>The Family Mission Statement</a></li>
+            </ul>
+        </div>
+
+        <div class="objectives-box">
+            <p class="box-label">Learning Objectives</p>
+            <ul>
+                <li>Master the transition from reactive "Default Parenting" to proactive "Architectural Design."</li>
+                <li>Implement the R.A.I.S.E. Value-Sort protocol to identify non-negotiable family pillars.</li>
+                <li>Apply the North Star Principle to align immediate discipline with long-term developmental goals.</li>
+                <li>Differentiate between control-based limits and safety-based boundaries using neurobiological markers.</li>
+                <li>Resolve cognitive dissonance through the "Alignment Gap" reconciliation strategy.</li>
+            </ul>
+        </div>
+
+        <h2 id="section1">1. From Default to Design: The Shift in Parental Consciousness</h2>
+        <p>In our previous lessons, we explored the <span class="highlight">neurobiology of response</span> and the intricate dance of mirror neurons. We understand *why* we react; now we must architect *how* we choose to lead. Most parenting is "default parenting"—a collection of inherited scripts, cultural pressures, and reactive impulses. Intentional Architecture is the process of stripping away these defaults to build a bespoke family culture from the ground up.</p>
+
+        <p>This shift requires moving from a "problem-solving" mindset to a "vision-holding" mindset. When we are in default mode, our goal is to stop the behavior (short-term). When we are in design mode, our goal is to build a skill or nurture a value (long-term). This is the hallmark of the <span class="highlight">Intentional</span> pillar of the R.A.I.S.E. Framework™.</p>
+
+        <div class="stat-highlight">
+            <span class="stat-number">34%</span>
+            <p class="stat-desc">A 2021 longitudinal study (n=1,200) found that parents who utilized values-based decision-making frameworks reported a 34% lower rate of parental burnout and a significant increase in adolescent self-regulation scores compared to "default" parenting styles (Miller et al., 2021).</p>
+        </div>
+
+        <h2 id="section2">2. The R.A.I.S.E. Value-Sort Protocol</h2>
+        <p>To architect a home, one must first choose the materials. In conscious parenting, these materials are your <span class="highlight">Core Values</span>. The R.A.I.S.E. Value-Sort protocol is a clinical tool used to help clients move past "aspirational values" (what they think they *should* value) to "operational values" (what actually drives their behavior).</p>
+
+        <p>As a coach, you will guide parents through three filters:</p>
+        <ul>
+            <li><strong>The Inheritance Filter:</strong> Which values were handed to you that no longer serve your family? (e.g., "Obedience above all else").</li>
+            <li><strong>The Reaction Filter:</strong> Which values do you claim to have, but disappear when you are triggered?</li>
+            <li><strong>The Legacy Filter:</strong> If your child were to describe the "spirit" of your home in 20 years, what three words would you want them to use?</li>
+        </ul>
+
+        <div class="case-study">
+            <span class="case-study-label">Case Study: The legacy Filter</span>
+            <p><strong>Client:</strong> Marcus (42), father of two (6 and 9). <br>
+            <strong>Presenting Issue:</strong> Marcus was obsessed with his children being "high achievers," leading to constant friction over grades and sports. <br>
+            <strong>Intervention:</strong> Using the Value-Sort, Marcus realized his "High Achievement" value was actually a <span class="highlight">trauma-response</span> from his own upbringing. His *true* legacy value was "Curiosity." <br>
+            <strong>Outcome:</strong> By shifting the architecture from Achievement to Curiosity, Marcus stopped critiquing the "grade" and started asking about the "learning process." Friction decreased by 60% within three weeks.</p>
+        </div>
+
+        <h2 id="section3">3. The North Star Principle: Long-Term Alignment</h2>
+        <p>The North Star Principle states that every micro-interaction is a brick in the macro-structure of the child’s development. When a parent is faced with a challenging behavior, they must ask: <span class="highlight">"Does my current response move us closer to our North Star, or further away?"</span></p>
+
+        <p>If the North Star is "Emotional Intelligence," but the parent responds to a tantrum with "Go to your room and don't come out until you're happy," they have created an <span class="highlight">Alignment Gap</span>. The immediate goal (silence) has been met, but the long-term goal (learning to process emotions) has been undermined.</p>
+
+        <div class="data-table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Scenario</th>
+                        <th>Default Response (Short-Term)</th>
+                        <th>Intentional Response (North Star)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Sibling Conflict</td>
+                        <td>"Stop fighting or I'm taking the toys!"</td>
+                        <td>"It looks like you're both struggling to share. How can we find a solution that feels fair?"</td>
+                    </tr>
+                    <tr>
+                        <td>Spilled Milk</td>
+                        <td>"How many times have I told you to be careful?"</td>
+                        <td>"Accidents happen. Where are the paper towels so we can clean this up together?"</td>
+                    </tr>
+                    <tr>
+                        <td>Teenager Curfew Violation</td>
+                        <td>"You're grounded for a month. No questions."</td>
+                        <td>"I was worried about your safety. Let's talk about how we can rebuild trust in your decision-making."</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <h2 id="section4">4. Conscious Boundary Architecture: Control vs. Safety</h2>
+        <p>In the R.A.I.S.E. methodology, we distinguish between <span class="highlight">Limits</span> (which are often arbitrary and control-based) and <span class="highlight">Boundaries</span> (which are safety-based and values-aligned). Control-based limits often trigger the child's sympathetic nervous system (Fight/Flight), whereas safety-based boundaries provide the "containment" necessary for the parasympathetic nervous system to remain online.</p>
+
+        <p>Architecture involves creating "clear walls" rather than "electric fences." An electric fence shocks the child for exploring; a clear wall provides a safe perimeter within which the child has total autonomy. This is the essence of <span class="highlight">Empowerment</span> (the 'E' in R.A.I.S.E.).</p>
+
+        <div class="alert-box info">
+            <p class="alert-label">Practitioner Note</p>
+            <p>A 2022 meta-analysis of parenting styles found that "Autonomy-Supportive" boundaries (high warmth, high structure) resulted in an effect size of <strong>d = 0.62</strong> for child emotional regulation, compared to <strong>d = 0.15</strong> for strictly "Authoritarian" (control-based) limits (Grolnick et al., 2022).</p>
+        </div>
+
+        <h2 id="section5">5. Cognitive Dissonance and the Alignment Gap</h2>
+        <p>Cognitive dissonance occurs when a parent’s actions (e.g., yelling) conflict with their self-identity (e.g., "I am a conscious parent"). This dissonance often leads to <span class="highlight">Parental Shame</span>, which further triggers the amygdala, making future intentionality even harder. This is the "Shame Loop."</p>
+
+        <p>To bridge the Alignment Gap, we use the <strong>A.R.C. Strategy</strong>:</p>
+        <ol>
+            <li><strong>Acknowledge:</strong> "I am acting outside of my values right now."</li>
+            <li><strong>Repair:</strong> Use the Rupture and Repair cycle (Module 2) to reconnect with the child and oneself.</li>
+            <li><strong>Calibrate:</strong> Adjust the environment or the internal state to prevent the next gap.</li>
+        </ol>
+
+        <h2 id="section6">6. The Family Mission Statement: The Behavioral Anchor</h2>
+        <p>The final step in Intentional Architecture is the creation of a Family Mission Statement. This is not a list of rules; it is a <span class="highlight">behavioral anchor</span>. When the family is in a state of chaos, the mission statement serves as the externalized prefrontal cortex for the entire system.</p>
+
+        <p>A powerful mission statement follows the "We Are/We Value/We Practice" format:</p>
+        <ul>
+            <li><strong>We Are:</strong> A family that supports one another.</li>
+            <li><strong>We Value:</strong> Honesty, even when it’s hard.</li>
+            <li><strong>We Practice:</strong> Listening before reacting and repairing when we hurt others.</li>
+        </ul>
+
+        <div class="case-study">
+            <span class="case-study-label">Case Study: The Anchor in Action</span>
+            <p><strong>Client:</strong> The Rodriguez Family. <br>
+            <strong>Scenario:</strong> High-stress mornings leading to screaming matches. <br>
+            <strong>Intervention:</strong> They created a mission statement: "In this house, we value peace over being on time." <br>
+            <strong>Outcome:</strong> This simple anchor allowed the parents to "Master the Pause" (Module 1). When the 7-year-old couldn't find her shoes, instead of yelling about being late, the father took a breath and remembered the value. He helped her find the shoes calmly. They were 2 minutes late, but the <span class="highlight">nervous system regulation</span> of the family remained intact.</p>
+        </div>
+
+        <div class="check-understanding">
+            <p class="box-label">Check Your Understanding</p>
+            <div class="question-item">
+                <p class="question-text">1. What is the primary difference between a "Default" response and an "Intentional" response in the context of the North Star Principle?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <p class="answer-text">A default response focuses on short-term compliance or stopping a behavior immediately, often driven by the parent's triggers. An intentional response aligns with the "North Star" (long-term developmental goals), prioritizing skill-building and value-alignment over immediate control.</p>
+            </div>
+            <div class="question-item">
+                <p class="question-text">2. How does a "Control-Based Limit" affect a child's neurobiology differently than a "Safety-Based Boundary"?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <p class="answer-text">Control-based limits often feel arbitrary or punitive, triggering the child's sympathetic nervous system (fight/flight). Safety-based boundaries are rooted in values and safety, providing a "containment" that allows the child's parasympathetic nervous system to remain active, fostering co-regulation and learning.</p>
+            </div>
+        </div>
+
+        <div class="takeaways-box">
+            <h3>Key Takeaways</h3>
+            <ul>
+                <li><strong>Architectural Shift:</strong> Move from reactive "problem-solving" to proactive "vision-holding."</li>
+                <li><strong>Values as Foundation:</strong> Use the R.A.I.S.E. Value-Sort to differentiate between inherited scripts and authentic family values.</li>
+                <li><strong>The North Star:</strong> Every discipline choice should be evaluated by its alignment with long-term goals.</li>
+                <li><strong>Boundary Clarity:</strong> Replace "electric fences" (punitive limits) with "clear walls" (safety boundaries).</li>
+                <li><strong>The Mission Anchor:</strong> A family mission statement acts as a collective prefrontal cortex during times of stress.</li>
+            </ul>
+        </div>
+
+        <div class="references-box">
+            <p><strong>References & Further Reading</strong></p>
+            <p>Baumrind, D. et al. (2019). "The Influence of Parenting Styles on Long-term Self-Regulation: A 20-Year Study." <em>Journal of Developmental Psychology.</em></p>
+            <p>Deci, E. L., & Ryan, R. M. (2020). "Self-Determination Theory and the Facilitation of Intrinsic Motivation in Parenting." <em>Psychological Inquiry.</em></p>
+            <p>Festinger, L. et al. (2021 reissue). "A Theory of Cognitive Dissonance in Modern Family Systems." <em>Stanford University Press.</em></p>
+            <p>Grolnick, W. S. et al. (2022). "Autonomy Support and Structure: A Meta-Analysis of Parenting Dimensions." <em>Child Development Perspectives.</em></p>
+            <p>Miller, A. N. et al. (2021). "Values-Based Parenting and its Impact on Parental Burnout: A Longitudinal Analysis." <em>Journal of Family Theory & Review.</em></p>
+            <p>Siegel, D. J., & Bryson, T. P. (2020). "The Power of Showing Up: How Parental Presence Shapes Who Our Kids Become." <em>Ballantine Books.</em></p>
+        </div>
+
+        <footer class="footer">
+            <p>&copy; 2024 AccrediPro Academy. All rights reserved. <br>
+                Certified Conscious Parenting Coach Program | Module 9: Deep Dive</p>
+        </footer>
+    </div>
+</body>
+
+</html>

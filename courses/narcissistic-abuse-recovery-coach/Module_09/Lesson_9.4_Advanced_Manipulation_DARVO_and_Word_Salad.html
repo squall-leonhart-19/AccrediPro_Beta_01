@@ -1,0 +1,645 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lesson 9.4: Advanced Manipulation: DARVO and Word Salad</title>
+    <style>
+        /* Base & Reset */
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Georgia, 'Times New Roman', serif;
+            line-height: 1.8;
+            color: #2d2d2d;
+            background: #f4f7f9;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Main Container */
+        .lesson-container {
+            max-width: 860px;
+            margin: 0 auto;
+            padding: 40px 30px;
+            background: #ffffff;
+            min-height: 100vh;
+            box-shadow: 0 0 60px rgba(0, 0, 0, 0.05);
+        }
+
+        /* Brand Header */
+        .brand-header {
+            text-align: center;
+            padding-bottom: 30px;
+            margin-bottom: 35px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .brand-logo {
+            max-width: 220px;
+            height: auto;
+            margin-bottom: 5px;
+        }
+
+        /* Module Header - DEEP BLUE theme for Recovery/Psychology */
+        .module-header {
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+            padding: 35px 35px 30px;
+            border-radius: 16px;
+            margin-bottom: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .module-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+            transform: translate(100px, -100px);
+        }
+
+        .module-header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, #d4af37, #f1c40f, #d4af37);
+        }
+
+        .module-label {
+            margin: 0;
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.75);
+            text-transform: uppercase;
+            letter-spacing: 2.5px;
+            font-weight: 500;
+        }
+
+        .lesson-title {
+            margin: 10px 0 0 0;
+            font-size: 28px;
+            color: #ffffff;
+            font-weight: 700;
+            line-height: 1.3;
+            position: relative;
+        }
+
+        .lesson-meta {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+            padding-top: 18px;
+            border-top: 1px solid rgba(255, 255, 255, 0.15);
+            flex-wrap: wrap;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.85);
+            background: rgba(255, 255, 255, 0.1);
+            padding: 5px 12px;
+            border-radius: 4px;
+        }
+
+        /* Table of Contents */
+        .toc-box {
+            background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+            border-radius: 14px;
+            padding: 24px 28px;
+            margin-bottom: 35px;
+            border: 1px solid #e2e8f0;
+        }
+
+        .toc-box .box-label {
+            font-weight: 600;
+            color: #1e3a8a;
+            margin: 0 0 18px 0;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #cbd5e1;
+        }
+
+        .toc-list {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px 24px;
+        }
+
+        .toc-list li {
+            margin: 0;
+        }
+
+        .toc-list a {
+            display: flex;
+            align-items: center;
+            padding: 8px 12px;
+            color: #475569;
+            text-decoration: none;
+            font-size: 14px;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+        }
+
+        .toc-list a:hover {
+            background: white;
+            color: #2563eb;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+        }
+
+        .toc-list .section-num {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 26px;
+            height: 26px;
+            background: #1e3a8a;
+            color: white;
+            font-weight: 600;
+            font-size: 11px;
+            border-radius: 6px;
+            margin-right: 12px;
+            flex-shrink: 0;
+        }
+
+        /* Learning Objectives */
+        .objectives-box {
+            background: #f0f7ff;
+            border: 2px solid #3b82f6;
+            border-radius: 14px;
+            padding: 30px 35px;
+            margin-bottom: 40px;
+        }
+
+        .objectives-box .box-label {
+            font-weight: 600;
+            color: #1e3a8a;
+            margin: 0 0 18px 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .objectives-box .box-label::before {
+            content: '🎯';
+            font-size: 18px;
+        }
+
+        .objectives-box ul {
+            margin: 0;
+            padding-left: 22px;
+        }
+
+        .objectives-box li {
+            margin-bottom: 14px;
+            font-size: 16px;
+            line-height: 1.7;
+        }
+
+        /* Key Terms Box */
+        .key-terms-box {
+            background: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%);
+            border-radius: 14px;
+            padding: 28px 30px;
+            margin: 40px 0;
+            border: 1px solid #cbd5e1;
+        }
+
+        .key-terms-box .box-label {
+            font-weight: 600;
+            color: #1e3a8a;
+            margin: 0 0 18px 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .terms-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 16px;
+        }
+
+        .term-item {
+            background: white;
+            padding: 16px 18px;
+            border-radius: 10px;
+            border-left: 4px solid #3b82f6;
+        }
+
+        .term-item .term {
+            font-weight: 700;
+            color: #1e3a8a;
+            font-size: 15px;
+            margin: 0 0 6px 0;
+        }
+
+        .term-item .definition {
+            font-size: 14px;
+            color: #475569;
+            margin: 0;
+            line-height: 1.6;
+        }
+
+        /* Section Headings */
+        h2 {
+            font-size: 24px;
+            color: #1e3a8a;
+            margin: 50px 0 20px 0;
+            font-weight: 600;
+            position: relative;
+            padding-bottom: 12px;
+        }
+
+        h2::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 60px;
+            height: 3px;
+            background: #d4af37;
+        }
+
+        h3 {
+            font-size: 20px;
+            color: #334155;
+            margin: 30px 0 15px 0;
+            font-weight: 600;
+        }
+
+        /* Paragraphs & Text */
+        p {
+            font-size: 17px;
+            margin-bottom: 20px;
+            color: #334155;
+        }
+
+        .highlight {
+            background: linear-gradient(180deg, transparent 60%, #daeaff 60%);
+            padding: 0 4px;
+            font-weight: 600;
+            color: #1e3a8a;
+        }
+
+        /* Case Study Box */
+        .case-study {
+            background: #ffffff;
+            border-radius: 16px;
+            margin: 40px 0;
+            overflow: hidden;
+            border: 1px solid #e2e8f0;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+        }
+
+        .case-study-header {
+            background: #1e3a8a;
+            padding: 20px 30px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .case-study-icon {
+            font-size: 24px;
+        }
+
+        .case-study-header .box-label {
+            font-weight: 600;
+            color: #ffffff;
+            margin: 0;
+            font-size: 16px;
+        }
+
+        .case-study-content {
+            padding: 30px;
+        }
+
+        .patient-profile {
+            background: #f8fafc;
+            padding: 15px 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            border: 1px solid #e2e8f0;
+        }
+
+        /* Data Table */
+        .data-table-container {
+            overflow-x: auto;
+            margin: 30px 0;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 15px;
+        }
+
+        th {
+            background: #1e3a8a;
+            color: white;
+            text-align: left;
+            padding: 15px;
+        }
+
+        td {
+            padding: 15px;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        tr:nth-child(even) {
+            background: #f8fafc;
+        }
+
+        /* Statistics Highlight */
+        .stat-highlight {
+            background: #f1f5f9;
+            border-left: 4px solid #3b82f6;
+            padding: 20px;
+            margin: 25px 0;
+            font-style: italic;
+            color: #1e3a8a;
+            font-weight: 500;
+        }
+
+        /* Check Understanding Box */
+        .check-understanding {
+            background: #fffcf0;
+            border: 2px solid #f1c40f;
+            border-radius: 16px;
+            padding: 32px;
+            margin: 45px 0;
+        }
+
+        .question-item {
+            margin-bottom: 25px;
+        }
+
+        .reveal-btn {
+            background: #1e3a8a;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+
+        .answer-text {
+            display: none;
+            margin-top: 15px;
+            padding: 15px;
+            background: #fefce8;
+            border-radius: 8px;
+            border: 1px solid #fef08a;
+        }
+
+        /* Takeaways & References */
+        .takeaways-box {
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            padding: 30px;
+            border-radius: 14px;
+            margin-top: 50px;
+        }
+
+        .references-box {
+            margin-top: 40px;
+            padding: 30px;
+            background: #ffffff;
+            border-top: 1px solid #eee;
+            font-size: 14px;
+            color: #64748b;
+        }
+
+        .references-box h4 {
+            color: #1e3a8a;
+            margin-bottom: 15px;
+        }
+
+        .lesson-footer {
+            text-align: center;
+            padding: 40px 0;
+            color: #94a3b8;
+            font-size: 13px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="lesson-container">
+        <div class="brand-header">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="brand-logo">
+        </div>
+
+        <header class="module-header">
+            <p class="module-label">Module 9: L1 Deep Dive Module 9</p>
+            <h1 class="lesson-title">Lesson 4: Advanced Manipulation: DARVO and Word Salad</h1>
+            <div class="lesson-meta">
+                <span class="meta-item">35 min read</span>
+                <span class="meta-item">Lesson 4 of 4</span>
+            </div>
+        </header>
+
+        <div class="toc-box">
+            <p class="box-label">In This Lesson</p>
+            <ul class="toc-list">
+                <li><a href="#darvo"><span class="section-num">1</span>Deconstructing DARVO</a></li>
+                <li><a href="#word-salad"><span class="section-num">2</span>Linguistic Word Salad</a></li>
+                <li><a href="#projective"><span class="section-num">3</span>Projective Identification</a></li>
+                <li><a href="#gaslighting"><span class="section-num">4</span>Gaslighting 2.0: Sanity Snatching</a></li>
+                <li><a href="#circular"><span class="section-num">5</span>The Mechanics of Circular Logic</a></li>
+                <li><a href="#coaching"><span class="section-num">6</span>Coaching Validation Strategies</a></li>
+            </ul>
+        </div>
+
+        <div class="objectives-box">
+            <p class="box-label">Learning Objectives</p>
+            <ul>
+                <li>Analyze the three stages of DARVO and their psychological impact on survivor testimony.</li>
+                <li>Identify the linguistic patterns of "Word Salad" designed to induce cognitive overload and "Brain Fog."</li>
+                <li>Explain the mechanism of Projective Identification as a means of offloading toxic shame.</li>
+                <li>Differentiate between standard gaslighting and "Sanity Snatching" (Gaslighting 2.0).</li>
+                <li>Implement practitioner-level documentation techniques to anchor clients in objective reality.</li>
+            </ul>
+        </div>
+
+        <h2 id="darvo">1. Deconstructing DARVO: The Ultimate Defense Mechanism</h2>
+        <p>In the previous lessons of this module, we explored the biochemistry of trauma bonding and the neurobiology of Narcissistic Victim Syndrome (NVS). We now transition into the tactical application of narcissistic defense. The most pervasive and damaging of these is <span class="highlight">DARVO</span>.</p>
+        
+        <p>Coined by Jennifer J. Freyd, PhD, in 1997, DARVO stands for <strong>Deny, Attack, and Reverse Victim and Offender</strong>. This is not merely a defensive lie; it is a systematic restructuring of reality that occurs in real-time during a confrontation. For the narcissist, the goal is not to find a resolution, but to escape accountability by overwhelming the victim's perception of the event.</p>
+
+        <div class="stat-highlight">
+            A 2020 study published in the journal <em>Psychology of Violence</em> (Harsey & Freyd) found that in experimental settings, participants exposed to DARVO tactics were significantly more likely to doubt the victim's credibility and perceive the offender as the actual victim, with an effect size of d = 0.84.
+        </div>
+
+        <h3>The Three Stages of DARVO</h3>
+        <ol>
+            <li><strong>Deny:</strong> The perpetrator denies the behavior ever occurred, or denies that it was harmful. ("I never said that," or "You're making a big deal out of nothing.")</li>
+            <li><strong>Attack:</strong> The perpetrator attacks the person bringing the concern. They attack the victim’s credibility, mental health, or character. ("You're only saying this because you're off your meds.")</li>
+            <li><strong>Reverse Victim and Offender:</strong> The perpetrator claims they are the one being abused, harassed, or unfairly targeted. By the end of the interaction, the victim is apologizing to the perpetrator.</li>
+        </ol>
+
+        <h2 id="word-salad">2. Linguistic Word Salad and Cognitive Overload</h2>
+        <p>While DARVO focuses on the *structure* of an argument, <span class="highlight">Word Salad</span> focuses on the *deconstruction of language* itself. In clinical terms, Word Salad refers to a "confused or unintelligible mixture of seemingly random words and phrases." In the context of narcissistic abuse, it is a deliberate linguistic smokescreen.</p>
+
+        <p>The primary psychological objective of Word Salad is to induce <span class="highlight">Cognitive Overload</span>. When a survivor attempts to address a specific issue, the narcissist responds with a barrage of circular reasoning, non-sequiturs, and irrelevant tangents. This forces the survivor's brain to work at maximum capacity to find meaning where none exists, eventually leading to the "Brain Fog" associated with NVS.</p>
+
+        <div class="data-table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Feature</th>
+                        <th>Healthy Communication</th>
+                        <th>Word Salad Manipulation</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Goal</strong></td>
+                        <td>Mutual understanding & resolution.</td>
+                        <td>Confusion, exhaustion, & evasion.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Logic</strong></td>
+                        <td>Linear (Point A leads to Point B).</td>
+                        <td>Circular or Tangential.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Emotional Tone</strong></td>
+                        <td>Regulated, even if intense.</td>
+                        <td>Rapidly shifting (rage to pity).</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Resolution</strong></td>
+                        <td>Agreement or compromise.</td>
+                        <td>Victim gives up due to exhaustion.</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <h2 id="projective">3. Projective Identification: Offloading the Toxic Self</h2>
+        <p>To understand why narcissists use these tactics, we must look at the mechanism of <span class="highlight">Projective Identification</span>. This is a psychological phenomenon where a person projects their own unwanted, intolerable traits (shame, inadequacy, rage) onto another person, and then behaves in a way that *forces* that person to embody those traits.</p>
+
+        <p>For example, a narcissist feeling intense internal shame will project that shame onto their partner by accusing them of being "worthless" or "embarrassing." Through Word Salad and DARVO, the narcissist creates an environment so chaotic that the partner eventually has an emotional breakdown. The narcissist then points to that breakdown as proof: "See? You're the unstable one. I'm the calm one."</p>
+
+        <div class="case-study">
+            <div class="case-study-header">
+                <span class="case-study-icon">👤</span>
+                <div class="case-study-label">Case Study: The Workplace DARVO Trap</div>
+            </div>
+            <div class="case-study-content">
+                <div class="patient-profile">
+                    <strong>Client:</strong> Sarah, 34, Senior Project Manager<br>
+                    <strong>Presented Symptoms:</strong> Severe anxiety, self-doubt, and "paralysis" when speaking to her supervisor.
+                </div>
+                <p>Sarah discovered her supervisor had misappropriated project funds. When she brought this to him privately, he immediately utilized DARVO. He <strong>Denied</strong> the discrepancy, <strong>Attacked</strong> Sarah's competence by bringing up a minor typo from three months prior, and <strong>Reversed</strong> the roles by claiming Sarah was "threatening his livelihood" and "creating a hostile work environment."</p>
+                <p><strong>Intervention:</strong> Using the N.A.R.C. Method™, Sarah's coach helped her identify the DARVO pattern. They practiced "Linguistic Anchoring"—refusing to defend the typo and returning the conversation to the audit trail. Sarah documented every interaction immediately after it occurred to combat the "Brain Fog" induced by her supervisor's Word Salad.</p>
+                <p><strong>Outcome:</strong> Sarah was able to present a clear, objective report to HR, successfully bypassing the supervisor's attempts to "Sanity Snatch" her professional reality.</p>
+            </div>
+        </div>
+
+        <h2 id="gaslighting">4. Gaslighting 2.0: Understanding "Sanity Snatching"</h2>
+        <p>In Module 1, we defined gaslighting as the systematic eradication of reality. In this deep dive, we look at <span class="highlight">Gaslighting 2.0</span>, or "Sanity Snatching." This is a more insidious level of manipulation where the narcissist targets the victim's core cognitive functions: memory, perception, and judgment.</p>
+
+        <p>Sanity Snatching involves "setting the stage" for the victim to fail. This might include moving keys and then helping the victim look for them while sighing about their "failing memory," or denying a conversation happened while recording the victim's frustrated reaction to use as "evidence" of their instability. The goal is to make the victim believe they are experiencing early-onset dementia or a psychotic break.</p>
+
+        <h2 id="circular">5. The Mechanics of Circular Logic and the "Hamster Wheel"</h2>
+        <p>Circular conversations are the delivery system for Word Salad. They often follow a predictable, yet exhausting, loop:</p>
+        <ul>
+            <li><strong>The Trigger:</strong> The survivor asks a clarifying question or expresses a need.</li>
+            <li><strong>The Diversion:</strong> The narcissist brings up a past grievance (Real or Imagined).</li>
+            <li><strong>The Generalization:</strong> The narcissist uses "Always" or "Never" statements to broaden the scope.</li>
+            <li><strong>The Victim Play:</strong> The narcissist expresses hurt that the survivor would even ask the question.</li>
+            <li><strong>The Exhaustion:</strong> The survivor stops trying to be heard just to make the talking stop.</li>
+        </ul>
+
+        <p>As a coach, you must teach clients that <span class="highlight">Engagement is the Trap</span>. In a circular conversation, the narcissist isn't listening for content; they are listening for "hooks" to keep the loop going. The only way to win a circular conversation is to refuse to step onto the hamster wheel.</p>
+
+        <h2 id="coaching">6. Coaching Techniques: Anchoring and Objective Validation</h2>
+        <p>The N.A.R.C. Recovery Method™ emphasizes the transition from "Defensive" to "Proactive" recovery. To combat DARVO and Word Salad, coaches must provide clients with practical "Reality Anchors."</p>
+
+        <h3>The "Fact Log" Protocol</h3>
+        <p>Encourage clients to maintain a digital, time-stamped log of interactions. This serves two purposes:
+            <ol>
+                <li><strong>Neurological Stabilization:</strong> Writing down what happened helps the Prefrontal Cortex override the emotional "noise" of the Amygdala.</li>
+                <li><strong>Evidence-Based Reality:</strong> When the narcissist attempts DARVO, the client can refer to their log (privately) to verify: "No, I am not crazy. This did happen on Tuesday at 4:00 PM."</li>
+            </ol>
+        </p>
+
+        <h3>The "Grey Rock" Linguistic Variant</h3>
+        <p>While "Grey Rocking" (becoming uninteresting) is a standard tool, the <strong>Linguistic Grey Rock</strong> involves using "Non-Committal Validation." Phrases include:
+            <ul>
+                <li>"That’s an interesting perspective."</li>
+                <li>"I hear that you feel that way."</li>
+                <li>"We remember that differently."</li>
+                <li>"I’m not willing to discuss my character; I’m here to discuss the budget."</li>
+            </ul>
+        </p>
+
+        <div class="check-understanding">
+            <p class="box-label">Check Your Understanding</p>
+            <div class="question-item">
+                <p class="question-text">1. A client reports that during a fight, their partner accused them of being "abusive" because they asked for help with the dishes. Which stage of DARVO is this?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-text">This is the <strong>Reverse Victim and Offender (RVO)</strong> stage. The narcissist has taken a simple request (help with dishes) and reframed themselves as the victim of "abuse" to escape accountability and silence the client's request.</div>
+            </div>
+            <div class="question-item">
+                <p class="question-text">2. Why is "Word Salad" effective at inducing Brain Fog from a neurobiological perspective?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-text">It triggers <strong>Cognitive Overload</strong>. The brain's Prefrontal Cortex attempts to find patterns and logic in the nonsensical speech. When it fails, it consumes massive amounts of glucose and oxygen, leading to mental exhaustion and a "foggy" state where the survivor is more suggestible.</div>
+            </div>
+        </div>
+
+        <div class="takeaways-box">
+            <p class="box-label">Key Takeaways</p>
+            <ul>
+                <li><strong>DARVO</strong> is a predictable three-step sequence used to evade accountability and discredit the survivor.</li>
+                <li><strong>Word Salad</strong> is a linguistic weapon used to overwhelm the victim's cognitive processing power.</li>
+                <li><strong>Projective Identification</strong> is the process by which a narcissist "vomits" their internal shame onto the victim.</li>
+                <li><strong>Sanity Snatching</strong> is an advanced form of gaslighting that targets the victim's fundamental belief in their own cognitive health.</li>
+                <li>Coaching success depends on <strong>Reality Anchoring</strong> through documentation and refusing to engage in circular logic.</li>
+            </ul>
+        </div>
+
+        <div class="references-box">
+            <h4>References & Further Reading</h4>
+            <ul>
+                <li>Freyd, J. J. (1997). "Violations of Power, Adaptive Blindness, and Betrayal Trauma Theory." <em>Feminism & Psychology.</em></li>
+                <li>Harsey, S. J., & Freyd, J. J. (2020). "Deny, Attack, and Reverse Victim and Offender (DARVO): What Is the Impact on Perceived Perpetrator and Victim Credibility?" <em>Psychology of Violence.</em></li>
+                <li>Klein, M. (1946). "Notes on Some Schizoid Mechanisms." <em>Journal of Psychotherapy Practice and Research.</em></li>
+                <li>Ogden, T. H. (1979). "On Projective Identification." <em>International Journal of Psycho-Analysis.</em></li>
+                <li>Stark, C. A. (2019). "Gaslighting, Misogyny, and Psychological Oppression." <em>The Monist.</em></li>
+                <li>Vaknin, S. (2015). "Malignant Self-Love: Narcissism Revisited." <em>Narcissus Publications.</em></li>
+            </ul>
+        </div>
+
+        <footer class="lesson-footer">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="footer-logo">
+            <p class="brand">AccrediPro Academy © 2024</p>
+            <p class="copyright">Certified Narcissistic Abuse Recovery Coach Program</p>
+        </footer>
+    </div>
+</body>
+
+</html>

@@ -16,9 +16,9 @@ from concurrent.futures import ThreadPoolExecutor
 import random
 import re
 
-# Load configuration from main .env (already in .gitignore)
+# Load configuration from course-generator config.env
 from dotenv import load_dotenv
-load_dotenv('../../.env')  # Main project .env file
+load_dotenv('config.env')  # Course generator config file
 
 
 @dataclass

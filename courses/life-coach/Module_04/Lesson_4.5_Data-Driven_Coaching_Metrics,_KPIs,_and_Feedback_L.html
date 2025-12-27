@@ -1,0 +1,694 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lesson 4.5: Data-Driven Coaching: Metrics, KPIs, and Feedback Loops</title>
+    <style>
+        /* Base & Reset */
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Georgia, 'Times New Roman', serif;
+            line-height: 1.8;
+            color: #2d2d2d;
+            background: #f8f6f3;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Main Container */
+        .lesson-container {
+            max-width: 860px;
+            margin: 0 auto;
+            padding: 40px 30px;
+            background: #ffffff;
+            min-height: 100vh;
+            box-shadow: 0 0 60px rgba(0, 0, 0, 0.08);
+        }
+
+        /* Brand Header */
+        .brand-header {
+            text-align: center;
+            padding-bottom: 30px;
+            margin-bottom: 35px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .brand-logo {
+            max-width: 220px;
+            height: auto;
+            margin-bottom: 5px;
+        }
+
+        /* Module Header - BLUE theme for Execution/Execute */
+        .module-header {
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+            padding: 35px 35px 30px;
+            border-radius: 16px;
+            margin-bottom: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .module-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+            transform: translate(100px, -100px);
+        }
+
+        .module-header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, #B8860B, #D4A84B, #B8860B);
+        }
+
+        .module-label {
+            margin: 0;
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.75);
+            text-transform: uppercase;
+            letter-spacing: 2.5px;
+            font-weight: 500;
+        }
+
+        .lesson-title {
+            margin: 10px 0 0 0;
+            font-size: 28px;
+            color: #ffffff;
+            font-weight: 700;
+            line-height: 1.3;
+            position: relative;
+        }
+
+        .lesson-meta {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+            padding-top: 18px;
+            border-top: 1px solid rgba(255, 255, 255, 0.15);
+            flex-wrap: wrap;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.85);
+            background: rgba(255, 255, 255, 0.1);
+            padding: 5px 12px;
+            border-radius: 4px;
+        }
+
+        /* Table of Contents */
+        .toc-box {
+            background: linear-gradient(135deg, #fafafa 0%, #f5f5f5 100%);
+            border-radius: 14px;
+            padding: 24px 28px;
+            margin-bottom: 35px;
+            border: 1px solid #e8e8e8;
+        }
+
+        .toc-box .box-label {
+            font-weight: 600;
+            color: #1e3a8a;
+            margin: 0 0 18px 0;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .toc-list {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px 24px;
+        }
+
+        .toc-list li {
+            margin: 0;
+        }
+
+        .toc-list a {
+            display: flex;
+            align-items: center;
+            padding: 8px 12px;
+            color: #555;
+            text-decoration: none;
+            font-size: 14px;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+        }
+
+        .toc-list a:hover {
+            background: white;
+            color: #3b82f6;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+        }
+
+        .toc-list .section-num {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 26px;
+            height: 26px;
+            background: #1e3a8a;
+            color: white;
+            font-weight: 600;
+            font-size: 11px;
+            border-radius: 6px;
+            margin-right: 12px;
+            flex-shrink: 0;
+        }
+
+        @media (max-width: 600px) {
+            .toc-list {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Learning Objectives */
+        .objectives-box {
+            background: #eff6ff;
+            border: 2px solid #3b82f6;
+            border-radius: 14px;
+            padding: 30px 35px;
+            margin-bottom: 40px;
+        }
+
+        .objectives-box .box-label {
+            font-weight: 600;
+            color: #1e3a8a;
+            margin: 0 0 18px 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .objectives-box .box-label::before {
+            content: '📊';
+            font-size: 18px;
+        }
+
+        .objectives-box ul {
+            margin: 0;
+            padding-left: 22px;
+        }
+
+        .objectives-box li {
+            margin-bottom: 14px;
+            font-size: 16px;
+            line-height: 1.7;
+        }
+
+        /* Section Headings */
+        h2 {
+            font-size: 24px;
+            color: #1e3a8a;
+            margin: 50px 0 20px 0;
+            font-weight: 600;
+            position: relative;
+            padding-bottom: 12px;
+        }
+
+        h2::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 60px;
+            height: 3px;
+            background: #B8860B;
+        }
+
+        /* Paragraphs & Highlights */
+        p {
+            font-size: 17px;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        .highlight {
+            background: linear-gradient(180deg, transparent 60%, #DBEAFE 60%);
+            padding: 0 4px;
+            font-weight: 500;
+            color: #1e3a8a;
+        }
+
+        /* Statistics Box */
+        .stats-box {
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+            padding: 40px;
+            border-radius: 16px;
+            margin: 35px 0;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 25px;
+            position: relative;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 42px;
+            font-weight: 700;
+            color: white;
+            line-height: 1;
+            margin-bottom: 8px;
+        }
+
+        .stat-label {
+            font-size: 13px;
+            color: rgba(255, 255, 255, 0.85);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* Case Study Box */
+        .case-study {
+            background: linear-gradient(135deg, #f8f9fb 0%, #f0f2f5 100%);
+            border-radius: 16px;
+            margin: 40px 0;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+            border: 1px solid #e5e7eb;
+        }
+
+        .case-study-header {
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+            padding: 20px 30px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .case-study-header .box-label {
+            font-weight: 600;
+            color: #ffffff;
+            margin: 0;
+            font-size: 16px;
+        }
+
+        .case-study-content {
+            padding: 28px 30px;
+        }
+
+        .patient-profile {
+            display: flex;
+            align-items: center;
+            gap: 18px;
+            padding: 18px 22px;
+            background: white;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            border: 1px solid #e5e5e5;
+        }
+
+        .patient-avatar {
+            width: 55px;
+            height: 55px;
+            background: #3b82f6;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            color: white;
+        }
+
+        /* Data Table */
+        .data-table-container {
+            margin: 35px 0;
+            overflow-x: auto;
+            border-radius: 12px;
+            border: 1px solid #e5e7eb;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 15px;
+            background: white;
+        }
+
+        th {
+            background: #f1f5f9;
+            color: #1e3a8a;
+            font-weight: 600;
+            text-align: left;
+            padding: 16px;
+            border-bottom: 2px solid #e2e8f0;
+        }
+
+        td {
+            padding: 16px;
+            border-bottom: 1px solid #f1f5f9;
+            vertical-align: top;
+        }
+
+        /* Principle Cards */
+        .principle-card {
+            background: white;
+            border-left: 5px solid #3b82f6;
+            padding: 24px 28px;
+            margin-bottom: 18px;
+            border-radius: 0 14px 14px 0;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.04);
+        }
+
+        .principle-title {
+            font-weight: 700;
+            color: #1e3a8a;
+            margin-bottom: 8px;
+        }
+
+        /* Check Understanding */
+        .check-understanding {
+            background: #fdfbf7;
+            border: 2px solid #B8860B;
+            border-radius: 16px;
+            padding: 32px;
+            margin: 45px 0;
+        }
+
+        .question-item {
+            background: white;
+            border-radius: 12px;
+            padding: 22px 24px;
+            margin-bottom: 16px;
+            border: 1px solid #e8e4dc;
+        }
+
+        .reveal-btn {
+            background: #1e3a8a;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+
+        .answer-text {
+            display: none;
+            margin-top: 15px;
+            padding: 15px;
+            background: #eff6ff;
+            border-radius: 8px;
+            color: #1e3a8a;
+        }
+
+        .answer-text.show {
+            display: block;
+        }
+
+        /* Takeaways */
+        .takeaways-box {
+            background: #f1f5f9;
+            padding: 25px;
+            border-radius: 12px;
+            margin-top: 40px;
+        }
+
+        /* References */
+        .references-box {
+            margin-top: 50px;
+            padding: 30px;
+            background: #fafafa;
+            border-radius: 12px;
+            font-size: 14px;
+        }
+
+        .references-box h4 {
+            margin-top: 0;
+            color: #1e3a8a;
+        }
+
+        .references-box ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .references-box li {
+            margin-bottom: 10px;
+            color: #666;
+        }
+
+        /* Footer */
+        .lesson-footer {
+            text-align: center;
+            padding: 40px 0;
+            border-top: 1px solid #eee;
+            margin-top: 40px;
+        }
+
+        .footer-logo {
+            max-width: 140px;
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="lesson-container">
+        <div class="brand-header">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="brand-logo">
+        </div>
+
+        <header class="module-header">
+            <p class="module-label">Module 4: E: Execute</p>
+            <h1 class="lesson-title">Lesson 4.5: Data-Driven Coaching: Metrics, KPIs, and Feedback Loops</h1>
+            <div class="lesson-meta">
+                <span class="meta-item">35 min read</span>
+                <span class="meta-item">Lesson 5 of 6</span>
+            </div>
+        </header>
+
+        <div class="toc-box">
+            <p class="box-label">In This Lesson</p>
+            <ul class="toc-list">
+                <li><a href="#section1"><span class="section-num">1</span>The Science of Self-Monitoring</a></li>
+                <li><a href="#section2"><span class="section-num">2</span>Personal KPIs in the L.I.F.E. Blueprint</a></li>
+                <li><a href="#section3"><span class="section-num">3</span>Quantitative vs. Qualitative Data</a></li>
+                <li><a href="#section4"><span class="section-num">4</span>The Weekly Review Protocol</a></li>
+                <li><a href="#section5"><span class="section-num">5</span>Feedback Loops & Dynamic Adjustments</a></li>
+                <li><a href="#section6"><span class="section-num">6</span>The Progress Principle & Scoreboards</a></li>
+            </ul>
+        </div>
+
+        <div class="objectives-box">
+            <p class="box-label">Learning Objectives</p>
+            <ul>
+                <li>Define and implement Personal Key Performance Indicators (KPIs) aligned with the L.I.F.E. Blueprint Method™.</li>
+                <li>Differentiate between lead and lag measures to drive consistent behavioral execution.</li>
+                <li>Master the Weekly Review Protocol to facilitate objective reflection and tactical adjustments.</li>
+                <li>Understand the neurobiological impact of "The Progress Principle" on client motivation and dopamine regulation.</li>
+                <li>Construct visual feedback loops that reduce cognitive load and enhance execution integrity.</li>
+            </ul>
+        </div>
+
+        <h2 id="section1">1. The Science of Self-Monitoring</h2>
+        <p>In previous lessons, we explored the psychology of execution and the strategies for overcoming resistance. However, execution without <span class="highlight">measurement</span> is merely activity; it is not necessarily progress. Data-driven coaching moves the practice from "feeling better" to "performing better" by utilizing objective evidence to guide the coaching relationship.</p>
+        
+        <p>The neurobiological basis for this approach lies in the <span class="highlight">Prefrontal Cortex (PFC)</span>. When a client monitors their behavior, they engage the executive function of the brain, shifting from the "autopilot" of the basal ganglia to the "deliberate control" of the PFC. This process, often called the Hawthorne Effect in social sciences, suggests that individuals modify an aspect of their behavior in response to their awareness of being observed—even if that observer is themselves.</p>
+
+        <div class="stats-box">
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <div class="stat-number">33%</div>
+                    <div class="stat-label">Higher Goal Success</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">2.5x</div>
+                    <div class="stat-label">Retention Rate</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">76%</div>
+                    <div class="stat-label">Execution Consistency</div>
+                </div>
+            </div>
+        </div>
+        <p style="text-align: center; font-size: 14px; color: #666;">*A 2015 study by Matthews found that individuals who sent weekly progress reports to a friend were 33% more successful in reaching their goals than those who merely set intentions.*</p>
+
+        <h2 id="section2">2. Personal KPIs in the L.I.F.E. Blueprint</h2>
+        <p>Within <span class="highlight">The L.I.F.E. Blueprint Method™</span>, we establish Key Performance Indicators (KPIs) that represent the vital signs of a client's transformation. KPIs are not just for corporations; they are the quantifiable measures of a life well-lived. To be effective, these metrics must be directly linked to the "Identify" and "Focus" phases of our framework.</p>
+
+        <p>We categorize these into two distinct types: <strong>Lead Measures</strong> and <strong>Lag Measures</strong>. Most clients focus solely on lag measures (the result), which often leads to frustration because they cannot control the result directly. As coaches, we redirect focus to lead measures (the behaviors).</p>
+
+        <div class="data-table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Metric Type</th>
+                        <th>Definition</th>
+                        <th>Example (Health Goal)</th>
+                        <th>Example (Career Goal)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Lag Measure</strong></td>
+                        <td>The ultimate outcome; measurable but historical.</td>
+                        <td>Losing 10 lbs of body fat.</td>
+                        <td>Securing a $20k raise.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Lead Measure</strong></td>
+                        <td>Predictive and influenceable behaviors.</td>
+                        <td>Walking 10k steps 5x/week.</td>
+                        <td>Sending 3 networking emails daily.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>L.I.F.E. KPI</strong></td>
+                        <td>The "North Star" metric for the current module.</td>
+                        <td>Resting Heart Rate (RHR).</td>
+                        <td>Hours of Deep Work per week.</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <h2 id="section3">3. Quantitative vs. Qualitative Data</h2>
+        <p>A premium coach understands that the human experience cannot be reduced entirely to numbers. Effective data-driven coaching balances <span class="highlight">Quantitative Data</span> (hard numbers) with <span class="highlight">Qualitative Data</span> (subjective experience).</p>
+
+        <p>While quantitative data tells us <em>what</em> happened, qualitative data tells us <em>why</em> it happened and how it felt. If a client hits their lead measures but reports a "happiness score" of 2/10, the execution strategy is unsustainable. We use Likert scales (1-10) to quantify qualitative experiences, such as:</p>
+        <ul>
+            <li><strong>Energy Levels:</strong> "On a scale of 1-10, how was your vitality upon waking?"</li>
+            <li><strong>Confidence:</strong> "How certain do you feel about your ability to execute next week's tasks?"</li>
+            <li><strong>Alignment:</strong> "How much did your actions this week reflect your core values identified in Module 2?"</li>
+        </ul>
+
+        <div class="case-study">
+            <div class="case-study-header">
+                <div class="case-study-icon">💼</div>
+                <div>
+                    <p class="box-label">Case Study: The Burnout Pivot</p>
+                    <p class="subtitle">Balancing hard metrics with subjective experience</p>
+                </div>
+            </div>
+            <div class="case-study-content">
+                <div class="patient-profile">
+                    <div class="patient-avatar">M</div>
+                    <div class="patient-info">
+                        <h4>Marcus S., 44</h4>
+                        <p>Tech Executive | Goal: Productivity & Work-Life Balance</p>
+                    </div>
+                </div>
+                <p><strong>The Challenge:</strong> Marcus was tracking "Hours Logged" as his primary KPI. He was consistently hitting 60+ hours but felt increasingly ineffective and disconnected from his family.</p>
+                <p><strong>The Intervention:</strong> We shifted his KPIs to include qualitative measures. We introduced a "Fulfillment Score" (1-10) for each workday and a lead measure of "30 Minutes of Screen-Free Play with Kids."</p>
+                <p><strong>Outcome:</strong> After 4 weeks, Marcus's total hours worked dropped to 52, but his "Fulfillment Score" rose from a 3 to an 8. By tracking the *quality* of his time alongside the quantity, he realized that his previous high-hour weeks were driven by "productive procrastination."</p>
+            </div>
+        </div>
+
+        <h2 id="section4">4. The Weekly Review Protocol</h2>
+        <p>The <span class="highlight">Weekly Review Protocol</span> is the engine of the Execute phase. Without a structured review, the client is likely to repeat errors or miss subtle patterns of success. This protocol should be performed at the same time every week (e.g., Sunday evening or Friday afternoon).</p>
+
+        <div class="principle-card">
+            <div class="principle-title">The 4-Question Review Framework:</div>
+            <p class="principle-text">
+                1. <strong>What were the wins?</strong> (Reinforcing the dopamine reward loop).<br>
+                2. <strong>Where did the data miss the target?</strong> (Objective analysis of lead measures).<br>
+                3. <strong>What was the 'Friction Point'?</strong> (Identifying cognitive or environmental blocks).<br>
+                4. <strong>What is the ONE tactical adjustment for next week?</strong> (Dynamic iteration).
+            </p>
+        </div>
+
+        <p>As a coach, your role during the session is to look for the <span class="highlight">delta</span>—the difference between the client's intention and their actual data. We do not judge the delta; we investigate it like scientists. This removes the shame often associated with "failing" a goal and replaces it with curiosity.</p>
+
+        <h2 id="section5">5. Feedback Loops & Dynamic Adjustments</h2>
+        <p>In systems theory, a <span class="highlight">Feedback Loop</span> is a circuit where the output of a system is circled back as input. In coaching, we use this to ensure the strategy remains relevant. If the data shows a consistent failure to meet a lead measure (e.g., a client consistently fails to go to the gym at 6 AM), the feedback loop tells us the <em>tactic</em> is flawed, not the <em>goal</em>.</p>
+
+        <p>We use two types of loops:</p>
+        <ul>
+            <li><strong>Positive Feedback Loops:</strong> Amplifying what works. "You meditated 5 days this week and reported 20% less stress. Let's increase the duration by 2 minutes."</li>
+            <li><strong>Negative (Corrective) Feedback Loops:</strong> Dampening deviations. "You missed your protein goal three days in a row. Let's move your meal prep to Sunday afternoon to reduce mid-week friction."</li>
+        </ul>
+
+        <h2 id="section6">6. The Progress Principle & Scoreboards</h2>
+        <p>Research by Teresa Amabile and Steven Kramer, published in <em>The Progress Principle</em>, reveals that the single most important factor in motivation is <strong>making progress in meaningful work</strong>. Even small wins, when visualized, trigger a release of dopamine that fuels further execution.</p>
+
+        <p>To leverage this, we use <span class="highlight">Visible Scoreboards</span>. A scoreboard is a visual representation of the client's lead measures. This could be a simple habit tracker, a sophisticated app, or a physical chart on a wall. The key is that it must be <strong>visible</strong> and <strong>simple</strong>.</p>
+
+        <div class="principle-card">
+            <div class="principle-title">The Psychology of the Scoreboard:</div>
+            <ul>
+                <li><strong>Immediate Feedback:</strong> The brain receives a "micro-reward" the moment a box is checked.</li>
+                <li><strong>Pattern Recognition:</strong> It becomes obvious when a "streak" is broken, prompting immediate corrective action.</li>
+                <li><strong>Cognitive Offloading:</strong> The client doesn't have to "remember" if they are doing well; the data tells them.</li>
+            </ul>
+        </div>
+
+        <div class="check-understanding">
+            <p class="box-label">Check Your Understanding</p>
+            <p class="box-subtitle">Test your knowledge of data-driven coaching principles.</p>
+            
+            <div class="question-item">
+                <p class="question-text">Why is it critical to focus a client's KPIs on "Lead Measures" rather than just "Lag Measures"?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-text">Lead measures are influenceable and predictive. While a client cannot directly control a lag measure (like losing 10 lbs), they have 100% control over lead measures (like eating 500g of vegetables daily). Focusing on lead measures increases the client's sense of agency and provides immediate data for adjustment.</div>
+            </div>
+
+            <div class="question-item">
+                <p class="question-text">What is the "Progress Principle," and how does it impact execution?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-text">The Progress Principle states that the most significant driver of motivation is the perception of making progress. In coaching, visualizing small wins through scoreboards triggers dopamine, which sustains the energy required for long-term execution and habit formation.</div>
+            </div>
+        </div>
+
+        <div class="takeaways-box">
+            <p class="box-label">Key Takeaways</p>
+            <ul>
+                <li><strong>Data is Neutral:</strong> Teach clients to view metrics as information for adjustment, not as a verdict on their worth.</li>
+                <li><strong>The Weekly Review:</strong> This is the non-negotiable anchor of the Execute phase, turning experience into expertise.</li>
+                <li><strong>Balance the Scales:</strong> Combine quantitative metrics (the "what") with qualitative Likert scales (the "how") for a holistic view of progress.</li>
+                <li><strong>Lead with Lead Measures:</strong> Focus execution energy on the behaviors that predict the outcome, not the outcome itself.</li>
+            </ul>
+        </div>
+
+        <div class="references-box">
+            <h4>References & Further Reading</h4>
+            <ul>
+                <li>Amabile, T. M., & Kramer, S. J. (2011). "The Progress Principle: Using Small Wins to Ignite Joy, Engagement, and Creativity at Work." Harvard Business Review Press.</li>
+                <li>Matthews, G. (2015). "The Effectiveness of Writing Goals and Accountability Groups." Dominican University of California Research.</li>
+                <li>Locke, E. A., & Latham, G. P. (2002). "Building a Practically Useful Theory of Goal Setting and Task Motivation." American Psychologist.</li>
+                <li>Harkin, B., et al. (2016). "Does Monitoring Goal Progress Promote Goal Attainment? A Meta-analysis of the Experimental Evidence." Psychological Bulletin.</li>
+                <li>McChesney, C., Covey, S., & Huling, J. (2012). "The 4 Disciplines of Execution." Free Press.</li>
+                <li>Gardner, B., et al. (2011). "Making Health Habitual: The Psychology of 'Habit-Formation' and General Practice." British Journal of General Practice.</li>
+            </ul>
+        </div>
+
+        <footer class="lesson-footer">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="footer-logo">
+            <p class="brand">AccrediPro Academy © 2024</p>
+            <p class="copyright">The L.I.F.E. Blueprint Method™ is a registered trademark. All rights reserved.</p>
+        </footer>
+    </div>
+</body>
+
+</html>

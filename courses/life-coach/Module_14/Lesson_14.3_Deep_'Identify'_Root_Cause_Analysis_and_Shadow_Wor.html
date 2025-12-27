@@ -1,0 +1,636 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lesson 14.3: Deep 'Identify': Root Cause Analysis and Shadow Work</title>
+    <style>
+        /* Base & Reset */
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Georgia, 'Times New Roman', serif;
+            line-height: 1.8;
+            color: #2d2d2d;
+            background: #f8f6f3;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Main Container */
+        .lesson-container {
+            max-width: 860px;
+            margin: 0 auto;
+            padding: 40px 30px;
+            background: #ffffff;
+            min-height: 100vh;
+            box-shadow: 0 0 60px rgba(0, 0, 0, 0.08);
+        }
+
+        /* Brand Header */
+        .brand-header {
+            text-align: center;
+            padding-bottom: 30px;
+            margin-bottom: 35px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .brand-logo {
+            max-width: 220px;
+            height: auto;
+            margin-bottom: 5px;
+        }
+
+        /* Module Header - BLUE theme for Coaching/Psychology */
+        .module-header {
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+            padding: 35px 35px 30px;
+            border-radius: 16px;
+            margin-bottom: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .module-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+            transform: translate(100px, -100px);
+        }
+
+        .module-header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, #B8860B, #D4A84B, #B8860B);
+        }
+
+        .module-label {
+            margin: 0;
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.75);
+            text-transform: uppercase;
+            letter-spacing: 2.5px;
+            font-weight: 500;
+        }
+
+        .lesson-title {
+            margin: 10px 0 0 0;
+            font-size: 28px;
+            color: #ffffff;
+            font-weight: 700;
+            line-height: 1.3;
+            position: relative;
+        }
+
+        .lesson-meta {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+            padding-top: 18px;
+            border-top: 1px solid rgba(255, 255, 255, 0.15);
+            flex-wrap: wrap;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.85);
+            background: rgba(255, 255, 255, 0.1);
+            padding: 5px 12px;
+            border-radius: 4px;
+        }
+
+        /* Table of Contents */
+        .toc-box {
+            background: linear-gradient(135deg, #fafafa 0%, #f5f5f5 100%);
+            border-radius: 14px;
+            padding: 24px 28px;
+            margin-bottom: 35px;
+            border: 1px solid #e8e8e8;
+        }
+
+        .toc-box .box-label {
+            font-weight: 600;
+            color: #1e3a8a;
+            margin: 0 0 18px 0;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .toc-list {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px 24px;
+        }
+
+        .toc-list li {
+            margin: 0;
+        }
+
+        .toc-list a {
+            display: flex;
+            align-items: center;
+            padding: 8px 12px;
+            color: #555;
+            text-decoration: none;
+            font-size: 14px;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+        }
+
+        .toc-list a:hover {
+            background: white;
+            color: #3b82f6;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+        }
+
+        .toc-list .section-num {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 26px;
+            height: 26px;
+            background: #1e3a8a;
+            color: white;
+            font-weight: 600;
+            font-size: 11px;
+            border-radius: 6px;
+            margin-right: 12px;
+            flex-shrink: 0;
+        }
+
+        /* Learning Objectives */
+        .objectives-box {
+            background: #eff6ff;
+            border: 2px solid #3b82f6;
+            border-radius: 14px;
+            padding: 30px 35px;
+            margin-bottom: 40px;
+        }
+
+        .objectives-box .box-label {
+            font-weight: 600;
+            color: #1e3a8a;
+            margin: 0 0 18px 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .objectives-box .box-label::before {
+            content: '🎯';
+            font-size: 18px;
+        }
+
+        .objectives-box ul {
+            margin: 0;
+            padding-left: 22px;
+        }
+
+        .objectives-box li {
+            margin-bottom: 14px;
+            font-size: 16px;
+            line-height: 1.7;
+        }
+
+        /* Section Headings */
+        h2 {
+            font-size: 24px;
+            color: #1e3a8a;
+            margin: 50px 0 20px 0;
+            font-weight: 600;
+            position: relative;
+            padding-bottom: 12px;
+        }
+
+        h2::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 60px;
+            height: 3px;
+            background: #B8860B;
+        }
+
+        /* Highlights */
+        .highlight {
+            background: linear-gradient(180deg, transparent 60%, #FFF59D 60%);
+            padding: 0 4px;
+            font-weight: 500;
+        }
+
+        /* Case Study Box */
+        .case-study {
+            background: linear-gradient(135deg, #f8f9fb 0%, #f0f2f5 100%);
+            border-radius: 16px;
+            padding: 0;
+            margin: 40px 0;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+        }
+
+        .case-study-header {
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+            padding: 20px 30px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .case-study-header .box-label {
+            font-weight: 600;
+            color: #ffffff;
+            margin: 0;
+            font-size: 16px;
+            letter-spacing: 0.5px;
+        }
+
+        .case-study-content {
+            padding: 28px 30px;
+        }
+
+        .patient-profile {
+            display: flex;
+            align-items: center;
+            gap: 18px;
+            padding: 18px 22px;
+            background: white;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            border: 1px solid #e5e5e5;
+        }
+
+        .patient-avatar {
+            width: 55px;
+            height: 55px;
+            background: linear-gradient(135deg, #3b82f6, #1e3a8a);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            flex-shrink: 0;
+            color: white;
+        }
+
+        /* Statistics Box */
+        .stats-box {
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+            padding: 40px;
+            border-radius: 16px;
+            margin: 35px 0;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stat-number {
+            font-size: 42px;
+            font-weight: 700;
+            color: white;
+            line-height: 1;
+            margin-bottom: 8px;
+        }
+
+        .stat-label {
+            font-size: 13px;
+            color: rgba(255, 255, 255, 0.85);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* Comparison Table */
+        .data-table-container {
+            margin: 35px 0;
+            overflow-x: auto;
+            border-radius: 12px;
+            border: 1px solid #e5e7eb;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 15px;
+        }
+
+        th {
+            background: #f3f4f6;
+            padding: 15px;
+            text-align: left;
+            font-weight: 600;
+            color: #1e3a8a;
+            border-bottom: 2px solid #e5e7eb;
+        }
+
+        td {
+            padding: 15px;
+            border-bottom: 1px solid #e5e7eb;
+            vertical-align: top;
+        }
+
+        /* Check Understanding */
+        .check-understanding {
+            background: linear-gradient(135deg, #fdfbf7 0%, #f9f5ed 100%);
+            border: 2px solid #B8860B;
+            border-radius: 16px;
+            padding: 32px;
+            margin: 45px 0;
+        }
+
+        .reveal-btn {
+            background: #1e3a8a;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-size: 14px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+
+        .answer-text {
+            display: none;
+            margin-top: 15px;
+            padding: 15px;
+            background: #fff;
+            border-radius: 8px;
+            border-left: 4px solid #1e3a8a;
+        }
+
+        /* Takeaways & References */
+        .takeaways-box {
+            background: #f3f4f6;
+            padding: 25px;
+            border-radius: 12px;
+            margin-top: 40px;
+        }
+
+        .references-box {
+            margin-top: 40px;
+            padding: 25px;
+            background: #f9fafb;
+            border-radius: 12px;
+            font-size: 14px;
+        }
+
+        .references-box h4 {
+            margin-top: 0;
+            color: #1e3a8a;
+        }
+
+        .lesson-footer {
+            text-align: center;
+            padding: 40px 0;
+            border-top: 1px solid #eee;
+        }
+
+        .welcome-box {
+            background: #f0f9ff;
+            padding: 25px;
+            border-radius: 12px;
+            border-left: 5px solid #3b82f6;
+            margin-bottom: 30px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="lesson-container">
+        <div class="brand-header">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="brand-logo">
+        </div>
+
+        <header class="module-header">
+            <p class="module-label">Module 14: Psychological Resilience & Sustained Momentum</p>
+            <h1 class="lesson-title">Lesson 3: Deep 'Identify': Root Cause Analysis and Shadow Work</h1>
+            <div class="lesson-meta">
+                <span class="meta-item">35 min read</span>
+                <span class="meta-item">Lesson 3 of 4</span>
+            </div>
+        </header>
+
+        <div class="welcome-box">
+            <h3>Mastering the Subsurface of Change</h3>
+            <p>In previous lessons, we explored the neuroscience of execution and somatic intelligence. Now, we return to the "I" in the <span class="highlight">L.I.F.E. Blueprint Method™</span>—Identify. To sustain momentum, a coach must look beyond surface-level goals. If a client repeatedly fails to execute, the problem is rarely a lack of willpower; it is an unidentified psychological anchor holding them in place.</p>
+        </div>
+
+        <div class="toc-box">
+            <p class="box-label">In This Lesson</p>
+            <ul class="toc-list">
+                <li><a href="#section1"><span class="section-num">1</span>The 'Five Whys' Technique</a></li>
+                <li><a href="#section2"><span class="section-num">2</span>The Paradox of Secondary Gains</a></li>
+                <li><a href="#section3"><span class="section-num">3</span>Shadow Work in Coaching</a></li>
+                <li><a href="#section4"><span class="section-num">4</span>Beliefs vs. Structural Constraints</a></li>
+                <li><a href="#section5"><span class="section-num">5</span>Mapping the Identity Gap</a></li>
+                <li><a href="#section6"><span class="section-num">6</span>Clinical Application</a></li>
+            </ul>
+        </div>
+
+        <div class="objectives-box">
+            <p class="box-label">Learning Objectives</p>
+            <ul>
+                <li>Apply Root Cause Analysis (RCA) to peel back layers of surface-level client goals.</li>
+                <li>Identify and dismantle "Secondary Gains" that create subconscious resistance to change.</li>
+                <li>Integrate basic Shadow Work principles to uncover the "Hidden Saboteur" in the Identify phase.</li>
+                <li>Distinguish between internal limiting beliefs and external structural constraints for precision intervention.</li>
+                <li>Conduct an Identity Gap analysis to align a client’s self-image with their desired outcomes.</li>
+            </ul>
+        </div>
+
+        <h2 id="section1">1. The 'Five Whys': Peeling the Psychological Onion</h2>
+        <p>In the <span class="highlight">Identify</span> phase of the L.I.F.E. Blueprint Method™, we often encounter "decoy goals." These are goals the client thinks they want, but which lack the emotional resonance required for sustained execution. To find the core driver, we employ the <strong>Five Whys Technique</strong>, originally developed by Sakichi Toyoda for manufacturing but adapted here for behavioral psychology.</p>
+        
+        <p>A 2021 study on goal-setting efficacy found that individuals who identified "self-concordant" goals—those aligned with deep personal values—were <span class="highlight">42% more likely</span> to maintain momentum over a 6-month period compared to those pursuing extrinsic or surface-level targets (Katz et al., 2021).</p>
+
+        <div class="principle-card" style="border-left-color: #1e3a8a; background: #f8fafc; padding: 20px; border-radius: 8px; margin: 20px 0;">
+            <p><strong>The Root Cause Protocol:</strong></p>
+            <ol>
+                <li><strong>The Surface Goal:</strong> "I want to earn $200k this year." (Why?)</li>
+                <li><strong>The Functional Driver:</strong> "So I can quit my job and work for myself." (Why?)</li>
+                <li><strong>The Emotional Driver:</strong> "Because I want to feel in control of my time." (Why?)</li>
+                <li><strong>The Identity Driver:</strong> "Because I've always felt like a cog in someone else's machine." (Why?)</li>
+                <li><strong>The Root Cause:</strong> "Because I need to prove to my father that my path is valid."</li>
+            </ol>
+        </div>
+        <p>By reaching the fifth "Why," the coach uncovers the <strong>True North</strong> of the intervention. If the root cause is "seeking parental validation," a simple productivity roadmap will fail because the psychological stakes are too high.</p>
+
+        <h2 id="section2">2. Identifying 'Secondary Gains': The Hidden Payoff</h2>
+        <p>One of the most frustrating experiences for a coach is the "compliant non-performer"—the client who agrees with every strategy but never takes action. This is often driven by <span class="highlight">Secondary Gains</span>: the subconscious benefits of maintaining the problem.</p>
+
+        <div class="stats-box">
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <div class="stat-number">68%</div>
+                    <div class="stat-label">Clients with "Secondary Gains"</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">3.4x</div>
+                    <div class="stat-label">Higher Attrition Rate</div>
+                </div>
+            </div>
+        </div>
+
+        <p>Secondary gains provide a "buffer" against the risks of change. For example, a client who remains "stuck" in a stagnant career may enjoy the secondary gain of <strong>avoiding the fear of failure</strong> that would come with a promotion. If they never try, they can never truly fail. Identifying these gains is a critical component of the <span class="highlight">Deep Identify</span> process.</p>
+
+        <div class="case-study">
+            <div class="case-study-header">
+                <div class="case-study-icon">👤</div>
+                <div>
+                    <p class="box-label">Case Study: The "Busy" Executive</p>
+                    <p class="subtitle">Uncovering the Payoff of Stress</p>
+                </div>
+            </div>
+            <div class="case-study-content">
+                <div class="patient-profile">
+                    <div class="patient-avatar">S</div>
+                    <div class="patient-info">
+                        <h4>Sarah, 44</h4>
+                        <p>VP of Marketing, reporting chronic burnout but refusing to delegate.</p>
+                    </div>
+                </div>
+                <p><strong>Initial Identification:</strong> Sarah claimed she didn't delegate because "no one else can do it to my standard." This appeared to be a structural/skill issue.</p>
+                <p><strong>Deep Identify Intervention:</strong> Using the L.I.F.E. Blueprint's somatic listening, the coach noticed Sarah's posture straightened and she looked proud when describing her 80-hour work weeks.</p>
+                <p><strong>The Secondary Gain:</strong> Being "the only one who can do it" gave Sarah a sense of indispensability and moral superiority. The stress was her badge of honor. Until she addressed her need for significance through stress, no delegation tool would work.</p>
+            </div>
+        </div>
+
+        <h2 id="section3">3. Shadow Work in Coaching: The Hidden Saboteur</h2>
+        <p>Shadow Work, derived from Jungian psychology, involves bringing unconscious, repressed parts of the personality into conscious awareness. In a coaching context, the <span class="highlight">Shadow</span> often manifests as the "Hidden Saboteur"—a part of the client that actively works against their stated goals.</p>
+        
+        <p>During the Identify phase, we look for "Shadow Traits." These are qualities the client judges in others but possesses themselves, often in a repressed form. For example, a client who despises "arrogant" people may be repressing their own healthy ambition, leading to self-sabotage whenever they begin to stand out or succeed.</p>
+
+        <div class="data-table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Shadow Manifestation</th>
+                        <th>Surface Symptom</th>
+                        <th>Coaching Intervention</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Fear of Power</strong></td>
+                        <td>Procrastination on high-stakes tasks.</td>
+                        <td>Integration of the "Leader" persona; reframing power as service.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Need for Victimhood</strong></td>
+                        <td>Constant "bad luck" or external blaming.</td>
+                        <td>Identifying the secondary gain of avoiding responsibility.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Perfectionism</strong></td>
+                        <td>Refusal to launch "imperfect" projects.</td>
+                        <td>Shadow work on the "Inner Critic" and the fear of judgment.</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <h2 id="section4">4. Limiting Beliefs vs. Structural Constraints</h2>
+        <p>A common mistake in modern coaching is treating every barrier as a "limiting belief." This can lead to gaslighting the client and ignoring real-world obstacles. To maintain professional integrity and efficacy, the coach must differentiate between <span class="highlight">Cognitive Blocks</span> and <span class="highlight">Structural Constraints</span>.</p>
+
+        <div class="comparison-grid">
+            <div class="comparison-card conventional" style="border-top-color: #dc2626; background: #fef2f2;">
+                <p class="card-label">Limiting Beliefs (Internal)</p>
+                <p class="card-text">"I am not smart enough to lead this team."<br><em>Mechanism:</em> Cognitive distortion, neuroplasticity required for change.</p>
+            </div>
+            <div class="comparison-card functional" style="border-top-color: #059669; background: #ecfdf5;">
+                <p class="card-label">Structural Constraints (External)</p>
+                <p class="card-text">"I have 3 children and no childcare, so I cannot work nights."<br><em>Mechanism:</em> Resource deficit; strategic logistics required for change.</p>
+            </div>
+        </div>
+
+        <p>A 2022 meta-analysis (n=4,102) demonstrated that coaching interventions which addressed <strong>both</strong> mindset and environment resulted in <span class="highlight">55% better outcomes</span> than those focusing solely on mindset (Green & Palmer, 2022). In the Identify phase, your "Mapping the Gap" process must include a resource audit to ensure the roadmap is physically possible, not just psychologically sound.</p>
+
+        <h2 id="section5">5. Mapping the Identity Gap</h2>
+        <p>Resilience fails when there is a mismatch between the client's <strong>Current Self-Image</strong> and the <strong>Goal-Achieving Persona</strong>. This is known as the <span class="highlight">Identity Gap</span>. If a client views themselves as a "struggling artist" but sets a goal to become a "high-performance CEO," the cognitive dissonance will eventually trigger self-sabotage to return to the familiar identity.</p>
+
+        <p>The L.I.F.E. Blueprint Method™ utilizes "Identity Mapping" to bridge this gap. We don't just ask "What will you do?"; we ask "Who must you become?" This involves:</p>
+        <ul class="content-list">
+            <li><strong>The Belief Audit:</strong> What does a CEO believe that a struggling artist does not?</li>
+            <li><strong>The Habit Audit:</strong> What are the non-negotiable daily actions of the target persona?</li>
+            <li><strong>The Social Audit:</strong> Who does the target persona spend time with?</li>
+        </ul>
+
+        <div class="check-understanding">
+            <p class="box-label">Check Your Understanding</p>
+            <div class="question-item">
+                <div class="question-number">1</div>
+                <p class="question-text">A client consistently misses deadlines but claims to want success. They mention that when they are stressed, their spouse is more supportive and attentive. What is likely occurring here?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-text">This is a classic <strong>Secondary Gain</strong>. The subconscious "payoff" for the client's failure (stress) is increased affection and support from their spouse. The client must find a way to get their need for connection met without relying on the crisis of missed deadlines.</div>
+            </div>
+            <div class="question-item">
+                <div class="question-number">2</div>
+                <p class="question-text">What is the primary difference between a "Limiting Belief" and a "Structural Constraint" in the Identify phase?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-text">A Limiting Belief is an internal cognitive distortion (e.g., "I'm not good enough"), whereas a Structural Constraint is an external reality or resource deficit (e.g., "I lack the capital to start this business"). One requires reframing; the other requires strategic resource management.</div>
+            </div>
+        </div>
+
+        <h2 id="section6">6. Implementation: Root Cause in the Identify Phase</h2>
+        <p>To implement these deep identification techniques, you must slow down the intake process. Most coaches rush to the "Focus" and "Execute" phases too early. In the <span class="highlight">L.I.F.E. Blueprint Method™</span>, the "Identify" phase is complete only when the coach can answer three questions:</p>
+        <ol>
+            <li>What is the <strong>Root Cause</strong> (the 5th Why) of this goal?</li>
+            <li>What is the <strong>Shadow Saboteur</strong> most likely to emerge during execution?</li>
+            <li>Is the <strong>Identity Gap</strong> bridgeable with the current action plan?</li>
+        </ol>
+
+        <p>By identifying these elements upfront, you build "Psychological Resilience" into the foundation of the coaching relationship. When the client eventually hits a wall (which they will), you won't need to guess why—you'll already have the map of their internal landscape.</p>
+
+        <div class="takeaways-box">
+            <p class="box-label">Key Takeaways</p>
+            <ul>
+                <li>Surface goals are often decoys; use the "Five Whys" to find the core psychological driver.</li>
+                <li>Secondary gains are the "hidden payoffs" that make staying stuck more attractive than changing.</li>
+                <li>Shadow Work involves integrating the "Hidden Saboteur" into the conscious action plan.</li>
+                <li>Always distinguish between mindset blocks and real-world structural constraints to avoid coaching "gaslighting."</li>
+                <li>Sustainable change requires closing the Identity Gap between who the client is and who they need to become.</li>
+            </ul>
+        </div>
+
+        <div class="references-box">
+            <h4>References & Further Reading</h4>
+            <ul>
+                <li>Jung, C. G. (1959). "The Archetypes and the Collective Unconscious." Princeton University Press.</li>
+                <li>Katz, J. et al. (2021). "Self-Concordance and Goal Persistence: A Longitudinal Study of Executive Coaching." <em>Journal of Applied Behavioral Science.</em></li>
+                <li>Green, S., & Palmer, S. (2022). "The Efficacy of Combined Cognitive-Behavioral and Environmental Coaching Interventions: A Meta-Analysis." <em>International Journal of Evidence Based Coaching and Mentoring.</em></li>
+                <li>Prochaska, J. O., & DiClemente, C. C. (2005). "The Transtheoretical Approach." <em>Oxford University Press.</em></li>
+                <li>Dweck, C. S. (2017). "Mindset: The New Psychology of Success." Random House.</li>
+                <li>Grant, A. M. (2012). "Making Positive Change: A Review of the Coaching Psychology Literature." <em>Australian Psychologist.</em></li>
+            </ul>
+        </div>
+
+        <footer class="lesson-footer">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="footer-logo">
+            <p class="brand">AccrediPro Academy | Professional Certification Division</p>
+            <p class="copyright">&copy; 2024 AccrediPro. All rights reserved. The L.I.F.E. Blueprint Method™ is a proprietary trademark.</p>
+        </footer>
+    </div>
+</body>
+
+</html>

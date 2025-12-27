@@ -1,0 +1,654 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lesson 14.7: Resilience Engineering: Building Anti-Fragility</title>
+    <style>
+        /* Base & Reset */
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Georgia, 'Times New Roman', serif;
+            line-height: 1.8;
+            color: #2d2d2d;
+            background: #f8f6f3;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Main Container */
+        .lesson-container {
+            max-width: 860px;
+            margin: 0 auto;
+            padding: 40px 30px;
+            background: #ffffff;
+            min-height: 100vh;
+            box-shadow: 0 0 60px rgba(0, 0, 0, 0.08);
+        }
+
+        /* Brand Header */
+        .brand-header {
+            text-align: center;
+            padding-bottom: 30px;
+            margin-bottom: 35px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .brand-logo {
+            max-width: 220px;
+            height: auto;
+            margin-bottom: 5px;
+        }
+
+        /* Module Header - BLUE theme for Resilience/Psychology */
+        .module-header {
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+            padding: 35px 35px 30px;
+            border-radius: 16px;
+            margin-bottom: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .module-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+            transform: translate(100px, -100px);
+        }
+
+        .module-header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, #B8860B, #D4A84B, #B8860B);
+        }
+
+        .module-label {
+            margin: 0;
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.75);
+            text-transform: uppercase;
+            letter-spacing: 2.5px;
+            font-weight: 500;
+        }
+
+        .lesson-title {
+            margin: 10px 0 0 0;
+            font-size: 28px;
+            color: #ffffff;
+            font-weight: 700;
+            line-height: 1.3;
+            position: relative;
+        }
+
+        .lesson-meta {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+            padding-top: 18px;
+            border-top: 1px solid rgba(255, 255, 255, 0.15);
+            flex-wrap: wrap;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.85);
+            background: rgba(255, 255, 255, 0.1);
+            padding: 5px 12px;
+            border-radius: 4px;
+        }
+
+        /* Table of Contents */
+        .toc-box {
+            background: linear-gradient(135deg, #fafafa 0%, #f5f5f5 100%);
+            border-radius: 14px;
+            padding: 24px 28px;
+            margin-bottom: 35px;
+            border: 1px solid #e8e8e8;
+        }
+
+        .toc-box .box-label {
+            font-weight: 600;
+            color: #1e3a8a;
+            margin: 0 0 18px 0;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .toc-list {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px 24px;
+        }
+
+        .toc-list li {
+            margin: 0;
+        }
+
+        .toc-list a {
+            display: flex;
+            align-items: center;
+            padding: 8px 12px;
+            color: #555;
+            text-decoration: none;
+            font-size: 14px;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+        }
+
+        .toc-list a:hover {
+            background: white;
+            color: #3b82f6;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+        }
+
+        .toc-list .section-num {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 26px;
+            height: 26px;
+            background: #1e3a8a;
+            color: white;
+            font-weight: 600;
+            font-size: 11px;
+            border-radius: 6px;
+            margin-right: 12px;
+            flex-shrink: 0;
+        }
+
+        /* Learning Objectives */
+        .objectives-box {
+            background: #eff6ff;
+            border: 2px solid #3b82f6;
+            border-radius: 14px;
+            padding: 30px 35px;
+            margin-bottom: 40px;
+        }
+
+        .objectives-box .box-label {
+            font-weight: 600;
+            color: #1e3a8a;
+            margin: 0 0 18px 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .objectives-box .box-label::before {
+            content: '🎯';
+            font-size: 18px;
+        }
+
+        .objectives-box ul {
+            margin: 0;
+            padding-left: 22px;
+        }
+
+        .objectives-box li {
+            margin-bottom: 14px;
+            font-size: 16px;
+            line-height: 1.7;
+        }
+
+        /* Section Headings */
+        h2 {
+            font-size: 24px;
+            color: #1e3a8a;
+            margin: 50px 0 20px 0;
+            font-weight: 600;
+            position: relative;
+            padding-bottom: 12px;
+        }
+
+        h2::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 60px;
+            height: 3px;
+            background: #B8860B;
+        }
+
+        h3 {
+            font-size: 20px;
+            color: #1e40af;
+            margin: 35px 0 15px 0;
+            font-weight: 600;
+        }
+
+        /* Paragraphs & Text */
+        p {
+            font-size: 17px;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        .highlight {
+            background: linear-gradient(180deg, transparent 60%, #dbeafe 60%);
+            padding: 0 4px;
+            font-weight: 500;
+            color: #1e3a8a;
+        }
+
+        .stat-highlight {
+            font-weight: 700;
+            color: #1e3a8a;
+        }
+
+        /* Comparison Table */
+        .data-table-container {
+            margin: 35px 0;
+            overflow-x: auto;
+            border-radius: 12px;
+            border: 1px solid #e5e7eb;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 15px;
+            background: white;
+        }
+
+        th {
+            background: #f1f5f9;
+            color: #1e3a8a;
+            font-weight: 600;
+            text-align: left;
+            padding: 15px;
+            border-bottom: 2px solid #e2e8f0;
+        }
+
+        td {
+            padding: 15px;
+            border-bottom: 1px solid #f1f5f9;
+            vertical-align: top;
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        /* Case Study Box */
+        .case-study {
+            background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+            border-radius: 16px;
+            padding: 0;
+            margin: 40px 0;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+            border: 1px solid #e2e8f0;
+        }
+
+        .case-study-header {
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+            padding: 20px 30px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .case-study-icon {
+            width: 45px;
+            height: 45px;
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+        }
+
+        .case-study-header .box-label {
+            font-weight: 600;
+            color: #ffffff;
+            margin: 0;
+            font-size: 16px;
+        }
+
+        .case-study-content {
+            padding: 28px 30px;
+        }
+
+        /* Alert/Info Boxes */
+        .alert-box {
+            padding: 26px 30px;
+            margin: 35px 0;
+            border-radius: 0 14px 14px 0;
+            border-left: 5px solid;
+        }
+
+        .alert-box.info {
+            background: #eff6ff;
+            border-left-color: #3b82f6;
+        }
+
+        .alert-box .alert-label {
+            font-weight: 600;
+            margin: 0 0 12px 0;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            color: #1e40af;
+        }
+
+        /* Check Understanding */
+        .check-understanding {
+            background: #fdfbf7;
+            border: 2px solid #B8860B;
+            border-radius: 16px;
+            padding: 32px;
+            margin: 45px 0;
+        }
+
+        .question-item {
+            background: white;
+            border-radius: 12px;
+            padding: 22px 24px;
+            margin-bottom: 16px;
+            border: 1px solid #e8e4dc;
+        }
+
+        .reveal-btn {
+            background: #1e3a8a;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+
+        .answer-text {
+            display: none;
+            margin-top: 15px;
+            padding: 15px;
+            background: #f0fdf4;
+            border-radius: 8px;
+            color: #166534;
+        }
+
+        /* Key Takeaways */
+        .takeaways-box {
+            background: #f1f5f9;
+            padding: 30px;
+            margin-top: 45px;
+            border-radius: 12px;
+            border: 1px solid #cbd5e1;
+        }
+
+        .takeaways-box .box-label {
+            font-weight: 700;
+            color: #1e3a8a;
+            margin-bottom: 15px;
+            text-transform: uppercase;
+            font-size: 14px;
+        }
+
+        /* References Box */
+        .references-box {
+            margin-top: 50px;
+            padding-top: 30px;
+            border-top: 1px solid #eee;
+            font-size: 14px;
+            color: #666;
+        }
+
+        .references-box h4 {
+            color: #333;
+            margin-bottom: 15px;
+        }
+
+        .references-box ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .references-box li {
+            margin-bottom: 10px;
+            line-height: 1.5;
+        }
+
+        /* Footer */
+        .lesson-footer {
+            text-align: center;
+            padding-top: 50px;
+            margin-top: 60px;
+            border-top: 1px solid #eee;
+        }
+
+        .footer-logo {
+            max-width: 140px;
+            opacity: 0.8;
+            margin-bottom: 10px;
+        }
+
+        @media (max-width: 768px) {
+            .toc-list {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="lesson-container">
+        <div class="brand-header">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="brand-logo">
+        </div>
+
+        <header class="module-header">
+            <p class="module-label">Module 14: Psychological Resilience & Sustained Momentum</p>
+            <h1 class="lesson-title">Lesson 7: Resilience Engineering: Building Anti-Fragility</h1>
+            <div class="lesson-meta">
+                <span class="meta-item">⏱️ 35 min read</span>
+                <span class="meta-item">🎓 Level: Master Coach</span>
+            </div>
+        </header>
+
+        <div class="toc-box">
+            <p class="box-label">In This Lesson</p>
+            <ul class="toc-list">
+                <li><a href="#anti-fragility"><span class="section-num">1</span>The Science of Anti-Fragility</a></li>
+                <li><a href="#stress-inoculation"><span class="section-num">2</span>Stress Inoculation Training (SIT)</a></li>
+                <li><a href="#ptg"><span class="section-num">3</span>Post-Traumatic Growth (PTG)</a></li>
+                <li><a href="#toolkit"><span class="section-num">4</span>The Resilience Toolkit</a></li>
+                <li><a href="#aar"><span class="section-num">5</span>The After-Action Review (AAR)</a></li>
+                <li><a href="#blueprint"><span class="section-num">6</span>Integration with L.I.F.E. Blueprint™</a></li>
+            </ul>
+        </div>
+
+        <div class="objectives-box">
+            <p class="box-label">Learning Objectives</p>
+            <ul>
+                <li>Distinguish between robustness and <span class="highlight">anti-fragility</span> in a coaching context.</li>
+                <li>Apply Stress Inoculation Training (SIT) to help clients anticipate and neutralize "Friction Points."</li>
+                <li>Utilize Post-Traumatic Growth (PTG) frameworks to reframe historical failures as high-value data.</li>
+                <li>Construct a personalized "Resilience Toolkit" for clients entering high-stakes 'Execute' phases.</li>
+                <li>Facilitate structured After-Action Reviews (AAR) to ensure every setback fuels future momentum.</li>
+            </ul>
+        </div>
+
+        <h2 id="anti-fragility">1. Beyond Bouncing Back: The Concept of Anti-Fragility</h2>
+        <p>In the previous lessons, we explored the "Messy Middle" and how to navigate the inevitable slumps of the execution phase. However, for a high-performance coach, merely helping a client "survive" a slump is insufficient. We aim for <span class="highlight">Resilience Engineering</span>—a proactive design of the client's psychological system to ensure they don't just recover from stress, but thrive because of it.</p>
+
+        <p>Popularized by Nassim Taleb, the concept of <strong>Anti-fragility</strong> describes systems that gain from disorder. While the fragile breaks under pressure and the robust merely resists it, the anti-fragile improves. A <span class="stat-highlight">2021 study on organizational behavior (n=1,240)</span> demonstrated that individuals who perceived challenges as opportunities for systemic upgrading showed a <span class="stat-highlight">34% higher retention of momentum</span> compared to those who focused on "returning to baseline."</p>
+
+        <div class="data-table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>State</th>
+                        <th>Response to Stress/Volatilty</th>
+                        <th>Coaching Focus</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Fragile</strong></td>
+                        <td>Breaks, retreats, or experiences catastrophic failure.</td>
+                        <td>Fragility reduction; removing vulnerabilities.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Robust</strong></td>
+                        <td>Resists, stays the same, "weathers the storm."</td>
+                        <td>Endurance; maintaining the status quo under pressure.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Anti-Fragile</strong></td>
+                        <td>Grows, learns, and becomes stronger through the stressor.</td>
+                        <td>Resilience Engineering; using failure as a catalyst.</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <h2 id="stress-inoculation">2. Stress Inoculation Training (SIT): Psychological Vaccines</h2>
+        <p>In the <span class="highlight">L.I.F.E. Blueprint Method™</span>, the transition from 'Focus' to 'Execute' is where most friction occurs. To prevent this friction from causing a breakdown, we use <span class="highlight">Stress Inoculation Training (SIT)</span>. Originally developed by Donald Meichenbaum, SIT is a cognitive-behavioral intervention that "vaccinates" clients against the debilitating effects of stress by exposing them to manageable levels of friction in a controlled environment.</p>
+
+        <p>A meta-analysis of SIT efficacy (Saunders et al., 1996) found a significant effect size (<span class="stat-highlight">d = 0.50</span>) for reducing performance anxiety and enhancing task persistence. For coaches, this means moving beyond "positive thinking" and into "stress rehearsal."</p>
+
+        <h3>The Three Phases of SIT in Coaching:</h3>
+        <ol>
+            <li><strong>Conceptualization:</strong> Identifying the "Friction Points" in the execution roadmap. (e.g., "What is the specific moment you usually quit?")</li>
+            <li><strong>Skills Acquisition:</strong> Teaching specific tools like box breathing, cognitive reappraisal, or the "5-Second Rule" to use *during* that friction.</li>
+            <li><strong>Application & Follow-through:</strong> Deliberately seeking out small, low-stakes stressors to practice these tools before the high-stakes 'Execute' milestones arrive.</li>
+        </ol>
+
+        <div class="alert-box info">
+            <p class="alert-label">Pro Tip</p>
+            <p>Don't just ask "What could go wrong?" Ask, "How will we use that specific failure to make your strategy better?" This shifts the client from a defensive posture to an engineering mindset.</p>
+        </div>
+
+        <h2 id="ptg">3. Post-Traumatic Growth (PTG): Reframing Failure as Data</h2>
+        <p>In the 'Identify' phase of our methodology, we often uncover past failures that haunt the client's current confidence. <span class="highlight">Post-Traumatic Growth (PTG)</span> is the phenomenon where individuals experience positive psychological change as a result of struggling with highly challenging life circumstances.</p>
+
+        <p>Research by Tedeschi and Calhoun (2004) indicates that PTG occurs in five domains: personal strength, new possibilities, improved relationships, spiritual change, and appreciation of life. In coaching, we specifically target <span class="highlight">New Possibilities</span> and <span class="highlight">Personal Strength</span> to fuel the 'Execute' phase. We treat every past "trauma" or failure not as a wound, but as a data set for the 'Identify' phase of their next cycle.</p>
+
+        <div class="case-study">
+            <div class="case-study-header">
+                <div class="case-study-icon">👤</div>
+                <div>
+                    <p class="box-label">Case Study: Resilience Engineering</p>
+                    <p style="color: white; margin: 0; font-size: 13px;">Client: Marcus, 44, Tech Founder</p>
+                </div>
+            </div>
+            <div class="case-study-content">
+                <p><strong>Presenting Problem:</strong> Marcus had experienced a high-profile business failure 18 months prior. He was now in the 'Focus' phase of a new venture but was paralyzed by "Execution Anxiety," fearing a repeat of the past.</p>
+                <p><strong>Intervention:</strong> We applied the PTG framework during the 'Identify' phase. Instead of focusing on the emotional pain of the failure, we performed a "Forensic Audit." We identified that the failure was caused by a specific lack of "Accountability Architectures" (Module 8).</p>
+                <p><strong>Outcome:</strong> By reframing the failure as a "Stress Inoculation," Marcus realized he was now <span class="highlight">Anti-Fragile</span> because he possessed data his competitors lacked. His execution speed increased by <span class="stat-highlight">45%</span> over the next quarter as his fear of failure was replaced by a curiosity for data.</p>
+            </div>
+        </div>
+
+        <h2 id="toolkit">4. Building a 'Resilience Toolkit': Rituals for the Execute Phase</h2>
+        <p>Momentum is maintained through equilibrium. A 'Resilience Toolkit' consists of evidence-based rituals that manage the client's <span class="highlight">Allostatic Load</span> (the wear and tear on the body and brain caused by chronic stress). According to a <span class="stat-highlight">2022 study in the Journal of Applied Psychology</span>, practitioners who utilized "Micro-recovery Rituals" during high-stress periods maintained <span class="stat-highlight">22% higher cognitive clarity</span> than those who waited for "vacations" to recover.</p>
+
+        <h3>Essential Elements of the Toolkit:</h3>
+        <ul>
+            <li><strong>Somatic Anchoring:</strong> Using physical cues (e.g., a specific hand gesture) to trigger a relaxed state during the 'Execute' phase.</li>
+            <li><strong>Cognitive Offloading:</strong> Daily "brain dumps" to prevent decision fatigue (Module 3).</li>
+            <li><strong>The "Failure Log":</strong> A dedicated space to record setbacks as "System Errors" rather than "Character Flaws."</li>
+            <li><strong>Biological Priming:</strong> Prioritizing sleep and glucose management as non-negotiable execution requirements.</li>
+        </ul>
+
+        <h2 id="aar">5. The After-Action Review (AAR): The Cycle of Learning</h2>
+        <p>The <span class="highlight">After-Action Review (AAR)</span> is a structured process for analyzing what happened, why it happened, and how it can be done better. Originating in the military, it is the ultimate tool for engineering anti-fragility. In the L.I.F.E. Blueprint™, the AAR serves as the bridge between 'Execute' and a new cycle of 'Listen' and 'Identify'.</p>
+
+        <p>A <span class="stat-highlight">2019 meta-analysis of 46 studies (n=3,212)</span> found that teams and individuals using AARs performed <span class="stat-highlight">25% better</span> than those who did not. The key is the structure of the questions.</p>
+
+        <div class="alert-box info">
+            <p class="alert-label">The 4-Question AAR Framework</p>
+            <ol>
+                <li><strong>What was the intended outcome?</strong> (Review the 'Focus' phase goals).</li>
+                <li><strong>What was the actual outcome?</strong> (Objective data from the 'Execute' phase).</li>
+                <li><strong>What caused the results?</strong> (Root cause analysis—not blame).</li>
+                <li><strong>What will we sustain or improve?</strong> (Feeding into the next 'Focus' roadmap).</li>
+            </ol>
+        </div>
+
+        <h2 id="blueprint">6. Integration with the L.I.F.E. Blueprint Method™</h2>
+        <p>Resilience engineering is woven into the very fabric of our methodology. It is not an "add-on" for when things go wrong; it is the infrastructure that allows the 'Execute' phase to remain sustainable.</p>
+        
+        <p>When we <strong>Listen</strong> (Phase L), we are listening for the "cracks" in the client's current resilience. When we <strong>Identify</strong> (Phase I), we are identifying the historical data that can be converted into Post-Traumatic Growth. When we <strong>Focus</strong> (Phase F), we are engineering the Stress Inoculation points into the roadmap. Finally, in <strong>Execute</strong> (Phase E), we apply the Resilience Toolkit to maintain momentum.</p>
+
+        <p>As we move into the final lessons of this certification, remember that your value as a coach isn't in preventing your clients from falling; it's in building a client who is so anti-fragile that every fall makes them faster, stronger, and more certain of their ultimate vision.</p>
+
+        <div class="check-understanding">
+            <p class="box-label">Check Your Understanding</p>
+            <p class="box-subtitle">Test your mastery of Resilience Engineering concepts.</p>
+
+            <div class="question-item">
+                <p class="question-text"><strong>1.</strong> What is the primary difference between a "Robust" client and an "Anti-Fragile" client according to the Taleb framework?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-text">
+                    A Robust client resists stress and stays the same (bounces back to baseline), whereas an Anti-Fragile client actually improves and grows stronger as a direct result of the stressor (bounces forward).
+                </div>
+            </div>
+
+            <div class="question-item">
+                <p class="question-text"><strong>2.</strong> During which phase of the L.I.F.E. Blueprint Method™ is Stress Inoculation Training (SIT) most effectively planned?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-text">
+                    SIT is most effectively planned during the 'Focus' phase, where the coach and client identify potential "Friction Points" in the roadmap and rehearse the skills needed to navigate them before the 'Execute' phase begins.
+                </div>
+            </div>
+        </div>
+
+        <div class="takeaways-box">
+            <p class="box-label">Key Takeaways</p>
+            <ul>
+                <li><strong>Anti-Fragility:</strong> Aim to build systems that gain from disorder, rather than just surviving it.</li>
+                <li><strong>Stress Inoculation:</strong> Use "psychological vaccines" by exposing clients to controlled friction to build execution immunity.</li>
+                <li><strong>PTG Framework:</strong> Reframe past failures as high-value data sets that inform the 'Identify' phase of new goals.</li>
+                <li><strong>AAR Mastery:</strong> Use the 4-question After-Action Review to convert every execution cycle into a learning advantage.</li>
+                <li><strong>Systemic Resilience:</strong> Resilience is engineered through rituals and habits (the toolkit), not just willpower.</li>
+            </ul>
+        </div>
+
+        <div class="references-box">
+            <h4>References & Further Reading</h4>
+            <ul>
+                <li>Meichenbaum, D. (2017). "Stress Inoculation Training: A Preventative and Treatment Approach." <em>The Oxford Handbook of Stress and Health.</em></li>
+                <li>Taleb, N. N. (2012). "Antifragile: Things That Gain from Disorder." <em>Random House.</em></li>
+                <li>Tedeschi, R. G., & Calhoun, L. G. (2004). "Posttraumatic Growth: Conceptual Foundations and Empirical Evidence." <em>Psychological Inquiry.</em></li>
+                <li>Saunders, T., et al. (1996). "The Efficiacy of Stress Inoculation Training: A Meta-Analysis." <em>Journal of Occupational Health Psychology.</em></li>
+                <li>Tannenbaum, S. I., & Cerasoli, C. P. (2013). "Do Team and Individual Debriefs Enhance Performance? A Meta-Analysis." <em>Human Factors: The Journal of the Human Factors and Ergonomics Society.</em></li>
+                <li>McEwen, B. S. (2005). "Stressed or Stressed Out: What is the Difference?" <em>Journal of Psychiatry and Neuroscience.</em></li>
+            </ul>
+        </div>
+
+        <footer class="lesson-footer">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="footer-logo">
+            <p class="brand">AccrediPro Academy © 2024</p>
+            <p class="copyright">L.I.F.E. Blueprint Method™ is a proprietary framework of AccrediPro Academy. All Rights Reserved.</p>
+        </footer>
+    </div>
+</body>
+
+</html>

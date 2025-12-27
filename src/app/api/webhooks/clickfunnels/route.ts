@@ -133,6 +133,19 @@ const PRODUCT_COURSE_MAP: Record<string, string | string[]> = {
   "fm_client_guarantee": "fm-10-client-guarantee",
   "client guarantee": "fm-10-client-guarantee",
   "10-client": "fm-10-client-guarantee",
+
+  // ======================
+  // NARC Recovery Coach
+  // ======================
+  "narc-certification": "narc-recovery-coach-certification",
+  "narc_certification": "narc-recovery-coach-certification",
+  "narcissistic": "narc-recovery-coach-certification",
+  "narc recovery": "narc-recovery-coach-certification",
+  "narcissistic abuse": "narc-recovery-coach-certification",
+
+  // NARC Pro Accelerator ($397)
+  "narc-pro-accelerator": ["narc-pro-advanced-clinical", "narc-pro-master-depth", "narc-pro-practice-path"],
+  "narc_pro_accelerator": ["narc-pro-advanced-clinical", "narc-pro-master-depth", "narc-pro-practice-path"],
 };
 
 // Product prices for Meta CAPI (fallback if not in payload)
@@ -141,6 +154,8 @@ const PRODUCT_PRICES: Record<string, number> = {
   "fm-certification": 197,
   "fm-pro-accelerator": 397,
   "fm-client-guarantee": 297,
+  "narc-certification": 97,
+  "narc-pro-accelerator": 397,
 };
 
 // Product display names for Meta CAPI
@@ -149,6 +164,8 @@ const PRODUCT_NAMES: Record<string, string> = {
   "fm-certification": "FM Certification",
   "fm-pro-accelerator": "FM Pro Accelerator",
   "fm-client-guarantee": "FM 10-Client Guarantee",
+  "narc-certification": "NARC Recovery Coach Certification",
+  "narc-pro-accelerator": "NARC Pro Accelerator",
 };
 
 // Verify ClickFunnels webhook signature (if they provide one)

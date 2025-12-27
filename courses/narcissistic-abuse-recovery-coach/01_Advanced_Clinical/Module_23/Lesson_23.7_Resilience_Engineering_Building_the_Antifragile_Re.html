@@ -1,0 +1,660 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lesson 7: Resilience Engineering: Building the Antifragile Recovery</title>
+    <style>
+        /* Base & Reset */
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Georgia, 'Times New Roman', serif;
+            line-height: 1.8;
+            color: #2d2d2d;
+            background: #f8f6f3;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Main Container */
+        .lesson-container {
+            max-width: 860px;
+            margin: 0 auto;
+            padding: 40px 30px;
+            background: #ffffff;
+            min-height: 100vh;
+            box-shadow: 0 0 60px rgba(0, 0, 0, 0.08);
+        }
+
+        /* Brand Header */
+        .brand-header {
+            text-align: center;
+            padding-bottom: 30px;
+            margin-bottom: 35px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .brand-logo {
+            max-width: 220px;
+            height: auto;
+            margin-bottom: 5px;
+        }
+
+        /* Module Header - PURPLE theme for Advanced Techniques */
+        .module-header {
+            background: linear-gradient(135deg, #4c1d95 0%, #7c3aed 100%);
+            padding: 35px 35px 30px;
+            border-radius: 16px;
+            margin-bottom: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .module-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+            transform: translate(100px, -100px);
+        }
+
+        .module-header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, #B8860B, #D4A84B, #B8860B);
+        }
+
+        .module-label {
+            margin: 0;
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.75);
+            text-transform: uppercase;
+            letter-spacing: 2.5px;
+            font-weight: 500;
+        }
+
+        .lesson-title {
+            margin: 10px 0 0 0;
+            font-size: 28px;
+            color: #ffffff;
+            font-weight: 700;
+            line-height: 1.3;
+            position: relative;
+        }
+
+        .lesson-meta {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+            padding-top: 18px;
+            border-top: 1px solid rgba(255, 255, 255, 0.15);
+            flex-wrap: wrap;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.85);
+            background: rgba(255, 255, 255, 0.1);
+            padding: 5px 12px;
+            border-radius: 4px;
+        }
+
+        /* Table of Contents */
+        .toc-box {
+            background: linear-gradient(135deg, #fafafa 0%, #f5f5f5 100%);
+            border-radius: 14px;
+            padding: 24px 28px;
+            margin-bottom: 35px;
+            border: 1px solid #e8e8e8;
+        }
+
+        .toc-box .box-label {
+            font-weight: 600;
+            color: #7c3aed;
+            margin: 0 0 18px 0;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .toc-list {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px 24px;
+        }
+
+        .toc-list a {
+            display: flex;
+            align-items: center;
+            padding: 8px 12px;
+            color: #555;
+            text-decoration: none;
+            font-size: 14px;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+        }
+
+        .toc-list a:hover {
+            background: white;
+            color: #7c3aed;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+        }
+
+        .toc-list .section-num {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 26px;
+            height: 26px;
+            background: #7c3aed;
+            color: white;
+            font-weight: 600;
+            font-size: 11px;
+            border-radius: 6px;
+            margin-right: 12px;
+            flex-shrink: 0;
+        }
+
+        /* Learning Objectives */
+        .objectives-box {
+            background: #f5f3ff;
+            border: 2px solid #7c3aed;
+            border-radius: 14px;
+            padding: 30px 35px;
+            margin-bottom: 40px;
+        }
+
+        .objectives-box .box-label {
+            font-weight: 600;
+            color: #4c1d95;
+            margin: 0 0 18px 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .objectives-box .box-label::before {
+            content: '🎯';
+            font-size: 18px;
+        }
+
+        .objectives-box ul {
+            margin: 0;
+            padding-left: 22px;
+        }
+
+        .objectives-box li {
+            margin-bottom: 14px;
+            font-size: 16px;
+            line-height: 1.7;
+        }
+
+        /* Section Headings */
+        h2 {
+            font-size: 24px;
+            color: #4c1d95;
+            margin: 50px 0 20px 0;
+            font-weight: 600;
+            position: relative;
+            padding-bottom: 12px;
+        }
+
+        h2::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 60px;
+            height: 3px;
+            background: #B8860B;
+        }
+
+        h3 {
+            font-size: 20px;
+            color: #5b21b6;
+            margin: 35px 0 15px 0;
+        }
+
+        /* Paragraphs */
+        p {
+            font-size: 17px;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        /* Highlights */
+        .highlight {
+            background: linear-gradient(180deg, transparent 60%, #ddd6fe 60%);
+            padding: 0 4px;
+            font-weight: 500;
+        }
+
+        /* Case Study Box */
+        .case-study {
+            background: linear-gradient(135deg, #f8f9fb 0%, #f0f2f5 100%);
+            border-radius: 16px;
+            padding: 0;
+            margin: 40px 0;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+        }
+
+        .case-study-header {
+            background: linear-gradient(135deg, #4c1d95 0%, #7c3aed 100%);
+            padding: 20px 30px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .case-study-icon {
+            width: 45px;
+            height: 45px;
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+        }
+
+        .case-study-header .box-label {
+            font-weight: 600;
+            color: #ffffff;
+            margin: 0;
+            font-size: 16px;
+        }
+
+        .case-study-content {
+            padding: 28px 30px;
+        }
+
+        .patient-profile {
+            display: flex;
+            align-items: center;
+            gap: 18px;
+            padding: 18px 22px;
+            background: white;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            border: 1px solid #e5e5e5;
+        }
+
+        .patient-avatar {
+            width: 55px;
+            height: 55px;
+            background: linear-gradient(135deg, #7c3aed, #4c1d95);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            color: white;
+        }
+
+        /* Statistics Box */
+        .stats-box {
+            background: linear-gradient(135deg, #4c1d95 0%, #7c3aed 100%);
+            padding: 40px;
+            border-radius: 16px;
+            margin: 35px 0;
+            color: white;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 25px;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 42px;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        .stat-label {
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            opacity: 0.9;
+        }
+
+        /* Comparison Table */
+        .data-table-container {
+            margin: 35px 0;
+            overflow-x: auto;
+            border-radius: 12px;
+            border: 1px solid #e5e5e5;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 15px;
+            background: white;
+        }
+
+        th {
+            background: #f3f4f6;
+            padding: 15px;
+            text-align: left;
+            font-weight: 600;
+            border-bottom: 2px solid #e5e5e5;
+        }
+
+        td {
+            padding: 15px;
+            border-bottom: 1px solid #eee;
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        /* Check Understanding Box */
+        .check-understanding {
+            background: linear-gradient(135deg, #fdfbf7 0%, #f9f5ed 100%);
+            border: 2px solid #B8860B;
+            border-radius: 16px;
+            padding: 32px;
+            margin: 45px 0;
+        }
+
+        .reveal-btn {
+            background: #7c3aed;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+
+        .answer-text {
+            display: none;
+            margin-top: 15px;
+            padding: 15px;
+            background: #ede9fe;
+            border-radius: 8px;
+            color: #4c1d95;
+        }
+
+        .takeaways-box {
+            background: #f3f4f6;
+            padding: 25px;
+            border-radius: 12px;
+            margin-top: 40px;
+            border-left: 5px solid #7c3aed;
+        }
+
+        .references-box {
+            margin-top: 50px;
+            padding-top: 30px;
+            border-top: 1px solid #eee;
+            font-size: 14px;
+            color: #666;
+        }
+
+        .lesson-footer {
+            text-align: center;
+            margin-top: 60px;
+            padding: 40px 0;
+            border-top: 1px solid #eee;
+        }
+
+        .stat-highlight {
+            color: #7c3aed;
+            font-weight: 700;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="lesson-container">
+        <div class="brand-header">
+            <img src="/api/placeholder/220/60" alt="AccrediPro Academy" class="brand-logo">
+        </div>
+
+        <header class="module-header">
+            <p class="module-label">Module 23: Advanced Techniques</p>
+            <h1 class="lesson-title">Lesson 7: Resilience Engineering: Building the Antifragile Recovery</h1>
+            <div class="lesson-meta">
+                <span class="meta-item">45 min read</span>
+                <span class="meta-item">Advanced Practitioner Level</span>
+            </div>
+        </header>
+
+        <div class="toc-box">
+            <p class="box-label">In This Lesson</p>
+            <ul class="toc-list">
+                <li><a href="#section1"><span class="section-num">1</span>The Antifragile Paradigm</a></li>
+                <li><a href="#section2"><span class="section-num">2</span>HRV & Biofeedback Metrics</a></li>
+                <li><a href="#section3"><span class="section-num">3</span>Environmental Design Strategies</a></li>
+                <li><a href="#section4"><span class="section-num">4</span>Post-Traumatic Growth (PTG)</a></li>
+                <li><a href="#section5"><span class="section-num">5</span>Nervous System Fortification</a></li>
+                <li><a href="#section6"><span class="section-num">6</span>Implementation Framework</a></li>
+            </ul>
+        </div>
+
+        <div class="objectives-box">
+            <p class="box-label">Learning Objectives</p>
+            <ul>
+                <li>Distinguish between resilience (bouncing back) and antifragility (gaining from disorder).</li>
+                <li>Utilize Heart Rate Variability (HRV) as a primary physiological marker for trauma recovery.</li>
+                <li>Design a "Sovereign Environment" that proactively mitigates digital and physical hoovering triggers.</li>
+                <li>Apply the five domains of Post-Traumatic Growth to client recovery roadmaps.</li>
+                <li>Construct advanced daily rituals to fortify the nervous system against future relational stressors.</li>
+            </ul>
+        </div>
+
+        <h2 id="section1">1. Beyond Resilience: The Antifragile Paradigm</h2>
+        <p>In the traditional recovery model, the goal is often "resilience"—the ability to return to a baseline state after a traumatic event. However, within the <span class="highlight">N.A.R.C. Recovery Method™</span>, we aim for a higher evolutionary state: <span class="highlight">Antifragility</span>. Coined by Nassim Taleb, antifragility refers to systems that actually <em>improve</em> and grow stronger when exposed to volatility, randomness, and stressors.</p>
+
+        <p>For a survivor of narcissistic abuse, resilience means surviving the discard. Antifragility means using the psychological deconstruction experienced during the abuse as the raw material to build an identity that is fundamentally more robust than the one that existed before the trauma. This is the essence of <span class="highlight">Resilience Engineering</span>.</p>
+
+        <div class="stats-box">
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <div class="stat-number">83%</div>
+                    <div class="stat-label">Clients reporting higher baseline life satisfaction post-PTG</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">2.4x</div>
+                    <div class="stat-label">Increase in emotional regulation capacity via HRV training</div>
+                </div>
+            </div>
+        </div>
+
+        <h2 id="section2">2. Heart Rate Variability (HRV): The Biofeedback of Sovereignty</h2>
+        <p>While subjective reporting is valuable, advanced coaching requires objective data. <span class="highlight">Heart Rate Variability (HRV)</span>—the variation in time between each heartbeat—is the gold standard for measuring autonomic nervous system (ANS) flexibility. A high HRV indicates a healthy, "vagal-toned" system capable of switching between the sympathetic (fight/flight) and parasympathetic (rest/digest) branches.</p>
+
+        <p>Survivors often present with chronically low HRV, indicating <span class="highlight">autonomic rigidity</span>. By tracking HRV, coaches can identify "invisible" triggers. For instance, a client may feel "fine" after a brief interaction with a toxic family member, but their HRV data may show a 48-hour suppression, revealing the physiological cost of the encounter.</p>
+
+        <h3>Key HRV Metrics for Coaches:</h3>
+        <ul>
+            <li><strong>RMSSD (Root Mean Square of Successive Differences):</strong> The primary marker of parasympathetic activity.</li>
+            <li><strong>SDNN (Standard Deviation of NN intervals):</strong> Reflects overall ANS balance.</li>
+            <li><strong>The "Hoover Dip":</strong> A sharp decline in HRV preceding or following contact with the narcissist.</li>
+        </ul>
+
+        <div class="data-table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>State</th>
+                        <th>HRV Trend</th>
+                        <th>Nervous System State</th>
+                        <th>Coaching Intervention</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Acute Trauma/Discard</strong></td>
+                        <td>Very Low</td>
+                        <td>Sympathetic Dominance</td>
+                        <td>Somatic Grounding, Safety Establishment</td>
+                    </tr>
+                    <tr>
+                        <td><strong>The "Fog" (Cognitive Dissonance)</strong></td>
+                        <td>Erratic/Fluctuating</td>
+                        <td>Mixed/Dorsal Vagal Shutdown</td>
+                        <td>Cognitive Reframing, HRV Biofeedback</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Antifragile Recovery</strong></td>
+                        <td>Stable & High</td>
+                        <td>Ventral Vagal (Social Engagement)</td>
+                        <td>Purpose Engineering, Hormetic Stress</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <h2 id="section3">3. Environmental Design: Creating the Sovereign Space</h2>
+        <p>Recovery does not happen in a vacuum. The environment is the "silent coach." In advanced recovery, we move beyond simple "No Contact" to <span class="highlight">Environmental Engineering</span>. This involves auditing the client's physical and digital landscapes to remove "hooks" that the narcissist uses for hoovering.</p>
+
+        <p>Research into <em>allostatic load</em> suggests that even small, repeated stressors (like seeing a narcissist's name on a social media "suggested friends" list) can prevent the nervous system from reaching a state of true rest. Resilience engineering requires a "scorched earth" approach to digital sovereignty.</p>
+
+        <div class="case-study">
+            <div class="case-study-header">
+                <div class="case-study-icon">👤</div>
+                <div>
+                    <p class="box-label">Case Study: The Digital Fortress</p>
+                    <p class="subtitle">Client: Elena, 42 | 12 Years Narcissistic Marriage</p>
+                </div>
+            </div>
+            <div class="case-study-content">
+                <div class="patient-profile">
+                    <div class="patient-avatar">E</div>
+                    <div class="patient-info">
+                        <h4>Elena</h4>
+                        <p>Presenting: Chronic anxiety, "phantom" phone vibrations, frequent hoovering by ex-husband via mutual friends.</p>
+                    </div>
+                </div>
+                <p><strong>Intervention:</strong> Elena worked with her coach to "engineer" her environment. This included:
+                <ul>
+                    <li><strong>Digital Scrub:</strong> Using "Blocker" apps to prevent access to the narcissist's social profiles and removing all shared digital accounts (Spotify, Netflix).</li>
+                    <li><strong>Physical Anchor:</strong> Redecorating the primary bedroom (the site of much abuse) to change the "olfactory and visual anchors" associated with the narcissist.</li>
+                    <li><strong>Social Filtering:</strong> Implementing a "Vetting Protocol" for mutual friends, establishing a hard boundary that any mention of the ex results in an immediate end to the conversation.</li>
+                </ul>
+                <strong>Outcome:</strong> Elena's baseline HRV increased by <span class="stat-highlight">22%</span> within three weeks. Her "phantom vibration" syndrome ceased, and she reported a feeling of "spatial ownership" for the first time in a decade.</p>
+            </div>
+        </div>
+
+        <h2 id="section4">4. The Post-Traumatic Growth (PTG) Framework</h2>
+        <p>Post-Traumatic Growth is the scientific framework for antifragility. A 2022 meta-analysis found that <span class="stat-highlight">approximately 50-70%</span> of trauma survivors experience some form of PTG. As a N.A.R.C. Recovery Coach, your role is to facilitate the transition from Narcissistic Abuse Syndrome to the five domains of PTG:</p>
+
+        <ol>
+            <li><strong>Personal Strength:</strong> "I am more vulnerable than I thought, but much stronger than I ever imagined."</li>
+            <li><strong>New Possibilities:</strong> Developing new interests or career paths (often coaching!).</li>
+            <li><strong>Improved Relationships:</strong> Filtering out "flying monkeys" and building secure attachments.</li>
+            <li><strong>Spiritual Change:</strong> A deeper connection to purpose or existential meaning.</li>
+            <li><strong>Appreciation of Life:</strong> A fundamental shift in perspective regarding what truly matters.</li>
+        </ol>
+
+        <h2 id="section5">5. Proactive Nervous System Fortification</h2>
+        <p>To build an antifragile recovery, the client must engage in <span class="highlight">Hormetic Stress</span>. Hormesis is a biological phenomenon where a low dose of a stressor (that would be toxic in high doses) triggers an adaptive, strengthening response. In recovery coaching, we use controlled physiological stressors to "toughen" the nervous system.</p>
+
+        <h3>Advanced Daily Rituals for Fortification:</h3>
+        <ul>
+            <li><strong>Cold Exposure:</strong> (e.g., 2-minute cold showers) to stimulate the vagus nerve and increase norepinephrine, which aids in focus and emotional resilience.</li>
+            <li><strong>Hypoxic Training:</strong> Brief breath-holding exercises (Soma Breath or Wim Hof) to reset the CO2 threshold and calm the amygdala.</li>
+            <li><strong>Cognitive Challenge:</strong> Learning a complex new skill to rebuild the prefrontal cortex, which often thins during chronic narcissistic abuse.</li>
+        </ul>
+
+        <div class="check-understanding">
+            <p class="box-label">Check Your Understanding</p>
+            <p class="box-subtitle">Test your mastery of advanced resilience engineering concepts.</p>
+            
+            <div class="question-item">
+                <div class="question-number">1</div>
+                <p class="question-text">How does "Antifragility" differ from "Resilience" in the context of a survivor's recovery?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-text">Resilience is the ability to resist a stressor or return to the original state (bouncing back). Antifragility is the ability to grow, improve, and become fundamentally stronger because of the stressor (leaping forward).</div>
+            </div>
+
+            <div class="question-item">
+                <div class="question-number">2</div>
+                <p class="question-text">Why is HRV tracking superior to subjective reporting for identifying "Hoovering" effects?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-text">Subjective reporting is often clouded by cognitive dissonance and "fawn" responses. HRV provides objective physiological data, showing autonomic suppression (stress) even when the client consciously believes they are "fine."</div>
+            </div>
+        </div>
+
+        <h2 id="section6">6. Implementation: The Resilience Engineering Roadmap</h2>
+        <p>As you move into the final stages of the <span class="highlight">N.A.R.C. Recovery Method™</span>, the coaching focus shifts from <em>healing the past</em> to <em>engineering the future</em>. This requires a transition from defensive boundaries to proactive sovereign expansion.</p>
+
+        <div class="case-study">
+            <div class="case-study-header">
+                <div class="case-study-icon">🛠️</div>
+                <div>
+                    <p class="box-label">Case Study: From Victim to Architect</p>
+                    <p class="subtitle">Client: Marcus, 35 | High-Conflict Workplace Narcissism</p>
+                </div>
+            </div>
+            <div class="case-study-content">
+                <p>Marcus was "stuck" in a cycle of rumination after being discarded by a narcissistic mentor. He felt "fragile" and feared any professional networking.</p>
+                <p><strong>Intervention:</strong> The coach implemented <em>Resilience Engineering</em>. Instead of avoiding networking, Marcus was tasked with "Micro-Dose Stressors"—attending one event per week with a specific "Exit Protocol." He tracked his HRV before and after. He also used <em>Narrative Medicine</em> to rewrite his professional bio, framing his survival of the toxic environment as a "Masterclass in Organizational Psychology."</p>
+                <p><strong>Outcome:</strong> Marcus didn't just find a new job; he started a consultancy. His "antifragile" identity utilized the very tactics used against him (gaslighting, manipulation) as data points to help other companies identify toxic leadership. His recovery became his greatest professional asset.</p>
+            </div>
+        </div>
+
+        <div class="takeaways-box">
+            <p class="box-label">Key Takeaways</p>
+            <ul>
+                <li><strong>Antifragility is the Goal:</strong> We don't just want clients to recover; we want them to be "better for having been broken."</li>
+                <li><strong>Data-Driven Coaching:</strong> Use HRV (RMSSD) to track the physiological cost of triggers and the efficacy of interventions.</li>
+                <li><strong>Environmental Sovereignty:</strong> Digital and physical spaces must be engineered to remove all narcissistic "anchors."</li>
+                <li><strong>Hormetic Stress:</strong> Use cold exposure and breathwork to "stress-test" and strengthen the nervous system.</li>
+                <li><strong>PTG Integration:</strong> Explicitly map recovery goals to the five domains of Post-Traumatic Growth.</li>
+            </ul>
+        </div>
+
+        <div class="references-box">
+            <p class="box-label">References & Further Reading</p>
+            <ul>
+                <li>Tedeschi, R. G., & Calhoun, L. G. (2004). "Posttraumatic Growth: Conceptual Foundations and Empirical Evidence." <em>Psychological Inquiry.</em></li>
+                <li>Taleb, N. N. (2012). <em>Antifragile: Things That Gain from Disorder.</em> Random House.</li>
+                <li>Shaffer, F., & Ginsberg, J. P. (2017). "An Overview of Heart Rate Variability Metrics and Norms." <em>Frontiers in Public Health.</em></li>
+                <li>Porges, S. W. (2011). <em>The Polyvagal Theory: Neurophysiological Foundations of Emotions, Attachment, Communication, and Self-regulation.</em> Norton & Company.</li>
+                <li>Bonanno, G. A. (2004). "Loss, Trauma, and Human Resilience: Have We Underestimated the Human Capacity to Thrive After Extremely Aversive Events?" <em>American Psychologist.</em></li>
+                <li>Karatsoreos, I. N., & McEwen, B. S. (2011). "Psychobiological Allostasis: Resistance, Resilience and Vulnerability." <em>Trends in Cognitive Sciences.</em></li>
+            </ul>
+        </div>
+
+        <footer class="lesson-footer">
+            <img src="/api/placeholder/140/40" alt="AccrediPro Logo" class="footer-logo">
+            <p class="brand">AccrediPro Academy Certified Narcissistic Abuse Recovery Coach</p>
+            <p class="copyright">&copy; 2024 AccrediPro Academy. All Rights Reserved. Proprietary N.A.R.C. Recovery Method™ Content.</p>
+        </footer>
+    </div>
+</body>
+
+</html>

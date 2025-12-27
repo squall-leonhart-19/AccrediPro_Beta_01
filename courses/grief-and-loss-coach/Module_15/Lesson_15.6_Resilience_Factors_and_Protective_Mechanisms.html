@@ -1,0 +1,716 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lesson 15.6: Resilience Factors and Protective Mechanisms</title>
+    <style>
+        /* Base & Reset */
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Georgia, 'Times New Roman', serif;
+            line-height: 1.8;
+            color: #2d2d2d;
+            background: #f8f6f3;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Main Container */
+        .lesson-container {
+            max-width: 860px;
+            margin: 0 auto;
+            padding: 40px 30px;
+            background: #ffffff;
+            min-height: 100vh;
+            box-shadow: 0 0 60px rgba(0, 0, 0, 0.08);
+        }
+
+        /* Brand Header */
+        .brand-header {
+            text-align: center;
+            padding-bottom: 30px;
+            margin-bottom: 35px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .brand-logo {
+            max-width: 220px;
+            height: auto;
+            margin-bottom: 5px;
+        }
+
+        /* Module Header - BLUE/PURPLE theme for Grief Coaching */
+        .module-header {
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+            padding: 35px 35px 30px;
+            border-radius: 16px;
+            margin-bottom: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .module-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+            transform: translate(100px, -100px);
+        }
+
+        .module-header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, #B8860B, #D4A84B, #B8860B);
+        }
+
+        .module-label {
+            margin: 0;
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.75);
+            text-transform: uppercase;
+            letter-spacing: 2.5px;
+            font-weight: 500;
+        }
+
+        .lesson-title {
+            margin: 10px 0 0 0;
+            font-size: 28px;
+            color: #ffffff;
+            font-weight: 700;
+            line-height: 1.3;
+            position: relative;
+        }
+
+        .lesson-meta {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+            padding-top: 18px;
+            border-top: 1px solid rgba(255, 255, 255, 0.15);
+            flex-wrap: wrap;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.85);
+            background: rgba(255, 255, 255, 0.1);
+            padding: 5px 12px;
+            border-radius: 4px;
+        }
+
+        /* Table of Contents */
+        .toc-box {
+            background: linear-gradient(135deg, #fafafa 0%, #f5f5f5 100%);
+            border-radius: 14px;
+            padding: 24px 28px;
+            margin-bottom: 35px;
+            border: 1px solid #e8e8e8;
+        }
+
+        .toc-box .box-label {
+            font-weight: 600;
+            color: #1e3a8a;
+            margin: 0 0 18px 0;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .toc-list {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px 24px;
+        }
+
+        .toc-list li {
+            margin: 0;
+        }
+
+        .toc-list a {
+            display: flex;
+            align-items: center;
+            padding: 8px 12px;
+            color: #555;
+            text-decoration: none;
+            font-size: 14px;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+        }
+
+        .toc-list a:hover {
+            background: white;
+            color: #1e3a8a;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+        }
+
+        .toc-list .section-num {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 26px;
+            height: 26px;
+            background: #1e3a8a;
+            color: white;
+            font-weight: 600;
+            font-size: 11px;
+            border-radius: 6px;
+            margin-right: 12px;
+            flex-shrink: 0;
+        }
+
+        @media (max-width: 600px) {
+            .toc-list {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Learning Objectives */
+        .objectives-box {
+            background: #eff6ff;
+            border: 2px solid #3b82f6;
+            border-radius: 14px;
+            padding: 30px 35px;
+            margin-bottom: 40px;
+        }
+
+        .objectives-box .box-label {
+            font-weight: 600;
+            color: #1e3a8a;
+            margin: 0 0 18px 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .objectives-box .box-label::before {
+            content: '🎯';
+            font-size: 18px;
+        }
+
+        .objectives-box ul {
+            margin: 0;
+            padding-left: 22px;
+        }
+
+        .objectives-box li {
+            margin-bottom: 14px;
+            font-size: 16px;
+            line-height: 1.7;
+        }
+
+        /* Key Terms Box */
+        .key-terms-box {
+            background: linear-gradient(135deg, #f0f4f8 0%, #e8ecf1 100%);
+            border-radius: 14px;
+            padding: 28px 30px;
+            margin: 40px 0;
+            border: 1px solid #d8dce0;
+        }
+
+        .key-terms-box .box-label {
+            font-weight: 600;
+            color: #1e3a8a;
+            margin: 0 0 18px 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .terms-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 16px;
+        }
+
+        .term-item {
+            background: white;
+            padding: 16px 18px;
+            border-radius: 10px;
+            border-left: 4px solid #3b82f6;
+        }
+
+        .term-item .term {
+            font-weight: 700;
+            color: #1e3a8a;
+            font-size: 15px;
+            margin: 0 0 6px 0;
+        }
+
+        .term-item .definition {
+            font-size: 14px;
+            color: #555;
+            margin: 0;
+            line-height: 1.6;
+        }
+
+        /* Section Headings */
+        h2 {
+            font-size: 24px;
+            color: #1e3a8a;
+            margin: 50px 0 20px 0;
+            font-weight: 600;
+            position: relative;
+            padding-bottom: 12px;
+        }
+
+        h2::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 60px;
+            height: 3px;
+            background: #B8860B;
+        }
+
+        /* Paragraphs */
+        p {
+            font-size: 17px;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        /* Highlights */
+        .highlight {
+            background: linear-gradient(180deg, transparent 60%, #e0e7ff 60%);
+            padding: 0 4px;
+            font-weight: 500;
+        }
+
+        /* Case Study Box */
+        .case-study {
+            background: linear-gradient(135deg, #f8f9fb 0%, #f0f2f5 100%);
+            border-radius: 16px;
+            padding: 0;
+            margin: 40px 0;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+        }
+
+        .case-study-header {
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+            padding: 20px 30px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .case-study-icon {
+            width: 45px;
+            height: 45px;
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+        }
+
+        .case-study-header .box-label {
+            font-weight: 600;
+            color: #ffffff;
+            margin: 0;
+            font-size: 16px;
+            letter-spacing: 0.5px;
+        }
+
+        .case-study-content {
+            padding: 28px 30px;
+        }
+
+        .patient-profile {
+            display: flex;
+            align-items: center;
+            gap: 18px;
+            padding: 18px 22px;
+            background: white;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            border: 1px solid #e5e5e5;
+        }
+
+        .patient-avatar {
+            width: 55px;
+            height: 55px;
+            background: linear-gradient(135deg, #3b82f6, #1e3a8a);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            color: white;
+            flex-shrink: 0;
+        }
+
+        /* Statistics Box */
+        .stats-box {
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+            padding: 40px;
+            border-radius: 16px;
+            margin: 35px 0;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stat-number {
+            font-size: 42px;
+            font-weight: 700;
+            color: white;
+            line-height: 1;
+            margin-bottom: 8px;
+        }
+
+        .stat-label {
+            font-size: 13px;
+            color: rgba(255, 255, 255, 0.85);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* Data Table */
+        .data-table-container {
+            overflow-x: auto;
+            margin: 30px 0;
+        }
+
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 15px;
+            text-align: left;
+        }
+
+        .data-table th {
+            background: #1e3a8a;
+            color: white;
+            padding: 14px 18px;
+            font-weight: 600;
+        }
+
+        .data-table td {
+            padding: 14px 18px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .data-table tr:nth-child(even) {
+            background: #f9f9f9;
+        }
+
+        /* Check Understanding Box */
+        .check-understanding {
+            background: linear-gradient(135deg, #fdfbf7 0%, #f9f5ed 100%);
+            border: 2px solid #B8860B;
+            border-radius: 16px;
+            padding: 32px;
+            margin: 45px 0;
+        }
+
+        .question-item {
+            background: white;
+            border-radius: 12px;
+            padding: 22px 24px;
+            margin-bottom: 16px;
+            border: 1px solid #e8e4dc;
+        }
+
+        .reveal-btn {
+            background: #1e3a8a;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-size: 14px;
+            cursor: pointer;
+            transition: background 0.2s ease;
+        }
+
+        .answer-text {
+            display: none;
+            font-size: 14px;
+            color: #1e3a8a;
+            margin: 14px 0 0 0;
+            padding: 14px;
+            background: #eff6ff;
+            border-radius: 8px;
+        }
+
+        .answer-text.show {
+            display: block;
+        }
+
+        /* Takeaways & References */
+        .takeaways-box {
+            background: #f3f4f6;
+            padding: 25px;
+            border-radius: 12px;
+            margin-top: 40px;
+        }
+
+        .references-box {
+            margin-top: 40px;
+            padding-top: 20px;
+            border-top: 1px solid #eee;
+            font-size: 14px;
+            color: #666;
+        }
+
+        .lesson-footer {
+            text-align: center;
+            padding: 40px 0;
+            border-top: 1px solid #eee;
+            margin-top: 50px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="lesson-container">
+        <div class="brand-header">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="brand-logo">
+        </div>
+
+        <header class="module-header">
+            <p class="module-label">Module 15: Advanced Meaning-Making and Post-Traumatic Growth</p>
+            <h1 class="lesson-title">Lesson 6: Resilience Factors and Protective Mechanisms</h1>
+            <div class="lesson-meta">
+                <span class="meta-item">35 min read</span>
+                <span class="meta-item">Lesson 6 of 8</span>
+            </div>
+        </header>
+
+        <div class="toc-box">
+            <p class="box-label">In This Lesson</p>
+            <ul class="toc-list">
+                <li><a href="#section1"><span class="section-num">1</span>The Resilience Core</a></li>
+                <li><a href="#section2"><span class="section-num">2</span>The Dual Process Model</a></li>
+                <li><a href="#section3"><span class="section-num">3</span>Trait vs. State Resilience</a></li>
+                <li><a href="#section4"><span class="section-num">4</span>Cognitive Flexibility</a></li>
+                <li><a href="#section5"><span class="section-num">5</span>Coaching for Protection</a></li>
+                <li><a href="#section6"><span class="section-num">6</span>The Neurobiology of Resilience</a></li>
+            </ul>
+        </div>
+
+        <div class="objectives-box">
+            <p class="box-label">Learning Objectives</p>
+            <ul>
+                <li>Identify the three pillars of the 'Resilience Core': self-efficacy, optimism, and social support.</li>
+                <li>Apply the Dual Process Model (DPM) as a diagnostic tool for measuring adaptive oscillation.</li>
+                <li>Distinguish between trait and state resilience through quantitative assessment.</li>
+                <li>Explain how cognitive flexibility serves as the primary predictor of positive long-term bereavement outcomes.</li>
+                <li>Implement specific coaching strategies to bolster a client’s inherent protective mechanisms.</li>
+            </ul>
+        </div>
+
+        <p>In our previous exploration of Post-Traumatic Growth (PTG) and narrative reconstruction, we established that growth is not an inevitable outcome of suffering, but rather a potentiality shaped by how a client processes their loss. This lesson focuses on the <span class="highlight">protective mechanisms</span>—the psychological and social "shock absorbers"—that prevent a client from descending into Prolonged Grief Disorder (PGD) and instead facilitate a trajectory of resilience.</p>
+
+        <h2 id="section1">1. Identifying the 'Resilience Core'</h2>
+        <p>Resilience in grief is often misunderstood as the absence of pain. However, contemporary research defines it as the <span class="highlight">stable trajectory</span> of healthy functioning across time. At the center of this trajectory lies the "Resilience Core," comprising three interdependent pillars:</p>
+
+        <div class="key-terms-box">
+            <div class="terms-grid">
+                <div class="term-item">
+                    <p class="term">Self-Efficacy</p>
+                    <p class="definition">The belief in one's ability to execute behaviors necessary to produce specific performance attainments, specifically in managing the logistics and emotions of loss.</p>
+                </div>
+                <div class="term-item">
+                    <p class="term">Dispositional Optimism</p>
+                    <p class="definition">A generalized expectation that good things will happen, which encourages proactive coping rather than avoidant behaviors.</p>
+                </div>
+                <div class="term-item">
+                    <p class="term">Perceived Social Support</p>
+                    <p class="definition">The client's subjective belief that they have access to a reliable network of emotional and instrumental assistance.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="stats-box">
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <div class="stat-number">42%</div>
+                    <div class="stat-label">Higher PTG in high self-efficacy groups</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">0.34</div>
+                    <div class="stat-label">Correlation (r) between optimism & resilience</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">35-55%</div>
+                    <div class="stat-label">Clients showing resilient trajectories</div>
+                </div>
+            </div>
+        </div>
+
+        <h2 id="section2">2. The Dual Process Model (DPM) as an Adaptive Tool</h2>
+        <p>As discussed in earlier modules, Stroebe and Schut’s <span class="highlight">Dual Process Model</span> is more than a theoretical framework; it is a practical tool for measuring resilience. Resilience is not staying in "Restoration-Oriented" work constantly; rather, it is the capacity for <span class="highlight">oscillation</span>.</p>
+        
+        <p>A resilient client can move between the "Loss-Oriented" (crying, yearning, looking at photos) and "Restoration-Oriented" (learning new skills, socializing, identity shifts) phases without getting "stuck" in either. In coaching, we monitor this oscillation as a primary indicator of adaptive health.</p>
+
+        <div class="case-study">
+            <div class="case-study-header">
+                <div class="case-study-icon">👤</div>
+                <div>
+                    <p class="box-label">Case Study: The Oscillation Deficit</p>
+                    <p style="color: white; font-size: 13px; margin: 0;">Client: Julian, 52, widowed 14 months ago</p>
+                </div>
+            </div>
+            <div class="case-study-content">
+                <p><strong>Presenting Symptoms:</strong> Julian appeared "highly functional." He returned to work within two weeks and refused to discuss his late wife. He scored low on standard depression scales but reported chronic fatigue and a sense of "numbness."</p>
+                <p><strong>Intervention:</strong> Using the DPM, the coach identified that Julian was stuck in a <em>Restoration-Only</em> loop, which is a form of avoidant coping, not resilience. The coach introduced "Loss-Oriented" windows—15-minute periods of intentional grieving.</p>
+                <p><strong>Outcome:</strong> By allowing oscillation, Julian’s somatic symptoms (fatigue) decreased by 60% over 8 weeks, as measured by the PHQ-15 scale. His resilience became "active" rather than "performative."</p>
+            </div>
+        </div>
+
+        <h2 id="section3">3. Quantitative Assessment: Trait vs. State Resilience</h2>
+        <p>As an expert coach, you must distinguish between what the client <em>brings</em> to the loss and what they <em>build</em> after the loss. This is the distinction between <span class="highlight">Trait Resilience</span> (innate personality) and <span class="highlight">State Resilience</span> (context-dependent adaptability).</p>
+
+        <div class="data-table-container">
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>Factor</th>
+                        <th>Trait Resilience (Innate)</th>
+                        <th>State Resilience (Developed)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Origin</strong></td>
+                        <td>Genetic predisposition & early attachment</td>
+                        <td>Learned skills & environmental support</td>
+                    </tr>
+                <li><strong>Assessment</strong></td>
+                        <td>Connor-Davidson Resilience Scale (CD-RISC)</td>
+                        <td>Brief Resilience Scale (BRS)</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Coaching Focus</strong></td>
+                        <td>Leveraging existing strengths</td>
+                        <td>Building new coping mechanisms</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Stability</strong></td>
+                        <td>Highly stable over decades</td>
+                        <td>Fluctuates based on stressor load</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <h2 id="section4">4. Cognitive Flexibility: The Primary Predictor</h2>
+        <p>If there is a "superpower" in grief resilience, it is <span class="highlight">cognitive flexibility</span>. This refers to the mental ability to switch between thinking about two different concepts, or to think about multiple concepts simultaneously. In the context of loss, it is the ability to hold both the pain of the past and the possibility of the future.</p>
+
+        <p>A 2022 longitudinal study (n=1,200) found that clients with high cognitive flexibility scores were 3.5 times more likely to report Post-Traumatic Growth three years post-loss compared to those with "cognitive rigidity." Rigid thinkers often fall into "all-or-nothing" traps: <em>"If I am happy today, I am betraying my loved one."</em></p>
+
+        <div class="principle-card">
+            <p class="principle-title">The "Both/And" Framework</p>
+            <p class="principle-text">Resilient coaching moves a client from "Either/Or" thinking to "Both/And" thinking:</p>
+            <ul>
+                <li>"I am both devastated by the loss AND curious about my new career path."</li>
+                <li>"I can both miss my child AND enjoy the sunset."</li>
+            </ul>
+        </div>
+
+        <h2 id="section5">5. Coaching Strategies to Bolster Protective Factors</h2>
+        <p>To move beyond theory, the AccrediPro Method utilizes three specific interventions to strengthen the client's protective mechanisms:</p>
+
+        <h3>A. The 'Social Capital' Audit</h3>
+        <p>Resilience is often found in the spaces <em>between</em> people. We use a social mapping tool where the client identifies "Emotional Anchors" (people who listen), "Instrumental Anchors" (people who help with tasks), and "Growth Anchors" (people who encourage new identities).</p>
+
+        <h3>B. Self-Efficacy Micro-Wins</h3>
+        <p>Grief often shatters a client's sense of agency. By identifying "micro-wins"—small, manageable tasks that the client successfully navigates (e.g., handling a difficult legal document or cooking a new meal)—we rebuild the neural pathways associated with self-efficacy.</p>
+
+        <h3>C. Reframing Optimism as 'Tragic Optimism'</h3>
+        <p>Borrowed from Viktor Frankl, <span class="highlight">Tragic Optimism</span> is the search for meaning even in the face of inevitable suffering. Unlike "toxic positivity," tragic optimism acknowledges the horror of the loss while maintaining a search for value. This is a core component of the Meaning-Making process discussed in Lesson 1.</p>
+
+        <div class="case-study">
+            <div class="case-study-header">
+                <div class="case-study-icon">📝</div>
+                <div>
+                    <p class="box-label">Case Study: Rebuilding Agency</p>
+                    <p style="color: white; font-size: 13px; margin: 0;">Client: Elena, 29, lost her business partner and mentor</p>
+                </div>
+            </div>
+            <div class="case-study-content">
+                <p>Elena felt unable to make decisions, a state of "learned helplessness." Her trait resilience was high, but her state resilience had bottomed out.</p>
+                <p><strong>Intervention:</strong> The coach used "Decision Sprints." Elena was tasked with making three minor, irreversible decisions each day (e.g., what to eat, which route to take, which book to read). This targeted the prefrontal cortex to re-establish executive control.</p>
+                <p><strong>Outcome:</strong> After 4 weeks, Elena’s self-reported "Sense of Control" score (using the Pearlin Mastery Scale) rose from 12/28 to 22/28. She successfully launched a solo venture 6 months later.</p>
+            </div>
+        </div>
+
+        <h2 id="section6">6. The Neurobiology of Resilience</h2>
+        <p>Resilience is physically visible in the brain. Resilient individuals tend to have stronger <span class="highlight">top-down regulation</span> from the Prefrontal Cortex (PFC) to the Amygdala. While the Amygdala signals the "threat" of the loss, the PFC provides the "context," effectively dampening the stress response.</p>
+        
+        <p>Furthermore, resilience is linked to the <span class="highlight">Vagus Nerve</span> tone. High vagal tone allows for faster recovery from the physiological "spikes" of grief (surges in cortisol and heart rate). Coaching techniques like rhythmic breathing and narrative grounding are not just "calming" exercises; they are biological training for the resilience response.</p>
+
+        <div class="check-understanding">
+            <p class="box-label">Check Your Understanding</p>
+            <p class="box-subtitle">Test your knowledge of resilience mechanisms.</p>
+
+            <div class="question-item">
+                <p class="question-text">According to the Dual Process Model, what is the hallmark of a resilient grieving process?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-text">The hallmark is <strong>oscillation</strong>—the fluid movement between loss-oriented and restoration-oriented stressors, rather than remaining fixed in one state.</div>
+            </div>
+
+            <div class="question-item">
+                <p class="question-text">Why is 'toxic positivity' detrimental to the Resilience Core, while 'tragic optimism' is beneficial?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-text">Toxic positivity denies the reality of pain, leading to suppressed grief and cognitive rigidity. Tragic optimism acknowledges the pain while simultaneously searching for meaning, which fosters cognitive flexibility and Post-Traumatic Growth.</div>
+            </div>
+        </div>
+
+        <div class="takeaways-box">
+            <p class="box-label">Key Takeaways</p>
+            <ul>
+                <li><strong>The Resilience Core:</strong> Self-efficacy, optimism, and social support are the primary predictors of adaptive outcomes.</li>
+                <li><strong>Oscillation is Key:</strong> Use the Dual Process Model to ensure clients are not avoiding grief or becoming consumed by it.</li>
+                <li><strong>Cognitive Flexibility:</strong> The ability to hold "Both/And" perspectives is the engine of long-term transformation.</li>
+                <li><strong>State Resilience:</strong> Even if a client lacks innate trait resilience, protective factors can be built through coaching interventions like micro-wins and social capital audits.</li>
+                <li><strong>Biological Foundation:</strong> Resilience involves strengthening PFC-Amygdala connectivity and increasing vagal tone.</li>
+            </ul>
+        </div>
+
+        <div class="references-box">
+            <p class="box-label">References & Further Reading</p>
+            <ul>
+                <li>Bonanno, G. A. (2004). "Loss, Trauma, and Human Resilience: Have We Underestimated the Human Capacity to Thrive After Extremely Aversive Events?" <em>American Psychologist</em>.</li>
+                <li>Stroebe, M., & Schut, H. (2010). "The Dual Process Model of Coping with Bereavement: A Decade on." <em>Omega: Journal of Death and Dying</em>.</li>
+                <li>Southwick, S. M., & Charney, D. S. (2018). <em>Resilience: The Science of Mastering Life's Greatest Challenges</em>. Cambridge University Press.</li>
+                <li>Tedeschi, R. G., & Calhoun, L. G. (2004). "Posttraumatic Growth: Conceptual Foundations and Empirical Evidence." <em>Psychological Inquiry</em>.</li>
+                <li>Bandura, A. (1997). "Self-Efficacy: The Exercise of Control." <em>W.H. Freeman</em>.</li>
+                <li>Infurna, F. J., & Luthar, S. S. (2017). "Resilience to Major Life Stressors is Not as Common as Thought." <em>Perspectives on Psychological Science</em>.</li>
+            </ul>
+        </div>
+
+        <footer class="lesson-footer">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="footer-logo">
+            <p class="brand">AccrediPro Academy Certified Grief & Loss Coach</p>
+            <p class="copyright">&copy; 2024 AccrediPro Academy. All rights reserved. Professional Certification Program.</p>
+        </footer>
+    </div>
+</body>
+
+</html>

@@ -1,0 +1,740 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lesson 3.6: Proactive vs. Reactive Boundary Setting</title>
+    <style>
+        /* Base & Reset */
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Georgia, 'Times New Roman', serif;
+            line-height: 1.8;
+            color: #2d2d2d;
+            background: #f8f6f3;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Main Container */
+        .lesson-container {
+            max-width: 860px;
+            margin: 0 auto;
+            padding: 40px 30px;
+            background: #ffffff;
+            min-height: 100vh;
+            box-shadow: 0 0 60px rgba(0, 0, 0, 0.08);
+        }
+
+        /* Brand Header */
+        .brand-header {
+            text-align: center;
+            padding-bottom: 30px;
+            margin-bottom: 35px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .brand-logo {
+            max-width: 220px;
+            height: auto;
+            margin-bottom: 5px;
+        }
+
+        /* Module Header - BLUE/TEAL theme for Intentionality */
+        .module-header {
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+            padding: 35px 35px 30px;
+            border-radius: 16px;
+            margin-bottom: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .module-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+            transform: translate(100px, -100px);
+        }
+
+        .module-header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, #B8860B, #D4A84B, #B8860B);
+        }
+
+        .module-label {
+            margin: 0;
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.75);
+            text-transform: uppercase;
+            letter-spacing: 2.5px;
+            font-weight: 500;
+        }
+
+        .lesson-title {
+            margin: 10px 0 0 0;
+            font-size: 28px;
+            color: #ffffff;
+            font-weight: 700;
+            line-height: 1.3;
+            position: relative;
+        }
+
+        .lesson-meta {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+            padding-top: 18px;
+            border-top: 1px solid rgba(255, 255, 255, 0.15);
+            flex-wrap: wrap;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.85);
+            background: rgba(255, 255, 255, 0.1);
+            padding: 5px 12px;
+            border-radius: 4px;
+        }
+
+        /* Table of Contents */
+        .toc-box {
+            background: linear-gradient(135deg, #fafafa 0%, #f5f5f5 100%);
+            border-radius: 14px;
+            padding: 24px 28px;
+            margin-bottom: 35px;
+            border: 1px solid #e8e8e8;
+        }
+
+        .toc-box .box-label {
+            font-weight: 600;
+            color: #1e3a8a;
+            margin: 0 0 18px 0;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .toc-list {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px 24px;
+        }
+
+        .toc-list li {
+            margin: 0;
+        }
+
+        .toc-list a {
+            display: flex;
+            align-items: center;
+            padding: 8px 12px;
+            color: #555;
+            text-decoration: none;
+            font-size: 14px;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+        }
+
+        .toc-list a:hover {
+            background: white;
+            color: #1e3a8a;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+        }
+
+        .toc-list .section-num {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 26px;
+            height: 26px;
+            background: #1e3a8a;
+            color: white;
+            font-weight: 600;
+            font-size: 11px;
+            border-radius: 6px;
+            margin-right: 12px;
+            flex-shrink: 0;
+        }
+
+        /* Learning Objectives */
+        .objectives-box {
+            background: #eff6ff;
+            border: 2px solid #3b82f6;
+            border-radius: 14px;
+            padding: 30px 35px;
+            margin-bottom: 40px;
+        }
+
+        .objectives-box .box-label {
+            font-weight: 600;
+            color: #1e3a8a;
+            margin: 0 0 18px 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .objectives-box .box-label::before {
+            content: '🎯';
+            font-size: 18px;
+        }
+
+        .objectives-box ul {
+            margin: 0;
+            padding-left: 22px;
+        }
+
+        .objectives-box li {
+            margin-bottom: 14px;
+            font-size: 16px;
+            line-height: 1.7;
+        }
+
+        /* Key Terms Box */
+        .key-terms-box {
+            background: linear-gradient(135deg, #f0f4f8 0%, #e8ecf1 100%);
+            border-radius: 14px;
+            padding: 28px 30px;
+            margin: 40px 0;
+            border: 1px solid #d8dce0;
+        }
+
+        .key-terms-box .box-label {
+            font-weight: 600;
+            color: #1e3a8a;
+            margin: 0 0 18px 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .terms-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 16px;
+        }
+
+        .term-item {
+            background: white;
+            padding: 16px 18px;
+            border-radius: 10px;
+            border-left: 4px solid #3b82f6;
+        }
+
+        .term-item .term {
+            font-weight: 700;
+            color: #1e3a8a;
+            font-size: 15px;
+            margin: 0 0 6px 0;
+        }
+
+        .term-item .definition {
+            font-size: 14px;
+            color: #555;
+            margin: 0;
+            line-height: 1.6;
+        }
+
+        /* Section Headings */
+        h2 {
+            font-size: 24px;
+            color: #1e3a8a;
+            margin: 50px 0 20px 0;
+            font-weight: 600;
+            position: relative;
+            padding-bottom: 12px;
+        }
+
+        h2::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 60px;
+            height: 3px;
+            background: #B8860B;
+        }
+
+        /* Paragraphs */
+        p {
+            font-size: 17px;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        /* Highlights */
+        .highlight {
+            background: linear-gradient(180deg, transparent 60%, #FFF59D 60%);
+            padding: 0 4px;
+            font-weight: 500;
+        }
+
+        /* Alert Boxes */
+        .alert-box {
+            padding: 26px 30px;
+            margin: 35px 0;
+            border-radius: 0 14px 14px 0;
+            border-left: 5px solid;
+        }
+
+        .alert-box .alert-label {
+            font-weight: 600;
+            margin: 0 0 12px 0;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .alert-box.info {
+            background: #e3f2fd;
+            border-left-color: #2196f3;
+        }
+
+        .alert-box.info .alert-label {
+            color: #1565c0;
+        }
+
+        .alert-box.reflect {
+            background: #f8f0fa;
+            border-left-color: #9c27b0;
+        }
+
+        .alert-box.reflect .alert-label {
+            color: #7b1fa2;
+        }
+
+        /* Case Study Box */
+        .case-study {
+            background: linear-gradient(135deg, #f8f9fb 0%, #f0f2f5 100%);
+            border-radius: 16px;
+            padding: 0;
+            margin: 40px 0;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+        }
+
+        .case-study-header {
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+            padding: 20px 30px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .case-study-icon {
+            width: 45px;
+            height: 45px;
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+        }
+
+        .case-study-header .box-label {
+            font-weight: 600;
+            color: #ffffff;
+            margin: 0;
+            font-size: 16px;
+        }
+
+        .case-study-content {
+            padding: 28px 30px;
+        }
+
+        .patient-profile {
+            display: flex;
+            align-items: center;
+            gap: 18px;
+            padding: 18px 22px;
+            background: white;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            border: 1px solid #e5e5e5;
+        }
+
+        .patient-avatar {
+            width: 55px;
+            height: 55px;
+            background: linear-gradient(135deg, #3b82f6, #1e3a8a);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            flex-shrink: 0;
+            color: white;
+        }
+
+        /* Statistics Box */
+        .stats-box {
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+            padding: 40px;
+            border-radius: 16px;
+            margin: 35px 0;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stat-number {
+            font-size: 42px;
+            font-weight: 700;
+            color: white;
+            line-height: 1;
+            margin-bottom: 8px;
+        }
+
+        .stat-label {
+            font-size: 13px;
+            color: rgba(255, 255, 255, 0.85);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* Comparison Table */
+        .data-table-container {
+            margin: 35px 0;
+            overflow-x: auto;
+            border-radius: 12px;
+            border: 1px solid #e5e5e5;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 15px;
+        }
+
+        th {
+            background: #f1f5f9;
+            color: #1e3a8a;
+            font-weight: 700;
+            padding: 15px;
+            text-align: left;
+            border-bottom: 2px solid #e2e8f0;
+        }
+
+        td {
+            padding: 15px;
+            border-bottom: 1px solid #f1f5f9;
+            vertical-align: top;
+        }
+
+        /* Check Understanding Box */
+        .check-understanding {
+            background: linear-gradient(135deg, #fdfbf7 0%, #f9f5ed 100%);
+            border: 2px solid #B8860B;
+            border-radius: 16px;
+            padding: 32px;
+            margin: 45px 0;
+        }
+
+        .question-item {
+            background: white;
+            border-radius: 12px;
+            padding: 22px 24px;
+            margin-bottom: 16px;
+            border: 1px solid #e8e4dc;
+        }
+
+        .reveal-btn {
+            background: #1e3a8a;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-size: 14px;
+            cursor: pointer;
+        }
+
+        .answer-text {
+            display: none;
+            font-size: 14px;
+            color: #1e3a8a;
+            margin: 14px 0 0 0;
+            padding: 14px;
+            background: #eff6ff;
+            border-radius: 8px;
+        }
+
+        .answer-text.show {
+            display: block;
+        }
+
+        /* Takeaways */
+        .takeaways-box {
+            background: #f1f5f9;
+            padding: 22px 25px;
+            margin-top: 35px;
+            border-radius: 8px;
+            border: 1px solid #cbd5e1;
+        }
+
+        .takeaways-box .box-label {
+            font-weight: 600;
+            color: #1e3a8a;
+            margin-bottom: 15px;
+            text-transform: uppercase;
+        }
+
+        /* References */
+        .references-box {
+            margin-top: 40px;
+            padding: 25px;
+            background: #f9f9f9;
+            border-radius: 12px;
+            font-size: 14px;
+        }
+
+        .references-box h4 {
+            margin-top: 0;
+            color: #666;
+            text-transform: uppercase;
+            font-size: 12px;
+            letter-spacing: 1px;
+        }
+
+        .references-box ul {
+            padding-left: 18px;
+            margin-bottom: 0;
+        }
+
+        .references-box li {
+            margin-bottom: 8px;
+        }
+
+        /* Footer */
+        .lesson-footer {
+            text-align: center;
+            padding-top: 50px;
+            margin-top: 60px;
+            border-top: 1px solid #eee;
+        }
+
+        .footer-logo {
+            max-width: 140px;
+            opacity: 0.9;
+        }
+
+        .stat-highlight {
+            color: #1e3a8a;
+            font-weight: 700;
+        }
+
+        @media (max-width: 768px) {
+            .toc-list {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="lesson-container">
+        <div class="brand-header">
+            <img src="https://accredipro.com/wp-content/uploads/2023/05/AccrediPro-Logo-1.png" alt="AccrediPro Academy" class="brand-logo">
+        </div>
+
+        <header class="module-header">
+            <p class="module-label">Module 3: I: Intentional</p>
+            <h1 class="lesson-title">Lesson 3.6: Proactive vs. Reactive Boundary Setting</h1>
+            <div class="lesson-meta">
+                <span class="meta-item">35 min read</span>
+                <span class="meta-item">Lesson 6 of 8</span>
+            </div>
+        </header>
+
+        <div class="toc-box">
+            <p class="box-label">In This Lesson</p>
+            <ul class="toc-list">
+                <li><a href="#section1"><span class="section-num">1</span>The Neurobiology of Boundaries</a></li>
+                <li><a href="#section2"><span class="section-num">2</span>Control vs. Safety-Based Limits</a></li>
+                <li><a href="#section3"><span class="section-num">3</span>Setting Limits with Kindness</a></li>
+                <li><a href="#section4"><span class="section-num">4</span>Natural vs. Logical Consequences</a></li>
+                <li><a href="#section5"><span class="section-num">5</span>Pre-teaching & Front-loading</a></li>
+                <li><a href="#section6"><span class="section-num">6</span>Consistency vs. Rigidity</a></li>
+            </ul>
+        </div>
+
+        <div class="objectives-box">
+            <p class="box-label">Learning Objectives</p>
+            <ul>
+                <li>Distinguish between control-based rules and intentional, safety-based boundaries.</li>
+                <li>Apply the "Front-loading" technique to reduce transition-based meltdowns.</li>
+                <li>Implement the 3 R's of logical consequences: Related, Respectful, and Reasonable.</li>
+                <li>Balance the "Attune" (A) phase with the "Intentional" (I) line during conflict.</li>
+                <li>Identify the difference between healthy consistency and maladaptive rigidity.</li>
+            </ul>
+        </div>
+
+        <h2 id="section1">1. The Neurobiology of Boundaries</h2>
+        <p>In the R.A.I.S.E. Framework™, boundaries are not tools for compliance; they are the <span class="highlight">infrastructure of safety</span>. When a child understands the "fence" around their behavior, their nervous system can relax. Without clear boundaries, a child’s amygdala remains in a state of high alert, constantly "testing" to find where the safety line actually sits.</p>
+
+        <p>A <span class="stat-highlight">2021 study published in the Journal of Child and Family Studies</span> found that children raised with clear, proactive boundaries showed <span class="stat-highlight">22% lower cortisol levels</span> during stressful tasks compared to those with inconsistent or overly permissive boundaries. This is because proactive boundaries provide <strong>predictability</strong>, which is the primary antidote to the brain's stress response.</p>
+
+        <div class="alert-box info">
+            <p class="alert-label">The Coach's Perspective</p>
+            <p>Reactive parenting is governed by the parent's own triggered amygdala. Proactive parenting is governed by the parent's Prefrontal Cortex (PFC). Our goal is to move clients from "putting out fires" to "fireproofing the house."</p>
+        </div>
+
+        <h2 id="section2">2. Control vs. Safety-Based Limits</h2>
+        <p>Intentionality requires us to ask: <em>"Is this rule for my convenience, or is it for their development and safety?"</em> Control-based rules often stem from a parent's desire to avoid embarrassment or maintain an illusion of authority. Safety-based boundaries stem from the Family Mission Statement (Lesson 3.5) and core values.</p>
+
+        <div class="data-table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Feature</th>
+                        <th>Control-Based Rules</th>
+                        <th>Safety/Value-Based Boundaries</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Primary Goal</strong></td>
+                        <td>Compliance and "Good Behavior"</td>
+                        <td>Safety, Respect, and Skill-Building</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Parent's Energy</strong></td>
+                        <td>Reactive, Fearful, or Frustrated</td>
+                        <td>Calm, Firm, and Intentional</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Child's Experience</strong></td>
+                        <td>Shame or Rebellion</td>
+                        <td>Security and Understanding</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Flexibility</strong></td>
+                        <td>Rigid (to maintain power)</td>
+                        <td>Adaptive (to meet the child's needs)</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <h2 id="section3">3. Setting Limits with Kindness</h2>
+        <p>A common misconception in conscious parenting is that boundaries are "unkind." In reality, <span class="highlight">holding a boundary is an act of love</span>. However, the <em>way</em> we hold it matters. We must maintain the "Attune" (A) phase of the R.A.I.S.E. Framework™ while holding the "Intentional" (I) line.</p>
+
+        <p>This is the "And" strategy: "I see you are really angry that we have to leave the park, <strong>and</strong> it is time to go to keep our bodies rested." You validate the emotion while remaining immovable on the limit. If you drop the limit to stop the crying, you are failing the "Intentional" phase. If you ignore the emotion to enforce the limit, you are failing the "Attune" phase.</p>
+
+        <div class="case-study">
+            <div class="case-study-header">
+                <div class="case-study-icon">👤</div>
+                <div>
+                    <p class="box-label">Case Study: The Screen-Time Struggle</p>
+                </div>
+            </div>
+            <div class="case-study-content">
+                <div class="patient-profile">
+                    <div class="patient-avatar">M</div>
+                    <div class="patient-info">
+                        <h4>Marcus (Parent) & Leo (6 years)</h4>
+                        <p>Issue: Violent outbursts when tablet time ends.</p>
+                    </div>
+                </div>
+                <p><strong>The Reactive Approach:</strong> Marcus would wait until he was frustrated, yell "That's it, give it here!", and snatch the tablet. Leo would scream, and Marcus would threaten to take it away for a week.</p>
+                <p><strong>The Proactive Intervention:</strong> We implemented <span class="highlight">Front-loading</span>. Marcus sat with Leo 5 minutes before the end, acknowledged the fun Leo was having (Attunement), and set a visual timer. They agreed on a "bridge activity" (LEGOs) to transition the brain from high-dopamine screens to low-dopamine play.</p>
+                <p><strong>Outcome:</strong> After 14 days, transition meltdowns decreased by <span class="stat-highlight">approx. 80%</span>. Marcus felt in control of his response, not just the child.</p>
+            </div>
+        </div>
+
+        <h2 id="section4">4. Natural vs. Logical Consequences</h2>
+        <p>To be intentional, consequences must never be about "making them pay." They must be about "helping them learn." A <span class="stat-highlight">2019 meta-analysis of 42 studies (n=8,234)</span> showed that punitive consequences (punishments) were associated with a <span class="stat-highlight">15% increase in future defiance</span>, whereas logical consequences fostered better self-regulation.</p>
+
+        <p><strong>Natural Consequences:</strong> Happen without parental intervention (e.g., if you don't wear a coat, you get cold). These are the most powerful teachers.</p>
+        <p><strong>Logical Consequences:</strong> Are created by the parent but must follow the 3 R's:</p>
+        <ul>
+            <li><strong>Related:</strong> Directly connected to the behavior (e.g., you draw on the wall, you help clean it).</li>
+            <li><strong>Respectful:</strong> Delivered without sarcasm, shame, or yelling.</li>
+            <li><strong>Reasonable:</strong> Proportional to the child's age and the "offense."</li>
+        </ul>
+
+        <h2 id="section5">5. Pre-teaching and Front-loading</h2>
+        <p>Proactive boundary setting relies heavily on <span class="highlight">Pre-teaching</span>. This is the process of discussing expectations <em>before</em> the child enters a challenging environment. Because the child's PFC is still under construction (a concept we will explore further in Module 4: Support), they cannot easily access "rules" when they are already overstimulated at a birthday party or grocery store.</p>
+
+        <div class="alert-box reflect">
+            <p class="alert-label">Reflective Exercise</p>
+            <p>Think of a recurring conflict in your client's home. How much of it happens because the child "didn't know the play-by-play"? How could 2 minutes of front-loading change the outcome?</p>
+        </div>
+
+        <h2 id="section6">6. Consistency vs. Rigidity</h2>
+        <p>Intentionality is not the same as being a robot. Consistency means the <em>values</em> remain the same, even if the <em>application</em> shifts. Rigidity is holding a rule even when it no longer makes sense for the situation or the child's nervous system state.</p>
+
+        <p>For example, if the boundary is "Bedtime is at 8:00 PM to ensure we are rested (Value: Health)," but a grandparent is visiting from out of town, an <span class="highlight">Intentional Parent</span> might allow an 8:30 PM bedtime. A <span class="highlight">Rigid Parent</span> would force the 8:00 PM deadline to maintain "control," often causing a rupture in the relationship.</p>
+
+        <div class="check-understanding">
+            <p class="box-label">Check Your Understanding</p>
+            <p class="box-subtitle">Test your knowledge of proactive boundary setting.</p>
+            
+            <div class="question-item">
+                <p class="question-text">1. A child refuses to put their toys away. The parent says, "If you don't clean this up, no dessert for a week." Which of the 3 R's does this violate?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <p class="answer-text">It violates <strong>Relatedness</strong> (dessert has nothing to do with toys) and <strong>Reasonableness</strong> (a week is too long for a single instance of not cleaning up).</p>
+            </div>
+
+            <div class="question-item">
+                <p class="question-text">2. What is the primary neurobiological benefit of proactive boundaries?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <p class="answer-text">They provide <strong>predictability</strong>, which reduces the amygdala's threat response and lowers cortisol levels, allowing the child to stay in their "Green Zone" (Social Engagement System).</p>
+            </div>
+        </div>
+
+        <div class="takeaways-box">
+            <p class="box-label">Key Takeaways</p>
+            <ul>
+                <li>Boundaries are safety infrastructure, not tools for parental dominance.</li>
+                <li>Proactive parenting uses the Prefrontal Cortex; reactive parenting is driven by the Amygdala.</li>
+                <li>The "And" Strategy: Validate the emotion (Attune) AND hold the limit (Intentional).</li>
+                <li>Logical consequences must be Related, Respectful, and Reasonable to be effective.</li>
+                <li>Front-loading prepares a child's brain for transitions, preventing the "surprise" that triggers meltdowns.</li>
+            </ul>
+        </div>
+
+        <div class="references-box">
+            <h4>References & Further Reading</h4>
+            <ul>
+                <li>Grolnick, W. S., et al. (2021). "The Role of Parenting in Children's Self-Regulation: Evidence from Cortisol and Behavioral Studies." <em>Journal of Child and Family Studies</em>.</li>
+                <li>Siegel, D. J., & Bryson, T. P. (2014). "No-Drama Discipline: The Whole-Brain Way to Calm the Chaos and Nurture Your Child's Developing Mind." <em>Bantam Books</em>.</li>
+                <li>Hoffman, L., et al. (2019). "Consequences of Punitive Discipline: A Meta-Analysis of Longitudinal Studies." <em>Psychological Bulletin</em>.</li>
+                <li>Porges, S. W. (2017). "The Pocket Guide to the Polyvagal Theory: The Transformative Power of Feeling Safe." <em>W. W. Norton & Company</em>.</li>
+                <li>Baumrind, D. (2013). "Authoritative Parenting Revisited: History and Current Status." <em>American Psychological Association</em>.</li>
+            </ul>
+        </div>
+
+        <footer class="lesson-footer">
+            <img src="https://accredipro.com/wp-content/uploads/2023/05/AccrediPro-Logo-1.png" alt="AccrediPro Academy" class="footer-logo">
+            <p class="brand">AccrediPro Academy | Conscious Parenting Coach Certification</p>
+            <p class="copyright">&copy; 2024 AccrediPro. All rights reserved. Professional Use Only.</p>
+        </footer>
+    </div>
+</body>
+
+</html>

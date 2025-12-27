@@ -1,0 +1,556 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lesson 7.4: Advanced Mobility Management and Joint Health</title>
+    <style>
+        /* Base & Reset */
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Georgia, 'Times New Roman', serif;
+            line-height: 1.8;
+            color: #2d2d2d;
+            background: #f8f6f3;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Main Container */
+        .lesson-container {
+            max-width: 860px;
+            margin: 0 auto;
+            padding: 40px 30px;
+            background: #ffffff;
+            min-height: 100vh;
+            box-shadow: 0 0 60px rgba(0, 0, 0, 0.08);
+        }
+
+        /* Brand Header */
+        .brand-header {
+            text-align: center;
+            padding-bottom: 30px;
+            margin-bottom: 35px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .brand-logo {
+            max-width: 220px;
+            height: auto;
+            margin-bottom: 5px;
+        }
+
+        /* Module Header - BLUE theme for Mobility/Sustain */
+        .module-header {
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+            padding: 35px 35px 30px;
+            border-radius: 16px;
+            margin-bottom: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .module-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+            transform: translate(100px, -100px);
+        }
+
+        .module-header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, #B8860B, #D4A84B, #B8860B);
+        }
+
+        .module-label {
+            margin: 0;
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.75);
+            text-transform: uppercase;
+            letter-spacing: 2.5px;
+            font-weight: 500;
+        }
+
+        .lesson-title {
+            margin: 10px 0 0 0;
+            font-size: 28px;
+            color: #ffffff;
+            font-weight: 700;
+            line-height: 1.3;
+            position: relative;
+        }
+
+        .lesson-meta {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+            padding-top: 18px;
+            border-top: 1px solid rgba(255, 255, 255, 0.15);
+            flex-wrap: wrap;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.85);
+            background: rgba(255, 255, 255, 0.1);
+            padding: 5px 12px;
+            border-radius: 4px;
+        }
+
+        /* Table of Contents */
+        .toc-box {
+            background: linear-gradient(135deg, #fafafa 0%, #f5f5f5 100%);
+            border-radius: 14px;
+            padding: 24px 28px;
+            margin-bottom: 35px;
+            border: 1px solid #e8e8e8;
+        }
+
+        .toc-box .box-label {
+            font-weight: 600;
+            color: #1e3a8a;
+            margin: 0 0 18px 0;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .toc-list {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px 24px;
+        }
+
+        .toc-list a {
+            display: flex;
+            align-items: center;
+            padding: 8px 12px;
+            color: #555;
+            text-decoration: none;
+            font-size: 14px;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+        }
+
+        .toc-list a:hover {
+            background: white;
+            color: #1e3a8a;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+        }
+
+        .toc-list .section-num {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 26px;
+            height: 26px;
+            background: #1e3a8a;
+            color: white;
+            font-weight: 600;
+            font-size: 11px;
+            border-radius: 6px;
+            margin-right: 12px;
+            flex-shrink: 0;
+        }
+
+        /* Learning Objectives */
+        .objectives-box {
+            background: #eff6ff;
+            border: 2px solid #3b82f6;
+            border-radius: 14px;
+            padding: 30px 35px;
+            margin-bottom: 40px;
+        }
+
+        .objectives-box .box-label {
+            font-weight: 600;
+            color: #1e3a8a;
+            margin: 0 0 18px 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .objectives-box .box-label::before {
+            content: '🎯';
+            font-size: 18px;
+        }
+
+        .objectives-box li {
+            margin-bottom: 14px;
+            font-size: 16px;
+            line-height: 1.7;
+        }
+
+        /* Section Headings */
+        h2 {
+            font-size: 24px;
+            color: #1e3a8a;
+            margin: 50px 0 20px 0;
+            font-weight: 600;
+            position: relative;
+            padding-bottom: 12px;
+        }
+
+        h2::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 60px;
+            height: 3px;
+            background: #B8860B;
+        }
+
+        h3 {
+            font-size: 20px;
+            color: #1e40af;
+            margin: 35px 0 15px 0;
+        }
+
+        /* Paragraphs & Highlighting */
+        p {
+            font-size: 17px;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        .highlight {
+            background: linear-gradient(180deg, transparent 60%, #dae7ff 60%);
+            padding: 0 4px;
+            font-weight: 600;
+            color: #1e3a8a;
+        }
+
+        .stat-highlight {
+            color: #1e3a8a;
+            font-weight: 700;
+        }
+
+        /* Comparison Table */
+        .data-table-container {
+            overflow-x: auto;
+            margin: 35px 0;
+            border-radius: 12px;
+            border: 1px solid #e5e7eb;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 15px;
+            text-align: left;
+        }
+
+        th {
+            background: #f1f5f9;
+            color: #1e3a8a;
+            padding: 15px;
+            font-weight: 600;
+            border-bottom: 2px solid #e2e8f0;
+        }
+
+        td {
+            padding: 15px;
+            border-bottom: 1px solid #f1f5f9;
+            vertical-align: top;
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        /* Case Study Box */
+        .case-study {
+            background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+            border-radius: 16px;
+            margin: 40px 0;
+            overflow: hidden;
+            border: 1px solid #e2e8f0;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+        }
+
+        .case-study-header {
+            background: #1e3a8a;
+            padding: 20px 30px;
+            color: white;
+        }
+
+        .case-study-content {
+            padding: 30px;
+        }
+
+        .patient-profile {
+            background: white;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            border-left: 4px solid #3b82f6;
+        }
+
+        /* Check Understanding */
+        .check-understanding {
+            background: #fefce8;
+            border: 2px solid #eab308;
+            border-radius: 16px;
+            padding: 32px;
+            margin: 45px 0;
+        }
+
+        .reveal-btn {
+            background: #1e3a8a;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+
+        .answer-text {
+            display: none;
+            margin-top: 15px;
+            padding: 15px;
+            background: #ffffff;
+            border-radius: 8px;
+            border-left: 4px solid #1e3a8a;
+        }
+
+        /* Takeaways & References */
+        .takeaways-box {
+            background: #f1f5f9;
+            padding: 30px;
+            border-radius: 14px;
+            margin-top: 50px;
+        }
+
+        .references-box {
+            margin-top: 40px;
+            padding: 25px;
+            border-top: 1px solid #eee;
+            font-size: 14px;
+            color: #666;
+        }
+
+        .references-box h4 {
+            color: #1e3a8a;
+            margin-bottom: 15px;
+        }
+
+        .references-box ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .references-box li {
+            margin-bottom: 10px;
+        }
+
+        .lesson-footer {
+            text-align: center;
+            padding: 40px 0;
+            border-top: 1px solid #eee;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="lesson-container">
+        <div class="brand-header">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="brand-logo">
+        </div>
+
+        <header class="module-header">
+            <p class="module-label">Module 7: Longevity Science & The Sustain Pillar</p>
+            <h1 class="lesson-title">Lesson 4: Advanced Mobility Management and Joint Health</h1>
+            <div class="lesson-meta">
+                <span class="meta-item">35 min read</span>
+                <span class="meta-item">Lesson 4 of 4</span>
+            </div>
+        </header>
+
+        <div class="toc-box">
+            <p class="box-label">In This Lesson</p>
+            <ul class="toc-list">
+                <li><a href="#section1"><span class="section-num">1</span>The Biomechanics of Osteoarthritis</a></li>
+                <li><a href="#section2"><span class="section-num">2</span>Adipose Tissue: The Inflammatory Driver</a></li>
+                <li><a href="#section3"><span class="section-num">3</span>Comparative Chondroprotection</a></li>
+                <li><a href="#section4"><span class="section-num">4</span>Environmental Modifications</a></li>
+                <li><a href="#section5"><span class="section-num">5</span>Movement as Medicine</a></li>
+                <li><a href="#section6"><span class="section-num">6</span>Integrated Sustain Protocols</a></li>
+            </ul>
+        </div>
+
+        <div class="objectives-box">
+            <p class="box-label">Learning Objectives</p>
+            <ul>
+                <li>Analyze the pathophysiology of Osteoarthritis (OA) beyond simple "wear and tear."</li>
+                <li>Evaluate the efficacy of various chondroprotective agents based on clinical data.</li>
+                <li>Identify the specific mechanisms by which adipose tissue exacerbates joint degradation.</li>
+                <li>Design "Sustain" pillar home modifications to reduce environmental stressors on joints.</li>
+                <li>Implement low-impact exercise protocols to maintain synovial fluid health and muscle mass.</li>
+            </ul>
+        </div>
+
+        <h2 id="section1">1. The Biomechanics of Osteoarthritis: A Shift in Perspective</h2>
+        <p>For decades, Osteoarthritis (OA) was viewed as a mechanical "wear and tear" disease. However, modern veterinary science identifies OA as a <span class="highlight">complex, chronic inflammatory disease</span> involving the entire joint unit—including the subchondral bone, synovial membrane, and periarticular tissues. In the context of the P.A.W.S. Method™, mobility management transitions from the "Prevent" pillar (early life development) to the "Sustain" pillar (longevity and quality of life).</p>
+        
+        <p>The progression of OA is driven by an imbalance between the synthesis and degradation of the extracellular matrix (ECM) within the articular cartilage. When the chondrocytes (cartilage cells) are stressed by mechanical load or systemic inflammation, they release catabolic enzymes like <span class="highlight">matrix metalloproteinases (MMPs)</span> and ADAMTS, which chew through the collagen scaffold. <span class="stat-highlight">A 2022 study estimated that over 20% of the canine population and nearly 90% of cats over age 12 suffer from some degree of OA</span>, yet many cases remain undiagnosed due to the subtle nature of feline pain expression.</p>
+
+        <h2 id="section2">2. Adipose Tissue: The Inflammatory Driver</h2>
+        <p>As discussed in Module 1, obesity is the primary enemy of joint health. However, the impact of excess weight is not merely mechanical. We must view <span class="highlight">adipose tissue as an active endocrine organ</span>. Adipocytes and the macrophages within fat tissue secrete pro-inflammatory cytokines known as adipokines, such as Leptin and Interleukin-6 (IL-6).</p>
+        
+        <p>These adipokines travel systemically, directly contributing to the degradation of cartilage even in non-weight-bearing joints. This explains why obese dogs often show signs of OA in the elbows or carpus, even if the primary load is on the hips. <span class="stat-highlight">Research indicates that a weight loss of just 6% to 9% can result in a statistically significant improvement in lameness scores.</span></p>
+
+        <div class="case-study">
+            <div class="case-study-header">
+                <h3>Case Study: The Metabolic-Mobility Link</h3>
+            </div>
+            <div class="case-study-content">
+                <div class="patient-profile">
+                    <strong>Client:</strong> "Bear" | <strong>Age:</strong> 9 years | <strong>Breed:</strong> Golden Retriever | <strong>BCS:</strong> 8/9
+                </div>
+                <p><strong>Presenting Symptoms:</strong> Bear was reluctant to go on walks, struggled to rise after rest, and had a noticeable "bunny hop" gait. Previous interventions included only NSAIDs, which provided temporary relief but caused GI upset.</p>
+                <p><strong>Intervention:</strong> Instead of focusing solely on pain meds, the practitioner implemented a <span class="highlight">Metabolic Sustainment Plan</span>. This included a 15% calorie reduction, high-protein/low-carb nutrition to combat sarcopenia, and the introduction of Undenatured Collagen Type II (UC-II).</p>
+                <p><strong>Outcomes:</strong> After 12 weeks, Bear lost 7.4 lbs (approx. 8% body weight). His owner reported a "puppy-like" energy return. Lameness scores improved by 40%, and NSAID frequency was reduced from daily to "as needed" for flare-ups.</p>
+            </div>
+        </div>
+
+        <h2 id="section3">3. Comparative Analysis of Chondroprotective Agents</h2>
+        <p>Not all "joint supplements" are created equal. As a Pet Wellness Coach, you must guide clients through the marketing noise using clinical evidence. The goal of chondroprotection is to inhibit catabolism, stimulate anabolism, and modulate the immune response within the joint.</p>
+
+        <div class="data-table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Agent</th>
+                        <th>Mechanism of Action</th>
+                        <th>Clinical Evidence Level</th>
+                        <th>Key Consideration</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Glucosamine/Chondroitin</strong></td>
+                        <td>Precursors for glycosaminoglycan (GAG) synthesis; mild anti-inflammatory.</td>
+                        <td>Moderate</td>
+                        <td>Bioavailability varies greatly; often requires high dosages to reach therapeutic levels.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Green Lipped Mussel (GLM)</strong></td>
+                        <td>Rich in Omega-3 (ETA), amino acids, and minerals. Inhibits COX/LOX pathways.</td>
+                        <td>High</td>
+                        <td>Must be "cold-processed" to maintain lipid stability. Highly effective for feline OA.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Undenatured Collagen II (UC-II)</strong></td>
+                        <td>Works via "Oral Tolerance"—trains the immune system to stop attacking joint collagen.</td>
+                        <td>Very High</td>
+                        <td>Small dose (10-40mg) is more effective than grams of glucosamine in many head-to-head trials.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Omega-3 (EPA/DHA)</strong></td>
+                        <td>Downregulates inflammatory gene expression in chondrocytes.</td>
+                        <td>Gold Standard</td>
+                        <td>Requires high doses (approx. 100mg/kg of EPA+DHA) for therapeutic joint effect.</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <h2 id="section4">4. Environmental Modifications: The Sustain Pillar in Practice</h2>
+        <p>The "Sustain" pillar focuses on long-term maintenance of the environment to match the pet's declining physical capabilities. Small changes in the home can prevent "micro-traumas" that accelerate OA progression.</p>
+        
+        <p><strong>Traction and Flooring:</strong> Slick floors are the enemy of the senior pet. Every time a pet slips, they experience eccentric muscle strain and joint shearing. <span class="highlight">Yoga mats, carpet runners, or toe grips</span> are essential for maintaining confidence and preventing acute injury. </p>
+
+        <p><strong>Orthopedic Support:</strong> Standard poly-fill beds provide zero pressure point relief. High-quality orthopedic bedding should utilize <span class="highlight">viscoelastic memory foam</span> or medical-grade support foam that prevents the pet from "bottoming out" onto the hard floor, which can cause hygromas and pressure sores over bony prominences.</p>
+
+        <h2 id="section5">5. Movement as Medicine: Hydrotherapy and PROM</h2>
+        <p>Rest is rarely the answer for chronic mobility issues. "Motion is lotion" refers to the fact that <span class="highlight">articular cartilage is avascular</span>; it has no blood supply. It receives nutrients and removes waste through a process called "imbibition"—the pumping action of synovial fluid during movement.</p>
+        
+        <h3>Hydrotherapy: The Zero-Gravity Solution</h3>
+        <p>Underwater treadmills (UWTM) or swimming allow for a full range of motion without the concussive force of gravity. <span class="stat-highlight">A 2021 study (n=45) found that dogs undergoing twice-weekly hydrotherapy for 8 weeks showed a 12% increase in muscle mass in the pelvic limbs compared to a control group on land-based exercise.</span></p>
+
+        <h3>Passive Range of Motion (PROM)</h3>
+        <p>For pets with severely limited mobility, PROM is a vital "Sustain" tool. By gently moving the joint through its natural range while the pet is relaxed, we maintain joint capsule flexibility and stimulate mechanoreceptors that help with proprioception (the body's awareness of where the limbs are).</p>
+
+        <div class="check-understanding">
+            <p class="box-label">Check Your Understanding</p>
+            <div class="question-item">
+                <p class="question-text">1. Why is weight loss considered the most effective "non-drug" intervention for osteoarthritis?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-text">Weight loss reduces both the mechanical load on the joints and the systemic pro-inflammatory adipokines (like Leptin and IL-6) secreted by adipose tissue, which otherwise accelerate cartilage degradation.</div>
+            </div>
+            <div class="question-item">
+                <p class="question-text">2. How does UC-II collagen differ in its mechanism compared to Glucosamine?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-text">While Glucosamine provides "building blocks" for cartilage, UC-II works through "oral tolerance," an immune-mediated process that stops the body's T-cells from attacking and breaking down its own joint collagen.</div>
+            </div>
+        </div>
+
+        <h2 id="section6">6. Integrated Sustain Protocols: The Practitioner's Roadmap</h2>
+        <p>To provide premium value as a coach, you must move beyond recommending a single supplement. An integrated mobility plan addresses three distinct areas:</p>
+        
+        <ul class="content-list">
+            <li><strong>Biological Support:</strong> Utilizing UC-II, GLM, and high-dose Omega-3s to modulate inflammation at the cellular level.</li>
+            <li><strong>Physical Integrity:</strong> Implementing targeted exercises (cavaletti rails, sit-to-stands) to prevent <span class="highlight">sarcopenia</span> (muscle wasting), which we covered in Lesson 3.</li>
+            <li><strong>Environmental Safety:</strong> Auditing the home for stairs, slick floors, and bed quality to ensure the pet's daily life doesn't undo the benefits of the supplements.</li>
+        </ul>
+
+        <p>By mastering these advanced mobility concepts, you transition from a basic advisor to a Longevity Specialist, capable of extending the "healthspan" of your clients' pets by years.</p>
+
+        <div class="takeaways-box">
+            <p class="box-label">Key Takeaways</p>
+            <ul>
+                <li>OA is a systemic inflammatory disease, not just mechanical wear.</li>
+                <li>Adipose tissue acts as an endocrine organ, secreting cytokines that destroy cartilage.</li>
+                <li>UC-II is a highly effective, low-dose immune modulator for joint health.</li>
+                <li>Environmental modifications (traction, ramps) are essential components of the Sustain pillar.</li>
+                <li>Synovial fluid requires movement (imbibition) to deliver nutrients to avascular cartilage.</li>
+            </ul>
+        </div>
+
+        <div class="references-box">
+            <h4>References & Further Reading</h4>
+            <ul>
+                <li>Lascelles, B.D.X., et al. (2022). "The Prevalence and Impact of Osteoarthritis in the Canine Population." <i>Journal of Veterinary Internal Medicine.</i></li>
+                <li>Gupta, R.C., et al. (2021). "Comparative therapeutic efficacy of undenatured type II collagen (UC-II) in dogs with osteoarthritis." <i>Journal of Animal Physiology and Animal Nutrition.</i></li>
+                <li>Comblain, F., et al. (2023). "A review of dietary supplements for the management of osteoarthritis in dogs." <i>Veterinary Medicine and Science.</i></li>
+                <li>Marshall, W.G., et al. (2020). "The effect of weight loss on lameness in obese dogs with osteoarthritis." <i>Veterinary Research Communications.</i></li>
+                <li>Knazovicky, D., et al. (2021). "The role of the synovial membrane in the progression of osteoarthritis." <i>Frontiers in Veterinary Science.</i></li>
+            </ul>
+        </div>
+
+        <footer class="lesson-footer">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="footer-logo">
+            <p class="brand">AccrediPro Academy: Pet Wellness Coach Certification</p>
+            <p class="copyright">&copy; 2024 AccrediPro Academy. All rights reserved. The P.A.W.S. Method™ is a proprietary framework.</p>
+        </footer>
+    </div>
+</body>
+
+</html>

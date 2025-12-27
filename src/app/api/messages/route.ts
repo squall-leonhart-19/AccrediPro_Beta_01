@@ -2,6 +2,11 @@ import { NextRequest, NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import prisma from "@/lib/prisma";
+import { sendEmail, emailWrapper } from "@/lib/email";
+
+// Track last email sent per conversation (in-memory, reset on server restart)
+const lastEmailSent: Map<string, number> = new Map();
+const EMAIL_RATE_LIMIT_MS = 15 * 60 * 1000; // 15 minutes
 
 // GET - Fetch messages with a specific user
 export async function GET(request: NextRequest) {
@@ -144,6 +149,61 @@ export async function POST(request: NextRequest) {
         data: { messageId: message.id, senderId: session.user.id },
       },
     });
+
+    // ===== SEND EMAIL NOTIFICATION (with rate limiting) =====
+    const conversationKey = [session.user.id, receiverId].sort().join("-");
+    const lastSent = lastEmailSent.get(conversationKey) || 0;
+    const now = Date.now();
+
+    if (now - lastSent > EMAIL_RATE_LIMIT_MS) {
+      // Get receiver's email
+      const receiver = await prisma.user.findUnique({
+        where: { id: receiverId },
+        select: { email: true, firstName: true },
+      });
+
+      if (receiver?.email) {
+        const senderName = session.user.firstName || "Your coach";
+        const messagePreview = content
+          ? (content.length > 150 ? content.substring(0, 150) + "..." : content)
+          : attachmentType === "voice" ? "🎤 Voice message"
+            : attachmentType === "image" ? "📷 Image"
+              : "New message";
+
+        const emailContent = `
+          <h2 style="color: #722F37; margin-bottom: 20px;">New message from ${senderName}</h2>
+          <div style="background: #f8f4f4; padding: 20px; border-radius: 8px; border-left: 4px solid #722F37; margin: 20px 0;">
+            <p style="margin: 0; font-size: 16px; line-height: 1.6; color: #333;">
+              "${messagePreview}"
+            </p>
+          </div>
+          <div style="text-align: center; margin: 30px 0;">
+            <a href="https://learn.accredipro.academy/messages" 
+               style="background: #722F37; color: white; padding: 14px 28px; border-radius: 8px; text-decoration: none; font-weight: bold; display: inline-block;">
+              View Message
+            </a>
+          </div>
+          <p style="color: #999; font-size: 13px; margin-top: 30px;">
+            You can also reply directly from your AccrediPro portal.
+          </p>
+        `;
+
+        try {
+          await sendEmail({
+            to: receiver.email,
+            subject: `💬 New message from ${senderName}`,
+            html: emailWrapper(emailContent, `${senderName} sent you a message`),
+          });
+          lastEmailSent.set(conversationKey, now);
+          console.log(`[DM] Email notification sent to ${receiver.email}`);
+        } catch (emailError) {
+          console.error(`[DM] Failed to send email notification:`, emailError);
+          // Don't fail the whole request if email fails
+        }
+      }
+    } else {
+      console.log(`[DM] Email rate limited for conversation ${conversationKey}`);
+    }
 
     return NextResponse.json({ success: true, data: message });
   } catch (error) {

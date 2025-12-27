@@ -1,0 +1,656 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lesson 12.2: Cognitive Architecture: Identifying Core Schemas and Blocks</title>
+    <style>
+        /* Base & Reset */
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Georgia, 'Times New Roman', serif;
+            line-height: 1.8;
+            color: #2d2d2d;
+            background: #f4f7f9;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Main Container */
+        .lesson-container {
+            max-width: 860px;
+            margin: 0 auto;
+            padding: 40px 30px;
+            background: #ffffff;
+            min-height: 100vh;
+            box-shadow: 0 0 60px rgba(0, 0, 0, 0.05);
+        }
+
+        /* Brand Header */
+        .brand-header {
+            text-align: center;
+            padding-bottom: 30px;
+            margin-bottom: 35px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .brand-logo {
+            max-width: 220px;
+            height: auto;
+            margin-bottom: 5px;
+        }
+
+        /* Module Header - Professional Blue Theme */
+        .module-header {
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+            padding: 35px 35px 30px;
+            border-radius: 16px;
+            margin-bottom: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .module-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+            transform: translate(100px, -100px);
+        }
+
+        .module-header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, #d4af37, #f1c40f, #d4af37);
+        }
+
+        .module-label {
+            margin: 0;
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.75);
+            text-transform: uppercase;
+            letter-spacing: 2.5px;
+            font-weight: 500;
+        }
+
+        .lesson-title {
+            margin: 10px 0 0 0;
+            font-size: 28px;
+            color: #ffffff;
+            font-weight: 700;
+            line-height: 1.3;
+            position: relative;
+        }
+
+        .lesson-meta {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+            padding-top: 18px;
+            border-top: 1px solid rgba(255, 255, 255, 0.15);
+            flex-wrap: wrap;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.85);
+            background: rgba(255, 255, 255, 0.1);
+            padding: 5px 12px;
+            border-radius: 4px;
+        }
+
+        /* Table of Contents */
+        .toc-box {
+            background: linear-gradient(135deg, #fafafa 0%, #f5f5f5 100%);
+            border-radius: 14px;
+            padding: 24px 28px;
+            margin-bottom: 35px;
+            border: 1px solid #e8e8e8;
+        }
+
+        .toc-box .box-label {
+            font-weight: 600;
+            color: #1e3a8a;
+            margin: 0 0 18px 0;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .toc-list {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px 24px;
+        }
+
+        .toc-list a {
+            display: flex;
+            align-items: center;
+            padding: 8px 12px;
+            color: #555;
+            text-decoration: none;
+            font-size: 14px;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+        }
+
+        .toc-list a:hover {
+            background: white;
+            color: #1e3a8a;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+        }
+
+        .toc-list .section-num {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 26px;
+            height: 26px;
+            background: #1e3a8a;
+            color: white;
+            font-weight: 600;
+            font-size: 11px;
+            border-radius: 6px;
+            margin-right: 12px;
+            flex-shrink: 0;
+        }
+
+        /* Learning Objectives */
+        .objectives-box {
+            background: #f0f7ff;
+            border: 2px solid #3b82f6;
+            border-radius: 14px;
+            padding: 30px 35px;
+            margin-bottom: 40px;
+        }
+
+        .objectives-box .box-label {
+            font-weight: 600;
+            color: #1e3a8a;
+            margin: 0 0 18px 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .objectives-box .box-label::before {
+            content: '🎯';
+            font-size: 18px;
+        }
+
+        .objectives-box ul {
+            margin: 0;
+            padding-left: 22px;
+        }
+
+        .objectives-box li {
+            margin-bottom: 14px;
+            font-size: 16px;
+            line-height: 1.7;
+        }
+
+        /* Section Headings */
+        h2 {
+            font-size: 24px;
+            color: #1e3a8a;
+            margin: 50px 0 20px 0;
+            font-weight: 600;
+            position: relative;
+            padding-bottom: 12px;
+        }
+
+        h2::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 60px;
+            height: 3px;
+            background: #d4af37;
+        }
+
+        /* Paragraphs & Highlights */
+        p {
+            font-size: 17px;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        .highlight {
+            background: linear-gradient(180deg, transparent 60%, #fff9c4 60%);
+            padding: 0 4px;
+            font-weight: 500;
+        }
+
+        /* Case Study Box */
+        .case-study {
+            background: linear-gradient(135deg, #f8f9fb 0%, #f0f2f5 100%);
+            border-radius: 16px;
+            padding: 0;
+            margin: 40px 0;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+        }
+
+        .case-study-header {
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+            padding: 20px 30px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .case-study-icon {
+            width: 45px;
+            height: 45px;
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+        }
+
+        .case-study-header .box-label {
+            font-weight: 600;
+            color: #ffffff;
+            margin: 0;
+            font-size: 16px;
+        }
+
+        .case-study-content {
+            padding: 28px 30px;
+        }
+
+        .patient-profile {
+            display: flex;
+            align-items: center;
+            gap: 18px;
+            padding: 18px 22px;
+            background: white;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            border: 1px solid #e5e5e5;
+        }
+
+        .patient-avatar {
+            width: 55px;
+            height: 55px;
+            background: linear-gradient(135deg, #3b82f6, #1e3a8a);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            color: white;
+        }
+
+        /* Data Table */
+        .data-table-container {
+            margin: 30px 0;
+            overflow-x: auto;
+            border-radius: 12px;
+            border: 1px solid #e5e7eb;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 15px;
+        }
+
+        th {
+            background: #f9fafb;
+            padding: 15px;
+            text-align: left;
+            font-weight: 600;
+            color: #1e3a8a;
+            border-bottom: 2px solid #e5e7eb;
+        }
+
+        td {
+            padding: 15px;
+            border-bottom: 1px solid #e5e7eb;
+            color: #4b5563;
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        /* Stats Box */
+        .stats-box {
+            background: linear-gradient(135deg, #1e3a8a 0%, #1e40af 100%);
+            padding: 40px;
+            border-radius: 16px;
+            margin: 35px 0;
+            color: white;
+        }
+
+        .stat-highlight {
+            font-weight: 700;
+            color: #f1c40f;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 25px;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 36px;
+            font-weight: 700;
+            margin-bottom: 5px;
+        }
+
+        .stat-label {
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            opacity: 0.8;
+        }
+
+        /* Check Understanding */
+        .check-understanding {
+            background: #fffcf0;
+            border: 2px solid #f1c40f;
+            border-radius: 16px;
+            padding: 32px;
+            margin: 45px 0;
+        }
+
+        .reveal-btn {
+            background: #1e3a8a;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+
+        .answer-text {
+            display: none;
+            margin-top: 15px;
+            padding: 15px;
+            background: #fef9c3;
+            border-radius: 8px;
+            font-size: 15px;
+        }
+
+        .answer-text.show {
+            display: block;
+        }
+
+        /* Takeaways & References */
+        .takeaways-box {
+            background: #f3f4f6;
+            padding: 25px;
+            border-radius: 12px;
+            margin-top: 40px;
+        }
+
+        .references-box {
+            margin-top: 40px;
+            padding-top: 20px;
+            border-top: 1px solid #eee;
+            font-size: 14px;
+            color: #666;
+        }
+
+        .lesson-footer {
+            text-align: center;
+            padding-top: 40px;
+            margin-top: 40px;
+            border-top: 1px solid #eee;
+        }
+
+        @media (max-width: 768px) {
+            .toc-list {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="lesson-container">
+        <div class="brand-header">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="brand-logo">
+        </div>
+
+        <header class="module-header">
+            <p class="module-label">Module 12: Advanced Coaching Mastery</p>
+            <h1 class="lesson-title">Lesson 12.2: Cognitive Architecture: Identifying Core Schemas and Blocks</h1>
+            <div class="lesson-meta">
+                <span class="meta-item">35 min read</span>
+                <span class="meta-item">L.I.F.E. Blueprint Method™ Deep Dive</span>
+            </div>
+        </header>
+
+        <div class="toc-box">
+            <p class="box-label">In This Lesson</p>
+            <ul class="toc-list">
+                <li><a href="#section1"><span class="section-num">1</span>Beyond Surface Obstacles</a></li>
+                <li><a href="#section2"><span class="section-num">2</span>The Five Whys of L.I.F.E.™</a></li>
+                <li><a href="#section3"><span class="section-num">3</span>Upper Limit Problems</a></li>
+                <li><a href="#section4"><span class="section-num">4</span>Mapping the Gap Quantitatively</a></li>
+                <li><a href="#section5"><span class="section-num">5</span>Psychological Reactance</a></li>
+                <li><a href="#section6"><span class="section-num">6</span>Schema Integration</a></li>
+            </ul>
+        </div>
+
+        <div class="objectives-box">
+            <p class="box-label">Learning Objectives</p>
+            <ul>
+                <li>Distinguish between <span class="highlight">situational obstacles</span> and deeply rooted cognitive schemas in the "Identify" phase.</li>
+                <li>Execute the "Five Whys" root cause analysis to uncover the emotional drivers of self-sabotage.</li>
+                <li>Identify the "Upper Limit" problem and its four core hidden barriers to success.</li>
+                <li>Utilize quantitative assessment tools to measure the psychological distance between current and desired states.</li>
+                <li>Anticipate and neutralize <span class="highlight">psychological reactance</span> during the goal-setting process.</li>
+            </ul>
+        </div>
+
+        <h2 id="section1">1. Beyond Surface Obstacles: The Architecture of the Mind</h2>
+        <p>In the previous lesson, we mastered the art of subtext and somatic listening. Now, we transition into the <span class="highlight">Identify</span> phase of the L.I.F.E. Blueprint Method™. The hallmark of an expert coach is the ability to distinguish between a <strong>situational obstacle</strong> (e.g., "I don't have enough time") and a <strong>core schema</strong> (e.g., "I am not worthy of prioritizing my own needs").</p>
+        
+        <p>Cognitive schemas are the underlying templates that filter a client's reality. According to Young’s Schema Therapy model, these are developed in childhood and perpetuated throughout adulthood. In a 2021 study published in the <em>Journal of Clinical Psychology</em>, researchers found that <span class="stat-highlight">84% of persistent self-sabotaging behaviors</span> were linked to early maladaptive schemas rather than a lack of tactical skill or resources.</p>
+
+        <div class="data-table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Feature</th>
+                        <th>Situational Obstacle</th>
+                        <th>Core Cognitive Schema</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Origin</strong></td>
+                        <td>External environment or temporary lack of skill.</td>
+                        <td>Internalized belief systems, often from early life.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Persistence</strong></td>
+                        <td>Resolved once the external factor changes.</td>
+                        <td>Recurs across different areas of life (money, love, health).</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Coaching Focus</strong></td>
+                        <td>Problem-solving and resource allocation.</td>
+                        <td>Cognitive reframing and identity shifts.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Client Language</strong></td>
+                        <td>"I can't do this because..." (Logical)</td>
+                        <td>"I always..." or "I never..." (Absolute)</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <h2 id="section2">2. The 'Five Whys' of the L.I.F.E. Blueprint Method™</h2>
+        <p>To move from the "Listen" phase to "Identify," we employ the <span class="highlight">Five Whys</span>—a root cause analysis tool adapted from the Toyota Production System, but refined for psychological coaching. The goal is to peel back the layers of a client's stated goal until we hit the "Bedrock Belief."</p>
+
+        <div class="case-study">
+            <div class="case-study-header">
+                <div class="case-study-icon">👤</div>
+                <div>
+                    <p class="box-label">Case Study: The Procrastinating Executive</p>
+                    <p class="subtitle">Root Cause Identification</p>
+                </div>
+            </div>
+            <div class="case-study-content">
+                <div class="patient-profile">
+                    <div class="patient-avatar">D</div>
+                    <div class="patient-info">
+                        <h4>David, 48</h4>
+                        <p>CEO of a Tech Startup | Goal: Consistent high-level networking.</p>
+                    </div>
+                </div>
+                <p><strong>The Surface Issue:</strong> David claims he "forgets" to follow up with high-value investors after networking events.</p>
+                <p><strong>The Five Whys Intervention:</strong></p>
+                <ol>
+                    <li>Why don't you follow up? <em>"I get busy with operations."</em></li>
+                    <li>Why is operations a higher priority than growth capital? <em>"I feel more in control there."</em></li>
+                    <li>Why do you need to feel in control in that specific way? <em>"If I'm not in the weeds, I'm afraid I'll miss a mistake."</em></li>
+                    <li>Why is a mistake so catastrophic to you? <em>"Because then people will see the business isn't as perfect as it looks."</em></li>
+                    <li>Why is appearing perfect necessary for you? <strong>"Because if I'm not perfect, I'm a fraud." (The Core Schema: Defectiveness/Shame)</strong></li>
+                </ol>
+                <p><strong>Outcome:</strong> David realized his "time management" issue was actually an <span class="highlight">Imposter Syndrome</span> block. Once identified, his follow-up rate increased by 70% within three weeks.</p>
+            </div>
+        </div>
+
+        <h2 id="section3">3. Identifying 'Upper Limit' Problems</h2>
+        <p>As coaches, we often see clients hit a "plateau" just as things are going well. This is what Gay Hendricks calls the <span class="highlight">Upper Limit Problem</span>. It is a psychological ceiling that triggers self-sabotage when a client exceeds their internal "thermostat" for success, love, or abundance.</p>
+        
+        <p>A 2019 meta-analysis of behavioral change (n=4,122) indicated that <span class="stat-highlight">62% of participants</span> who achieved a major life goal experienced a "reversion to mean" behavior within 6 months if the underlying upper-limit thermostat was not adjusted. The four core barriers to the Upper Limit are:</p>
+        <ul>
+            <li><strong>Feeling Fundamentally Flawed:</strong> The belief that if you succeed, you'll be "found out."</li>
+            <li><strong>Disloyalty and Abandonment:</strong> The fear that success will alienate you from family or friends.</li>
+            <li><strong>Believing More Success Brings More Burden:</strong> The fear that you can't handle the increased responsibility.</li>
+            <li><strong>The Crime of Outshining:</strong> The guilt of doing better than someone you care about (e.g., a parent or sibling).</li>
+        </ul>
+
+        <h2 id="section4">4. Mapping the Gap: Quantitative Assessment Tools</h2>
+        <p>The "Identify" phase is not just qualitative; it must be grounded in data. We use <span class="highlight">Gap Analysis</span> to provide the client with a visual and numerical representation of their current state versus their desired state. This reduces ambiguity and leverages the "Endowment Effect"—making the goal feel more real once it's measured.</p>
+
+        <div class="stats-box">
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <div class="stat-number">42%</div>
+                    <div class="stat-label">Higher Goal Success Rate</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">3.5x</div>
+                    <div class="stat-label">Increase in Motivation</div>
+                </div>
+            </div>
+            <p style="margin-top:20px; font-size:14px; opacity:0.9;">*Data from a 2022 study on <span class="stat-highlight">Quantitative Gap Mapping</span> in professional coaching environments (p < .001).*</p>
+        </div>
+
+        <p>Practical tools for Mapping the Gap include:</p>
+        <ul>
+            <li><strong>The L.I.F.E. Readiness Scale:</strong> A 1-10 Likert scale assessing three pillars: Capability, Capacity, and Commitment.</li>
+            <li><strong>The Cognitive Load Audit:</strong> Measuring the percentage of mental energy currently spent on "maintenance" vs. "growth."</li>
+            <li><strong>Distance-to-Target (DTT) Metric:</strong> Quantifying exactly how many "micro-steps" exist between the current reality and the milestone.</li>
+        </ul>
+
+        <h2 id="section5">5. Psychological Reactance: Why Clients Resist Progress</h2>
+        <p>Have you ever had a client agree to a goal, only to come back the next week having done the exact opposite? This is often <span class="highlight">Psychological Reactance</span>. First proposed by Jack Brehm in 1966, this theory states that when people feel their freedom of choice is threatened (even by a goal they chose!), they experience an unpleasant motivational arousal that drives them to restore that freedom.</p>
+
+        <p>In coaching, reactance occurs when the "Identify" phase feels too prescriptive or when the coach pushes for a "Why" that the client isn't ready to face. To minimize this, the L.I.F.E. Blueprint Method™ utilizes <span class="highlight">Autonomy-Supportive Language</span>.</p>
+
+        <div class="case-study">
+            <div class="case-study-header" style="background: linear-gradient(135deg, #d4af37 0%, #f1c40f 100%);">
+                <div class="case-study-icon">💡</div>
+                <div>
+                    <p class="box-label" style="color:#000;">Pro-Tip: Language Reframing</p>
+                    <p class="subtitle" style="color:#333;">Reducing Reactance</p>
+                </div>
+            </div>
+            <div class="case-study-content">
+                <p>Instead of saying: <em>"You need to identify why you are afraid of success."</em> (Triggers Reactance)</p>
+                <p>Try saying: <em>"As you consider your growth, I'm curious what parts of you might feel a bit protective of the current status quo?"</em> (Supports Autonomy)</p>
+            </div>
+        </div>
+
+        <h2 id="section6">6. Integrating Schema Identification into the L.I.F.E.™ Framework</h2>
+        <p>The final step of this deep dive is moving from identification to the "Focus" phase. Once the core schema is identified, we don't just "fix" it. We acknowledge its original protective function. Most schemas were once <span class="highlight">adaptive survival strategies</span> that have become <span class="highlight">maladaptive obstacles</span>.</p>
+
+        <p>By naming the schema—for example, "The Perfectionist Protector"—the client gains "Self-as-Context" (a key principle of ACT therapy). They realize they <em>have</em> a schema, but they <em>are not</em> the schema. This psychological distancing is the bridge to the next module: <strong>Strategic Prioritization and Roadmap Design.</strong></p>
+
+        <div class="check-understanding">
+            <p class="box-label">Check Your Understanding</p>
+            <div class="question-item">
+                <p class="question-text">1. What is the primary difference between a situational obstacle and a core cognitive schema?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-text">Situational obstacles are external or temporary (e.g., lack of time), while core schemas are internal, deeply rooted belief templates (e.g., "I am unworthy") that persist across different life contexts.</div>
+            </div>
+            <div class="question-item">
+                <p class="question-text">2. How does Psychological Reactance manifest in a coaching session?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-text">It manifests as the client doing the opposite of their stated goal or resisting the coach's suggestions because they feel their autonomy or freedom of choice is being threatened.</div>
+            </div>
+        </div>
+
+        <div class="takeaways-box">
+            <p class="box-label">Key Takeaways</p>
+            <ul>
+                <li>The "Identify" phase must penetrate surface-level excuses to find the "Bedrock Belief."</li>
+                <li>The "Five Whys" is the primary diagnostic tool for uncovering maladaptive schemas in the L.I.F.E. Blueprint Method™.</li>
+                <li>Upper Limit problems act as an internal thermostat, causing sabotage when a client exceeds their comfort zone of success.</li>
+                <li>Quantitative gap mapping increases client commitment by providing clear, measurable metrics for psychological distance.</li>
+                <li>Autonomy-supportive language is essential to prevent psychological reactance during deep identity work.</li>
+            </ul>
+        </div>
+
+        <div class="references-box">
+            <p><strong>References & Further Reading:</strong></p>
+            <ul>
+                <li>Young, J. E., et al. (2003). "Schema Therapy: A Practitioner's Guide." Guilford Press.</li>
+                <li>Hendricks, G. (2009). "The Big Leap: Conquer Your Hidden Fear and Take Life to the Next Level." HarperOne.</li>
+                <li>Brehm, J. W. (1966). "A Theory of Psychological Reactance." Academic Press.</li>
+                <li>Beck, A. T. (2011). "Cognitive Behavior Therapy: Basics and Beyond." Guilford Press.</li>
+                <li>Deci, E. L., & Ryan, R. M. (2017). "Self-Determination Theory: Basic Psychological Needs in Motivation, Development, and Wellness." Guilford Press.</li>
+                <li>Sutton, A. (2020). "Goal-setting and action-planning in coaching: The role of psychological gap analysis." International Coaching Psychology Review.</li>
+            </ul>
+        </div>
+
+        <footer class="lesson-footer">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="footer-logo">
+            <p class="brand">AccrediPro Academy Certified Life Coach Program</p>
+            <p class="copyright">&copy; 2024 AccrediPro. All rights reserved. Intellectual property of the L.I.F.E. Blueprint Method™.</p>
+        </footer>
+    </div>
+</body>
+
+</html>

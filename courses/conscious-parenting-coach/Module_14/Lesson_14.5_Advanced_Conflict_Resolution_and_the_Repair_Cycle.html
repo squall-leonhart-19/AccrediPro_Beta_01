@@ -1,0 +1,743 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lesson 14.5: Advanced Conflict Resolution and the Repair Cycle</title>
+    <style>
+        /* Base & Reset */
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Georgia, 'Times New Roman', serif;
+            line-height: 1.8;
+            color: #2d2d2d;
+            background: #f8f6f3;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Main Container */
+        .lesson-container {
+            max-width: 860px;
+            margin: 0 auto;
+            padding: 40px 30px;
+            background: #ffffff;
+            min-height: 100vh;
+            box-shadow: 0 0 60px rgba(0, 0, 0, 0.08);
+        }
+
+        /* Brand Header */
+        .brand-header {
+            text-align: center;
+            padding-bottom: 30px;
+            margin-bottom: 35px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .brand-logo {
+            max-width: 220px;
+            height: auto;
+            margin-bottom: 5px;
+        }
+
+        /* Module Header - BLUE/PURPLE theme for Advanced Integration */
+        .module-header {
+            background: linear-gradient(135deg, #4338ca 0%, #6366f1 100%);
+            padding: 35px 35px 30px;
+            border-radius: 16px;
+            margin-bottom: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .module-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+            transform: translate(100px, -100px);
+        }
+
+        .module-header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, #B8860B, #D4A84B, #B8860B);
+        }
+
+        .module-label {
+            margin: 0;
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.75);
+            text-transform: uppercase;
+            letter-spacing: 2.5px;
+            font-weight: 500;
+        }
+
+        .lesson-title {
+            margin: 10px 0 0 0;
+            font-size: 28px;
+            color: #ffffff;
+            font-weight: 700;
+            line-height: 1.3;
+            position: relative;
+        }
+
+        .lesson-meta {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+            padding-top: 18px;
+            border-top: 1px solid rgba(255, 255, 255, 0.15);
+            flex-wrap: wrap;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.85);
+            background: rgba(255, 255, 255, 0.1);
+            padding: 5px 12px;
+            border-radius: 4px;
+        }
+
+        /* Table of Contents */
+        .toc-box {
+            background: linear-gradient(135deg, #fafafa 0%, #f5f5f5 100%);
+            border-radius: 14px;
+            padding: 24px 28px;
+            margin-bottom: 35px;
+            border: 1px solid #e8e8e8;
+        }
+
+        .toc-box .box-label {
+            font-weight: 600;
+            color: #4338ca;
+            margin: 0 0 18px 0;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .toc-list {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px 24px;
+        }
+
+        .toc-list li {
+            margin: 0;
+        }
+
+        .toc-list a {
+            display: flex;
+            align-items: center;
+            padding: 8px 12px;
+            color: #555;
+            text-decoration: none;
+            font-size: 14px;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+        }
+
+        .toc-list a:hover {
+            background: white;
+            color: #4338ca;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+        }
+
+        .toc-list .section-num {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 26px;
+            height: 26px;
+            background: #4338ca;
+            color: white;
+            font-weight: 600;
+            font-size: 11px;
+            border-radius: 6px;
+            margin-right: 12px;
+            flex-shrink: 0;
+        }
+
+        /* Learning Objectives */
+        .objectives-box {
+            background: #f5f3ff;
+            border: 2px solid #6366f1;
+            border-radius: 14px;
+            padding: 30px 35px;
+            margin-bottom: 40px;
+        }
+
+        .objectives-box .box-label {
+            font-weight: 600;
+            color: #4338ca;
+            margin: 0 0 18px 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .objectives-box .box-label::before {
+            content: '🎯';
+            font-size: 18px;
+        }
+
+        .objectives-box ul {
+            margin: 0;
+            padding-left: 22px;
+        }
+
+        .objectives-box li {
+            margin-bottom: 14px;
+            font-size: 16px;
+            line-height: 1.7;
+        }
+
+        /* Key Terms Box */
+        .key-terms-box {
+            background: linear-gradient(135deg, #f0f4f8 0%, #e8ecf1 100%);
+            border-radius: 14px;
+            padding: 28px 30px;
+            margin: 40px 0;
+            border: 1px solid #d8dce0;
+        }
+
+        .key-terms-box .box-label {
+            font-weight: 600;
+            color: #4338ca;
+            margin: 0 0 18px 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .terms-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 16px;
+        }
+
+        .term-item {
+            background: white;
+            padding: 16px 18px;
+            border-radius: 10px;
+            border-left: 4px solid #6366f1;
+        }
+
+        .term-item .term {
+            font-weight: 700;
+            color: #4338ca;
+            font-size: 15px;
+            margin: 0 0 6px 0;
+        }
+
+        .term-item .definition {
+            font-size: 14px;
+            color: #555;
+            margin: 0;
+            line-height: 1.6;
+        }
+
+        /* Section Headings */
+        h2 {
+            font-size: 24px;
+            color: #4338ca;
+            margin: 50px 0 20px 0;
+            font-weight: 600;
+            position: relative;
+            padding-bottom: 12px;
+        }
+
+        h2::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 60px;
+            height: 3px;
+            background: #B8860B;
+        }
+
+        h3 {
+            font-size: 20px;
+            color: #312e81;
+            margin: 35px 0 15px 0;
+            font-weight: 600;
+        }
+
+        /* Paragraphs & Highlighting */
+        p {
+            font-size: 17px;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        .highlight {
+            background: linear-gradient(180deg, transparent 60%, #e0e7ff 60%);
+            padding: 0 4px;
+            font-weight: 500;
+        }
+
+        .stat-highlight {
+            font-weight: 700;
+            color: #4338ca;
+        }
+
+        /* Case Study Box */
+        .case-study {
+            background: linear-gradient(135deg, #f8f9fb 0%, #f0f2f5 100%);
+            border-radius: 16px;
+            padding: 0;
+            margin: 40px 0;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+        }
+
+        .case-study-header {
+            background: linear-gradient(135deg, #4338ca 0%, #6366f1 100%);
+            padding: 20px 30px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .case-study-icon {
+            width: 45px;
+            height: 45px;
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+        }
+
+        .case-study-header .box-label {
+            font-weight: 600;
+            color: #ffffff;
+            margin: 0;
+            font-size: 16px;
+        }
+
+        .case-study-content {
+            padding: 28px 30px;
+        }
+
+        /* Data Tables */
+        .data-table-container {
+            margin: 35px 0;
+            overflow-x: auto;
+            border-radius: 12px;
+            border: 1px solid #e5e7eb;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 15px;
+            text-align: left;
+        }
+
+        th {
+            background: #f9fafb;
+            padding: 15px;
+            font-weight: 600;
+            color: #374151;
+            border-bottom: 2px solid #e5e7eb;
+        }
+
+        td {
+            padding: 15px;
+            border-bottom: 1px solid #f3f4f6;
+            vertical-align: top;
+        }
+
+        /* Statistics Box */
+        .stats-box {
+            background: linear-gradient(135deg, #4338ca 0%, #6366f1 100%);
+            padding: 40px;
+            border-radius: 16px;
+            margin: 35px 0;
+            color: white;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 25px;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 36px;
+            font-weight: 700;
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        .stat-label {
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            opacity: 0.9;
+        }
+
+        /* Check Understanding Box */
+        .check-understanding {
+            background: #fffbeb;
+            border: 2px solid #fbbf24;
+            border-radius: 16px;
+            padding: 32px;
+            margin: 45px 0;
+        }
+
+        .question-item {
+            background: white;
+            border-radius: 12px;
+            padding: 22px 24px;
+            margin-bottom: 16px;
+            border: 1px solid #fde68a;
+        }
+
+        .reveal-btn {
+            background: #fbbf24;
+            color: #92400e;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+
+        .answer-text {
+            display: none;
+            margin-top: 15px;
+            padding: 15px;
+            background: #fef3c7;
+            border-radius: 8px;
+            color: #92400e;
+        }
+
+        /* Takeaways Box */
+        .takeaways-box {
+            background: #f3f4f6;
+            border-radius: 14px;
+            padding: 30px;
+            margin: 40px 0;
+            border-left: 6px solid #4338ca;
+        }
+
+        .takeaways-box .box-label {
+            font-weight: 700;
+            color: #4338ca;
+            margin-bottom: 15px;
+            display: block;
+        }
+
+        /* References Box */
+        .references-box {
+            background: #fafafa;
+            border-radius: 12px;
+            padding: 25px;
+            margin-top: 50px;
+            border: 1px solid #eee;
+            font-size: 14px;
+        }
+
+        .references-box h4 {
+            margin: 0 0 15px 0;
+            color: #666;
+        }
+
+        .references-box ul {
+            padding-left: 20px;
+            margin: 0;
+        }
+
+        .references-box li {
+            margin-bottom: 8px;
+            color: #777;
+        }
+
+        /* Footer */
+        .lesson-footer {
+            text-align: center;
+            padding-top: 50px;
+            margin-top: 60px;
+            border-top: 1px solid #eee;
+        }
+
+        .footer-logo {
+            max-width: 140px;
+            margin-bottom: 10px;
+        }
+
+        .brand {
+            font-weight: 600;
+            color: #4338ca;
+        }
+
+        .copyright {
+            font-size: 12px;
+            color: #999;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="lesson-container">
+        <div class="brand-header">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="brand-logo">
+        </div>
+
+        <header class="module-header">
+            <p class="module-label">Module 14: Advanced Integration and Complex Family Dynamics</p>
+            <h1 class="lesson-title">Lesson 5: Advanced Conflict Resolution and the Repair Cycle</h1>
+            <div class="lesson-meta">
+                <span class="meta-item">35 min read</span>
+                <span class="meta-item">Lesson 5 of 8</span>
+            </div>
+        </header>
+
+        <div class="toc-box">
+            <p class="box-label">In This Lesson</p>
+            <ul class="toc-list">
+                <li><a href="#section1"><span class="section-num">1</span>The Anatomy of Conscious Conflict</a></li>
+                <li><a href="#section2"><span class="section-num">2</span>De-escalation Science</a></li>
+                <li><a href="#section3"><span class="section-num">3</span>The 4-Step Repair Process</a></li>
+                <li><a href="#section4"><span class="section-num">4</span>Fostering Conflict Intelligence</a></li>
+                <li><a href="#section5"><span class="section-num">5</span>Addressing Triangulation</a></li>
+                <li><a href="#section6"><span class="section-num">6</span>The Practitioner's Role</a></li>
+            </ul>
+        </div>
+
+        <div class="objectives-box">
+            <p class="box-label">Learning Objectives</p>
+            <ul>
+                <li>Distinguish between "Winning-Oriented" conflict and "Connection-Oriented" conflict.</li>
+                <li>Apply the neurobiology of de-escalation to high-arousal family situations.</li>
+                <li>Execute a comprehensive 4-step repair process using the Respond and Attune pillars.</li>
+                <li>Identify and dismantle triangulation patterns within complex family systems.</li>
+                <li>Equip parents with tools to teach children "Conflict Intelligence" (CQ).</li>
+            </ul>
+        </div>
+
+        <h2 id="section1">1. The Anatomy of Conscious Conflict</h2>
+        <p>In the traditional parenting paradigm, conflict is often viewed as a failure of authority or a breakdown of discipline. However, within the <span class="highlight">The R.A.I.S.E. Framework™</span>, we recognize that conflict is an inevitable byproduct of two (or more) individuals having different needs, perspectives, or emotional states. It is not a sign of dysfunction, but an opportunity for <span class="highlight">Advanced Attunement</span>.</p>
+
+        <p>A "Conscious Conflict" differs from conventional disputes in its objective. While conventional conflict seeks <strong>compliance</strong> or <strong>dominance</strong>, conscious conflict seeks <strong>mutual understanding</strong> and <strong>systemic equilibrium</strong>. A 2019 study published in the <i>Journal of Family Psychology</i> indicated that families who focus on "constructive conflict" (characterized by support and problem-solving) show a <span class="stat-highlight">34% increase</span> in adolescent emotional regulation scores compared to those using avoidant or destructive patterns.</p>
+
+        <div class="data-table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Feature</th>
+                        <th>Conventional Conflict</th>
+                        <th>Conscious Conflict</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Primary Goal</strong></td>
+                        <td>Winning, compliance, being "right."</td>
+                        <td>Understanding, repair, connection.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Neuro-State</strong></td>
+                        <td>Amygdala-driven (Fight/Flight).</td>
+                        <td>Prefrontal Cortex-engaged (Social Engagement).</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Communication</strong></td>
+                        <td>Blame, shame, "You" statements.</td>
+                        <td>Vulnerability, "I" statements, needs-based.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Outcome</strong></td>
+                        <td>Resentment or temporary submission.</td>
+                        <td>Increased trust and skill-building.</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <h2 id="section2">2. De-escalation Science: The Neurobiology of High Arousal</h2>
+        <p>Before any resolution can occur, the nervous system must be settled. As discussed in Module 1 (Respond) and Module 8 (Polyvagal Theory), a brain in "survival mode" cannot process logic. De-escalation is the somatic bridge that allows the family to move from the <span class="highlight">Sympathetic Nervous System</span> (arousal) back to the <span class="highlight">Ventral Vagal</span> state (safety).</p>
+
+        <p>Effective de-escalation requires the parent to maintain <span class="highlight">Somatic Presence</span>. Research suggests that the "emotional contagion" effect is so strong that a parent’s heart rate variability (HRV) can directly influence the child’s HRV within 60-90 seconds of close proximity. Advanced de-escalation involves:</p>
+
+        <ul>
+            <li><strong>The Low-Arousal Approach:</strong> Reducing vocal volume, slowing speech cadence, and avoiding direct, aggressive eye contact which may be perceived as a predatory threat.</li>
+            <li><strong>The 20-Minute Rule:</strong> Physiological data shows that once the "Amygdala Hijack" occurs, it takes approximately <span class="stat-highlight">20 to 30 minutes</span> for neurochemicals like cortisol and adrenaline to dissipate enough for rational thought to return.</li>
+            <li><strong>Non-Verbal Anchoring:</strong> Using "open" body language (palms up, relaxed shoulders) to signal safety to the child's mirror neuron system.</li>
+        </ul>
+
+        <div class="case-study">
+            <div class="case-study-header">
+                <div class="case-study-icon">👤</div>
+                <div>
+                    <p class="box-label">Case Study: The High-Arousal Spiral</p>
+                    <p style="margin:0; font-size:12px; color:rgba(255,255,255,0.8)">Client: Julian (42) and son Leo (14)</p>
+                </div>
+            </div>
+            <div class="case-study-content">
+                <p><strong>Presenting Issue:</strong> Leo returned home two hours past curfew. Julian, triggered by fear and intergenerational patterns of "strictness," met Leo with shouting and threats of grounding for a month. Leo reacted by slamming his door and shouting profanities. The rupture was deep, and communication ceased for 48 hours.</p>
+                <p><strong>Intervention:</strong> Julian was coached to use the <strong>Respond</strong> pillar by first acknowledging his own "Amgydala Hijack." He practiced a somatic "shake-off" to release his own sympathetic charge. Instead of re-entering with a lecture, he used a low-arousal approach: "Leo, I was very scared when you weren't home. My brain went to a dark place. I’m ready to listen when you are."</p>
+                <p><strong>Outcome:</strong> Leo emerged 30 minutes later. By Julian staying in his Ventral Vagal state, Leo’s defenses dropped. They moved from conflict to a collaborative "Safe Home Agreement" (Empower pillar).</p>
+            </div>
+        </div>
+
+        <h2 id="section3">3. The 4-Step Repair Process: Beyond "I'm Sorry"</h2>
+        <p>A simple apology is often a "band-aid" that fails to address the underlying neurobiological rupture. In Conscious Parenting, we use a structured <span class="highlight">Repair Cycle</span> that integrates the <strong>Respond</strong> and <strong>Attune</strong> pillars. This process is essential because, as Dr. Ed Tronick’s research on the "Still Face Experiment" demonstrates, it is not the <i>absence</i> of rupture that creates secure attachment, but the <i>frequency and quality of repair</i>.</p>
+
+        <h3>Step 1: Self-Regulation (The Respond Pillar)</h3>
+        <p>The parent must first "put on their own oxygen mask." This involves identifying the trigger and moving back to center. Without this, Step 2 will feel performative or manipulative to the child.</p>
+
+        <h3>Step 2: Acknowledgment & Responsibility</h3>
+        <p>The parent names the behavior without making excuses. <i>"I lost my temper and I raised my voice. That was not a respectful way to talk to you."</i> This models accountability and removes the "shame-load" from the child.</p>
+
+        <h3>Step 3: Attunement & Validation (The Attune Pillar)</h3>
+        <p>The parent makes space for the child's experience of the rupture. <i>"How did it feel when I shouted? I imagine it felt scary or frustrating."</i> The goal here is "Mirroring"—allowing the child to feel felt.</p>
+
+        <h3>Step 4: The Collaborative Pivot (The Empower Pillar)</h3>
+        <p>Once the connection is restored, the family looks forward. <i>"Next time I feel that frustrated, I’m going to take a 5-minute break. What can we do differently together to handle the morning rush?"</i></p>
+
+        <div class="stats-box">
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <span class="stat-number">5:1</span>
+                    <span class="stat-label">Gottman's Magic Ratio (Positive/Negative)</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-number">70%</span>
+                    <span class="stat-label">Time spent in "mismatch" in healthy dyads</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-number">100%</span>
+                    <span class="stat-label">Parental Responsibility for Initiation of Repair</span>
+                </div>
+            </div>
+        </div>
+
+        <h2 id="section4">4. Teaching "Conflict Intelligence" (CQ)</h2>
+        <p>The <span class="highlight">Empower</span> pillar focuses on giving children the skills they need for life. Conflict Intelligence (CQ) is the ability to navigate interpersonal friction with emotional regulation and empathy. Instead of resolving conflicts <i>for</i> children, conscious coaches teach parents to act as "Conflict Consultants."</p>
+
+        <p>Key components of CQ include:</p>
+        <ul>
+            <li><strong>Perspective Taking:</strong> Asking, "What do you think was happening for your sister in that moment?"</li>
+            <li><strong>Needs Identification:</strong> Moving past the "want" (the toy) to the "need" (inclusion, autonomy, or stimulation).</li>
+            <li><strong>Boundary Setting:</strong> Teaching children to say, "I don't like it when you use that tone, I'm going to take a break," rather than hitting or retreating.</li>
+        </ul>
+
+        <h2 id="section5">5. Analyzing Triangulation in Family Systems</h2>
+        <p>In complex family dynamics, conflict often involves more than two people. <span class="highlight">Triangulation</span> occurs when a two-person system (e.g., Mother and Son) is under stress, and a third person (e.g., Father or a Sibling) is "triangled in" to dilute the tension. This is a concept from Bowenian Family Systems Theory that is critical for the Advanced Conscious Parenting Coach.</p>
+
+        <p>Common triangulation patterns include:</p>
+        <ul>
+            <li><strong>The "Messenger" Pattern:</strong> Parent A tells the Child to tell Parent B something to avoid direct conflict.</li>
+            <li><strong>The "Ally" Pattern:</strong> A parent enlists a child to take their side against the other parent.</li>
+            <li><strong>The "Scapegoat" Pattern:</strong> Two parents focus all their marital tension on the child's "problem behavior" to avoid addressing their own relationship issues.</li>
+        </ul>
+
+        <p>To dismantle triangulation, the coach must guide the family toward <span class="highlight">Direct Communication</span>. This requires the "Support" pillar—supporting the adults in building the emotional capacity to handle direct, two-person tension without using the child as a buffer.</p>
+
+        <div class="case-study">
+            <div class="case-study-header">
+                <div class="case-study-icon">👪</div>
+                <div>
+                    <p class="box-label">Case Study: Dismantling the Triangle</p>
+                    <p style="margin:0; font-size:12px; color:rgba(255,255,255,0.8)">Client: The Miller Family (Parents + 10yo Daughter)</p>
+                </div>
+            </div>
+            <div class="case-study-content">
+                <p><strong>Presenting Issue:</strong> Mom (Sarah) felt Dad (Mark) was too "lax" with bedtime. Instead of talking to Mark, Sarah would complain to her daughter, Sophie: "I wish your Dad would help more, he just lets you stay up too late." Sophie began to feel responsible for her Mom's happiness and started acting out against her Dad.</p>
+                <p><strong>Intervention:</strong> The coach identified this as a classic triangle. Sarah was encouraged to use the <strong>Intentional</strong> pillar to align her communication with her values of "Directness." She was coached to have a "Values Alignment Meeting" with Mark, removing Sophie from the middle.</p>
+                <p><strong>Outcome:</strong> By removing Sophie from the "Adult" conflict, Sophie’s anxiety-driven behaviors decreased by <span class="stat-highlight">60%</span> within three weeks. The parents regained their roles as the "Supportive Container."</p>
+            </div>
+        </div>
+
+        <h2 id="section6">6. The Practitioner's Role in High-Conflict Dynamics</h2>
+        <p>As an AccrediPro Certified Coach, your role is to be the "Non-Anxious Presence." In high-conflict family systems, the "emotional field" is highly charged. If you become "triangled" into the family drama (e.g., taking the Mom's side against the Dad), you lose your therapeutic efficacy.</p>
+
+        <p>Practitioners must maintain <strong>Neutrality</strong> and <strong>Multilateral Partiality</strong>—the ability to be "on everyone's side" simultaneously. This is achieved by focusing on the <i>process</i> of the R.A.I.S.E. Framework™ rather than the <i>content</i> of the family's arguments. You are not a judge; you are a neurobiological guide helping them navigate back to connection.</p>
+
+        <div class="check-understanding">
+            <p class="box-label">Check Your Understanding</p>
+            <p class="box-subtitle">Reflect on the concepts covered in this lesson.</p>
+
+            <div class="question-item">
+                <p class="question-text">1. Why is the "20-minute rule" essential in the de-escalation of family conflict?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-text">
+                    The 20-minute rule is based on the physiological time required for the body to metabolize stress hormones (cortisol/adrenaline) after an amygdala hijack. Attempting to resolve conflict before this "cooldown" period usually results in further escalation because the prefrontal cortex is not yet fully online.
+                </div>
+            </div>
+
+            <div class="question-item">
+                <p class="question-text">2. How does "Triangulation" harm the child's development within the family system?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-text">
+                    Triangulation forces the child into an adult role (parentification), creates split loyalties, and increases chronic anxiety. It prevents the child from focusing on their own developmental tasks because they are preoccupied with managing the emotional tension between their parents.
+                </div>
+            </div>
+        </div>
+
+        <div class="takeaways-box">
+            <p class="box-label">Key Takeaways</p>
+            <ul>
+                <li><strong>Conflict is Information:</strong> It reveals unmet needs and areas where attunement is lacking.</li>
+                <li><strong>Regulation Precedes Resolution:</strong> No meaningful repair can happen while the nervous system is in a state of high arousal.</li>
+                <li><strong>Repair is the Goal:</strong> Secure attachment is built through the cycle of rupture and repair, not the avoidance of conflict.</li>
+                <li><strong>Direct Communication is Vital:</strong> Dismantling triangulation is necessary to restore the healthy hierarchy and safety of the family system.</li>
+                <li><strong>Parents are Models:</strong> By practicing advanced conflict resolution, parents teach children "Conflict Intelligence" for life.</li>
+            </ul>
+        </div>
+
+        <div class="references-box">
+            <h4>References & Further Reading</h4>
+            <ul>
+                <li>Bowen, M. (1978). "Family Therapy in Clinical Practice." Jason Aronson.</li>
+                <li>Gottman, J. M., & Silver, N. (2015). "The Seven Principles for Making Marriage Work." Harmony.</li>
+                <li>Porges, S. W. (2011). "The Polyvagal Theory: Neurophysiological Foundations of Emotions, Attachment, Communication, and Self-regulation." W. W. Norton & Company.</li>
+                <li>Siegel, D. J., & Bryson, T. P. (2014). "No-Drama Discipline: The Whole-Brain Way to Calm the Chaos and Nurture Your Child's Developing Mind." Bantam.</li>
+                <li>Tronick, E. (2007). "The Neurobehavioral and Social-Emotional Development of Infants and Children." W. W. Norton & Company.</li>
+                <li>Teyber, E., & McClure, F. H. (2011). "Interpersonal Process in Therapy: An Integrative Model." Cengage Learning.</li>
+            </ul>
+        </div>
+
+        <footer class="lesson-footer">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="footer-logo">
+            <p class="brand">AccrediPro Academy Certified Conscious Parenting Coach</p>
+            <p class="copyright">&copy; 2024 AccrediPro Academy. All rights reserved. Professional Certification Program.</p>
+        </footer>
+    </div>
+</body>
+
+</html>
