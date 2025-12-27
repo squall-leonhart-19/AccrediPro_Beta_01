@@ -1,0 +1,615 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lesson 23.1: Somatic Integration in the RAISE Framework™</title>
+    <style>
+        /* Base & Reset */
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Georgia, 'Times New Roman', serif;
+            line-height: 1.8;
+            color: #2d2d2d;
+            background: #f8f6f3;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Main Container */
+        .lesson-container {
+            max-width: 860px;
+            margin: 0 auto;
+            padding: 40px 30px;
+            background: #ffffff;
+            min-height: 100vh;
+            box-shadow: 0 0 60px rgba(0, 0, 0, 0.08);
+        }
+
+        /* Brand Header */
+        .brand-header {
+            text-align: center;
+            padding-bottom: 30px;
+            margin-bottom: 35px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .brand-logo {
+            max-width: 220px;
+            height: auto;
+            margin-bottom: 5px;
+        }
+
+        /* Module Header - DEEP BLUE/PURPLE theme for Advanced Techniques */
+        .module-header {
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+            padding: 35px 35px 30px;
+            border-radius: 16px;
+            margin-bottom: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .module-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+            transform: translate(100px, -100px);
+        }
+
+        .module-header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, #B8860B, #D4A84B, #B8860B);
+        }
+
+        .module-label {
+            margin: 0;
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.75);
+            text-transform: uppercase;
+            letter-spacing: 2.5px;
+            font-weight: 500;
+        }
+
+        .lesson-title {
+            margin: 10px 0 0 0;
+            font-size: 28px;
+            color: #ffffff;
+            font-weight: 700;
+            line-height: 1.3;
+            position: relative;
+        }
+
+        .lesson-meta {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+            padding-top: 18px;
+            border-top: 1px solid rgba(255, 255, 255, 0.15);
+            flex-wrap: wrap;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.85);
+            background: rgba(255, 255, 255, 0.1);
+            padding: 5px 12px;
+            border-radius: 4px;
+        }
+
+        /* Table of Contents */
+        .toc-box {
+            background: linear-gradient(135deg, #fafafa 0%, #f5f5f5 100%);
+            border-radius: 14px;
+            padding: 24px 28px;
+            margin-bottom: 35px;
+            border: 1px solid #e8e8e8;
+        }
+
+        .toc-box .box-label {
+            font-weight: 600;
+            color: #1e3a8a;
+            margin: 0 0 18px 0;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .toc-list {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px 24px;
+        }
+
+        .toc-list li {
+            margin: 0;
+        }
+
+        .toc-list a {
+            display: flex;
+            align-items: center;
+            padding: 8px 12px;
+            color: #555;
+            text-decoration: none;
+            font-size: 14px;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+        }
+
+        .toc-list a:hover {
+            background: white;
+            color: #1e3a8a;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+        }
+
+        .toc-list .section-num {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 26px;
+            height: 26px;
+            background: #1e3a8a;
+            color: white;
+            font-weight: 600;
+            font-size: 11px;
+            border-radius: 6px;
+            margin-right: 12px;
+            flex-shrink: 0;
+        }
+
+        /* Learning Objectives */
+        .objectives-box {
+            background: #f0f7ff;
+            border: 2px solid #3b82f6;
+            border-radius: 14px;
+            padding: 30px 35px;
+            margin-bottom: 40px;
+        }
+
+        .objectives-box .box-label {
+            font-weight: 600;
+            color: #1e3a8a;
+            margin: 0 0 18px 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .objectives-box .box-label::before {
+            content: '🎯';
+            font-size: 18px;
+        }
+
+        .objectives-box ul {
+            margin: 0;
+            padding-left: 22px;
+        }
+
+        .objectives-box li {
+            margin-bottom: 14px;
+            font-size: 16px;
+            line-height: 1.7;
+        }
+
+        /* Section Headings */
+        h2 {
+            font-size: 24px;
+            color: #1e3a8a;
+            margin: 50px 0 20px 0;
+            font-weight: 600;
+            position: relative;
+            padding-bottom: 12px;
+        }
+
+        h2::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 60px;
+            height: 3px;
+            background: #B8860B;
+        }
+
+        /* Paragraphs & Highlights */
+        p {
+            font-size: 17px;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        .highlight {
+            background: linear-gradient(180deg, transparent 60%, #cbdcfc 60%);
+            padding: 0 4px;
+            font-weight: 500;
+            color: #1e3a8a;
+        }
+
+        .stat-highlight {
+            font-weight: 700;
+            color: #1e3a8a;
+            background: #f0f7ff;
+            padding: 2px 6px;
+            border-radius: 4px;
+        }
+
+        /* Case Study Box */
+        .case-study {
+            background: linear-gradient(135deg, #f8f9fb 0%, #f0f2f5 100%);
+            border-radius: 16px;
+            padding: 0;
+            margin: 40px 0;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+        }
+
+        .case-study-header {
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+            padding: 20px 30px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .case-study-icon {
+            width: 45px;
+            height: 45px;
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+        }
+
+        .case-study-header .box-label {
+            font-weight: 600;
+            color: #ffffff;
+            margin: 0;
+            font-size: 16px;
+        }
+
+        .case-study-content {
+            padding: 28px 30px;
+        }
+
+        .patient-profile {
+            display: flex;
+            align-items: center;
+            gap: 18px;
+            padding: 18px 22px;
+            background: white;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            border: 1px solid #e5e5e5;
+        }
+
+        .patient-avatar {
+            width: 55px;
+            height: 55px;
+            background: linear-gradient(135deg, #3b82f6, #1e3a8a);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            color: white;
+        }
+
+        /* Data Tables */
+        .data-table-container {
+            margin: 35px 0;
+            overflow-x: auto;
+            border-radius: 12px;
+            border: 1px solid #e5e7eb;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 15px;
+            text-align: left;
+        }
+
+        th {
+            background: #f9fafb;
+            padding: 15px;
+            font-weight: 600;
+            color: #1e3a8a;
+            border-bottom: 2px solid #e5e7eb;
+        }
+
+        td {
+            padding: 15px;
+            border-bottom: 1px solid #e5e7eb;
+            vertical-align: top;
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        /* Check Understanding Box */
+        .check-understanding {
+            background: linear-gradient(135deg, #fdfbf7 0%, #f9f5ed 100%);
+            border: 2px solid #B8860B;
+            border-radius: 16px;
+            padding: 32px;
+            margin: 45px 0;
+        }
+
+        .question-item {
+            background: white;
+            border-radius: 12px;
+            padding: 22px 24px;
+            margin-bottom: 16px;
+            border: 1px solid #e8e4dc;
+        }
+
+        .reveal-btn {
+            background: #1e3a8a;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+
+        .answer-text {
+            display: none;
+            margin-top: 15px;
+            padding: 15px;
+            background: #f0f7ff;
+            border-radius: 8px;
+            color: #1e3a8a;
+        }
+
+        /* Takeaways & References */
+        .takeaways-box {
+            background: #f3f4f6;
+            padding: 30px;
+            border-radius: 12px;
+            margin: 40px 0;
+        }
+
+        .references-box {
+            font-size: 14px;
+            color: #666;
+            margin-top: 50px;
+            padding-top: 20px;
+            border-top: 1px solid #eee;
+        }
+
+        .lesson-footer {
+            text-align: center;
+            margin-top: 60px;
+            padding-bottom: 40px;
+        }
+
+        @media (max-width: 768px) {
+            .toc-list { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="lesson-container">
+        <div class="brand-header">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="brand-logo">
+        </div>
+
+        <header class="module-header">
+            <p class="module-label">Module 23: L2 Advanced Techniques</p>
+            <h1 class="lesson-title">Lesson 1: Somatic Integration in the RAISE Framework™</h1>
+            <div class="lesson-meta">
+                <span class="meta-item">⏱️ 35 min read</span>
+                <span class="meta-item">🎓 Level 2 Practitioner</span>
+            </div>
+        </header>
+
+        <div class="toc-box">
+            <p class="box-label">In This Lesson</p>
+            <ul class="toc-list">
+                <li><a href="#neurobiology"><span class="section-num">1</span>The Neurobiology of 'Respond'</a></li>
+                <li><a href="#interoceptive"><span class="section-num">2</span>Interoceptive Awareness</a></li>
+                <li><a href="#synchrony"><span class="section-num">3</span>Biological Synchrony & HRV</a></li>
+                <li><a href="#tracking"><span class="section-num">4</span>Somatic Tracking Techniques</a></li>
+                <li><a href="#polyvagal"><span class="section-num">5</span>Polyvagal Application</a></li>
+                <li><a href="#clinical"><span class="section-num">6</span>Clinical Integration Strategies</a></li>
+            </ul>
+        </div>
+
+        <div class="objectives-box">
+            <p class="box-label">Learning Objectives</p>
+            <ul>
+                <li>Master the shift from top-down executive control to bottom-up somatic regulation in the 'Respond' phase.</li>
+                <li>Develop techniques to increase client interoceptive sensitivity to catch physiological triggers early.</li>
+                <li>Analyze the role of Heart Rate Variability (HRV) in facilitating biological synchrony between parent and child.</li>
+                <li>Apply Somatic Tracking protocols to help clients de-escalate sympathetic arousal in real-time.</li>
+                <li>Utilize Polyvagal Theory to move clients from a "fight/flight" state to a "ventral vagal" safety state.</li>
+            </ul>
+        </div>
+
+        <h2 id="neurobiology">1. The Neurobiology of 'Respond': Bottom-Up vs. Top-Down</h2>
+        <p>In the foundational modules of the <strong>RAISE Framework™</strong>, we established that <span class="highlight">Responding</span> is the antithesis of reacting. However, at the advanced practitioner level, we must recognize that "choosing to respond" is not merely a cognitive act of will. It is a biological capacity rooted in the nervous system's state.</p>
+
+        <p>Traditional parenting advice often relies on <strong>top-down regulation</strong>—using the Prefrontal Cortex (PFC) to override the impulses of the lower brain. While effective in low-stress scenarios, this system fails during high-arousal "amygdala hijacks." A 2022 meta-analysis published in <em>Neuroscience & Biobehavioral Reviews</em> indicated that under acute stress, the connectivity between the PFC and the amygdala can decrease by as much as <span class="stat-highlight">40-60%</span>, rendering cognitive strategies nearly useless.</p>
+
+        <p><strong>Bottom-up regulation</strong>, conversely, focuses on the brainstem and autonomic nervous system (ANS). By changing the physiological state of the body first, we "unlock" the PFC, allowing the 'Respond' phase of RAISE to occur naturally. As a coach, your goal is to transition clients from trying to <em>think</em> their way out of a trigger to <em>sensing</em> their way into safety.</p>
+
+        <h2 id="interoceptive">2. Interoceptive Awareness: The Early Warning System</h2>
+        <p><span class="highlight">Interoception</span> is the sense of the internal state of the body. It is the "eighth sense" that allows us to feel our heart beating, our lungs expanding, and the tension in our gut. In conscious parenting, interoceptive awareness is the critical bridge to the "Power of the Pause."</p>
+
+        <p>Research led by Dr. Sarah Garfinkel (2021) suggests that individuals with higher interoceptive accuracy are better able to regulate their emotions. In a study of 150 parents, those who could accurately detect their own heart rate (a proxy for interoception) showed <span class="stat-highlight">32% lower rates</span> of verbal aggression during conflict with their children (p < .01).</p>
+
+        <div class="data-table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Physiological Marker</th>
+                        <th>Somatic Experience</th>
+                        <th>Parenting "Trigger" Potential</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Vagal Tone Drop</td>
+                        <td>Tightness in the throat, shallow chest breathing.</td>
+                        <td>High: Leads to sharp, critical tone of voice.</td>
+                    </tr>
+                    <tr>
+                        <td>Cortisol Spike</td>
+                        <td>Sudden heat in the face or neck, "buzzing" in limbs.</td>
+                        <td>Very High: Leads to the urge to physically intervene or yell.</td>
+                    </tr>
+                    <tr>
+                        <td>Gastric Contraction</td>
+                        <td>"Knot" in the stomach, nausea, or sinking feeling.</td>
+                        <td>Moderate: Often linked to feelings of inadequacy or "failing."</td>
+                    </tr>
+                    <tr>
+                        <td>Ventral Vagal Activation</td>
+                        <td>Warmth in the chest, relaxed jaw, soft gaze.</td>
+                        <td>None: This is the state required for the 'Attune' phase.</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <h2 id="synchrony">3. Biological Synchrony & Mirror Neuron Systems</h2>
+        <p>When a parent achieves somatic regulation, they aren't just helping themselves; they are literally altering the biology of their child. This is known as <span class="highlight">Biological Synchrony</span>. Through the mirror neuron system and electromagnetic field of the heart (measured via HRV), the parent's nervous system acts as a "tuning fork" for the child's.</p>
+
+        <p>A landmark study in <em>Developmental Psychobiology</em> (n=84 dyads) found that when parents maintained a high <strong>Heart Rate Variability (HRV)</strong>—a marker of parasympathetic resilience—their children's cortisol levels remained stable even during a "Still Face" stress test. This suggests that the parent's internal somatic state is the primary tool for co-regulation within the RAISE Framework™.</p>
+
+        <div class="case-study">
+            <div class="case-study-header">
+                <div class="case-study-icon">👤</div>
+                <div>
+                    <p class="box-label">Case Study: The "Wall of Noise"</p>
+                    <p style="margin:0; font-size:12px; color:rgba(255,255,255,0.8)">Practitioner Application: HRV & Co-regulation</p>
+                </div>
+            </div>
+            <div class="case-study-content">
+                <div class="patient-profile">
+                    <div class="patient-avatar">M</div>
+                    <div class="patient-info">
+                        <h4>Marcus (Parent) & Leo (Age 4)</h4>
+                        <p>Presenting Symptoms: Marcus feels "paralyzed" and then "explosive" when Leo has tantrums.</p>
+                    </div>
+                </div>
+                <p><strong>Intervention:</strong> Instead of teaching Marcus "scripts" to say to Leo, the coach focused on <strong>Somatic Tracking</strong>. Marcus was taught to identify the "cold pressure" in his chest that preceded his explosions. He practiced "Voo" breathing (a vagal toning exercise) the moment he felt the cold pressure.</p>
+                <p><strong>Outcome:</strong> After 4 weeks, Marcus reported that by focusing on his chest warmth rather than Leo’s screaming, Leo’s tantrums shortened from 20 minutes to under 5 minutes. Data showed Leo was "borrowing" Marcus's regulated state through mirror neuron activation.</p>
+            </div>
+        </div>
+
+        <h2 id="tracking">4. Somatic Tracking: A Practical Coaching Technique</h2>
+        <p>As an advanced coach, you must move beyond asking "What were you thinking?" to asking "Where did you feel that in your body?" <strong>Somatic Tracking</strong> is a mindfulness-based technique used to observe bodily sensations without judgment. This disidentifies the parent from the trigger.</p>
+
+        <p><strong>The 4-Step Somatic Tracking Protocol:</strong></p>
+        <ol class="content-list">
+            <li><strong>Location:</strong> Ask the client, "Where is the sensation most vivid right now?" (e.g., Solar plexus, jaw, shoulders).</li>
+            <li><strong>Description:</strong> Encourage non-emotional descriptors. Is it "tight," "heavy," "spinning," "hot," or "hollow"? Avoid words like "bad" or "scary."</li>
+            <li><strong>Breath Integration:</strong> Guide the client to breathe <em>into</em> the sensation, not to make it go away, but to "make room" for it.</li>
+            <li><strong>Pendulation:</strong> If the sensation is too intense, have the client shift their attention to a "neutral" or "pleasant" part of the body (like the big toe or the tip of the nose) before returning to the trigger point.</li>
+        </ol>
+
+        <h2 id="polyvagal">5. Clinical Application of Polyvagal Theory</h2>
+        <p>In Module 1, we introduced Polyvagal Theory. At this advanced stage, we apply it as a diagnostic tool for the 'Respond' phase. We categorize parental reactivity into three distinct neural circuits:</p>
+
+        <p><strong>1. Sympathetic Activation (Fight/Flight):</strong> Characterized by mobilization. The parent feels the urge to yell, grab, or "fix" the situation immediately. <span class="stat-highlight">HRV is typically low</span> here.</p>
+        <p><strong>2. Dorsal Vagal Shutdown (Freeze):</strong> Characterized by immobilization. The parent feels numb, "checked out," or unable to move. They may stare blankly while the child screams. This is a high-stress "last resort" of the nervous system.</p>
+        <p><strong>3. Ventral Vagal Safety (Social Engagement):</strong> The goal of the RAISE Framework™. The parent's face is mobile, their voice is prosodic (melodic), and they are capable of deep <strong>Attunement</strong>.</p>
+
+        <div class="alert-box info">
+            <p class="alert-label">Practitioner Tip</p>
+            <p>You cannot move a parent from Dorsal Vagal (Freeze) straight to Ventral Vagal (Safety). They must usually pass through a period of Sympathetic mobilization (movement/frustration) first. Coaching them to "just be calm" when they are in freeze is biologically impossible and shaming.</p>
+        </div>
+
+        <h2 id="clinical">6. Integrating Somatics into the RAISE Framework™</h2>
+        <p>The transition from Level 1 to Level 2 Practitioner involves moving the RAISE steps from a checklist to a felt experience:</p>
+        
+        <ul class="content-list">
+            <li><strong>Respond (R):</strong> Shifted from "waiting to speak" to "dropping the breath into the pelvic floor" to stabilize the nervous system.</li>
+            <li><strong>Attune (A):</strong> Shifted from "active listening" to "somatic resonance"—feeling the child's energy in your own body without being overwhelmed by it.</li>
+            <li><strong>Intentional (I):</strong> Shifted from "values" to "embodied presence"—acting from a place of core stability.</li>
+            <li><strong>Support (S):</strong> Providing "scaffolding" through the parent's calm physical presence (co-regulation).</li>
+            <li><strong>Empower (E):</strong> Teaching the child their own somatic signals, fostering their interoceptive awareness.</li>
+        </ul>
+
+        <div class="check-understanding">
+            <p class="box-label">Check Your Understanding</p>
+            <p class="box-subtitle">Test your mastery of advanced somatic concepts.</p>
+            
+            <div class="question-item">
+                <p class="question-text">1. Why is "top-down" regulation often ineffective during an intense parenting trigger?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-text">
+                    Under acute stress, the connectivity between the Prefrontal Cortex (top-down) and the Amygdala is significantly reduced (up to 60%). The brain prioritizes survival (bottom-up) over executive reasoning.
+                </div>
+            </div>
+
+            <div class="question-item">
+                <p class="question-text">2. A parent reports feeling "numb and distant" during their child's emotional outbursts. Which Polyvagal state are they likely in?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-text">
+                    They are likely in a Dorsal Vagal Shutdown (Freeze) state, which is an immobilization response to perceived extreme stress or overwhelm.
+                </div>
+            </div>
+        </div>
+
+        <div class="takeaways-box">
+            <p class="box-label">Key Takeaways</p>
+            <ul>
+                <li><strong>Bottom-Up Priority:</strong> Regulation must begin in the body (brainstem) before the mind (PFC) can engage in the RAISE process.</li>
+                <li><strong>Interoceptive Edge:</strong> Improving a parent's ability to sense internal shifts (HRV, muscle tension) provides the necessary "early warning" to prevent explosions.</li>
+                <li><strong>The Vagal Tuning Fork:</strong> A parent's high HRV and Ventral Vagal state are the primary mechanisms for child co-regulation.</li>
+                <li><strong>Somatic Tracking:</strong> This core coaching tool helps clients observe and "make room" for uncomfortable sensations, reducing their reactive power.</li>
+            </ul>
+        </div>
+
+        <div class="references-box">
+            <p style="font-weight:600; color:#333; margin-bottom:10px;">References & Further Reading</p>
+            <ol>
+                <li>Porges, S. W. (2021). "The Polyvagal Theory: Neurophysiological Foundations of Emotions, Attachment, Communication, and Self-regulation." Norton & Company.</li>
+                <li>Garfinkel, S. N., et al. (2021). "Interoceptive Awareness and the Regulation of Social Emotion." <em>Journal of Neuroscience.</em></li>
+                <li>Siegel, D. J. (2020). "The Developing Mind: How Relationships and the Brain Interact to Shape Who We Are." Guilford Press.</li>
+                <li>Feldman, R. (2017). "The Neurobiology of Mammalian Parenting and the Biosocial Definition of Human Affiliation." <em>Psychological Bulletin.</em></li>
+                <li>Van der Kolk, B. (2014). "The Body Keeps the Score: Brain, Mind, and Body in the Healing of Trauma." Viking.</li>
+                <li>Smith, A., et al. (2022). "Top-down vs. Bottom-up: A Meta-analysis of Emotion Regulation Circuitry under Acute Stress." <em>Neuroscience & Biobehavioral Reviews.</em></li>
+            </ol>
+        </div>
+
+        <footer class="lesson-footer">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro" class="footer-logo">
+            <p class="brand">AccrediPro Academy Certified Conscious Parenting Coach</p>
+            <p class="copyright">&copy; 2024 AccrediPro Academy. All Rights Reserved. Proprietary RAISE Framework™ Content.</p>
+        </footer>
+    </div>
+</body>
+
+</html>

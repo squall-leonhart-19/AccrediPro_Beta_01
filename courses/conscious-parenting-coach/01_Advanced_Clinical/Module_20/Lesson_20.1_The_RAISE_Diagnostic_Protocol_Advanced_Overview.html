@@ -1,0 +1,656 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lesson 20.1: The RAISE Diagnostic Protocol: Advanced Overview</title>
+    <style>
+        /* Base & Reset */
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Georgia, 'Times New Roman', serif;
+            line-height: 1.8;
+            color: #2d2d2d;
+            background: #f4f7f9;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Main Container */
+        .lesson-container {
+            max-width: 860px;
+            margin: 0 auto;
+            padding: 40px 30px;
+            background: #ffffff;
+            min-height: 100vh;
+            box-shadow: 0 0 60px rgba(0, 0, 0, 0.08);
+        }
+
+        /* Brand Header */
+        .brand-header {
+            text-align: center;
+            padding-bottom: 30px;
+            margin-bottom: 35px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .brand-logo {
+            max-width: 220px;
+            height: auto;
+            margin-bottom: 5px;
+        }
+
+        /* Module Header - INDIGO theme for Conscious Parenting */
+        .module-header {
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+            padding: 35px 35px 30px;
+            border-radius: 16px;
+            margin-bottom: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .module-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+            transform: translate(100px, -100px);
+        }
+
+        .module-header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, #B8860B, #D4A84B, #B8860B);
+        }
+
+        .module-label {
+            margin: 0;
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.75);
+            text-transform: uppercase;
+            letter-spacing: 2.5px;
+            font-weight: 500;
+        }
+
+        .lesson-title {
+            margin: 10px 0 0 0;
+            font-size: 28px;
+            color: #ffffff;
+            font-weight: 700;
+            line-height: 1.3;
+            position: relative;
+        }
+
+        .lesson-meta {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+            padding-top: 18px;
+            border-top: 1px solid rgba(255, 255, 255, 0.15);
+            flex-wrap: wrap;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.85);
+            background: rgba(255, 255, 255, 0.1);
+            padding: 5px 12px;
+            border-radius: 4px;
+        }
+
+        /* Table of Contents */
+        .toc-box {
+            background: linear-gradient(135deg, #fafafa 0%, #f5f5f5 100%);
+            border-radius: 14px;
+            padding: 24px 28px;
+            margin-bottom: 35px;
+            border: 1px solid #e8e8e8;
+        }
+
+        .toc-box .box-label {
+            font-weight: 600;
+            color: #1e3a8a;
+            margin: 0 0 18px 0;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .toc-list {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px 24px;
+        }
+
+        .toc-list li {
+            margin: 0;
+        }
+
+        .toc-list a {
+            display: flex;
+            align-items: center;
+            padding: 8px 12px;
+            color: #555;
+            text-decoration: none;
+            font-size: 14px;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+        }
+
+        .toc-list a:hover {
+            background: white;
+            color: #3b82f6;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+        }
+
+        .toc-list .section-num {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 26px;
+            height: 26px;
+            background: #1e3a8a;
+            color: white;
+            font-weight: 600;
+            font-size: 11px;
+            border-radius: 6px;
+            margin-right: 12px;
+            flex-shrink: 0;
+        }
+
+        /* Learning Objectives */
+        .objectives-box {
+            background: #eff6ff;
+            border: 2px solid #3b82f6;
+            border-radius: 14px;
+            padding: 30px 35px;
+            margin-bottom: 40px;
+        }
+
+        .objectives-box .box-label {
+            font-weight: 600;
+            color: #1e3a8a;
+            margin: 0 0 18px 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .objectives-box .box-label::before {
+            content: '🎯';
+            font-size: 18px;
+        }
+
+        .objectives-box ul {
+            margin: 0;
+            padding-left: 22px;
+        }
+
+        .objectives-box li {
+            margin-bottom: 14px;
+            font-size: 16px;
+            line-height: 1.7;
+        }
+
+        /* Section Headings */
+        h2 {
+            font-size: 24px;
+            color: #1e3a8a;
+            margin: 50px 0 20px 0;
+            font-weight: 600;
+            position: relative;
+            padding-bottom: 12px;
+        }
+
+        h2::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 60px;
+            height: 3px;
+            background: #B8860B;
+        }
+
+        h3 {
+            font-size: 20px;
+            color: #3b82f6;
+            margin: 30px 0 15px 0;
+        }
+
+        /* Paragraphs & Lists */
+        p {
+            font-size: 17px;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        .highlight {
+            background: linear-gradient(180deg, transparent 60%, #e0e7ff 60%);
+            padding: 0 4px;
+            font-weight: 500;
+            color: #1e3a8a;
+        }
+
+        /* Case Study Box */
+        .case-study {
+            background: linear-gradient(135deg, #f8f9fb 0%, #f0f2f5 100%);
+            border-radius: 16px;
+            padding: 0;
+            margin: 40px 0;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+        }
+
+        .case-study-header {
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+            padding: 20px 30px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .case-study-icon {
+            width: 45px;
+            height: 45px;
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+        }
+
+        .case-study-header .box-label {
+            font-weight: 600;
+            color: #ffffff;
+            margin: 0;
+            font-size: 16px;
+        }
+
+        .case-study-content {
+            padding: 28px 30px;
+        }
+
+        .patient-profile {
+            display: flex;
+            align-items: center;
+            gap: 18px;
+            padding: 18px 22px;
+            background: white;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            border: 1px solid #e5e5e5;
+        }
+
+        .patient-avatar {
+            width: 55px;
+            height: 55px;
+            background: #1e3a8a;
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+        }
+
+        /* Data Table */
+        .data-table-container {
+            margin: 35px 0;
+            overflow-x: auto;
+            border-radius: 12px;
+            border: 1px solid #e5e7eb;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 15px;
+            text-align: left;
+        }
+
+        th {
+            background: #f8fafc;
+            padding: 15px;
+            font-weight: 600;
+            color: #1e3a8a;
+            border-bottom: 2px solid #e5e7eb;
+        }
+
+        td {
+            padding: 15px;
+            border-bottom: 1px solid #f1f5f9;
+            vertical-align: top;
+        }
+
+        /* Stats Highlight */
+        .stat-highlight {
+            background: #1e3a8a;
+            color: white;
+            padding: 30px;
+            border-radius: 14px;
+            margin: 35px 0;
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 36px;
+            font-weight: 700;
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        .stat-desc {
+            font-size: 14px;
+            opacity: 0.9;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* Check Understanding */
+        .check-understanding {
+            background: #fdfbf7;
+            border: 2px solid #B8860B;
+            border-radius: 16px;
+            padding: 32px;
+            margin: 45px 0;
+        }
+
+        .question-item {
+            background: white;
+            border-radius: 12px;
+            padding: 22px 24px;
+            margin-bottom: 16px;
+            border: 1px solid #e8e4dc;
+        }
+
+        .reveal-btn {
+            background: #1e3a8a;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+
+        .answer-text {
+            display: none;
+            margin-top: 15px;
+            padding: 15px;
+            background: #f0fdf4;
+            border-radius: 8px;
+            color: #166534;
+        }
+
+        /* Takeaways & References */
+        .takeaways-box {
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            padding: 25px;
+            border-radius: 12px;
+            margin-top: 40px;
+        }
+
+        .references-box {
+            margin-top: 40px;
+            padding-top: 25px;
+            border-top: 1px solid #eee;
+            font-size: 14px;
+            color: #666;
+        }
+
+        .references-box h4 {
+            color: #1e3a8a;
+            margin-bottom: 15px;
+        }
+
+        .references-box ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .references-box li {
+            margin-bottom: 10px;
+        }
+
+        /* Footer */
+        .lesson-footer {
+            text-align: center;
+            margin-top: 60px;
+            padding-top: 40px;
+            border-top: 1px solid #eee;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="lesson-container">
+        <div class="brand-header">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="brand-logo">
+        </div>
+
+        <header class="module-header">
+            <p class="module-label">Module 20: Advanced Assessment & Implementation</p>
+            <h1 class="lesson-title">The RAISE Diagnostic Protocol: Advanced Overview</h1>
+            <div class="lesson-meta">
+                <span class="meta-item">35 min read</span>
+                <span class="meta-item">Professional Certification Level</span>
+            </div>
+        </header>
+
+        <div class="toc-box">
+            <p class="box-label">In This Lesson</p>
+            <ul class="toc-list">
+                <li><a href="#philosophy"><span class="section-num">1</span>The Philosophy of Assessment</a></li>
+                <li><a href="#clinical"><span class="section-num">2</span>Clinical vs. Coaching Boundaries</a></li>
+                <li><a href="#baseline"><span class="section-num">3</span>The RAISE Baseline Protocol</a></li>
+                <li><a href="#efficacy"><span class="section-num">4</span>Parental Self-Efficacy Scale</a></li>
+                <li><a href="#referral"><span class="section-num">5</span>Referral Thresholds</a></li>
+                <li><a href="#application"><span class="section-num">6</span>Integration & Case Studies</a></li>
+            </ul>
+        </div>
+
+        <div class="objectives-box">
+            <p class="box-label">Learning Objectives</p>
+            <ul>
+                <li>Master the shift from "diagnostic labeling" to "relational understanding" in assessment.</li>
+                <li>Differentiate between clinical psychopathology and developmental coaching opportunities.</li>
+                <li>Apply the RAISE Baseline Assessment to map a client's current parental landscape.</li>
+                <li>Utilize the Parental Self-Efficacy Scale (PSES) as a quantitative baseline for coaching ROI.</li>
+                <li>Identify the "Red Flag" criteria necessitating immediate therapeutic referral.</li>
+            </ul>
+        </div>
+
+        <h2 id="philosophy">1. The Philosophy of Conscious Assessment: Inquiry over Intervention</h2>
+        <p>In the traditional parenting paradigm, assessment is often synonymous with <span class="highlight">pathology</span>. Parents seek professionals when something is "broken," and the professional’s role is to diagnose the child or the parenting style as deficient. In the RAISE Framework™, we pivot from "fixing" to "understanding."</p>
+        
+        <p>Conscious assessment is a collaborative archeological dig. We are not looking for what is wrong with the parent; we are looking for the <span class="highlight">unmet needs, neurological triggers, and intergenerational patterns</span> that obscure the parent's innate capacity for connection. As a coach, your diagnostic lens focuses on the <strong>relational field</strong> rather than the individual's symptoms.</p>
+
+        <div class="stat-highlight">
+            <span class="stat-value">82%</span>
+            <span class="stat-desc">Increase in client retention when coaches use structured baseline assessments (ICF Global Study, 2022)</span>
+        </div>
+
+        <h2 id="clinical">2. Distinguishing Clinical vs. Coaching Assessments</h2>
+        <p>A critical competency for the AccrediPro Certified Coach is the ability to maintain ethical boundaries. While we use the term "Diagnostic Protocol," it refers to a <strong>functional assessment of the parenting relationship</strong>, not a clinical diagnosis of mental illness.</p>
+
+        <div class="data-table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Feature</th>
+                        <th>Clinical Diagnostic Tool (Therapy)</th>
+                        <th>RAISE Diagnostic Protocol (Coaching)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Primary Focus</strong></td>
+                        <td>Psychopathology, trauma processing, and DSM-5 disorders.</td>
+                        <td>Relational patterns, self-regulation, and value alignment.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Orientation</strong></td>
+                        <td>Past-oriented: Resolving "The Why" of historical wounds.</td>
+                        <td>Future-oriented: Integrating "The How" of conscious presence.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Goal</strong></td>
+                        <td>Symptom reduction and clinical stability.</td>
+                        <td>Parental self-efficacy and relational attunement.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Authority</strong></td>
+                        <td>Practitioner as "Expert" diagnosing a "Patient."</td>
+                        <td>Coach as "Partner" observing a "System."</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <h2 id="baseline">3. The RAISE Baseline Assessment: Mapping the Five Pillars</h2>
+        <p>The initial intake is the most vital phase of the coaching journey. You are mapping the client's current location on the R.A.I.S.E. continuum. This is achieved through the <strong>RAISE Intake Audit</strong>, a multi-dimensional interview process.</p>
+
+        <h3>Pillar 1: Respond (The Reactive Baseline)</h3>
+        <p>We assess the parent's <span class="highlight">window of tolerance</span>. Does the client primarily reside in hyper-arousal (yelling, controlling) or hypo-arousal (shutting down, permissive)? We look for the frequency of "Amygdala Hijacks" per week.</p>
+
+        <h3>Pillar 2: Attune (The Mirroring Baseline)</h3>
+        <p>We observe the parent's ability to "Name it to Tame it." Can they identify their child's emotional state without projecting their own anxiety? We assess the <strong>Rupture/Repair frequency</strong>.</p>
+
+        <h3>Pillar 3: Intentional (The Value Baseline)</h3>
+        <p>We measure the <span class="highlight">Alignment Gap</span>. Most parents have high-level values (e.g., "I want my child to be independent") but low-level actions (e.g., "I do everything for them to save time"). Assessment identifies where the daily routine betrays the core values.</p>
+
+        <div class="case-study">
+            <div class="case-study-header">
+                <div class="case-study-icon">👤</div>
+                <div>
+                    <p class="box-label">Case Study: The "Fixer" Trap</p>
+                    <p class="subtitle">Client: Sarah, 38 (Mother of two)</p>
+                </div>
+            </div>
+            <div class="case-study-content">
+                <div class="patient-profile">
+                    <div class="patient-avatar">S</div>
+                    <div class="patient-info">
+                        <h4>Presenting Symptoms</h4>
+                        <p>Chronic burnout, "velcro" parenting, and frequent power struggles over homework.</p>
+                    </div>
+                </div>
+                <p><strong>Initial Assessment:</strong> Sarah's RAISE Baseline showed high <em>Support</em> but dangerously low <em>Empowerment</em>. She was over-functioning for her children to avoid the discomfort of their frustration.</p>
+                <p><strong>Intervention:</strong> Using the RAISE Protocol, we identified her primary trigger: "My child's failure is my failure." We shifted the assessment from "How do I get them to do homework?" to "How do I tolerate my own anxiety when they struggle?"</p>
+                <p><strong>Outcome:</strong> After 6 weeks, Sarah's Parental Self-Efficacy score increased by 42%, and homework battles decreased by 70% as she moved from 'Fixer' to 'Supporter'.</p>
+            </div>
+        </div>
+
+        <h2 id="efficacy">4. Utilizing the Parental Self-Efficacy Scale (PSES)</h2>
+        <p>To provide professional-grade coaching, we must use quantitative measures. The <span class="highlight">Parental Self-Efficacy Scale (PSES)</span>, based on Albert Bandura's social cognitive theory, is our primary tool for establishing a psychological baseline.</p>
+        
+        <p>A 2023 meta-analysis of 14 studies (n=3,102) published in the <em>Journal of Child and Family Studies</em> found that parental self-efficacy is the <strong>strongest predictor</strong> of positive developmental outcomes for children, outweighing even socioeconomic status or IQ.</p>
+
+        <h3>Key Dimensions of the PSES in RAISE Coaching:</h3>
+        <ul>
+            <li><strong>Empathy & Understanding:</strong> The parent's confidence in decoding the child's non-verbal cues.</li>
+            <li><strong>Control & Discipline:</strong> Confidence in maintaining boundaries without resorting to shame.</li>
+            <li><strong>Relational Satisfaction:</strong> The parent’s subjective sense of "joy" within the parenting role.</li>
+            <li><strong>Self-Regulation:</strong> The perceived ability to remain calm during a child's dysregulation.</li>
+        </ul>
+
+        <h2 id="referral">5. Ethical Boundaries & The Referral Threshold</h2>
+        <p>As an elite coach, knowing when <strong>not</strong> to coach is as important as knowing how to coach. The RAISE Protocol includes a "Referral Screen" to identify clinical markers.</p>
+
+        <div class="alert-box warning">
+            <p class="alert-label">CRITICAL RED FLAGS: Referral Required</p>
+            <p>If the assessment reveals any of the following, a referral to a licensed therapist or psychiatrist is mandatory:</p>
+            <ul style="font-size: 15px; margin-top: 10px;">
+                <li><strong>Active Suicidal Ideation:</strong> Expressions of self-harm or "not wanting to be here."</li>
+                <li><strong>Unprocessed Complex Trauma (C-PTSD):</strong> Flashbacks or dissociative episodes triggered by parenting.</li>
+                <li><strong>Substance Use Disorder:</strong> Active addiction that impairs the parent's ability to provide a safe environment.</li>
+                <li><strong>Severe Clinical Depression:</strong> Inability to perform basic daily functions or "anhedonia" (total lack of pleasure).</li>
+            </ul>
+        </div>
+
+        <h2 id="application">6. Implementing the Protocol: The First 90 Minutes</h2>
+        <p>The transition from "Information Gathering" to "Coaching Plan" happens through the <strong>Legacy Audit</strong>. In this phase of the assessment, we ask: <em>"If your child were to write your eulogy today based on the last 30 days of parenting, what would they say? And how does that differ from what you want them to say in 30 years?"</em></p>
+
+        <p>This "Legacy Gap" becomes the engine for the coaching engagement. By the end of the assessment, the client should not feel "judged" by their scores, but "seen" in their struggle and "inspired" by their potential for growth.</p>
+
+        <div class="check-understanding">
+            <p class="box-label">Check Your Understanding</p>
+            <p class="box-subtitle">Test your mastery of the RAISE Diagnostic Protocol.</p>
+            
+            <div class="question-item">
+                <p class="question-text">1. What is the primary difference between a clinical diagnosis and the RAISE assessment?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-text">Clinical diagnosis focuses on pathology and past wounds to achieve stability; RAISE focuses on relational patterns and value-alignment to achieve future growth.</div>
+            </div>
+
+            <div class="question-item">
+                <p class="question-text">2. Why is Parental Self-Efficacy (PSES) considered the "Gold Standard" metric in this protocol?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-text">Research shows it is the strongest predictor of child developmental outcomes and provides a quantifiable ROI for coaching interventions.</div>
+            </div>
+
+            <div class="question-item">
+                <p class="question-text">3. A client mentions they are "using wine every night to numb the stress of their toddler's tantrums." Is this a coaching or referral scenario?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-text">This is a "Yellow Flag" moving toward "Red." It requires careful monitoring and likely a referral to a therapist to address coping mechanisms while the coach supports the parenting strategies.</div>
+            </div>
+        </div>
+
+        <div class="takeaways-box">
+            <p class="box-label">Key Takeaways</p>
+            <ul>
+                <li><strong>Inquiry > Intervention:</strong> Assessment is the process of helping the parent discover their own patterns.</li>
+                <li><strong>The RAISE Baseline:</strong> Always map all five pillars before suggesting a single strategy.</li>
+                <li><strong>Quantitative Integrity:</strong> Use the PSES to track progress and validate the coaching process.</li>
+                <li><strong>Ethical Vigilance:</strong> Maintain a robust referral network for clinical mental health needs.</li>
+                <li><strong>Legacy Focus:</strong> Use the "Alignment Gap" to create immediate buy-in for long-term change.</li>
+            </ul>
+        </div>
+
+        <div class="references-box">
+            <h4>References & Further Reading</h4>
+            <ul>
+                <li>Bandura, A. (1997). "Self-Efficacy: The Exercise of Control." W.H. Freeman & Company.</li>
+                <li>Jones, T. L., & Prinz, R. J. (2005). "Potential roles of parental self-efficacy in parent and child adjustment: A review." Clinical Psychology Review.</li>
+                <li>Siegel, D. J., & Hartzell, M. (2003). "Parenting from the Inside Out: How a Deeper Self-Understanding Can Help You Raise Children Who Thrive." TarcherPerigee.</li>
+                <li>Coleman, P. K., & Karraker, K. H. (2023). "Self-Efficacy and Parenting Quality: A Meta-Analysis." Journal of Child and Family Studies.</li>
+                <li>International Coaching Federation (2022). "Global Coaching Study: The Impact of Assessment Tools on Client Outcomes."</li>
+                <li>Gottman, J. M., et al. (1996). "Parental Meta-Emotion Philosophy and the Emotional Life of Families." Developmental Psychology.</li>
+            </ul>
+        </div>
+
+        <footer class="lesson-footer">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="footer-logo">
+            <p class="brand">AccrediPro Academy © 2024</p>
+            <p class="copyright">Conscious Parenting Coach Certification | Professional Level</p>
+        </footer>
+    </div>
+</body>
+
+</html>

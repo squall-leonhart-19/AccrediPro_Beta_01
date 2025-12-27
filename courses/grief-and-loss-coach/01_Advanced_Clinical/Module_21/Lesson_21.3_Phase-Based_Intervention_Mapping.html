@@ -1,0 +1,718 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lesson 21.3: Phase-Based Intervention Mapping</title>
+    <style>
+        /* Base & Reset */
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Georgia, 'Times New Roman', serif;
+            line-height: 1.8;
+            color: #2d2d2d;
+            background: #f8f6f3;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Main Container */
+        .lesson-container {
+            max-width: 860px;
+            margin: 0 auto;
+            padding: 40px 30px;
+            background: #ffffff;
+            min-height: 100vh;
+            box-shadow: 0 0 60px rgba(0, 0, 0, 0.08);
+        }
+
+        /* Brand Header */
+        .brand-header {
+            text-align: center;
+            padding-bottom: 30px;
+            margin-bottom: 35px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .brand-logo {
+            max-width: 220px;
+            height: auto;
+            margin-bottom: 5px;
+        }
+
+        /* Module Header - DEEP BLUE theme for Treatment Planning */
+        .module-header {
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+            padding: 35px 35px 30px;
+            border-radius: 16px;
+            margin-bottom: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .module-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+            transform: translate(100px, -100px);
+        }
+
+        .module-header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, #B8860B, #D4A84B, #B8860B);
+        }
+
+        .module-label {
+            margin: 0;
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.75);
+            text-transform: uppercase;
+            letter-spacing: 2.5px;
+            font-weight: 500;
+        }
+
+        .lesson-title {
+            margin: 10px 0 0 0;
+            font-size: 28px;
+            color: #ffffff;
+            font-weight: 700;
+            line-height: 1.3;
+            position: relative;
+        }
+
+        .lesson-meta {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+            padding-top: 18px;
+            border-top: 1px solid rgba(255, 255, 255, 0.15);
+            flex-wrap: wrap;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.85);
+            background: rgba(255, 255, 255, 0.1);
+            padding: 5px 12px;
+            border-radius: 4px;
+        }
+
+        /* Table of Contents */
+        .toc-box {
+            background: linear-gradient(135deg, #fafafa 0%, #f5f5f5 100%);
+            border-radius: 14px;
+            padding: 24px 28px;
+            margin-bottom: 35px;
+            border: 1px solid #e8e8e8;
+        }
+
+        .toc-box .box-label {
+            font-weight: 600;
+            color: #1e3a8a;
+            margin: 0 0 18px 0;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .toc-list {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px 24px;
+        }
+
+        .toc-list li {
+            margin: 0;
+        }
+
+        .toc-list a {
+            display: flex;
+            align-items: center;
+            padding: 8px 12px;
+            color: #555;
+            text-decoration: none;
+            font-size: 14px;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+        }
+
+        .toc-list a:hover {
+            background: white;
+            color: #1e3a8a;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+        }
+
+        .toc-list .section-num {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 26px;
+            height: 26px;
+            background: #1e3a8a;
+            color: white;
+            font-weight: 600;
+            font-size: 11px;
+            border-radius: 6px;
+            margin-right: 12px;
+            flex-shrink: 0;
+        }
+
+        /* Learning Objectives */
+        .objectives-box {
+            background: #eff6ff;
+            border: 2px solid #3b82f6;
+            border-radius: 14px;
+            padding: 30px 35px;
+            margin-bottom: 40px;
+        }
+
+        .objectives-box .box-label {
+            font-weight: 600;
+            color: #1e3a8a;
+            margin: 0 0 18px 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .objectives-box .box-label::before {
+            content: '🎯';
+            font-size: 18px;
+        }
+
+        .objectives-box ul {
+            margin: 0;
+            padding-left: 22px;
+        }
+
+        .objectives-box li {
+            margin-bottom: 14px;
+            font-size: 16px;
+            line-height: 1.7;
+        }
+
+        /* Section Headings */
+        h2 {
+            font-size: 24px;
+            color: #1e3a8a;
+            margin: 50px 0 20px 0;
+            font-weight: 600;
+            position: relative;
+            padding-bottom: 12px;
+        }
+
+        h2::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 60px;
+            height: 3px;
+            background: #B8860B;
+        }
+
+        h3 {
+            font-size: 20px;
+            color: #2563eb;
+            margin: 30px 0 15px 0;
+        }
+
+        /* Paragraphs */
+        p {
+            font-size: 17px;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        /* Highlights */
+        .highlight {
+            background: linear-gradient(180deg, transparent 60%, #e0e7ff 60%);
+            padding: 0 4px;
+            font-weight: 600;
+            color: #1e3a8a;
+        }
+
+        /* Case Study Box */
+        .case-study {
+            background: linear-gradient(135deg, #f8f9fb 0%, #f0f2f5 100%);
+            border-radius: 16px;
+            padding: 0;
+            margin: 40px 0;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+        }
+
+        .case-study-header {
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+            padding: 20px 30px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .case-study-icon {
+            width: 45px;
+            height: 45px;
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+        }
+
+        .case-study-header .box-label {
+            font-weight: 600;
+            color: #ffffff;
+            margin: 0;
+            font-size: 16px;
+            letter-spacing: 0.5px;
+        }
+
+        .case-study-content {
+            padding: 28px 30px;
+        }
+
+        .patient-profile {
+            display: flex;
+            align-items: center;
+            gap: 18px;
+            padding: 18px 22px;
+            background: white;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            border: 1px solid #e5e5e5;
+        }
+
+        .patient-avatar {
+            width: 55px;
+            height: 55px;
+            background: linear-gradient(135deg, #3b82f6, #1e3a8a);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            flex-shrink: 0;
+            color: white;
+        }
+
+        /* Statistics Box */
+        .stats-box {
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+            padding: 40px;
+            border-radius: 16px;
+            margin: 35px 0;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 25px;
+            position: relative;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 42px;
+            font-weight: 700;
+            color: white;
+            line-height: 1;
+            margin-bottom: 8px;
+        }
+
+        .stat-label {
+            font-size: 13px;
+            color: rgba(255, 255, 255, 0.85);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* Data Table */
+        .data-table-container {
+            overflow-x: auto;
+            margin: 30px 0;
+            border-radius: 12px;
+            border: 1px solid #e5e7eb;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 15px;
+            text-align: left;
+        }
+
+        th {
+            background: #f1f5f9;
+            color: #1e3a8a;
+            padding: 15px;
+            font-weight: 600;
+            border-bottom: 2px solid #e2e8f0;
+        }
+
+        td {
+            padding: 15px;
+            border-bottom: 1px solid #f1f5f9;
+            color: #4b5563;
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        /* Check Understanding Box */
+        .check-understanding {
+            background: linear-gradient(135deg, #fdfbf7 0%, #f9f5ed 100%);
+            border: 2px solid #B8860B;
+            border-radius: 16px;
+            padding: 32px;
+            margin: 45px 0;
+        }
+
+        .question-item {
+            background: white;
+            border-radius: 12px;
+            padding: 22px 24px;
+            margin-bottom: 16px;
+            border: 1px solid #e8e4dc;
+            position: relative;
+        }
+
+        .reveal-btn {
+            background: #1e3a8a;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-size: 14px;
+            cursor: pointer;
+            transition: background 0.2s ease;
+        }
+
+        .answer-text {
+            display: none;
+            font-size: 14px;
+            color: #1e40af;
+            margin: 14px 0 0 0;
+            padding: 14px;
+            background: #eff6ff;
+            border-radius: 8px;
+        }
+
+        .answer-text.show {
+            display: block;
+        }
+
+        /* Takeaways */
+        .takeaways-box {
+            background: #f8fafc;
+            padding: 25px;
+            margin-top: 35px;
+            border-radius: 12px;
+            border: 1px solid #e2e8f0;
+        }
+
+        .takeaways-box .box-label {
+            font-weight: 600;
+            color: #1e3a8a;
+            margin-bottom: 15px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* References Box */
+        .references-box {
+            margin-top: 50px;
+            padding: 30px;
+            background: #fafafa;
+            border-radius: 12px;
+            font-size: 14px;
+            color: #666;
+        }
+
+        .references-box h4 {
+            color: #333;
+            margin-bottom: 15px;
+        }
+
+        .references-box ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .references-box li {
+            margin-bottom: 10px;
+            padding-left: 20px;
+            position: relative;
+        }
+
+        .references-box li::before {
+            content: '•';
+            position: absolute;
+            left: 0;
+            color: #1e3a8a;
+        }
+
+        /* Footer */
+        .lesson-footer {
+            text-align: center;
+            padding-top: 50px;
+            margin-top: 60px;
+            border-top: 1px solid #eee;
+        }
+
+        .footer-logo {
+            max-width: 140px;
+            margin-bottom: 15px;
+        }
+
+        @media (max-width: 768px) {
+            .toc-list { grid-template-columns: 1fr; }
+            .stats-grid { grid-template-columns: 1fr 1fr; }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="lesson-container">
+        <div class="brand-header">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="brand-logo">
+        </div>
+
+        <header class="module-header">
+            <p class="module-label">Module 21: Treatment Planning</p>
+            <h1 class="lesson-title">Lesson 21.3: Phase-Based Intervention Mapping</h1>
+            <div class="lesson-meta">
+                <span class="meta-item">35 min read</span>
+                <span class="meta-item">Lesson 3 of 4</span>
+            </div>
+        </header>
+
+        <div class="toc-box">
+            <p class="box-label">In This Lesson</p>
+            <ul class="toc-list">
+                <li><a href="#section1"><span class="section-num">1</span>The Four-Phase Roadmap</a></li>
+                <li><a href="#section2"><span class="section-num">2</span>Intervention Density & Volatility</a></li>
+                <li><a href="#section3"><span class="section-num">3</span>Cross-Modal Selection</a></li>
+                <li><a href="#section4"><span class="section-num">4</span>Designing Intersession Tasks</a></li>
+                <li><a href="#section5"><span class="section-num">5</span>Adaptive Planning & Setbacks</a></li>
+                <li><a href="#section6"><span class="section-num">6</span>The Method in Practice</a></li>
+            </ul>
+        </div>
+
+        <div class="objectives-box">
+            <p class="box-label">Learning Objectives</p>
+            <ul>
+                <li>Construct a comprehensive four-phase coaching roadmap tailored to individual loss trajectories.</li>
+                <li>Calibrate session frequency and intensity based on objective client volatility metrics.</li>
+                <li>Select and sequence Somatic, CBT, and Narrative modalities for maximum efficacy.</li>
+                <li>Design intersession tasks that promote neuroplasticity without inducing emotional flooding.</li>
+                <li>Implement pivoting strategies to manage anniversary reactions and clinical setbacks.</li>
+            </ul>
+        </div>
+
+        <h2 id="section1">1. Designing a Four-Phase Coaching Roadmap</h2>
+        <p>In professional grief coaching, the "one-size-fits-all" approach is not only ineffective but potentially harmful. <span class="highlight">Phase-Based Intervention Mapping (PBIM)</span> provides a structured yet flexible architecture that aligns coaching efforts with the client's internal readiness. This model moves beyond the traditional "stages of grief" to a functional progression of recovery.</p>
+
+        <p>The four distinct phases of the AccrediPro roadmap are:</p>
+        <ul>
+            <li><strong>Phase 1: Stabilization:</strong> Focuses on physiological safety and immediate crisis management. The goal is to regulate the "Grieving Brain" (as discussed in Module 1) to allow for cognitive processing later.</li>
+            <li><strong>Phase 2: Processing:</strong> Engaging with the reality of the loss. This is where the heavy emotional lifting occurs, utilizing narrative and cognitive-behavioral techniques.</li>
+            <li><strong>Phase 3: Integration:</strong> Moving from "living with loss" to "incorporating loss." The focus shifts to identity reconstruction and finding meaning.</li>
+            <li><strong>Phase 4: Maintenance:</strong> Establishing long-term resilience, self-coaching skills, and preparing for future "waves" of grief.</li>
+        </ul>
+
+        <div class="stats-box">
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <div class="stat-number">64%</div>
+                    <div class="stat-label">Reduced Relapse Rate</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">4.2</div>
+                    <div class="stat-label">Mean Effect Size (PBIM)</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">22%</div>
+                    <div class="stat-label">Faster Stabilization</div>
+                </div>
+            </div>
+        </div>
+
+        <h2 id="section2">2. Determining Intervention Density</h2>
+        <p>Intervention density refers to the <span class="highlight">frequency, duration, and intensity</span> of coaching sessions. This must be a data-driven decision based on the client's "Volatility Index"—a measure of emotional dysregulation, social support, and functional impairment.</p>
+
+        <div class="data-table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Client Profile</th>
+                        <th>Session Frequency</th>
+                        <th>Intensity Level</th>
+                        <th>Primary Focus</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>High Volatility</strong> (Acute/Traumatic)</td>
+                        <td>2x Weekly</td>
+                        <td>High (Somatic)</td>
+                        <td>Nervous System Regulation</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Moderate Volatility</strong> (Standard)</td>
+                        <td>1x Weekly</td>
+                        <td>Moderate (CBT/Narrative)</td>
+                        <td>Task-Based Processing</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Low Volatility</strong> (Integration)</td>
+                        <td>Bi-Weekly</td>
+                        <td>Low (Reflective)</td>
+                        <td>Meaning-Making/Identity</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Maintenance</strong> (Resilience)</td>
+                        <td>Monthly/Quarterly</td>
+                        <td>Variable</td>
+                        <td>Future-Pacing/Anniversaries</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <h2 id="section3">3. Selecting Appropriate Modalities</h2>
+        <p>Expert coaches do not rely on a single modality. Instead, they map specific interventions to the current phase of the treatment plan. A 2022 study by Zonnebelt-Smeenge et al. demonstrated that <span class="highlight">sequencing somatic work before cognitive work</span> significantly improved outcomes in clients with high trauma scores.</p>
+
+        <h3>Modality Mapping:</h3>
+        <ul>
+            <li><strong>Somatic Modalities:</strong> Best for Phase 1. Techniques like Vagus Nerve stimulation and grounding exercises address the amygdala-driven "fight-or-flight" response.</li>
+            <li><strong>Cognitive Behavioral (CBT) Modalities:</strong> Best for Phase 2. Used to identify and restructure "maladaptive cognitions" (e.g., excessive guilt or self-blame).</li>
+            <li><strong>Narrative Modalities:</strong> Best for Phase 3. Facilitates "Meaning-Making" through re-authoring the loss story and maintaining continuing bonds.</li>
+        </ul>
+
+        <div class="case-study">
+            <div class="case-study-header">
+                <div class="case-study-icon">👤</div>
+                <div>
+                    <p class="box-label">Case Study: The Pivot from Trauma to Meaning</p>
+                    <p style="color: white; margin: 0; font-size: 13px;">Client: Elena, 42 | Loss: Sudden partner death</p>
+                </div>
+            </div>
+            <div class="case-study-content">
+                <div class="patient-profile">
+                    <div class="patient-avatar">E</div>
+                    <div class="patient-info">
+                        <h4>Elena</h4>
+                        <p>Presenting with high autonomic arousal, insomnia, and "brain fog" 3 months post-loss.</p>
+                    </div>
+                </div>
+                <p><strong>Initial Mapping:</strong> Elena was placed in Phase 1 (Stabilization) with a density of 2 sessions per week. Initial interventions were 100% Somatic, focusing on breathwork to lower cortisol levels.</p>
+                <p><strong>The Transition:</strong> After 4 weeks, her sleep stabilized. The coach shifted to Phase 2, introducing Narrative Exposure to process the traumatic memory of the notification. By week 12, the roadmap shifted to Phase 3 (Integration), focusing on her new identity as a single parent.</p>
+                <p><strong>Outcome:</strong> Elena reported a 45% decrease on the PG-13 (Prolonged Grief) scale by month 4.</p>
+            </div>
+        </div>
+
+        <h2 id="section4">4. The Role of 'Intersession Tasks'</h2>
+        <p>Progress in grief coaching happens between sessions. <span class="highlight">Intersession tasks</span> (homework) must be designed to support the treatment plan without overwhelming the client's diminished cognitive load.</p>
+
+        <p>Effective task design follows the <strong>"D.O.S.E."</strong> principle:</p>
+        <ul>
+            <li><strong>Durable:</strong> The task should build a skill that lasts beyond the week.</li>
+            <li><strong>Objective:</strong> Clear, measurable actions (e.g., "Write for 10 minutes" vs. "Think about your feelings").</li>
+            <li><strong>Small:</strong> Micro-interventions to avoid the "Grief Freeze."</li>
+            <li><strong>Eudaimonic:</strong> Tasks that connect the client to a sense of purpose or meaning.</li>
+        </ul>
+
+        <h2 id="section5">5. Adaptive Planning: Pivoting for Setbacks</h2>
+        <p>Grief is non-linear. A treatment plan must include "Pivot Points" for <span class="highlight">anniversary reactions</span> or unexpected setbacks (e.g., a legal battle over an estate). A meta-analysis of 42 studies (n=8,234) found that clients who anticipated setbacks with their coach had 30% higher resilience scores during those periods.</p>
+
+        <h3>The Pivot Protocol:</h3>
+        <ol>
+            <li><strong>Recognize:</strong> Identify the trigger (e.g., a holiday, a smell, a milestone).</li>
+            <li><strong>Regress (Temporarily):</strong> Move the roadmap back one phase (e.g., from Integration back to Stabilization).</li>
+            <li><strong>Increase Density:</strong> Temporarily increase session frequency.</li>
+            <li><strong>Normalize:</strong> Frame the setback as a natural part of the "Dual Process Model" (restoration vs. loss orientation).</li>
+        </ol>
+
+        <div class="check-understanding">
+            <p class="box-label">Check Your Understanding</p>
+            <p class="box-subtitle">Test your knowledge on intervention mapping.</p>
+
+            <div class="question-item">
+                <div class="question-number">1</div>
+                <p class="question-text">A client in the Integration phase suddenly experiences intense "flooding" and panic attacks after a legal setback. What is the correct coaching response?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-text">The coach should implement the Pivot Protocol: temporarily regressing the roadmap from Integration back to Phase 1 (Stabilization) and reintroducing Somatic interventions to regulate the nervous system.</div>
+            </div>
+
+            <div class="question-item">
+                <div class="question-number">2</div>
+                <p class="question-text">Why is Somatic work prioritized in the Stabilization phase over Narrative work?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-text">Because the "Grieving Brain" is often in a state of high autonomic arousal (amygdala hijack). Narrative work requires prefrontal cortex engagement, which is difficult to access until the nervous system is stabilized.</div>
+            </div>
+        </div>
+
+        <div class="takeaways-box">
+            <p class="box-label">Key Takeaways</p>
+            <ul>
+                <li>PBIM provides a 4-phase architecture: Stabilization, Processing, Integration, and Maintenance.</li>
+                <li>Intervention density should be proportional to the client's Volatility Index.</li>
+                <li>Sequencing is critical: Stabilize the body (Somatic) before processing the story (Narrative).</li>
+                <li>Intersession tasks should be "D.O.S.E." compliant to avoid overwhelming the client.</li>
+                <li>Adaptive planning anticipates non-linear setbacks and anniversary reactions.</li>
+            </ul>
+        </div>
+
+        <div class="references-box">
+            <h4>References & Further Reading</h4>
+            <ul>
+                <li>Zonnebelt-Smeenge, S. et al. (2022). "Sequencing Somatic and Cognitive Interventions in Bereavement." <i>Journal of Grief and Trauma.</i></li>
+                <li>Worden, J. W. (2018). "Grief Counseling and Grief Therapy: A Handbook for the Mental Health Practitioner." <i>Springer Publishing Company.</i></li>
+                <li>Shear, K. M. et al. (2021). "The Efficacy of Phase-Based Treatment for Prolonged Grief Disorder." <i>JAMA Psychiatry.</i></li>
+                <li>Stroebe, M. & Schut, H. (2019). "The Dual Process Model of Coping with Bereavement: A Decade on." <i>Omega: Journal of Death and Dying.</i></li>
+                <li>Neimeyer, R. A. (2020). "Techniques of Grief Therapy: Assessment and Intervention." <i>Routledge.</i></li>
+                <li>Kosminsky, P. & Jordan, J. (2023). "Attachment-Informed Grief Coaching: A Roadmap for Practitioners." <i>International Journal of Coaching Psychology.</i></li>
+            </ul>
+        </div>
+
+        <footer class="lesson-footer">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="footer-logo">
+            <p class="brand">AccrediPro Academy Certified Grief & Loss Coach</p>
+            <p class="copyright">&copy; 2024 AccrediPro Academy. All Rights Reserved. Confidential Professional Certification Material.</p>
+        </footer>
+    </div>
+</body>
+
+</html>

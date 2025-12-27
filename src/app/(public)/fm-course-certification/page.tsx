@@ -3,7 +3,6 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import Script from "next/script";
 
 // Sales page images in order
 const salesImages = [
@@ -30,6 +29,13 @@ const CHECKOUT_URL = "https://sarah.accredipro.academy/checkout-fm-certification
 
 export default function FMCourseCertificationPage() {
     const [showFloatingCta, setShowFloatingCta] = useState(false);
+    const [chatOpen, setChatOpen] = useState(false);
+    const [showOptin, setShowOptin] = useState(true);
+    const [userName, setUserName] = useState("");
+    const [userEmail, setUserEmail] = useState("");
+    const [messages, setMessages] = useState<{ role: string; content: string }[]>([]);
+    const [inputValue, setInputValue] = useState("");
+    const [isTyping, setIsTyping] = useState(false);
 
     useEffect(() => {
         // Show floating CTA after scrolling 200px
@@ -38,8 +44,74 @@ export default function FMCourseCertificationPage() {
         };
 
         window.addEventListener("scroll", handleScroll);
+
+        // Check localStorage for existing user
+        const savedName = localStorage.getItem("chatUserName");
+        if (savedName) {
+            setUserName(savedName);
+            setShowOptin(false);
+            setMessages([{
+                role: "bot",
+                content: `Hey ${savedName}! 👋 Welcome back! I'm Sarah, the lead instructor. Ask me anything about the certification!`
+            }]);
+        }
+
         return () => window.removeEventListener("scroll", handleScroll);
     }, []);
+
+    const startChat = () => {
+        if (!userName.trim()) return;
+
+        localStorage.setItem("chatUserName", userName);
+        if (userEmail) localStorage.setItem("chatUserEmail", userEmail);
+
+        // Save optin
+        fetch("/api/chat/optin", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+                visitorId: localStorage.getItem("chatVisitorId") || `visitor_${Math.random().toString(36).substr(2, 9)}`,
+                name: userName,
+                email: userEmail || null,
+                page: "fm-course-certification"
+            })
+        }).catch(() => { });
+
+        setShowOptin(false);
+        setMessages([{
+            role: "bot",
+            content: `Hey ${userName}! 👋 So nice to meet you! I'm Sarah, the lead instructor here. I'm live right now — ask me anything about the certification!`
+        }]);
+    };
+
+    const sendMessage = async () => {
+        if (!inputValue.trim()) return;
+
+        const userMessage = inputValue;
+        setInputValue("");
+        setMessages(prev => [...prev, { role: "user", content: userMessage }]);
+        setIsTyping(true);
+
+        try {
+            const res = await fetch("/api/chat/sales", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    message: userMessage,
+                    page: "fm-course-certification",
+                    visitorId: localStorage.getItem("chatVisitorId"),
+                    userName,
+                    userEmail
+                })
+            });
+            const data = await res.json();
+            setMessages(prev => [...prev, { role: "bot", content: data.reply || "Thanks for your question! The FM Certification gives you 9 international certifications, personal mentorship, and lifetime access for just $97 today. What else would you like to know?" }]);
+        } catch {
+            setMessages(prev => [...prev, { role: "bot", content: "Thanks for reaching out! The FM Certification gives you everything you need to become a certified functional medicine coach in 30 days. It includes 9 international certifications, daily mentorship with me, and lifetime access to our community. Today's special is just $97! What questions can I answer for you?" }]);
+        } finally {
+            setIsTyping(false);
+        }
+    };
 
     return (
         <>
@@ -101,7 +173,7 @@ export default function FMCourseCertificationPage() {
                 {/* Floating CTA for Mobile */}
                 <Link
                     href={CHECKOUT_URL}
-                    className={`fixed bottom-5 left-1/2 -translate-x-1/2 z-50 md:hidden
+                    className={`fixed bottom-5 left-1/2 -translate-x-1/2 z-40 md:hidden
             bg-gradient-to-r from-[#D4AF37] to-[#AA8C2C] text-[#1a1a1a]
             px-8 py-4 rounded-full font-bold text-base
             shadow-[0_4px_20px_rgba(212,175,55,0.4)]
@@ -113,58 +185,154 @@ export default function FMCourseCertificationPage() {
                 </Link>
             </main>
 
-            {/* Live Chat Widget - Tawk.to */}
-            <Script id="tawk-chat" strategy="lazyOnload">
-                {`
-          var Tawk_API=Tawk_API||{}, Tawk_LoadStart=new Date();
-          (function(){
-            var s1=document.createElement("script"),s0=document.getElementsByTagName("script")[0];
-            s1.async=true;
-            s1.src='https://embed.tawk.to/YOUR_TAWK_ID/default';
-            s1.charset='UTF-8';
-            s1.setAttribute('crossorigin','*');
-            s0.parentNode.insertBefore(s1,s0);
-          })();
-        `}
-            </Script>
+            {/* Sarah Live Chat Widget */}
+            <div className="fixed bottom-5 right-5 z-50">
+                {/* Chat Window */}
+                {chatOpen && (
+                    <div className="absolute bottom-20 right-0 w-[340px] bg-white rounded-2xl shadow-2xl overflow-hidden animate-slideUp">
+                        {/* Header */}
+                        <div className="bg-gradient-to-r from-[#722F37] to-[#5A2435] text-white p-4 flex items-center gap-3">
+                            <img
+                                src="https://coach.accredipro.academy/wp-content/uploads/2025/10/Sarah-M.webp"
+                                alt="Sarah"
+                                className="w-10 h-10 rounded-full border-2 border-[#D4AF37]"
+                            />
+                            <div className="flex-1">
+                                <h4 className="font-semibold text-sm">Sarah</h4>
+                                <p className="text-xs opacity-90 flex items-center gap-1">
+                                    <span className="w-2 h-2 bg-green-400 rounded-full"></span>
+                                    Online now
+                                </p>
+                            </div>
+                            <button
+                                onClick={() => setChatOpen(false)}
+                                className="text-xl opacity-80 hover:opacity-100"
+                            >
+                                ✕
+                            </button>
+                        </div>
 
-            {/* Alternative: Custom Chat Widget Trigger */}
-            <div
-                id="chat-widget-trigger"
-                className="fixed bottom-24 right-5 z-50 md:bottom-5 cursor-pointer
-          bg-[#722F37] text-white p-4 rounded-full shadow-lg
-          hover:scale-110 transition-transform"
-                onClick={() => {
-                    // Open chat - trigger Tawk or custom chat
-                    if (typeof window !== 'undefined' && (window as any).Tawk_API) {
-                        (window as any).Tawk_API.maximize();
-                    }
-                }}
-            >
-                <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
-                    <path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm0 14H6l-2 2V4h16v12z" />
-                    <path d="M7 9h10v2H7zm0-3h10v2H7z" />
-                </svg>
+                        {/* Optin Form */}
+                        {showOptin ? (
+                            <div className="p-4 bg-white">
+                                <p className="text-sm text-gray-500 mb-3 text-center">Hey, Sarah here! How should I call you? 😊</p>
+                                <input
+                                    type="text"
+                                    placeholder="Your first name"
+                                    value={userName}
+                                    onChange={(e) => setUserName(e.target.value)}
+                                    className="w-full border border-gray-200 rounded-lg p-3 text-sm mb-2 focus:outline-none focus:border-[#722F37]"
+                                />
+                                <input
+                                    type="email"
+                                    placeholder="Your email (in case I'm offline)"
+                                    value={userEmail}
+                                    onChange={(e) => setUserEmail(e.target.value)}
+                                    className="w-full border border-gray-200 rounded-lg p-3 text-sm mb-2 focus:outline-none focus:border-[#722F37]"
+                                />
+                                <button
+                                    onClick={startChat}
+                                    className="w-full bg-[#722F37] text-white py-3 rounded-lg font-bold text-sm hover:bg-[#5A2435]"
+                                >
+                                    Let&apos;s Chat!
+                                </button>
+                                <button
+                                    onClick={() => { setShowOptin(false); setUserName("Friend"); setMessages([{ role: "bot", content: "Hey there! 👋 I'm Sarah. Ask me anything about the certification!" }]); }}
+                                    className="w-full text-center text-xs text-gray-400 mt-2 hover:text-gray-600"
+                                >
+                                    Skip, just let me ask a question
+                                </button>
+                            </div>
+                        ) : (
+                            <>
+                                {/* Messages */}
+                                <div className="h-60 overflow-y-auto p-3 bg-gray-50">
+                                    {messages.map((msg, i) => (
+                                        <div key={i} className={`mb-3 flex ${msg.role === "user" ? "justify-end" : "gap-2"}`}>
+                                            {msg.role === "bot" && (
+                                                <img
+                                                    src="https://coach.accredipro.academy/wp-content/uploads/2025/10/Sarah-M.webp"
+                                                    alt="Sarah"
+                                                    className="w-7 h-7 rounded-full flex-shrink-0"
+                                                />
+                                            )}
+                                            <div className={`max-w-[80%] p-3 rounded-xl text-sm ${msg.role === "user"
+                                                    ? "bg-[#722F37] text-white rounded-br-sm"
+                                                    : "bg-white border border-gray-200 rounded-bl-sm"
+                                                }`}>
+                                                {msg.content}
+                                            </div>
+                                        </div>
+                                    ))}
+                                    {isTyping && (
+                                        <div className="flex gap-2 mb-3">
+                                            <img
+                                                src="https://coach.accredipro.academy/wp-content/uploads/2025/10/Sarah-M.webp"
+                                                alt="Sarah"
+                                                className="w-7 h-7 rounded-full"
+                                            />
+                                            <div className="bg-white border border-gray-200 p-3 rounded-xl flex gap-1">
+                                                <span className="w-2 h-2 bg-gray-300 rounded-full animate-bounce"></span>
+                                                <span className="w-2 h-2 bg-gray-300 rounded-full animate-bounce" style={{ animationDelay: "0.1s" }}></span>
+                                                <span className="w-2 h-2 bg-gray-300 rounded-full animate-bounce" style={{ animationDelay: "0.2s" }}></span>
+                                            </div>
+                                        </div>
+                                    )}
+                                </div>
+
+                                {/* Input */}
+                                <div className="p-3 bg-white border-t border-gray-100 flex gap-2">
+                                    <input
+                                        type="text"
+                                        placeholder="Type your question..."
+                                        value={inputValue}
+                                        onChange={(e) => setInputValue(e.target.value)}
+                                        onKeyPress={(e) => e.key === "Enter" && sendMessage()}
+                                        className="flex-1 border border-gray-200 rounded-full px-4 py-2 text-sm focus:outline-none focus:border-[#722F37]"
+                                    />
+                                    <button
+                                        onClick={sendMessage}
+                                        className="w-10 h-10 rounded-full bg-[#722F37] text-white flex items-center justify-center hover:bg-[#5A2435]"
+                                    >
+                                        ➤
+                                    </button>
+                                </div>
+                            </>
+                        )}
+                    </div>
+                )}
+
+                {/* Chat Bubble */}
+                <div
+                    onClick={() => setChatOpen(!chatOpen)}
+                    className="w-16 h-16 rounded-full bg-gradient-to-br from-[#722F37] to-[#5A2435] flex items-center justify-center cursor-pointer shadow-lg hover:scale-105 transition-transform relative"
+                >
+                    <div className="absolute inset-[-4px] rounded-full bg-[#722F37] opacity-30 animate-ping"></div>
+                    <img
+                        src="https://coach.accredipro.academy/wp-content/uploads/2025/10/Sarah-M.webp"
+                        alt="Sarah"
+                        className="w-11 h-11 rounded-full border-2 border-[#D4AF37]"
+                    />
+                    <div className="absolute bottom-1 right-1 w-3 h-3 bg-green-400 rounded-full border-2 border-white"></div>
+                </div>
+
+                {/* Chat Label */}
+                {!chatOpen && (
+                    <div className="absolute bottom-20 right-0 bg-white px-4 py-2 rounded-full shadow-md text-sm whitespace-nowrap animate-pulse">
+                        Sarah here... I&apos;m live! Ask me anything 💬
+                    </div>
+                )}
             </div>
 
-            {/* Scroll tracking script */}
-            <Script id="scroll-tracking" strategy="lazyOnload">
-                {`
-          let maxScroll = 0;
-          window.addEventListener('scroll', () => {
-            const scrollPercent = Math.round((window.scrollY / (document.body.scrollHeight - window.innerHeight)) * 100);
-            if (scrollPercent > maxScroll) {
-              maxScroll = scrollPercent;
-              if ([25, 50, 75, 100].includes(scrollPercent)) {
-                console.log('Scroll milestone:', scrollPercent + '%');
-                if (typeof gtag !== 'undefined') {
-                  gtag('event', 'scroll_depth', { value: scrollPercent, page: 'fm-course-certification' });
-                }
-              }
-            }
-          });
-        `}
-            </Script>
+            <style jsx>{`
+        @keyframes slideUp {
+          from { opacity: 0; transform: translateY(20px); }
+          to { opacity: 1; transform: translateY(0); }
+        }
+        .animate-slideUp {
+          animation: slideUp 0.3s ease;
+        }
+      `}</style>
         </>
     );
 }
