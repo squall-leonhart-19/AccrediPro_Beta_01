@@ -196,6 +196,11 @@ export function UsersClient({ users, courses }: UsersClientProps) {
   // Reset Mini Diploma state
   const [resettingMiniDiploma, setResettingMiniDiploma] = useState(false);
 
+  // Send Login Email Dialog state
+  const [loginEmailDialogOpen, setLoginEmailDialogOpen] = useState(false);
+  const [targetLoginEmail, setTargetLoginEmail] = useState("");
+  const [sendingLoginEmail, setSendingLoginEmail] = useState(false);
+
   // Common tags for quick selection
   const COMMON_TAGS = [
     "fm_free_mini_diploma_lead", // Grants mini-diploma access!
@@ -449,6 +454,43 @@ export function UsersClient({ users, courses }: UsersClientProps) {
   const openEmailDialog = (user: User) => {
     setSelectedUser(user);
     setEmailDialogOpen(true);
+  };
+
+  const openSendLoginDialog = (user: User) => {
+    setSelectedUser(user);
+    setTargetLoginEmail(user.email);
+    setLoginEmailDialogOpen(true);
+  };
+
+  const handleSendLoginEmail = async () => {
+    if (!selectedUser) return;
+    setSendingLoginEmail(true);
+    try {
+      const response = await fetch("/api/admin/users/send-login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          userId: selectedUser.id,
+          email: targetLoginEmail || undefined,
+        }),
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        alert("Login credentials sent successfully!");
+        setLoginEmailDialogOpen(false);
+        setTargetLoginEmail("");
+        setSelectedUser(null);
+      } else {
+        alert(data.error || "Failed to send login credentials");
+      }
+    } catch (error) {
+      console.error("Failed to send login email:", error);
+      alert("An error occurred while sending login credentials");
+    } finally {
+      setSendingLoginEmail(false);
+    }
   };
 
   const openEnrollDialog = (user: User) => {
@@ -1105,6 +1147,13 @@ export function UsersClient({ users, courses }: UsersClientProps) {
                               >
                                 <MessageSquare className="w-4 h-4 mr-2 text-burgundy-600" />
                                 Send Direct Message
+                              </DropdownMenuItem>
+                              <DropdownMenuItem
+                                onClick={() => openSendLoginDialog(user)}
+                                className="cursor-pointer"
+                              >
+                                <Mail className="w-4 h-4 mr-2 text-burgundy-600" />
+                                Send Login Credentials
                               </DropdownMenuItem>
                               <DropdownMenuSeparator />
                               <DropdownMenuItem
@@ -2452,6 +2501,51 @@ export function UsersClient({ users, courses }: UsersClientProps) {
               disabled={addingTag || !newTag.trim()}
             >
               {addingTag ? "Adding..." : "Add Tag"}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Send Login Credentials Dialog */}
+      <Dialog open={loginEmailDialogOpen} onOpenChange={setLoginEmailDialogOpen}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              <Mail className="w-5 h-5 text-burgundy-600" />
+              Send Login Credentials
+            </DialogTitle>
+            <DialogDescription>
+              This will reset the user&apos;s password to <strong>Futurecoach2025</strong> and email them new login instructions.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="space-y-4 py-4">
+            <div className="space-y-2">
+              <Label htmlFor="login-email">Recipient Email</Label>
+              <Input
+                id="login-email"
+                value={targetLoginEmail}
+                onChange={(e) => setTargetLoginEmail(e.target.value)}
+                placeholder="user@example.com"
+              />
+              <p className="text-xs text-gray-500">
+                Update this only if the user needs to login with a different email.
+              </p>
+            </div>
+          </div>
+          <DialogFooter>
+            <Button
+              variant="outline"
+              onClick={() => setLoginEmailDialogOpen(false)}
+              disabled={sendingLoginEmail}
+            >
+              Cancel
+            </Button>
+            <Button
+              onClick={handleSendLoginEmail}
+              disabled={sendingLoginEmail || !targetLoginEmail.trim()}
+              className="bg-burgundy-600 hover:bg-burgundy-700"
+            >
+              {sendingLoginEmail ? "Sending..." : "Send Credentials"}
             </Button>
           </DialogFooter>
         </DialogContent>
