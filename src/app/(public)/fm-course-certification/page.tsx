@@ -3,6 +3,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
+import Script from "next/script";
 
 // Sales page images in order
 const salesImages = [
@@ -18,14 +19,14 @@ const salesImages = [
     { src: "/sales-images/fm_cro_calendar_freedom_1766352854539.png", alt: "Flexible schedule - Work when you want" },
     { src: "/sales-images/sp_img_07_transformation_1766504511154.png", alt: "Before and after transformation stories" },
     { src: "/sales-images/sp_img_08_curriculum_1766504530305.png", alt: "What's inside - 21 modules of complete practitioner training" },
-    { src: "/sales-images/sp_img_09_included_1766504568811.png", alt: "Everything you get - $4285 value", cta: true },
-    { src: "/sales-images/sp_img_10_pricing_1766504585512.png", alt: "Your investment today - $97 one-time payment", cta: true },
+    { src: "/sales-images/sp_img_09_included_1766504568811.png", alt: "Everything you get - $4285 value" },
+    { src: "/sales-images/sp_img_10_pricing_1766504585512.png", alt: "Your investment today - $97 one-time payment" },
     { src: "/sales-images/sp_img_11_guarantee_1766504633606.png", alt: "30-day money-back guarantee - risk free" },
     { src: "/sales-images/sp_img_12_faq_1766504654263.png", alt: "Frequently asked questions" },
-    { src: "/sales-images/sp_img_13_finalcta_1766504690313.png", alt: "The choice is yours - Get certified now", cta: true },
+    { src: "/sales-images/sp_img_13_finalcta_1766504690313.png", alt: "The choice is yours - Get certified now" },
 ];
 
-const CHECKOUT_URL = "https://accredipro.com/checkout";
+const CHECKOUT_URL = "https://sarah.accredipro.academy/checkout-fm-certification";
 
 export default function FMCourseCertificationPage() {
     const [showFloatingCta, setShowFloatingCta] = useState(false);
@@ -51,28 +52,40 @@ export default function FMCourseCertificationPage() {
                 />
             </head>
 
-            <main className="min-h-screen bg-[#1a1a1a] flex flex-col items-center">
+            {/* Sticky Header */}
+            <header className="fixed top-0 left-0 right-0 z-50 bg-gradient-to-r from-[#722F37] to-[#8B3A42] shadow-lg">
+                <div className="max-w-[1080px] mx-auto px-4 py-3 flex items-center justify-between">
+                    <div className="flex items-center gap-3">
+                        <Image
+                            src="/logos/accredipro-logo-white.png"
+                            alt="AccrediPro Academy"
+                            width={140}
+                            height={35}
+                            className="h-8 w-auto"
+                            priority
+                        />
+                    </div>
+                    <Link
+                        href={CHECKOUT_URL}
+                        className="bg-gradient-to-r from-[#D4AF37] to-[#AA8C2C] text-[#1a1a1a] 
+              px-6 py-2 rounded-full font-bold text-sm
+              shadow-[0_2px_10px_rgba(212,175,55,0.3)]
+              hover:scale-105 transition-transform"
+                    >
+                        GET CERTIFIED →
+                    </Link>
+                </div>
+            </header>
+
+            <main className="min-h-screen bg-[#1a1a1a] flex flex-col items-center pt-14">
                 <div className="w-full max-w-[1080px] flex flex-col items-center">
                     {salesImages.map((image, index) => (
-                        image.cta ? (
-                            <Link
-                                key={index}
-                                href={CHECKOUT_URL}
-                                className="w-full block cursor-pointer hover:opacity-95 transition-opacity"
-                            >
-                                <Image
-                                    src={image.src}
-                                    alt={image.alt}
-                                    width={1080}
-                                    height={1350}
-                                    className="w-full h-auto"
-                                    priority={image.priority}
-                                    loading={image.priority ? "eager" : "lazy"}
-                                />
-                            </Link>
-                        ) : (
+                        <Link
+                            key={index}
+                            href={CHECKOUT_URL}
+                            className="w-full block cursor-pointer hover:opacity-95 transition-opacity"
+                        >
                             <Image
-                                key={index}
                                 src={image.src}
                                 alt={image.alt}
                                 width={1080}
@@ -81,7 +94,7 @@ export default function FMCourseCertificationPage() {
                                 priority={image.priority}
                                 loading={image.priority ? "eager" : "lazy"}
                             />
-                        )
+                        </Link>
                     ))}
                 </div>
 
@@ -100,26 +113,58 @@ export default function FMCourseCertificationPage() {
                 </Link>
             </main>
 
+            {/* Live Chat Widget - Tawk.to */}
+            <Script id="tawk-chat" strategy="lazyOnload">
+                {`
+          var Tawk_API=Tawk_API||{}, Tawk_LoadStart=new Date();
+          (function(){
+            var s1=document.createElement("script"),s0=document.getElementsByTagName("script")[0];
+            s1.async=true;
+            s1.src='https://embed.tawk.to/YOUR_TAWK_ID/default';
+            s1.charset='UTF-8';
+            s1.setAttribute('crossorigin','*');
+            s0.parentNode.insertBefore(s1,s0);
+          })();
+        `}
+            </Script>
+
+            {/* Alternative: Custom Chat Widget Trigger */}
+            <div
+                id="chat-widget-trigger"
+                className="fixed bottom-24 right-5 z-50 md:bottom-5 cursor-pointer
+          bg-[#722F37] text-white p-4 rounded-full shadow-lg
+          hover:scale-110 transition-transform"
+                onClick={() => {
+                    // Open chat - trigger Tawk or custom chat
+                    if (typeof window !== 'undefined' && (window as any).Tawk_API) {
+                        (window as any).Tawk_API.maximize();
+                    }
+                }}
+            >
+                <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm0 14H6l-2 2V4h16v12z" />
+                    <path d="M7 9h10v2H7zm0-3h10v2H7z" />
+                </svg>
+            </div>
+
             {/* Scroll tracking script */}
-            <script
-                dangerouslySetInnerHTML={{
-                    __html: `
-            let maxScroll = 0;
-            window.addEventListener('scroll', () => {
-              const scrollPercent = Math.round((window.scrollY / (document.body.scrollHeight - window.innerHeight)) * 100);
-              if (scrollPercent > maxScroll) {
-                maxScroll = scrollPercent;
-                if ([25, 50, 75, 100].includes(scrollPercent)) {
-                  console.log('Scroll milestone:', scrollPercent + '%');
-                  if (typeof gtag !== 'undefined') {
-                    gtag('event', 'scroll_depth', { value: scrollPercent, page: 'fm-course-certification' });
-                  }
+            <Script id="scroll-tracking" strategy="lazyOnload">
+                {`
+          let maxScroll = 0;
+          window.addEventListener('scroll', () => {
+            const scrollPercent = Math.round((window.scrollY / (document.body.scrollHeight - window.innerHeight)) * 100);
+            if (scrollPercent > maxScroll) {
+              maxScroll = scrollPercent;
+              if ([25, 50, 75, 100].includes(scrollPercent)) {
+                console.log('Scroll milestone:', scrollPercent + '%');
+                if (typeof gtag !== 'undefined') {
+                  gtag('event', 'scroll_depth', { value: scrollPercent, page: 'fm-course-certification' });
                 }
               }
-            });
-          `,
-                }}
-            />
+            }
+          });
+        `}
+            </Script>
         </>
     );
 }

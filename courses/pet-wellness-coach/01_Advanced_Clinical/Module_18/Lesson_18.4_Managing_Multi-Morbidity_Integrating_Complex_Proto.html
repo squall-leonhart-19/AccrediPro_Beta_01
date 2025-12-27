@@ -1,0 +1,659 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lesson 18.4: Managing Multi-Morbidity: Integrating Complex Protocols</title>
+    <style>
+        /* Base & Reset */
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Georgia, 'Times New Roman', serif;
+            line-height: 1.8;
+            color: #2d2d2d;
+            background: #f8f6f3;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Main Container */
+        .lesson-container {
+            max-width: 860px;
+            margin: 0 auto;
+            padding: 40px 30px;
+            background: #ffffff;
+            min-height: 100vh;
+            box-shadow: 0 0 60px rgba(0, 0, 0, 0.08);
+        }
+
+        /* Brand Header */
+        .brand-header {
+            text-align: center;
+            padding-bottom: 30px;
+            margin-bottom: 35px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .brand-logo {
+            max-width: 220px;
+            height: auto;
+            margin-bottom: 5px;
+        }
+
+        /* Module Header - BLUE/TEAL theme for Integration */
+        .module-header {
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            padding: 35px 35px 30px;
+            border-radius: 16px;
+            margin-bottom: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .module-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+            transform: translate(100px, -100px);
+        }
+
+        .module-header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, #B8860B, #D4A84B, #B8860B);
+        }
+
+        .module-label {
+            margin: 0;
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.75);
+            text-transform: uppercase;
+            letter-spacing: 2.5px;
+            font-weight: 500;
+        }
+
+        .lesson-title {
+            margin: 10px 0 0 0;
+            font-size: 28px;
+            color: #ffffff;
+            font-weight: 700;
+            line-height: 1.3;
+            position: relative;
+        }
+
+        .lesson-meta {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+            padding-top: 18px;
+            border-top: 1px solid rgba(255, 255, 255, 0.15);
+            flex-wrap: wrap;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.85);
+            background: rgba(255, 255, 255, 0.1);
+            padding: 5px 12px;
+            border-radius: 4px;
+        }
+
+        /* Table of Contents */
+        .toc-box {
+            background: linear-gradient(135deg, #fafafa 0%, #f5f5f5 100%);
+            border-radius: 14px;
+            padding: 24px 28px;
+            margin-bottom: 35px;
+            border: 1px solid #e8e8e8;
+        }
+
+        .toc-box .box-label {
+            font-weight: 600;
+            color: #1e293b;
+            margin: 0 0 18px 0;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .toc-list {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px 24px;
+        }
+
+        .toc-list a {
+            display: flex;
+            align-items: center;
+            padding: 8px 12px;
+            color: #555;
+            text-decoration: none;
+            font-size: 14px;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+        }
+
+        .toc-list a:hover {
+            background: white;
+            color: #1e293b;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+        }
+
+        .toc-list .section-num {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 26px;
+            height: 26px;
+            background: #1e293b;
+            color: white;
+            font-weight: 600;
+            font-size: 11px;
+            border-radius: 6px;
+            margin-right: 12px;
+            flex-shrink: 0;
+        }
+
+        /* Learning Objectives */
+        .objectives-box {
+            background: #f8fafc;
+            border: 2px solid #334155;
+            border-radius: 14px;
+            padding: 30px 35px;
+            margin-bottom: 40px;
+        }
+
+        .objectives-box .box-label {
+            font-weight: 600;
+            color: #334155;
+            margin: 0 0 18px 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .objectives-box .box-label::before {
+            content: '🎯';
+            font-size: 18px;
+        }
+
+        .objectives-box ul {
+            margin: 0;
+            padding-left: 22px;
+        }
+
+        .objectives-box li {
+            margin-bottom: 14px;
+            font-size: 16px;
+            line-height: 1.7;
+        }
+
+        /* Section Headings */
+        h2 {
+            font-size: 24px;
+            color: #1e293b;
+            margin: 50px 0 20px 0;
+            font-weight: 600;
+            position: relative;
+            padding-bottom: 12px;
+        }
+
+        h2::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 60px;
+            height: 3px;
+            background: #B8860B;
+        }
+
+        h3 {
+            font-size: 20px;
+            color: #334155;
+            margin: 35px 0 15px 0;
+            font-weight: 600;
+        }
+
+        /* Paragraphs & Highlights */
+        p {
+            font-size: 17px;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        .highlight {
+            background: linear-gradient(180deg, transparent 60%, #FFF59D 60%);
+            padding: 0 4px;
+            font-weight: 500;
+        }
+
+        /* Statistics Box */
+        .stats-box {
+            background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
+            padding: 40px;
+            border-radius: 16px;
+            margin: 35px 0;
+            color: white;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 25px;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 42px;
+            font-weight: 700;
+            color: #D4A84B;
+            margin-bottom: 8px;
+        }
+
+        .stat-label {
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.85);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* Case Study Box */
+        .case-study {
+            background: #f1f5f9;
+            border-radius: 16px;
+            margin: 40px 0;
+            overflow: hidden;
+            border: 1px solid #e2e8f0;
+        }
+
+        .case-study-header {
+            background: #334155;
+            padding: 20px 30px;
+            color: white;
+        }
+
+        .case-study-content {
+            padding: 28px 30px;
+        }
+
+        .patient-profile {
+            display: flex;
+            align-items: center;
+            gap: 18px;
+            padding: 15px;
+            background: white;
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
+
+        .patient-avatar {
+            font-size: 30px;
+            background: #e2e8f0;
+            width: 60px;
+            height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+        }
+
+        /* Comparison Table */
+        .data-table-container {
+            overflow-x: auto;
+            margin: 30px 0;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 15px;
+        }
+
+        th {
+            background: #334155;
+            color: white;
+            padding: 15px;
+            text-align: left;
+        }
+
+        td {
+            padding: 15px;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        tr:nth-child(even) {
+            background: #f8fafc;
+        }
+
+        /* Check Understanding */
+        .check-understanding {
+            background: #fffcf0;
+            border: 2px solid #d4a84b;
+            border-radius: 16px;
+            padding: 32px;
+            margin: 45px 0;
+        }
+
+        .question-item {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 15px;
+            border: 1px solid #f0e6cc;
+        }
+
+        .reveal-btn {
+            background: #334155;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+
+        .answer-text {
+            display: none;
+            margin-top: 15px;
+            padding: 15px;
+            background: #f0fdf4;
+            border-radius: 6px;
+            color: #166534;
+        }
+
+        /* Takeaways & References */
+        .takeaways-box {
+            background: #f1f5f9;
+            padding: 25px;
+            border-radius: 12px;
+            margin: 40px 0;
+        }
+
+        .references-box {
+            background: #fafafa;
+            padding: 25px;
+            border-radius: 12px;
+            font-size: 14px;
+            color: #666;
+            border: 1px solid #eee;
+        }
+
+        .references-box h4 {
+            margin-top: 0;
+            color: #334155;
+        }
+
+        .references-box ul {
+            padding-left: 20px;
+            margin: 0;
+        }
+
+        .references-box li {
+            margin-bottom: 8px;
+        }
+
+        .footer-logo {
+            max-width: 140px;
+            opacity: 0.8;
+            margin-bottom: 10px;
+        }
+
+        .lesson-footer {
+            text-align: center;
+            padding: 40px 0;
+            border-top: 1px solid #eee;
+        }
+
+        /* Alert Box */
+        .alert-box.warning {
+            background: #fff7ed;
+            border-left: 5px solid #f97316;
+            padding: 20px;
+            margin: 25px 0;
+            border-radius: 0 8px 8px 0;
+        }
+
+        .alert-label {
+            font-weight: 700;
+            color: #c2410c;
+            display: block;
+            margin-bottom: 5px;
+            font-size: 12px;
+            text-transform: uppercase;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="lesson-container">
+        <div class="brand-header">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="brand-logo">
+        </div>
+
+        <header class="module-header">
+            <p class="module-label">Module 18: L2 Integration & Synthesis</p>
+            <h1 class="lesson-title">Lesson 18.4: Managing Multi-Morbidity: Integrating Complex Protocols</h1>
+            <div class="lesson-meta">
+                <span class="meta-item">35 min read</span>
+                <span class="meta-item">Lesson 4 of 4</span>
+            </div>
+        </header>
+
+        <div class="toc-box">
+            <p class="box-label">In This Lesson</p>
+            <ul class="toc-list">
+                <li><a href="#synthesis"><span class="section-num">1</span>The Synthesis Challenge</a></li>
+                <li><a href="#tiered"><span class="section-num">2</span>Tiered Intervention Strategies</a></li>
+                <li><a href="#polypharmacy"><span class="section-num">3</span>Polypharmacy & Synergies</a></li>
+                <li><a href="#prevent"><span class="section-num">4</span>Adjusting the Prevent Pillar</a></li>
+                <li><a href="#compliance"><span class="section-num">5</span>Simplifying for Compliance</a></li>
+                <li><a href="#summary"><span class="section-num">6</span>Integration Checklist</a></li>
+            </ul>
+        </div>
+
+        <div class="objectives-box">
+            <p class="box-label">Learning Objectives</p>
+            <ul>
+                <li>Resolve conflicting biological requirements in pets with multiple chronic conditions.</li>
+                <li>Apply the P.A.W.S. Method™ to prioritize interventions based on severity and quality of life.</li>
+                <li>Identify potential interactions between common veterinary medications and wellness nutraceuticals.</li>
+                <li>Modify preventative protocols for high-risk, immunocompromised senior patients.</li>
+                <li>Design simplified care plans that improve client adherence without compromising efficacy.</li>
+            </ul>
+        </div>
+
+        <h2 id="synthesis">The 'Synthesis Challenge': Balancing Conflicting Requirements</h2>
+        <p>As a Pet Wellness Coach, your greatest challenge occurs when a pet presents with <span class="highlight">multi-morbidity</span>—the co-occurrence of two or more chronic conditions. In these cases, the "standard" protocol for one disease may be contraindicated for another. This is where clinical synthesis replaces rote protocol application.</p>
+
+        <div class="stats-box">
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <div class="stat-number">82%</div>
+                    <div class="stat-label">Dogs >10 yrs with Multi-morbidity</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">3.4</div>
+                    <div class="stat-label">Avg. Conditions in Senior Cats</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">45%</div>
+                    <div class="stat-label">Owners report protocol confusion</div>
+                </div>
+            </div>
+        </div>
+
+        <p>The most common synthesis conflict involves <span class="highlight">Chronic Kidney Disease (CKD) and Osteoarthritis (OA)</span>. A traditional CKD diet focuses on protein restriction to reduce nitrogenous waste. However, an OA patient suffering from <span class="highlight">sarcopenia</span> (muscle wasting) requires high-quality, bioavailable protein to maintain the muscle mass necessary for joint support. If we follow the CKD protocol strictly, we accelerate the OA-related mobility decline. If we follow the OA protocol, we may accelerate renal azotemia.</p>
+
+        <h2 id="tiered">Tiered Intervention Strategies: The 'Sustain' Pillar</h2>
+        <p>When managing pets with three or more chronic conditions, we must move away from "fixing" and toward "optimizing." The <span class="highlight">Sustain</span> pillar becomes our primary focus. We use a tiered approach to decide which physiological system takes precedence.</p>
+
+        <div class="data-table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Tier</th>
+                        <th>Focus</th>
+                        <th>Example Condition Pair</th>
+                        <th>Priority Strategy</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Tier 1: Vital</strong></td>
+                        <td>Organ failure / Life-threatening</td>
+                        <td>Congestive Heart Failure + OA</td>
+                        <td>Prioritize cardiac output/fluid balance; modify exercise to low-impact only.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Tier 2: Functional</strong></td>
+                        <td>Mobility & Cognitive health</td>
+                        <td>Diabetes + Cognitive Dysfunction</td>
+                        <td>Prioritize glycemic stability to prevent neuroinflammation; use antioxidant support.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Tier 3: Quality</strong></td>
+                        <td>Comfort & Sensory</td>
+                        <td>Dental Disease + Early Renal</td>
+                        <td>Manage pain and oral biome to prevent systemic inflammatory seeding.</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <h2 id="polypharmacy">Polypharmacy and Nutraceutical Interactions</h2>
+        <p>In the <span class="highlight">Wellness</span> pillar, we often introduce nutraceuticals. However, multi-morbid pets are frequently on "polypharmacy" (multiple medications). We must ensure our wellness interventions do not interfere with veterinary medical treatments.</p>
+        
+        <p>For example, a pet on NSAIDs for OA should be carefully monitored if adding high-dose Omega-3 fatty acids or Curcumin, as both can have mild anti-platelet effects, potentially increasing the risk of GI bleeding when combined with pharmaceutical anti-inflammatories. Similarly, <span class="highlight">S-Adenosylmethionine (SAMe)</span>, used for liver support and cognitive health, must be cautiously applied in pets on SSRIs due to the theoretical risk of serotonin syndrome.</p>
+
+        <div class="alert-box warning">
+            <span class="alert-label">Practitioner Alert</span>
+            <p>Always verify the "half-life" and metabolic pathway (CYP450 enzymes) of veterinary medications before introducing potent botanical extracts. When in doubt, introduce one wellness supplement at a time with a 14-day observation period.</p>
+        </div>
+
+        <div class="case-study">
+            <div class="case-study-header">
+                <div class="box-label">Case Study: The Synthesis Puzzle</div>
+                <p class="subtitle">Managing Conflicting Biological Demands</p>
+            </div>
+            <div class="case-study-content">
+                <div class="patient-profile">
+                    <div class="patient-avatar">🐕</div>
+                    <div class="patient-info">
+                        <h4>Barnaby, 13yr Golden Retriever</h4>
+                        <p>Conditions: Stage 2 CKD, Severe Hip OA, Early-stage Sarcopenia, Obesity (BCS 7/9).</p>
+                    </div>
+                </div>
+                <p><strong>The Conflict:</strong> Barnaby needs to lose weight to help his hips, but calorie restriction might lead to further muscle loss (sarcopenia). He needs low phosphorus for his kidneys, but high protein for his muscles.</p>
+                <p><strong>Intervention:</strong> Instead of a standard "Renal Diet," we implemented a <span class="highlight">Moderate Protein/High Biological Value</span> approach. We used egg whites as a protein source (high leucine, low phosphorus) and focused on "hydrotherapy" for weight loss to protect joints while building muscle.</p>
+                <p><strong>Outcome:</strong> 4lb weight loss over 12 weeks, stable SDMA (renal marker), and improved Muscle Condition Score (MCS) from 1/3 to 2/3.</p>
+            </div>
+        </div>
+
+        <h2 id="prevent">Adjusting the 'Prevent' Pillar for High-Risk Seniors</h2>
+        <p>The <span class="highlight">Prevent</span> pillar changes its definition for the multi-morbid pet. We are no longer preventing the *onset* of disease; we are preventing <span class="highlight">acute-on-chronic crises</span> and secondary complications. For an immunocompromised senior (e.g., a dog on immunosuppressants for IMHA or a cat with FIV), the environmental assessment (Module 13) becomes critical.</p>
+
+        <h3>Key Adjustments for High-Risk Seniors:</h3>
+        <ul>
+            <li><strong>Microbiome Shielding:</strong> Shifting from general probiotics to targeted <span class="highlight">postbiotics</span> to support the gut barrier without introducing live bacteria to a severely compromised system.</li>
+            <li><strong>Metabolic Buffer:</strong> Increasing antioxidant capacity (Vitamin E, Selenium, Glutathione precursors) to handle the higher oxidative stress loads of multi-morbidity.</li>
+            <li><strong>Environmental Toxicity:</strong> Reducing the "Total Toxic Burden" by switching to VOC-free cleaners and high-efficiency air filtration to reduce the workload on already taxed liver/kidney pathways.</li>
+        </ul>
+
+        <h2 id="compliance">Utilizing the P.A.W.S. Method™ for Client Compliance</h2>
+        <p>Complexity is the enemy of compliance. When an owner is told their pet needs 4 medications, 3 supplements, a special diet, and specific exercises, they often experience "caregiver burden." We use the <span class="highlight">P.A.W.S. Method™</span> to simplify the plan into a logical flow.</p>
+
+        <div class="principle-card">
+            <div class="principle-title">Step 1: P (Prevent) - The Non-Negotiables</div>
+            <div class="principle-text">Focus on the one thing that prevents a crisis (e.g., "Always ensure access to fresh water for the CKD pet").</div>
+        </div>
+        <div class="principle-card">
+            <div class="principle-title">Step 2: A (Assess) - The 2-Minute Check</div>
+            <div class="principle-text">Teach the owner one "Vital Sign" to track (e.g., Resting Respiratory Rate for heart pets).</div>
+        </div>
+        <div class="principle-card">
+            <div class="principle-title">Step 3: W (Wellness) - The "Hidden" Intervention</div>
+            <div class="principle-text">Integrate supplements into mealtime and exercises into existing bathroom breaks.</div>
+        </div>
+        <div class="principle-card">
+            <div class="principle-title">Step 4: S (Sustain) - The Monthly Review</div>
+            <div class="principle-text">A scheduled check-in to adjust the protocol, preventing the owner from feeling stuck in an outdated plan.</div>
+        </div>
+
+        <div class="check-understanding">
+            <p class="box-label">Check Your Understanding</p>
+            <p class="box-subtitle">Test your ability to synthesize complex data points.</p>
+            
+            <div class="question-item">
+                <div class="question-number">1</div>
+                <p class="question-text">A 14-year-old cat has Hyperthyroidism (managed), Stage 3 CKD, and Constipation. Why might the typical CKD diet worsen the constipation?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-text">CKD diets are often low in fiber and can contribute to dehydration if the cat doesn't compensate with enough water. In a hyperthyroid cat (even managed), the metabolic rate is often higher, increasing the risk of fecal desiccation. Integration requires adding soluble fiber (psyllium) and moisture-rich food rather than dry renal kibble.</div>
+            </div>
+
+            <div class="question-item">
+                <div class="question-number">2</div>
+                <p class="question-text">What is the "Total Toxic Burden" concept in the context of a senior pet with liver disease?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-text">It is the cumulative effect of environmental toxins (cleaners, pesticides), medications, and metabolic waste. For a pet with compromised liver function, reducing the *external* burden (Pillar: Prevent) is essential because the liver has less capacity to process *internal* metabolic waste.</div>
+            </div>
+        </div>
+
+        <div class="takeaways-box">
+            <p class="box-label">Lesson Takeaways</p>
+            <ul>
+                <li><strong>Synthesis Over Protocol:</strong> Multi-morbidity requires balancing conflicting needs (e.g., Renal vs. Sarcopenia).</li>
+                <li><strong>Prioritize Vitals:</strong> Use a tiered approach where life-threatening organ systems (Tier 1) take precedence over quality-of-life systems (Tier 3) during acute phases.</li>
+                <li><strong>Safety First:</strong> Be vigilant about drug-nutrient interactions, particularly with anti-inflammatories and behavior medications.</li>
+                <li><strong>Simplify for Success:</strong> Use the P.A.W.S. Method™ to categorize instructions, reducing owner overwhelm and increasing compliance.</li>
+                <li><strong>Dynamic Sustainment:</strong> Senior protocols must be reviewed at least every 90 days to account for the rapid metabolic shifts of aging.</li>
+            </ul>
+        </div>
+
+        <div class="references-box">
+            <h4>References & Further Reading</h4>
+            <ul>
+                <li>Bellows, J., et al. (2015). "The Aging Cat: Cognition, Joint Health, and Multi-morbidity." <i>Journal of Feline Medicine and Surgery.</i></li>
+                <li>Freeman, L. M., et al. (2016). "Nutritional Management of Multi-morbidity in Dogs and Cats." <i>Journal of the American Veterinary Medical Association.</i></li>
+                <li>Hezzell, M. J., et al. (2020). "Prevalence of Multi-morbidity in an Aging Population of Insured Dogs in the UK." <i>Scientific Reports.</i></li>
+                <li>Linder, D. E., & Mueller, M. (2014). "Managing Obesity in Pets with Co-existing Chronic Disease." <i>Veterinary Clinics of North America: Small Animal Practice.</i></li>
+                <li>Vandeweerd, J. M., et al. (2012). "Systematic Review of Efficacy of Nutraceuticals to Alleviate Clinical Signs of Osteoarthritis." <i>Journal of Veterinary Internal Medicine.</i></li>
+                <li>Zoran, D. L. (2015). "The Effect of Aging on the Gastrointestinal System and Nutrition." <i>Veterinary Clinics: Small Animal Practice.</i></li>
+            </ul>
+        </div>
+
+        <footer class="lesson-footer">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="footer-logo">
+            <p class="brand">AccrediPro Academy © 2024</p>
+            <p class="copyright">Certified Pet Wellness Coach Program | Integration & Synthesis Series</p>
+        </footer>
+    </div>
+</body>
+
+</html>

@@ -1,0 +1,616 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lesson 19.3: Physiological Markers: Measuring the BALANCE Effect</title>
+    <style>
+        /* Base & Reset */
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Georgia, 'Times New Roman', serif;
+            line-height: 1.8;
+            color: #2d2d2d;
+            background: #f8f6f3;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Main Container */
+        .lesson-container {
+            max-width: 860px;
+            margin: 0 auto;
+            padding: 40px 30px;
+            background: #ffffff;
+            min-height: 100vh;
+            box-shadow: 0 0 60px rgba(0, 0, 0, 0.08);
+        }
+
+        /* Brand Header */
+        .brand-header {
+            text-align: center;
+            padding-bottom: 30px;
+            margin-bottom: 35px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .brand-logo {
+            max-width: 220px;
+            height: auto;
+            margin-bottom: 5px;
+        }
+
+        /* Module Header - BLUE/PURPLE theme for Research/Science */
+        .module-header {
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+            padding: 35px 35px 30px;
+            border-radius: 16px;
+            margin-bottom: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .module-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+            transform: translate(100px, -100px);
+        }
+
+        .module-header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, #B8860B, #D4A84B, #B8860B);
+        }
+
+        .module-label {
+            margin: 0;
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.75);
+            text-transform: uppercase;
+            letter-spacing: 2.5px;
+            font-weight: 500;
+        }
+
+        .lesson-title {
+            margin: 10px 0 0 0;
+            font-size: 28px;
+            color: #ffffff;
+            font-weight: 700;
+            line-height: 1.3;
+            position: relative;
+        }
+
+        .lesson-meta {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+            padding-top: 18px;
+            border-top: 1px solid rgba(255, 255, 255, 0.15);
+            flex-wrap: wrap;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.85);
+            background: rgba(255, 255, 255, 0.1);
+            padding: 5px 12px;
+            border-radius: 4px;
+        }
+
+        /* Table of Contents */
+        .toc-box {
+            background: linear-gradient(135deg, #fafafa 0%, #f5f5f5 100%);
+            border-radius: 14px;
+            padding: 24px 28px;
+            margin-bottom: 35px;
+            border: 1px solid #e8e8e8;
+        }
+
+        .toc-box .box-label {
+            font-weight: 600;
+            color: #1e3a8a;
+            margin: 0 0 18px 0;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .toc-list {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px 24px;
+        }
+
+        .toc-list a {
+            display: flex;
+            align-items: center;
+            padding: 8px 12px;
+            color: #555;
+            text-decoration: none;
+            font-size: 14px;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+        }
+
+        .toc-list a:hover {
+            background: white;
+            color: #3b82f6;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+        }
+
+        .toc-list .section-num {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 26px;
+            height: 26px;
+            background: #1e3a8a;
+            color: white;
+            font-weight: 600;
+            font-size: 11px;
+            border-radius: 6px;
+            margin-right: 12px;
+            flex-shrink: 0;
+        }
+
+        /* Learning Objectives */
+        .objectives-box {
+            background: #eff6ff;
+            border: 2px solid #3b82f6;
+            border-radius: 14px;
+            padding: 30px 35px;
+            margin-bottom: 40px;
+        }
+
+        .objectives-box .box-label {
+            font-weight: 600;
+            color: #1e3a8a;
+            margin: 0 0 18px 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .objectives-box .box-label::before {
+            content: '🔬';
+            font-size: 18px;
+        }
+
+        .objectives-box ul {
+            margin: 0;
+            padding-left: 22px;
+        }
+
+        .objectives-box li {
+            margin-bottom: 14px;
+            font-size: 16px;
+            line-height: 1.7;
+        }
+
+        /* Section Headings */
+        h2 {
+            font-size: 24px;
+            color: #1e3a8a;
+            margin: 50px 0 20px 0;
+            font-weight: 600;
+            position: relative;
+            padding-bottom: 12px;
+        }
+
+        h2::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 60px;
+            height: 3px;
+            background: #B8860B;
+        }
+
+        /* Paragraphs & Text */
+        p {
+            font-size: 17px;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        .highlight {
+            background: linear-gradient(180deg, transparent 60%, #e0e7ff 60%);
+            padding: 0 4px;
+            font-weight: 600;
+            color: #1e3a8a;
+        }
+
+        /* Case Study Box */
+        .case-study {
+            background: linear-gradient(135deg, #f8f9fb 0%, #f0f2f5 100%);
+            border-radius: 16px;
+            padding: 0;
+            margin: 40px 0;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+        }
+
+        .case-study-header {
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+            padding: 20px 30px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .case-study-icon {
+            width: 45px;
+            height: 45px;
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+        }
+
+        .case-study-header .box-label {
+            font-weight: 600;
+            color: #ffffff;
+            margin: 0;
+            font-size: 16px;
+        }
+
+        .case-study-content {
+            padding: 28px 30px;
+        }
+
+        .patient-profile {
+            display: flex;
+            align-items: center;
+            gap: 18px;
+            padding: 18px 22px;
+            background: white;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            border: 1px solid #e5e5e5;
+        }
+
+        /* Statistics Box */
+        .stats-box {
+            background: linear-gradient(135deg, #1e3a8a 0%, #1e40af 100%);
+            padding: 40px;
+            border-radius: 16px;
+            margin: 35px 0;
+            position: relative;
+            color: white;
+        }
+
+        .stat-highlight {
+            font-weight: 700;
+            color: #fcd34d;
+        }
+
+        /* Tables */
+        .data-table-container {
+            overflow-x: auto;
+            margin: 30px 0;
+            border-radius: 12px;
+            border: 1px solid #e5e7eb;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 15px;
+        }
+
+        th {
+            background: #f3f4f6;
+            padding: 15px;
+            text-align: left;
+            font-weight: 600;
+            color: #1e3a8a;
+            border-bottom: 2px solid #e5e7eb;
+        }
+
+        td {
+            padding: 15px;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        /* Check Understanding Box */
+        .check-understanding {
+            background: #fdfbf7;
+            border: 2px solid #B8860B;
+            border-radius: 16px;
+            padding: 32px;
+            margin: 45px 0;
+        }
+
+        .reveal-btn {
+            background: #1e3a8a;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+
+        .answer-text {
+            display: none;
+            padding: 15px;
+            background: #f1f5f9;
+            border-radius: 8px;
+            margin-top: 10px;
+        }
+
+        /* Takeaways & References */
+        .takeaways-box {
+            background: #f1f5f9;
+            padding: 30px;
+            border-radius: 12px;
+            margin-top: 40px;
+        }
+
+        .references-box {
+            margin-top: 40px;
+            padding-top: 20px;
+            border-top: 1px solid #eee;
+            font-size: 14px;
+            color: #666;
+        }
+
+        .references-box h4 {
+            color: #1e3a8a;
+            margin-bottom: 15px;
+        }
+
+        .references-list {
+            list-style: none;
+            padding: 0;
+        }
+
+        .references-list li {
+            margin-bottom: 8px;
+            padding-left: 20px;
+            position: relative;
+        }
+
+        .references-list li::before {
+            content: '•';
+            position: absolute;
+            left: 0;
+            color: #3b82f6;
+        }
+
+        /* Footer */
+        .lesson-footer {
+            text-align: center;
+            padding-top: 50px;
+            margin-top: 60px;
+            border-top: 1px solid #eee;
+        }
+
+        .footer-logo {
+            max-width: 140px;
+            opacity: 0.9;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="lesson-container">
+        <div class="brand-header">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="brand-logo">
+        </div>
+
+        <header class="module-header">
+            <p class="module-label">Module 19: Research & Evidence</p>
+            <h1 class="lesson-title">Lesson 3: Physiological Markers: Measuring the BALANCE Effect</h1>
+            <div class="lesson-meta">
+                <span class="meta-item">35 min read</span>
+                <span class="meta-item">Module 19, Lesson 3</span>
+            </div>
+        </header>
+
+        <div class="toc-box">
+            <p class="box-label">In This Lesson</p>
+            <ul class="toc-list">
+                <li><a href="#hrv"><span class="section-num">1</span>HRV & Autonomic Balance</a></li>
+                <li><a href="#hormones"><span class="section-num">2</span>Cortisol & Immune Response</a></li>
+                <li><a href="#brainwaves"><span class="section-num">3</span>EEG Brainwave Coherence</a></li>
+                <li><a href="#vagus"><span class="section-num">4</span>The Vagal Mediation Theory</a></li>
+                <li><a href="#imaging"><span class="section-num">5</span>Advanced Biofield Imaging</a></li>
+                <li><a href="#clinical"><span class="section-num">6</span>Clinical Interpretation</a></li>
+            </ul>
+        </div>
+
+        <div class="objectives-box">
+            <p class="box-label">Learning Objectives</p>
+            <ul>
+                <li>Analyze Heart Rate Variability (HRV) as the primary metric for autonomic nervous system regulation during energy work.</li>
+                <li>Evaluate the impact of the <span class="highlight">B.A.L.A.N.C.E. Protocol™</span> on salivary cortisol and Secretory IgA levels.</li>
+                <li>Understand the transition from Beta to Alpha/Theta brainwave states during energy clearing and neutralization.</li>
+                <li>Explain the role of the Vagus Nerve as the biological bridge for energetic interventions.</li>
+                <li>Identify the clinical utility of Gas Discharge Visualization (GDV) and Thermography in energy medicine.</li>
+            </ul>
+        </div>
+
+        <h2 id="hrv">1. Heart Rate Variability (HRV): The Gold Standard of Balance</h2>
+        <p>In our previous lesson, we examined the clinical meta-analyses that validate biofield therapies. However, for the elite practitioner, "it works" is an insufficient explanation. We must understand the <span class="highlight">physiological mechanisms</span> that underpin the shift from disease to homeostasis. The most robust marker for this shift is <span class="highlight">Heart Rate Variability (HRV)</span>.</p>
+
+        <p>HRV is the measure of the variation in time between each heartbeat (the R-R interval). Contrary to popular belief, a healthy heart does not beat like a metronome; it is slightly irregular. This irregularity reflects the heart's ability to respond to the constant push-and-pull between the Sympathetic (fight/flight) and Parasympathetic (rest/digest) nervous systems. High HRV is a marker of <span class="highlight">autonomic resilience</span> and high vagal tone.</p>
+
+        <div class="stats-box">
+            <p><strong>The Data:</strong> A 2021 study on Biofield Therapies (n=124) demonstrated that participants undergoing energy clearing saw a <span class="stat-highlight">22% increase in RMSSD</span> (a key HRV metric) within 20 minutes of intervention, compared to a 4% change in the sham control group (p < 0.01).</p>
+        </div>
+
+        <p>During the <strong>"L" (Lifeforce Activation)</strong> phase of the B.A.L.A.N.C.E. Protocol™, we specifically target the induction of <span class="highlight">Heart Coherence</span>. This is a state where the HRV pattern becomes a smooth, sine-wave-like curve, indicating that the heart, brain, and nervous system are in energetic alignment.</p>
+
+        <h2 id="hormones">2. Hormonal & Immune Response: Cortisol and IgA</h2>
+        <p>The <strong>"A" (Align Chakras)</strong> and <strong>"N" (Neutralize Blocks)</strong> phases of our protocol have profound effects on the endocrine and immune systems. When an energetic block is neutralized, the body’s perceived "threat" level drops, triggering a cascade of biochemical changes.</p>
+
+        <p>Two primary markers are used in energy medicine research:</p>
+        <ul>
+            <li><strong>Salivary Cortisol:</strong> The primary stress hormone. Chronic elevation leads to systemic inflammation and biofield depletion.</li>
+            <li><strong>Secretory IgA (sIgA):</strong> The first line of defense in the immune system. It is highly sensitive to emotional and energetic states.</li>
+        </ul>
+
+        <div class="data-table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Marker</th>
+                        <th>Biochemical Role</th>
+                        <th>Effect of B.A.L.A.N.C.E. Protocol™</th>
+                        <th>Clinical Significance</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Cortisol</strong></td>
+                        <td>Stress response / Catabolic</td>
+                        <td>Significant Decrease (15-25%)</td>
+                        <td>Reduced systemic inflammation</td>
+                    </tr>
+                    <tr>
+                        <td><strong>sIgA</strong></td>
+                        <td>Mucosal Immunity</td>
+                        <td>Significant Increase (30%+)</td>
+                        <td>Enhanced pathogen resistance</td>
+                    </tr>
+                    <tr>
+                        <td><strong>DHEA</strong></td>
+                        <td>Vitality / Anabolic</td>
+                        <td>Moderate Increase</td>
+                        <td>Improved tissue repair and longevity</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="case-study">
+            <div class="case-study-header">
+                <div class="case-study-icon">👤</div>
+                <div>
+                    <p class="box-label">Case Study: Endocrine Regulation</p>
+                    <p class="subtitle">Chronic Fatigue & High-Stress Profile</p>
+                </div>
+            </div>
+            <div class="case-study-content">
+                <div class="patient-profile">
+                    <div class="patient-avatar">S</div>
+                    <div class="patient-info">
+                        <h4>Sarah J., 44</h4>
+                        <p>Symptoms: Burnout, recurrent respiratory infections, insomnia.</p>
+                    </div>
+                </div>
+                <p><strong>Intervention:</strong> Sarah received four sessions focusing on <strong>Neutralizing Blocks (N)</strong> in the Solar Plexus and <strong>Aligning Chakras (A)</strong>. Salivary markers were taken before the first and after the fourth session.</p>
+                <p><strong>Outcomes:</strong> Sarah's morning cortisol dropped from 28 nmol/L (borderline high) to 19 nmol/L (optimal). Her sIgA levels increased by <span class="highlight">42%</span>. Subjectively, she reported "unprecedented mental clarity" and zero infections during the subsequent 3-month follow-up.</p>
+            </div>
+        </div>
+
+        <h2 id="brainwaves">3. EEG Brainwave Coherence: The Shift to Healing States</h2>
+        <p>Electroencephalography (EEG) allows us to monitor the electrical activity of the brain in real-time. During a standard B.A.L.A.N.C.E. session, we observe a predictable "Neural Signature" transition. As the practitioner enters the <strong>"B" (Biofield Assessment)</strong> phase, the client usually remains in High Beta (active, often anxious thought).</p>
+
+        <p>As the practitioner moves into <strong>"L" (Lifeforce Activation)</strong>, the client’s brainwaves typically shift toward <span class="highlight">Alpha (8-12 Hz)</span>, the frequency of relaxed alertness. In deep sessions, particularly during <strong>"C" (Clear Energy Field)</strong>, we often see the emergence of <span class="highlight">Theta (4-8 Hz)</span> waves. Theta is the "healing state," where the subconscious mind is accessible and the body’s self-repair mechanisms are most active.</p>
+
+        <p>Crucially, research by <em>Thackray et al.</em> has shown that it isn't just the client's brainwaves that change; the <span class="highlight">Practitioner and Client often exhibit EEG Coherence</span>—their brainwaves synchronize. This "Bio-Entrainment" is the physiological foundation of the healing rapport.</p>
+
+        <h2 id="vagus">4. The Vagal Mediation Theory</h2>
+        <p>Why does an energetic shift in the biofield result in a change in heart rate or hormone levels? The answer lies in the <span class="highlight">Vagus Nerve</span>. As the longest nerve of the autonomic nervous system, the Vagus acts as the "information superhighway" between the brain and the major organs.</p>
+
+        <p>The <span class="highlight">Vagal Mediation Theory</span> suggests that energy healing interventions stimulate the "Vagal Brake." By calming the biofield, we reduce the amygdala's "threat" signaling, which allows the Vagus nerve to release acetylcholine, slowing the heart rate and inhibiting the production of pro-inflammatory cytokines. This is why <strong>Activating the Vagus Nerve</strong> is a core component of the "A" (Activate Healing) phase of our protocol.</p>
+
+        <h2 id="imaging">5. Advanced Biofield Imaging: Visualizing the Invisible</h2>
+        <p>While blood and heart metrics are vital, practitioners often seek to visualize the field itself. Two primary technologies have gained traction in the research community:</p>
+
+        <p><strong>1. Gas Discharge Visualization (GDV):</strong> Developed by Dr. Konstantin Korotkov, this uses Kirlian photography principles and modern computer analysis to measure the "electron cloud" or biophoton emission from the fingertips. It provides a map of the "Energy State" of various organ systems.</p>
+
+        <p><strong>2. Infrared Thermography:</strong> This measures the radiant heat from the body. Energetic blocks (Neutralize Blocks - N) often correlate with "cold spots" (reduced circulation/stagnation) or "hot spots" (inflammation/congestion). Successful clearing (C) is often visible as a <span class="highlight">normalization of thermal distribution</span> across the treated area.</p>
+
+        <div class="stats-box" style="background: linear-gradient(135deg, #4b5563 0%, #1f2937 100%);">
+            <p><strong>Researcher Insight:</strong> A study using GDV (n=60) found that energy healing resulted in a <span class="stat-highlight">18.4% increase in "Field Area"</span> (a measure of energetic vitality) and a significant reduction in "Symmetry Deviation," indicating more balanced energy distribution between the left and right hemispheres of the body.</p>
+        </div>
+
+        <h2 id="clinical">6. Clinical Interpretation for the Practitioner</h2>
+        <p>As a certified Practitioner, you do not necessarily need to carry an EEG or GDV device to every session. However, understanding these markers allows you to:</p>
+        <ul>
+            <li><strong>Validate the Experience:</strong> When a client feels a "tingle" or "heat," you can explain it as the physiological correlate of <span class="highlight">vasodilation</span> and vagal activation.</li>
+            <li><strong>Identify "Resistant" Clients:</strong> If a client remains in a high-Beta state (visible through rapid breathing or restless eye movement), you know to spend more time in the <strong>"L" (Lifeforce Activation)</strong> phase before attempting deeper clearing.</li>
+            <li><strong>Communicate with Medical Professionals:</strong> Using terms like "Autonomic Regulation," "HRV Coherence," and "Cortisol Modulation" builds a bridge between energy medicine and conventional healthcare.</li>
+        </ul>
+
+        <div class="check-understanding">
+            <p class="box-label">Check Your Understanding</p>
+            <p class="box-subtitle">Test your knowledge of physiological markers in energy medicine.</p>
+
+            <div class="question-item">
+                <span class="question-number">1</span>
+                <p class="question-text">Which metric is considered the most robust indicator of autonomic nervous system balance during a BALANCE Protocol™ session?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-text">Heart Rate Variability (HRV). It measures the balance between the sympathetic and parasympathetic branches of the nervous system.</div>
+            </div>
+
+            <div class="question-item">
+                <span class="question-number">2</span>
+                <p class="question-text">A client reports feeling "extremely relaxed but deeply focused" after a session. Which brainwave state is likely dominant?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-text">Alpha or Theta. Alpha is associated with relaxed alertness, while Theta is associated with deep meditation and cellular healing.</div>
+            </div>
+        </div>
+
+        <div class="takeaways-box">
+            <p class="box-label">Key Takeaways</p>
+            <ul>
+                <li><strong>HRV is the "Vital Sign" of Energy Medicine:</strong> High variability indicates a resilient, balanced system capable of self-healing.</li>
+                <li><strong>Biochemical Shifts are Rapid:</strong> Energy work can modulate cortisol and sIgA levels within a single 30-60 minute session.</li>
+                <li><strong>The Vagus Nerve is the Bridge:</strong> It translates energetic intent into physiological relaxation and immune activation.</li>
+                <li><strong>Coherence is Measurable:</strong> EEG studies prove that the "healing state" involves a shift to lower frequency brainwaves and synchronization between practitioner and client.</li>
+                <li><strong>Imaging Validates the Field:</strong> Tools like GDV and Thermography provide a visual map of the changes we effect during the "C" (Clear) and "A" (Align) phases.</li>
+            </ul>
+        </div>
+
+        <div class="references-box">
+            <h4>References & Further Reading</h4>
+            <ul class="references-list">
+                <li>Jain, S., et al. (2021). "Impact of Biofield Therapies on Heart Rate Variability: A Systematic Review." <em>Global Advances in Health and Medicine.</em></li>
+                <li>Korotkov, K. (2018). "The Energy of Health: Analyzing the Human Biofield through GDV." <em>Journal of Alternative and Complementary Medicine.</em></li>
+                <li>Lutgendorf, S. K., et al. (2010). "Presurgical Reiki and its Effects on Cortisol and Immune Function in Cancer Patients." <em>Integrative Cancer Therapies.</em></li>
+                <li>McCraty, R., et al. (2015). "The Coherent Heart: Heart-Brain Interactions and the Enhancement of Cognitive and Emotional Function." <em>HeartMath Institute Research Library.</em></li>
+                <li>Thackray, A., et al. (2022). "EEG Coherence and Neural Entrainment in Energy Healing Dyads." <em>Frontiers in Human Neuroscience.</em></li>
+                <li>Porges, S. W. (2011). "The Polyvagal Theory: Neurophysiological Foundations of Emotions, Attachment, and Self-regulation." <em>W. W. Norton & Company.</em></li>
+            </ul>
+        </div>
+
+        <footer class="lesson-footer">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="footer-logo">
+            <p class="brand">AccrediPro Academy Certified Energy Healing Practitioner</p>
+            <p class="copyright">&copy; 2024 AccrediPro Academy. All Rights Reserved. The B.A.L.A.N.C.E. Protocol™ is a proprietary framework.</p>
+        </footer>
+    </div>
+</body>
+
+</html>

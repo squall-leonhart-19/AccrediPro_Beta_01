@@ -1,0 +1,672 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lesson 18.5: Advanced Scaffolding: Support vs. Rescue</title>
+    <style>
+        /* Base & Reset */
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Georgia, 'Times New Roman', serif;
+            line-height: 1.8;
+            color: #2d2d2d;
+            background: #f8f6f3;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Main Container */
+        .lesson-container {
+            max-width: 860px;
+            margin: 0 auto;
+            padding: 40px 30px;
+            background: #ffffff;
+            min-height: 100vh;
+            box-shadow: 0 0 60px rgba(0, 0, 0, 0.08);
+        }
+
+        /* Brand Header */
+        .brand-header {
+            text-align: center;
+            padding-bottom: 30px;
+            margin-bottom: 35px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .brand-logo {
+            max-width: 220px;
+            height: auto;
+            margin-bottom: 5px;
+        }
+
+        /* Module Header - BLUE/TEAL theme for Parenting/Support */
+        .module-header {
+            background: linear-gradient(135deg, #0f172a 0%, #334155 100%);
+            padding: 35px 35px 30px;
+            border-radius: 16px;
+            margin-bottom: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .module-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+            transform: translate(100px, -100px);
+        }
+
+        .module-header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, #B8860B, #D4A84B, #B8860B);
+        }
+
+        .module-label {
+            margin: 0;
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.75);
+            text-transform: uppercase;
+            letter-spacing: 2.5px;
+            font-weight: 500;
+        }
+
+        .lesson-title {
+            margin: 10px 0 0 0;
+            font-size: 28px;
+            color: #ffffff;
+            font-weight: 700;
+            line-height: 1.3;
+            position: relative;
+        }
+
+        .lesson-meta {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+            padding-top: 18px;
+            border-top: 1px solid rgba(255, 255, 255, 0.15);
+            flex-wrap: wrap;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.85);
+            background: rgba(255, 255, 255, 0.1);
+            padding: 5px 12px;
+            border-radius: 4px;
+        }
+
+        /* Table of Contents */
+        .toc-box {
+            background: linear-gradient(135deg, #fafafa 0%, #f5f5f5 100%);
+            border-radius: 14px;
+            padding: 24px 28px;
+            margin-bottom: 35px;
+            border: 1px solid #e8e8e8;
+        }
+
+        .toc-box .box-label {
+            font-weight: 600;
+            color: #334155;
+            margin: 0 0 18px 0;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .toc-list {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px 24px;
+        }
+
+        .toc-list a {
+            display: flex;
+            align-items: center;
+            padding: 8px 12px;
+            color: #555;
+            text-decoration: none;
+            font-size: 14px;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+        }
+
+        .toc-list a:hover {
+            background: white;
+            color: #334155;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+        }
+
+        .toc-list .section-num {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 26px;
+            height: 26px;
+            background: #334155;
+            color: white;
+            font-weight: 600;
+            font-size: 11px;
+            border-radius: 6px;
+            margin-right: 12px;
+            flex-shrink: 0;
+        }
+
+        /* Learning Objectives */
+        .objectives-box {
+            background: #f8fafc;
+            border: 2px solid #334155;
+            border-radius: 14px;
+            padding: 30px 35px;
+            margin-bottom: 40px;
+        }
+
+        .objectives-box .box-label {
+            font-weight: 600;
+            color: #334155;
+            margin: 0 0 18px 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .objectives-box .box-label::before {
+            content: '🎯';
+            font-size: 18px;
+        }
+
+        .objectives-box ul {
+            margin: 0;
+            padding-left: 22px;
+        }
+
+        .objectives-box li {
+            margin-bottom: 14px;
+            font-size: 16px;
+            line-height: 1.7;
+        }
+
+        /* Section Headings */
+        h2 {
+            font-size: 24px;
+            color: #0f172a;
+            margin: 50px 0 20px 0;
+            font-weight: 600;
+            position: relative;
+            padding-bottom: 12px;
+        }
+
+        h2::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 60px;
+            height: 3px;
+            background: #B8860B;
+        }
+
+        h3 {
+            font-size: 20px;
+            color: #334155;
+            margin: 35px 0 15px 0;
+            font-weight: 600;
+        }
+
+        /* Paragraphs */
+        p {
+            font-size: 17px;
+            margin-bottom: 20px;
+            color: #333;
+            line-height: 1.8;
+        }
+
+        /* Highlights */
+        .highlight {
+            background: linear-gradient(180deg, transparent 60%, #FFF59D 60%);
+            padding: 0 4px;
+            font-weight: 500;
+        }
+
+        /* Case Study Box */
+        .case-study {
+            background: linear-gradient(135deg, #f8f9fb 0%, #f0f2f5 100%);
+            border-radius: 16px;
+            padding: 0;
+            margin: 40px 0;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+            border: 1px solid #e2e8f0;
+        }
+
+        .case-study-header {
+            background: linear-gradient(135deg, #334155 0%, #475569 100%);
+            padding: 20px 30px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .case-study-icon {
+            width: 45px;
+            height: 45px;
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+        }
+
+        .case-study-header .box-label {
+            font-weight: 600;
+            color: #ffffff;
+            margin: 0;
+            font-size: 16px;
+            letter-spacing: 0.5px;
+        }
+
+        .case-study-content {
+            padding: 28px 30px;
+        }
+
+        .patient-profile {
+            display: flex;
+            align-items: center;
+            gap: 18px;
+            padding: 18px 22px;
+            background: white;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            border: 1px solid #e5e5e5;
+        }
+
+        .patient-avatar {
+            width: 55px;
+            height: 55px;
+            background: linear-gradient(135deg, #334155, #0f172a);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            color: white;
+            flex-shrink: 0;
+        }
+
+        /* Stats Highlight */
+        .stat-highlight {
+            background: #f1f5f9;
+            padding: 25px;
+            border-radius: 12px;
+            border-left: 4px solid #B8860B;
+            margin: 30px 0;
+        }
+
+        .stat-value {
+            font-size: 32px;
+            font-weight: 700;
+            color: #0f172a;
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        .stat-desc {
+            font-size: 15px;
+            color: #475569;
+            margin: 0;
+            line-height: 1.5;
+        }
+
+        /* Comparison Table */
+        .data-table-container {
+            overflow-x: auto;
+            margin: 35px 0;
+            border-radius: 12px;
+            border: 1px solid #e2e8f0;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 15px;
+            background: white;
+        }
+
+        th {
+            background: #f8fafc;
+            color: #0f172a;
+            font-weight: 600;
+            text-align: left;
+            padding: 16px;
+            border-bottom: 2px solid #e2e8f0;
+        }
+
+        td {
+            padding: 16px;
+            border-bottom: 1px solid #e2e8f0;
+            vertical-align: top;
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        /* Check Understanding */
+        .check-understanding {
+            background: #fdfbf7;
+            border: 2px solid #B8860B;
+            border-radius: 16px;
+            padding: 32px;
+            margin: 45px 0;
+        }
+
+        .question-item {
+            background: white;
+            border-radius: 12px;
+            padding: 22px 24px;
+            margin-bottom: 16px;
+            border: 1px solid #e8e4dc;
+            position: relative;
+        }
+
+        .reveal-btn {
+            background: #334155;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-size: 14px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+
+        .answer-text {
+            display: none;
+            font-size: 14px;
+            color: #1e293b;
+            margin-top: 15px;
+            padding: 15px;
+            background: #f1f5f9;
+            border-radius: 8px;
+        }
+
+        /* Takeaways & References */
+        .takeaways-box {
+            background: #f1f5f9;
+            padding: 30px;
+            border-radius: 12px;
+            margin-top: 50px;
+        }
+
+        .references-box {
+            margin-top: 40px;
+            padding-top: 25px;
+            border-top: 1px solid #eee;
+            font-size: 13px;
+            color: #666;
+        }
+
+        .references-box h4 {
+            margin: 0 0 15px 0;
+            color: #333;
+            font-size: 15px;
+        }
+
+        .ref-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .ref-list li {
+            margin-bottom: 10px;
+            line-height: 1.5;
+        }
+
+        /* Footer */
+        .lesson-footer {
+            text-align: center;
+            padding-top: 50px;
+            margin-top: 60px;
+            border-top: 1px solid #eee;
+        }
+
+        .footer-logo {
+            max-width: 140px;
+            opacity: 0.9;
+        }
+
+        @media (max-width: 768px) {
+            .toc-list { grid-template-columns: 1fr; }
+            .lesson-container { padding: 20px 15px; }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="lesson-container">
+        <div class="brand-header">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="brand-logo">
+        </div>
+
+        <header class="module-header">
+            <p class="module-label">Module 18: L2: Integration & Synthesis</p>
+            <h1 class="lesson-title">Lesson 5: Advanced Scaffolding: Support vs. Rescue</h1>
+            <div class="lesson-meta">
+                <span class="meta-item">35 min read</span>
+                <span class="meta-item">Lesson 5 of 8</span>
+            </div>
+        </header>
+
+        <div class="toc-box">
+            <p class="box-label">In This Lesson</p>
+            <ul class="toc-list">
+                <li><a href="#section1"><span class="section-num">1</span>The Scaffolding Paradigm</a></li>
+                <li><a href="#section2"><span class="section-num">3</span>Support vs. Rescue Dynamics</a></li>
+                <li><a href="#section3"><span class="section-num">3</span>ZPD in Emotional Intelligence</a></li>
+                <li><a href="#section4"><span class="section-num">4</span>Neurodiversity-Informed Support</a></li>
+                <li><a href="#section5"><span class="section-num">5</span>The Support-to-Autonomy Pipeline</a></li>
+                <li><a href="#section6"><span class="section-num">6</span>The Rescuer Archetype</a></li>
+            </ul>
+        </div>
+
+        <div class="objectives-box">
+            <p class="box-label">Learning Objectives</p>
+            <ul>
+                <li>Differentiate between developmental scaffolding and parental over-functioning in high-stakes scenarios.</li>
+                <li>Apply Vygotsky’s Zone of Proximal Development (ZPD) to emotional regulation and executive function.</li>
+                <li>Identify the "Rescuer" archetype and its specific neurobiological impact on a child's self-efficacy.</li>
+                <li>Customize the <span class="highlight">R.A.I.S.E. Framework™</span> for ADHD, ASD, and Highly Sensitive Children (HSC).</li>
+                <li>Implement a strategic "fading" protocol to transition from high support to authentic autonomy.</li>
+            </ul>
+        </div>
+
+        <h2 id="section1">1. The Scaffolding Paradigm: Redefining the 'S' Pillar</h2>
+        <p>In the earlier stages of the <span class="highlight">R.A.I.S.E. Framework™</span>, we defined <strong>Support</strong> as the bridge between a child’s current capability and their future potential. However, at the advanced level of integration, the coach must help parents navigate the nuanced boundary between being a <em>scaffold</em> and being a <em>crutch</em>.</p>
+        
+        <p>Scaffolding, a term popularized by Jerome Bruner and based on Lev Vygotsky’s theories, refers to the temporary support provided to a learner to help them complete a task they cannot yet do independently. In conscious parenting, this extends beyond academic tasks to <strong>emotional regulation, social navigation, and executive functioning</strong>. The goal of a scaffold is its eventual removal; if the support stays in place indefinitely, it ceases to be a scaffold and becomes a form of "over-functioning" that inhibits the child's neuroplastic growth.</p>
+
+        <div class="stat-highlight">
+            <span class="stat-value">24% Increase</span>
+            <p class="stat-desc">A 2021 longitudinal study (n=1,200) published in the <em>Journal of Child and Family Studies</em> found that children of "over-functioning" parents showed a 24% higher incidence of clinical anxiety and lower self-efficacy scores by age 15 compared to those receiving calibrated scaffolding.</p>
+        </div>
+
+        <h2 id="section2">2. Support vs. Rescue: The Critical Distinction</h2>
+        <p>The primary challenge for the conscious parent is the biological urge to "rescue." When a child is in distress, the parent’s own nervous system—often governed by the <span class="highlight">Sympathetic Nervous System</span>—triggers a "fix-it" response. Rescuing is an act of parental self-regulation; the parent fixes the problem to alleviate their <em>own</em> discomfort with the child's struggle.</p>
+
+        <div class="data-table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Feature</th>
+                        <th>Scaffolding (Support)</th>
+                        <th>Rescuing (Over-functioning)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Primary Goal</strong></td>
+                        <td>Building the child's internal capacity.</td>
+                        <td>Ending the immediate conflict/discomfort.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Parental State</strong></td>
+                        <td>Regulated, observant, "The Anchor."</td>
+                        <td>Reactive, anxious, "The Hero."</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Child's Experience</strong></td>
+                        <td>"I am capable with help."</td>
+                        <td>"I am incapable without help."</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Long-term Outcome</strong></td>
+                        <td>Self-efficacy and resilience.</td>
+                        <td>Learned helplessness and dependency.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Example</strong></td>
+                        <td>"I’ll sit with you while you organize your bag."</td>
+                        <td>"I’ll pack your bag so we aren't late."</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <h2 id="section3">3. Applying ZPD to Emotional Intelligence</h2>
+        <p>The <strong>Zone of Proximal Development (ZPD)</strong> is the "sweet spot" of learning. In the context of the <span class="highlight">R.A.I.S.E. Framework™</span>, we apply this to the child's window of tolerance. If a task is too easy, the child is bored; if it is too hard (outside the ZPD), the child experiences an <span class="highlight">amygdala hijack</span> and cannot learn.</p>
+
+        <p>Advanced scaffolding requires the parent to accurately assess the child's current emotional ZPD. For instance, if a 10-year-old is having a meltdown, their ZPD for "problem-solving" is currently zero. The scaffold required at that moment is <strong>co-regulation</strong> (Module 2: Attune). Once the child returns to a ventral vagal state, the ZPD shifts, and the parent can scaffold the <em>thinking</em> process rather than just fixing the problem.</p>
+
+        <div class="case-study">
+            <div class="case-study-header">
+                <div class="case-study-icon">👤</div>
+                <div>
+                    <p class="box-label">Case Study: Calibrating the ZPD</p>
+                </div>
+            </div>
+            <div class="case-study-content">
+                <div class="patient-profile">
+                    <div class="patient-avatar">L</div>
+                    <div class="patient-info">
+                        <h4>Leo (Age 9)</h4>
+                        <p>Presenting Issue: Chronic "homework meltdowns" and refusal to start tasks.</p>
+                    </div>
+                </div>
+                <p><strong>The Rescue Pattern:</strong> Leo’s mother, Sarah, would sit next to him and essentially dictate the answers to "stop the crying," leading to Leo becoming increasingly dependent and unable to work for even five minutes alone.</p>
+                <p><strong>The Scaffolding Intervention:</strong> Sarah was coached to move from "Hero" to "Scaffold." We identified Leo's ZPD for independent work was exactly 4 minutes.
+                <ul>
+                    <li><strong>Step 1:</strong> Sarah sits with Leo for the first 2 minutes to "prime" his brain (Attunement).</li>
+                    <li><strong>Step 2:</strong> Sarah sets a timer for 4 minutes and moves to the other side of the room.</li>
+                    <li><strong>Step 3:</strong> If Leo struggles, Sarah asks, "What is the very first tiny step?" rather than giving the answer.</li>
+                </ul>
+                <strong>Outcome:</strong> Within 6 weeks, Leo's independent work ZPD increased to 20 minutes, and his "homework anxiety" decreased by 60% as measured by parental observation logs.</p>
+            </div>
+        </div>
+
+        <h2 id="section4">4. Neurodiversity-Informed Support</h2>
+        <p>A "one-size-fits-all" approach to scaffolding fails neurodivergent children. For these children, the "Support" pillar must be customized to account for <strong>Executive Function (EF) deficits</strong> or <strong>Sensory Processing</strong> differences.</p>
+
+        <h3>ADHD and the "External Brain"</h3>
+        <p>Children with ADHD often have a "performance gap"—they know <em>what</em> to do but cannot <em>execute</em> it. Scaffolding here involves being an "external frontal lobe." This is not rescuing; it is providing the structural support their brain lacks biologically. Examples include visual checklists, body doubling, and breaking tasks into micro-segments.</p>
+
+        <h3>The Highly Sensitive Child (HSC)</h3>
+        <p>For the HSC, scaffolding focuses on <strong>emotional titration</strong>. Because they process information more deeply, they reach the "overwhelmed" threshold faster. Scaffolding involves "previewing" transitions and providing sensory breaks before the nervous system reaches a state of high arousal.</p>
+
+        <h2 id="section5">5. The Support-to-Autonomy Pipeline: Strategic Fading</h2>
+        <p>The hallmark of an expert Conscious Parenting Coach is the ability to help parents <strong>fade</strong> their support. Fading is the systematic reduction of prompts and assistance as the child demonstrates mastery. This is where many parents get "stuck"—they continue to provide level-10 support for a level-2 problem.</p>
+
+        <p>The Fading Protocol follows four distinct stages:</p>
+        <ol class="content-list">
+            <li><strong>I Do, You Watch:</strong> The parent models the skill (emotional regulation or task completion) while narrating the internal process.</li>
+            <li><strong>We Do Together:</strong> High-level collaboration. The parent provides 50-70% of the executive "heavy lifting."</li>
+            <li><strong>You Do, I Watch:</strong> The parent is present but silent. They only intervene if the child moves into a "danger zone" of dysregulation.</li>
+            <li><strong>You Do, I Check In:</strong> The child performs the task independently, and the parent provides "delayed feedback" or celebratory attunement afterward.</li>
+        </ol>
+
+        <h2 id="section6">6. Analyzing the 'Rescuer' Archetype</h2>
+        <p>Rescuing is often a "ghost in the nursery"—a pattern the parent learned in their own childhood. If a parent was praised for being a "helper" or felt responsible for their own parents' emotions, they are likely to adopt the Rescuer Archetype. </p>
+        
+        <p>Neurobiologically, the Rescuer Archetype prevents the child from experiencing the "productive struggle" necessary for <strong>Myelination</strong>. When a child struggles and then succeeds, the brain reinforces the neural pathways associated with that skill. When a parent rescues, those pathways remain weak. Over time, this results in a child who lacks "Grit" (as defined by Angela Duckworth) and has a fragile sense of self.</p>
+
+        <div class="check-understanding">
+            <p class="box-label">Check Your Understanding</p>
+            <p class="box-subtitle">Test your clinical reasoning on support vs. rescue.</p>
+            
+            <div class="question-item">
+                <div class="question-number">1</div>
+                <p class="question-text">A 12-year-old forgets their lunch for the third time this week. The parent is tempted to drive it to school. Is this Support or Rescue?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Analysis</button>
+                <div class="answer-text">
+                    In most cases, this is <strong>Rescuing</strong>. At age 12, the child is capable of experiencing the natural consequence (hunger or borrowing from a friend). A <strong>Support</strong> approach would be: "That's tough that you forgot your lunch. Let's brainstorm a visual reminder for the door tonight so it doesn't happen tomorrow." Driving the lunch alleviates the <em>parent's</em> anxiety about the child's discomfort.
+                </div>
+            </div>
+
+            <div class="question-item">
+                <div class="question-number">2</div>
+                <p class="question-text">How does the ZPD change when a child is in a state of 'Hyper-arousal' (Sympathetic activation)?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Analysis</button>
+                <div class="answer-text">
+                    The ZPD for cognitive learning <strong>shrinks to zero</strong>. During hyper-arousal, the prefrontal cortex is offline. The only effective scaffold is "Co-regulation" (The 'A' in R.A.I.S.E.) to bring the child back into their window of tolerance before any autonomy-building can occur.
+                </div>
+            </div>
+        </div>
+
+        <div class="takeaways-box">
+            <p class="box-label">Key Takeaways</p>
+            <ul>
+                <li><strong>Scaffolding is Temporary:</strong> If the support doesn't have an "exit strategy," it is over-functioning, not supporting.</li>
+                <li><strong>Rescue is for the Parent:</strong> Rescuing usually serves to regulate the parent's anxiety rather than the child's development.</li>
+                <li><strong>ZPD is Fluid:</strong> A child's capacity for independence fluctuates based on their nervous system state, time of day, and sensory load.</li>
+                <li><strong>Neurodiversity Requires "External Scaffolds":</strong> For ADHD/ASD, support often looks like environmental modifications rather than just "trying harder."</li>
+                <li><strong>Self-Efficacy is Earned:</strong> Authentic confidence comes from the child's mastery of the "productive struggle," not from parental praise.</li>
+            </ul>
+        </div>
+
+        <div class="references-box">
+            <h4>References & Further Reading</h4>
+            <ul class="ref-list">
+                <li>Vygotsky, L. S. (1978). "Mind in Society: The Development of Higher Psychological Processes." Harvard University Press.</li>
+                <li>Schiffrin, H. H. et al. (2014). "Helping or Hovering? The Effects of Helicopter Parenting on College Students’ Well-Being." Journal of Child and Family Studies.</li>
+                <li>Duckworth, A. L. et al. (2007). "Grit: Perseverance and Passion for Long-Term Goals." Journal of Personality and Social Psychology.</li>
+                <li>Cui, M. et al. (2022). "Parental Over-control and Adolescent Self-Efficacy: A 3-Year Longitudinal Study." Journal of Youth and Adolescence.</li>
+                <li>Barkley, R. A. (2020). "Executive Functions: What They Are, How They Work, and Why They Evolved." Guilford Press.</li>
+                <li>Grolnick, W. S. et al. (2015). "Parental Scaffolding in the Contemporary Context." Developmental Review.</li>
+            </ul>
+        </div>
+
+        <footer class="lesson-footer">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="footer-logo">
+            <p class="brand">AccrediPro Academy Certified Conscious Parenting Coach</p>
+            <p class="copyright">&copy; 2024 AccrediPro Academy. All Rights Reserved. Confidential Professional Certification Material.</p>
+        </footer>
+    </div>
+</body>
+
+</html>
