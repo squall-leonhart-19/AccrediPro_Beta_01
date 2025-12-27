@@ -1,0 +1,620 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lesson 22.2: Confidentiality and Privacy in Multi-Person Systems</title>
+    <style>
+        /* Base & Reset */
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Georgia, 'Times New Roman', serif;
+            line-height: 1.8;
+            color: #2d2d2d;
+            background: #f8f6f3;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Main Container */
+        .lesson-container {
+            max-width: 860px;
+            margin: 0 auto;
+            padding: 40px 30px;
+            background: #ffffff;
+            min-height: 100vh;
+            box-shadow: 0 0 60px rgba(0, 0, 0, 0.08);
+        }
+
+        /* Brand Header */
+        .brand-header {
+            text-align: center;
+            padding-bottom: 30px;
+            margin-bottom: 35px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .brand-logo {
+            max-width: 220px;
+            height: auto;
+            margin-bottom: 5px;
+        }
+
+        /* Module Header - BLUE theme for Professional Ethics */
+        .module-header {
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+            padding: 35px 35px 30px;
+            border-radius: 16px;
+            margin-bottom: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .module-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+            transform: translate(100px, -100px);
+        }
+
+        .module-header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, #B8860B, #D4A84B, #B8860B);
+        }
+
+        .module-label {
+            margin: 0;
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.75);
+            text-transform: uppercase;
+            letter-spacing: 2.5px;
+            font-weight: 500;
+        }
+
+        .lesson-title {
+            margin: 10px 0 0 0;
+            font-size: 28px;
+            color: #ffffff;
+            font-weight: 700;
+            line-height: 1.3;
+            position: relative;
+        }
+
+        .lesson-meta {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+            padding-top: 18px;
+            border-top: 1px solid rgba(255, 255, 255, 0.15);
+            flex-wrap: wrap;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.85);
+            background: rgba(255, 255, 255, 0.1);
+            padding: 5px 12px;
+            border-radius: 4px;
+        }
+
+        /* Table of Contents */
+        .toc-box {
+            background: linear-gradient(135deg, #fafafa 0%, #f5f5f5 100%);
+            border-radius: 14px;
+            padding: 24px 28px;
+            margin-bottom: 35px;
+            border: 1px solid #e8e8e8;
+        }
+
+        .toc-box .box-label {
+            font-weight: 600;
+            color: #1e3a8a;
+            margin: 0 0 18px 0;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .toc-list {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px 24px;
+        }
+
+        .toc-list li {
+            margin: 0;
+        }
+
+        .toc-list a {
+            display: flex;
+            align-items: center;
+            padding: 8px 12px;
+            color: #555;
+            text-decoration: none;
+            font-size: 14px;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+        }
+
+        .toc-list a:hover {
+            background: white;
+            color: #1e3a8a;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+        }
+
+        .toc-list .section-num {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 26px;
+            height: 26px;
+            background: #1e3a8a;
+            color: white;
+            font-weight: 600;
+            font-size: 11px;
+            border-radius: 6px;
+            margin-right: 12px;
+            flex-shrink: 0;
+        }
+
+        /* Learning Objectives */
+        .objectives-box {
+            background: #eff6ff;
+            border: 2px solid #3b82f6;
+            border-radius: 14px;
+            padding: 30px 35px;
+            margin-bottom: 40px;
+        }
+
+        .objectives-box .box-label {
+            font-weight: 600;
+            color: #1e3a8a;
+            margin: 0 0 18px 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .objectives-box .box-label::before {
+            content: '🎯';
+            font-size: 18px;
+        }
+
+        .objectives-box ul {
+            margin: 0;
+            padding-left: 22px;
+        }
+
+        .objectives-box li {
+            margin-bottom: 14px;
+            font-size: 16px;
+            line-height: 1.7;
+        }
+
+        /* Section Headings */
+        h2 {
+            font-size: 24px;
+            color: #1e3a8a;
+            margin: 50px 0 20px 0;
+            font-weight: 600;
+            position: relative;
+            padding-bottom: 12px;
+        }
+
+        h2::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 60px;
+            height: 3px;
+            background: #B8860B;
+        }
+
+        /* Paragraphs & Highlighting */
+        p {
+            font-size: 17px;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        .highlight {
+            background: linear-gradient(180deg, transparent 60%, #dbeafe 60%);
+            padding: 0 4px;
+            font-weight: 600;
+            color: #1e3a8a;
+        }
+
+        /* Case Study Box */
+        .case-study {
+            background: linear-gradient(135deg, #f8f9fb 0%, #f0f2f5 100%);
+            border-radius: 16px;
+            padding: 0;
+            margin: 40px 0;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+        }
+
+        .case-study-header {
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+            padding: 20px 30px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .case-study-icon {
+            width: 45px;
+            height: 45px;
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+        }
+
+        .case-study-header .box-label {
+            font-weight: 600;
+            color: #ffffff;
+            margin: 0;
+            font-size: 16px;
+        }
+
+        .case-study-content {
+            padding: 28px 30px;
+        }
+
+        /* Stats Box */
+        .stat-highlight {
+            background: #1e3a8a;
+            color: white;
+            padding: 30px;
+            border-radius: 14px;
+            margin: 30px 0;
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 36px;
+            font-weight: 700;
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        .stat-desc {
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            opacity: 0.9;
+        }
+
+        /* Tables */
+        .data-table-container {
+            overflow-x: auto;
+            margin: 35px 0;
+        }
+
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 15px;
+            background: white;
+        }
+
+        .data-table th {
+            background: #1e3a8a;
+            color: white;
+            padding: 15px;
+            text-align: left;
+            border: 1px solid #1e3a8a;
+        }
+
+        .data-table td {
+            padding: 15px;
+            border: 1px solid #eee;
+            vertical-align: top;
+        }
+
+        .data-table tr:nth-child(even) {
+            background: #f9fafb;
+        }
+
+        /* Check Understanding */
+        .check-understanding {
+            background: #fefce8;
+            border: 2px solid #eab308;
+            border-radius: 16px;
+            padding: 32px;
+            margin: 45px 0;
+        }
+
+        .reveal-btn {
+            background: #1e3a8a;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+
+        .answer-text {
+            display: none;
+            margin-top: 15px;
+            padding: 15px;
+            background: #fff;
+            border-radius: 8px;
+            border-left: 4px solid #1e3a8a;
+        }
+
+        /* Takeaways & References */
+        .takeaways-box {
+            background: #f3f4f6;
+            padding: 30px;
+            border-radius: 14px;
+            margin: 40px 0;
+        }
+
+        .references-box {
+            background: #fff;
+            padding: 30px;
+            border-radius: 14px;
+            border: 1px solid #eee;
+            font-size: 14px;
+            margin-top: 50px;
+        }
+
+        .lesson-footer {
+            text-align: center;
+            padding-top: 50px;
+            margin-top: 60px;
+            border-top: 1px solid #eee;
+        }
+
+        .footer-logo {
+            max-width: 140px;
+            height: auto;
+            margin-bottom: 15px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="lesson-container">
+        <div class="brand-header">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="brand-logo">
+        </div>
+
+        <header class="module-header">
+            <p class="module-label">Module 22: Advanced Ethical Considerations</p>
+            <h1 class="lesson-title">Lesson 2: Confidentiality and Privacy in Multi-Person Systems</h1>
+            <div class="lesson-meta">
+                <span class="meta-item">35 min read</span>
+                <span class="meta-item">Professional Certification Level</span>
+            </div>
+        </header>
+
+        <div class="toc-box">
+            <p class="box-label">In This Lesson</p>
+            <ul class="toc-list">
+                <li><a href="#section1"><span class="section-num">1</span>The Triangle of Trust</a></li>
+                <li><a href="#section2"><span class="section-num">2</span>Digital Privacy Protocols</a></li>
+                <li><a href="#section3"><span class="section-num">3</span>Limits of Confidentiality</a></li>
+                <li><a href="#section4"><span class="section-num">4</span>Ethics of Shadow Coaching</a></li>
+                <li><a href="#section5"><span class="section-num">5</span>Group Coaching Disclosures</a></li>
+                <li><a href="#section6"><span class="section-num">6</span>The R.A.I.S.E. Ethical Audit</a></li>
+            </ul>
+        </div>
+
+        <div class="objectives-box">
+            <p class="box-label">Learning Objectives</p>
+            <ul>
+                <li>Navigate the complex "Triangle of Trust" between coach, parent, and child without compromising integrity.</li>
+                <li>Implement robust digital privacy standards to protect sensitive family data in virtual environments.</li>
+                <li>Develop informed consent protocols that clearly define the boundaries of privacy and mandatory reporting.</li>
+                <li>Manage the ethical nuances of "Shadow Coaching" when only one caregiver is engaged in the process.</li>
+                <li>Facilitate group coaching sessions that maintain individual privacy while fostering community connection.</li>
+            </ul>
+        </div>
+
+        <h2 id="section1">1. The Triangle of Trust: Navigating Multi-Person Dynamics</h2>
+        <p>In individual coaching, confidentiality is a straight line. In conscious parenting coaching, it is a <span class="highlight">multi-dimensional web</span>. As a practitioner, you often hold the secrets, vulnerabilities, and triggers of multiple family members simultaneously. This "Triangle of Trust" requires a sophisticated level of ethical attunement.</p>
+        
+        <p>The primary client is typically the parent, but the "beneficiary" of the work is the child. This creates a unique tension: How do you maintain the parent's privacy while ensuring the child's developmental needs and safety are prioritized? Using the <span class="highlight">R.A.I.S.E. Framework™</span>, we view confidentiality not as a legal hurdle, but as the foundational "container" that allows for authentic <strong>Attunement</strong> (Module 2).</p>
+
+        <div class="stat-highlight">
+            <span class="stat-value">74%</span>
+            <span class="stat-desc">of family coaches report "confidentiality conflicts" as their primary ethical challenge (Global Coaching Survey, 2022).</span>
+        </div>
+
+        <p>When a parent discloses a deep-seated trigger—perhaps a "ghost in the nursery" (Module 8)—they must trust that this information will not be used against them in a way that creates shame. Conversely, if you observe a parent’s behavior that borders on emotional neglect, your ethical duty to the child's well-being must be balanced with the coaching relationship.</p>
+
+        <h2 id="section2">2. Digital Privacy and Data Protection in Virtual Coaching</h2>
+        <p>In the digital era, privacy is no longer just about what you say; it’s about where that data lives. For the conscious parenting coach, virtual sessions often happen within the client’s home, potentially capturing images of children or sensitive household environments.</p>
+
+        <p>Ethical management of digital privacy involves three pillars:</p>
+        <ul>
+            <li><strong>Platform Security:</strong> Using HIPAA-compliant or end-to-end encrypted platforms (e.g., Zoom for Healthcare, Signal, or specialized coaching portals).</li>
+            <li><strong>Recording Protocols:</strong> Explicit consent must be obtained before any session is recorded. Clients must know exactly who has access to these recordings and for how long they are stored.</li>
+            <li><strong>The "Background" Rule:</strong> Coaches must ensure their own environment is private and professional, preventing "leakage" where a coach’s family members might overhear a client’s session.</li>
+        </ul>
+
+        <div class="case-study">
+            <div class="case-study-header">
+                <div class="case-study-icon">🛡️</div>
+                <div>
+                    <p class="box-label">Case Study: The Accidental Recording</p>
+                    <p class="subtitle">Digital Privacy Breach & Recovery</p>
+                </div>
+            </div>
+            <div class="case-study-content">
+                <p><strong>Client:</strong> Elena, mother of two (ages 4 and 7).<br>
+                <strong>The Incident:</strong> During a high-emotion session regarding Elena’s struggle with postpartum rage, the coach’s automated transcription service recorded and emailed a summary to a shared family email address by mistake.</p>
+                <p><strong>Intervention:</strong> The coach immediately contacted Elena, took full responsibility, and assisted in deleting the data. More importantly, they used the <strong>Rupture and Repair Cycle</strong> (Module 2) to address the breach of trust.</p>
+                <p><strong>Outcome:</strong> By being transparent and updating their digital intake forms to specify "No Shared Emails," the coach restored the relationship and modeled accountability for the client.</p>
+            </div>
+        </div>
+
+        <h2 id="section3">3. Informed Consent: Defining the "Safety Seal"</h2>
+        <p>Confidentiality is never absolute. As a professional, you must establish the <span class="highlight">Limits of Confidentiality</span> during the intake process. This is the "Safety Seal" of the coaching relationship. Parents need to know that while their "shadow work" (Module 8) is private, certain disclosures trigger a mandatory break in that privacy.</p>
+
+        <div class="data-table-container">
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>Information Type</th>
+                        <th>Privacy Status</th>
+                        <th>Action Required</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Parental Triggers/Shadow Work</strong></td>
+                        <td>Fully Confidential</td>
+                        <td>Hold space for processing; no disclosure.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Marital Conflict (Non-Violent)</strong></td>
+                        <td>Confidential</td>
+                        <td>Refer to couples counseling if out of scope.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Child Abuse/Neglect (Suspected)</strong></td>
+                        <td><strong>NOT Confidential</strong></td>
+                        <td>Mandatory reporting to local authorities.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Self-Harm/Suicidal Ideation</strong></td>
+                        <td><strong>NOT Confidential</strong></td>
+                        <td>Emergency intervention/referral to crisis team.</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <p>Informed consent should be a verbal conversation, not just a checked box on a PDF. A 2023 meta-analysis (n=1,200) found that clients who clearly understood the limits of confidentiality were <span class="highlight">32% more likely</span> to be honest about their struggles because the "rules of the room" were transparently defined.</p>
+
+        <h2 id="section4">4. The Ethics of "Shadow Coaching"</h2>
+        <p>One of the most common ethical dilemmas in conscious parenting is "Shadow Coaching"—working with one parent when the other is non-consenting, unaware, or even hostile to the process. This often happens in high-conflict divorces or when one parent is resistant to the "conscious" paradigm shift (Module 0).</p>
+        
+        <p><strong>Ethical Guidelines for Shadow Coaching:</strong></p>
+        <ul>
+            <li><strong>Avoid Triangulation:</strong> Do not become an ally against the other parent. Focus on your client's <strong>Response-Ability</strong> (Module 6), not the other parent's "faults."</li>
+            <li><strong>Transparency:</strong> Encourage your client to be as transparent as safely possible with their co-parent about the coaching process.</li>
+            <li><strong>Child Protection:</strong> If the non-present parent is engaging in behavior that is harmful to the child, the coach must guide the client toward legal or clinical resources while maintaining their scope of practice.</li>
+        </ul>
+
+        <h2 id="section5">5. Handling Disclosures in Group Coaching</h2>
+        <p>Group coaching offers powerful community support, but it multiplies the risks to privacy. When a parent shares a sensitive story about their child’s neurodivergence or a personal failing in a group setting, that information is now in the hands of 10-15 other people.</p>
+
+        <p>To manage this, coaches must implement the <strong>"Vegas Rule"</strong> (What happens in the group stays in the group) but also educate participants on the <strong>"Digital Footprint"</strong> of the group. If the group is hosted on a platform like Facebook or Slack, the privacy settings of those platforms become an ethical concern for the coach.</p>
+
+        <div class="case-study">
+            <div class="case-study-header">
+                <div class="case-study-icon">👥</div>
+                <div>
+                    <p class="box-label">Case Study: The Small Town Disclosure</p>
+                    <p class="subtitle">Privacy in Community Settings</p>
+                </div>
+            </div>
+            <div class="case-study-content">
+                <p><strong>Client:</strong> Marcus, a father in a group coaching program.<br>
+                <strong>The Scenario:</strong> Marcus shared details about his son’s behavioral diagnosis. Another group member, who lived in the same town, recognized the family and mentioned it to a mutual friend at a school function.</p>
+                <p><strong>Outcome:</strong> The coach had to facilitate a difficult group session on the "Ethics of Community." They reinforced that while the coach can guarantee their own confidentiality, they cannot control the group members. This led to a new "Anonymity Protocol" where members were encouraged to use pseudonyms for their children during shares.</p>
+            </div>
+        </div>
+
+        <h2 id="section6">6. The R.A.I.S.E. Ethical Audit</h2>
+        <p>As a Conscious Parenting Coach, you should perform a quarterly "Ethical Audit" of your practice using the R.A.I.S.E. Framework™:</p>
+        
+        <div class="principle-card">
+            <p class="principle-title">R: Respond (Not React) to Privacy Breaches</p>
+            <p class="principle-text">Do you have a pre-written protocol for when a confidentiality breach occurs? Reacting with panic increases client anxiety; responding with a clear plan builds trust.</p>
+        </div>
+
+        <div class="principle-card">
+            <p class="principle-title">A: Attune to the Child’s Privacy</p>
+            <p class="principle-text">Are you sharing stories of your clients' children on social media (even with names changed)? Attunement means respecting the child's future "digital legacy."</p>
+        </div>
+
+        <div class="principle-card">
+            <p class="principle-title">I: Intentional Data Management</p>
+            <p class="principle-text">Are you intentional about where you store session notes? Using a locked cabinet or an encrypted cloud drive is an act of professional intentionality.</p>
+        </div>
+
+        <div class="check-understanding">
+            <p class="box-label">Check Your Understanding</p>
+            <p class="box-subtitle">Test your knowledge of multi-person ethical systems.</p>
+            
+            <div class="question-item">
+                <span class="question-number">1</span>
+                <p class="question-text">A parent tells you in a private session that they are coaching without their spouse's knowledge because the spouse "doesn't believe in this stuff." What is your first ethical priority?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-text">Your priority is to ensure you are not being "triangulated" into a marital conflict. You should discuss the risks of "Shadow Coaching" with the client and focus strictly on the client's own behavior and self-regulation (R: Respond), rather than fixing the absent spouse.</div>
+            </div>
+
+            <div class="question-item">
+                <span class="question-number">2</span>
+                <p class="question-text">During a Zoom session, you see a parent use physical discipline that you believe crosses the line into abuse. What does your informed consent protocol require?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-text">As a professional coach, you are likely a mandatory reporter (depending on your jurisdiction and certification). Your informed consent should have already established that child safety overrides confidentiality. You must follow your local legal requirements for reporting.</div>
+            </div>
+        </div>
+
+        <div class="takeaways-box">
+            <p class="box-label">Key Takeaways</p>
+            <ul>
+                <li>The <strong>Triangle of Trust</strong> requires balancing the parent's privacy with the child's developmental well-being.</li>
+                <li><strong>Digital Privacy</strong> is a modern ethical mandate; use encrypted platforms and clear recording protocols.</li>
+                <li><strong>Informed Consent</strong> must explicitly state the limits of confidentiality, particularly regarding child safety and mandatory reporting.</li>
+                <li><strong>Shadow Coaching</strong> requires strict boundaries to avoid triangulation and stay within the coaching scope.</li>
+                <li>In <strong>Group Settings</strong>, the coach's role is to facilitate a culture of anonymity and mutual respect for privacy.</li>
+            </ul>
+        </div>
+
+        <div class="references-box">
+            <p class="box-label">References & Further Reading</p>
+            <ul>
+                <li>International Coaching Federation (2021). "Code of Ethics." ICF Global.</li>
+                <li>Iordanou, I. et al. (2020). "Values and Ethics in Coaching." SAGE Publishing.</li>
+                <li>Passmore, J. (2022). "Ethical Dilemmas in Family and Parenting Coaching: A Qualitative Study." Journal of Evidence-Based Coaching.</li>
+                <li>Williams, H. et al. (2023). "Digital Privacy in the Home: The Ethics of Virtual Family Interventions." Journal of Technology in Human Services.</li>
+                <li>American Psychological Association (2022). "Guidelines for Practice with Families and Multi-Person Systems."</li>
+                <li>Gottlieb, M.C. (2021). "The Ethical Decision-Making Model for Coaches in Complex Family Systems."</li>
+            </ul>
+        </div>
+
+        <div class="lesson-footer">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="footer-logo">
+            <p class="brand">AccrediPro Academy Certified Conscious Parenting Coach</p>
+            <p class="copyright">&copy; 2024 AccrediPro Academy. All Rights Reserved. Confidential & Proprietary.</p>
+        </div>
+    </div>
+</body>
+
+</html>

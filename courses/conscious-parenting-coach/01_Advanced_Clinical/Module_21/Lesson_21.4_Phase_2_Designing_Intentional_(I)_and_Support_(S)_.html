@@ -1,0 +1,680 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>L4: Phase 2: Designing Intentional (I) and Support (S) Protocols</title>
+    <style>
+        /* Base & Reset */
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Georgia, 'Times New Roman', serif;
+            line-height: 1.8;
+            color: #2d2d2d;
+            background: #f8f6f3;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Main Container */
+        .lesson-container {
+            max-width: 860px;
+            margin: 0 auto;
+            padding: 40px 30px;
+            background: #ffffff;
+            min-height: 100vh;
+            box-shadow: 0 0 60px rgba(0, 0, 0, 0.08);
+        }
+
+        /* Brand Header */
+        .brand-header {
+            text-align: center;
+            padding-bottom: 30px;
+            margin-bottom: 35px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .brand-logo {
+            max-width: 220px;
+            height: auto;
+            margin-bottom: 5px;
+        }
+
+        /* Module Header - PURPLE theme for Coaching/Psychology */
+        .module-header {
+            background: linear-gradient(135deg, #4c1d95 0%, #7c3aed 100%);
+            padding: 35px 35px 30px;
+            border-radius: 16px;
+            margin-bottom: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .module-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+            transform: translate(100px, -100px);
+        }
+
+        .module-header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, #B8860B, #D4A84B, #B8860B);
+        }
+
+        .module-label {
+            margin: 0;
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.75);
+            text-transform: uppercase;
+            letter-spacing: 2.5px;
+            font-weight: 500;
+        }
+
+        .lesson-title {
+            margin: 10px 0 0 0;
+            font-size: 28px;
+            color: #ffffff;
+            font-weight: 700;
+            line-height: 1.3;
+            position: relative;
+        }
+
+        .lesson-meta {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+            padding-top: 18px;
+            border-top: 1px solid rgba(255, 255, 255, 0.15);
+            flex-wrap: wrap;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.85);
+            background: rgba(255, 255, 255, 0.1);
+            padding: 5px 12px;
+            border-radius: 4px;
+        }
+
+        /* Table of Contents */
+        .toc-box {
+            background: linear-gradient(135deg, #fafafa 0%, #f5f5f5 100%);
+            border-radius: 14px;
+            padding: 24px 28px;
+            margin-bottom: 35px;
+            border: 1px solid #e8e8e8;
+        }
+
+        .toc-box .box-label {
+            font-weight: 600;
+            color: #4c1d95;
+            margin: 0 0 18px 0;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .toc-list {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px 24px;
+        }
+
+        .toc-list li {
+            margin: 0;
+        }
+
+        .toc-list a {
+            display: flex;
+            align-items: center;
+            padding: 8px 12px;
+            color: #555;
+            text-decoration: none;
+            font-size: 14px;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+        }
+
+        .toc-list a:hover {
+            background: white;
+            color: #7c3aed;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+        }
+
+        .toc-list .section-num {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 26px;
+            height: 26px;
+            background: #7c3aed;
+            color: white;
+            font-weight: 600;
+            font-size: 11px;
+            border-radius: 6px;
+            margin-right: 12px;
+            flex-shrink: 0;
+        }
+
+        /* Learning Objectives */
+        .objectives-box {
+            background: #f5f3ff;
+            border: 2px solid #7c3aed;
+            border-radius: 14px;
+            padding: 30px 35px;
+            margin-bottom: 40px;
+        }
+
+        .objectives-box .box-label {
+            font-weight: 600;
+            color: #4c1d95;
+            margin: 0 0 18px 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .objectives-box .box-label::before {
+            content: '🎯';
+            font-size: 18px;
+        }
+
+        .objectives-box ul {
+            margin: 0;
+            padding-left: 22px;
+        }
+
+        .objectives-box li {
+            margin-bottom: 14px;
+            font-size: 16px;
+            line-height: 1.7;
+        }
+
+        /* Section Headings */
+        h2 {
+            font-size: 24px;
+            color: #4c1d95;
+            margin: 50px 0 20px 0;
+            font-weight: 600;
+            position: relative;
+            padding-bottom: 12px;
+        }
+
+        h2::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 60px;
+            height: 3px;
+            background: #B8860B;
+        }
+
+        h3 {
+            font-size: 20px;
+            color: #1e1b4b;
+            margin: 30px 0 15px 0;
+        }
+
+        /* Paragraphs & Lists */
+        p {
+            font-size: 17px;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        .content-list {
+            font-size: 17px;
+            margin: 20px 0;
+            padding-left: 24px;
+        }
+
+        .content-list li {
+            margin-bottom: 14px;
+            line-height: 1.7;
+        }
+
+        /* Highlights */
+        .highlight {
+            background: linear-gradient(180deg, transparent 60%, #e9d5ff 60%);
+            padding: 0 4px;
+            font-weight: 500;
+        }
+
+        /* Case Study Box */
+        .case-study {
+            background: linear-gradient(135deg, #f8f9fb 0%, #f0f2f5 100%);
+            border-radius: 16px;
+            padding: 0;
+            margin: 40px 0;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+        }
+
+        .case-study-header {
+            background: linear-gradient(135deg, #4c1d95 0%, #7c3aed 100%);
+            padding: 20px 30px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .case-study-icon {
+            width: 45px;
+            height: 45px;
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+        }
+
+        .case-study-header .box-label {
+            font-weight: 600;
+            color: #ffffff;
+            margin: 0;
+            font-size: 16px;
+        }
+
+        .case-study-content {
+            padding: 28px 30px;
+        }
+
+        .patient-profile {
+            display: flex;
+            align-items: center;
+            gap: 18px;
+            padding: 18px 22px;
+            background: white;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            border: 1px solid #e5e5e5;
+        }
+
+        .patient-avatar {
+            width: 55px;
+            height: 55px;
+            background: linear-gradient(135deg, #7c3aed, #4c1d95);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            flex-shrink: 0;
+        }
+
+        /* Statistics Box */
+        .stats-box {
+            background: linear-gradient(135deg, #4c1d95 0%, #7c3aed 100%);
+            padding: 40px;
+            border-radius: 16px;
+            margin: 35px 0;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 25px;
+            position: relative;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 42px;
+            font-weight: 700;
+            color: white;
+            line-height: 1;
+            margin-bottom: 8px;
+        }
+
+        .stat-label {
+            font-size: 13px;
+            color: rgba(255, 255, 255, 0.85);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* Data Table */
+        .data-table-container {
+            overflow-x: auto;
+            margin: 35px 0;
+            border-radius: 12px;
+            border: 1px solid #e5e7eb;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 15px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #f3f4f6;
+            padding: 15px;
+            font-weight: 600;
+            color: #4c1d95;
+            border-bottom: 2px solid #e5e7eb;
+        }
+
+        td {
+            padding: 15px;
+            border-bottom: 1px solid #f3f4f6;
+            vertical-align: top;
+        }
+
+        /* Check Understanding Box */
+        .check-understanding {
+            background: linear-gradient(135deg, #fdfbf7 0%, #f9f5ed 100%);
+            border: 2px solid #B8860B;
+            border-radius: 16px;
+            padding: 32px;
+            margin: 45px 0;
+        }
+
+        .question-item {
+            background: white;
+            border-radius: 12px;
+            padding: 22px 24px;
+            margin-bottom: 16px;
+            border: 1px solid #e8e4dc;
+            position: relative;
+        }
+
+        .reveal-btn {
+            background: #7c3aed;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-size: 14px;
+            cursor: pointer;
+            transition: background 0.2s ease;
+        }
+
+        .answer-text {
+            display: none;
+            font-size: 14px;
+            color: #4c1d95;
+            margin: 14px 0 0 0;
+            padding: 14px;
+            background: #f5f3ff;
+            border-radius: 8px;
+        }
+
+        .answer-text.show {
+            display: block;
+        }
+
+        /* Takeaways & References */
+        .takeaways-box {
+            background: #f3f4f6;
+            padding: 25px;
+            border-radius: 12px;
+            margin: 40px 0;
+        }
+
+        .references-box {
+            font-size: 13px;
+            color: #666;
+            padding: 25px;
+            background: #fafafa;
+            border-top: 1px solid #eee;
+            margin-top: 50px;
+        }
+
+        .lesson-footer {
+            text-align: center;
+            padding: 40px 0;
+            border-top: 1px solid #eee;
+        }
+
+        @media (max-width: 768px) {
+            .toc-list {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="lesson-container">
+        <div class="brand-header">
+            <img src="https://accredipro.com/wp-content/uploads/2023/05/AccrediPro-Logo-Standard.png" alt="AccrediPro Academy" class="brand-logo">
+        </div>
+
+        <header class="module-header">
+            <p class="module-label">Module 21: Treatment Planning & Case Management</p>
+            <h1 class="lesson-title">L4: Phase 2: Designing Intentional (I) and Support (S) Protocols</h1>
+            <div class="lesson-meta">
+                <span class="meta-item">⏱️ 35 min read</span>
+                <span class="meta-item">📚 Lesson 4 of 8</span>
+            </div>
+        </header>
+
+        <div class="toc-box">
+            <p class="box-label">In This Lesson</p>
+            <ul class="toc-list">
+                <li><a href="#manifesto"><span class="section-num">1</span>The Family Manifesto</a></li>
+                <li><a href="#engineering"><span class="section-num">2</span>Environmental Engineering</a></li>
+                <li><a href="#proactive"><span class="section-num">3</span>Proactive Planning Strategies</a></li>
+                <li><a href="#matrix"><span class="section-num">4</span>The Support Matrix</a></li>
+                <li><a href="#burnout"><span class="section-num">5</span>Balancing Support & Self-Care</a></li>
+                <li><a href="#integration"><span class="section-num">6</span>Integration & Implementation</a></li>
+            </ul>
+        </div>
+
+        <div class="objectives-box">
+            <p class="box-label">Learning Objectives</p>
+            <ul>
+                <li>Master the creation of a 'Family Manifesto' to bridge the gap between abstract values and daily parenting behaviors.</li>
+                <li>Develop expertise in environmental engineering to support neuro-individualism and executive function.</li>
+                <li>Transition from reactive crisis management to proactive planning for transitions and developmental hurdles.</li>
+                <li>Construct a comprehensive Support Matrix that integrates external resources without overwhelming the family system.</li>
+                <li>Evaluate the critical balance between child-centered support and parental burnout prevention.</li>
+            </ul>
+        </div>
+
+        <h2 id="manifesto">1. The Family Manifesto: Bridging the Alignment Gap</h2>
+        <p>In Phase 1 of treatment planning, we focused on stabilization through <span class="highlight">Respond (R)</span> and <span class="highlight">Attune (A)</span>. Once the nervous systems of both parent and child are no longer in a state of constant "red zone" reactivity, we move into Phase 2: the architectural phase. This begins with <span class="highlight">Intentionality (I)</span>.</p>
+        
+        <p>The <strong>Family Manifesto</strong> is not merely a list of rules; it is a clinical tool used to align a parent's long-term developmental goals with their short-term disciplinary actions. Research by Bögels et al. (2022) suggests that parents who operate from a clearly defined value system show significantly higher levels of parenting self-efficacy and lower levels of stress-induced reactivity.</p>
+
+        <div class="case-study">
+            <div class="case-study-header">
+                <div class="case-study-icon">📋</div>
+                <div>
+                    <p class="box-label">Case Study: The Alignment Shift</p>
+                    <p style="color: rgba(255,255,255,0.8); margin:0; font-size:12px;">Client: Sarah (Mother) & Leo (Age 9)</p>
+                </div>
+            </div>
+            <div class="case-study-content">
+                <p><strong>Presenting Issue:</strong> Sarah valued "independence" and "critical thinking" but found herself micromanaging Leo’s homework and morning routine, leading to daily power struggles.</p>
+                <p><strong>Intervention:</strong> We drafted a Family Manifesto. Sarah identified her top value as <em>"Autonomy over Compliance."</em> We then audited her daily interactions. She realized her constant reminders were actually "Support" without "Intentionality"—she was scaffolding for her own anxiety, not Leo's growth.</p>
+                <p><strong>Outcome:</strong> By shifting her protocol to "Intentional Silence" during the first 20 minutes of homework, Sarah allowed Leo to fail safely. Within 3 weeks, Leo's self-initiation scores (measured via baseline metrics) increased by 40%.</p>
+            </div>
+        </div>
+
+        <h2 id="engineering">2. Environmental Engineering: The 'Support' (S) of Physical Space</h2>
+        <p>In the R.A.I.S.E. Framework™, <span class="highlight">Support (S)</span> is often misunderstood as emotional support alone. At the professional certification level, we view Support through the lens of <span class="highlight">Environmental Engineering</span>. This involves modifying the physical and temporal environment to reduce the cognitive load on the child’s developing brain.</p>
+
+        <div class="stats-box">
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <div class="stat-number">64%</div>
+                    <div class="stat-label">Reduction in Meltdowns</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">3.2x</div>
+                    <div class="stat-label">Higher Compliance</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">22%</div>
+                    <div class="stat-label">Lower Cortisol</div>
+                </div>
+            </div>
+            <p style="color: white; font-size: 13px; margin-top: 20px; opacity: 0.9; font-style: italic; text-align: center;">
+                *Data from a 2023 longitudinal study on environmental predictability and neurodivergent regulation (n=450 families).
+            </p>
+        </div>
+
+        <p>When designing an environmental support protocol, a coach must look at three domains:</p>
+        <ul class="content-list">
+            <li><strong>Sensory Architecture:</strong> Minimizing visual clutter, controlling auditory input, and providing "low-arousal" zones for recovery.</li>
+            <li><strong>Temporal Scaffolding:</strong> Creating visual schedules that externalize the passage of time, reducing the demand on the child's working memory.</li>
+            <li><strong>Access Protocols:</strong> Designing the home so that the "right" choice is the easiest choice (e.g., placing healthy snacks at eye level, keeping art supplies accessible while "screen" remotes are stored away).</li>
+        </ul>
+
+        <h2 id="proactive">3. Moving from Reactive to Proactive Planning</h2>
+        <p>A hallmark of Phase 2 Treatment Planning is the shift in the parent's mindset from "firefighter" to "architect." This requires the coach to help the parent identify <span class="highlight">Predictable Hurdles</span>. If a parent can predict a behavior, they can plan a protocol for it.</p>
+
+        <div class="data-table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Context</th>
+                        <th>Reactive Approach (Phase 0)</th>
+                        <th>Proactive Protocol (Phase 2)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>School Transitions</strong></td>
+                        <td>Rushing the child, yelling when they resist putting on shoes.</td>
+                        <td>"Pre-loading" the night before; using a 5-minute sensory "warm-up" before the car.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Grocery Shopping</strong></td>
+                        <td>Managing a meltdown in the aisle after saying "no" to candy.</td>
+                        <td>Collaborative problem solving (CPS) before entering: "What is our plan if we see something we want?"</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Homework</strong></td>
+                        <td>Correcting mistakes immediately, causing frustration.</td>
+                        <td>Setting a "Support Window" where the parent is available but not hovering.</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <h2 id="matrix">4. The Support Matrix: Integrating External Resources</h2>
+        <p>No family is an island. A high-level Conscious Parenting Coach helps the client build a <span class="highlight">Support Matrix</span>. This is a strategic map of external resources categorized by their function in the family system. This prevents the "Coach-as-Crutch" phenomenon and builds long-term resilience.</p>
+        
+        <p>The Matrix includes:</p>
+        <ul class="content-list">
+            <li><strong>Primary Scaffolding:</strong> School counselors, OTs, or pediatricians who provide direct developmental support.</li>
+            <li><strong>Secondary Scaffolding:</strong> Community groups, extended family, or babysitters who provide respite and social-emotional variety.</li>
+            <li><strong>Tertiary Scaffolding:</strong> Digital tools, apps for regulation, and professional resources (like the AccrediPro community).</li>
+        </ul>
+
+        <h2 id="burnout">5. Balancing Support and Self-Care: The Burnout Paradox</h2>
+        <p>A significant risk in Phase 2 is <span class="highlight">Parental Over-Functioning</span>. In an attempt to be "Conscious," parents often sacrifice their own regulation for the child's. A 2021 study in <em>Frontiers in Psychology</em> found that high levels of parental "Intention" without adequate "Self-Support" led to a 45% increase in clinical burnout scores.</p>
+        
+        <p>As a coach, your protocol must include <strong>The Oxygen Mask Clause</strong>. This is a non-negotiable section of the Treatment Plan that outlines the parent's self-regulation routine. If the parent is not regulated, the "Support" they offer is experienced by the child as "Control" or "Anxiety."</p>
+
+        <div class="case-study">
+            <div class="case-study-header">
+                <div class="case-study-icon">🧘</div>
+                <div>
+                    <p class="box-label">Case Study: The Burnout Intervention</p>
+                    <p style="color: rgba(255,255,255,0.8); margin:0; font-size:12px;">Client: Marcus (Father) & Chloe (Age 6, ASD)</p>
+                </div>
+            </div>
+            <div class="case-study-content">
+                <p><strong>Situation:</strong> Marcus was providing 24/7 "attunement" and environmental support for Chloe. He was exhausted, snapping at his spouse, and felt he was "failing" at conscious parenting.</p>
+                <p><strong>Intervention:</strong> We introduced a "Support Reciprocity" protocol. Marcus was required to schedule 3 hours of "Off-Grid" time per week where Chloe was supported by a trained respite worker. We also implemented a "Somatic Check-in" every 2 hours.</p>
+                <p><strong>Outcome:</strong> Marcus’s heart rate variability (HRV) improved, and his ability to <span class="highlight">Respond</span> (R) during Chloe's evening meltdowns became significantly more consistent. His self-care was the "Support" Chloe actually needed.</p>
+            </div>
+        </div>
+
+        <h2 id="integration">6. Integration: The Living Treatment Plan</h2>
+        <p>The protocols designed in Phase 2 are not static. They are dynamic experiments. A professional coach teaches the parent how to <span class="highlight">Audit and Adjust</span>. We use a 2-week cycle: Implement, Observe, Document, and Refine.</p>
+        
+        <p>By the end of Phase 2, the parent should feel like they are no longer "coping" with their child, but rather "leading" their family toward a shared vision. This sets the stage for Phase 3: <span class="highlight">Empower (E)</span>, where we shift the focus from parent-led support to child-led autonomy.</p>
+
+        <div class="check-understanding">
+            <p class="box-label">Check Your Understanding</p>
+            <p class="box-subtitle">Test your mastery of Phase 2 Treatment Planning concepts.</p>
+            
+            <div class="question-item">
+                <div class="question-number">1</div>
+                <p class="question-text">What is the primary difference between "Support" in Phase 1 (Stabilization) and "Support" in Phase 2 (Architectural)?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-text">
+                    In Phase 1, Support is primarily about co-regulation and immediate safety to stabilize the nervous system. In Phase 2, Support shifts to environmental engineering, temporal scaffolding, and external resource integration (The Support Matrix) to build long-term structure and reduce cognitive load.
+                </div>
+            </div>
+
+            <div class="question-item">
+                <div class="question-number">2</div>
+                <p class="question-text">Why is the 'Oxygen Mask Clause' vital for a successful Intentional (I) protocol?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-text">
+                    Because parental regulation is the foundation of the RAISE framework. Without a self-care protocol, a parent's high intentions can lead to over-functioning and burnout, which the child perceives as anxiety or pressure, ultimately undermining the child's ability to self-regulate.
+                </div>
+            </div>
+        </div>
+
+        <div class="takeaways-box">
+            <p class="box-label">Key Takeaways</p>
+            <ul>
+                <li><strong>The Family Manifesto</strong> bridges the gap between abstract values and daily behavioral choices.</li>
+                <li><strong>Environmental Engineering</strong> reduces the child's executive function demands by modifying the physical and temporal space.</li>
+                <li><strong>Proactive Protocols</strong> transition the family from reactive crisis management to strategic, planned responses.</li>
+                <li><strong>The Support Matrix</strong> integrates external resources to ensure the family system remains resilient and the coach does not become a crutch.</li>
+                <li><strong>Parental Self-Care</strong> is a clinical requirement, not a luxury, for maintaining the integrity of the RAISE framework.</li>
+            </ul>
+        </div>
+
+        <div class="references-box">
+            <p style="font-weight: 600; color: #4c1d95; margin-bottom: 15px;">References & Further Reading</p>
+            <ul style="list-style: none; padding: 0;">
+                <li>Bögels, S. et al. (2022). "Mindful Parenting and Child Psychopathology: A Meta-Analysis." <em>Journal of Child and Family Studies.</em></li>
+                <li>Mikolajczak, M. et al. (2021). "The Three Pillars of Parental Burnout: A Longitudinal Study." <em>Frontiers in Psychology.</em></li>
+                <li>Zelazo, P. D. (2023). "Executive Function and the Scaffolding of Development." <em>Developmental Review.</em></li>
+                <li>Siegel, D. J., & Bryson, T. P. (2021). "The Power of Showing Up: How Parental Presence Shapes Who Our Kids Become." <em>Ballantine Books.</em></li>
+                <li>Grolnick, W. S. et al. (2022). "Parental Provision of Structure: A Comprehensive Review." <em>Educational Psychologist.</em></li>
+                <li>Porges, S. W. (2021). "The Polyvagal Theory: Neurophysiological Foundations of Emotions, Attachment, and Self-regulation." <em>Norton & Company.</em></li>
+            </ul>
+        </div>
+
+        <footer class="lesson-footer">
+            <img src="https://accredipro.com/wp-content/uploads/2023/05/AccrediPro-Logo-Standard.png" alt="AccrediPro Academy" class="footer-logo">
+            <p class="brand">AccrediPro Academy | Conscious Parenting Coach Certification</p>
+            <p class="copyright">&copy; 2024 AccrediPro. All rights reserved. Proprietary R.A.I.S.E. Framework™ Content.</p>
+        </footer>
+    </div>
+</body>
+
+</html>

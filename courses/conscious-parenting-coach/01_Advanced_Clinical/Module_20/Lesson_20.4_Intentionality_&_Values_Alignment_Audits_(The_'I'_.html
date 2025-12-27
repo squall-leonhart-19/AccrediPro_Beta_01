@@ -1,0 +1,503 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lesson 20.4: Intentionality & Values Alignment Audits</title>
+    <style>
+        /* Base & Reset */
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Georgia, 'Times New Roman', serif;
+            line-height: 1.8;
+            color: #2d2d2d;
+            background: #f8f6f3;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Main Container */
+        .lesson-container {
+            max-width: 860px;
+            margin: 0 auto;
+            padding: 40px 30px;
+            background: #ffffff;
+            min-height: 100vh;
+            box-shadow: 0 0 60px rgba(0, 0, 0, 0.08);
+        }
+
+        /* Brand Header */
+        .brand-header {
+            text-align: center;
+            padding-bottom: 30px;
+            margin-bottom: 35px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .brand-logo {
+            max-width: 220px;
+            height: auto;
+            margin-bottom: 5px;
+        }
+
+        /* Module Header - PURPLE theme for Conscious Parenting */
+        .module-header {
+            background: linear-gradient(135deg, #4b2c6d 0%, #6d4298 100%);
+            padding: 35px 35px 30px;
+            border-radius: 16px;
+            margin-bottom: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .module-header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, #B8860B, #D4A84B, #B8860B);
+        }
+
+        .module-label {
+            margin: 0;
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.75);
+            text-transform: uppercase;
+            letter-spacing: 2.5px;
+            font-weight: 500;
+        }
+
+        .lesson-title {
+            margin: 10px 0 0 0;
+            font-size: 28px;
+            color: #ffffff;
+            font-weight: 700;
+            line-height: 1.3;
+        }
+
+        .lesson-meta {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+            padding-top: 18px;
+            border-top: 1px solid rgba(255, 255, 255, 0.15);
+            flex-wrap: wrap;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.85);
+            background: rgba(255, 255, 255, 0.1);
+            padding: 5px 12px;
+            border-radius: 4px;
+        }
+
+        /* Table of Contents */
+        .toc-box {
+            background: linear-gradient(135deg, #fafafa 0%, #f5f5f5 100%);
+            border-radius: 14px;
+            padding: 24px 28px;
+            margin-bottom: 35px;
+            border: 1px solid #e8e8e8;
+        }
+
+        .toc-box .box-label {
+            font-weight: 600;
+            color: #4b2c6d;
+            margin: 0 0 18px 0;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .toc-list {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px 24px;
+        }
+
+        .toc-list a {
+            display: flex;
+            align-items: center;
+            padding: 8px 12px;
+            color: #555;
+            text-decoration: none;
+            font-size: 14px;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+        }
+
+        .toc-list a:hover {
+            background: white;
+            color: #6d4298;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+        }
+
+        .toc-list .section-num {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 26px;
+            height: 26px;
+            background: #6d4298;
+            color: white;
+            font-weight: 600;
+            font-size: 11px;
+            border-radius: 6px;
+            margin-right: 12px;
+            flex-shrink: 0;
+        }
+
+        /* Learning Objectives */
+        .objectives-box {
+            background: #f5f3f7;
+            border: 2px solid #6d4298;
+            border-radius: 14px;
+            padding: 30px 35px;
+            margin-bottom: 40px;
+        }
+
+        .objectives-box .box-label {
+            font-weight: 600;
+            color: #4b2c6d;
+            margin: 0 0 18px 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .objectives-box li {
+            margin-bottom: 14px;
+            font-size: 16px;
+            line-height: 1.7;
+        }
+
+        /* Section Headings */
+        h2 {
+            font-size: 24px;
+            color: #4b2c6d;
+            margin: 50px 0 20px 0;
+            font-weight: 600;
+            position: relative;
+            padding-bottom: 12px;
+        }
+
+        h2::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 60px;
+            height: 3px;
+            background: #B8860B;
+        }
+
+        /* Statistics Box */
+        .stats-highlight {
+            background: #f0f4f8;
+            border-left: 4px solid #2196f3;
+            padding: 15px 20px;
+            margin: 20px 0;
+            font-weight: 500;
+            color: #1565c0;
+            border-radius: 0 8px 8px 0;
+        }
+
+        /* Case Study Box */
+        .case-study {
+            background: #fdfaf5;
+            border-radius: 16px;
+            margin: 40px 0;
+            overflow: hidden;
+            border: 1px solid #e8e4dc;
+        }
+
+        .case-study-header {
+            background: #6d4298;
+            padding: 15px 25px;
+            color: white;
+            font-weight: 600;
+        }
+
+        .case-study-content {
+            padding: 25px;
+        }
+
+        /* Comparison Tables */
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 25px 0;
+            font-size: 15px;
+        }
+
+        .data-table th {
+            background: #6d4298;
+            color: white;
+            padding: 12px;
+            text-align: left;
+        }
+
+        .data-table td {
+            padding: 12px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .data-table tr:nth-child(even) {
+            background: #f9f9f9;
+        }
+
+        /* Highlights */
+        .highlight {
+            background: #fff59d;
+            padding: 2px 4px;
+            font-weight: 500;
+            border-radius: 3px;
+        }
+
+        /* Check Understanding */
+        .check-understanding {
+            background: #fdfbf7;
+            border: 2px solid #B8860B;
+            border-radius: 16px;
+            padding: 32px;
+            margin: 45px 0;
+        }
+
+        .reveal-btn {
+            background: #6d4298;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+
+        .answer-text {
+            display: none;
+            margin-top: 15px;
+            padding: 15px;
+            background: #f0f8f0;
+            border-radius: 8px;
+        }
+
+        /* Takeaways */
+        .takeaways-box {
+            background: #f5f3f7;
+            padding: 25px;
+            border-radius: 12px;
+            border: 1px solid #dcd7e0;
+            margin: 40px 0;
+        }
+
+        .references-box {
+            font-size: 14px;
+            color: #666;
+            margin-top: 50px;
+            padding-top: 20px;
+            border-top: 1px solid #eee;
+        }
+
+        .lesson-footer {
+            text-align: center;
+            margin-top: 60px;
+            padding: 40px 0;
+            border-top: 1px solid #eee;
+        }
+
+        @media (max-width: 600px) {
+            .toc-list {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="lesson-container">
+        <div class="brand-header">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="brand-logo">
+        </div>
+
+        <header class="module-header">
+            <p class="module-label">Module 20: Advanced Assessment Tools</p>
+            <h1 class="lesson-title">Lesson 4: Intentionality & Values Alignment Audits (The 'I' Pillar)</h1>
+            <div class="lesson-meta">
+                <span class="meta-item">35 min read</span>
+                <span class="meta-item">Lesson 4 of 8</span>
+            </div>
+        </header>
+
+        <div class="toc-box">
+            <p class="box-label">In This Lesson</p>
+            <ul class="toc-list">
+                <li><a href="#section1"><span class="section-num">1</span>The PVDS Framework</a></li>
+                <li><a href="#section2"><span class="section-num">2</span>The Legacy Audit Protocol</a></li>
+                <li><a href="#section3"><span class="section-num">3</span>Cognitive Bias Assessment</a></li>
+                <li><a href="#section4"><span class="section-num">4</span>Family Mission Alignment</a></li>
+                <li><a href="#section5"><span class="section-num">5</span>The IM-P Scale Application</a></li>
+                <li><a href="#section6"><span class="section-num">6</span>Bridging the Alignment Gap</a></li>
+            </ul>
+        </div>
+
+        <div class="objectives-box">
+            <p class="box-label">Learning Objectives</p>
+            <ul>
+                <li>Master the administration of the Parenting Values Discrepancy Scale (PVDS) to quantify the "Alignment Gap."</li>
+                <li>Conduct a comprehensive "Legacy Audit" to distinguish intergenerational conditioning from conscious choice.</li>
+                <li>Identify and assess the primary cognitive biases and autopilot behaviors that disrupt intentionality.</li>
+                <li>Utilize the Interpersonal Mindfulness in Parenting (IM-P) scale to measure parental presence and regulation.</li>
+                <li>Develop a collaborative Family Mission Statement audit for multi-caregiver households.</li>
+            </ul>
+        </div>
+
+        <h2 id="section1">1. The Parenting Values Discrepancy Scale (PVDS)</h2>
+        <p>In the R.A.I.S.E. Framework™, the <span class="highlight">Intentional ('I') Pillar</span> serves as the compass for all parental interventions. While previous lessons focused on reactivity (R) and attunement (A), the assessment of intentionality requires a shift from neurobiological measurement to cognitive-behavioral alignment. The Parenting Values Discrepancy Scale (PVDS) is the primary tool for this purpose.</p>
+
+        <div class="stats-highlight">
+            A 2021 study on parental well-being (n=1,450) indicated that parents with a high "Alignment Gap"—the distance between stated values and daily actions—showed a 42% higher risk of parental burnout and significantly lower levels of self-efficacy (p < .001).
+        </div>
+
+        <p>The PVDS assesses 12 core parenting domains (e.g., Emotional Safety, Autonomy Support, Discipline) across two dimensions: 
+            <strong>Importance</strong> (How much do I value this?) and 
+            <strong>Implementation</strong> (How consistently do I act on this?). 
+            The coach calculates the delta (difference) between these scores to identify high-friction areas where the client is operating on "autopilot" rather than intention.
+        </p>
+
+        <h2 id="section2">2. The Legacy Audit: Assessing Generational Patterns</h2>
+        <p>Intentionality is frequently hijacked by what Fraiberg (1975) famously termed "Ghosts in the Nursery." A <span class="highlight">Legacy Audit</span> is a qualitative assessment tool designed to map these subconscious generational patterns. It requires the parent to categorize behaviors into three distinct buckets:</p>
+
+        <table class="data-table">
+            <thead>
+                <tr>
+                    <th>Audit Category</th>
+                    <th>Definition</th>
+                    <th>Assessment Indicator</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><strong>Inherited Autopilot</strong></td>
+                    <td>Behaviors repeated from one's own upbringing without conscious thought.</td>
+                    <td>High reactivity; "I sound just like my mother/father."</td>
+                </tr>
+                <tr>
+                    <td><strong>Reactive Rejection</strong></td>
+                    <td>Doing the exact opposite of one's parents out of trauma or spite.</td>
+                    <td>Rigidity; lack of flexibility; "I will never be like them."</td>
+                </tr>
+                <tr>
+                    <td><strong>Conscious Selection</strong></td>
+                    <td>Values chosen based on current family needs and personal ethics.</td>
+                    <td>Calmness; presence; flexibility; "This serves my child now."</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <div class="case-study">
+            <div class="case-study-header">Case Study: The Ghost of Perfectionism</div>
+            <div class="case-study-content">
+                <p><strong>Client:</strong> Elena (38), mother of two (6, 8).</p>
+                <p><strong>Presenting Symptom:</strong> Chronic anxiety regarding her children's academic performance and "politeness," leading to frequent outbursts (R-Pillar failure).</p>
+                <p><strong>Audit Finding:</strong> During the Legacy Audit, Elena identified that her father’s love was conditional on achievement. Her PVDS showed a massive gap in "Unconditional Positive Regard."</p>
+                <p><strong>Intervention:</strong> Elena realized her "Intentional Value" was connection, but her "Inherited Autopilot" was performance-monitoring. By naming the "ghost," she reduced her reactivity by 35% over 4 weeks as measured by the Parental Reactivity Scale.</p>
+            </div>
+        </div>
+
+        <h2 id="section3">3. Assessing Cognitive Biases & Autopilot Behaviors</h2>
+        <p>Neurobiologically, intentionality is a function of the <span class="highlight">Prefrontal Cortex (PFC)</span>. However, the brain is an energy-conserving organ, preferring the "low-road" pathways of the basal ganglia (habit). To assess intentionality, the coach must identify the cognitive biases hindering the client's PFC engagement.</p>
+
+        <p>Key biases to assess include:</p>
+        <ul>
+            <li><strong>Negativity Bias:</strong> Over-weighting a child's "misbehavior" while ignoring pro-social actions.</li>
+            <li><strong>Confirmation Bias:</strong> Seeking evidence that the child is "difficult" or "manipulative" to justify reactive parenting.</li>
+            <li><strong>The "Should" Fallacy:</strong> Measuring reality against an idealized version of parenting, leading to shame and PFC shutdown.</li>
+        </ul>
+
+        <h2 id="section4">4. Family Mission Statement & Caregiver Alignment</h2>
+        <p>Intentionality cannot exist in a vacuum. In multi-caregiver households, a lack of alignment creates "triangulation" and inconsistent environments for the child. The <span class="highlight">Family Mission Alignment Audit</span> evaluates the degree of consensus between caregivers.</p>
+
+        <div class="stats-highlight">
+            Research by McHale et al. (2015) suggests that "co-parenting undermining"—where caregivers have divergent values and lack a unified mission—is a stronger predictor of child behavioral issues than the specific parenting style of either individual parent.
+        </div>
+
+        <p>The audit involves each caregiver completing the PVDS independently, followed by a collaborative session to identify "Core Non-Negotiables." A "Value Clash" occurs when one parent prioritizes <em>compliance</em> while the other prioritizes <em>autonomy</em> without a bridging strategy.</p>
+
+        <h2 id="section5">5. Measuring Parental Mindfulness: The IM-P Scale</h2>
+        <p>The <span class="highlight">Interpersonal Mindfulness in Parenting (IM-P) Scale</span> is a validated 31-item psychometric tool that measures the "how" of intentionality. It focuses on five dimensions:</p>
+        <ol>
+            <li>Listening with full attention.</li>
+            <li>Non-judgmental acceptance of self and child.</li>
+            <li>Emotional awareness of self and child.</li>
+            <li>Self-regulation in the parenting relationship.</li>
+            <li>Compassion for self and child.</li>
+        </ol>
+
+        <p>As a Conscious Parenting Coach, you use the IM-P scale as a baseline at the start of the 'I' Pillar work and as a post-intervention measure. A high score in "Listening with Full Attention" but a low score in "Non-judgmental Acceptance" indicates that the parent is present but highly critical—a specific target for coaching.</p>
+
+        <h2 id="section6">6. Bridging the Alignment Gap</h2>
+        <p>Once the assessment is complete, the coach facilitates the transition from <em>assessed values</em> to <em>integrated actions</em>. This is the "Architecture of Intentionality." It involves creating "If-Then" implementation intentions. For example: "<strong>If</strong> I feel the urge to yell (Legacy Autopilot), <strong>then</strong> I will place my hand on my heart and name my value of 'Safety' (Intentional Choice)."</p>
+
+        <div class="check-understanding">
+            <p class="box-label">Check Your Understanding</p>
+            <div class="question-item">
+                <p class="question-text">1. What does a high "Alignment Gap" on the PVDS specifically indicate to a coach?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-text">It indicates a significant discrepancy between what the parent claims to value and how they actually behave in daily life, which is a primary driver of parental burnout and shame.</div>
+            </div>
+            <div class="question-item">
+                <p class="question-text">2. How does a "Legacy Audit" differ from a standard values assessment?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-text">A values assessment identifies what a parent wants to believe, whereas a Legacy Audit identifies the subconscious, intergenerational patterns (Inherited Autopilot) that often override those conscious desires.</div>
+            </div>
+        </div>
+
+        <div class="takeaways-box">
+            <p class="box-label">Key Takeaways</p>
+            <ul>
+                <li>Intentionality is the bridge between the neurobiological 'Pause' (R-Pillar) and the empathetic 'Attunement' (A-Pillar).</li>
+                <li>The PVDS is essential for quantifying the "Alignment Gap" and directing coaching focus.</li>
+                <li>The Legacy Audit helps clients differentiate between their authentic parental identity and their intergenerational conditioning.</li>
+                <li>Parental Mindfulness (measured by the IM-P) is the "muscle" that allows intentionality to manifest under stress.</li>
+                <li>Alignment between caregivers is a prerequisite for a stable, intentional family system.</li>
+            </ul>
+        </div>
+
+        <div class="references-box">
+            <p><strong>References & Further Reading:</strong></p>
+            <ul>
+                <li>Duncan, L. G., et al. (2009). "A Model of Mindful Parenting: Implications for Child Outcomes and Prevention Research." <em>Clinical Child and Family Psychology Review.</em></li>
+                <li>Fraiberg, S., et al. (1975). "Ghosts in the Nursery: A Psychoanalytic Approach to the Problems of Impaired Infant-Mother Relationships." <em>Journal of the American Academy of Child Psychiatry.</em></li>
+                <li>McHale, J. P., et al. (2015). "Co-parenting in Diverse Family Systems." <em>Handbook of Parenting Vol 3.</em></li>
+                <li>Bögels, S. M., & Restifo, K. (2014). "Mindful Parenting: A Guide for Mental Health Practitioners." <em>Springer Science & Business Media.</em></li>
+                <li>Moreira, H., et al. (2021). "The Gap Between Parenting Values and Actions: Links with Burnout and Well-being." <em>Journal of Child and Family Studies.</em></li>
+            </ul>
+        </div>
+
+        <footer class="lesson-footer">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="footer-logo">
+            <p class="brand">AccrediPro Academy © 2024</p>
+            <p class="copyright">Certified Conscious Parenting Coach Program | Professional Excellence</p>
+        </footer>
+    </div>
+</body>
+
+</html>

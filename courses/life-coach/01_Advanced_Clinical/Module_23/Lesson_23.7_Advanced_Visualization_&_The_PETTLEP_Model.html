@@ -1,0 +1,658 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lesson 23.7: Advanced Visualization & The PETTLEP Model</title>
+    <style>
+        /* Base & Reset */
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Georgia, 'Times New Roman', serif;
+            line-height: 1.8;
+            color: #2d2d2d;
+            background: #f8f6f3;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Main Container */
+        .lesson-container {
+            max-width: 860px;
+            margin: 0 auto;
+            padding: 40px 30px;
+            background: #ffffff;
+            min-height: 100vh;
+            box-shadow: 0 0 60px rgba(0, 0, 0, 0.08);
+        }
+
+        /* Brand Header */
+        .brand-header {
+            text-align: center;
+            padding-bottom: 30px;
+            margin-bottom: 35px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .brand-logo {
+            max-width: 220px;
+            height: auto;
+            margin-bottom: 5px;
+        }
+
+        /* Module Header - Gold/Emerald theme for Advanced Coaching */
+        .module-header {
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+            padding: 35px 35px 30px;
+            border-radius: 16px;
+            margin-bottom: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .module-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+            transform: translate(100px, -100px);
+        }
+
+        .module-header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, #B8860B, #D4A84B, #B8860B);
+        }
+
+        .module-label {
+            margin: 0;
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.75);
+            text-transform: uppercase;
+            letter-spacing: 2.5px;
+            font-weight: 500;
+        }
+
+        .lesson-title {
+            margin: 10px 0 0 0;
+            font-size: 28px;
+            color: #ffffff;
+            font-weight: 700;
+            line-height: 1.3;
+            position: relative;
+        }
+
+        .lesson-meta {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+            padding-top: 18px;
+            border-top: 1px solid rgba(255, 255, 255, 0.15);
+            flex-wrap: wrap;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.85);
+            background: rgba(255, 255, 255, 0.1);
+            padding: 5px 12px;
+            border-radius: 4px;
+        }
+
+        /* Table of Contents */
+        .toc-box {
+            background: linear-gradient(135deg, #fafafa 0%, #f5f5f5 100%);
+            border-radius: 14px;
+            padding: 24px 28px;
+            margin-bottom: 35px;
+            border: 1px solid #e8e8e8;
+        }
+
+        .toc-box .box-label {
+            font-weight: 600;
+            color: #1e3a8a;
+            margin: 0 0 18px 0;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .toc-list {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px 24px;
+        }
+
+        .toc-list li {
+            margin: 0;
+        }
+
+        .toc-list a {
+            display: flex;
+            align-items: center;
+            padding: 8px 12px;
+            color: #555;
+            text-decoration: none;
+            font-size: 14px;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+        }
+
+        .toc-list a:hover {
+            background: white;
+            color: #1e3a8a;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+        }
+
+        .toc-list .section-num {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 26px;
+            height: 26px;
+            background: #1e3a8a;
+            color: white;
+            font-weight: 600;
+            font-size: 11px;
+            border-radius: 6px;
+            margin-right: 12px;
+            flex-shrink: 0;
+        }
+
+        /* Learning Objectives */
+        .objectives-box {
+            background: #f0f7ff;
+            border: 2px solid #3b82f6;
+            border-radius: 14px;
+            padding: 30px 35px;
+            margin-bottom: 40px;
+        }
+
+        .objectives-box .box-label {
+            font-weight: 600;
+            color: #1e3a8a;
+            margin: 0 0 18px 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .objectives-box .box-label::before {
+            content: '🎯';
+            font-size: 18px;
+        }
+
+        .objectives-box ul {
+            margin: 0;
+            padding-left: 22px;
+        }
+
+        .objectives-box li {
+            margin-bottom: 14px;
+            font-size: 16px;
+            line-height: 1.7;
+        }
+
+        /* Section Headings */
+        h2 {
+            font-size: 24px;
+            color: #1e3a8a;
+            margin: 50px 0 20px 0;
+            font-weight: 600;
+            position: relative;
+            padding-bottom: 12px;
+        }
+
+        h2::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 60px;
+            height: 3px;
+            background: #B8860B;
+        }
+
+        /* Paragraphs & Highlighting */
+        p {
+            font-size: 17px;
+            margin-bottom: 22px;
+            color: #333;
+        }
+
+        .highlight {
+            background: linear-gradient(180deg, transparent 60%, #e0e7ff 60%);
+            padding: 0 4px;
+            font-weight: 600;
+            color: #1e3a8a;
+        }
+
+        /* Case Study Box */
+        .case-study {
+            background: linear-gradient(135deg, #f8f9fb 0%, #f0f2f5 100%);
+            border-radius: 16px;
+            padding: 0;
+            margin: 40px 0;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+            border: 1px solid #e5e7eb;
+        }
+
+        .case-study-header {
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+            padding: 20px 30px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .case-study-icon {
+            width: 45px;
+            height: 45px;
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+        }
+
+        .case-study-header .box-label {
+            font-weight: 600;
+            color: #ffffff;
+            margin: 0;
+            font-size: 16px;
+            letter-spacing: 0.5px;
+        }
+
+        .case-study-content {
+            padding: 28px 30px;
+        }
+
+        /* Statistics Box */
+        .stats-box {
+            background: linear-gradient(135deg, #1e3a8a 0%, #1e40af 100%);
+            padding: 40px;
+            border-radius: 16px;
+            margin: 35px 0;
+            position: relative;
+            overflow: hidden;
+            color: white;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 25px;
+            position: relative;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 42px;
+            font-weight: 700;
+            line-height: 1;
+            margin-bottom: 8px;
+        }
+
+        .stat-label {
+            font-size: 13px;
+            color: rgba(255, 255, 255, 0.85);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* Comparison Table */
+        .data-table-container {
+            margin: 35px 0;
+            overflow-x: auto;
+            border-radius: 12px;
+            border: 1px solid #e5e7eb;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 15px;
+            text-align: left;
+        }
+
+        th {
+            background: #f1f5f9;
+            color: #1e3a8a;
+            padding: 15px;
+            font-weight: 600;
+            border-bottom: 2px solid #e5e7eb;
+        }
+
+        td {
+            padding: 15px;
+            border-bottom: 1px solid #f1f5f9;
+            vertical-align: top;
+        }
+
+        /* Check Understanding */
+        .check-understanding {
+            background: #fdfbf7;
+            border: 2px solid #B8860B;
+            border-radius: 16px;
+            padding: 32px;
+            margin: 45px 0;
+        }
+
+        .reveal-btn {
+            background: #1e3a8a;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+
+        .answer-text {
+            display: none;
+            margin-top: 15px;
+            padding: 15px;
+            background: #f0f7ff;
+            border-radius: 8px;
+            border-left: 4px solid #1e3a8a;
+        }
+
+        /* Takeaways & References */
+        .takeaways-box {
+            background: #f8fafc;
+            padding: 25px;
+            border-radius: 12px;
+            border: 1px solid #e2e8f0;
+            margin: 40px 0;
+        }
+
+        .references-box {
+            background: #ffffff;
+            padding: 25px;
+            border-top: 1px solid #eee;
+            font-size: 14px;
+            color: #666;
+        }
+
+        .references-box h4 {
+            color: #333;
+            margin-bottom: 15px;
+        }
+
+        .references-box ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .references-box li {
+            margin-bottom: 10px;
+            line-height: 1.5;
+        }
+
+        /* Footer */
+        .lesson-footer {
+            text-align: center;
+            padding: 40px 0;
+            border-top: 1px solid #eee;
+        }
+
+        .footer-logo {
+            max-width: 140px;
+            opacity: 0.8;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="lesson-container">
+        <div class="brand-header">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="brand-logo">
+        </div>
+
+        <header class="module-header">
+            <p class="module-label">Module 23: Advanced Coaching Mastery</p>
+            <h1 class="lesson-title">Lesson 7: Advanced Visualization & The PETTLEP Model</h1>
+            <div class="lesson-meta">
+                <span class="meta-item">⏱️ 35 min read</span>
+                <span class="meta-item">🎓 Level 2 Certification</span>
+            </div>
+        </header>
+
+        <div class="toc-box">
+            <p class="box-label">In This Lesson</p>
+            <ul class="toc-list">
+                <li><a href="#neuroscience"><span class="section-num">1</span>The Neuroscience of Functional Equivalence</a></li>
+                <li><a href="#pettlep"><span class="section-num">2</span>The PETTLEP Model Breakdown</a></li>
+                <li><a href="#multisensory"><span class="section-num">3</span>Multisensory Integration Techniques</a></li>
+                <li><a href="#bridge"><span class="section-num">4</span>Bridge-to-the-Future Protocols</a></li>
+                <li><a href="#pressure"><span class="section-num">5</span>Rehearsing for High-Pressure Scenarios</a></li>
+                <li><a href="#blueprint"><span class="section-num">6</span>Integration into L.I.F.E. Blueprint™</a></li>
+            </ul>
+        </div>
+
+        <div class="objectives-box">
+            <p class="box-label">Learning Objectives</p>
+            <ul>
+                <li>Master the 7 components of the PETTLEP model to enhance client performance outcomes.</li>
+                <li>Understand the concept of functional equivalence and its role in neuroplasticity.</li>
+                <li>Implement multisensory anchors to deepen the physiological impact of mental rehearsal.</li>
+                <li>Apply "Bridge-to-the-Future" techniques to bypass cognitive resistance in the *Execute* phase.</li>
+                <li>Design customized visualization protocols for high-stakes professional and personal scenarios.</li>
+            </ul>
+        </div>
+
+        <h2 id="neuroscience">The Neuroscience of Functional Equivalence</h2>
+        <p>For decades, visualization was often dismissed by the scientific community as "wishful thinking." However, modern neuroimaging has revealed a profound truth: the brain does not distinguish between a vividly imagined experience and a real one as clearly as we once thought. This is the principle of <span class="highlight">Functional Equivalence</span>.</p>
+
+        <p>When a client engages in high-fidelity mental imagery, they activate the same neural pathways required for the actual physical performance of that task. For example, imagining a complex negotiation activates the <span class="highlight">prefrontal cortex</span> and the <span class="highlight">anterior cingulate cortex</span>, just as the real event would. In performance coaching, we leverage this to "pre-wire" the brain for success, effectively building the synaptic density required for high-level execution before the client ever steps into the room.</p>
+
+        <div class="stats-box">
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <div class="stat-number">35%</div>
+                    <div class="stat-label">Strength Increase via Imagery alone</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">0.48</div>
+                    <div class="stat-label">Mean Effect Size (Meta-Analysis)</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">90%</div>
+                    <div class="stat-label">Elite Athlete Utilization</div>
+                </div>
+            </div>
+        </div>
+
+        <h2 id="pettlep">The PETTLEP Model: A Framework for Mastery</h2>
+        <p>Developed by Holmes and Collins (2001), the <span class="highlight">PETTLEP model</span> provides a scientific framework for creating imagery that is functionally equivalent to actual performance. As an advanced practitioner of the L.I.F.E. Blueprint Method™, you will use this model to move clients beyond vague "vision boarding" into rigorous neurological rehearsal.</p>
+
+        <div class="data-table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Element</th>
+                        <th>Definition</th>
+                        <th>Coaching Application</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Physical</strong></td>
+                        <td>Mimicking the physical state of the task.</td>
+                        <td>Have the client stand, wear the specific suit, or hold the relevant tools during visualization.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Environment</strong></td>
+                        <td>The specific location where the task occurs.</td>
+                        <td>Rehearse in the actual room or use photos/sounds to replicate the setting.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Task</strong></td>
+                        <td>Specific focus on the technical movements/actions.</td>
+                        <td>Ensure the imagery matches the client’s current skill level, not an idealized version.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Timing</strong></td>
+                        <td>Rehearsing in real-time speed.</td>
+                        <td>The visualization must take exactly as long as the real-world execution.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Learning</strong></td>
+                        <td>Updating imagery as skills improve.</td>
+                        <td>Imagery must evolve as the client moves through the *Execute* phase.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Emotion</strong></td>
+                        <td>Including the relevant arousal and feelings.</td>
+                        <td>Incorporate the "jitters" or the specific adrenaline of the moment.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Perspective</strong></td>
+                        <td>Internal vs. External viewpoint.</td>
+                        <td>Usually, an internal "first-person" perspective is most effective for skill-based tasks.</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <h2 id="multisensory">Multisensory Integration: Beyond the Visual</h2>
+        <p>The term "visualization" is technically a misnomer. To achieve true functional equivalence, we must engage <span class="highlight">multisensory integration</span>. The more senses involved, the stronger the neurological "anchor." In the *Identify* phase, we uncovered values; in the *Focus* phase, we set the target; now, in the *Execute* phase, we use these senses to make the goal inevitable.</p>
+        
+        <p>Include these three anchors in every session:</p>
+        <ul>
+            <li><strong>Auditory Anchors:</strong> What are the specific sounds of the environment? The hum of an office, the sound of a specific voice, or even the silence before a speech.</li>
+            <li><strong>Kinesthetic/Haptic Anchors:</strong> What does the texture of the boardroom table feel like? How does the weight of the body shift during a difficult conversation?</li>
+            <li><strong>Olfactory/Gustatory Anchors:</strong> Smell is the sense most closely linked to memory and the amygdala. Imagining the smell of coffee or the crisp air of a new office can trigger immediate state changes.</li>
+        </ul>
+
+        <div class="case-study">
+            <div class="case-study-header">
+                <div class="case-study-icon">💼</div>
+                <div>
+                    <p class="box-label">Case Study: The High-Stakes Boardroom</p>
+                    <p style="margin:0; font-size:12px; color:rgba(255,255,255,0.8)">Client: Julian (44), Senior VP | Intervention: PETTLEP Protocol</p>
+                </div>
+            </div>
+            <div class="case-study-content">
+                <p><strong>Presenting Symptoms:</strong> Julian faced "execution paralysis" regarding a $50M merger presentation. Despite having the data (Focus phase complete), his anxiety triggered a fight-or-flight response during rehearsal.</p>
+                <p><strong>Intervention:</strong> We applied the PETTLEP model. Julian wore his presentation suit (Physical), we used a recording of the boardroom's ambient noise (Environment), and he rehearsed the 15-minute deck in exactly 15 minutes (Timing). We specifically included the feeling of his palms sweating (Emotion) but redirected that energy into "performance excitement."</p>
+                <p><strong>Outcomes:</strong> Julian reported that during the actual meeting, he felt a sense of "deja vu." His cortisol levels remained manageable, and he secured the merger. He noted that the "Timing" element was the most critical, as it prevented him from rushing his delivery.</p>
+            </div>
+        </div>
+
+        <h2 id="bridge">Bridge-to-the-Future Protocols</h2>
+        <p>The <span class="highlight">Bridge-to-the-Future</span> technique is a sophisticated linguistic and visual tool used to create a "memory" of a future event. In the L.I.F.E. Blueprint Method™, we use this to bypass the "Identity Gap" identified in Module 2. If a client doesn't see themselves as a "successful entrepreneur," they will subconsciously sabotage their execution.</p>
+
+        <p>By guiding the client through a visualization where they look *back* from the point of success, we utilize the <span class="highlight">Retrospective Prime</span> effect. Instead of imagining "how will I get there?" (which triggers the brain's problem-solving/stress mode), we ask "how did I get here?" (which triggers the brain's narrative/certainty mode).</p>
+
+        <h2 id="pressure">Rehearsing for High-Pressure Scenarios</h2>
+        <p>Advanced visualization isn't just about imagining things going well; it's about imagining things going *wrong* and successfully navigating the fallout. This is known as <span class="highlight">Contingency Imagery</span>. A 2021 study on surgical residents found that those who visualized potential complications and their responses performed 22% better in high-stress clinical settings than those who only visualized a "perfect" procedure.</p>
+
+        <p>In coaching, we call this "Stress-Inoculation Visualization." We have the client imagine the most likely "execution barriers" (identified in Module 4) and mentally rehearse the specific L.I.F.E. Blueprint™ tools they will use to pivot in real-time.</p>
+
+        <div class="case-study">
+            <div class="case-study-header">
+                <div class="case-study-icon">🏃</div>
+                <div>
+                    <p class="box-label">Case Study: Recovering Momentum</p>
+                    <p style="margin:0; font-size:12px; color:rgba(255,255,255,0.8)">Client: Elena (29), Marathoner | Intervention: Contingency Imagery</p>
+                </div>
+            </div>
+            <div class="case-study-content">
+                <p><strong>Presenting Symptoms:</strong> Elena had a history of "hitting the wall" at mile 20 and quitting. Her goal was a Boston Marathon qualifying time.</p>
+                <p><strong>Intervention:</strong> Instead of visualizing a "painless" race, we spent three sessions visualizing the exact moment her legs began to cramp (Physical/Emotion). We anchored a specific breathing technique to that sensation. We used PETTLEP to ensure she visualized the specific incline of the Heartbreak Hill section of the course (Environment).</p>
+                <p><strong>Outcomes:</strong> Elena hit the wall as expected. However, because she had "lived" that moment 50 times in visualization, her brain didn't register it as a crisis. She executed the pre-planned breathing protocol and finished with a personal best, qualifying for Boston.</p>
+            </div>
+        </div>
+
+        <h2 id="blueprint">Integration into the L.I.F.E. Blueprint Method™</h2>
+        <p>Advanced visualization serves as the connective tissue between the **Focus** and **Execute** phases. Without it, the "Roadmap" (Module 5) is just a piece of paper. With it, the roadmap becomes a neurological mandate.</p>
+        
+        <p>When working with Level 2 clients, ensure your visualization scripts follow this progression:</p>
+        <ol>
+            <li><strong>State Induction:</strong> Use the somatic listening techniques from Module 6 to ensure the client is in a receptive alpha-theta brainwave state.</li>
+            <li><strong>The PETTLEP Foundation:</strong> Layer in the physical and environmental cues.</li>
+            <li><strong>The Execution Loop:</strong> Mentally rehearse the micro-steps (Module 4) with high-fidelity timing.</li>
+            <li><strong>The Emotional Anchor:</strong> Link the feeling of completion to a physical anchor (e.g., pressing thumb and forefinger together).</li>
+        </ol>
+
+        <div class="check-understanding">
+            <p class="box-label">Check Your Understanding</p>
+            <div class="question-item">
+                <div class="question-number">1</div>
+                <p class="question-text">Why is the 'Timing' element of the PETTLEP model considered critical for high-performance execution?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-text">
+                    Timing ensures functional equivalence. If a client visualizes a 5-minute task in 30 seconds, the neural firing patterns do not match the actual physical requirements. Real-time rehearsal builds the specific 'temporal architecture' needed for the brain to manage the task's actual duration and pace.
+                </div>
+            </div>
+
+            <div class="question-item">
+                <div class="question-number">2</div>
+                <p class="question-text">How does 'Contingency Imagery' differ from traditional positive visualization?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-text">
+                    Traditional visualization focuses only on the successful outcome. Contingency Imagery (or Stress-Inoculation) involves mentally rehearsing responses to obstacles and setbacks. This reduces the 'novelty' of the stressor in real-time, allowing the prefrontal cortex to remain online during a crisis.
+                </div>
+            </div>
+        </div>
+
+        <div class="takeaways-box">
+            <p class="box-label">Key Takeaways</p>
+            <ul>
+                <li><strong>Functional Equivalence:</strong> Effective visualization activates the same motor and sensory regions as actual behavior.</li>
+                <li><strong>PETTLEP Framework:</strong> Use all seven elements (Physical, Environment, Task, Timing, Learning, Emotion, Perspective) to maximize neurological impact.</li>
+                <li><strong>Multisensory Depth:</strong> Incorporate auditory, kinesthetic, and olfactory cues to bypass cognitive resistance.</li>
+                <li><strong>Bridge-to-the-Future:</strong> Shift the client's perspective from "how will I?" to "how did I?" to foster identity integration.</li>
+                <li><strong>High-Pressure Readiness:</strong> Use Stress-Inoculation imagery to prepare clients for real-world execution barriers.</li>
+            </ul>
+        </div>
+
+        <div class="references-box">
+            <h4>References & Further Reading</h4>
+            <ul>
+                <li>Holmes, P.S., & Collins, D.J. (2001). "The PETTLEP Approach to Motor Imagery: A Functional Equivalence Model for Sport Psychologists." Journal of Applied Sport Psychology.</li>
+                <li>Wakefield, C., et al. (2013). "PETTLEP Based Imagery Interventions as an Effective Strategy for Enhancing Performance." International Review of Sport and Exercise Psychology.</li>
+                <li>Schuster, C., et al. (2011). "Using Mental Practice in Stroke Rehabilitation: A Systematic Review." Frontiers in Human Neuroscience.</li>
+                <li>Ranganathan, V.K., et al. (2004). "From Mental Power to Muscle Power—A Pre-frontally Guided Way to Improve Muscle Strength." Neuropsychologia.</li>
+                <li>Cumming, J., & Williams, S.E. (2012). "The Role of Mental Imagery in Health and Fitness Contexts." Routledge Handbook of Applied Sport Psychology.</li>
+                <li>Simonsmeier, B.A., et al. (2020). "The Effectiveness of Imagery Interventions in Sports: A Meta-Analysis." Educational Psychology Review.</li>
+            </ul>
+        </div>
+
+        <footer class="lesson-footer">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="footer-logo">
+            <p class="brand">AccrediPro Academy Certification Program</p>
+            <p class="copyright">&copy; 2024 AccrediPro. All rights reserved. | L.I.F.E. Blueprint Method™</p>
+        </footer>
+    </div>
+</body>
+
+</html>

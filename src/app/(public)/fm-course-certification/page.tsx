@@ -124,30 +124,37 @@ export default function FMCourseCertificationPage() {
                 />
             </head>
 
-            {/* Sticky Header */}
+            {/* Sticky Promo Banner */}
             <header className="fixed top-0 left-0 right-0 z-50 bg-gradient-to-r from-[#722F37] to-[#8B3A42] shadow-lg">
-                <div className="max-w-[1080px] mx-auto px-4 py-3 flex items-center justify-between">
-                    <div className="flex items-center gap-3">
-                        <Image
-                            src="/logos/accredipro-logo-white.png"
-                            alt="AccrediPro Academy"
-                            width={140}
-                            height={35}
-                            className="h-8 w-auto"
-                            priority
-                        />
+                <div className="max-w-[1080px] mx-auto px-4 py-2.5 flex items-center justify-between text-white">
+                    <div className="flex items-center gap-2 text-sm">
+                        <span>🎄</span>
+                        <span className="font-bold">CHRISTMAS SALE: 80% OFF</span>
+                        <span className="hidden sm:inline">— Ends Soon!</span>
+                        <span className="mx-2 opacity-50">|</span>
+                        <span className="hidden sm:flex items-center gap-1">
+                            <span className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></span>
+                            Sarah is Online
+                        </span>
+                        <button
+                            onClick={() => setChatOpen(true)}
+                            className="sm:hidden flex items-center gap-1 text-[#D4AF37] font-semibold"
+                        >
+                            💬 Chat
+                        </button>
                     </div>
                     <Link
                         href={CHECKOUT_URL}
                         className="bg-gradient-to-r from-[#D4AF37] to-[#AA8C2C] text-[#1a1a1a] 
-              px-6 py-2 rounded-full font-bold text-sm
+              px-5 py-1.5 rounded-full font-bold text-sm
               shadow-[0_2px_10px_rgba(212,175,55,0.3)]
               hover:scale-105 transition-transform"
                     >
-                        GET CERTIFIED →
+                        GET CERTIFIED — $97 →
                     </Link>
                 </div>
             </header>
+
 
             <main className="min-h-screen bg-[#1a1a1a] flex flex-col items-center pt-14">
                 <div className="w-full max-w-[1080px] flex flex-col items-center">
@@ -257,8 +264,8 @@ export default function FMCourseCertificationPage() {
                                                 />
                                             )}
                                             <div className={`max-w-[80%] p-3 rounded-xl text-sm ${msg.role === "user"
-                                                    ? "bg-[#722F37] text-white rounded-br-sm"
-                                                    : "bg-white border border-gray-200 rounded-bl-sm"
+                                                ? "bg-[#722F37] text-white rounded-br-sm"
+                                                : "bg-white border border-gray-200 rounded-bl-sm"
                                                 }`}>
                                                 {msg.content}
                                             </div>
