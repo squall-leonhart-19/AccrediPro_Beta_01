@@ -50,6 +50,45 @@ const PRODUCT_COURSE_MAP: Record<string, string> = {
     "integrative": "functional-medicine-complete-certification",
     "integrative health": "functional-medicine-complete-certification",
 
+    // === NEW 2025 CERTIFICATIONS ===
+    // 1. Holistic Nutrition
+    "holistic nutrition": "holistic-nutrition-coach-certification",
+    "holistic-nutrition": "holistic-nutrition-coach-certification",
+    "nutrition coach": "holistic-nutrition-coach-certification",
+
+    // 2. NARC Recovery
+    "narc": "narc-recovery-coach-certification",
+    "narcissistic": "narc-recovery-coach-certification",
+    "abuse recovery": "narc-recovery-coach-certification",
+
+    // 3. Christian Life Coach
+    "christian": "christian-life-coach-certification",
+    "faith-based": "christian-life-coach-certification",
+
+    // 4. Life Coach
+    "life coach": "life-coach-certification",
+    "life-coach": "life-coach-certification",
+
+    // 5. Grief & Loss
+    "grief": "grief-loss-coach-certification",
+    "bereavement": "grief-loss-coach-certification",
+
+    // 6. Energy Healing
+    "energy healing": "energy-healing-certification",
+    "reiki": "energy-healing-certification",
+
+    // 7. Conscious Parenting
+    "conscious parenting": "conscious-parenting-certification",
+    "mindful parenting": "conscious-parenting-certification",
+
+    // 8. Pet Wellness
+    "pet": "pet-wellness-certification",
+    "animal": "pet-wellness-certification",
+
+    // 9. LGBTQ+ Life Coach
+    "lgbtq": "lgbtq-life-coach-certification",
+    "affirming": "lgbtq-life-coach-certification",
+
     // Pro Accelerator ($397 XMAS)
     "fm-pro-accelerator": "fm-pro-accelerator",
     "pro accelerator": "fm-pro-accelerator",

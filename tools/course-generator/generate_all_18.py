@@ -13,8 +13,9 @@ from datetime import datetime
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from dotenv import load_dotenv
-# Load from external folder to keep keys safe from git/detection
-load_dotenv(os.path.expanduser('~/.accredipro-keys/config.env'))
+# Load environment variables from Desktop/config.env for security
+# This file is outside the repo and easier for user to access
+load_dotenv(os.path.expanduser('~/Desktop/config.env'))
 
 from turbo_generator import TurboGenerator
 
@@ -23,20 +24,20 @@ from turbo_generator import TurboGenerator
 # ============================================================================
 
 COURSES_TO_GENERATE = [
-    {
-        "name": "Holistic Nutrition Coach",
-        "methodology": {
-            "acronym": "VITAL",
-            "full_name": "The V.I.T.A.L. Nutrition Method™",
-            "letters": [
-                {"letter": "V", "meaning": "Vitality Assessment", "description": "Identify root causes and bio-individual needs through comprehensive lifestyle and metabolic analysis."},
-                {"letter": "I", "meaning": "Inflammation & Immunity", "description": "Address systemic inflammation and gut health to restore immune resilience."},
-                {"letter": "T", "meaning": "Targeted Nourishment", "description": "Use functional superfoods and therapeutic macronutrient balancing as medicine."},
-                {"letter": "A", "meaning": "Aligned Lifestyle", "description": "Synchronize eating with circadian rhythms, stress management, and movement."},
-                {"letter": "L", "meaning": "Longevity & Legacy", "description": "Create sustainable habits for lifelong health and empower clients to teach others."}
-            ]
-        }
-    },
+    # {
+    #     "name": "Holistic Nutrition Coach",
+    #     "methodology": {
+    #         "acronym": "VITAL",
+    #         "full_name": "The V.I.T.A.L. Nutrition Method™",
+    #         "letters": [
+    #             {"letter": "V", "meaning": "Vitality Assessment", "description": "Identify root causes and bio-individual needs through comprehensive lifestyle and metabolic analysis."},
+    #             {"letter": "I", "meaning": "Inflammation & Immunity", "description": "Address systemic inflammation and gut health to restore immune resilience."},
+    #             {"letter": "T", "meaning": "Targeted Nourishment", "description": "Use functional superfoods and therapeutic macronutrient balancing as medicine."},
+    #             {"letter": "A", "meaning": "Aligned Lifestyle", "description": "Synchronize eating with circadian rhythms, stress management, and movement."},
+    #             {"letter": "L", "meaning": "Longevity & Legacy", "description": "Create sustainable habits for lifelong health and empower clients to teach others."}
+    #         ]
+    #     }
+    # },
     {
         "name": "Stress & Burnout Coach",
         "methodology": {

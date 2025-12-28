@@ -25,8 +25,9 @@ from prompts import (
 )
 
 from dotenv import load_dotenv
-# Load from external folder to keep keys safe from git/detection
-load_dotenv(os.path.expanduser('~/.accredipro-keys/config.env'))
+# Load environment variables from Desktop/config.env for security
+# This file is outside the repo and easier for user to access
+load_dotenv(os.path.expanduser('~/Desktop/config.env'))
 
 
 # ============================================================================
@@ -746,9 +747,10 @@ class TurboGenerator:
         modules = self.blueprint.get('modules', [])
         results = []
         
-        # Process modules in parallel batches (4 at a time for quality balance)
-        batch_size = min(4, len(self.config['api_keys']) // 2)  # Half keys per batch for safety
-        batch_size = max(2, batch_size)  # At least 2
+        # Process modules in parallel batches (Use all keys for maximum speed)
+        # With 19+ keys, we can do 18+ modules in parallel
+        # Reserve 1 key for safety/overheads
+        batch_size = max(4, len(self.config['api_keys']) - 1)
         
         for i in range(0, len(modules), batch_size):
             batch = modules[i:i + batch_size]
