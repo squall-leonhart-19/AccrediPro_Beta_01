@@ -1,4 +1,4 @@
-import { PrismaClient } from "@prisma/client";
+import { PrismaClient, Difficulty } from "@prisma/client";
 import { PrismaPg } from "@prisma/adapter-pg";
 import fs from "fs/promises";
 import path from "path";
@@ -12,7 +12,7 @@ const prisma = new PrismaClient({ adapter });
 const CONFIG = {
     COURSES_ROOT: "/Users/pochitino/Desktop/accredipro-lms/courses",
     METADATA_FILE: "/Users/pochitino/Desktop/accredipro-lms/docs/launch_steps/certifications.json",
-    DEFAULT_COACH_NAME: "Sarah", // Can make this dynamic if needed
+    DEFAULT_COACH_EMAIL: "sarah@accredipro-certificate.com",
 };
 
 async function slugify(text: string): Promise<string> {
@@ -33,12 +33,12 @@ async function main() {
     console.log(`📋 Found ${Object.keys(certifications).length} certifications in metadata.`);
 
     // 2. Get/Create Coach
-    const coach = await prisma.user.findFirst({
-        where: { firstName: { equals: CONFIG.DEFAULT_COACH_NAME, mode: "insensitive" } },
+    const coach = await prisma.user.findUnique({
+        where: { email: CONFIG.DEFAULT_COACH_EMAIL },
     });
 
     if (!coach) {
-        console.warn(`⚠️ Warning: Default coach '${CONFIG.DEFAULT_COACH_NAME}' not found. Courses will have no coach.`);
+        console.warn(`⚠️ Warning: Default coach '${CONFIG.DEFAULT_COACH_EMAIL}' not found. Courses will have no coach.`);
     }
 
     // 3. Iterate and Import
@@ -90,7 +90,7 @@ async function main() {
             price: price,
             isFree: false,
             isPublished: true,
-            difficulty: "INTERMEDIATE",
+            difficulty: Difficulty.INTERMEDIATE,
             // Default to 15 hours (30 modules * 30 min)
             duration: 15 * 60,
             certificateType: "CERTIFICATION" as const,
