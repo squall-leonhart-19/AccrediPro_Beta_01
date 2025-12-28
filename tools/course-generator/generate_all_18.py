@@ -24,20 +24,22 @@ from turbo_generator import TurboGenerator
 # ============================================================================
 
 COURSES_TO_GENERATE = [
-    # {
-    #     "name": "Holistic Nutrition Coach",
-    #     "methodology": {
-    #         "acronym": "VITAL",
-    #         "full_name": "The V.I.T.A.L. Nutrition Method™",
-    #         "letters": [
-    #             {"letter": "V", "meaning": "Vitality Assessment", "description": "Identify root causes and bio-individual needs through comprehensive lifestyle and metabolic analysis."},
-    #             {"letter": "I", "meaning": "Inflammation & Immunity", "description": "Address systemic inflammation and gut health to restore immune resilience."},
-    #             {"letter": "T", "meaning": "Targeted Nourishment", "description": "Use functional superfoods and therapeutic macronutrient balancing as medicine."},
-    #             {"letter": "A", "meaning": "Aligned Lifestyle", "description": "Synchronize eating with circadian rhythms, stress management, and movement."},
-    #             {"letter": "L", "meaning": "Longevity & Legacy", "description": "Create sustainable habits for lifelong health and empower clients to teach others."}
-    #         ]
-    #     }
-    # },
+    {
+        "name": "Certified Holistic Nutrition Coach",
+        "methodology": {
+            "acronym": "NOURISH",
+            "full_name": "The N.O.U.R.I.S.H. Method™",
+            "letters": [
+                {"letter": "N", "meaning": "Nutritional Foundations", "description": "Master the science of macronutrients, micronutrients, and bio-individuality."},
+                {"letter": "O", "meaning": "Optimize Digestion", "description": "Address gut health, absorption, and the microbiome as the core of wellness."},
+                {"letter": "U", "meaning": "Uncover Root Causes", "description": "Identify metabolic imbalances, deficiencies, and lifestyle triggers."},
+                {"letter": "R", "meaning": "Restore Balance", "description": "Use targeted protocols to restore hormonal, immune, and energy balance."},
+                {"letter": "I", "meaning": "Integrative Protocols", "description": "Combine food-as-medicine with evidence-based lifestyle interventions."},
+                {"letter": "S", "meaning": "Sustainable Habits", "description": "Create lasting behavioral change through coaching psychology."},
+                {"letter": "H", "meaning": "Holistic Healing", "description": "Connect body, mind, and spirit for comprehensive transformation."}
+            ]
+        }
+    },
     {
         "name": "Stress & Burnout Coach",
         "methodology": {
