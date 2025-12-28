@@ -94,17 +94,22 @@ async function main() {
             // Default to 15 hours (30 modules * 30 min)
             duration: 15 * 60,
             certificateType: "CERTIFICATION" as const,
-            categoryId: category.id,
-            coachId: coach?.id || null,
             publishedAt: new Date(),
+            thumbnail: cert.image_url || null, // Map JSON image_url to DB thumbnail
         };
 
         const course = await prisma.course.upsert({
             where: { slug: courseSlug },
-            update: courseData,
+            update: {
+                ...courseData,
+                category: { connect: { id: category.id } },
+                coach: coach ? { connect: { id: coach.id } } : undefined,
+            },
             create: {
                 slug: courseSlug,
                 ...courseData,
+                category: { connect: { id: category.id } },
+                coach: coach ? { connect: { id: coach.id } } : undefined,
             },
         });
 

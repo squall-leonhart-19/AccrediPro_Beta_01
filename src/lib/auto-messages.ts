@@ -5,20 +5,20 @@ import { createClient } from "@supabase/supabase-js";
 interface TriggerAutoMessageOptions {
   userId: string;
   trigger:
-    | "first_login"
-    | "enrollment"
-    | "course_complete"
-    | "module_complete"
-    | "mini_diploma_module_complete"
-    | "inactive_7d"
-    | "mini_diploma_complete"
-    | "training_video_complete"
-    | "pricing_page_visit"
-    | "sequence_day_5"
-    | "sequence_day_10"
-    | "sequence_day_20"
-    | "sequence_day_27"
-    | "sequence_day_30";
+  | "first_login"
+  | "enrollment"
+  | "course_complete"
+  | "module_complete"
+  | "mini_diploma_module_complete"
+  | "inactive_7d"
+  | "mini_diploma_complete"
+  | "training_video_complete"
+  | "pricing_page_visit"
+  | "sequence_day_5"
+  | "sequence_day_10"
+  | "sequence_day_20"
+  | "sequence_day_27"
+  | "sequence_day_30";
   triggerValue?: string; // e.g., course ID or module number
 }
 
@@ -669,22 +669,28 @@ The AccrediPro Team`;
  * Creates the personalized welcome message content from Sarah (sent 2-3 min after signup)
  */
 function getWelcomeMessage(firstName: string): string {
-  return `Hey ${firstName}....!
+  return `Hey ${firstName}! 💕
 
-I'm Sarah, and I'll be your coach throughout this journey.
+I'm Sarah, your coach for this entire journey - and I just saw your name come through!
 
-I just saw your name come through and wanted to personally say welcome. This is the start of something special..!
+Welcome! This is the start of something special, and I'm SO excited you're here!
 
-Inside your dashboard, you'll find your Mini Diploma ready to start, your Roadmap showing where you're headed, and you can message me anytime..!
+Inside your dashboard you'll find:
 
-I know you might have questions. Maybe you're wondering if this is really for you... I get it, I felt the same way when I started...
+✨ Your certification ready to start
+✨ Your Roadmap showing where you're headed
+✨ Direct access to message me anytime
 
-But here's what I know: you signed up for a reason. Let's find out what that is together.
+I know you might be wondering if this is really for you... maybe feeling a mix of excited and nervous? I felt the exact same way when I started!
 
-Hit reply anytime. I'm here for you, every step of the way!!!
+But here's what I know: you signed up for a reason. Something inside you said YES to this. Let's find out what that is together.
+
+Hit reply anytime - tell me a little about yourself! What brought you here? What's your "why"?
+
+I'm here for you every step of the way!
 
 Talk soon,
-Sarah`;
+Sarah ✨`;
 }
 
 /**
