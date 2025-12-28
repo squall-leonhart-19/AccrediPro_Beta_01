@@ -717,8 +717,8 @@ export function LessonPageV2({
                       isCurrentModule
                         ? "bg-gradient-to-br from-burgundy-500 to-burgundy-600 text-white"
                         : modProgress === 100
-                        ? "bg-green-100 text-green-600"
-                        : "bg-gray-100 text-gray-500"
+                          ? "bg-green-100 text-green-600"
+                          : "bg-gray-100 text-gray-500"
                     )}>
                       {modProgress === 100 ? (
                         <CheckCircle className="w-5 h-5" />
@@ -773,7 +773,7 @@ export function LessonPageV2({
                               <div className="w-8 h-8 rounded-lg bg-gray-100 flex items-center justify-center">
                                 <Lock className="w-4 h-4 text-gray-400" />
                               </div>
-                              <span className="text-sm text-gray-400 truncate">{les.title}</span>
+                              <span className="text-sm text-gray-400">{les.title}</span>
                             </div>
                           );
                         }
@@ -794,8 +794,8 @@ export function LessonPageV2({
                               isLesCompleted
                                 ? "bg-green-100"
                                 : isCurrent
-                                ? "bg-burgundy-200"
-                                : "bg-gray-100"
+                                  ? "bg-burgundy-200"
+                                  : "bg-gray-100"
                             )}>
                               {isLesCompleted ? (
                                 <CheckCircle className="w-4 h-4 text-green-600" />
@@ -807,12 +807,12 @@ export function LessonPageV2({
                             </div>
                             <div className="flex-1 min-w-0">
                               <p className={cn(
-                                "text-sm truncate",
+                                "text-sm",
                                 isCurrent
                                   ? "font-semibold text-burgundy-700"
                                   : isLesCompleted
-                                  ? "text-green-700"
-                                  : "text-gray-700"
+                                    ? "text-green-700"
+                                    : "text-gray-700"
                               )}>
                                 {les.title}
                               </p>
