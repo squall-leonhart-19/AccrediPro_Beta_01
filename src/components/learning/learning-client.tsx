@@ -189,6 +189,31 @@ export function LearningClient({
     setLocalCourseProgress(progress.courseProgress);
   }, [lesson.id, progress.isCompleted, initialProgressMap, progress.courseProgress]);
 
+  // Inject toggleAnswer function for inline onclick handlers in lesson HTML
+  useEffect(() => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    (window as any).toggleAnswer = (answerId: string) => {
+      const answerElement = document.getElementById(answerId);
+      if (answerElement) {
+        const isHidden = answerElement.style.display === "none" ||
+          answerElement.classList.contains("hidden") ||
+          !answerElement.style.display;
+
+        if (isHidden) {
+          answerElement.style.display = "block";
+          answerElement.classList.remove("hidden");
+        } else {
+          answerElement.style.display = "none";
+        }
+      }
+    };
+
+    return () => {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      delete (window as any).toggleAnswer;
+    };
+  }, []);
+
   const moduleProgressPercent = progress.moduleProgress.total > 0
     ? (progress.moduleProgress.completed / progress.moduleProgress.total) * 100
     : 0;

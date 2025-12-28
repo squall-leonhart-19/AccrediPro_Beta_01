@@ -88,7 +88,29 @@ export function LessonContentReader({
     window.addEventListener("scroll", handleScroll, { passive: true });
     handleScroll(); // Initial calculation
 
-    return () => window.removeEventListener("scroll", handleScroll);
+    // Inject toggleAnswer function for inline onclick handlers in lesson HTML
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    (window as any).toggleAnswer = (answerId: string) => {
+      const answerElement = document.getElementById(answerId);
+      if (answerElement) {
+        const isHidden = answerElement.style.display === "none" ||
+          answerElement.classList.contains("hidden") ||
+          !answerElement.style.display;
+
+        if (isHidden) {
+          answerElement.style.display = "block";
+          answerElement.classList.remove("hidden");
+        } else {
+          answerElement.style.display = "none";
+        }
+      }
+    };
+
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      delete (window as any).toggleAnswer;
+    };
   }, [calculateReadingProgress, trackSections]);
 
   const scrollToTop = () => {

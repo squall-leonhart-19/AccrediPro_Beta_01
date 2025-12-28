@@ -1,0 +1,1116 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Complex Client Scenarios - Part 7</title>
+    <style>
+        /* Base & Reset */
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Georgia, 'Times New Roman', serif;
+            line-height: 1.8;
+            color: #2d2d2d;
+            background: #f8f6f3;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Main Container */
+        .lesson-container {
+            max-width: 860px;
+            margin: 0 auto;
+            padding: 40px 30px;
+            background: #ffffff;
+            min-height: 100vh;
+            box-shadow: 0 0 60px rgba(0, 0, 0, 0.08);
+        }
+
+        /* Brand Header */
+        .brand-header {
+            text-align: center;
+            padding-bottom: 30px;
+            margin-bottom: 35px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .brand-logo {
+            max-width: 220px;
+            height: auto;
+            margin-bottom: 5px;
+        }
+
+        /* Module Header - GREEN theme for Gut Health */
+        .module-header {
+            background: linear-gradient(135deg, #059669 0%, #10B981 100%);
+            padding: 35px 35px 30px;
+            border-radius: 16px;
+            margin-bottom: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .module-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+            transform: translate(100px, -100px);
+        }
+
+        .module-header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, #B8860B, #D4A84B, #B8860B);
+        }
+
+        .module-label {
+            margin: 0;
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.75);
+            text-transform: uppercase;
+            letter-spacing: 2.5px;
+            font-weight: 500;
+        }
+
+        .lesson-title {
+            margin: 10px 0 0 0;
+            font-size: 28px;
+            color: #ffffff;
+            font-weight: 700;
+            line-height: 1.3;
+            position: relative;
+        }
+
+        .lesson-meta {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+            padding-top: 18px;
+            border-top: 1px solid rgba(255, 255, 255, 0.15);
+            flex-wrap: wrap;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.85);
+            background: rgba(255, 255, 255, 0.1);
+            padding: 5px 12px;
+            border-radius: 4px;
+        }
+
+        /* Table of Contents */
+        .toc-box {
+            background: linear-gradient(135deg, #fafafa 0%, #f5f5f5 100%);
+            border-radius: 14px;
+            padding: 24px 28px;
+            margin-bottom: 35px;
+            border: 1px solid #e8e8e8;
+        }
+
+        .toc-box .box-label {
+            font-weight: 600;
+            color: #059669;
+            margin: 0 0 18px 0;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .toc-list {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px 24px;
+        }
+
+        .toc-list li {
+            margin: 0;
+        }
+
+        .toc-list a {
+            display: flex;
+            align-items: center;
+            padding: 8px 12px;
+            color: #555;
+            text-decoration: none;
+            font-size: 14px;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+        }
+
+        .toc-list a:hover {
+            background: white;
+            color: #059669;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+        }
+
+        .toc-list .section-num {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 26px;
+            height: 26px;
+            background: #059669;
+            color: white;
+            font-weight: 600;
+            font-size: 11px;
+            border-radius: 6px;
+            margin-right: 12px;
+            flex-shrink: 0;
+        }
+
+        @media (max-width: 600px) {
+            .toc-list {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Learning Objectives */
+        .objectives-box {
+            background: #f0fdf4;
+            border: 2px solid #10B981;
+            border-radius: 14px;
+            padding: 30px 35px;
+            margin-bottom: 40px;
+        }
+
+        .objectives-box .box-label {
+            font-weight: 600;
+            color: #059669;
+            margin: 0 0 18px 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .objectives-box .box-label::before {
+            content: '🎯';
+            font-size: 18px;
+        }
+
+        .objectives-box ul {
+            margin: 0;
+            padding-left: 22px;
+        }
+
+        .objectives-box li {
+            margin-bottom: 14px;
+            font-size: 16px;
+            line-height: 1.7;
+        }
+
+        .objectives-box li:last-child {
+            margin-bottom: 0;
+        }
+
+        /* Key Terms Box */
+        .key-terms-box {
+            background: linear-gradient(135deg, #f0f4f8 0%, #e8ecf1 100%);
+            border-radius: 14px;
+            padding: 28px 30px;
+            margin: 40px 0;
+            border: 1px solid #d8dce0;
+        }
+
+        .key-terms-box .box-label {
+            font-weight: 600;
+            color: #059669;
+            margin: 0 0 18px 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .terms-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 16px;
+        }
+
+        .term-item {
+            background: white;
+            padding: 16px 18px;
+            border-radius: 10px;
+            border-left: 4px solid #10B981;
+        }
+
+        .term-item .term {
+            font-weight: 700;
+            color: #059669;
+            font-size: 15px;
+            margin: 0 0 6px 0;
+        }
+
+        .term-item .definition {
+            font-size: 14px;
+            color: #555;
+            margin: 0;
+            line-height: 1.6;
+        }
+
+        /* Section Headings */
+        h2 {
+            font-size: 24px;
+            color: #059669;
+            margin: 50px 0 20px 0;
+            font-weight: 600;
+            position: relative;
+            padding-bottom: 12px;
+        }
+
+        h2::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 60px;
+            height: 3px;
+            background: #B8860B;
+        }
+
+        /* Paragraphs */
+        p {
+            font-size: 17px;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        /* Highlights */
+        .highlight {
+            background: linear-gradient(180deg, transparent 60%, #FFF59D 60%);
+            padding: 0 4px;
+            font-weight: 500;
+        }
+
+        /* Welcome/Intro Box */
+        .welcome-box {
+            background: linear-gradient(135deg, #f0fdf4 0%, #ecfdf5 100%);
+            padding: 30px 35px;
+            border-radius: 14px;
+            margin-bottom: 40px;
+            border: 1px solid #bbf7d0;
+        }
+
+        .welcome-box h3 {
+            margin: 0 0 15px 0;
+            font-size: 20px;
+            color: #059669;
+            font-weight: 600;
+        }
+
+        .welcome-box p {
+            margin: 0;
+            font-size: 17px;
+            line-height: 1.8;
+            color: #444;
+        }
+
+        /* Alert Boxes */
+        .alert-box {
+            padding: 26px 30px;
+            margin: 35px 0;
+            border-radius: 0 14px 14px 0;
+            border-left: 5px solid;
+        }
+
+        .alert-box .alert-label {
+            font-weight: 600;
+            margin: 0 0 12px 0;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .alert-box p:last-child {
+            margin: 0;
+            font-size: 16px;
+            line-height: 1.7;
+        }
+
+        .alert-box.warning {
+            background: #fff8e6;
+            border-left-color: #ff9800;
+        }
+
+        .alert-box.warning .alert-label {
+            color: #e65100;
+        }
+
+        .alert-box.success {
+            background: #f0f8f0;
+            border-left-color: #4caf50;
+        }
+
+        .alert-box.success .alert-label {
+            color: #2e7d32;
+        }
+
+        .alert-box.reflect {
+            background: #f8f0fa;
+            border-left-color: #9c27b0;
+        }
+
+        .alert-box.reflect .alert-label {
+            color: #7b1fa2;
+        }
+
+        .alert-box.info {
+            background: #e3f2fd;
+            border-left-color: #2196f3;
+        }
+
+        .alert-box.info .alert-label {
+            color: #1565c0;
+        }
+
+        /* Case Study Box */
+        .case-study {
+            background: linear-gradient(135deg, #f8f9fb 0%, #f0f2f5 100%);
+            border-radius: 16px;
+            padding: 0;
+            margin: 40px 0;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+        }
+
+        .case-study-header {
+            background: linear-gradient(135deg, #059669 0%, #10B981 100%);
+            padding: 20px 30px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .case-study-icon {
+            width: 45px;
+            height: 45px;
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+        }
+
+        .case-study-header .box-label {
+            font-weight: 600;
+            color: #ffffff;
+            margin: 0;
+            font-size: 16px;
+            letter-spacing: 0.5px;
+        }
+
+        .case-study-header .subtitle {
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 13px;
+            margin: 4px 0 0 0;
+        }
+
+        .case-study-content {
+            padding: 28px 30px;
+        }
+
+        .case-study-content p {
+            font-size: 16px;
+            margin-bottom: 18px;
+        }
+
+        .case-study-content ul {
+            margin: 18px 0;
+            padding-left: 22px;
+        }
+
+        .case-study-content li {
+            margin-bottom: 10px;
+            font-size: 15px;
+        }
+
+        .patient-profile {
+            display: flex;
+            align-items: center;
+            gap: 18px;
+            padding: 18px 22px;
+            background: white;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            border: 1px solid #e5e5e5;
+        }
+
+        .patient-avatar {
+            width: 55px;
+            height: 55px;
+            background: linear-gradient(135deg, #10B981, #059669);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            flex-shrink: 0;
+        }
+
+        .patient-info h4 {
+            margin: 0 0 5px 0;
+            font-size: 17px;
+            color: #1a1a1a;
+        }
+
+        .patient-info p {
+            margin: 0;
+            font-size: 14px;
+            color: #666;
+        }
+
+        /* Comparison Cards */
+        .comparison-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+            margin: 30px 0;
+        }
+
+        .comparison-card {
+            border-radius: 14px;
+            padding: 26px;
+            border-top: 5px solid;
+            transition: transform 0.2s ease;
+        }
+
+        .comparison-card:hover {
+            transform: translateY(-3px);
+        }
+
+        .comparison-card.conventional {
+            background: #fff5f5;
+            border-top-color: #c62828;
+        }
+
+        .comparison-card.functional {
+            background: #f1f8f1;
+            border-top-color: #2e7d32;
+        }
+
+        .comparison-card .card-label {
+            font-weight: 600;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            margin: 0 0 14px 0;
+        }
+
+        .comparison-card.conventional .card-label {
+            color: #c62828;
+        }
+
+        .comparison-card.functional .card-label {
+            color: #2e7d32;
+        }
+
+        .comparison-card .card-text {
+            margin: 0;
+            font-size: 16px;
+            font-style: italic;
+            line-height: 1.6;
+        }
+
+        /* Content Lists */
+        .content-list {
+            font-size: 17px;
+            margin: 20px 0;
+            padding-left: 24px;
+        }
+
+        .content-list li {
+            margin-bottom: 14px;
+            line-height: 1.7;
+        }
+
+        .content-list li:last-child {
+            margin-bottom: 0;
+        }
+
+        /* Statistics Box */
+        .stats-box {
+            background: linear-gradient(135deg, #059669 0%, #10B981 100%);
+            padding: 40px;
+            border-radius: 16px;
+            margin: 35px 0;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stats-box::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -20%;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.08) 0%, transparent 70%);
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 25px;
+            position: relative;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 42px;
+            font-weight: 700;
+            color: white;
+            line-height: 1;
+            margin-bottom: 8px;
+        }
+
+        .stat-label {
+            font-size: 13px;
+            color: rgba(255, 255, 255, 0.85);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* Principle Cards */
+        .principle-card {
+            background: linear-gradient(to right, #fafafa, #ffffff);
+            border-left: 5px solid #059669;
+            padding: 24px 28px;
+            margin-bottom: 18px;
+            border-radius: 0 14px 14px 0;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.04);
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .principle-card:hover {
+            transform: translateX(5px);
+            box-shadow: 0 4px 18px rgba(0, 0, 0, 0.08);
+        }
+
+        .principle-card .principle-title {
+            font-weight: 700;
+            color: #059669;
+            margin: 0 0 10px 0;
+            font-size: 17px;
+        }
+
+        .principle-card .principle-text {
+            margin: 0;
+            font-size: 15px;
+            line-height: 1.7;
+        }
+
+        .principle-card ul {
+            margin: 12px 0 0 0;
+            padding-left: 20px;
+            font-size: 14px;
+        }
+
+        .principle-card li {
+            margin-bottom: 5px;
+        }
+
+        /* Check Understanding Box */
+        .check-understanding {
+            background: linear-gradient(135deg, #fdfbf7 0%, #f9f5ed 100%);
+            border: 2px solid #B8860B;
+            border-radius: 16px;
+            padding: 32px;
+            margin: 45px 0;
+        }
+
+        .check-understanding .box-label {
+            font-weight: 600;
+            color: #8B6914;
+            margin: 0 0 8px 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .check-understanding .box-subtitle {
+            font-size: 15px;
+            color: #666;
+            margin: 0 0 24px 0;
+        }
+
+        .question-item {
+            background: white;
+            border-radius: 12px;
+            padding: 22px 24px;
+            margin-bottom: 16px;
+            border: 1px solid #e8e4dc;
+            position: relative;
+        }
+
+        .question-item:last-child {
+            margin-bottom: 0;
+        }
+
+        .question-number {
+            position: absolute;
+            top: -12px;
+            left: 20px;
+            background: #059669;
+            color: white;
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            font-size: 13px;
+        }
+
+        .question-text {
+            font-size: 16px;
+            color: #333;
+            margin: 0 0 16px 0;
+            line-height: 1.6;
+            padding-top: 4px;
+        }
+
+        .reveal-btn {
+            background: #059669;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-size: 14px;
+            cursor: pointer;
+            font-family: inherit;
+            transition: background 0.2s ease;
+        }
+
+        .reveal-btn:hover {
+            background: #047857;
+        }
+
+        .answer-text {
+            display: none;
+            font-size: 14px;
+            color: #2e7d32;
+            margin: 14px 0 0 0;
+            padding: 14px;
+            background: #f0f8f0;
+            border-radius: 8px;
+            line-height: 1.6;
+        }
+
+        .answer-text.show {
+            display: block;
+        }
+
+        /* Key Takeaways */
+        .takeaways-box {
+            background: linear-gradient(135deg, #f5f5f5 0%, #e8e8e8 100%);
+            padding: 22px 25px;
+            margin-top: 35px;
+            border-radius: 8px;
+            border: 1px solid #ddd;
+        }
+
+        .takeaways-box .box-label {
+            font-weight: 600;
+            color: #059669;
+            margin: 0 0 15px 0;
+            font-size: 16px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .takeaways-box ul {
+            margin: 0;
+            padding-left: 18px;
+            font-size: 15px;
+        }
+
+        .takeaways-box li {
+            margin-bottom: 10px;
+        }
+
+        .takeaways-box li:last-child {
+            margin-bottom: 0;
+        }
+
+        /* Interactive Diagram */
+        .interactive-diagram {
+            background: white;
+            border: 2px solid #e5e5e5;
+            border-radius: 16px;
+            padding: 30px;
+            margin: 35px 0;
+            text-align: center;
+        }
+
+        .diagram-title {
+            font-weight: 600;
+            color: #333;
+            margin: 0 0 20px 0;
+            font-size: 18px;
+        }
+
+        .gut-visual {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 30px;
+            flex-wrap: wrap;
+            margin: 20px 0;
+        }
+
+        .gut-section {
+            background: linear-gradient(135deg, #f0fdf4 0%, #ecfdf5 100%);
+            border: 2px solid #10B981;
+            border-radius: 12px;
+            padding: 20px;
+            min-width: 150px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .gut-section:hover {
+            transform: scale(1.05);
+            box-shadow: 0 8px 25px rgba(16, 185, 129, 0.2);
+        }
+
+        .gut-section .icon {
+            font-size: 32px;
+            margin-bottom: 10px;
+        }
+
+        .gut-section .label {
+            font-weight: 600;
+            color: #059669;
+            font-size: 14px;
+        }
+
+        .gut-section .count {
+            font-size: 12px;
+            color: #666;
+            margin-top: 5px;
+        }
+
+        /* Footer */
+        .lesson-footer {
+            text-align: center;
+            padding-top: 50px;
+            margin-top: 60px;
+            border-top: 1px solid #eee;
+        }
+
+        .footer-logo {
+            max-width: 140px;
+            height: auto;
+            margin-bottom: 15px;
+            opacity: 0.9;
+        }
+
+        .lesson-footer .brand {
+            color: #059669;
+            font-weight: 600;
+            margin: 0;
+            font-size: 15px;
+        }
+
+        .lesson-footer .copyright {
+            color: #888;
+            font-size: 13px;
+            margin: 10px 0 0 0;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .lesson-container {
+                padding: 20px 16px;
+            }
+
+            .module-header {
+                padding: 25px 20px 22px;
+            }
+
+            .lesson-title {
+                font-size: 22px;
+            }
+
+            h2 {
+                font-size: 20px;
+                margin: 35px 0 15px 0;
+            }
+
+            p {
+                font-size: 16px;
+            }
+
+            .toc-list {
+                grid-template-columns: 1fr;
+            }
+
+            .objectives-box {
+                padding: 25px 20px;
+            }
+
+            .key-terms-box {
+                padding: 22px 18px;
+            }
+
+            .terms-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .stats-box {
+                padding: 25px 20px;
+            }
+
+            .stat-number {
+                font-size: 32px;
+            }
+
+            .comparison-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .principle-card {
+                padding: 20px;
+            }
+
+            .case-study-content {
+                padding: 20px;
+            }
+
+            .check-understanding {
+                padding: 25px 20px;
+            }
+
+            .takeaways-box {
+                padding: 18px 20px;
+            }
+
+            .alert-box {
+                padding: 20px;
+            }
+
+            .content-list {
+                padding-left: 20px;
+                font-size: 16px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .lesson-container {
+                padding: 15px 12px;
+            }
+
+            .brand-logo {
+                max-width: 180px;
+            }
+
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 15px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="lesson-container">
+        <div class="brand-header">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="brand-logo">
+        </div>
+
+        <header class="module-header">
+            <p class="module-label">Module 17: L2: Complex Client Scenarios</p>
+            <h1 class="lesson-title">L2: Complex Client Scenarios - Part 7</h1>
+            <div class="lesson-meta">
+                <span class="meta-item">30 min read</span>
+                <span class="meta-item">Lesson 7 of 7</span>
+            </div>
+        </header>
+
+        <!-- Table of Contents -->
+        <div class="toc-box">
+            <p class="box-label">In This Lesson</p>
+            <ul class="toc-list">
+                <li><a href="#key-concepts"><span class="section-num">1</span>Key Concepts for Complex Scenarios</a></li>
+                <li><a href="#practical-applications"><span class="section-num">2</span>Practical Applications and Examples</a></li>
+                <li><a href="#case-studies"><span class="section-num">3</span>Case Studies and Real-World Scenarios</a></li>
+                <li><a href="#the-vital-nutrition-method"><span class="section-num">4</span>The V.I.T.A.L. Nutrition Method™</a></li>
+                <li><a href="#check-understanding"><span class="section-num">5</span>Check Your Understanding</a></li>
+                <li><a href="#summary"><span class="section-num">6</span>Summary and Key Takeaways</a></li>
+            </ul>
+        </div>
+
+        <!-- Learning Objectives -->
+        <div class="objectives-box">
+            <p class="box-label">Learning Objectives</p>
+            <ul>
+                <li>Apply key nutritional concepts to complex client cases, integrating knowledge from previous lessons.</li>
+                <li>Develop practical strategies for addressing multifaceted health challenges using the V.I.T.A.L. Nutrition Method™.</li>
+                <li>Analyze real-world case studies to enhance problem-solving skills and decision-making abilities.</li>
+                <li>Understand the importance of personalized nutrition plans and lifestyle adjustments in complex scenarios.</li>
+                <li>Identify potential challenges and develop effective communication strategies for client adherence and success.</li>
+            </ul>
+        </div>
+
+        <h2 id="key-concepts">Key Conceptsfor Complex Scenarios</h2>
+        <p>Navigating complex client scenarios requires a synthesis of various nutritional concepts and principles. These situations often involve multiple health conditions, lifestyle factors, and individual needs that demand a comprehensive and personalized approach. Key concepts include:</p>
+        <ul class="content-list">
+            <li><b>Nutrient Timing and Prioritization:</b> Understanding when and how to deliver specific nutrients based on the client's daily routine and health goals. For example, prioritizing protein intake post-workout for muscle recovery or adjusting carbohydrate intake to manage blood sugar levels.</li>
+            <li><b>Macronutrient Balancing:</b> Tailoring the balance of carbohydrates, proteins, and fats to meet individual metabolic needs and health conditions. This may involve adjusting ratios based on activity levels, insulin sensitivity, or specific dietary requirements.</li>
+            <li><b>Micronutrient Optimization:</b> Ensuring adequate intake of vitamins, minerals, and trace elements to support overall health and address specific deficiencies. This often requires detailed dietary assessments and supplementation strategies.</li>
+            <li><b>Gut Health Modulation:</b> Recognizing the critical role of the gut microbiome in overall health and implementing strategies to improve gut function. This includes incorporating probiotics, prebiotics, and fiber-rich foods to support a balanced gut ecosystem.</li>
+            <li><b>Inflammation Management:</b> Identifying and addressing sources of inflammation through dietary modifications and lifestyle adjustments. This involves reducing intake of processed foods, added sugars, and unhealthy fats while increasing consumption of anti-inflammatory foods like fruits, vegetables, and omega-3 fatty acids.</li>
+        </ul>
+
+        <h2 id="practical-applications">Practical Applications and Examples</h2>
+        <p>To effectively apply these key concepts, consider the following practical examples:</p>
+        <ul class="content-list">
+            <li><b>Example 1:</b> A client with type 2 diabetes and cardiovascular disease requires a diet that balances blood sugar control with heart health. This involves emphasizing low-glycemic index foods, lean proteins, healthy fats, and high-fiber options. Monitoring carbohydrate intake and meal timing is crucial to prevent blood sugar spikes.</li>
+            <li><b>Example 2:</b> An athlete with irritable bowel syndrome (IBS) needs a diet that supports performance while minimizing gut symptoms. This may involve a low-FODMAP diet, careful selection of pre- and probiotics, and strategies to manage stress and inflammation.</li>
+            <li><b>Example 3:</b> A client undergoing cancer treatment requires a diet that supports immune function, manages side effects, and maintains nutritional status. This often involves high-protein intake, easy-to-digest foods, and strategies to address nausea, fatigue, and appetite loss.</li>
+        </ul>
+
+        <h2 id="case-studies">Case Studies and Real-World Scenarios</h2>
+        <p>Analyzing real-world case studies can provide valuable insights into managing complex client scenarios. Here are a couple of examples:</p>
+
+        <div class="case-study">
+            <h3 class="case-study-title">Case Study 1: Sarah, 52, with Metabolic Syndrome</h3>
+            <div class="case-study-content">
+                <p><b>Client:</b> Sarah, a 52-year-old female, presents with metabolic syndrome, characterized by abdominal obesity, high blood pressure, elevated triglycerides, low HDL cholesterol, and insulin resistance.</p>
+                <p><b>Presenting Symptoms:</b> Fatigue, weight gain, elevated blood sugar levels, and high blood pressure.</p>
+                <p><b>Intervention:</b>
+                <ul class="content-list">
+                    <li><b>Dietary Modifications:</b> A low-glycemic index diet emphasizing whole grains, lean proteins, healthy fats (e.g., olive oil, avocados, nuts), and plenty of non-starchy vegetables. Reduced intake of processed foods, sugary drinks, and saturated fats.</li>
+                    <li><b>Macronutrient Ratios:</b> Balanced macronutrient distribution with approximately 40% carbohydrates, 30% protein, and 30% fats.</li>
+                    <li><b>Nutrient Timing:</b> Consistent meal times to stabilize blood sugar levels, with a focus on protein and fiber at each meal.</li>
+                    <li><b>Lifestyle Adjustments:</b> Regular moderate-intensity exercise (e.g., brisk walking, cycling) for at least 150 minutes per week. Stress management techniques such as yoga and meditation.</li>
+                    <li><b>Supplementation:</b> Omega-3 fatty acids (2g/day) to improve lipid profile, magnesium (400mg/day) to enhance insulin sensitivity, and a multivitamin to address potential deficiencies.</li>
+                </ul>
+                </p>
+                <p><b>Outcomes:</b> After 12 weeks, Sarah experienced significant improvements in her health markers. Her blood pressure decreased from 140/90 mmHg to 125/80 mmHg, fasting blood sugar dropped from 130 mg/dL to 105 mg/dL, triglycerides decreased by <span class="stat-highlight">25%</span>, and HDL cholesterol increased by <span class="stat-highlight">15%</span>. She also lost 10 pounds and reported increased energy levels and improved mood.</p>
+            </div>
+        </div>
+
+        <div class="case-study">
+            <h3 class="case-study-title">Case Study 2: Mark, 38, with Crohn's Disease and Malnutrition</h3>
+            <div class="case-study-content">
+                <p><b>Client:</b> Mark, a 38-year-old male, diagnosed with Crohn's disease, presenting with malnutrition and frequent flare-ups.</p>
+                <p><b>Presenting Symptoms:</b> Abdominal pain, diarrhea, weight loss, fatigue, and nutrient deficiencies (e.g., iron, vitamin D, B12).</p>
+                <p><b>Intervention:</b>
+                <ul class="content-list">
+                    <li><b>Dietary Modifications:</b> An anti-inflammatory diet focusing on easily digestible foods, such as cooked vegetables, lean proteins (e.g., chicken, fish), and gluten-free grains. Avoidance of common trigger foods like dairy, processed foods, and high-fiber raw vegetables during flare-ups.</li>
+                    <li><b>Macronutrient Adjustments:</b> Increased protein intake to support tissue repair and immune function. Moderate fat intake with an emphasis on omega-3 fatty acids from fish oil or flaxseed oil.</li>
+                    <li><b>Gut Health Support:</b> Probiotic supplementation (multi-strain, high-potency) to improve gut microbiome balance. Prebiotic-rich foods (e.g., bananas, oats) during remission to support beneficial bacteria.</li>
+                    <li><b>Nutrient Replenishment:</b> Supplementation with iron, vitamin D, B12, and other deficient nutrients as indicated by blood tests.</li>
+                    <li><b>Meal Timing:</b> Small, frequent meals to reduce digestive burden and improve nutrient absorption.</li>
+                </ul>
+                </p>
+                <p><b>Outcomes:</b> Over six months, Mark experienced a reduction in flare-up frequency and severity. His weight stabilized, nutrient deficiencies were corrected, and he reported improved energy levels and overall quality of life. Inflammatory markers (e.g., C-reactive protein) decreased by <span class="stat-highlight">30%</span>, indicating reduced disease activity.</p>
+            </div>
+        </div>
+
+        <h2 id="the-vital-nutrition-method">The V.I.T.A.L. Nutrition Method™</h2>
+        <p>The <span class="highlight">V.I.T.A.L. Nutrition Method™</span> provides a structured approach to addressing complex client scenarios. It integrates various nutritional concepts and practical strategies to create personalized and effective plans. The method includes:</p>
+        <ul class="content-list">
+            <li><b>V - Validation:</b> Begin by validating the client's concerns and experiences. This involves active listening, empathy, and acknowledging the challenges they face.</li>
+            <li><b>I - Investigation:</b> Conduct a thorough investigation of the client's health history, lifestyle, dietary habits, and relevant lab results. This step is crucial for identifying underlying issues and potential contributing factors.</li>
+            <li><b>T - Targeting:</b> Based on the investigation, target specific nutritional and lifestyle interventions to address the identified issues. This may include dietary modifications, supplementation, exercise recommendations, and stress management techniques.</li>
+            <li><b>A - Application:</b> Apply the targeted interventions in a practical and realistic manner. This involves creating a personalized nutrition plan, providing clear guidelines, and offering ongoing support and education.</li>
+            <li><b>L - Lifestyle Integration:</b> Integrate the recommended changes into the client's daily lifestyle. This requires a collaborative approach, considering the client's preferences, cultural background, and social support system.</li>
+        </ul>
+
+        <p>For instance, in Sarah's case, the V.I.T.A.L. method involved:</p>
+        <ul class="content-list">
+            <li><b>Validation:</b> Acknowledging Sarah's frustration with weight gain and fatigue.</li>
+            <li><b>Investigation:</b> Assessing her medical history, blood test results, and dietary habits.</li>
+            <li><b>Targeting:</b> Addressing insulin resistance, high blood pressure, and lipid imbalances through a low-glycemic index diet and lifestyle adjustments.</li>
+            <li><b>Application:</b> Creating a personalized meal plan with specific food choices and meal timings.</li>
+            <li><b>Lifestyle Integration:</b> Incorporating regular exercise and stress management techniques into her daily routine.</li>
+        </ul>
+
+        <h2 id="check-understanding">Check Your Understanding</h2>
+
+        <div class="check-understanding">
+            <p class="box-label">Test Your Knowledge</p>
+
+            <p class="question">Question 1: What are the key components of the V.I.T.A.L. Nutrition Method™?</p>
+            <button class="reveal-btn">Reveal Answer</button>
+            <div class="answer-text">Answer: The key components of the V.I.T.A.L. Nutrition Method™ are Validation, Investigation, Targeting, Application, and Lifestyle Integration.</div>
+
+            <p class="question">Question 2: How can you apply the concept of nutrient timing in a complex client scenario?</p>
+            <button class="reveal-btn">Reveal Answer</button>
+            <div class="answer-text">Answer: Nutrient timing can be applied by strategically planning when to consume specific nutrients based on the client's daily routine, activity levels, and health goals. For example, prioritizing protein intake post-workout for muscle recovery or adjusting carbohydrate intake to manage blood sugar levels.</div>
+        </div>
+
+        <h2 id="summary">Summary and Key Takeaways</h2>
+
+        <div class="takeaways-box">
+            <p class="box-label">Key Takeaways</p>
+            <ul>
+                <li>Complex client scenarios require a comprehensive understanding of various nutritional concepts and principles.</li>
+                <li>Practical applications include tailoring macronutrient ratios, optimizing micronutrient intake, and modulating gut health.</li>
+                <li>Case studies provide valuable insights into managing multifaceted health challenges.</li>
+                <li>The V.I.T.A.L. Nutrition Method™ offers a structured approach to creating personalized and effective nutrition plans.</li>
+                <li>Ongoing support, education, and lifestyle integration are essential for client adherence and long-term success.</li>
+            </ul>
+        </div>
+
+        <!-- References -->
+        <div class="references-box">
+            <p class="box-label">References & Further Reading</p>
+            <ul>
+                <li>Anderson, J. W. et al. (2001). "Health implications of dietary fiber." Nutrition Reviews, 59(1), 1-18.</li>
+                <li>Brand-Miller, J. C. et al. (2003). "Glycemic index and glycemic load for foods: a systematic review." American Journal of Clinical Nutrition, 71(6), 1455-1492.</li>
+                <li>Das, U. N. (2006). "Essential fatty acids: a review." Nutrition, 22(1), 71-76.</li>
+                <li>Gillinov, A. M. et al. (2016). "The role of nutrition in inflammatory bowel disease." Inflammatory Bowel Diseases, 22(3), 662-674.</li>
+                <li>Lustig, R. H. (2010). "Fructose 2.0: metabolic, genetic, and societal implications of fructose excess." American Journal of Clinical Nutrition, 91(6), 1387-1394.</li>
+                <li>Mozaffarian, D. et al. (2011). "Dietary and policy priorities for cardiovascular disease, diabetes, and obesity: a comprehensive review." Circulation, 123(8), 933-964.</li>
+                <li>Sender, R. et al. (2016). "Revised estimates for the number of human and bacteria cells in the body." PLoS Biology, 14(8), e1002533.</li>
+                <li>Slavin, J. L. (2013). "Fiber and prebiotics: mechanisms and health benefits." Nutrients, 5(4), 1417-1435.</li>
+            </ul>
+        </div>
+
+        <footer class="lesson-footer">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="footer-logo">
+            <p class="brand">AccrediPro Academy</p>
+            <p class="copyright">&copy; 2024 AccrediPro Academy. All rights reserved.</p>
+        </footer>
+    </div>
+
+    <script>
+        document.querySelectorAll('.reveal-btn').forEach(button => {
+            button.addEventListener('click', function() {
+                this.nextElementSibling.classList.toggle('show');
+            });
+        });
+    </script>
+</body>
+
+</html>
