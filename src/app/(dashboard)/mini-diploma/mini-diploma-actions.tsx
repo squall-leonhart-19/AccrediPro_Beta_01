@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useSession } from "next-auth/react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -15,6 +16,7 @@ export function MiniDiplomaActions({ userId }: MiniDiplomaActionsProps) {
   const [isCompleting, setIsCompleting] = useState(false);
   const [message, setMessage] = useState<{ type: "success" | "error"; text: string } | null>(null);
   const router = useRouter();
+  const { update: updateSession } = useSession();
 
   const handleCompleteAll = async () => {
     setIsCompleting(true);
@@ -32,10 +34,13 @@ export function MiniDiplomaActions({ userId }: MiniDiplomaActionsProps) {
       if (data.success) {
         setMessage({ type: "success", text: "All lessons completed! Unlocking your Masterclass Bonus..." });
 
+        // Refresh session to update enrollment status (triggers JWT callback)
+        await updateSession();
+
         // Short delay to show success message, then redirect to training page
         setTimeout(() => {
-          // Force full page reload to refresh session (isMiniDiplomaOnly will now be false)
-          window.location.href = "/training";
+          router.push("/training");
+          router.refresh();
         }, 1500);
       } else {
         setMessage({ type: "error", text: data.error || "Failed to complete lessons" });
@@ -85,11 +90,10 @@ export function MiniDiplomaActions({ userId }: MiniDiplomaActionsProps) {
 
         {message && (
           <div
-            className={`mt-3 p-3 rounded-lg flex items-center gap-2 ${
-              message.type === "success"
+            className={`mt-3 p-3 rounded-lg flex items-center gap-2 ${message.type === "success"
                 ? "bg-emerald-100 text-emerald-800"
                 : "bg-red-100 text-red-800"
-            }`}
+              }`}
           >
             {message.type === "success" ? (
               <CheckCircle className="w-4 h-4" />

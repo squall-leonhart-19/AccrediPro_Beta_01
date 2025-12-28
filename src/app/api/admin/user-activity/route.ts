@@ -4,6 +4,7 @@ import { authOptions } from "@/lib/auth";
 import prisma from "@/lib/prisma";
 
 // GET - Fetch complete user activity for dispute resolution
+// OPTIMIZED: Reduced query complexity for faster loading
 export async function GET(request: NextRequest) {
     try {
         const session = await getServerSession(authOptions);
@@ -18,16 +19,17 @@ export async function GET(request: NextRequest) {
             return NextResponse.json({ error: "User ID required" }, { status: 400 });
         }
 
-        // Fetch all activity data for this user
+        // OPTIMIZED: Fetch data with minimal fields and reduced limits
         const [
             user,
             loginHistory,
             enrollments,
-            lessonProgress,
+            lessonProgressCount,
+            recentLessonProgress,
             certificates,
-            activityLogs,
+            activityLogsCount,
         ] = await Promise.all([
-            // Basic user info
+            // Basic user info - minimal fields
             prisma.user.findUnique({
                 where: { id: userId },
                 select: {
@@ -42,17 +44,29 @@ export async function GET(request: NextRequest) {
                 },
             }),
 
-            // Login history
+            // Login history - reduced to 20 most recent
             prisma.loginHistory.findMany({
                 where: { userId },
                 orderBy: { createdAt: "desc" },
-                take: 50,
+                take: 20,
+                select: {
+                    id: true,
+                    createdAt: true,
+                    ipAddress: true,
+                    device: true,
+                    browser: true,
+                },
             }),
 
-            // Enrollments with course info
+            // Enrollments - minimal fields, no deep nesting
             prisma.enrollment.findMany({
                 where: { userId },
-                include: {
+                select: {
+                    id: true,
+                    status: true,
+                    progress: true,
+                    enrolledAt: true,
+                    completedAt: true,
                     course: {
                         select: { id: true, title: true, slug: true },
                     },
@@ -60,33 +74,36 @@ export async function GET(request: NextRequest) {
                 orderBy: { enrolledAt: "desc" },
             }),
 
-            // Lesson progress with lesson and module info
+            // OPTIMIZED: Just count completed lessons instead of fetching all
+            prisma.lessonProgress.count({
+                where: { userId, isCompleted: true },
+            }),
+
+            // OPTIMIZED: Only fetch 10 most recent for display
             prisma.lessonProgress.findMany({
                 where: { userId },
-                include: {
+                select: {
+                    id: true,
+                    isCompleted: true,
+                    watchTime: true,
+                    updatedAt: true,
                     lesson: {
                         select: {
                             id: true,
                             title: true,
-                            module: {
-                                select: {
-                                    title: true,
-                                    course: {
-                                        select: { title: true },
-                                    },
-                                },
-                            },
                         },
                     },
                 },
                 orderBy: { updatedAt: "desc" },
-                take: 100,
+                take: 10,
             }),
 
-            // Certificates issued
+            // Certificates - minimal fields
             prisma.certificate.findMany({
                 where: { userId },
-                include: {
+                select: {
+                    id: true,
+                    issuedAt: true,
                     course: {
                         select: { title: true },
                     },
@@ -94,11 +111,9 @@ export async function GET(request: NextRequest) {
                 orderBy: { issuedAt: "desc" },
             }),
 
-            // General activity logs
-            prisma.userActivity.findMany({
+            // OPTIMIZED: Just count activity logs
+            prisma.userActivity.count({
                 where: { userId },
-                orderBy: { createdAt: "desc" },
-                take: 100,
             }),
         ]);
 
@@ -106,7 +121,9 @@ export async function GET(request: NextRequest) {
             return NextResponse.json({ error: "User not found" }, { status: 404 });
         }
 
-        // Calculate stats
+        // Calculate stats using counts instead of fetched arrays
+        const totalWatchTime = recentLessonProgress.reduce((acc, lp) => acc + (lp.watchTime || 0), 0);
+
         const stats = {
             totalLogins: user.loginCount,
             firstLogin: user.firstLoginAt,
@@ -114,9 +131,10 @@ export async function GET(request: NextRequest) {
             accountCreated: user.createdAt,
             totalEnrollments: enrollments.length,
             completedCourses: enrollments.filter(e => e.status === "COMPLETED").length,
-            lessonsCompleted: lessonProgress.filter(lp => lp.isCompleted).length,
-            totalWatchTime: lessonProgress.reduce((acc, lp) => acc + (lp.watchTime || 0), 0),
+            lessonsCompleted: lessonProgressCount,
+            totalWatchTime,
             certificatesEarned: certificates.length,
+            totalActivityLogs: activityLogsCount,
         };
 
         return NextResponse.json({
@@ -124,12 +142,13 @@ export async function GET(request: NextRequest) {
             stats,
             loginHistory,
             enrollments,
-            lessonProgress,
+            lessonProgress: recentLessonProgress,
             certificates,
-            activityLogs,
+            activityLogs: [], // Don't fetch full logs - just show count in stats
         });
     } catch (error) {
         console.error("Get user activity error:", error);
         return NextResponse.json({ error: "Failed to fetch user activity" }, { status: 500 });
     }
 }
+

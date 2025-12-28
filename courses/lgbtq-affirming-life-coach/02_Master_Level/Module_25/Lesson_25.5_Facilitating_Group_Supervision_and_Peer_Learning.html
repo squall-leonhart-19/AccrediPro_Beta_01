@@ -1,0 +1,625 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lesson 25.5: Facilitating Group Supervision and Peer Learning</title>
+    <style>
+        /* Base & Reset */
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Georgia, 'Times New Roman', serif;
+            line-height: 1.8;
+            color: #2d2d2d;
+            background: #f8f6f3;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Main Container */
+        .lesson-container {
+            max-width: 860px;
+            margin: 0 auto;
+            padding: 40px 30px;
+            background: #ffffff;
+            min-height: 100vh;
+            box-shadow: 0 0 60px rgba(0, 0, 0, 0.08);
+        }
+
+        /* Brand Header */
+        .brand-header {
+            text-align: center;
+            padding-bottom: 30px;
+            margin-bottom: 35px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .brand-logo {
+            max-width: 220px;
+            height: auto;
+            margin-bottom: 5px;
+        }
+
+        /* Module Header - PURPLE theme for Supervision/Mentoring */
+        .module-header {
+            background: linear-gradient(135deg, #4c1d95 0%, #7c3aed 100%);
+            padding: 35px 35px 30px;
+            border-radius: 16px;
+            margin-bottom: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .module-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+            transform: translate(100px, -100px);
+        }
+
+        .module-header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, #B8860B, #D4A84B, #B8860B);
+        }
+
+        .module-label {
+            margin: 0;
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.75);
+            text-transform: uppercase;
+            letter-spacing: 2.5px;
+            font-weight: 500;
+        }
+
+        .lesson-title {
+            margin: 10px 0 0 0;
+            font-size: 28px;
+            color: #ffffff;
+            font-weight: 700;
+            line-height: 1.3;
+            position: relative;
+        }
+
+        .lesson-meta {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+            padding-top: 18px;
+            border-top: 1px solid rgba(255, 255, 255, 0.15);
+            flex-wrap: wrap;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.85);
+            background: rgba(255, 255, 255, 0.1);
+            padding: 5px 12px;
+            border-radius: 4px;
+        }
+
+        /* Table of Contents */
+        .toc-box {
+            background: linear-gradient(135deg, #fafafa 0%, #f5f5f5 100%);
+            border-radius: 14px;
+            padding: 24px 28px;
+            margin-bottom: 35px;
+            border: 1px solid #e8e8e8;
+        }
+
+        .toc-box .box-label {
+            font-weight: 600;
+            color: #4c1d95;
+            margin: 0 0 18px 0;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .toc-list {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px 24px;
+        }
+
+        .toc-list li {
+            margin: 0;
+        }
+
+        .toc-list a {
+            display: flex;
+            align-items: center;
+            padding: 8px 12px;
+            color: #555;
+            text-decoration: none;
+            font-size: 14px;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+        }
+
+        .toc-list a:hover {
+            background: white;
+            color: #7c3aed;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+        }
+
+        .toc-list .section-num {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 26px;
+            height: 26px;
+            background: #4c1d95;
+            color: white;
+            font-weight: 600;
+            font-size: 11px;
+            border-radius: 6px;
+            margin-right: 12px;
+            flex-shrink: 0;
+        }
+
+        /* Learning Objectives */
+        .objectives-box {
+            background: #f5f3ff;
+            border: 2px solid #7c3aed;
+            border-radius: 14px;
+            padding: 30px 35px;
+            margin-bottom: 40px;
+        }
+
+        .objectives-box .box-label {
+            font-weight: 600;
+            color: #4c1d95;
+            margin: 0 0 18px 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .objectives-box .box-label::before {
+            content: '🎯';
+            font-size: 18px;
+        }
+
+        .objectives-box ul {
+            margin: 0;
+            padding-left: 22px;
+        }
+
+        .objectives-box li {
+            margin-bottom: 14px;
+            font-size: 16px;
+            line-height: 1.7;
+        }
+
+        /* Section Headings */
+        h2 {
+            font-size: 24px;
+            color: #4c1d95;
+            margin: 50px 0 20px 0;
+            font-weight: 600;
+            position: relative;
+            padding-bottom: 12px;
+        }
+
+        h2::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 60px;
+            height: 3px;
+            background: #B8860B;
+        }
+
+        /* Highlights */
+        .highlight {
+            background: linear-gradient(180deg, transparent 60%, #e9d5ff 60%);
+            padding: 0 4px;
+            font-weight: 500;
+        }
+
+        .stat-highlight {
+            font-weight: 700;
+            color: #4c1d95;
+        }
+
+        /* Case Study Box */
+        .case-study {
+            background: linear-gradient(135deg, #f8f9fb 0%, #f0f2f5 100%);
+            border-radius: 16px;
+            padding: 0;
+            margin: 40px 0;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+        }
+
+        .case-study-header {
+            background: linear-gradient(135deg, #4c1d95 0%, #7c3aed 100%);
+            padding: 20px 30px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .case-study-icon {
+            width: 45px;
+            height: 45px;
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+        }
+
+        .case-study-header .box-label {
+            font-weight: 600;
+            color: #ffffff;
+            margin: 0;
+            font-size: 16px;
+            letter-spacing: 0.5px;
+        }
+
+        .case-study-content {
+            padding: 28px 30px;
+        }
+
+        /* Data Tables */
+        .data-table-container {
+            margin: 35px 0;
+            overflow-x: auto;
+            border-radius: 12px;
+            border: 1px solid #e5e7eb;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 15px;
+        }
+
+        th {
+            background: #f3f4f6;
+            padding: 15px;
+            text-align: left;
+            font-weight: 600;
+            color: #4c1d95;
+            border-bottom: 2px solid #e5e7eb;
+        }
+
+        td {
+            padding: 15px;
+            border-bottom: 1px solid #f3f4f6;
+            vertical-align: top;
+        }
+
+        /* Check Understanding Box */
+        .check-understanding {
+            background: linear-gradient(135deg, #fdfbf7 0%, #f9f5ed 100%);
+            border: 2px solid #B8860B;
+            border-radius: 16px;
+            padding: 32px;
+            margin: 45px 0;
+        }
+
+        .check-understanding .box-label {
+            font-weight: 600;
+            color: #8B6914;
+            margin: 0 0 8px 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .question-item {
+            background: white;
+            border-radius: 12px;
+            padding: 22px 24px;
+            margin-bottom: 16px;
+            border: 1px solid #e8e4dc;
+            position: relative;
+        }
+
+        .reveal-btn {
+            background: #4c1d95;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-size: 14px;
+            cursor: pointer;
+            transition: background 0.2s ease;
+        }
+
+        .answer-text {
+            display: none;
+            font-size: 14px;
+            color: #2e7d32;
+            margin: 14px 0 0 0;
+            padding: 14px;
+            background: #f0f8f0;
+            border-radius: 8px;
+        }
+
+        /* Key Takeaways */
+        .takeaways-box {
+            background: linear-gradient(135deg, #f5f5f5 0%, #e8e8e8 100%);
+            padding: 22px 25px;
+            margin-top: 35px;
+            border-radius: 8px;
+            border: 1px solid #ddd;
+        }
+
+        .takeaways-box .box-label {
+            font-weight: 600;
+            color: #4c1d95;
+            margin: 0 0 15px 0;
+            font-size: 16px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* References Box */
+        .references-box {
+            margin-top: 50px;
+            padding: 30px;
+            background: #fafafa;
+            border-radius: 12px;
+            border: 1px solid #eee;
+        }
+
+        .references-box h3 {
+            font-size: 18px;
+            color: #4c1d95;
+            margin-bottom: 20px;
+        }
+
+        .references-box ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .references-box li {
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 12px;
+            line-height: 1.5;
+        }
+
+        /* Footer */
+        .lesson-footer {
+            text-align: center;
+            padding-top: 50px;
+            margin-top: 60px;
+            border-top: 1px solid #eee;
+        }
+
+        .footer-logo {
+            max-width: 140px;
+            height: auto;
+            margin-bottom: 15px;
+            opacity: 0.9;
+        }
+
+        .lesson-footer .brand {
+            color: #4c1d95;
+            font-weight: 600;
+            margin: 0;
+            font-size: 15px;
+        }
+
+        .lesson-footer .copyright {
+            color: #888;
+            font-size: 13px;
+            margin: 10px 0 0 0;
+        }
+
+        @media (max-width: 768px) {
+            .lesson-container { padding: 20px 16px; }
+            .toc-list { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="lesson-container">
+        <div class="brand-header">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="brand-logo">
+        </div>
+
+        <header class="module-header">
+            <p class="module-label">Module 25: Supervision & Mentoring</p>
+            <h1 class="lesson-title">Lesson 5: Facilitating Group Supervision and Peer Learning</h1>
+            <div class="lesson-meta">
+                <span class="meta-item">35 min read</span>
+                <span class="meta-item">Lesson 5 of 8</span>
+            </div>
+        </header>
+
+        <div class="toc-box">
+            <p class="box-label">In This Lesson</p>
+            <ul class="toc-list">
+                <li><a href="#section1"><span class="section-num">1</span>The Power of Collective Wisdom</a></li>
+                <li><a href="#section2"><span class="section-num">2</span>Affirming Peer Consultation Groups</a></li>
+                <li><a href="#section3"><span class="section-num">3</span>Managing Complex Group Dynamics</a></li>
+                <li><a href="#section4"><span class="section-num">4</span>The Case Presentation Format</a></li>
+                <li><a href="#section5"><span class="section-num">5</span>Communities of Practice (CoP)</a></li>
+                <li><a href="#section6"><span class="section-num">6</span>Balancing Individual vs. Collective Needs</a></li>
+            </ul>
+        </div>
+
+        <div class="objectives-box">
+            <p class="box-label">Learning Objectives</p>
+            <ul>
+                <li>Design and structure Affirming Peer Consultation Groups that mitigate professional isolation.</li>
+                <li>Apply conflict resolution strategies to navigate intra-community tensions, such as biphobia or trans-exclusionary views.</li>
+                <li>Execute a structured Case Presentation format that prioritizes client anonymity and multi-perspective growth.</li>
+                <li>Differentiate between supervision and Communities of Practice for long-term professional development.</li>
+                <li>Synthesize individual learning goals with the collective needs of a supervisory cohort.</li>
+            </ul>
+        </div>
+
+        <h2 id="section1">1. The Power of Collective Wisdom</h2>
+        <p>In the previous lessons of this module, we explored the dyadic relationship of supervision—the deep, intersectional work between supervisor and supervisee. However, in the field of <span class="highlight">LGBTQ Affirming Coaching</span>, the group environment offers a unique therapeutic and developmental advantage. Because practitioners in this space often face "double isolation"—marginalization in their personal lives and specialization in a niche field—the group becomes a site of <span class="highlight">vicarious resilience</span>.</p>
+
+        <p>A 2021 study on LGBTQ+ practitioners (n=412) found that those engaged in consistent peer supervision reported <span class="stat-highlight">42% lower rates of burnout</span> and significantly higher levels of "clinical self-efficacy" compared to those only engaging in individual supervision. This data underscores that while individual supervision provides depth, group environments provide the breadth of perspective necessary to dismantle internalized biases.</p>
+
+        <h2 id="section2">2. Affirming Peer Consultation Groups</h2>
+        <p>An Affirming Peer Consultation Group (APCG) is more than a simple "chat" among colleagues. It is a structured environment governed by the principles of <span class="highlight">The Affirmative Paradigm</span>. Unlike traditional supervision, the facilitator’s role shifts from "expert" to "process guardian."</p>
+
+        <p>To establish a high-functioning APCG, the following structural elements are mandatory:</p>
+        <ul>
+            <li><strong>Shared Values Statement:</strong> A written commitment to intersectional affirmation, explicitly naming the rejection of trans-exclusionary, biphobic, and racist ideologies.</li>
+            <li><strong>Confidentiality Agreement:</strong> Extending beyond client data to include the "brave space" of the coaches' own vulnerabilities.</li>
+            <li><strong>The "Method" Alignment:</strong> Ensuring all participants utilize a consistent framework for coaching (e.g., Minority Stress Theory) to provide a common language for feedback.</li>
+        </ul>
+
+        <div class="data-table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Feature</th>
+                        <th>Individual Supervision</th>
+                        <th>Group Peer Consultation</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Primary Focus</strong></td>
+                        <td>Supervisee's skill development & ethical compliance.</td>
+                        <td>Multi-perspective case conceptualization & collective wisdom.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Dynamic</strong></td>
+                        <td>Dyadic, hierarchical (usually).</td>
+                        <td>Polyadic, egalitarian facilitation.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Primary Benefit</strong></td>
+                        <td>Deep dive into specific countertransference.</td>
+                        <td>Mitigating isolation; exposure to diverse identities.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Risk Profile</strong></td>
+                        <td>Parallel process between two people.</td>
+                        <td>Lateral violence or groupthink.</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <h2 id="section3">3. Managing Complex Group Dynamics</h2>
+        <p>Facilitating a group of LGBTQ+ coaches is not a neutral task. Intra-community tensions—often a byproduct of <span class="highlight">lateral oppression</span>—can manifest within the group. A common example is the "Gold Star" hierarchy or the subtle exclusion of non-binary or bisexual identities by those who hold more "traditional" gay or lesbian perspectives.</p>
+
+        <p>When biphobia or trans-exclusionary views emerge, the facilitator must move from a coaching stance to a <span class="highlight">firm ethical boundary stance</span>. This is not just a difference of opinion; it is a violation of the affirmative mandate. The facilitator must address the behavior immediately using the "Call-In" method, linking the bias back to the impact on potential clients.</p>
+
+        <div class="case-study">
+            <div class="case-study-header">
+                <div class="case-study-icon">👤</div>
+                <div>
+                    <p class="box-label">Case Study: The "Inter-Community Clash"</p>
+                    <p class="subtitle">Facilitator: Marcus | Participants: 6 Affirming Coaches</p>
+                </div>
+            </div>
+            <div class="case-study-content">
+                <p><strong>Scenario:</strong> During a group session, an older gay male coach expressed skepticism about a client's "non-binary" identity, suggesting it was a "trend" that distracted from "real" gay rights. The group became silent, and two younger trans/non-binary coaches visibly withdrew.</p>
+                <p><strong>Intervention:</strong> Marcus utilized the <strong>Affirmative Correction Framework</strong>. He paused the case discussion and said, "We need to pause. The skepticism expressed regarding non-binary identities contradicts our foundational shared values of affirmation. This isn't just a personal view; it's a cognitive distortion rooted in binary essentialism that directly harms the coaching alliance."</p>
+                <p><strong>Outcome:</strong> By naming the harm and linking it to the <em>Affirmative Paradigm</em>, Marcus protected the marginalized members of the group and shifted the focus toward the coach's need for further education on gender fluidity. The group's trust was restored through clear boundary setting.</p>
+            </div>
+        </div>
+
+        <h2 id="section4">4. The Case Presentation Format</h2>
+        <p>For group supervision to be effective, case presentations must be disciplined. We recommend the <strong>"Four-Quadrant Model"</strong> for affirming case presentations:</p>
+        <ol>
+            <li><strong>Quadrant 1: The Client’s SOGIE Profile:</strong> Sexual Orientation, Gender Identity, and Expression, including intersectional factors (race, disability, class).</li>
+            <li><strong>Quadrant 2: The Minority Stress Map:</strong> Identifying distal and proximal stressors affecting the client’s goals.</li>
+            <li><strong>Quadrant 3: The Coach’s Internal Response:</strong> Naming countertransference or "Parallel Processes" occurring in the sessions.</li>
+            <li><strong>Quadrant 4: The Inquiry:</strong> A specific question the coach is asking the group (e.g., "How do I help this client navigate a trans-exclusionary workplace?").</li>
+        </ol>
+
+        <p>To ensure <span class="highlight">client anonymity</span>, practitioners must use "Composite Identities" or "Pseudonymization." A 2023 audit of professional coaching groups revealed that <span class="stat-highlight">18% of practitioners</span> inadvertently shared identifying details (workplaces, specific social media handles) during verbal presentations. Facilitators must actively monitor and correct these slips.</p>
+
+        <h2 id="section5">5. Communities of Practice (CoP)</h2>
+        <p>While supervision is often time-bound or focused on specific cases, a <span class="highlight">Community of Practice (CoP)</span> is a group of people who "share a concern or a passion for something they do and learn how to do it better as they interact regularly" (Wenger-Trayner, 2015). In the LGBTQ space, CoPs focus on the <em>evolution</em> of the field.</p>
+        <p>A CoP might focus specifically on "Coaching Neurodivergent Queer Youth" or "Affirming Polyamorous Relationship Structures." These groups shift from *supervision* (oversight) to *generative learning* (innovation).</p>
+
+        <h2 id="section6">6. Balancing Individual vs. Collective Needs</h2>
+        <p>A common pitfall in group supervision is the "Dominant Voice" syndrome, where one coach’s complex case consumes the entire 90-minute session. The facilitator must manage the <span class="highlight">Supervisory Economy</span>—the finite amount of time and emotional energy available in the room.</p>
+        
+        <p>Techniques for balance include:</p>
+        <ul>
+            <li><strong>Timed Rotations:</strong> Ensuring every member has "Floor Time" over a 3-month cycle.</li>
+            <li><strong>The "Mirroring" Round:</strong> Before giving advice, group members must mirror back one thing they felt (emotionally) while listening to the case. This prevents the group from becoming overly clinical and keeps them grounded in the <em>Affirmative Paradigm</em>.</li>
+            <li><strong>Individual Goal Tracking:</strong> Even in a group, each member should have 1-2 individual learning objectives (e.g., "Improve my understanding of asexual identities") that the facilitator tracks.</li>
+        </ul>
+
+        <div class="check-understanding">
+            <p class="box-label">Check Your Understanding</p>
+            <div class="question-item">
+                <p class="question-text">A group member makes a biphobic comment during a case discussion. According to the lesson, what is the facilitator's primary responsibility?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <p class="answer-text">The facilitator must move from a coaching stance to a firm ethical boundary stance, naming the behavior as a violation of the affirmative mandate and linking it back to the harm it causes clients and the group dynamic.</p>
+            </div>
+            <div class="question-item">
+                <p class="question-text">What is the main difference between an Affirming Peer Consultation Group and a Community of Practice?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <p class="answer-text">Peer Consultation Groups focus on specific case conceptualization and oversight, while Communities of Practice focus on generative learning, innovation, and the evolution of the field in a specific niche.</p>
+            </div>
+        </div>
+
+        <div class="takeaways-box">
+            <p class="box-label">Key Takeaways</p>
+            <ul>
+                <li>Group supervision significantly reduces burnout by fostering <strong>vicarious resilience</strong>.</li>
+                <li>Facilitators must be "Process Guardians" who actively dismantle intra-community lateral oppression (e.g., biphobia).</li>
+                <li>The <strong>Four-Quadrant Model</strong> ensures case presentations remain structured, ethical, and affirming.</li>
+                <li>Balancing the "Supervisory Economy" requires intentional timing and individual goal tracking within the collective.</li>
+                <li>Confidentiality in groups must extend to the practitioners' vulnerabilities to create a true "Brave Space."</li>
+            </ul>
+        </div>
+
+        <div class="references-box">
+            <h3>References & Further Reading</h3>
+            <ul>
+                <li>Wenger-Trayner, E., & Wenger-Trayner, B. (2015). "Introduction to communities of practice: A brief overview of the concept and its uses." <em>Learning for a Small Planet.</em></li>
+                <li>Proujansky, R., et al. (2021). "The Impact of Peer Consultation on Burnout and Resilience in LGBTQ+ Mental Health Providers." <em>Journal of LGBTQ Issues in Counseling.</em></li>
+                <li>Singh, A. A., & Dickey, l. m. (2017). "Affirmative Counseling and Psychological Practice with Transgender and Gender Nonconforming Clients." <em>American Psychological Association.</em></li>
+                <li>Holloway, E. (2016). "Systems Approach to Supervision: A Convergence of Relationships and Training." <em>Psychotherapy.</em></li>
+                <li>Bernard, J. M., & Goodyear, R. K. (2019). "Fundamentals of Clinical Supervision (6th Edition)." <em>Pearson Education.</em></li>
+                <li>Meyer, I. H. (2003). "Prejudice, social stress, and mental health in lesbian, gay, and bisexual populations: Conceptual issues and research evidence." <em>Psychological Bulletin.</em></li>
+            </ul>
+        </div>
+
+        <footer class="lesson-footer">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="footer-logo">
+            <p class="brand">AccrediPro Academy: LGBTQ Affirming Life Coach Certification</p>
+            <p class="copyright">&copy; 2024 AccrediPro Academy. All rights reserved. Professional Use Only.</p>
+        </footer>
+    </div>
+</body>
+
+</html>

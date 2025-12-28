@@ -1,0 +1,702 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lesson 6: Operational Excellence and Practice Automation</title>
+    <style>
+        /* Base & Reset */
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Georgia, 'Times New Roman', serif;
+            line-height: 1.8;
+            color: #2d2d2d;
+            background: #f4f7f9;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Main Container */
+        .lesson-container {
+            max-width: 860px;
+            margin: 0 auto;
+            padding: 40px 30px;
+            background: #ffffff;
+            min-height: 100vh;
+            box-shadow: 0 0 60px rgba(0, 0, 0, 0.05);
+        }
+
+        /* Brand Header */
+        .brand-header {
+            text-align: center;
+            padding-bottom: 30px;
+            margin-bottom: 35px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .brand-logo {
+            max-width: 220px;
+            height: auto;
+            margin-bottom: 5px;
+        }
+
+        /* Module Header - SLATE/INDIGO theme for Business Operations */
+        .module-header {
+            background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
+            padding: 35px 35px 30px;
+            border-radius: 16px;
+            margin-bottom: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .module-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.05) 0%, transparent 70%);
+            transform: translate(100px, -100px);
+        }
+
+        .module-header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, #94a3b8, #cbd5e1, #94a3b8);
+        }
+
+        .module-label {
+            margin: 0;
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.75);
+            text-transform: uppercase;
+            letter-spacing: 2.5px;
+            font-weight: 500;
+        }
+
+        .lesson-title {
+            margin: 10px 0 0 0;
+            font-size: 28px;
+            color: #ffffff;
+            font-weight: 700;
+            line-height: 1.3;
+            position: relative;
+        }
+
+        .lesson-meta {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+            padding-top: 18px;
+            border-top: 1px solid rgba(255, 255, 255, 0.15);
+            flex-wrap: wrap;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.85);
+            background: rgba(255, 255, 255, 0.1);
+            padding: 5px 12px;
+            border-radius: 4px;
+        }
+
+        /* Table of Contents */
+        .toc-box {
+            background: linear-gradient(135deg, #fafafa 0%, #f5f5f5 100%);
+            border-radius: 14px;
+            padding: 24px 28px;
+            margin-bottom: 35px;
+            border: 1px solid #e8e8e8;
+        }
+
+        .toc-box .box-label {
+            font-weight: 600;
+            color: #1e293b;
+            margin: 0 0 18px 0;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .toc-list {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px 24px;
+        }
+
+        .toc-list li {
+            margin: 0;
+        }
+
+        .toc-list a {
+            display: flex;
+            align-items: center;
+            padding: 8px 12px;
+            color: #555;
+            text-decoration: none;
+            font-size: 14px;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+        }
+
+        .toc-list a:hover {
+            background: white;
+            color: #334155;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+        }
+
+        .toc-list .section-num {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 26px;
+            height: 26px;
+            background: #334155;
+            color: white;
+            font-weight: 600;
+            font-size: 11px;
+            border-radius: 6px;
+            margin-right: 12px;
+            flex-shrink: 0;
+        }
+
+        /* Learning Objectives */
+        .objectives-box {
+            background: #f8fafc;
+            border: 2px solid #334155;
+            border-radius: 14px;
+            padding: 30px 35px;
+            margin-bottom: 40px;
+        }
+
+        .objectives-box .box-label {
+            font-weight: 600;
+            color: #1e293b;
+            margin: 0 0 18px 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .objectives-box .box-label::before {
+            content: '⚙️';
+            font-size: 18px;
+        }
+
+        .objectives-box ul {
+            margin: 0;
+            padding-left: 22px;
+        }
+
+        .objectives-box li {
+            margin-bottom: 14px;
+            font-size: 16px;
+            line-height: 1.7;
+        }
+
+        /* Key Terms Box */
+        .key-terms-box {
+            background: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%);
+            border-radius: 14px;
+            padding: 28px 30px;
+            margin: 40px 0;
+            border: 1px solid #cbd5e1;
+        }
+
+        .key-terms-box .box-label {
+            font-weight: 600;
+            color: #1e293b;
+            margin: 0 0 18px 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .terms-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 16px;
+        }
+
+        .term-item {
+            background: white;
+            padding: 16px 18px;
+            border-radius: 10px;
+            border-left: 4px solid #334155;
+        }
+
+        .term-item .term {
+            font-weight: 700;
+            color: #1e293b;
+            font-size: 15px;
+            margin: 0 0 6px 0;
+        }
+
+        .term-item .definition {
+            font-size: 14px;
+            color: #475569;
+            margin: 0;
+            line-height: 1.6;
+        }
+
+        /* Section Headings */
+        h2 {
+            font-size: 24px;
+            color: #1e293b;
+            margin: 50px 0 20px 0;
+            font-weight: 600;
+            position: relative;
+            padding-bottom: 12px;
+        }
+
+        h2::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 60px;
+            height: 3px;
+            background: #94a3b8;
+        }
+
+        h3 {
+            font-size: 20px;
+            color: #334155;
+            margin: 35px 0 15px 0;
+        }
+
+        /* Paragraphs */
+        p {
+            font-size: 17px;
+            margin-bottom: 20px;
+            color: #334155;
+        }
+
+        /* Highlights */
+        .highlight {
+            background: linear-gradient(180deg, transparent 60%, #e2e8f0 60%);
+            padding: 0 4px;
+            font-weight: 600;
+            color: #1e293b;
+        }
+
+        /* Stats Box */
+        .stats-box {
+            background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
+            padding: 40px;
+            border-radius: 16px;
+            margin: 35px 0;
+            color: white;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 25px;
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 36px;
+            font-weight: 700;
+            display: block;
+        }
+
+        .stat-label {
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            opacity: 0.8;
+        }
+
+        /* Case Study Box */
+        .case-study {
+            background: #f8fafc;
+            border-radius: 16px;
+            margin: 40px 0;
+            overflow: hidden;
+            border: 1px solid #e2e8f0;
+        }
+
+        .case-study-header {
+            background: #334155;
+            padding: 20px 30px;
+            color: white;
+        }
+
+        .case-study-content {
+            padding: 30px;
+        }
+
+        /* Data Table */
+        .data-table-container {
+            overflow-x: auto;
+            margin: 30px 0;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 15px;
+        }
+
+        th {
+            background: #f1f5f9;
+            text-align: left;
+            padding: 15px;
+            border-bottom: 2px solid #cbd5e1;
+            color: #1e293b;
+        }
+
+        td {
+            padding: 15px;
+            border-bottom: 1px solid #e2e8f0;
+            vertical-align: top;
+        }
+
+        /* Check Understanding */
+        .check-understanding {
+            background: #f8fafc;
+            border: 2px solid #cbd5e1;
+            border-radius: 16px;
+            padding: 32px;
+            margin: 45px 0;
+        }
+
+        .reveal-btn {
+            background: #334155;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+
+        .answer-text {
+            display: none;
+            margin-top: 15px;
+            padding: 15px;
+            background: #f1f5f9;
+            border-radius: 8px;
+            border-left: 4px solid #334155;
+        }
+
+        /* Takeaways */
+        .takeaways-box {
+            background: #1e293b;
+            color: white;
+            padding: 30px;
+            border-radius: 14px;
+            margin: 40px 0;
+        }
+
+        .takeaways-box .box-label {
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 20px;
+            display: block;
+        }
+
+        /* References */
+        .references-box {
+            font-size: 14px;
+            color: #64748b;
+            margin-top: 50px;
+            padding-top: 30px;
+            border-top: 1px solid #e2e8f0;
+        }
+
+        .references-box h4 {
+            font-size: 14px;
+            text-transform: uppercase;
+            margin-bottom: 15px;
+        }
+
+        .references-box ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .references-box li {
+            margin-bottom: 8px;
+        }
+
+        /* Footer */
+        .lesson-footer {
+            text-align: center;
+            padding-top: 50px;
+            margin-top: 60px;
+            border-top: 1px solid #eee;
+        }
+
+        .footer-logo {
+            max-width: 140px;
+            opacity: 0.8;
+        }
+
+        @media (max-width: 768px) {
+            .toc-list { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="lesson-container">
+        <div class="brand-header">
+            <img src="https://accredipro.com/wp-content/uploads/2023/05/AccrediPro-Logo-1.png" alt="AccrediPro Academy" class="brand-logo">
+        </div>
+
+        <header class="module-header">
+            <p class="module-label">Module 30: Practice Building & Business Mastery</p>
+            <h1 class="lesson-title">Lesson 6: Operational Excellence and Practice Automation</h1>
+            <div class="lesson-meta">
+                <span class="meta-item">35 min read</span>
+                <span class="meta-item">Operational Mastery</span>
+            </div>
+        </header>
+
+        <div class="toc-box">
+            <p class="box-label">Lesson Architecture</p>
+            <ul class="toc-list">
+                <li><a href="#section1"><span class="section-num">1</span>The Operational Imperative</a></li>
+                <li><a href="#section2"><span class="section-num">2</span>The Core Tech Stack</a></li>
+                <li><a href="#section3"><span class="section-num">3</span>The Automated Onboarding Journey</a></li>
+                <li><a href="#section4"><span class="section-num">4</span>Data Governance & Privacy</a></li>
+                <li><a href="#section5"><span class="section-num">5</span>Standard Operating Procedures</a></li>
+                <li><a href="#section6"><span class="section-num">6</span>High Tech, High Touch Balance</a></li>
+            </ul>
+        </div>
+
+        <div class="objectives-box">
+            <p class="box-label">Learning Objectives</p>
+            <ul>
+                <li>Architect a professional practice management tech stack tailored for grief coaching.</li>
+                <li>Design an automated onboarding sequence that reduces friction and establishes authority.</li>
+                <li>Implement HIPAA/GDPR compliant data storage protocols for sensitive client narratives.</li>
+                <li>Develop Standard Operating Procedures (SOPs) to ensure consistent service delivery and scalability.</li>
+                <li>Optimize administrative workflows to preserve "Presence Capital" for deep client work.</li>
+            </ul>
+        </div>
+
+        <div class="key-terms-box">
+            <p class="box-label">Core Operational Concepts</p>
+            <div class="terms-grid">
+                <div class="term-item">
+                    <p class="term">Practice Management System (PMS)</p>
+                    <p class="definition">An all-in-one software solution handling scheduling, billing, and clinical notes.</p>
+                </div>
+                <div class="term-item">
+                    <p class="term">Friction Point</p>
+                    <p class="definition">Any step in the client journey where complexity or delay causes a potential drop-off.</p>
+                </div>
+                <div class="term-item">
+                    <p class="term">Presence Capital</p>
+                    <p class="definition">The finite amount of emotional and cognitive energy a coach can dedicate to active listening.</p>
+                </div>
+            </div>
+        </div>
+
+        <h2 id="section1">1. The Operational Imperative: Protecting Presence Capital</h2>
+        <p>In the preceding lessons, we explored niche authority and financial architecture. However, even the most prestigious grief coaching practice will succumb to <span class="highlight">practitioner burnout</span> if the operational foundation is built on manual labor. For a grief coach, "Presence Capital" is the most valuable asset. When you are bogged down by rescheduling emails, invoice chasing, and lost intake forms, you deplete the cognitive reserves required for the <span class="highlight">The Method’s</span> advanced empathetic resonance.</p>
+        
+        <p>A 2022 study on administrative burden in mental health professions found that practitioners spend an average of 14.5 hours per week on non-clinical tasks. In a grief-centric practice, where the emotional intensity of sessions is high, this administrative load acts as a secondary stressor, significantly increasing the risk of vicarious traumatization.</p>
+
+        <div class="stats-box">
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <span class="stat-number">38%</span>
+                    <span class="stat-label">Reduction in Burnout via Automation</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-number">14.5h</span>
+                    <span class="stat-label">Avg Weekly Admin Load (Manual)</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-number">82%</span>
+                    <span class="stat-label">Client Preference for Online Booking</span>
+                </div>
+            </div>
+        </div>
+
+        <h2 id="section2">2. Selecting and Implementing Your Tech Stack</h2>
+        <p>Operational excellence begins with selecting a <span class="highlight">cohesive tech stack</span>. While it is tempting to use a disparate collection of free tools (Google Calendar, PayPal, email), this creates "Data Silos" and increases the risk of privacy breaches. A professional practice requires a unified system.</p>
+
+        <h3>The Three Pillars of the Stack</h3>
+        <p>1. <strong>The CRM/PMS (The Brain):</strong> Systems like Practice Better, SimplePractice, or HoneyBook. These serve as the single source of truth for client data. 2. <strong>Automated Scheduling (The Gateway):</strong> Tools that sync with your calendar to prevent double-booking and eliminate "email tag." 3. <strong>Integrated Billing (The Engine):</strong> Payment processors (Stripe/Square) integrated directly into the booking flow to ensure 100% upfront collection.</p>
+
+        <div class="data-table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Feature</th>
+                        <th>General CRM (e.g., HubSpot)</th>
+                        <th>Practice Management (e.g., SimplePractice)</th>
+                        <th>Manual/Legacy Methods</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Privacy Compliance</strong></td>
+                        <td>Limited (Needs Add-ons)</td>
+                        <td>Native HIPAA/GDPR Compliance</td>
+                        <td>High Risk (Paper/Personal Email)</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Clinical Notes</strong></td>
+                        <td>Generic Text Fields</td>
+                        <td>Structured Templates & Goal Tracking</td>
+                        <td>Word Docs (Unsecured)</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Client Portal</strong></td>
+                        <td>None</td>
+                        <td>Secure Document Exchange</td>
+                        <td>Email Attachments</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Automation</strong></td>
+                        <td>High (Marketing Focus)</td>
+                        <td>High (Clinical Workflow Focus)</td>
+                        <td>None</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <h2 id="section3">3. Automating the Onboarding Journey</h2>
+        <p>The transition from "Inquirer" to "Client" is a vulnerable period, especially in grief. If a client reaches out in a moment of acute loss and meets a slow, manual response, they may retreat. Automation ensures that the <span class="highlight">containment</span> (a key principle of The Method) begins the moment they click "Apply."</p>
+
+        <h3>The 5-Step Automated Workflow</h3>
+        <ol class="content-list">
+            <li><strong>Inquiry & Screening:</strong> A website form triggers an automated "Welcome & Next Steps" email containing a brief screening questionnaire to ensure fit.</li>
+            <li><strong>Strategic Scheduling:</strong> Upon successful screening, the client is automatically sent a link to book their initial consultation.</li>
+            <li><strong>Contract & Payment:</strong> The booking is only confirmed once the digital Coaching Agreement is signed and the deposit is paid via the integrated portal.</li>
+            <li><strong>The Discovery Intake:</strong> 48 hours before the session, a comprehensive intake form (covering loss history, current coping mechanisms, and medical history) is automatically dispatched.</li>
+            <li><strong>Session Containment:</strong> Automated SMS and email reminders are sent at the 24-hour and 1-hour marks, reducing no-shows by up to 40%.</li>
+        </ol>
+
+        <div class="case-study">
+            <div class="case-study-header">
+                <span class="box-label">Case Study: The Efficiency Pivot</span>
+                <p class="subtitle">Practitioner: Elena R., Grief Coach specializing in Traumatic Loss</p>
+            </div>
+            <div class="case-study-content">
+                <p><strong>The Challenge:</strong> Elena was spending 6 hours per week on "onboarding ping-pong"—sending contracts, chasing payments, and reminding clients of sessions. She was capped at 10 clients per week due to administrative exhaustion.</p>
+                <p><strong>The Intervention:</strong> Elena implemented a dedicated PMS (SimplePractice) and automated her entire onboarding flow. She created a "Grief History Intake" that clients completed before the first call, allowing her to skip 20 minutes of data-gathering during the actual session.</p>
+                <p><strong>Outcome:</strong>
+                    <ul>
+                        <li>Administrative time reduced from 6 hours to 45 minutes per week.</li>
+                        <li>Client capacity increased from 10 to 16 without increasing total work hours.</li>
+                        <li>Revenue increased by 60% while her subjective "stress score" dropped from 8/10 to 3/10.</li>
+                    </ul>
+                </p>
+            </div>
+        </div>
+
+        <h2 id="section4">4. Client Data Management: Security as an Ethical Mandate</h2>
+        <p>In grief coaching, you are the custodian of some of the most sensitive narratives a human can share. Securely storing progress notes and assessments is not just a legal requirement (HIPAA/GDPR); it is a core component of the <span class="highlight">Trust Framework</span> in The Method.</p>
+        
+        <p>A 2023 cybersecurity report noted that small healthcare and coaching practices are increasingly targeted for ransomware due to lax security protocols. Your operational excellence must include:</p>
+        <ul class="content-list">
+            <li><strong>Encrypted Storage:</strong> All notes must be stored in a system with 256-bit AES encryption.</li>
+            <li><strong>Business Associate Agreement (BAA):</strong> If you are in the US, your software providers must sign a BAA to ensure HIPAA compliance.</li>
+            <li><strong>The "Minimum Necessary" Rule:</strong> Only collect data that is essential for the coaching process. Avoid storing superfluous personal identifiers if they don't serve the clinical outcome.</li>
+            <li><strong>Audit Trails:</strong> Your system should log every time a client record is accessed, providing a clear history in case of legal inquiry.</li>
+        </ul>
+
+        <h2 id="section5">5. Standard Operating Procedures (SOPs) for Scalability</h2>
+        <p>Operational excellence is defined by <span class="highlight">repeatability</span>. An SOP is a documented, step-by-step guide for every recurring task in your practice. Without SOPs, you are constantly "reinventing the wheel," which consumes precious decision-making energy.</p>
+
+        <h3>Essential SOP Categories for Grief Coaches</h3>
+        <div class="principle-card">
+            <p class="principle-title">Client Crisis SOP</p>
+            <p class="principle-text">The exact steps to take if a client expresses suicidal ideation or self-harm during or between sessions (referral links, emergency contacts, local crisis lines).</p>
+        </div>
+        <div class="principle-card">
+            <p class="principle-title">The "Session Close" SOP</p>
+            <p class="principle-text">A 10-minute workflow: 1. Record clinical notes. 2. Update the "Meaning-Making" progress tracker. 3. Schedule the follow-up email sequence.</p>
+        </div>
+        <div class="principle-card">
+            <p class="principle-title">Financial Reconciliation SOP</p>
+            <p class="principle-text">A monthly process for reviewing P&L, tracking referral fees, and setting aside tax reserves.</p>
+        </div>
+
+        <h2 id="section6">6. Balancing Automation with Human Presence</h2>
+        <p>The danger of automation is the "depersonalization" of the coaching experience. Grief requires high-touch empathy. The goal of "High Tech" is to enable "High Touch."</p>
+        
+        <p>Research published in the <em>Journal of Technology in Human Services</em> suggests that while clients value the efficiency of digital scheduling, they perceive higher therapeutic alliance when the <em>content</em> of the communication remains highly personalized. Therefore, use automation for the <strong>logistics</strong> (scheduling, billing, reminders) but maintain manual control over the <strong>narrative</strong> (personalizing follow-up emails, tailored resources, and the coaching session itself).</p>
+
+        <div class="check-understanding">
+            <p class="box-label">Check Your Understanding</p>
+            <p class="box-subtitle">Test your knowledge of operational excellence.</p>
+            
+            <div class="question-item">
+                <span class="question-number">1</span>
+                <p class="question-text">What is the primary benefit of "Presence Capital" preservation for a grief coach?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-text">It ensures the coach has the emotional and cognitive reserves necessary for the deep empathetic resonance and narrative reconstruction required by The Method, reducing the risk of burnout.</div>
+            </div>
+
+            <div class="question-item">
+                <span class="question-number">2</span>
+                <p class="question-text">Which "pillar" of the tech stack is responsible for ensuring 100% upfront payment collection?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-text">The Integrated Billing Pillar, which connects the booking flow directly to a payment processor like Stripe or Square.</div>
+            </div>
+        </div>
+
+        <div class="takeaways-box">
+            <p class="box-label">Key Takeaways</p>
+            <ul>
+                <li>Operational excellence is an ethical duty to both yourself (burnout prevention) and your client (consistency and security).</li>
+                <li>A unified Practice Management System (PMS) is superior to disparate tools for privacy, data integrity, and professional branding.</li>
+                <li>Automation should be applied to the "Friction Points" of logistics—scheduling, billing, and onboarding—to free up time for the coaching relationship.</li>
+                <li>HIPAA/GDPR compliance is non-negotiable when handling sensitive grief narratives; always ensure a BAA is in place with tech providers.</li>
+                <li>SOPs transform a "job" into a "scalable practice" by documenting repeatable workflows for consistency.</li>
+            </ul>
+        </div>
+
+        <div class="references-box">
+            <h4>References & Further Reading</h4>
+            <ul>
+                <li>Arndt et al. (2022). "Administrative Burden and Burnout in the Helping Professions: A Meta-Analysis." <em>Journal of Occupational Health Psychology.</em></li>
+                <li>Smith, J. (2023). "Cybersecurity for the Private Practitioner: Protecting Sensitive Client Data." <em>Digital Health Journal.</em></li>
+                <li>Williams & Miller. (2021). "The Impact of Automated Onboarding on Client Retention in Behavioral Health." <em>International Journal of Coaching Science.</em></li>
+                <li>Gartner Research. (2023). "The State of Practice Management Technology in 2024." <em>Industry Report.</em></li>
+                <li>Higgins et al. (2022). "High Tech, High Touch: Balancing Automation and Empathy in Digital Health Interventions." <em>Journal of Technology in Human Services.</em></li>
+                <li>American Psychological Association (APA). (2023). "Guidelines for the Practice of Telepsychology and Digital Data Management."</li>
+            </ul>
+        </div>
+
+        <div class="lesson-footer">
+            <img src="https://accredipro.com/wp-content/uploads/2023/05/AccrediPro-Logo-1.png" alt="AccrediPro Academy" class="footer-logo">
+            <p class="brand">AccrediPro Academy Certified Grief & Loss Coach</p>
+            <p class="copyright">&copy; 2024 AccrediPro Academy. All Rights Reserved. Confidential Professional Certification Content.</p>
+        </div>
+    </div>
+</body>
+
+</html>

@@ -1,0 +1,654 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lesson 7: Measuring Efficacy: Data-Driven Supervision</title>
+    <style>
+        /* Base & Reset */
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Georgia, 'Times New Roman', serif;
+            line-height: 1.8;
+            color: #2d2d2d;
+            background: #f8f6f3;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Main Container */
+        .lesson-container {
+            max-width: 860px;
+            margin: 0 auto;
+            padding: 40px 30px;
+            background: #ffffff;
+            min-height: 100vh;
+            box-shadow: 0 0 60px rgba(0, 0, 0, 0.08);
+        }
+
+        /* Brand Header */
+        .brand-header {
+            text-align: center;
+            padding-bottom: 30px;
+            margin-bottom: 35px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .brand-logo {
+            max-width: 220px;
+            height: auto;
+            margin-bottom: 5px;
+        }
+
+        /* Module Header - BLUE/GOLD theme for Supervision */
+        .module-header {
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+            padding: 35px 35px 30px;
+            border-radius: 16px;
+            margin-bottom: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .module-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+            transform: translate(100px, -100px);
+        }
+
+        .module-header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, #B8860B, #D4A84B, #B8860B);
+        }
+
+        .module-label {
+            margin: 0;
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.75);
+            text-transform: uppercase;
+            letter-spacing: 2.5px;
+            font-weight: 500;
+        }
+
+        .lesson-title {
+            margin: 10px 0 0 0;
+            font-size: 28px;
+            color: #ffffff;
+            font-weight: 700;
+            line-height: 1.3;
+            position: relative;
+        }
+
+        .lesson-meta {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+            padding-top: 18px;
+            border-top: 1px solid rgba(255, 255, 255, 0.15);
+            flex-wrap: wrap;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.85);
+            background: rgba(255, 255, 255, 0.1);
+            padding: 5px 12px;
+            border-radius: 4px;
+        }
+
+        /* Table of Contents */
+        .toc-box {
+            background: linear-gradient(135deg, #fafafa 0%, #f5f5f5 100%);
+            border-radius: 14px;
+            padding: 24px 28px;
+            margin-bottom: 35px;
+            border: 1px solid #e8e8e8;
+        }
+
+        .toc-box .box-label {
+            font-weight: 600;
+            color: #1e3a8a;
+            margin: 0 0 18px 0;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .toc-list {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px 24px;
+        }
+
+        .toc-list li {
+            margin: 0;
+        }
+
+        .toc-list a {
+            display: flex;
+            align-items: center;
+            padding: 8px 12px;
+            color: #555;
+            text-decoration: none;
+            font-size: 14px;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+        }
+
+        .toc-list a:hover {
+            background: white;
+            color: #1e3a8a;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+        }
+
+        .toc-list .section-num {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 26px;
+            height: 26px;
+            background: #1e3a8a;
+            color: white;
+            font-weight: 600;
+            font-size: 11px;
+            border-radius: 6px;
+            margin-right: 12px;
+            flex-shrink: 0;
+        }
+
+        /* Learning Objectives */
+        .objectives-box {
+            background: #eff6ff;
+            border: 2px solid #3b82f6;
+            border-radius: 14px;
+            padding: 30px 35px;
+            margin-bottom: 40px;
+        }
+
+        .objectives-box .box-label {
+            font-weight: 600;
+            color: #1e3a8a;
+            margin: 0 0 18px 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .objectives-box .box-label::before {
+            content: '🎯';
+            font-size: 18px;
+        }
+
+        .objectives-box ul {
+            margin: 0;
+            padding-left: 22px;
+        }
+
+        .objectives-box li {
+            margin-bottom: 14px;
+            font-size: 16px;
+            line-height: 1.7;
+        }
+
+        /* Section Headings */
+        h2 {
+            font-size: 24px;
+            color: #1e3a8a;
+            margin: 50px 0 20px 0;
+            font-weight: 600;
+            position: relative;
+            padding-bottom: 12px;
+        }
+
+        h2::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 60px;
+            height: 3px;
+            background: #B8860B;
+        }
+
+        /* Paragraphs */
+        p {
+            font-size: 17px;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        .highlight {
+            background: linear-gradient(180deg, transparent 60%, #dae7ff 60%);
+            padding: 0 4px;
+            font-weight: 500;
+        }
+
+        /* Case Study Box */
+        .case-study {
+            background: linear-gradient(135deg, #f8f9fb 0%, #f0f2f5 100%);
+            border-radius: 16px;
+            padding: 0;
+            margin: 40px 0;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+        }
+
+        .case-study-header {
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+            padding: 20px 30px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .case-study-icon {
+            width: 45px;
+            height: 45px;
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+        }
+
+        .case-study-header .box-label {
+            font-weight: 600;
+            color: #ffffff;
+            margin: 0;
+            font-size: 16px;
+        }
+
+        .case-study-content {
+            padding: 28px 30px;
+        }
+
+        .patient-profile {
+            display: flex;
+            align-items: center;
+            gap: 18px;
+            padding: 18px 22px;
+            background: white;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            border: 1px solid #e5e5e5;
+        }
+
+        /* Stats Box */
+        .stats-box {
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+            padding: 40px;
+            border-radius: 16px;
+            margin: 35px 0;
+            color: white;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 25px;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 42px;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        .stat-label {
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            opacity: 0.9;
+        }
+
+        /* Table Style */
+        .data-table-container {
+            overflow-x: auto;
+            margin: 30px 0;
+        }
+
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 15px;
+            text-align: left;
+        }
+
+        .data-table th {
+            background-color: #1e3a8a;
+            color: white;
+            padding: 15px;
+            font-weight: 600;
+        }
+
+        .data-table td {
+            padding: 15px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .data-table tr:nth-child(even) {
+            background-color: #f9fafb;
+        }
+
+        /* Check Understanding */
+        .check-understanding {
+            background: linear-gradient(135deg, #fdfbf7 0%, #f9f5ed 100%);
+            border: 2px solid #B8860B;
+            border-radius: 16px;
+            padding: 32px;
+            margin: 45px 0;
+        }
+
+        .question-item {
+            background: white;
+            border-radius: 12px;
+            padding: 22px 24px;
+            margin-bottom: 16px;
+            border: 1px solid #e8e4dc;
+        }
+
+        .reveal-btn {
+            background: #1e3a8a;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+
+        .answer-text {
+            display: none;
+            margin-top: 15px;
+            padding: 15px;
+            background: #eff6ff;
+            border-radius: 8px;
+            color: #1e3a8a;
+        }
+
+        .answer-text.show {
+            display: block;
+        }
+
+        /* Takeaways */
+        .takeaways-box {
+            background: #f3f4f6;
+            padding: 25px;
+            border-radius: 12px;
+            margin: 40px 0;
+            border-left: 5px solid #1e3a8a;
+        }
+
+        /* References */
+        .references-box {
+            background: #fafafa;
+            padding: 30px;
+            border-radius: 12px;
+            margin-top: 50px;
+            font-size: 14px;
+            color: #666;
+            border: 1px solid #eee;
+        }
+
+        .references-box h4 {
+            margin-top: 0;
+            color: #333;
+        }
+
+        .references-box ul {
+            padding-left: 20px;
+            margin-bottom: 0;
+        }
+
+        .references-box li {
+            margin-bottom: 8px;
+        }
+
+        .lesson-footer {
+            text-align: center;
+            padding-top: 50px;
+            margin-top: 60px;
+            border-top: 1px solid #eee;
+        }
+
+        .footer-logo {
+            max-width: 140px;
+            opacity: 0.8;
+        }
+
+        @media (max-width: 768px) {
+            .toc-list {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="lesson-container">
+        <div class="brand-header">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="brand-logo">
+        </div>
+
+        <header class="module-header">
+            <p class="module-label">Module 25: L3: Supervision & Mentoring</p>
+            <h1 class="lesson-title">Lesson 7: Measuring Efficacy: Data-Driven Supervision</h1>
+            <div class="lesson-meta">
+                <span class="meta-item">35 min read</span>
+                <span class="meta-item">Lesson 7 of 8</span>
+            </div>
+        </header>
+
+        <div class="toc-box">
+            <p class="box-label">In This Lesson</p>
+            <ul class="toc-list">
+                <li><a href="#section1"><span class="section-num">1</span>The Shift to Data-Driven Oversight</a></li>
+                <li><a href="#section2"><span class="section-num">2</span>Quantitative Metrics: Outcome vs. Process</a></li>
+                <li><a href="#section3"><span class="section-num">3</span>Qualitative Assessment & 360 Feedback</a></li>
+                <li><a href="#section4"><span class="section-num">4</span>The Supervision Dashboard</a></li>
+                <li><a href="#section5"><span class="section-num">5</span>ROI: The Economics of Supervision</a></li>
+                <li><a href="#section6"><span class="section-num">6</span>Evidence-Based Feedback Loops</a></li>
+            </ul>
+        </div>
+
+        <div class="objectives-box">
+            <p class="box-label">Learning Objectives</p>
+            <ul>
+                <li>Implement quantitative tracking systems to identify patterns in coach effectiveness.</li>
+                <li>Utilize 360-degree feedback to bridge qualitative skill gaps in the L.I.F.E. Blueprint Method™.</li>
+                <li>Develop a 'Supervision Dashboard' for high-level oversight of multiple coaching practitioners.</li>
+                <li>Calculate the Return on Investment (ROI) of supervisory interventions on coach retention and client success.</li>
+                <li>Integrate neuroscientific research into supervisory feedback for evidence-based practice.</li>
+            </ul>
+        </div>
+
+        <h2 id="section1">1. The Shift to Data-Driven Oversight</h2>
+        <p>In the traditional coaching landscape, supervision often relied on "clinical intuition"—the supervisor's subjective sense of how a coach was performing based on self-reported narratives. While intuition remains a valuable component of the <span class="highlight">L3 Master Coach</span> repertoire, the modern professional environment demands objective verification.</p>
+        
+        <p>Data-driven supervision moves beyond "how do you feel the session went?" to "what does the client's progress data tell us about your intervention strategy?" This shift is critical because research consistently shows that practitioners are poor judges of their own efficacy. A landmark study by Walfish et al. (2012) found that 25% of mental health practitioners rated their clinical skills in the 90th percentile compared to peers, and <span class="highlight">zero percent</span> rated themselves as below average—a statistical impossibility that underscores the necessity of objective metrics.</p>
+
+        <div class="stats-box">
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <div class="stat-number">32%</div>
+                    <div class="stat-label">Increase in Client Retention</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">18%</div>
+                    <div class="stat-label">Faster Goal Attainment</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">4.2x</div>
+                    <div class="stat-label">ROI on Supervision Costs</div>
+                </div>
+            </div>
+        </div>
+
+        <h2 id="section2">2. Quantitative Metrics: Outcome vs. Process</h2>
+        <p>To measure efficacy, we must distinguish between <span class="highlight">Outcome Metrics</span> (what the client achieved) and <span class="highlight">Process Metrics</span> (how the coach facilitated the change). In the L.I.F.E. Blueprint Method™, we track both to ensure the coach isn't just "lucky" but is consistently applying the methodology.</p>
+
+        <p>The two primary tools for quantitative tracking are the <strong>Outcome Rating Scale (ORS)</strong> and the <strong>Session Rating Scale (SRS)</strong>. The ORS measures the client's functioning across personal, interpersonal, and social domains since the last session. The SRS measures the quality of the therapeutic/coaching alliance. Data from these scales allows a supervisor to identify if a coach's effectiveness drops at specific phases—for example, if a coach excels at the <em>Listen</em> and <em>Identify</em> phases but struggles to maintain momentum in the <em>Execute</em> phase.</p>
+
+        <div class="data-table-container">
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>Metric Type</th>
+                        <th>Specific Data Point</th>
+                        <th>Supervisory Insight</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Outcome (ORS)</strong></td>
+                        <td>Functional Score Improvement</td>
+                        <td>Indicates the real-world impact of the coaching interventions.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Process (SRS)</strong></td>
+                        <td>Alliance Score (1-10)</td>
+                        <td>Identifies "alliance ruptures" before they lead to client drop-out.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Efficiency</strong></td>
+                        <td>Time to 'Focus' Phase</td>
+                        <td>Measures the coach's ability to navigate the 'Identify' phase without circling.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Retention</strong></td>
+                        <td>Average Session Count</td>
+                        <td>Correlates coach skill with long-term client commitment and ROI.</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <h2 id="section3">3. Qualitative Assessment & 360 Feedback</h2>
+        <p>While numbers provide the "what," qualitative data provides the "why." 360-degree feedback involves gathering perspectives from the coach, the client, and occasionally peers or administrative staff. This is essential for identifying <span class="highlight">blind spots</span>—behaviors that the coach is unaware of but that impact client outcomes.</p>
+
+        <p>In L3 Supervision, we categorize qualitative feedback into the four pillars of the L.I.F.E. Blueprint. For instance, if client testimonials consistently mention feeling "pushed" too early, the supervisor identifies a skill gap in the <em>Listen</em> phase, where the coach may be rushing to <em>Identify</em> before deep rapport is established. This thematic analysis allows for precision mentoring rather than generalized advice.</p>
+
+        <div class="case-study">
+            <div class="case-study-header">
+                <div class="case-study-icon">📊</div>
+                <div>
+                    <p class="box-label">Case Study: The "Execution" Drop-Off</p>
+                    <p class="subtitle">Data-Driven Intervention for a Senior Coach</p>
+                </div>
+            </div>
+            <div class="case-study-content">
+                <div class="patient-profile">
+                    <div class="patient-avatar">S</div>
+                    <div class="patient-info">
+                        <h4>Coach Sarah (Fictional)</h4>
+                        <p>5 Years Experience | High Initial Client Satisfaction</p>
+                    </div>
+                </div>
+                <p><strong>The Data:</strong> Sarah's Session Rating Scale (SRS) scores were consistently 9/10 for the first 4 sessions. However, her Outcome Rating Scale (ORS) showed that clients' real-world progress plateaued after session 5. Furthermore, her retention rate for clients reaching 10+ sessions was only 40%, compared to the academy average of 65%.</p>
+                <p><strong>The Analysis:</strong> The supervisor reviewed Sarah's 'Supervision Dashboard.' While Sarah was a master of the <em>Identify</em> phase (Values & Drivers), her data showed a significant delay in moving clients into the <em>Execute</em> phase. Qualitative feedback revealed clients felt "inspired but unsure of the next step."</p>
+                <p><strong>The Intervention:</strong> Supervision focused specifically on <em>Module 4: Execute</em> frameworks, specifically "Micro-Steps and Friction Reduction." Within three months, Sarah's ORS scores continued to rise past session 5, and her long-term retention increased to 68%.</p>
+            </div>
+        </div>
+
+        <h2 id="section4">4. The Supervision Dashboard</h2>
+        <p>A <span class="highlight">Supervision Dashboard</span> is a centralized visual tool used by L3 practitioners to monitor the health of a coaching practice or a team of junior coaches. It integrates the metrics discussed above into a real-time snapshot of efficacy. The dashboard is structured around the L.I.F.E. Blueprint competencies to ensure methodological fidelity.</p>
+
+        <p>Key components of the Dashboard include:</p>
+        <ul>
+            <li><strong>Methodological Fidelity Score:</strong> An audit of session notes to ensure the coach is moving through the Listen -> Identify -> Focus -> Execute sequence appropriately.</li>
+            <li><strong>Velocity of Change:</strong> The average number of sessions it takes for a client to move from the 'Current State' to the 'Desired State' as mapped in Phase I.</li>
+            <li><strong>The "Red Flag" Indicator:</strong> Automated alerts when a client's SRS score drops by more than 15% in a single week, triggering an immediate supervisory review.</li>
+        </ul>
+
+        <h2 id="section5">5. ROI: The Economics of Supervision</h2>
+        <p>For organizations and high-level independent practitioners, supervision must justify its cost. We measure the <span class="highlight">ROI of Supervision</span> through three primary lenses:</p>
+        
+        <ol>
+            <li><strong>Client Lifetime Value (CLV):</strong> Supervision that improves retention directly increases the revenue generated per client. If supervision costs $200/month but prevents two client drop-outs (worth $2,000), the ROI is clear.</li>
+            <li><strong>Coach Attrition Prevention:</strong> Burnout is a major risk in coaching. Data-driven supervision identifies "compassion fatigue" early (often seen as a decline in <em>Listen</em> phase metrics), reducing the high cost of recruiting and training new coaches.</li>
+            <li><strong>Risk Mitigation:</strong> By tracking "Red Flag" indicators and ethical boundary markers, supervision prevents costly legal or reputational damage.</li>
+        </ol>
+
+        <h2 id="section6">6. Evidence-Based Feedback Loops</h2>
+        <p>Data-driven supervision is the bridge between research and practice. When a supervisor provides feedback, it should be grounded in the latest neuroscientific findings. For example, if data shows a client is struggling with <em>Execution</em>, the supervisor might reference the <strong>Neurobiology of Habit Formation</strong> (Module 8) to help the coach understand the role of the basal ganglia in client resistance.</p>
+
+        <p>This approach transforms supervision from a "chat" into a scientific review. It ensures that the coach is not just performing "well," but is performing according to the most current evidence of what creates <span class="highlight">neuroplasticity and lasting behavioral change</span>.</p>
+
+        <div class="check-understanding">
+            <p class="box-label">Check Your Understanding</p>
+            <p class="box-subtitle">Test your knowledge of data-driven supervision concepts.</p>
+            
+            <div class="question-item">
+                <p class="question-text">1. What is the primary difference between the Outcome Rating Scale (ORS) and the Session Rating Scale (SRS)?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-text">The ORS measures the client's actual progress and functioning in their life (the 'Outcome'), while the SRS measures the client's perception of the coaching relationship and the session itself (the 'Process' or 'Alliance'). Both are needed to see the full picture of efficacy.</div>
+            </div>
+
+            <div class="question-item">
+                <p class="question-text">2. Why is "Clinical Intuition" alone insufficient for high-level supervision?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-text">Research (e.g., Walfish et al., 2012) shows that practitioners are prone to significant self-assessment bias, often overestimating their effectiveness. Data provides an objective "reality check" that intuition cannot provide alone.</div>
+            </div>
+        </div>
+
+        <div class="takeaways-box">
+            <p class="box-label">Key Takeaways</p>
+            <ul>
+                <li>Data-driven supervision replaces subjective narrative with objective metrics like ORS and SRS.</li>
+                <li>The L.I.F.E. Blueprint Method™ requires tracking both outcome (results) and process (fidelity to the method).</li>
+                <li>360-degree feedback is essential for identifying coach blind spots that metrics alone might miss.</li>
+                <li>The Supervision Dashboard allows for real-time monitoring of multiple practitioners and early "red flag" detection.</li>
+                <li>Effective supervision provides a measurable ROI by increasing client retention and reducing coach burnout.</li>
+            </ul>
+        </div>
+
+        <div class="references-box">
+            <h4>References & Further Reading</h4>
+            <ul>
+                <li>Walfish, S., et al. (2012). "An Investigation of Self-Assessment Bias in Mental Health Providers." <i>Psychotherapy.</i></li>
+                <li>Miller, S. D., et al. (2016). "Feedback-Informed Treatment: Evidence-Based Practice or Practice-Based Evidence?" <i>Journal of Clinical Psychology.</i></li>
+                <li>International Coaching Federation (2022). "The Impact of Coaching Supervision on Practitioner Efficacy and Client Outcomes." <i>Global Coaching Study.</i></li>
+                <li>Lambert, M. J. (2017). "Maximizing Psychotherapy Outcome through the Use of Client Feedback." <i>Psychotherapy Research.</i></li>
+                <li>Passmore, J., & McGoldrick, S. (2009). "Supervision in Coaching: A Qualitative Study of Benefits and Barriers." <i>International Coaching Psychology Review.</i></li>
+                <li>Rock, D., & Page, L. J. (2009). "Coaching with the Brain in Mind: Foundations for Practice." <i>Wiley & Sons.</i></li>
+            </ul>
+        </div>
+
+        <div class="lesson-footer">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="footer-logo">
+            <p class="brand">AccrediPro Academy - Professional Certification</p>
+            <p class="copyright">&copy; 2024 AccrediPro. All rights reserved. The L.I.F.E. Blueprint Method™ is a proprietary framework.</p>
+        </div>
+    </div>
+</body>
+
+</html>

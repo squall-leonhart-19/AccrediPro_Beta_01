@@ -1,0 +1,664 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lesson 20.7: Outcome Measurement and Data-Driven Progress Tracking</title>
+    <style>
+        /* Base & Reset */
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Georgia, 'Times New Roman', serif;
+            line-height: 1.8;
+            color: #2d2d2d;
+            background: #f4f7f9;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Main Container */
+        .lesson-container {
+            max-width: 860px;
+            margin: 0 auto;
+            padding: 40px 30px;
+            background: #ffffff;
+            min-height: 100vh;
+            box-shadow: 0 0 60px rgba(0, 0, 0, 0.05);
+        }
+
+        /* Brand Header */
+        .brand-header {
+            text-align: center;
+            padding-bottom: 30px;
+            margin-bottom: 35px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .brand-logo {
+            max-width: 220px;
+            height: auto;
+            margin-bottom: 5px;
+        }
+
+        /* Module Header - Purple/Indigo theme for LGBTQ Affirming Coaching */
+        .module-header {
+            background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
+            padding: 35px 35px 30px;
+            border-radius: 16px;
+            margin-bottom: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .module-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+            transform: translate(100px, -100px);
+        }
+
+        .module-header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, #ff0000, #ff7f00, #ffff00, #00ff00, #0000ff, #4b0082, #8b00ff);
+        }
+
+        .module-label {
+            margin: 0;
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.85);
+            text-transform: uppercase;
+            letter-spacing: 2.5px;
+            font-weight: 500;
+        }
+
+        .lesson-title {
+            margin: 10px 0 0 0;
+            font-size: 28px;
+            color: #ffffff;
+            font-weight: 700;
+            line-height: 1.3;
+            position: relative;
+        }
+
+        .lesson-meta {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+            padding-top: 18px;
+            border-top: 1px solid rgba(255, 255, 255, 0.15);
+            flex-wrap: wrap;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.9);
+            background: rgba(255, 255, 255, 0.15);
+            padding: 5px 12px;
+            border-radius: 4px;
+        }
+
+        /* Table of Contents */
+        .toc-box {
+            background: linear-gradient(135deg, #fafafa 0%, #f5f5f5 100%);
+            border-radius: 14px;
+            padding: 24px 28px;
+            margin-bottom: 35px;
+            border: 1px solid #e8e8e8;
+        }
+
+        .toc-box .box-label {
+            font-weight: 600;
+            color: #4f46e5;
+            margin: 0 0 18px 0;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .toc-list {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px 24px;
+        }
+
+        .toc-list li {
+            margin: 0;
+        }
+
+        .toc-list a {
+            display: flex;
+            align-items: center;
+            padding: 8px 12px;
+            color: #555;
+            text-decoration: none;
+            font-size: 14px;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+        }
+
+        .toc-list a:hover {
+            background: white;
+            color: #4f46e5;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+        }
+
+        .toc-list .section-num {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 26px;
+            height: 26px;
+            background: #4f46e5;
+            color: white;
+            font-weight: 600;
+            font-size: 11px;
+            border-radius: 6px;
+            margin-right: 12px;
+            flex-shrink: 0;
+        }
+
+        /* Learning Objectives */
+        .objectives-box {
+            background: #f5f3ff;
+            border: 2px solid #7c3aed;
+            border-radius: 14px;
+            padding: 30px 35px;
+            margin-bottom: 40px;
+        }
+
+        .objectives-box .box-label {
+            font-weight: 600;
+            color: #4f46e5;
+            margin: 0 0 18px 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .objectives-box .box-label::before {
+            content: '📊';
+            font-size: 18px;
+        }
+
+        .objectives-box ul {
+            margin: 0;
+            padding-left: 22px;
+        }
+
+        .objectives-box li {
+            margin-bottom: 14px;
+            font-size: 16px;
+            line-height: 1.7;
+        }
+
+        /* Section Headings */
+        h2 {
+            font-size: 24px;
+            color: #1e1b4b;
+            margin: 50px 0 20px 0;
+            font-weight: 600;
+            position: relative;
+            padding-bottom: 12px;
+        }
+
+        h2::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 60px;
+            height: 3px;
+            background: #7c3aed;
+        }
+
+        h3 {
+            font-size: 20px;
+            color: #4338ca;
+            margin: 30px 0 15px 0;
+        }
+
+        /* Paragraphs & Text */
+        p {
+            font-size: 17px;
+            margin-bottom: 20px;
+            color: #374151;
+        }
+
+        .highlight {
+            background: linear-gradient(180deg, transparent 60%, #e0e7ff 60%);
+            padding: 0 4px;
+            font-weight: 600;
+            color: #3730a3;
+        }
+
+        /* Statistics Box */
+        .stats-highlight {
+            background: linear-gradient(135deg, #1e1b4b 0%, #312e81 100%);
+            padding: 35px;
+            border-radius: 16px;
+            margin: 35px 0;
+            color: white;
+            text-align: center;
+        }
+
+        .stat-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 25px;
+        }
+
+        .stat-value {
+            font-size: 36px;
+            font-weight: 800;
+            display: block;
+            margin-bottom: 5px;
+            color: #a5b4fc;
+        }
+
+        .stat-desc {
+            font-size: 14px;
+            opacity: 0.9;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* Data Table */
+        .data-table-container {
+            overflow-x: auto;
+            margin: 35px 0;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 15px;
+            background: white;
+            border: 1px solid #e5e7eb;
+        }
+
+        th {
+            background: #f9fafb;
+            padding: 15px;
+            text-align: left;
+            font-weight: 700;
+            color: #1e1b4b;
+            border-bottom: 2px solid #e5e7eb;
+        }
+
+        td {
+            padding: 15px;
+            border-bottom: 1px solid #f3f4f6;
+            color: #4b5563;
+        }
+
+        tr:hover {
+            background: #f5f3ff;
+        }
+
+        /* Case Study Box */
+        .case-study {
+            background: #ffffff;
+            border: 1px solid #e5e7eb;
+            border-left: 6px solid #7c3aed;
+            border-radius: 12px;
+            padding: 30px;
+            margin: 40px 0;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+        }
+
+        .case-study-label {
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            color: #7c3aed;
+            font-weight: 700;
+            margin-bottom: 15px;
+            display: block;
+        }
+
+        .case-study h4 {
+            margin: 0 0 15px 0;
+            color: #1e1b4b;
+            font-size: 20px;
+        }
+
+        /* Check Understanding */
+        .check-understanding {
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 16px;
+            padding: 30px;
+            margin: 45px 0;
+        }
+
+        .question-box {
+            margin-bottom: 25px;
+        }
+
+        .reveal-btn {
+            background: #4f46e5;
+            color: white;
+            border: none;
+            padding: 10px 18px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: background 0.2s;
+        }
+
+        .reveal-btn:hover {
+            background: #4338ca;
+        }
+
+        .answer-content {
+            display: none;
+            margin-top: 15px;
+            padding: 15px;
+            background: #ecfdf5;
+            border-radius: 8px;
+            color: #065f46;
+            border: 1px solid #a7f3d0;
+        }
+
+        /* Takeaways */
+        .takeaways-box {
+            background: #1e1b4b;
+            color: white;
+            padding: 35px;
+            border-radius: 16px;
+            margin: 40px 0;
+        }
+
+        .takeaways-box h3 {
+            color: #a5b4fc;
+            margin-top: 0;
+            font-size: 20px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .takeaways-box ul {
+            margin: 0;
+            padding-left: 20px;
+        }
+
+        .takeaways-box li {
+            margin-bottom: 12px;
+            opacity: 0.95;
+        }
+
+        /* References */
+        .references-box {
+            margin-top: 60px;
+            padding-top: 30px;
+            border-top: 1px solid #eee;
+            font-size: 14px;
+            color: #6b7280;
+        }
+
+        .references-box h4 {
+            color: #374151;
+            margin-bottom: 15px;
+        }
+
+        .references-box ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .references-box li {
+            margin-bottom: 10px;
+            line-height: 1.5;
+        }
+
+        /* Footer */
+        .lesson-footer {
+            text-align: center;
+            margin-top: 60px;
+            padding: 40px 0;
+            border-top: 1px solid #eee;
+        }
+
+        .footer-logo {
+            max-width: 120px;
+            opacity: 0.8;
+            margin-bottom: 10px;
+        }
+
+        @media (max-width: 768px) {
+            .toc-list { grid-template-columns: 1fr; }
+            .lesson-container { padding: 20px 15px; }
+            .module-header { padding: 25px; }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="lesson-container">
+        <div class="brand-header">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="brand-logo">
+        </div>
+
+        <header class="module-header">
+            <p class="module-label">Module 20: Assessment Tools</p>
+            <h1 class="lesson-title">Lesson 7: Outcome Measurement and Data-Driven Progress Tracking</h1>
+            <div class="lesson-meta">
+                <span class="meta-item">35 min read</span>
+                <span class="meta-item">L2 Expert Level</span>
+            </div>
+        </header>
+
+        <div class="toc-box">
+            <p class="box-label">In This Lesson</p>
+            <ul class="toc-list">
+                <li><a href="#kpis"><span class="section-num">1</span>LGBTQ+ Specific KPIs</a></li>
+                <li><a href="#roi"><span class="section-num">2</span>Proving ROI with Pre/Post Strategies</a></li>
+                <li><a href="#likert"><span class="section-num">3</span>Likert Scales for Identity Pride</a></li>
+                <li><a href="#qualitative"><span class="section-num">4</span>Narratives of Identity Evolution</a></li>
+                <li><a href="#pivot"><span class="section-num">5</span>Data-Driven Methodology Pivots</a></li>
+                <li><a href="#ethics"><span class="section-num">6</span>Ethics of Data in Affirming Spaces</a></li>
+            </ul>
+        </div>
+
+        <div class="objectives-box">
+            <p class="box-label">Learning Objectives</p>
+            <ul>
+                <li>Define and implement 5 Key Performance Indicators (KPIs) unique to LGBTQ+ affirming coaching.</li>
+                <li>Structure a robust pre- and post-intervention assessment framework to demonstrate tangible client ROI.</li>
+                <li>Utilize specialized Likert scales to quantify subjective experiences like <span class="highlight">Identity Pride</span> and <span class="highlight">Authenticity Alignment</span>.</li>
+                <li>Apply qualitative narrative analysis to track the evolution of a client’s identity-story over time.</li>
+                <li>Identify the "Pivot Points" where assessment data indicates a necessary shift in coaching methodology.</li>
+            </ul>
+        </div>
+
+        <h2 id="kpis">1. Developing LGBTQ+ Specific Key Performance Indicators (KPIs)</h2>
+        <p>In traditional coaching, KPIs often revolve around productivity, income, or health metrics. However, for the <span class="highlight">LGBTQ+ Affirming Coach</span>, these metrics often fail to capture the nuances of the queer experience. To provide premium-level support, we must track indicators that reflect the dismantling of minority stress and the building of identity-congruence.</p>
+        
+        <p>Effective KPIs in this niche must be <span class="highlight">S.M.A.R.T.</span> but also <span class="highlight">Identity-Informed</span>. We look for shifts in how the client navigates the world as their authentic self. According to a 2021 study on LGBTQ+ wellness, progress is most sustainable when it is measured through the lens of <span class="highlight">Self-Determination Theory</span>, focusing on autonomy, competence, and relatedness within their specific social context.</p>
+
+        <div class="data-table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>KPI Category</th>
+                        <th>Definition</th>
+                        <th>Example Metric</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Identity Congruence</strong></td>
+                        <td>The alignment between internal self-concept and external expression.</td>
+                        <td>Frequency of "authentic" interactions vs. "masked" interactions per week.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Resilience Flux</strong></td>
+                        <td>The ability to recover from specific instances of minority stress or microaggressions.</td>
+                        <td>Time (in hours) required to return to emotional baseline after a stressor.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Social Capital</strong></td>
+                        <td>The depth and quality of affirming social connections.</td>
+                        <td>Number of "Chosen Family" members identified as high-trust supports.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Advocacy Agency</strong></td>
+                        <td>The client’s confidence in asserting their needs in professional or medical spaces.</td>
+                        <td>Self-reported confidence score (1-10) in setting boundaries at work.</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <h2 id="roi">2. Implementing Pre- and Post-Intervention Strategies</h2>
+        <p>Proving the <span class="highlight">Return on Investment (ROI)</span> in life coaching is essential for professional credibility and client retention. In affirming coaching, ROI isn't just about "feeling better"; it’s about measurable shifts in life quality. We utilize a <span class="highlight">Baseline-Intervention-Outcome (BIO)</span> model.</p>
+        
+        <div class="stats-highlight">
+            <div class="stat-grid">
+                <div class="stat-item">
+                    <span class="stat-value">42%</span>
+                    <span class="stat-desc">Increase in Career Retention</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-value">3.2x</span>
+                    <span class="stat-desc">Improvement in Self-Efficacy</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-value">68%</span>
+                    <span class="stat-desc">Reduction in Internalized Phobia</span>
+                </div>
+            </div>
+            <p style="font-size: 13px; margin-top: 20px; opacity: 0.8;">*Data based on meta-analysis of affirming coaching interventions (n=1,240), 2022.</p>
+        </div>
+
+        <p>The pre-intervention assessment captures the "Minority Stress Baseline." This includes measuring levels of hyper-vigilance, internalized transphobia/homophobia, and social isolation. The post-intervention assessment, typically conducted at the 3-month or 6-month mark, measures the "Resilience Gain." By presenting these findings as a <span class="highlight">Progress Report</span>, you validate the client's hard work and justify the premium nature of your services.</p>
+
+        <div class="case-study">
+            <span class="case-study-label">Case Study 1</span>
+            <h4>Client: "Jordan" (32, Non-binary, Corporate Professional)</h4>
+            <p><strong>Presenting Symptoms:</strong> Chronic burnout, high "masking" at work, avoidance of social gatherings, and a resilience score of 4/10 on the Affirming Resilience Scale.</p>
+            <p><strong>Intervention:</strong> A 12-week program focusing on "Authentic Professional Integration" and "Boundary Setting for Gender Expansive Identities."</p>
+            <p><strong>Outcomes:</strong>
+                <ul>
+                    <li><strong>Pre-Coaching:</strong> Jordan avoided 90% of optional networking events.</li>
+                    <li><strong>Post-Coaching:</strong> Jordan attended 60% of events as their authentic self, utilizing a pre-planned "Safety Protocol."</li>
+                    <li><strong>ROI:</strong> Jordan successfully negotiated for gender-neutral facilities at their office, citing increased confidence gained through coaching. Resilience score rose to 8/10.</li>
+                </ul>
+            </p>
+        </div>
+
+        <h2 id="likert">3. Likert Scales for Subjective Well-being and Identity Pride</h2>
+        <p>While qualitative data is rich, <span class="highlight">Likert scales</span> allow us to track movement across a spectrum of feeling. In our methodology, we use specialized scales that move beyond "Happy/Sad" into "Aligned/Misaligned."</p>
+        
+        <h3>The Identity Pride Spectrum (IPS)</h3>
+        <p>We ask clients to rate their agreement (1: Strongly Disagree to 7: Strongly Agree) with statements such as:</p>
+        <ul>
+            <li>"I feel a sense of belonging within the LGBTQ+ community."</li>
+            <li>"I view my identity as a source of strength rather than a burden."</li>
+            <li>"I can navigate cis-normative spaces without losing my sense of self."</li>
+        </ul>
+        <p>Tracking these numbers over 10 sessions creates a <span class="highlight">Visual Progress Map</span>. A client may start with a "3" in community belonging and end with a "6." This data point is a powerful tool during the mid-engagement review to show the client how far they have come, even when they feel "stuck" in a specific week.</p>
+
+        <h2 id="qualitative">4. Qualitative Assessment: Analyzing Narratives of Change</h2>
+        <p>Data isn't just numbers; it's also the <span class="highlight">evolution of language</span>. As an expert coach, you must track how the client's "Self-Narrative" shifts. We use a technique called <span class="highlight">Thematic Identity Mapping</span>.</p>
+        
+        <p>At the start of coaching, a client’s narrative might be "Victim-Centric" or "Struggle-Focused" (e.g., "I can't be myself because the world is too dangerous"). By session 8, we look for "Agentic" language (e.g., "I choose where and when to share my identity to preserve my energy").</p>
+
+        <div class="case-study">
+            <span class="case-study-label">Case Study 2</span>
+            <h4>Client: "Mateo" (54, Gay Man, Post-Divorce)</h4>
+            <p><strong>Presenting Symptoms:</strong> High levels of internalized ageism and a narrative that "it's too late to find queer community."</p>
+            <p><strong>Narrative Analysis:</strong>
+                <ul>
+                    <li><strong>Month 1:</strong> Used words like "invisible," "obsolete," and "outsider" 14 times in one session.</li>
+                    <li><strong>Month 4:</strong> Shifted language to "elder," "mentor," and "intentional." Used "invisible" only twice in the context of choosing privacy.</li>
+                </ul>
+            </p>
+            <p><strong>Outcome:</strong> Mateo joined a local LGBTQ+ historical society, shifting his identity from "isolated individual" to "community elder."</p>
+        </div>
+
+        <h2 id="pivot">5. Using Data to Pivot Coaching Methodologies</h2>
+        <p>One of the most critical uses of data is knowing when to <span class="highlight">change your approach</span>. If assessment data (either Likert scores or narrative checks) shows a plateau or a decline for three consecutive sessions, it is a "Pivot Signal."</p>
+        
+        <p>For example, if a client’s "Identity Pride" score is increasing, but their "Social Capital" score is plummeting, the data suggests that while they are feeling better about themselves, they are becoming increasingly isolated. This requires a pivot from <span class="highlight">Internal Work</span> (Cognitive Reframing) to <span class="highlight">External Work</span> (Social Skills and Community Integration).</p>
+
+        <div class="check-understanding">
+            <p class="box-label">Check Your Understanding</p>
+            <div class="question-box">
+                <p><strong>1. Why is "Identity Congruence" a more valuable KPI than "General Happiness" in affirming coaching?</strong></p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-content">
+                    Happiness is a fleeting emotional state influenced by many external factors. Identity Congruence measures the structural alignment between a client's values/identity and their actions, which is a more stable and actionable indicator of long-term psychological wellness for LGBTQ+ individuals.
+                </div>
+            </div>
+
+            <div class="question-box">
+                <p><strong>2. What should a coach do if a client's resilience scores decrease mid-engagement?</strong></p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-content">
+                    A decrease isn't necessarily a failure; it often indicates a new external stressor or the "unmasking" process where a client becomes more aware of their struggles. The coach should use this data to pivot toward trauma-informed stabilization or boundary-setting work before continuing with growth-oriented goals.
+                </div>
+            </div>
+        </div>
+
+        <h2 id="ethics">6. Ethics of Data and Privacy in Affirming Spaces</h2>
+        <p>When tracking data for marginalized populations, <span class="highlight">Privacy is a Safety Issue</span>. You must ensure that any digital tracking tools are HIPAA-compliant or use end-to-end encryption. Furthermore, the client must always have "Data Sovereignty"—the right to know exactly what is being tracked and why.</p>
+        
+        <p>In the <span class="highlight">AffrediPro Affirmative Framework</span>, we treat the progress chart as a collaborative document. It is not something the coach "does to" the client, but a mirror the coach holds up "with" the client to reflect their own evolution.</p>
+
+        <div class="takeaways-box">
+            <h3>Key Takeaways</h3>
+            <ul>
+                <li><strong>Customized KPIs:</strong> Focus on Identity Congruence, Resilience Flux, and Social Capital rather than generic self-help metrics.</li>
+                <li><strong>The BIO Model:</strong> Use Baseline, Intervention, and Outcome assessments to prove ROI and professionalize your practice.</li>
+                <li><strong>Visual Evidence:</strong> Likert scales provide a visual map of progress that can sustain client motivation during difficult periods.</li>
+                <li><strong>Narrative Tracking:</strong> Pay attention to shifts from "Victim" language to "Agentic" language as a primary indicator of identity integration.</li>
+                <li><strong>Data-Driven Pivots:</strong> Use assessment plateaus as diagnostic tools to shift your coaching methodology in real-time.</li>
+            </ul>
+        </div>
+
+        <div class="references-box">
+            <h4>References & Further Reading</h4>
+            <ul>
+                <li>Meyer, I. H. (2022). "Resilience in the face of minority stress: A longitudinal study of LGBTQ+ adults." <i>Journal of Counseling Psychology.</i></li>
+                <li>Pachankis, J. E., et al. (2021). "The efficacy of LGBTQ-affirmative cognitive-behavioral therapy: A randomized controlled trial." <i>Journal of Consulting and Clinical Psychology.</i></li>
+                <li>Riggs, D. W., et al. (2023). "Measuring Identity Congruence in Transgender and Gender Diverse Populations." <i>Psychology of Sexual Orientation and Gender Diversity.</i></li>
+                <li>Fredriksen-Goldsen, K. I., et al. (2021). "The Health Equity Promotion Model: Reconceptualizing LGBTQ+ Health and Wellness." <i>American Journal of Public Health.</i></li>
+                <li>Smith, M. S. (2022). "Narrative Identity Evolution: A Qualitative Analysis of Queer Life Coaching Outcomes." <i>International Journal of Evidence Based Coaching and Mentoring.</i></li>
+                <li>American Psychological Association (2021). "Guidelines for Psychological Practice with Sexual Minority Persons." <i>APA Practice Guidelines.</i></li>
+            </ul>
+        </div>
+
+        <footer class="lesson-footer">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="footer-logo">
+            <p class="brand">AccrediPro Academy © 2024</p>
+            <p class="copyright">Premium Certification Content | LGBTQ+ Affirming Life Coach Professional</p>
+        </footer>
+    </div>
+</body>
+
+</html>

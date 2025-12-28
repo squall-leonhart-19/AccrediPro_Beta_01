@@ -554,10 +554,23 @@ export function UsersClient({ users, courses }: UsersClientProps) {
     }
   };
 
-  const openKnowledgeDialog = (user: User) => {
+  const openKnowledgeDialog = async (user: User) => {
     setSelectedUser(user);
-    setKnowledgeBaseContent(user.knowledgeBase || "");
+    setKnowledgeBaseContent("Loading...");
     setKnowledgeDialogOpen(true);
+
+    try {
+      const res = await fetch(`/api/admin/users/knowledge?userId=${user.id}`);
+      if (res.ok) {
+        const data = await res.json();
+        setKnowledgeBaseContent(data.knowledgeBase || "");
+      } else {
+        setKnowledgeBaseContent("Failed to load knowledge base.");
+      }
+    } catch (err) {
+      console.error("Failed to fetch knowledge base:", err);
+      setKnowledgeBaseContent("Error loading knowledge base.");
+    }
   };
 
   const openRoleDialog = (user: User) => {

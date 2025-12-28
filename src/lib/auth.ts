@@ -112,22 +112,6 @@ export const authOptions: NextAuthOptions = {
           });
         }
 
-        // Check if user is Mini Diploma only (enrolled only in fm-mini-diploma, not completed)
-        const enrollments = await prisma.enrollment.findMany({
-          where: { userId: user.id },
-          include: { course: { select: { slug: true } } },
-        });
-        const isMiniDiplomaOnly =
-          enrollments.length === 1 &&
-          enrollments[0].course.slug === "fm-mini-diploma" &&
-          enrollments[0].status !== "COMPLETED";
-
-        // Check if user is FM Preview only (enrolled only in fm-preview, not completed)
-        const isFMPreviewOnly =
-          enrollments.length === 1 &&
-          enrollments[0].course.slug === "fm-preview" &&
-          enrollments[0].status !== "COMPLETED";
-
         return {
           id: user.id,
           email: user.email,
@@ -137,9 +121,6 @@ export const authOptions: NextAuthOptions = {
           firstName: user.firstName,
           lastName: user.lastName,
           isFirstLogin,
-          miniDiplomaCategory: user.miniDiplomaCategory,
-          isMiniDiplomaOnly,
-          isFMPreviewOnly,
         };
       },
     }),
@@ -150,33 +131,14 @@ export const authOptions: NextAuthOptions = {
   },
   callbacks: {
     async jwt({ token, user }) {
+      // On initial login: set user data
       if (user) {
         token.id = user.id;
         token.role = user.role;
         token.firstName = user.firstName;
         token.lastName = user.lastName;
         token.isFirstLogin = user.isFirstLogin;
-        token.miniDiplomaCategory = user.miniDiplomaCategory;
-        token.isMiniDiplomaOnly = user.isMiniDiplomaOnly;
-        token.isFMPreviewOnly = user.isFMPreviewOnly;
       }
-
-      // Always refresh enrollment status from database to catch completion status changes
-      if (token.id) {
-        const enrollments = await prisma.enrollment.findMany({
-          where: { userId: token.id as string },
-          include: { course: { select: { slug: true } } },
-        });
-        token.isMiniDiplomaOnly =
-          enrollments.length === 1 &&
-          enrollments[0].course.slug === "fm-mini-diploma" &&
-          enrollments[0].status !== "COMPLETED";
-        token.isFMPreviewOnly =
-          enrollments.length === 1 &&
-          enrollments[0].course.slug === "fm-preview" &&
-          enrollments[0].status !== "COMPLETED";
-      }
-
       return token;
     },
     async session({ session, token }) {
@@ -186,9 +148,6 @@ export const authOptions: NextAuthOptions = {
         session.user.firstName = token.firstName as string;
         session.user.lastName = token.lastName as string;
         session.user.isFirstLogin = token.isFirstLogin as boolean;
-        session.user.miniDiplomaCategory = token.miniDiplomaCategory as string | null;
-        session.user.isMiniDiplomaOnly = token.isMiniDiplomaOnly as boolean;
-        session.user.isFMPreviewOnly = token.isFMPreviewOnly as boolean;
       }
       return session;
     },

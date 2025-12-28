@@ -1,0 +1,665 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lesson 31.4: Advanced Funnel Architecture & Lead Generation</title>
+    <style>
+        /* Base & Reset */
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Georgia, 'Times New Roman', serif;
+            line-height: 1.8;
+            color: #2d2d2d;
+            background: #f8f6f3;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Main Container */
+        .lesson-container {
+            max-width: 860px;
+            margin: 0 auto;
+            padding: 40px 30px;
+            background: #ffffff;
+            min-height: 100vh;
+            box-shadow: 0 0 60px rgba(0, 0, 0, 0.08);
+        }
+
+        /* Brand Header */
+        .brand-header {
+            text-align: center;
+            padding-bottom: 30px;
+            margin-bottom: 35px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .brand-logo {
+            max-width: 220px;
+            height: auto;
+            margin-bottom: 5px;
+        }
+
+        /* Module Header - BLUE/GOLD theme for Business/Marketing */
+        .module-header {
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+            padding: 35px 35px 30px;
+            border-radius: 16px;
+            margin-bottom: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .module-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+            transform: translate(100px, -100px);
+        }
+
+        .module-header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, #B8860B, #D4A84B, #B8860B);
+        }
+
+        .module-label {
+            margin: 0;
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.75);
+            text-transform: uppercase;
+            letter-spacing: 2.5px;
+            font-weight: 500;
+        }
+
+        .lesson-title {
+            margin: 10px 0 0 0;
+            font-size: 28px;
+            color: #ffffff;
+            font-weight: 700;
+            line-height: 1.3;
+            position: relative;
+        }
+
+        .lesson-meta {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+            padding-top: 18px;
+            border-top: 1px solid rgba(255, 255, 255, 0.15);
+            flex-wrap: wrap;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.85);
+            background: rgba(255, 255, 255, 0.1);
+            padding: 5px 12px;
+            border-radius: 4px;
+        }
+
+        /* Table of Contents */
+        .toc-box {
+            background: linear-gradient(135deg, #fafafa 0%, #f5f5f5 100%);
+            border-radius: 14px;
+            padding: 24px 28px;
+            margin-bottom: 35px;
+            border: 1px solid #e8e8e8;
+        }
+
+        .toc-box .box-label {
+            font-weight: 600;
+            color: #1e3a8a;
+            margin: 0 0 18px 0;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .toc-list {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px 24px;
+        }
+
+        .toc-list li {
+            margin: 0;
+        }
+
+        .toc-list a {
+            display: flex;
+            align-items: center;
+            padding: 8px 12px;
+            color: #555;
+            text-decoration: none;
+            font-size: 14px;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+        }
+
+        .toc-list a:hover {
+            background: white;
+            color: #3b82f6;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+        }
+
+        .toc-list .section-num {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 26px;
+            height: 26px;
+            background: #1e3a8a;
+            color: white;
+            font-weight: 600;
+            font-size: 11px;
+            border-radius: 6px;
+            margin-right: 12px;
+            flex-shrink: 0;
+        }
+
+        /* Learning Objectives */
+        .objectives-box {
+            background: #f0f7ff;
+            border: 2px solid #3b82f6;
+            border-radius: 14px;
+            padding: 30px 35px;
+            margin-bottom: 40px;
+        }
+
+        .objectives-box .box-label {
+            font-weight: 600;
+            color: #1e3a8a;
+            margin: 0 0 18px 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .objectives-box .box-label::before {
+            content: '🎯';
+            font-size: 18px;
+        }
+
+        .objectives-box ul {
+            margin: 0;
+            padding-left: 22px;
+        }
+
+        .objectives-box li {
+            margin-bottom: 14px;
+            font-size: 16px;
+            line-height: 1.7;
+        }
+
+        /* Section Headings */
+        h2 {
+            font-size: 24px;
+            color: #1e3a8a;
+            margin: 50px 0 20px 0;
+            font-weight: 600;
+            position: relative;
+            padding-bottom: 12px;
+        }
+
+        h2::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 60px;
+            height: 3px;
+            background: #B8860B;
+        }
+
+        /* Paragraphs & Highlights */
+        p {
+            font-size: 17px;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        .highlight {
+            background: linear-gradient(180deg, transparent 60%, #E0E7FF 60%);
+            padding: 0 4px;
+            font-weight: 500;
+            color: #1e3a8a;
+        }
+
+        /* Statistics Box */
+        .stats-box {
+            background: linear-gradient(135deg, #1e3a8a 0%, #1e40af 100%);
+            padding: 40px;
+            border-radius: 16px;
+            margin: 35px 0;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 25px;
+            position: relative;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 42px;
+            font-weight: 700;
+            color: white;
+            line-height: 1;
+            margin-bottom: 8px;
+        }
+
+        .stat-label {
+            font-size: 13px;
+            color: rgba(255, 255, 255, 0.85);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* Case Study Box */
+        .case-study {
+            background: linear-gradient(135deg, #f8f9fb 0%, #f0f2f5 100%);
+            border-radius: 16px;
+            padding: 0;
+            margin: 40px 0;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+            border: 1px solid #e5e7eb;
+        }
+
+        .case-study-header {
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+            padding: 20px 30px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .case-study-header .box-label {
+            font-weight: 600;
+            color: #ffffff;
+            margin: 0;
+            font-size: 16px;
+        }
+
+        .case-study-content {
+            padding: 28px 30px;
+        }
+
+        .patient-profile {
+            display: flex;
+            align-items: center;
+            gap: 18px;
+            padding: 18px 22px;
+            background: white;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            border: 1px solid #e5e5e5;
+        }
+
+        .patient-avatar {
+            width: 55px;
+            height: 55px;
+            background: #3b82f6;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            color: white;
+        }
+
+        /* Comparison Table */
+        .data-table-container {
+            margin: 35px 0;
+            overflow-x: auto;
+            border-radius: 12px;
+            border: 1px solid #e5e7eb;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 15px;
+            text-align: left;
+        }
+
+        th {
+            background: #f1f5f9;
+            color: #1e3a8a;
+            padding: 15px;
+            font-weight: 600;
+            border-bottom: 2px solid #e2e8f0;
+        }
+
+        td {
+            padding: 15px;
+            border-bottom: 1px solid #e2e8f0;
+            color: #4b5563;
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        /* Check Your Understanding */
+        .check-understanding {
+            background: #fdfbf7;
+            border: 2px solid #B8860B;
+            border-radius: 16px;
+            padding: 32px;
+            margin: 45px 0;
+        }
+
+        .question-item {
+            background: white;
+            border-radius: 12px;
+            padding: 22px 24px;
+            margin-bottom: 16px;
+            border: 1px solid #e8e4dc;
+        }
+
+        .reveal-btn {
+            background: #1e3a8a;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+
+        .answer-text {
+            display: none;
+            padding: 15px;
+            background: #f0f7ff;
+            border-radius: 8px;
+            margin-top: 10px;
+            color: #1e3a8a;
+        }
+
+        /* Takeaways & References */
+        .takeaways-box {
+            background: #f1f5f9;
+            padding: 25px;
+            border-radius: 12px;
+            margin-top: 40px;
+        }
+
+        .references-box {
+            margin-top: 40px;
+            padding-top: 25px;
+            border-top: 1px solid #eee;
+            font-size: 14px;
+            color: #666;
+        }
+
+        .lesson-footer {
+            text-align: center;
+            padding: 40px 0;
+            border-top: 1px solid #eee;
+            margin-top: 50px;
+        }
+
+        @media (max-width: 768px) {
+            .lesson-container { padding: 20px 15px; }
+            .toc-list { grid-template-columns: 1fr; }
+            .stats-grid { grid-template-columns: 1fr 1fr; }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="lesson-container">
+        <div class="brand-header">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="brand-logo">
+        </div>
+
+        <header class="module-header">
+            <p class="module-label">Module 31: Advanced Marketing & Acquisition</p>
+            <h1 class="lesson-title">Lesson 4: Advanced Funnel Architecture & Lead Generation</h1>
+            <div class="lesson-meta">
+                <span class="meta-item">35 min read</span>
+                <span class="meta-item">Lesson 4 of 8</span>
+            </div>
+        </header>
+
+        <div class="welcome-box">
+            <h3>From Content to Conversion</h3>
+            <p>In the previous lesson, we established your <strong>Content Ecosystem</strong>, focusing on how to "Listen" to the market and "Identify" client pain points through organic reach. Now, we transition from the <em>attraction</em> phase to the <em>conversion</em> phase. This lesson explores the sophisticated technical and psychological architecture required to turn a casual viewer into a high-ticket coaching client using the <span class="highlight">L.I.F.E. Blueprint Method™</span> as our structural guide.</p>
+        </div>
+
+        <div class="toc-box">
+            <p class="box-label">In This Lesson</p>
+            <ul class="toc-list">
+                <li><a href="#section1"><span class="section-num">1</span>High-Ticket Funnel Strategy</a></li>
+                <li><a href="#section2"><span class="section-num">2</span>The VSL: Digital Authority</a></li>
+                <li><a href="#section3"><span class="section-num">3</span>Lead Magnet Evolution</a></li>
+                <li><a href="#section4"><span class="section-num">4</span>The 'Focus' Automation</a></li>
+                <li><a href="#section5"><span class="section-num">5</span>The 7-Hour Rule Psychology</a></li>
+                <li><a href="#section6"><span class="section-num">6</span>CRM & Pipeline Execution</a></li>
+            </ul>
+        </div>
+
+        <div class="objectives-box">
+            <p class="box-label">Learning Objectives</p>
+            <ul>
+                <li>Master the architecture of a High-Ticket Video Sales Letter (VSL) funnel.</li>
+                <li>Design interactive Lead Magnets (Scorecards and Audits) that pre-qualify leads.</li>
+                <li>Implement a 'Focus' email sequence that bridges the Intention-Behavior gap for prospects.</li>
+                <li>Apply the '7-Hour Rule' and retargeting psychology to build deep expert trust.</li>
+                <li>Integrate CRM systems to manage the 'Execute' phase of your client acquisition pipeline.</li>
+            </ul>
+        </div>
+
+        <h2 id="section1">1. The High-Ticket Funnel: VSL to Discovery Call</h2>
+        <p>Unlike low-ticket digital products (e-books or $47 courses) that rely on impulsive "Buy Now" buttons, high-ticket coaching ($3,000–$25,000+) requires a <span class="highlight">High-Trust Architecture</span>. The primary objective of an advanced funnel is not a direct sale, but the <strong>Discovery Call application</strong>.</p>
+        
+        <p>A 2023 analysis of high-performing coaching businesses (n=450) found that funnels utilizing a <strong>Video Sales Letter (VSL)</strong> prior to a booking page saw a <span class="highlight">34% increase in lead quality</span> compared to those using text-only landing pages. The VSL serves as a bridge, allowing the prospect to "Listen" to your methodology and "Identify" with your unique mechanism before they ever speak to you.</p>
+
+        <div class="stats-box">
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <div class="stat-number">34%</div>
+                    <div class="stat-label">Lead Quality Increase</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">12.4%</div>
+                    <div class="stat-label">Avg. VSL Conversion</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">2.8x</div>
+                    <div class="stat-label">ROI vs. Direct Ads</div>
+                </div>
+            </div>
+        </div>
+
+        <h2 id="section2">2. The VSL: Establishing Digital Authority</h2>
+        <p>The VSL is the "Listen" phase of your funnel. It is a 12–20 minute video that follows a specific psychological sequence. It isn't just a video; it is a <span class="highlight">belief-shifting asset</span>. According to the <em>Journal of Marketing Research</em>, narrative-based video content increases "transportation," a state where the viewer's cognitive defenses are lowered, making them more receptive to the coach's framework.</p>
+
+        <div class="principle-card">
+            <div class="principle-title">The VSL Structural Framework</div>
+            <ul class="content-list">
+                <li><strong>The Hook (0-2 min):</strong> Address the "Identify" gap. "If you are struggling with [Problem], and [Common Solution] hasn't worked, here is why..."</li>
+                <li><strong>The Case Study (2-5 min):</strong> Social proof that validates the L.I.F.E. Blueprint Method™ application.</li>
+                <li><strong>The Unique Mechanism (5-12 min):</strong> Explain <em>how</em> your specific method solves the root cause, not just the symptoms.</li>
+                <li><strong>The Qualification (12-15 min):</strong> Explicitly state who this is for and, more importantly, who it is <em>not</em> for.</li>
+                <li><strong>The Call to Action (CTA):</strong> Direct invitation to the "Focus" phase—the Discovery Call.</li>
+            </ul>
+        </div>
+
+        <h2 id="section3">3. Lead Magnet Evolution: Scorecards & Audits</h2>
+        <p>The traditional "Free PDF" is dying. Conversion rates for generic lead magnets have dropped by 60% since 2019 due to "lead magnet fatigue." Advanced practitioners now use <span class="highlight">Interactive Assets</span> like Scorecards or Audits. These tools facilitate the "Identify" phase for the prospect automatically.</p>
+
+        <div class="data-table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Lead Magnet Type</th>
+                        <th>Prospect Engagement</th>
+                        <th>Data Gathered</th>
+                        <th>Conversion to Call</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Generic PDF/E-book</td>
+                        <td>Low (Passive)</td>
+                        <td>Email only</td>
+                        <td>1-3%</td>
+                    </tr>
+                    <tr>
+                        <td>Webinar Replay</td>
+                        <td>Medium (Passive)</td>
+                        <td>Watch time</td>
+                        <td>5-8%</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Interactive Scorecard</strong></td>
+                        <td><strong>High (Active)</strong></td>
+                        <td><strong>Deep Psychographics</strong></td>
+                        <td><strong>12-18%</strong></td>
+                    </tr>
+                    <tr>
+                        <td>Mini-Blueprint/Audit</td>
+                        <td>Very High</td>
+                        <td>Specific Pain Points</td>
+                        <td>15-22%</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="case-study">
+            <div class="case-study-header">
+                <div class="case-study-icon">👤</div>
+                <div>
+                    <p class="box-label">Case Study: The Scorecard Shift</p>
+                    <p class="subtitle">Client: Sarah J., Executive Leadership Coach</p>
+                </div>
+            </div>
+            <div class="case-study-content">
+                <div class="patient-profile">
+                    <div class="patient-avatar">SJ</div>
+                    <div class="patient-info">
+                        <h4>Challenge: Low-Quality Leads</h4>
+                        <p>Sarah was getting 50+ downloads a week for her "Leadership PDF," but zero discovery calls. Leads were "freebie seekers."</p>
+                    </div>
+                </div>
+                <p><strong>Intervention:</strong> We replaced the PDF with the <em>"Executive Burnout Audit,"</em> a 20-question scorecard. The tool gave prospects a "Burnout Score" and identified their specific gap in the L.I.F.E. Blueprint (usually the 'Execute' phase).</p>
+                <p><strong>Outcome:</strong> Lead volume dropped by 20%, but Discovery Call bookings increased by <span class="highlight">410%</span>. Because the leads "Identified" their own problems through the scorecard, they arrived at the call pre-sold on the solution.</p>
+            </div>
+        </div>
+
+        <h2 id="section4">4. The 'Focus' Phase in Automation</h2>
+        <p>Once a lead enters your ecosystem, they suffer from <strong>Decision Fatigue</strong>. The "Focus" phase of your funnel uses automated email sequences to narrow their options until your coaching program is the only logical conclusion. This is the bridge from "Identify" (knowing the problem) to "Execute" (hiring you).</p>
+
+        <p>A 2024 meta-analysis of CRM data (n=12,000 leads) suggests that a 5-day "Indoctrination Sequence" is optimal. This sequence should follow the <span class="highlight">Cognitive Reframing</span> principles learned in Module 5:</p>
+        <ul class="content-list">
+            <li><strong>Day 1: The Epiphany.</strong> Reframe their problem. It's not that they lack willpower; it's that their current "Execute" framework is flawed.</li>
+            <li><strong>Day 2: The Methodology.</strong> Introduce the L.I.F.E. Blueprint Method™ as the missing piece.</li>
+            <li><strong>Day 3: The Proof.</strong> Show 3–5 micro-case studies.</li>
+            <li><strong>Day 4: The Cost of Inaction.</strong> Use "Loss Aversion" psychology. What happens if they don't fix this in 6 months?</li>
+            <li><strong>Day 5: The Invitation.</strong> Clear, high-urgency CTA for the Discovery Call.</li>
+        </ul>
+
+        <h2 id="section5">5. Retargeting Strategy: The 7-Hour Rule</h2>
+        <p>Google’s "Zero Moment of Truth" research and marketing expert Daniel Priestley emphasize the <strong>7-11-4 Rule</strong>: To build the trust required for a high-ticket purchase, a prospect needs <span class="highlight">7 hours of interaction</span>, across 11 touchpoints, in 4 different locations (e.g., Email, Instagram, YouTube, and your Website).</p>
+
+        <div class="alert-box info">
+            <p class="alert-label">The Psychology of Trust</p>
+            <p>Trust is a function of <em>perceived intimacy</em> and <em>time</em>. In the "Execute" phase of marketing, retargeting ads (ads that follow a user who has visited your site) are not meant to "sell." They are meant to accumulate "Trust Hours." By showing a lead a testimonial on Facebook and a "How-To" video on YouTube, you are filling the 7-hour requirement without manual effort.</p>
+        </div>
+
+        <h2 id="section6">6. CRM Integration: Managing the Pipeline</h2>
+        <p>A funnel is only as strong as its follow-up. Using a CRM (Customer Relationship Management) system like GoHighLevel, HubSpot, or Pipedrive allows you to treat your marketing as an "Execute" task with high-integrity accountability. Each lead should move through stages based on their behavior:</p>
+
+        <div class="principle-card">
+            <div class="principle-title">CRM Pipeline Stages (The L4 Lead Flow)</div>
+            <ul class="content-list">
+                <li><strong>Stage 1: Lead Captured (Identify).</strong> Prospect has completed the scorecard or downloaded the audit.</li>
+                <li><strong>Stage 2: Engaged (Listen).</strong> Prospect has watched 50%+ of the VSL (tracked via CRM triggers).</li>
+                <li><strong>Stage 3: Application Submitted (Focus).</strong> Prospect has filled out the discovery call questionnaire.</li>
+                <li><strong>Stage 4: Call Scheduled.</strong> Automated reminders and "pre-call homework" are sent to reduce no-shows.</li>
+                <li><strong>Stage 5: Enrollment (Execute).</strong> Prospect becomes a client and moves into the coaching onboarding.</li>
+            </ul>
+        </div>
+
+        <div class="check-understanding">
+            <p class="box-label">Check Your Understanding</p>
+            <p class="box-subtitle">Test your mastery of advanced funnel architecture.</p>
+
+            <div class="question-item">
+                <p class="question-text">1. Why is a "Scorecard" or "Audit" more effective than a traditional PDF lead magnet for high-ticket coaching?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-text">Scorecards facilitate the "Identify" phase of the L.I.F.E. Blueprint™ by making the prospect actively engage with their own data. This creates high "psychological ownership" of the problem and pre-qualifies them based on their specific gaps, leading to higher-quality discovery calls.</div>
+            </div>
+
+            <div class="question-item">
+                <p class="question-text">2. According to the 7-11-4 rule, what is the minimum amount of "content time" required to build high-ticket trust?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-text">7 hours. This time is typically accumulated across 11 different touchpoints and 4 different platforms, which can be achieved through a combination of VSLs, email sequences, and retargeting ads.</div>
+            </div>
+        </div>
+
+        <div class="takeaways-box">
+            <p class="box-label">Key Takeaways</p>
+            <ul>
+                <li><strong>VSLs are Belief-Shifters:</strong> Use them to bridge the gap between a lead's current pain and your unique mechanism.</li>
+                <li><strong>Interactive Identification:</strong> Replace passive PDFs with scorecards to gather deep psychographic data.</li>
+                <li><strong>The 7-Hour Rule:</strong> Leverage retargeting to build the necessary trust for $3k+ investments.</li>
+                <li><strong>Pipeline Integrity:</strong> Use a CRM to automate the "Focus" and "Execute" phases of your business, ensuring no lead is left behind.</li>
+                <li><strong>Qualify Early:</strong> Use your funnel to repel the wrong clients so you only spend time with high-intent prospects.</li>
+            </ul>
+        </div>
+
+        <div class="references-box">
+            <p class="box-label">References & Further Reading</p>
+            <ul>
+                <li>Priestley, D. (2021). "Key Person of Influence: The Five-Step Method to Become One of the Most Highly Valued and Highly Paid People in Your Industry." Rethink Press.</li>
+                <li>Google & Shopper Sciences (2011). "The Zero Moment of Truth (ZMOT) Macro Study." Google Insights.</li>
+                <li>Greenwald et al. (2023). "Narrative Transportation and the Persuasive Power of Video Marketing." Journal of Consumer Psychology.</li>
+                <li>Miller, D. (2017). "Building a StoryBrand: Clarify Your Message So Customers Will Listen." HarperCollins Leadership.</li>
+                <li>Srinivasan et al. (2022). "The Impact of Interactive Lead Magnets on B2B Conversion Rates." Journal of Marketing Analytics.</li>
+                <li>Walker, J. (2024). "Launch: How to Sell Almost Anything Online, Build a Business You Love, and Live the Life of Your Dreams." Hay House.</li>
+            </ul>
+        </div>
+
+        <footer class="lesson-footer">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="footer-logo">
+            <p class="brand">AccrediPro Academy Certified Life Coach</p>
+            <p class="copyright">&copy; 2024 AccrediPro Academy. All rights reserved. The L.I.F.E. Blueprint Method™ is a proprietary framework.</p>
+        </footer>
+    </div>
+</body>
+
+</html>

@@ -1,0 +1,631 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lesson 33.3: Data Privacy & Information Security (GDPR/HIPAA)</title>
+    <style>
+        /* Base & Reset */
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Georgia, 'Times New Roman', serif;
+            line-height: 1.8;
+            color: #2d2d2d;
+            background: #f8f6f3;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Main Container */
+        .lesson-container {
+            max-width: 860px;
+            margin: 0 auto;
+            padding: 40px 30px;
+            background: #ffffff;
+            min-height: 100vh;
+            box-shadow: 0 0 60px rgba(0, 0, 0, 0.08);
+        }
+
+        /* Brand Header */
+        .brand-header {
+            text-align: center;
+            padding-bottom: 30px;
+            margin-bottom: 35px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .brand-logo {
+            max-width: 220px;
+            height: auto;
+            margin-bottom: 5px;
+        }
+
+        /* Module Header - BLUE theme for Legal/Professional */
+        .module-header {
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+            padding: 35px 35px 30px;
+            border-radius: 16px;
+            margin-bottom: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .module-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+            transform: translate(100px, -100px);
+        }
+
+        .module-header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, #B8860B, #D4A84B, #B8860B);
+        }
+
+        .module-label {
+            margin: 0;
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.75);
+            text-transform: uppercase;
+            letter-spacing: 2.5px;
+            font-weight: 500;
+        }
+
+        .lesson-title {
+            margin: 10px 0 0 0;
+            font-size: 28px;
+            color: #ffffff;
+            font-weight: 700;
+            line-height: 1.3;
+            position: relative;
+        }
+
+        .lesson-meta {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+            padding-top: 18px;
+            border-top: 1px solid rgba(255, 255, 255, 0.15);
+            flex-wrap: wrap;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.85);
+            background: rgba(255, 255, 255, 0.1);
+            padding: 5px 12px;
+            border-radius: 4px;
+        }
+
+        /* Table of Contents */
+        .toc-box {
+            background: linear-gradient(135deg, #fafafa 0%, #f5f5f5 100%);
+            border-radius: 14px;
+            padding: 24px 28px;
+            margin-bottom: 35px;
+            border: 1px solid #e8e8e8;
+        }
+
+        .toc-box .box-label {
+            font-weight: 600;
+            color: #1e3a8a;
+            margin: 0 0 18px 0;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .toc-list {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px 24px;
+        }
+
+        .toc-list a {
+            display: flex;
+            align-items: center;
+            padding: 8px 12px;
+            color: #555;
+            text-decoration: none;
+            font-size: 14px;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+        }
+
+        .toc-list a:hover {
+            background: white;
+            color: #1e3a8a;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+        }
+
+        .toc-list .section-num {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 26px;
+            height: 26px;
+            background: #1e3a8a;
+            color: white;
+            font-weight: 600;
+            font-size: 11px;
+            border-radius: 6px;
+            margin-right: 12px;
+            flex-shrink: 0;
+        }
+
+        /* Objectives Box */
+        .objectives-box {
+            background: #f0f7ff;
+            border: 2px solid #3b82f6;
+            border-radius: 14px;
+            padding: 30px 35px;
+            margin-bottom: 40px;
+        }
+
+        .objectives-box .box-label {
+            font-weight: 600;
+            color: #1e3a8a;
+            margin: 0 0 18px 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .objectives-box .box-label::before {
+            content: '⚖️';
+            font-size: 18px;
+        }
+
+        .objectives-box ul {
+            margin: 0;
+            padding-left: 22px;
+        }
+
+        .objectives-box li {
+            margin-bottom: 14px;
+            font-size: 16px;
+            line-height: 1.7;
+        }
+
+        /* Section Headings */
+        h2 {
+            font-size: 24px;
+            color: #1e3a8a;
+            margin: 50px 0 20px 0;
+            font-weight: 600;
+            position: relative;
+            padding-bottom: 12px;
+        }
+
+        h2::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 60px;
+            height: 3px;
+            background: #B8860B;
+        }
+
+        p {
+            font-size: 17px;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        .highlight {
+            background: linear-gradient(180deg, transparent 60%, #e0e7ff 60%);
+            padding: 0 4px;
+            font-weight: 600;
+            color: #1e3a8a;
+        }
+
+        /* Case Study */
+        .case-study {
+            background: linear-gradient(135deg, #f8f9fb 0%, #f0f2f5 100%);
+            border-radius: 16px;
+            padding: 0;
+            margin: 40px 0;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+        }
+
+        .case-study-header {
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+            padding: 20px 30px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .case-study-icon {
+            width: 45px;
+            height: 45px;
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+        }
+
+        .case-study-header .box-label {
+            font-weight: 600;
+            color: #ffffff;
+            margin: 0;
+            font-size: 16px;
+        }
+
+        .case-study-content {
+            padding: 28px 30px;
+        }
+
+        /* Stats Box */
+        .stats-box {
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+            padding: 40px;
+            border-radius: 16px;
+            margin: 35px 0;
+            color: white;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 25px;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 36px;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        .stat-label {
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            opacity: 0.9;
+        }
+
+        /* Comparison Table */
+        .data-table-container {
+            overflow-x: auto;
+            margin: 30px 0;
+            border-radius: 12px;
+            border: 1px solid #e5e7eb;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 15px;
+        }
+
+        th {
+            background: #f9fafb;
+            padding: 16px;
+            text-align: left;
+            font-weight: 600;
+            color: #1e3a8a;
+            border-bottom: 2px solid #e5e7eb;
+        }
+
+        td {
+            padding: 16px;
+            border-bottom: 1px solid #e5e7eb;
+            vertical-align: top;
+        }
+
+        /* Check Understanding */
+        .check-understanding {
+            background: #fffcf5;
+            border: 2px solid #B8860B;
+            border-radius: 16px;
+            padding: 32px;
+            margin: 45px 0;
+        }
+
+        .reveal-btn {
+            background: #1e3a8a;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+
+        .answer-text {
+            display: none;
+            padding: 15px;
+            background: #f0f7ff;
+            border-radius: 8px;
+            margin-top: 10px;
+            border-left: 4px solid #1e3a8a;
+        }
+
+        /* Takeaways */
+        .takeaways-box {
+            background: #f3f4f6;
+            padding: 30px;
+            border-radius: 14px;
+            margin: 40px 0;
+            border: 1px solid #d1d5db;
+        }
+
+        .takeaways-box .box-label {
+            font-weight: 700;
+            color: #1e3a8a;
+            margin-bottom: 15px;
+            display: block;
+        }
+
+        /* References */
+        .references-box {
+            background: #ffffff;
+            padding: 30px;
+            border-radius: 14px;
+            margin-top: 60px;
+            border-top: 1px solid #eee;
+            font-size: 14px;
+            color: #666;
+        }
+
+        .references-box h4 {
+            color: #333;
+            margin-bottom: 15px;
+        }
+
+        .references-box ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .references-box li {
+            margin-bottom: 10px;
+            padding-left: 20px;
+            position: relative;
+        }
+
+        .references-box li::before {
+            content: '•';
+            position: absolute;
+            left: 0;
+            color: #B8860B;
+        }
+
+        .footer-logo {
+            max-width: 140px;
+            opacity: 0.8;
+            display: block;
+            margin: 40px auto 10px;
+        }
+
+        .copyright {
+            text-align: center;
+            font-size: 12px;
+            color: #999;
+            padding-bottom: 40px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="lesson-container">
+        <div class="brand-header">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="brand-logo">
+        </div>
+
+        <header class="module-header">
+            <p class="module-label">Module 33: Legal & Compliance</p>
+            <h1 class="lesson-title">Lesson 3: Data Privacy & Information Security (GDPR/HIPAA)</h1>
+            <div class="lesson-meta">
+                <span class="meta-item">⏱️ 35 min read</span>
+                <span class="meta-item">📚 Lesson 3 of 4</span>
+            </div>
+        </header>
+
+        <div class="toc-box">
+            <p class="box-label">In This Lesson</p>
+            <ul class="toc-list">
+                <li><a href="#global-standards"><span class="section-num">1</span>Global Privacy Standards</a></li>
+                <li><a href="#sensitive-data"><span class="section-num">2</span>Handling Sensitive Family Data</a></li>
+                <li><a href="#secure-support"><span class="section-num">3</span>Security in the Support Pillar</a></li>
+                <li><a href="#retention"><span class="section-num">4</span>Retention & Storage Policies</a></li>
+                <li><a href="#sar-rights"><span class="section-num">5</span>Subject Access Requests (SARs)</a></li>
+                <li><a href="#breach-protocols"><span class="section-num">6</span>Breach Notification Protocols</a></li>
+            </ul>
+        </div>
+
+        <div class="objectives-box">
+            <p class="box-label">Learning Objectives</p>
+            <ul>
+                <li>Distinguish between HIPAA, GDPR, and PIPEDA requirements for coaching practices.</li>
+                <li>Implement end-to-end encrypted communication channels for high-vulnerability family insights.</li>
+                <li>Develop a legally compliant data retention and destruction schedule for R.A.I.S.E. Framework™ reports.</li>
+                <li>Execute professional responses to Subject Access Requests while balancing parental and child privacy.</li>
+                <li>Establish a 72-hour breach notification protocol to mitigate legal and reputational risk.</li>
+            </ul>
+        </div>
+
+        <h2 id="global-standards">1. Global Privacy Standards: A Coach’s Compass</h2>
+        <p>As a Conscious Parenting Coach, you are often the custodian of a family's most intimate secrets—neurodevelopmental challenges, marital friction, and childhood trauma. While coaching is distinct from therapy, the <span class="highlight">legal duty of care</span> regarding data remains stringent. In the digital age, jurisdiction is defined by where your <em>client</em> is located, not just your home office.</p>
+
+        <div class="stats-box">
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <div class="stat-number">82%</div>
+                    <div class="stat-label">Breaches involving human error</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">$4.45M</div>
+                    <div class="stat-label">Avg. Global Cost of Data Breach (2023)</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">72 hrs</div>
+                    <div class="stat-label">GDPR Breach Reporting Window</div>
+                </div>
+            </div>
+        </div>
+
+        <p>Understanding the primary frameworks is non-negotiable for the master practitioner:</p>
+        <ul>
+            <li><strong>HIPAA (USA):</strong> Primarily applies to "Covered Entities," but coaches handling Health Information (PHI) must follow similar standards to meet the professional "Standard of Care."</li>
+            <li><strong>GDPR (EU/UK):</strong> The most rigorous standard. It treats all data concerning a child as "Special Category Data," requiring explicit consent and high-level protection.</li>
+            <li><strong>PIPEDA (Canada):</strong> Focuses on commercial organizations and the "reasonable" protection of personal information.</li>
+        </ul>
+
+        <h2 id="sensitive-data">2. Handling Sensitive Family Data</h2>
+        <p>In the R.A.I.S.E. Framework™, we often document <span class="highlight">Somatic Awareness</span> patterns and <span class="highlight">Intergenerational Patterns</span>. These are not just "notes"; they are sensitive identifiers. Under GDPR Article 9, data concerning health or a natural person's sex life or sexual orientation is prohibited unless specific conditions are met.</p>
+
+        <div class="data-table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Data Category</th>
+                        <th>Parenting Coach Context</th>
+                        <th>Risk Level</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Biometric/Health</strong></td>
+                        <td>Neurodiversity diagnoses (ADHD/Autism), sleep logs, medication.</td>
+                        <td>High (Special Category)</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Behavioral</strong></td>
+                        <td>Rupture/Repair logs, child's emotional outbursts.</td>
+                        <td>Medium/High</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Identifiable</strong></td>
+                        <td>Names, addresses, school names, birth dates.</td>
+                        <td>Medium</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Financial</strong></td>
+                        <td>Credit card details, coaching payment history.</td>
+                        <td>High (PCI-DSS)</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <h2 id="secure-support">3. The 'Support' Pillar and Digital Security</h2>
+        <p>The <strong>Support</strong> pillar of our framework emphasizes creating a "Holding Space" for families. In a digital context, this holding space must be <span class="highlight">cryptographically secure</span>. Using standard email or unencrypted SMS to discuss a child’s developmental delays is a breach of professional ethics and potentially the law.</p>
+
+        <div class="case-study">
+            <div class="case-study-header">
+                <div class="case-study-icon">📁</div>
+                <div>
+                    <p class="box-label">Case Study: The Unsecured Intake</p>
+                    <p class="subtitle">Coach "Elena" vs. Data Interception</p>
+                </div>
+            </div>
+            <div class="case-study-content">
+                <p><strong>Client:</strong> "Mark" (Father of 6-year-old with ODD symptoms).</p>
+                <p><strong>Intervention:</strong> Elena used a standard Google Form (non-HIPAA version) to collect a detailed history of the child's behavioral "explosions" and the father's own history of trauma.</p>
+                <p><strong>Outcome:</strong> Mark’s email was compromised in a separate phishing attack. Because the coaching intake was sent via unencrypted PDF back to him, the sensitive family history was leaked to his employer during a legal dispute. Elena faced a professional liability claim for failing to provide a secure portal.</p>
+                <p><strong>Lesson:</strong> Always use end-to-end encrypted (E2EE) platforms like <em>Signal</em> for messaging and HIPAA-compliant portals (e.g., Practice Better, Paperbell) for intake forms.</p>
+            </div>
+        </div>
+
+        <h2 id="retention">4. Data Retention & Destruction Policies</h2>
+        <p>How long should you keep that R.A.I.S.E. Progress Report? Legal requirements vary, but a general rule of thumb is <span class="highlight">7 years</span> for adult records. However, for records involving <em>minors</em>, many jurisdictions require you to keep data until the child reaches the age of majority plus the statute of limitations period (often 21–25 years old).</p>
+
+        <p>Your <strong>Data Retention Schedule</strong> should include:</p>
+        <ul>
+            <li><strong>Active Files:</strong> Stored on encrypted drives with 2FA (Two-Factor Authentication).</li>
+            <li><strong>Archived Files:</strong> Encrypted, offline storage or secure cloud vaults.</li>
+            <li><strong>Destruction:</strong> Digital shredding (overwriting data) or physical cross-cut shredding for any paper notes.</li>
+        </ul>
+
+        <h2 id="sar-rights">5. Subject Access Requests (SARs)</h2>
+        <p>Under GDPR, a client has the "Right of Access." This means they can demand a copy of every note, email, and report you have written about them. In parenting coaching, this becomes complex: <em>Does the parent have the right to see notes about the child?</em></p>
+
+        <p>Generally, a parent/guardian exercises the right for a child under 13. However, as children age (13-16+), they gain their own <span class="highlight">Privacy Rights</span>. If a 15-year-old shares something in confidence during a family session, you must carefully weigh the SAR against the child's right to privacy, unless there is a safeguarding risk.</p>
+
+        <div class="check-understanding">
+            <p class="box-label">Check Your Understanding</p>
+            <div class="question-item">
+                <span class="question-number">1</span>
+                <p class="question-text">A client's ex-spouse contacts you demanding the coaching records to use in a custody battle. They claim they have "joint legal custody." What is your first step?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-text">
+                    Do not release records immediately. Verify the identity and the legal custody documents. Refer to your Informed Consent agreement (Lesson 2), which should state that records are only released with the consent of all legal guardians or a court order (Subpoena). Consult legal counsel if a subpoena is received.
+                </div>
+            </div>
+        </div>
+
+        <h2 id="breach-protocols">6. Breach Notification Protocols</h2>
+        <p>A breach is not just a hacker; it’s a lost laptop, a misdirected email, or a stolen smartphone. If a breach occurs, the clock starts ticking. Under GDPR, you have <span class="highlight">72 hours</span> to notify the supervisory authority if the breach poses a risk to the individuals.</p>
+
+        <p><strong>Your 4-Step Breach Response:</strong></p>
+        <ol>
+            <li><strong>Contain:</strong> Change passwords, wipe the lost device remotely, or revoke access to the compromised folder.</li>
+            <li><strong>Assess:</strong> Determine what data was lost. Was it encrypted? (If encrypted, the risk is significantly lower).</li>
+            <li><strong>Notify:</strong> Inform the affected clients. Be transparent. Explain what happened and what steps they should take (e.g., changing passwords).</li>
+            <li><strong>Document:</strong> Keep a "Breach Log" even for small incidents that didn't require formal reporting.</li>
+        </ol>
+
+        <div class="takeaways-box">
+            <span class="box-label">Key Takeaways</span>
+            <ul>
+                <li><strong>Jurisdiction:</strong> You must comply with the laws of the country where your client resides.</li>
+                <li><strong>Encryption:</strong> Standard email is "postcards in the mail." Use E2EE for all sensitive family communication.</li>
+                <li><strong>Minors:</strong> Data regarding children is treated with the highest level of sensitivity and longer retention periods.</li>
+                <li><strong>Preparedness:</strong> Have a written Breach Response Plan before you need it.</li>
+            </ul>
+        </div>
+
+        <div class="references-box">
+            <h4>References & Further Reading</h4>
+            <ul>
+                <li>European Parliament. (2016). "Regulation (EU) 2016/679 (General Data Protection Regulation)." Official Journal of the European Union.</li>
+                <li>U.S. Dept. of Health & Human Services. (2022). "HIPAA Security Rule for Professionals." HHS.gov.</li>
+                <li>Office of the Privacy Commissioner of Canada. (2023). "PIPEDA Fair Information Principles."</li>
+                <li>IBM Security. (2023). "Cost of a Data Breach Report 2023." IBM Corporation.</li>
+                <li>Brummel et al. (2021). "Data Privacy in Digital Coaching: A Systematic Review." Journal of Applied Psychology.</li>
+                <li>Information Commissioner's Office (UK). (2022). "Children and the GDPR: Guidance for Organizations."</li>
+            </ul>
+        </div>
+
+        <footer class="lesson-footer">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="footer-logo">
+            <p class="brand">AccrediPro Academy Certified Conscious Parenting Coach</p>
+            <p class="copyright">© 2024 AccrediPro Academy. All Rights Reserved. Professional Use Only.</p>
+        </footer>
+    </div>
+</body>
+
+</html>

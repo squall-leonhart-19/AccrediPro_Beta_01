@@ -10,7 +10,25 @@ async function getUsers() {
       email: { not: null }
     },
     orderBy: { createdAt: "desc" },
-    include: {
+    select: {
+      id: true,
+      email: true,
+      firstName: true,
+      lastName: true,
+      avatar: true,
+      phone: true,
+      role: true,
+      isActive: true,
+      createdAt: true,
+      lastLoginAt: true,
+      leadSource: true,
+      leadSourceDetail: true,
+      // knowledgeBase: true, // EXCLUDED explicitly to prevent 10s load times
+      hasCompletedOnboarding: true,
+      learningGoal: true,
+      experienceLevel: true,
+      focusAreas: true,
+      bio: true,
       tags: {
         select: {
           id: true,

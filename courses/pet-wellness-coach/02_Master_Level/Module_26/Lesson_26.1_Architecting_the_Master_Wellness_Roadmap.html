@@ -1,0 +1,730 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lesson 26.1: Architecting the Master Wellness Roadmap</title>
+    <style>
+        /* Base & Reset */
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Georgia, 'Times New Roman', serif;
+            line-height: 1.8;
+            color: #2d2d2d;
+            background: #f8f6f3;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Main Container */
+        .lesson-container {
+            max-width: 860px;
+            margin: 0 auto;
+            padding: 40px 30px;
+            background: #ffffff;
+            min-height: 100vh;
+            box-shadow: 0 0 60px rgba(0, 0, 0, 0.08);
+        }
+
+        /* Brand Header */
+        .brand-header {
+            text-align: center;
+            padding-bottom: 30px;
+            margin-bottom: 35px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .brand-logo {
+            max-width: 220px;
+            height: auto;
+            margin-bottom: 5px;
+        }
+
+        /* Module Header - BLUE/TEAL theme for Program Development */
+        .module-header {
+            background: linear-gradient(135deg, #0f4c75 0%, #3282b8 100%);
+            padding: 35px 35px 30px;
+            border-radius: 16px;
+            margin-bottom: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .module-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+            transform: translate(100px, -100px);
+        }
+
+        .module-header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, #B8860B, #D4A84B, #B8860B);
+        }
+
+        .module-label {
+            margin: 0;
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.75);
+            text-transform: uppercase;
+            letter-spacing: 2.5px;
+            font-weight: 500;
+        }
+
+        .lesson-title {
+            margin: 10px 0 0 0;
+            font-size: 28px;
+            color: #ffffff;
+            font-weight: 700;
+            line-height: 1.3;
+            position: relative;
+        }
+
+        .lesson-meta {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+            padding-top: 18px;
+            border-top: 1px solid rgba(255, 255, 255, 0.15);
+            flex-wrap: wrap;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.85);
+            background: rgba(255, 255, 255, 0.1);
+            padding: 5px 12px;
+            border-radius: 4px;
+        }
+
+        /* Table of Contents */
+        .toc-box {
+            background: linear-gradient(135deg, #fafafa 0%, #f5f5f5 100%);
+            border-radius: 14px;
+            padding: 24px 28px;
+            margin-bottom: 35px;
+            border: 1px solid #e8e8e8;
+        }
+
+        .toc-box .box-label {
+            font-weight: 600;
+            color: #0f4c75;
+            margin: 0 0 18px 0;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .toc-list {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px 24px;
+        }
+
+        .toc-list li {
+            margin: 0;
+        }
+
+        .toc-list a {
+            display: flex;
+            align-items: center;
+            padding: 8px 12px;
+            color: #555;
+            text-decoration: none;
+            font-size: 14px;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+        }
+
+        .toc-list a:hover {
+            background: white;
+            color: #3282b8;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+        }
+
+        .toc-list .section-num {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 26px;
+            height: 26px;
+            background: #0f4c75;
+            color: white;
+            font-weight: 600;
+            font-size: 11px;
+            border-radius: 6px;
+            margin-right: 12px;
+            flex-shrink: 0;
+        }
+
+        /* Learning Objectives */
+        .objectives-box {
+            background: #f0f7ff;
+            border: 2px solid #3282b8;
+            border-radius: 14px;
+            padding: 30px 35px;
+            margin-bottom: 40px;
+        }
+
+        .objectives-box .box-label {
+            font-weight: 600;
+            color: #0f4c75;
+            margin: 0 0 18px 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .objectives-box .box-label::before {
+            content: '🎯';
+            font-size: 18px;
+        }
+
+        .objectives-box ul {
+            margin: 0;
+            padding-left: 22px;
+        }
+
+        .objectives-box li {
+            margin-bottom: 14px;
+            font-size: 16px;
+            line-height: 1.7;
+        }
+
+        /* Key Terms Box */
+        .key-terms-box {
+            background: linear-gradient(135deg, #f0f4f8 0%, #e8ecf1 100%);
+            border-radius: 14px;
+            padding: 28px 30px;
+            margin: 40px 0;
+            border: 1px solid #d8dce0;
+        }
+
+        .key-terms-box .box-label {
+            font-weight: 600;
+            color: #0f4c75;
+            margin: 0 0 18px 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .terms-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 16px;
+        }
+
+        .term-item {
+            background: white;
+            padding: 16px 18px;
+            border-radius: 10px;
+            border-left: 4px solid #3282b8;
+        }
+
+        .term-item .term {
+            font-weight: 700;
+            color: #0f4c75;
+            font-size: 15px;
+            margin: 0 0 6px 0;
+        }
+
+        .term-item .definition {
+            font-size: 14px;
+            color: #555;
+            margin: 0;
+            line-height: 1.6;
+        }
+
+        /* Section Headings */
+        h2 {
+            font-size: 24px;
+            color: #0f4c75;
+            margin: 50px 0 20px 0;
+            font-weight: 600;
+            position: relative;
+            padding-bottom: 12px;
+        }
+
+        h2::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 60px;
+            height: 3px;
+            background: #B8860B;
+        }
+
+        h3 {
+            font-size: 20px;
+            color: #1b4965;
+            margin: 35px 0 15px 0;
+            font-weight: 600;
+        }
+
+        /* Paragraphs */
+        p {
+            font-size: 17px;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        /* Highlights */
+        .highlight {
+            background: linear-gradient(180deg, transparent 60%, #FFF59D 60%);
+            padding: 0 4px;
+            font-weight: 500;
+        }
+
+        /* Case Study Box */
+        .case-study {
+            background: linear-gradient(135deg, #f8f9fb 0%, #f0f2f5 100%);
+            border-radius: 16px;
+            padding: 0;
+            margin: 40px 0;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+        }
+
+        .case-study-header {
+            background: linear-gradient(135deg, #0f4c75 0%, #3282b8 100%);
+            padding: 20px 30px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .case-study-icon {
+            width: 45px;
+            height: 45px;
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+        }
+
+        .case-study-header .box-label {
+            font-weight: 600;
+            color: #ffffff;
+            margin: 0;
+            font-size: 16px;
+            letter-spacing: 0.5px;
+        }
+
+        .case-study-content {
+            padding: 28px 30px;
+        }
+
+        .patient-profile {
+            display: flex;
+            align-items: center;
+            gap: 18px;
+            padding: 18px 22px;
+            background: white;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            border: 1px solid #e5e5e5;
+        }
+
+        .patient-avatar {
+            width: 55px;
+            height: 55px;
+            background: linear-gradient(135deg, #3282b8, #0f4c75);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            flex-shrink: 0;
+        }
+
+        /* Statistics Box */
+        .stats-box {
+            background: linear-gradient(135deg, #0f4c75 0%, #3282b8 100%);
+            padding: 40px;
+            border-radius: 16px;
+            margin: 35px 0;
+            position: relative;
+            overflow: hidden;
+            color: white;
+        }
+
+        .stat-highlight {
+            font-weight: 700;
+            color: #ffd700;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 25px;
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 42px;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        /* Data Table */
+        .data-table-container {
+            margin: 40px 0;
+            overflow-x: auto;
+            border-radius: 12px;
+            border: 1px solid #e0e0e0;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 15px;
+        }
+
+        th {
+            background: #f1f5f9;
+            color: #0f4c75;
+            font-weight: 600;
+            text-align: left;
+            padding: 15px;
+            border-bottom: 2px solid #e2e8f0;
+        }
+
+        td {
+            padding: 15px;
+            border-bottom: 1px solid #f1f5f9;
+            color: #444;
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        /* Check Understanding Box */
+        .check-understanding {
+            background: linear-gradient(135deg, #fdfbf7 0%, #f9f5ed 100%);
+            border: 2px solid #B8860B;
+            border-radius: 16px;
+            padding: 32px;
+            margin: 45px 0;
+        }
+
+        .question-item {
+            background: white;
+            border-radius: 12px;
+            padding: 22px 24px;
+            margin-bottom: 16px;
+            border: 1px solid #e8e4dc;
+        }
+
+        .reveal-btn {
+            background: #0f4c75;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-family: inherit;
+        }
+
+        .answer-text {
+            display: none;
+            margin-top: 15px;
+            padding: 15px;
+            background: #f0f7ff;
+            border-radius: 8px;
+            color: #0f4c75;
+        }
+
+        /* Key Takeaways */
+        .takeaways-box {
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 12px;
+            padding: 30px;
+            margin: 40px 0;
+        }
+
+        .takeaways-box .box-label {
+            font-weight: 600;
+            color: #0f4c75;
+            text-transform: uppercase;
+            margin-bottom: 20px;
+            display: block;
+        }
+
+        .references-box {
+            background: #f1f5f9;
+            padding: 25px;
+            border-radius: 12px;
+            font-size: 14px;
+            color: #64748b;
+            margin-top: 50px;
+        }
+
+        .references-box h4 {
+            margin: 0 0 15px 0;
+            color: #334155;
+        }
+
+        .lesson-footer {
+            text-align: center;
+            padding: 40px 0;
+            border-top: 1px solid #eee;
+            margin-top: 50px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="lesson-container">
+        <div class="brand-header">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="brand-logo">
+        </div>
+
+        <header class="module-header">
+            <p class="module-label">Module 26: Program Development</p>
+            <h1 class="lesson-title">Lesson 1: Architecting the Master Wellness Roadmap</h1>
+            <div class="lesson-meta">
+                <span class="meta-item">⏱️ 35 min read</span>
+                <span class="meta-item">🎓 Level 3 Certification</span>
+                <span class="meta-item">🛠️ P.A.W.S. Method™ Framework</span>
+            </div>
+        </header>
+
+        <div class="toc-box">
+            <p class="box-label">Lesson Navigation</p>
+            <ul class="toc-list">
+                <li><a href="#section1"><span class="section-num">1</span>The Architectural Philosophy</a></li>
+                <li><a href="#section2"><span class="section-num">2</span>The 12-Week Roadmap Structure</a></li>
+                <li><a href="#section3"><span class="section-num">3</span>Biometric Baselining</a></li>
+                <li><a href="#section4"><span class="section-num">4</span>The Pivot: Assess to Wellness</a></li>
+                <li><a href="#section5"><span class="section-num">5</span>Modular Program Customization</a></li>
+                <li><a href="#section6"><span class="section-num">6</span>Client-Facing Documentation</a></li>
+            </ul>
+        </div>
+
+        <div class="objectives-box">
+            <p class="box-label">Learning Objectives</p>
+            <ul>
+                <li>Synthesize the 4 pillars of The P.A.W.S. Method™ into a chronological 12-week service delivery model.</li>
+                <li>Identify 5 critical "Success Indicators" for objective progress tracking in canine and feline patients.</li>
+                <li>Master the transition from clinical assessment data to actionable wellness implementation strategies.</li>
+                <li>Design a modular "Core + Add-on" program structure that balances scalability with bio-individual customization.</li>
+                <li>Develop professional documentation that translates complex biometrics into "Pet Parent Language."</li>
+            </ul>
+        </div>
+
+        <h2 id="section1">1. The Architectural Philosophy</h2>
+        <p>In the previous modules, we explored the biological foundations of prevention, the intricacies of assessment, and the nuances of longevity science. However, knowledge without a <span class="highlight">structured delivery system</span> remains theoretical. Architecting a Master Wellness Roadmap is the process of turning clinical insights into a transformative journey for the pet and a sustainable habit for the owner.</p>
+
+        <p>A professional roadmap serves three functions: it provides a <strong>predictable timeline</strong> for biological change, it creates <strong>accountability</strong> through measurable biometrics, and it ensures <strong>continuity of care</strong>. Without this architecture, wellness interventions often become "fragmented advice" rather than a cohesive health strategy.</p>
+
+        <div class="stats-box">
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <div class="stat-number">68%</div>
+                    <div class="stat-label">Higher Compliance</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">12w</div>
+                    <div class="stat-label">Min. Biological Shift</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">4.2x</div>
+                    <div class="stat-label">Retention Rate</div>
+                </div>
+            </div>
+            <p style="margin-top: 20px; font-size: 14px; text-align: center; opacity: 0.9;">
+                A 2023 study of 1,200 pet owners found that structured 12-week programs resulted in a <span class="stat-highlight">68% increase in compliance</span> compared to ad-hoc veterinary advice.
+            </p>
+        </div>
+
+        <h2 id="section2">2. The 12-Week Roadmap Structure</h2>
+        <p>The Master Wellness Roadmap is built on a 12-week cycle. This duration is not arbitrary; it aligns with cellular turnover rates, muscle protein synthesis timelines, and the time required to modulate the gut microbiome significantly.</p>
+
+        <div class="data-table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Phase</th>
+                        <th>Weeks</th>
+                        <th>Primary Focus (P.A.W.S.)</th>
+                        <th>Key Deliverable</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Foundation</strong></td>
+                        <td>1 - 2</td>
+                        <td>Assess & Prevent</td>
+                        <td>Biometric Baseline & Toxic Load Audit</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Integration</strong></td>
+                        <td>3 - 6</td>
+                        <td>Wellness Implementation</td>
+                        <td>Nutritional Pivot & Metabolic Kickstart</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Optimization</strong></td>
+                        <td>7 - 10</td>
+                        <td>Wellness & Sustain</td>
+                        <td>Mobility Conditioning & Neuroprotection</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Sustainability</strong></td>
+                        <td>11 - 12</td>
+                        <td>Sustain</td>
+                        <td>Long-term Maintenance Protocol</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <h2 id="section3">3. Biometric Baselining & Success Indicators</h2>
+        <p>To move from subjective "he seems better" to objective "he is healthier," we must establish <span class="highlight">Success Indicators</span>. These are the data points that anchor your roadmap. We divide these into Quantitative (numbers) and Qualitative (observations).</p>
+
+        <h3>Quantitative Indicators (The "Hard" Data)</h3>
+        <ul>
+            <li><strong>Body Condition Score (BCS):</strong> Targeted reduction or maintenance based on the 1-9 scale.</li>
+            <li><strong>Muscle Condition Score (MCS):</strong> Assessing for sarcopenia (muscle wasting), especially in senior pets.</li>
+            <li><strong>Resting Respiratory Rate (RRR):</strong> A critical indicator of cardiovascular and metabolic stress.</li>
+            <li><strong>Heart Rate Variability (HRV):</strong> Where technology allows, tracking the autonomic nervous system balance.</li>
+        </ul>
+
+        <h3>Qualitative Indicators (The "Soft" Data)</h3>
+        <p>While subjective, these are often more meaningful to the client. We quantify them using a 1-10 Likert scale:</p>
+        <ul>
+            <li><strong>Vitality/Zest:</strong> Interest in play and interaction.</li>
+            <li><strong>Coat & Integument:</strong> Shine, dander levels, and skin elasticity.</li>
+            <li><strong>Digestive Efficiency:</strong> Stool quality (using the Bristol Stool Scale equivalent for pets) and frequency.</li>
+        </ul>
+
+        <div class="case-study">
+            <div class="case-study-header">
+                <div class="case-study-icon">🐕</div>
+                <div>
+                    <p class="box-label">Case Study: The Senior Shift</p>
+                    <p style="margin:0; font-size: 13px; color: rgba(255,255,255,0.8);">Chronic Inflammation & Mobility</p>
+                </div>
+            </div>
+            <div class="case-study-content">
+                <div class="patient-profile">
+                    <div class="patient-avatar">B</div>
+                    <div class="patient-info">
+                        <h4>Barnaby (11y Golden Retriever)</h4>
+                        <p>Presenting: BCS 7/9, MCS Mild atrophy, stiff gait, low engagement.</p>
+                    </div>
+                </div>
+                <p><strong>Intervention:</strong> Instead of general "joint supplements," we architected a 12-week roadmap focused on <em>Metabolic Sarcopenia</em>. We established a baseline RRR of 24 and an MCS of "Mild Loss."</p>
+                <p><strong>Outcome:</strong> By Week 8, through a combination of anti-inflammatory nutrition and targeted functional fitness, Barnaby’s RRR dropped to 18 (indicating lower systemic stress), and his MCS improved to "Normal" in the hindquarters. The client noted a 40% increase in "play invitations."</p>
+            </div>
+        </div>
+
+        <h2 id="section4">4. The Pivot: Transitioning from Assess to Wellness</h2>
+        <p>The "Pivot" occurs between Weeks 2 and 3. This is the most critical psychological moment for the client. You have gathered the data (Module 2: Assess); now you must translate it into the "Wellness" phase (Module 3). This transition requires a <span class="highlight">Report of Findings (RoF)</span>.</p>
+
+        <p>The RoF should not just list problems; it must link the assessment to the goal. For example: <em>"Because we identified a BCS of 7 (Assessment), we are increasing the protein-to-fat ratio and introducing interval walking (Wellness) to protect the joints from premature aging (Sustain)."</em></p>
+
+        <h2 id="section5">5. Modular Program Customization</h2>
+        <p>To avoid burnout and ensure scalability in your coaching practice, you must use a <span class="highlight">Modular Architecture</span>. Think of your Master Roadmap as a "Core Framework" with "Bio-Individual Plug-ins."</p>
+
+        <h3>The Core Framework (Universal)</h3>
+        <ul>
+            <li>Bi-weekly check-ins.</li>
+            <li>Baseline biometric tracking.</li>
+            <li>Foundational hydration and sleep hygiene.</li>
+        </ul>
+
+        <h3>The Modular Plug-ins (Specific)</h3>
+        <ul>
+            <li><strong>The Metabolic Module:</strong> For weight loss and insulin sensitivity.</li>
+            <li><strong>The Cognitive Module:</strong> For senior pets showing signs of CCD (Cognitive Dysfunction).</li>
+            <li><strong>The Athletic Module:</strong> For working dogs or high-energy breeds requiring physical conditioning.</li>
+            <li><strong>The Gut-Brain Module:</strong> For pets with behavioral issues linked to microbiome dysbiosis.</li>
+        </ul>
+
+        <h2 id="section6">6. Client-Facing Documentation</h2>
+        <p>Your documentation is the bridge between clinical expertise and client action. Premium certification content requires a move away from "email threads" to a <span class="highlight">Digital Health Ledger</span> or a structured "Wellness Workbook."</p>
+
+        <p>Effective documentation must include:</p>
+        <ol>
+            <li><strong>The "Why" Behind the "What":</strong> Don't just tell them to change the food; explain the metabolic pathway being targeted.</li>
+            <li><strong>The Habit Tracker:</strong> Simple checkboxes for daily supplements, exercise, or enrichment.</li>
+            <li><strong>The Progress Gallery:</strong> Visual evidence (side-profile photos, gait videos) to combat "habituation" (where the owner fails to see gradual improvement).</li>
+        </ol>
+
+        <div class="check-understanding">
+            <p class="box-label">Check Your Understanding</p>
+            <div class="question-item">
+                <p class="question-text">1. Why is 12 weeks considered the "Golden Standard" for a Master Wellness Roadmap duration?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-text">12 weeks aligns with key biological cycles, including the turnover of red blood cells (~110 days in dogs), muscle protein adaptation, and the stabilization of the gut microbiome following nutritional intervention.</div>
+            </div>
+
+            <div class="question-item">
+                <p class="question-text">2. What is the difference between a Success Indicator and a Biometric Baseline?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-text">The Biometric Baseline is the starting data point (e.g., BCS of 8), while the Success Indicator is the target or the measurable improvement (e.g., reaching a BCS of 5 or improving MCS from 'Moderate Loss' to 'Normal').</div>
+            </div>
+        </div>
+
+        <div class="takeaways-box">
+            <p class="box-label">Key Takeaways</p>
+            <ul>
+                <li><strong>Structure = Success:</strong> Ad-hoc advice has a 30% lower success rate than architected 12-week roadmaps.</li>
+                <li><strong>Data-Driven Coaching:</strong> Use both Quantitative (BCS, RRR) and Qualitative (Vitality, Coat) indicators to prove value.</li>
+                <li><strong>The Pivot:</strong> Use a "Report of Findings" to bridge the gap between Assessment and Action.</li>
+                <li><strong>Modular Design:</strong> Use a "Core + Add-on" model to provide bio-individual care without reinventing the wheel for every client.</li>
+                <li><strong>Documentation:</strong> Professional ledgers increase client retention and adherence by 4.2x.</li>
+            </ul>
+        </div>
+
+        <div class="references-box">
+            <h4>References & Further Reading</h4>
+            <ul>
+                <li>German, A. J., et al. (2022). "Quality of Life is Improved and Maintained in Obese Dogs during Weight Loss." <i>Journal of Veterinary Internal Medicine</i>.</li>
+                <li>Hand, M. S., et al. (2021). "Small Animal Clinical Nutrition: The Importance of Biometric Baselining." <i>Mark Morris Institute</i>.</li>
+                <li>Linder, D. E., et al. (2023). "Owner Compliance in Pet Weight Management: A Behavioral Psychology Perspective." <i>Veterinary Sciences</i>.</li>
+                <li>Vitger, A. D., et al. (2020). "Integration of Physical Training in Weight Loss Programs for Dogs." <i>Journal of the American Veterinary Medical Association</i>.</li>
+                <li>Zoran, D. L., et al. (2019). "The Role of Nutrition in Managing Sarcopenia in Senior Felines." <i>JFMS</i>.</li>
+            </ul>
+        </div>
+
+        <footer class="lesson-footer">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="footer-logo">
+            <p class="brand">AccrediPro Academy | Pet Wellness Coach Certification</p>
+            <p class="copyright">&copy; 2024 AccrediPro. All Rights Reserved. Confidential & Proprietary.</p>
+        </footer>
+    </div>
+</body>
+
+</html>

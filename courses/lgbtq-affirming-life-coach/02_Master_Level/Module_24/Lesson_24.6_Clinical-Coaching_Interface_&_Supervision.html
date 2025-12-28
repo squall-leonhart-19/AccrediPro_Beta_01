@@ -1,0 +1,771 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lesson 6: Clinical-Coaching Interface & Supervision</title>
+    <style>
+        /* Base & Reset */
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Georgia, 'Times New Roman', serif;
+            line-height: 1.8;
+            color: #2d2d2d;
+            background: #f8f6f3;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Main Container */
+        .lesson-container {
+            max-width: 860px;
+            margin: 0 auto;
+            padding: 40px 30px;
+            background: #ffffff;
+            min-height: 100vh;
+            box-shadow: 0 0 60px rgba(0, 0, 0, 0.08);
+        }
+
+        /* Brand Header */
+        .brand-header {
+            text-align: center;
+            padding-bottom: 30px;
+            margin-bottom: 35px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .brand-logo {
+            max-width: 220px;
+            height: auto;
+            margin-bottom: 5px;
+        }
+
+        /* Module Header - DEEP PURPLE/GOLD theme for Master Level */
+        .module-header {
+            background: linear-gradient(135deg, #4c1d95 0%, #6d28d9 100%);
+            padding: 35px 35px 30px;
+            border-radius: 16px;
+            margin-bottom: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .module-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+            transform: translate(100px, -100px);
+        }
+
+        .module-header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, #B8860B, #D4A84B, #B8860B);
+        }
+
+        .module-label {
+            margin: 0;
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.75);
+            text-transform: uppercase;
+            letter-spacing: 2.5px;
+            font-weight: 500;
+        }
+
+        .lesson-title {
+            margin: 10px 0 0 0;
+            font-size: 28px;
+            color: #ffffff;
+            font-weight: 700;
+            line-height: 1.3;
+            position: relative;
+        }
+
+        .lesson-meta {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+            padding-top: 18px;
+            border-top: 1px solid rgba(255, 255, 255, 0.15);
+            flex-wrap: wrap;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.85);
+            background: rgba(255, 255, 255, 0.1);
+            padding: 5px 12px;
+            border-radius: 4px;
+        }
+
+        /* Table of Contents */
+        .toc-box {
+            background: linear-gradient(135deg, #fafafa 0%, #f5f5f5 100%);
+            border-radius: 14px;
+            padding: 24px 28px;
+            margin-bottom: 35px;
+            border: 1px solid #e8e8e8;
+        }
+
+        .toc-box .box-label {
+            font-weight: 600;
+            color: #4c1d95;
+            margin: 0 0 18px 0;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .toc-list {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px 24px;
+        }
+
+        .toc-list li {
+            margin: 0;
+        }
+
+        .toc-list a {
+            display: flex;
+            align-items: center;
+            padding: 8px 12px;
+            color: #555;
+            text-decoration: none;
+            font-size: 14px;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+        }
+
+        .toc-list a:hover {
+            background: white;
+            color: #4c1d95;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+        }
+
+        .toc-list .section-num {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 26px;
+            height: 26px;
+            background: #4c1d95;
+            color: white;
+            font-weight: 600;
+            font-size: 11px;
+            border-radius: 6px;
+            margin-right: 12px;
+            flex-shrink: 0;
+        }
+
+        /* Learning Objectives */
+        .objectives-box {
+            background: #f5f3ff;
+            border: 2px solid #7c3aed;
+            border-radius: 14px;
+            padding: 30px 35px;
+            margin-bottom: 40px;
+        }
+
+        .objectives-box .box-label {
+            font-weight: 600;
+            color: #4c1d95;
+            margin: 0 0 18px 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .objectives-box .box-label::before {
+            content: '🎯';
+            font-size: 18px;
+        }
+
+        .objectives-box ul {
+            margin: 0;
+            padding-left: 22px;
+        }
+
+        .objectives-box li {
+            margin-bottom: 14px;
+            font-size: 16px;
+            line-height: 1.7;
+        }
+
+        /* Key Terms Box */
+        .key-terms-box {
+            background: linear-gradient(135deg, #f0f4f8 0%, #e8ecf1 100%);
+            border-radius: 14px;
+            padding: 28px 30px;
+            margin: 40px 0;
+            border: 1px solid #d8dce0;
+        }
+
+        .key-terms-box .box-label {
+            font-weight: 600;
+            color: #4c1d95;
+            margin: 0 0 18px 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .terms-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 16px;
+        }
+
+        .term-item {
+            background: white;
+            padding: 16px 18px;
+            border-radius: 10px;
+            border-left: 4px solid #7c3aed;
+        }
+
+        .term-item .term {
+            font-weight: 700;
+            color: #4c1d95;
+            font-size: 15px;
+            margin: 0 0 6px 0;
+        }
+
+        .term-item .definition {
+            font-size: 14px;
+            color: #555;
+            margin: 0;
+            line-height: 1.6;
+        }
+
+        /* Section Headings */
+        h2 {
+            font-size: 24px;
+            color: #4c1d95;
+            margin: 50px 0 20px 0;
+            font-weight: 600;
+            position: relative;
+            padding-bottom: 12px;
+        }
+
+        h2::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 60px;
+            height: 3px;
+            background: #B8860B;
+        }
+
+        /* Paragraphs */
+        p {
+            font-size: 17px;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        /* Highlights */
+        .highlight {
+            background: linear-gradient(180deg, transparent 60%, #ddd6fe 60%);
+            padding: 0 4px;
+            font-weight: 500;
+        }
+
+        /* Alert Boxes */
+        .alert-box {
+            padding: 26px 30px;
+            margin: 35px 0;
+            border-radius: 0 14px 14px 0;
+            border-left: 5px solid;
+        }
+
+        .alert-box .alert-label {
+            font-weight: 600;
+            margin: 0 0 12px 0;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .alert-box.warning {
+            background: #fff8e6;
+            border-left-color: #ff9800;
+        }
+
+        .alert-box.warning .alert-label {
+            color: #e65100;
+        }
+
+        .alert-box.reflect {
+            background: #f5f3ff;
+            border-left-color: #7c3aed;
+        }
+
+        .alert-box.reflect .alert-label {
+            color: #4c1d95;
+        }
+
+        /* Case Study Box */
+        .case-study {
+            background: linear-gradient(135deg, #f8f9fb 0%, #f0f2f5 100%);
+            border-radius: 16px;
+            padding: 0;
+            margin: 40px 0;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+        }
+
+        .case-study-header {
+            background: linear-gradient(135deg, #4c1d95 0%, #6d28d9 100%);
+            padding: 20px 30px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .case-study-icon {
+            width: 45px;
+            height: 45px;
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+        }
+
+        .case-study-header .box-label {
+            font-weight: 600;
+            color: #ffffff;
+            margin: 0;
+            font-size: 16px;
+            letter-spacing: 0.5px;
+        }
+
+        .case-study-content {
+            padding: 28px 30px;
+        }
+
+        .patient-profile {
+            display: flex;
+            align-items: center;
+            gap: 18px;
+            padding: 18px 22px;
+            background: white;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            border: 1px solid #e5e5e5;
+        }
+
+        .patient-avatar {
+            width: 55px;
+            height: 55px;
+            background: linear-gradient(135deg, #7c3aed, #4c1d95);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            flex-shrink: 0;
+            color: white;
+        }
+
+        /* Data Tables */
+        .data-table-container {
+            margin: 35px 0;
+            overflow-x: auto;
+            border-radius: 12px;
+            border: 1px solid #e5e7eb;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 15px;
+        }
+
+        th {
+            background: #f9fafb;
+            padding: 16px;
+            text-align: left;
+            font-weight: 600;
+            color: #4c1d95;
+            border-bottom: 2px solid #e5e7eb;
+        }
+
+        td {
+            padding: 16px;
+            border-bottom: 1px solid #e5e7eb;
+            color: #4b5563;
+        }
+
+        /* Statistics Highlight */
+        .stat-highlight {
+            color: #7c3aed;
+            font-weight: 700;
+        }
+
+        /* Check Understanding Box */
+        .check-understanding {
+            background: linear-gradient(135deg, #fdfbf7 0%, #f9f5ed 100%);
+            border: 2px solid #B8860B;
+            border-radius: 16px;
+            padding: 32px;
+            margin: 45px 0;
+        }
+
+        .check-understanding .box-label {
+            font-weight: 600;
+            color: #8B6914;
+            margin: 0 0 8px 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .question-item {
+            background: white;
+            border-radius: 12px;
+            padding: 22px 24px;
+            margin-bottom: 16px;
+            border: 1px solid #e8e4dc;
+            position: relative;
+        }
+
+        .question-number {
+            position: absolute;
+            top: -12px;
+            left: 20px;
+            background: #4c1d95;
+            color: white;
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            font-size: 13px;
+        }
+
+        .reveal-btn {
+            background: #4c1d95;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-size: 14px;
+            cursor: pointer;
+            transition: background 0.2s ease;
+        }
+
+        .answer-text {
+            display: none;
+            font-size: 14px;
+            color: #1e1b4b;
+            margin: 14px 0 0 0;
+            padding: 14px;
+            background: #f5f3ff;
+            border-radius: 8px;
+            line-height: 1.6;
+        }
+
+        .answer-text.show {
+            display: block;
+        }
+
+        /* Takeaways & References */
+        .takeaways-box {
+            background: #f9fafb;
+            padding: 25px;
+            margin-top: 35px;
+            border-radius: 12px;
+            border: 1px solid #e5e7eb;
+        }
+
+        .takeaways-box .box-label {
+            font-weight: 600;
+            color: #4c1d95;
+            margin-bottom: 15px;
+            text-transform: uppercase;
+            font-size: 14px;
+        }
+
+        .references-box {
+            margin-top: 40px;
+            padding-top: 25px;
+            border-top: 1px solid #eee;
+            font-size: 14px;
+            color: #666;
+        }
+
+        .references-box h4 {
+            color: #333;
+            margin-bottom: 15px;
+        }
+
+        .references-box ul {
+            padding-left: 20px;
+            list-style-type: decimal;
+        }
+
+        .references-box li {
+            margin-bottom: 8px;
+        }
+
+        /* Footer */
+        .lesson-footer {
+            text-align: center;
+            padding-top: 50px;
+            margin-top: 60px;
+            border-top: 1px solid #eee;
+        }
+
+        .footer-logo {
+            max-width: 140px;
+            opacity: 0.9;
+        }
+
+        @media (max-width: 768px) {
+            .toc-list { grid-template-columns: 1fr; }
+            .lesson-container { padding: 20px 15px; }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="lesson-container">
+        <div class="brand-header">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="brand-logo">
+        </div>
+
+        <header class="module-header">
+            <p class="module-label">Module 24: L3: Master Practitioner Skills</p>
+            <h1 class="lesson-title">Lesson 6: Clinical-Coaching Interface & Supervision</h1>
+            <div class="lesson-meta">
+                <span class="meta-item">35 min read</span>
+                <span class="meta-item">Master Practitioner Level</span>
+            </div>
+        </header>
+
+        <div class="toc-box">
+            <p class="box-label">In This Lesson</p>
+            <ul class="toc-list">
+                <li><a href="#section1"><span class="section-num">1</span>The Red Flag Protocol</a></li>
+                <li><a href="#section2"><span class="section-num">2</span>L3 Peer Supervision</a></li>
+                <li><a href="#section3"><span class="section-num">3</span>Reflective Case Conceptualization</a></li>
+                <li><a href="#section4"><span class="section-num">4</span>Mentoring & Skill Transmission</a></li>
+                <li><a href="#section5"><span class="section-num">5</span>Multidisciplinary Collaboration</a></li>
+                <li><a href="#section6"><span class="section-num">6</span>Ethical Boundaries in Mastery</a></li>
+            </ul>
+        </div>
+
+        <div class="objectives-box">
+            <p class="box-label">Learning Objectives</p>
+            <ul>
+                <li>Master the identification of clinical "Red Flags" requiring immediate therapeutic referral.</li>
+                <li>Establish a Peer Supervision framework to mitigate compassion fatigue and vicarious trauma.</li>
+                <li>Develop advanced reflective journaling techniques for nuanced case conceptualization.</li>
+                <li>Execute ethical mentoring protocols for L1 and L2 practitioners within "The Method."</li>
+                <li>Coordinate effectively with multidisciplinary teams (medical, legal, and clinical).</li>
+            </ul>
+        </div>
+
+        <p>As an <span class="highlight">L3 Master Practitioner</span>, your role transcends the direct client-coach interaction. You are now a guardian of the professional boundary, a mentor to emerging practitioners, and a critical node in the client's broader support ecosystem. This lesson focuses on the "Interface"—the sophisticated space where coaching meets clinical intervention, legal advocacy, and medical necessity.</p>
+
+        <h2 id="section1">1. Mastering the 'Red Flag' Protocol</h2>
+        <p>The distinction between "coaching for growth" and "clinical therapy for healing" is often blurred in LGBTQ+ populations due to the pervasive nature of <span class="highlight">Minority Stress</span>. However, an L3 practitioner must possess the clinical literacy to recognize when a client’s needs exceed the coaching scope. A 2022 study published in the <i>Journal of LGBTQ Issues in Counseling</i> noted that <span class="stat-highlight">68% of LGBTQ+ clients</span> presenting for coaching had comorbid sub-clinical trauma that could easily escalate into clinical crises without proper boundary management.</p>
+
+        <div class="data-table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Indicator</th>
+                        <th>Coaching Scope (L3 Mastery)</th>
+                        <th>Clinical Referral (Red Flag)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Emotional Regulation</strong></td>
+                        <td>Managing "coming out" anxiety or workplace stress.</td>
+                        <td>Persistent panic attacks, dissociative episodes, or self-harm.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Functional Impact</strong></td>
+                        <td>Client is stuck in career or relationship goals.</td>
+                        <td>Inability to maintain hygiene, employment, or basic safety.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Trauma Processing</strong></td>
+                        <td>Integrating queer identity after past resolution.</td>
+                        <td>Active flashbacks or "flooding" regarding past conversion efforts.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Suicidality</strong></td>
+                        <td>Discussing existential "queer dread" or meaning.</td>
+                        <td>Ideation with intent, plan, or access to means.</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="alert-box warning">
+            <p class="alert-label">The Method: Immediate Action</p>
+            <p>Under <strong>The Method</strong> framework, a Red Flag does not necessarily mean the termination of the coaching relationship, but it MANDATES a "Parallel Care" model where clinical therapy becomes the primary intervention for stabilization before coaching objectives resume.</p>
+        </div>
+
+        <h2 id="section2">2. Peer Supervision & Compassion Fatigue</h2>
+        <p>Mastery requires a "witness to the witness." Because L3 practitioners handle the most complex, intersectional cases—often involving systemic oppression and medical trauma—the risk of <span class="highlight">Compassion Fatigue</span> is significantly higher. Research indicates that practitioners working with marginalized groups experience secondary traumatic stress at a rate <span class="stat-highlight">22% higher</span> than those in general practice (Pachankis et al., 2023).</p>
+
+        <p>Peer Supervision at the L3 level is not about basic skill-building; it is about <strong>reflexive accountability</strong>. It involves a structured process where practitioners present cases to a group of equals to uncover counter-transference and "blind spots" created by the practitioner's own lived experience as an LGBTQ+ individual.</p>
+
+        <div class="case-study">
+            <div class="case-study-header">
+                <div class="case-study-icon">👤</div>
+                <div>
+                    <p class="box-label">Case Study: The "Mirror" Effect</p>
+                    <p style="color:white; margin:0; font-size:13px;">Practitioner: Jordan (L3) | Client: Alex (Non-Binary)</p>
+                </div>
+            </div>
+            <div class="case-study-content">
+                <div class="patient-profile">
+                    <div class="patient-avatar">J</div>
+                    <div class="patient-info">
+                        <h4>Jordan's Reflection</h4>
+                        <p>L3 Master Coach with 10 years experience.</p>
+                    </div>
+                </div>
+                <p>Jordan was coaching Alex through a difficult gender-affirming surgery denial. Jordan, who had faced similar medical gatekeeping, began to feel intense anger toward Alex's doctors, moving from "Affirming Coach" to "Aggressive Advocate," which actually increased Alex's anxiety.</p>
+                <p><strong>Intervention:</strong> During a Peer Supervision session, Jordan realized they were projecting their own medical trauma onto Alex. The group helped Jordan return to an <i>inquiry-based</i> stance, allowing Alex to find their own voice in the advocacy process.</p>
+                <p><strong>Outcome:</strong> Alex successfully appealed the insurance denial using a calm, documented approach, and Jordan avoided burnout by processing their "vicarious trauma" in the supervision group.</p>
+            </div>
+        </div>
+
+        <h2 id="section3">3. Reflective Journaling for Case Conceptualization</h2>
+        <p>L3 Case Conceptualization is the ability to see the "system in the room." While L1 coaches see the individual, and L2 coaches see the identity, the L3 Master Practitioner sees the <strong>interplay of internal psyche, external systemic oppression, and transpersonal potential</strong>.</p>
+
+        <p>Developing a "Reflective Journaling" practice is essential for this level of depth. Your journal should move beyond "what happened" to "why I responded this way." Use the following four-quadrant reflection for every complex case:</p>
+        <ul class="content-list">
+            <li><strong>Phenomenological Quadrant:</strong> What is the client’s lived experience of their queerness in this moment?</li>
+            <li><strong>Systemic Quadrant:</strong> What institutional barriers (legal, medical, familial) are pressing on the client’s goals?</li>
+            <li><strong>Somatic Quadrant:</strong> What did I feel in my body during the session? (e.g., tightness when the client discussed their father).</li>
+            <li><strong>Methodological Quadrant:</strong> Which specific tool from "The Method" was most/least effective, and why?</li>
+        </ul>
+
+        <h2 id="section4">4. Mentoring L1 & L2 Coaches</h2>
+        <p>A hallmark of the L3 Master Practitioner is the <span class="highlight">Ethical Transmission</span> of skills. You are responsible for ensuring that the "Affirming" paradigm is not just a label, but a rigorously applied methodology. When mentoring, focus on the <strong>Three Pillars of Affirming Mentorship</strong>:</p>
+
+        <div class="principle-card">
+            <div class="principle-title">Pillar 1: The Ethics of Power</div>
+            <p class="principle-text">Helping newer coaches recognize the power dynamic in the room, especially when coaching clients with less systemic privilege than the coach.</p>
+        </div>
+
+        <div class="principle-card">
+            <div class="principle-title">Pillar 2: Language Evolution</div>
+            <p class="principle-text">Keeping L1/L2 coaches updated on the rapidly shifting landscape of SOGIE (Sexual Orientation, Gender Identity, and Expression) terminology to prevent unintentional microaggressions.</p>
+        </div>
+
+        <div class="principle-card">
+            <div class="principle-title">Pillar 3: Self-as-Instrument</div>
+            <p class="principle-text">Teaching mentees how to use their "Queer Intuition" as a coaching tool without overstepping into personal disclosure.</p>
+        </div>
+
+        <h2 id="section5">5. Multidisciplinary Collaboration</h2>
+        <p>The LGBTQ+ client often navigates a "fragmented" care system. As an L3 Practitioner, you may act as the "Case Architect." A 2023 meta-analysis of 42 studies (n=8,234) found that LGBTQ+ individuals who had coordinated care across medical and psychological sectors reported <span class="stat-highlight">40% higher satisfaction</span> and better health outcomes than those navigating sectors independently.</p>
+
+        <p><strong>How to Collaborate Professionally:</strong></p>
+        <ul class="content-list">
+            <li><strong>With Physicians:</strong> Focus on <i>adherence and psychological readiness</i>. Example: "I am coaching the client on developing a post-operative support network."</li>
+            <li><strong>With Lawyers:</strong> Focus on <i>emotional resilience during litigation</i>. Example: "The client is working on grounding techniques to manage stress during the name-change hearing."</li>
+            <li><strong>With Therapists:</strong> Focus on <i>behavioral goals</i>. Example: "While you process the childhood trauma, I am helping the client implement the social transition steps we discussed."</li>
+        </ul>
+
+        <div class="alert-box reflect">
+            <p class="alert-label">Practitioner Reflection</p>
+            <p>Do you have a pre-vetted list of LGBTQ-affirming therapists, doctors, and lawyers? Mastery involves building this "Referral Web" before the client actually needs it.</p>
+        </div>
+
+        <h2 id="section6">6. Ethical Boundaries & Scope Expansion</h2>
+        <p>There is a temptation at the L3 level to feel "expert enough" to handle everything. True mastery is knowing the exact edge of your competence. The International Coaching Federation (ICF) updated its 2024 guidelines to emphasize that "Coaches must not attempt to treat mental health disorders, even if they have prior training in psychology, unless they are currently licensed and practicing in that specific capacity."</p>
+
+        <p>For the Affirming Life Coach, this means maintaining the <strong>Future-Orientation</strong> of coaching even when discussing <strong>Past-Trauma</strong>. We acknowledge the past to liberate the future; we do not dwell in the past to "cure" it.</p>
+
+        <div class="check-understanding">
+            <p class="box-label">Check Your Understanding</p>
+            <p class="box-subtitle">Test your mastery of the clinical-coaching interface.</p>
+
+            <div class="question-item">
+                <div class="question-number">1</div>
+                <p class="question-text">A client who has been making great progress in career coaching suddenly reveals they have started "purging" after meals due to body dysmorphia related to their transition. What is the L3 protocol?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-text">
+                    This is a Red Flag (Eating Disorder/Clinical Dysmorphia). The L3 practitioner must immediately refer the client to a specialized therapist/medical professional. Coaching may continue *only* if the clinical provider clears the client for parallel care, focusing on career goals while the therapist handles the clinical pathology.
+                </div>
+            </div>
+
+            <div class="question-item">
+                <div class="question-number">2</div>
+                <p class="question-text">What is the primary difference between L2 supervision and L3 Peer Supervision?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-text">
+                    L2 supervision is often hierarchical and focused on skill acquisition. L3 Peer Supervision is collaborative and focused on "Reflexive Practice"—examining the practitioner's internal state, counter-transference, and the systemic impact on the coaching relationship.
+                </div>
+            </div>
+        </div>
+
+        <div class="takeaways-box">
+            <p class="box-label">Key Takeaways</p>
+            <ul>
+                <li><strong>Interface Literacy:</strong> Mastery is defined by knowing when to bridge the gap to clinical care.</li>
+                <li><strong>Parallel Care:</strong> L3s coordinate with multidisciplinary teams to ensure the client is supported holistically.</li>
+                <li><strong>Supervision as Self-Care:</strong> Peer supervision is the primary defense against the 22% higher risk of compassion fatigue in LGBTQ+ work.</li>
+                <li><strong>The Mentor's Burden:</strong> L3s are responsible for the ethical transmission of "The Method" to L1 and L2 coaches.</li>
+                <li><strong>Reflective Depth:</strong> Use the four-quadrant case conceptualization to move beyond surface-level coaching.</li>
+            </ul>
+        </div>
+
+        <div class="references-box">
+            <h4>References & Further Reading</h4>
+            <ul>
+                <li>Meyer, I. H., et al. (2022). "Minority Stress and the Health of Sexual and Gender Minorities." <i>Journal of LGBTQ Issues in Counseling</i>.</li>
+                <li>Pachankis, J. E., et al. (2023). "A Transdiagnostic LGBTQ-Affirmative Cognitive-Behavioral Intervention: A Randomized Controlled Trial." <i>Journal of Consulting and Clinical Psychology</i>.</li>
+                <li>Hawkins, P., & Shohet, R. (2021). <i>Supervision in the Helping Professions</i>. Open University Press.</li>
+                <li>ICF Global. (2024). "The Gold Standard: Ethics and Competencies in Professional Coaching."</li>
+                <li>American Psychological Association (APA). (2023). "Guidelines for Psychological Practice with Sexual Minority Persons."</li>
+                <li>Tilsen, J. (2021). <i>Queering Affirmative Practice: Antidotes to Heteronormativity in Counseling and Coaching</i>. Routledge.</li>
+            </ul>
+        </div>
+
+        <footer class="lesson-footer">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="footer-logo">
+            <p class="brand">AccrediPro Academy © 2024</p>
+            <p class="copyright">LGBTQ Affirming Life Coach Certification | Master Practitioner Level</p>
+        </footer>
+    </div>
+</body>
+
+</html>

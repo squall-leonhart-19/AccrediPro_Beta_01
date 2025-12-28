@@ -1,0 +1,644 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lesson 26.6: Data-Driven Program Adjustments & Biometric Monitoring</title>
+    <style>
+        /* Base & Reset */
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Georgia, 'Times New Roman', serif;
+            line-height: 1.8;
+            color: #2d2d2d;
+            background: #f8f6f3;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Main Container */
+        .lesson-container {
+            max-width: 860px;
+            margin: 0 auto;
+            padding: 40px 30px;
+            background: #ffffff;
+            min-height: 100vh;
+            box-shadow: 0 0 60px rgba(0, 0, 0, 0.08);
+        }
+
+        /* Brand Header */
+        .brand-header {
+            text-align: center;
+            padding-bottom: 30px;
+            margin-bottom: 35px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .brand-logo {
+            max-width: 220px;
+            height: auto;
+            margin-bottom: 5px;
+        }
+
+        /* Module Header - BLUE theme for Data/Science */
+        .module-header {
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+            padding: 35px 35px 30px;
+            border-radius: 16px;
+            margin-bottom: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .module-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+            transform: translate(100px, -100px);
+        }
+
+        .module-header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, #B8860B, #D4A84B, #B8860B);
+        }
+
+        .module-label {
+            margin: 0;
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.75);
+            text-transform: uppercase;
+            letter-spacing: 2.5px;
+            font-weight: 500;
+        }
+
+        .lesson-title {
+            margin: 10px 0 0 0;
+            font-size: 28px;
+            color: #ffffff;
+            font-weight: 700;
+            line-height: 1.3;
+            position: relative;
+        }
+
+        .lesson-meta {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+            padding-top: 18px;
+            border-top: 1px solid rgba(255, 255, 255, 0.15);
+            flex-wrap: wrap;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.85);
+            background: rgba(255, 255, 255, 0.1);
+            padding: 5px 12px;
+            border-radius: 4px;
+        }
+
+        /* Table of Contents */
+        .toc-box {
+            background: linear-gradient(135deg, #fafafa 0%, #f5f5f5 100%);
+            border-radius: 14px;
+            padding: 24px 28px;
+            margin-bottom: 35px;
+            border: 1px solid #e8e8e8;
+        }
+
+        .toc-box .box-label {
+            font-weight: 600;
+            color: #1e3a8a;
+            margin: 0 0 18px 0;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .toc-list {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px 24px;
+        }
+
+        .toc-list li {
+            margin: 0;
+        }
+
+        .toc-list a {
+            display: flex;
+            align-items: center;
+            padding: 8px 12px;
+            color: #555;
+            text-decoration: none;
+            font-size: 14px;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+        }
+
+        .toc-list a:hover {
+            background: white;
+            color: #1e3a8a;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+        }
+
+        .toc-list .section-num {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 26px;
+            height: 26px;
+            background: #1e3a8a;
+            color: white;
+            font-weight: 600;
+            font-size: 11px;
+            border-radius: 6px;
+            margin-right: 12px;
+            flex-shrink: 0;
+        }
+
+        /* Learning Objectives */
+        .objectives-box {
+            background: #eff6ff;
+            border: 2px solid #3b82f6;
+            border-radius: 14px;
+            padding: 30px 35px;
+            margin-bottom: 40px;
+        }
+
+        .objectives-box .box-label {
+            font-weight: 600;
+            color: #1e3a8a;
+            margin: 0 0 18px 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .objectives-box .box-label::before {
+            content: '📊';
+            font-size: 18px;
+        }
+
+        .objectives-box ul {
+            margin: 0;
+            padding-left: 22px;
+        }
+
+        .objectives-box li {
+            margin-bottom: 14px;
+            font-size: 16px;
+            line-height: 1.7;
+        }
+
+        /* Section Headings */
+        h2 {
+            font-size: 24px;
+            color: #1e3a8a;
+            margin: 50px 0 20px 0;
+            font-weight: 600;
+            position: relative;
+            padding-bottom: 12px;
+        }
+
+        h2::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 60px;
+            height: 3px;
+            background: #D4A84B;
+        }
+
+        h3 {
+            font-size: 20px;
+            color: #3b82f6;
+            margin: 30px 0 15px 0;
+            font-weight: 600;
+        }
+
+        /* Paragraphs */
+        p {
+            font-size: 17px;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        /* Highlights */
+        .highlight {
+            background: linear-gradient(180deg, transparent 60%, #dae7ff 60%);
+            padding: 0 4px;
+            font-weight: 500;
+            color: #1e3a8a;
+        }
+
+        /* Case Study Box */
+        .case-study {
+            background: linear-gradient(135deg, #f8f9fb 0%, #f0f2f5 100%);
+            border-radius: 16px;
+            padding: 0;
+            margin: 40px 0;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+        }
+
+        .case-study-header {
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+            padding: 20px 30px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .case-study-icon {
+            width: 45px;
+            height: 45px;
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+        }
+
+        .case-study-header .box-label {
+            font-weight: 600;
+            color: #ffffff;
+            margin: 0;
+            font-size: 16px;
+            letter-spacing: 0.5px;
+        }
+
+        .case-study-content {
+            padding: 28px 30px;
+        }
+
+        /* Statistics Box */
+        .stat-highlight {
+            background: #1e3a8a;
+            color: white;
+            padding: 30px;
+            border-radius: 14px;
+            margin: 30px 0;
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 36px;
+            font-weight: 700;
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        .stat-desc {
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            opacity: 0.9;
+        }
+
+        /* Data Table */
+        .data-table-container {
+            overflow-x: auto;
+            margin: 35px 0;
+            border-radius: 12px;
+            border: 1px solid #e5e7eb;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 15px;
+        }
+
+        th {
+            background: #f1f5f9;
+            padding: 15px;
+            text-align: left;
+            font-weight: 600;
+            color: #1e3a8a;
+            border-bottom: 2px solid #e2e8f0;
+        }
+
+        td {
+            padding: 15px;
+            border-bottom: 1px solid #f1f5f9;
+            color: #4b5563;
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        /* Check Understanding Box */
+        .check-understanding {
+            background: #fdfbf7;
+            border: 2px solid #D4A84B;
+            border-radius: 16px;
+            padding: 32px;
+            margin: 45px 0;
+        }
+
+        .reveal-btn {
+            background: #1e3a8a;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-size: 14px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+
+        .answer-text {
+            display: none;
+            padding: 15px;
+            background: #f0f8f0;
+            border-radius: 8px;
+            margin-top: 15px;
+            font-size: 15px;
+        }
+
+        /* Takeaways Box */
+        .takeaways-box {
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            padding: 30px;
+            border-radius: 14px;
+            margin: 40px 0;
+        }
+
+        .takeaways-box h4 {
+            color: #1e3a8a;
+            margin: 0 0 15px 0;
+            text-transform: uppercase;
+            font-size: 14px;
+            letter-spacing: 1px;
+        }
+
+        /* References Box */
+        .references-box {
+            background: #f1f5f9;
+            padding: 30px;
+            border-radius: 12px;
+            margin-top: 50px;
+            font-size: 14px;
+        }
+
+        .references-box h4 {
+            margin: 0 0 15px 0;
+            color: #475569;
+        }
+
+        .references-box ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .references-box li {
+            margin-bottom: 10px;
+            color: #64748b;
+        }
+
+        /* Footer */
+        .lesson-footer {
+            text-align: center;
+            padding-top: 50px;
+            margin-top: 60px;
+            border-top: 1px solid #eee;
+        }
+
+        .footer-logo {
+            max-width: 140px;
+            height: auto;
+            margin-bottom: 15px;
+            opacity: 0.9;
+        }
+
+        .copyright {
+            color: #888;
+            font-size: 13px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="lesson-container">
+        <div class="brand-header">
+            <img src="https://accredipro.com/wp-content/uploads/2023/05/AccrediPro-Logo-Standard.png" alt="AccrediPro Academy" class="brand-logo">
+        </div>
+
+        <header class="module-header">
+            <p class="module-label">Module 26: Program Development & Strategic Management</p>
+            <h1 class="lesson-title">Lesson 6: Data-Driven Program Adjustments & Biometric Monitoring</h1>
+            <div class="lesson-meta">
+                <span class="meta-item">⏱️ 35 min read</span>
+                <span class="meta-item">🎓 Advanced Certification Level</span>
+            </div>
+        </header>
+
+        <div class="toc-box">
+            <p class="box-label">In This Lesson</p>
+            <ul class="toc-list">
+                <li><a href="#biometrics"><span class="section-num">1</span>Wearable Biometrics</a></li>
+                <li><a href="#longitudinal"><span class="section-num">2</span>Diagnostic Trend Analysis</a></li>
+                <li><a href="#redflags"><span class="section-num">3</span>The 'Red Flag' Framework</a></li>
+                <li><a href="#compliance"><span class="section-num">4</span>Tracking Client Compliance</a></li>
+                <li><a href="#audits"><span class="section-num">5</span>The Monthly Wellness Audit</a></li>
+                <li><a href="#paws-integration"><span class="section-num">6</span>Refining the P.A.W.S. Plan</a></li>
+            </ul>
+        </div>
+
+        <div class="objectives-box">
+            <p class="box-label">Learning Objectives</p>
+            <ul>
+                <li>Master the interpretation of wearable data (HRV, sleep, activity) for program refinement.</li>
+                <li>Analyze longitudinal trends in veterinary bloodwork to guide preemptive program pivots.</li>
+                <li>Identify specific clinical and behavioral 'Red Flags' that necessitate immediate referral.</li>
+                <li>Implement objective tracking systems for client compliance to improve outcomes.</li>
+                <li>Conduct comprehensive Monthly Wellness Audits to synchronize programs with biological aging.</li>
+            </ul>
+        </div>
+
+        <h2 id="biometrics">1. The Biometric Revolution: Wearable Technology in Wellness</h2>
+        <p>In the previous lessons of this module, we architected the master roadmap. However, a roadmap is only as good as its real-time GPS. In pet wellness, <span class="highlight">wearable technology</span> serves as that GPS, providing objective data that often precedes clinical symptoms.</p>
+        
+        <p>A 2022 study published in <i>Frontiers in Veterinary Science</i> demonstrated that wearable accelerometers could detect changes in pruritic (itchy) behavior and sleep disruption with 87% accuracy compared to owner observation. For the Pet Wellness Coach, these data points are not just "stats"—they are indicators of internal physiological stress.</p>
+
+        <h3>Key Biometric Markers to Monitor:</h3>
+        <ul>
+            <li><strong>Heart Rate Variability (HRV):</strong> A proxy for the Autonomic Nervous System (ANS). A downward trend in HRV often indicates chronic stress, systemic inflammation, or impending illness before the pet appears symptomatic.</li>
+            <li><strong>Sleep Quality & Efficiency:</strong> Disturbed sleep is a primary indicator of discomfort (e.g., Osteoarthritis) or cognitive decline. Monitoring "nighttime restlessness" can trigger a pivot in the <strong>Wellness (W)</strong> pillar regarding joint support.</li>
+            <li><strong>Activity Duration vs. Intensity:</strong> Using the <strong>P.A.W.S. Method™</strong>, we look for "activity fragmentation"—short bursts of movement followed by long recovery—which may signal metabolic fatigue or cardiovascular strain.</li>
+        </ul>
+
+        <div class="stat-highlight">
+            <span class="stat-value">24-48 Hours</span>
+            <span class="stat-desc">The window in which biometric changes (like decreased sleep efficiency) often precede visible clinical symptoms of illness.</span>
+        </div>
+
+        <h2 id="longitudinal">2. Interpreting Longitudinal Trends in Diagnostics</h2>
+        <p>Most pet owners view bloodwork as a "pass/fail" test. As an expert coach, you must view diagnostics as a <span class="highlight">longitudinal trend line</span>. A value within the "normal range" may still be clinically significant if it has shifted 20% from the pet's baseline over six months.</p>
+
+        <div class="data-table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Biomarker</th>
+                        <th>Wellness Significance</th>
+                        <th>Trend-Based Adjustment</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>SDMA / Creatinine</strong></td>
+                        <td>Early Renal Function</td>
+                        <td>If rising (even in range), increase hydration and review protein bioavailability.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>ALP / ALT (Liver)</strong></td>
+                        <td>Metabolic/Toxin Burden</td>
+                        <td>Upward trend triggers an environmental toxin audit (Module 13) and antioxidant support.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Albumin</strong></td>
+                        <td>Protein Status / Inflammation</td>
+                        <td>Downward trend suggests chronic low-grade inflammation or malabsorption.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Urine Specific Gravity</strong></td>
+                        <td>Hydration / Kidney Concentration</td>
+                        <td>Declining trends necessitate a pivot in moisture-rich nutritional programming.</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <h2 id="redflags">3. Establishing 'Red Flag' Triggers</h2>
+        <p>A critical component of professional ethics and the <span class="highlight">Scope of Practice</span> (Module 0) is knowing when the wellness program must stop and the veterinary intervention must begin. 'Red Flags' are pre-defined thresholds that trigger an immediate referral.</p>
+
+        <div class="case-study">
+            <div class="case-study-header">
+                <div class="case-study-icon">🐕</div>
+                <div>
+                    <p class="box-label">Case Study: The HRV Pivot</p>
+                    <p style="color: rgba(255,255,255,0.8); margin:0; font-size:13px;">Client: "Cooper" | 8-Year-Old Golden Retriever</p>
+                </div>
+            </div>
+            <div class="case-study-content">
+                <p><strong>Presenting Scenario:</strong> Cooper was on a standard <strong>Sustain (S)</strong> pillar program for healthy aging. His owner reported he seemed "fine," but his wearable data showed a 15% decrease in HRV over three weeks and an increase in "resting respiratory rate" from 18 to 24 breaths per minute during sleep.</p>
+                <p><strong>Intervention:</strong> The coach identified these as "Yellow Flags." Instead of increasing exercise as planned in the roadmap, the coach recommended a veterinary cardiac screening.</p>
+                <p><strong>Outcome:</strong> Early-stage dilated cardiomyopathy (DCM) was diagnosed. Because it was caught via biometric trends before fainting or coughing occurred, the program was adjusted to low-sodium, taurine-rich nutrition and restricted exertion, significantly extending Cooper's life expectancy.</p>
+            </div>
+        </div>
+
+        <h2 id="compliance">4. Client Compliance Tracking Systems</h2>
+        <p>The most scientifically perfect wellness program will fail if it is not implemented. A 2023 meta-analysis of veterinary compliance found that <span class="highlight">42% of owners</span> fail to follow long-term nutritional or exercise recommendations accurately. </p>
+        
+        <p>To adjust a program, you must first know if the data reflects the *pet's biology* or the *owner's behavior*. We implement a <strong>Compliance Scoring System (CSS)</strong>:</p>
+        
+        <ul>
+            <li><strong>Level 1 (0-25%):</strong> Minimal adherence. Program must be simplified. Focus on "Micro-Habits."</li>
+            <li><strong>Level 2 (26-75%):</strong> Inconsistent adherence. Identify "friction points" (e.g., "I forget the supplements in the morning").</li>
+            <li><strong>Level 3 (76-100%):</strong> High adherence. Data shifts at this level are purely biological and require program pivots.</li>
+        </ul>
+
+        <h2 id="audits">5. The Monthly Wellness Audit</h2>
+        <p>Every 30 days, a structured <strong>Wellness Audit</strong> should be conducted to ensure the P.A.W.S. plan is evolving. A pet’s biological age can shift faster than their chronological age, especially during the "Senior Transition" (Module 4).</p>
+
+        <h3>The Audit Checklist:</h3>
+        <ol>
+            <li><strong>Metric Comparison:</strong> Compare current weight/BCS/MCS to the previous month.</li>
+            <li><strong>Biometric Review:</strong> Analyze 30-day averages for activity and sleep.</li>
+            <li><strong>Symptom Mapping:</strong> Has the frequency of "minor" issues (loose stool, eye discharge, stiffness) changed?</li>
+            <li><strong>Goal Assessment:</strong> Were the milestones from the Master Roadmap (Lesson 1) achieved?</li>
+        </ol>
+
+        <h2 id="paws-integration">6. Refining the P.A.W.S.™ Plan Based on Data</h2>
+        <p>The <strong>P.A.W.S. Method™</strong> is a closed-loop system. Data-driven adjustments look like this:</p>
+        
+        <ul>
+            <li><strong>P (Prevent):</strong> If inflammatory markers (e.g., C-Reactive Protein) trend upward, we move from "Maintenance" to "Aggressive Anti-Inflammatory" protocols.</li>
+            <li><strong>A (Assess):</strong> Use the monthly audit to update the "Biological Age" score.</li>
+            <li><strong>W (Wellness):</strong> If activity data shows a decline in intensity, we adjust caloric intake downward by 5-10% to prevent metabolic drift.</li>
+            <li><strong>S (Sustain):</strong> For senior pets, if sleep fragmentation increases, we introduce cognitive enrichment (Module 3) and neuroprotective nutrients.</li>
+        </ul>
+
+        <div class="check-understanding">
+            <p class="box-label">Check Your Understanding</p>
+            <p class="box-subtitle">Test your ability to interpret biometric shifts.</p>
+            
+            <div style="margin-bottom: 20px;">
+                <p><strong>Question 1:</strong> A 10-year-old cat's wearable data shows a sudden increase in nighttime activity (zoomies) and vocalization, despite a long-term trend of sedentary behavior. What is the most likely "Red Flag" concern?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.style.display='block'">Reveal Answer</button>
+                <div class="answer-text">
+                    This is a classic "Red Flag" for Feline Hyperthyroidism or Cognitive Dysfunction Syndrome. Increased nocturnal activity in senior cats often indicates metabolic or neurological shifts that require immediate veterinary bloodwork (T4 levels).
+                </div>
+            </div>
+
+            <div>
+                <p><strong>Question 2:</strong> Why is an Albumin trend more important than a single Albumin reading within the normal range?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.style.display='block'">Reveal Answer</button>
+                <div class="answer-text">
+                    Albumin is a negative acute-phase protein. While a single reading might be "normal," a downward trend over several months—even within the reference range—is a strong indicator of chronic low-grade inflammation or declining protein synthesis, allowing for a "Prevent" (P) pillar intervention before clinical disease manifests.
+                </div>
+            </div>
+        </div>
+
+        <div class="takeaways-box">
+            <h4>Key Takeaways</h4>
+            <ul>
+                <li><strong>Data Precedes Symptoms:</strong> Wearables can detect physiological stress up to 48 hours before clinical signs appear.</li>
+                <li><strong>Trend > Snapshot:</strong> Always analyze diagnostics longitudinally to identify shifts in the pet's unique baseline.</li>
+                <li><strong>Referral Thresholds:</strong> Establish clear 'Red Flags' (e.g., 20% drop in HRV, increased resting respiratory rate) for veterinary referral.</li>
+                <li><strong>Compliance is a Variable:</strong> Before adjusting a program, audit the owner's compliance score to ensure the data is biological, not behavioral.</li>
+                <li><strong>The Living Roadmap:</strong> Use Monthly Wellness Audits to ensure the P.A.W.S. plan evolves with the pet's biological needs.</li>
+            </ul>
+        </div>
+
+        <div class="references-box">
+            <h4>References & Further Reading</h4>
+            <ul>
+                <li>Griffin et al. (2022). "Validation of a wearable accelerometer for monitoring activity in dogs." <i>Journal of Veterinary Behavior.</i></li>
+                <li>Hall et al. (2023). "Longitudinal trends in SDMA as a predictor of early renal decline." <i>Veterinary Clinical Pathology.</i></li>
+                <li>Kogut et al. (2021). "The impact of client compliance on outcomes in canine weight management." <i>Frontiers in Veterinary Science.</i></li>
+                <li>Reagan et al. (2022). "Heart Rate Variability as a marker of chronic pain in Osteoarthritis." <i>American Journal of Veterinary Research.</i></li>
+                <li>Vandeweerd et al. (2020). "Systematic review of biometric monitoring in senior companion animals." <i>Sensors (Basel).</i></li>
+            </ul>
+        </div>
+
+        <footer class="lesson-footer">
+            <img src="https://accredipro.com/wp-content/uploads/2023/05/AccrediPro-Logo-Standard.png" alt="AccrediPro Academy" class="footer-logo">
+            <p class="brand">AccrediPro Academy | Pet Wellness Coach Certification</p>
+            <p class="copyright">&copy; 2024 AccrediPro. All rights reserved. Proprietary P.A.W.S. Method™ Framework.</p>
+        </footer>
+    </div>
+</body>
+
+</html>

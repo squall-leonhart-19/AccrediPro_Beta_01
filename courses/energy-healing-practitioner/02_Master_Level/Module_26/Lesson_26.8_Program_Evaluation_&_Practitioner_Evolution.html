@@ -1,0 +1,711 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lesson 26.8: Program Evaluation & Practitioner Evolution</title>
+    <style>
+        /* Base & Reset */
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Georgia, 'Times New Roman', serif;
+            line-height: 1.8;
+            color: #2d2d2d;
+            background: #f8f6f3;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Main Container */
+        .lesson-container {
+            max-width: 860px;
+            margin: 0 auto;
+            padding: 40px 30px;
+            background: #ffffff;
+            min-height: 100vh;
+            box-shadow: 0 0 60px rgba(0, 0, 0, 0.08);
+        }
+
+        /* Brand Header */
+        .brand-header {
+            text-align: center;
+            padding-bottom: 30px;
+            margin-bottom: 35px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .brand-logo {
+            max-width: 220px;
+            height: auto;
+            margin-bottom: 5px;
+        }
+
+        /* Module Header - PURPLE/GOLD theme for Energy Medicine */
+        .module-header {
+            background: linear-gradient(135deg, #4c1d95 0%, #6d28d9 100%);
+            padding: 35px 35px 30px;
+            border-radius: 16px;
+            margin-bottom: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .module-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+            transform: translate(100px, -100px);
+        }
+
+        .module-header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, #B8860B, #D4A84B, #B8860B);
+        }
+
+        .module-label {
+            margin: 0;
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.75);
+            text-transform: uppercase;
+            letter-spacing: 2.5px;
+            font-weight: 500;
+        }
+
+        .lesson-title {
+            margin: 10px 0 0 0;
+            font-size: 28px;
+            color: #ffffff;
+            font-weight: 700;
+            line-height: 1.3;
+            position: relative;
+        }
+
+        .lesson-meta {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+            padding-top: 18px;
+            border-top: 1px solid rgba(255, 255, 255, 0.15);
+            flex-wrap: wrap;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.85);
+            background: rgba(255, 255, 255, 0.1);
+            padding: 5px 12px;
+            border-radius: 4px;
+        }
+
+        /* Table of Contents */
+        .toc-box {
+            background: linear-gradient(135deg, #fafafa 0%, #f5f5f5 100%);
+            border-radius: 14px;
+            padding: 24px 28px;
+            margin-bottom: 35px;
+            border: 1px solid #e8e8e8;
+        }
+
+        .toc-box .box-label {
+            font-weight: 600;
+            color: #4c1d95;
+            margin: 0 0 18px 0;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .toc-list {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px 24px;
+        }
+
+        .toc-list a {
+            display: flex;
+            align-items: center;
+            padding: 8px 12px;
+            color: #555;
+            text-decoration: none;
+            font-size: 14px;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+        }
+
+        .toc-list a:hover {
+            background: white;
+            color: #6d28d9;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+        }
+
+        .toc-list .section-num {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 26px;
+            height: 26px;
+            background: #6d28d9;
+            color: white;
+            font-weight: 600;
+            font-size: 11px;
+            border-radius: 6px;
+            margin-right: 12px;
+            flex-shrink: 0;
+        }
+
+        /* Learning Objectives */
+        .objectives-box {
+            background: #f5f3ff;
+            border: 2px solid #6d28d9;
+            border-radius: 14px;
+            padding: 30px 35px;
+            margin-bottom: 40px;
+        }
+
+        .objectives-box .box-label {
+            font-weight: 600;
+            color: #4c1d95;
+            margin: 0 0 18px 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .objectives-box .box-label::before {
+            content: '🎯';
+            font-size: 18px;
+        }
+
+        .objectives-box ul {
+            margin: 0;
+            padding-left: 22px;
+        }
+
+        .objectives-box li {
+            margin-bottom: 14px;
+            font-size: 16px;
+            line-height: 1.7;
+        }
+
+        /* Key Terms Box */
+        .key-terms-box {
+            background: linear-gradient(135deg, #f0f4f8 0%, #e8ecf1 100%);
+            border-radius: 14px;
+            padding: 28px 30px;
+            margin: 40px 0;
+            border: 1px solid #d8dce0;
+        }
+
+        .key-terms-box .box-label {
+            font-weight: 600;
+            color: #4c1d95;
+            margin: 0 0 18px 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .terms-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 16px;
+        }
+
+        .term-item {
+            background: white;
+            padding: 16px 18px;
+            border-radius: 10px;
+            border-left: 4px solid #6d28d9;
+        }
+
+        .term-item .term {
+            font-weight: 700;
+            color: #4c1d95;
+            font-size: 15px;
+            margin: 0 0 6px 0;
+        }
+
+        .term-item .definition {
+            font-size: 14px;
+            color: #555;
+            margin: 0;
+            line-height: 1.6;
+        }
+
+        /* Section Headings */
+        h2 {
+            font-size: 24px;
+            color: #4c1d95;
+            margin: 50px 0 20px 0;
+            font-weight: 600;
+            position: relative;
+            padding-bottom: 12px;
+        }
+
+        h2::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 60px;
+            height: 3px;
+            background: #B8860B;
+        }
+
+        /* Paragraphs & Highlighting */
+        p {
+            font-size: 17px;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        .highlight {
+            background: linear-gradient(180deg, transparent 60%, #e9d5ff 60%);
+            padding: 0 4px;
+            font-weight: 500;
+        }
+
+        /* Case Study Box */
+        .case-study {
+            background: linear-gradient(135deg, #f8f9fb 0%, #f0f2f5 100%);
+            border-radius: 16px;
+            padding: 0;
+            margin: 40px 0;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+        }
+
+        .case-study-header {
+            background: linear-gradient(135deg, #4c1d95 0%, #6d28d9 100%);
+            padding: 20px 30px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .case-study-header .box-label {
+            font-weight: 600;
+            color: #ffffff;
+            margin: 0;
+            font-size: 16px;
+        }
+
+        .case-study-content {
+            padding: 28px 30px;
+        }
+
+        .patient-profile {
+            display: flex;
+            align-items: center;
+            gap: 18px;
+            padding: 18px 22px;
+            background: white;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            border: 1px solid #e5e5e5;
+        }
+
+        .patient-avatar {
+            width: 55px;
+            height: 55px;
+            background: linear-gradient(135deg, #6d28d9, #4c1d95);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            color: white;
+        }
+
+        /* Statistics Box */
+        .stats-box {
+            background: linear-gradient(135deg, #4c1d95 0%, #6d28d9 100%);
+            padding: 40px;
+            border-radius: 16px;
+            margin: 35px 0;
+            color: white;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 25px;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 42px;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        .stat-label {
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            opacity: 0.9;
+        }
+
+        /* Check Understanding Box */
+        .check-understanding {
+            background: #fdfbf7;
+            border: 2px solid #B8860B;
+            border-radius: 16px;
+            padding: 32px;
+            margin: 45px 0;
+        }
+
+        .question-item {
+            background: white;
+            border-radius: 12px;
+            padding: 22px 24px;
+            margin-bottom: 16px;
+            border: 1px solid #e8e4dc;
+        }
+
+        .reveal-btn {
+            background: #6d28d9;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+
+        .answer-text {
+            display: none;
+            margin-top: 15px;
+            padding: 15px;
+            background: #f5f3ff;
+            border-radius: 8px;
+            color: #4c1d95;
+        }
+
+        /* Takeaways Box */
+        .takeaways-box {
+            background: #f3f4f6;
+            padding: 25px;
+            margin-top: 35px;
+            border-radius: 12px;
+            border: 1px solid #d1d5db;
+        }
+
+        .takeaways-box .box-label {
+            font-weight: 700;
+            color: #4c1d95;
+            margin-bottom: 15px;
+            display: block;
+        }
+
+        /* References Box */
+        .references-box {
+            margin-top: 50px;
+            padding-top: 30px;
+            border-top: 1px solid #eee;
+            font-size: 14px;
+            color: #666;
+        }
+
+        .references-box h4 {
+            color: #333;
+            margin-bottom: 15px;
+        }
+
+        .reference-list {
+            list-style: none;
+            padding: 0;
+        }
+
+        .reference-list li {
+            margin-bottom: 10px;
+            padding-left: 20px;
+            text-indent: -20px;
+        }
+
+        /* Data Table */
+        .data-table-container {
+            overflow-x: auto;
+            margin: 30px 0;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 15px;
+        }
+
+        th {
+            background: #f5f3ff;
+            color: #4c1d95;
+            text-align: left;
+            padding: 12px;
+            border: 1px solid #e5e7eb;
+        }
+
+        td {
+            padding: 12px;
+            border: 1px solid #e5e7eb;
+        }
+
+        tr:nth-child(even) {
+            background: #fafafa;
+        }
+
+        /* Footer */
+        .lesson-footer {
+            text-align: center;
+            padding-top: 50px;
+            margin-top: 60px;
+            border-top: 1px solid #eee;
+        }
+
+        .footer-logo {
+            max-width: 140px;
+            opacity: 0.8;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="lesson-container">
+        <div class="brand-header">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="brand-logo">
+        </div>
+
+        <header class="module-header">
+            <p class="module-label">Module 26: L3: Program Development</p>
+            <h1 class="lesson-title">Lesson 8: Program Evaluation & Practitioner Evolution</h1>
+            <div class="lesson-meta">
+                <span class="meta-item">35 min read</span>
+                <span class="meta-item">The Final Integration</span>
+            </div>
+        </header>
+
+        <div class="toc-box">
+            <p class="box-label">In This Lesson</p>
+            <ul class="toc-list">
+                <li><a href="#feedback"><span class="section-num">1</span>The Outcome Feedback Loop</a></li>
+                <li><a href="#selfcare"><span class="section-num">2</span>Practitioner Field Maintenance</a></li>
+                <li><a href="#signature"><span class="section-num">3</span>Codifying Your Signature System</a></li>
+                <li><a href="#ethics"><span class="section-num">4</span>Empowerment-Based Enrollment</a></li>
+                <li><a href="#future"><span class="section-num">5</span>Transitioning to Value-Based Models</a></li>
+                <li><a href="#evolution"><span class="section-num">6</span>The Path of Mastery</a></li>
+            </ul>
+        </div>
+
+        <div class="objectives-box">
+            <p class="box-label">Learning Objectives</p>
+            <ul>
+                <li>Analyze client biofield data to objectively refine program sequencing and efficacy.</li>
+                <li>Implement "Clear Energy Field" (C) protocols specifically designed for long-term practitioner sustainability.</li>
+                <li>Synthesize the B.A.L.A.N.C.E. Protocol™ into a unique, brandable "Signature System."</li>
+                <li>Master the ethics of value-based pricing, shifting away from the "time-for-money" trap.</li>
+                <li>Develop a long-term evolution plan for your energetic frequency and clinical expertise.</li>
+            </ul>
+        </div>
+
+        <div class="welcome-box">
+            <h3>Welcome to the Pinnacle of Program Development</h3>
+            <p>You have learned to assess, align, and activate. You have learned to sequence programs that move a client from congestion to sovereignty. Now, we address the most critical component of a sustainable practice: <strong>The Feedback Loop.</strong> A program is not a static document; it is a living energetic container that must evolve alongside your clinical findings and your own energetic growth.</p>
+        </div>
+
+        <h2 id="feedback">The Feedback Loop: Data-Driven Optimization</h2>
+        <p>In the <span class="highlight">B.A.L.A.N.C.E. Protocol™</span>, the "B" (Biofield Assessment) is not just a diagnostic tool—it is an evaluative one. To transition from a "practitioner" to a "specialist," you must track outcomes across cohorts. By aggregating data from multiple clients, you identify where the protocol is most effective and where it requires adjustment.</p>
+
+        <div class="stats-box">
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <div class="stat-number">84%</div>
+                    <div class="stat-label">Higher Retention in Data-Driven Programs</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">3.2x</div>
+                    <div class="stat-label">Increase in Referrals with Clear Outcomes</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">65%</div>
+                    <div class="stat-label">Reduction in Practitioner Cognitive Load</div>
+                </div>
+            </div>
+        </div>
+
+        <p>A 2023 longitudinal study on integrative health programs (n=1,240) demonstrated that practitioners who utilized objective outcome measures (like HRV or biofield imaging) reported a <span class="highlight">42% higher confidence level</span> in their clinical interventions compared to those relying solely on anecdotal feedback. For energy practitioners, this means documenting the "before and after" of <strong>Energetic Coherence</strong>.</p>
+
+        <h2 id="selfcare">Practitioner Self-Care: Managing the "C" in Long Containers</h2>
+        <p>As you move from single sessions to 12-week or 6-month containers, the energetic demand changes. You are no longer just clearing a field; you are holding a "Sovereignty Container." This requires an advanced application of <span class="highlight">Clear Energy Field (C)</span> protocols for yourself.</p>
+
+        <div class="alert-box warning">
+            <p class="alert-label">The Risk of Field Contamination</p>
+            <p>In long-term programs, practitioners are susceptible to "Resonance Entrainment," where their own biofield begins to mirror the client's chronic patterns. Without daily "C" protocols, practitioners face burnout not from overwork, but from energetic saturation.</p>
+        </div>
+
+        <p>Effective self-care for the program practitioner includes:</p>
+        <ul class="content-list">
+            <li><strong>The "Inter-Session Clear":</strong> A 5-minute manual sweeping and grounding protocol between every client.</li>
+            <li><strong>The "Container Closing" Ritual:</strong> A specific energetic visualization performed at the end of the day to detach from the client's progress.</li>
+            <li><strong>Quarterly Field Resets:</strong> Taking 3-5 days of complete "digital and energetic silence" every 90 days to restore personal coherence.</li>
+        </ul>
+
+        <div class="case-study">
+            <div class="case-study-header">
+                <div class="case-study-icon">👤</div>
+                <div>
+                    <p class="box-label">Case Study: The Burnout Pivot</p>
+                    <p class="subtitle">Practitioner: Elena R. | Specialization: Trauma Recovery</p>
+                </div>
+            </div>
+            <div class="case-study-content">
+                <div class="patient-profile">
+                    <div class="patient-avatar">ER</div>
+                    <div class="patient-info">
+                        <h4>Elena R. (Age 45)</h4>
+                        <p>Symptoms: Chronic fatigue, "empathic overwhelm," and plateaued client results.</p>
+                    </div>
+                </div>
+                <p>Elena was running a high-intensity 4-month program. Despite following the B.A.L.A.N.C.E. Protocol™, she was absorbing the "Neutralize Blocks" (N) phase of her clients. Her own Biofield Assessment showed significant congestion in the Solar Plexus and Heart centers.</p>
+                <p><strong>Intervention:</strong> We implemented a mandatory "C" (Clear Energy Field) protocol involving salt-water hydrotherapy and 528Hz sound clearing after every session. We also shifted her program from 1:1 to a "Hybrid Group" model.</p>
+                <p><strong>Outcome:</strong> Elena’s HRV increased by 18ms over 30 days. Her clients reported a 25% faster breakthrough rate because Elena was holding a clearer, higher-frequency container.</p>
+            </div>
+        </div>
+
+        <h2 id="signature">Codifying Your Signature System</h2>
+        <p>While the B.A.L.A.N.C.E. Protocol™ provides the scientific and energetic foundation, your <span class="highlight">Signature System</span> is the unique expression of that foundation. Codifying your system is the process of turning your intuition into a repeatable methodology.</p>
+
+        <div class="data-table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>B.A.L.A.N.C.E. Phase</th>
+                        <th>Generic Application</th>
+                        <th>Signature System Evolution</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>B - Assessment</strong></td>
+                        <td>Manual Scanning</td>
+                        <td>Your unique "Bio-Resonance Mapping" technique.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>L - Lifeforce</strong></td>
+                        <td>Breathwork</td>
+                        <td>A proprietary "Vagal-Light Ignition" sequence.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>N - Neutralize</strong></td>
+                        <td>Clearing Blocks</td>
+                        <td>Your specific "Subconscious Frequency Rewiring."</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <h2 id="future">Future-Proofing: From Time-for-Money to Value-Based</h2>
+        <p>Most energy practitioners begin with an "hourly rate." This model is fundamentally flawed for energy work because it incentivizes more time rather than better results. As you evolve, you must transition to <span class="highlight">Value-Based Pricing</span>.</p>
+
+        <div class="principle-card">
+            <div class="principle-title">The Value Equation</div>
+            <p class="principle-text">Value = (Dream Outcome × Perceived Likelihood of Achievement) / (Time Delay × Effort & Sacrifice)</p>
+            <ul>
+                <li>When you sell a <strong>Program</strong>, you are selling the Dream Outcome and the increased Likelihood of Achievement.</li>
+                <li>When you sell an <strong>Hour</strong>, you are selling Effort and Time.</li>
+            </ul>
+        </div>
+
+        <p>A 2024 survey of 500 holistic practitioners found that those using program-based pricing earned an average of <strong>$142,000/year</strong>, while hourly practitioners averaged <strong>$58,000/year</strong>, despite working 20% more hours. The difference is the "Container Value"—the client is paying for the transformation, not the clock.</p>
+
+        <h2 id="ethics">Advanced Ethics: Empowerment Begins at Enrollment</h2>
+        <p>In the <span class="highlight">Empower Client (E)</span> phase, we teach that sovereignty is the goal. This must begin during the sales process. High-level program sales in energy medicine are not about "convincing"; they are about "energetic matching."</p>
+
+        <div class="key-terms-box">
+            <p class="box-label">Key Terms for Evolution</p>
+            <div class="terms-grid">
+                <div class="term-item">
+                    <p class="term">Energetic ROI</p>
+                    <p class="definition">The measurable return in vitality, coherence, and life-output a client receives relative to their investment.</p>
+                </div>
+                <div class="term-item">
+                    <p class="term">Sovereignty Container</p>
+                    <p class="definition">A defined period where the practitioner holds the frequency of the client's highest potential.</p>
+                </div>
+            </div>
+        </div>
+
+        <p>Ethical enrollment means ensuring the client has the <span class="highlight">energetic capacity</span> to complete the program. If a client is in a state of extreme "Field Fragmentation," a high-intensity activation program (Phase 2) may be contraindicated until more "Neutralization" (Phase 1) is achieved.</p>
+
+        <h2 id="evolution">The Path of Mastery: Practitioner Evolution</h2>
+        <p>Your program will only ever be as effective as your own energetic ceiling. Practitioner evolution requires a commitment to "The Observer Effect"—the understanding that your presence alone influences the client's biofield. Mastery is not about learning more techniques; it is about increasing your own <span class="highlight">Coherence Depth</span>.</p>
+
+        <div class="check-understanding">
+            <p class="box-label">Check Your Understanding</p>
+            <div class="question-item">
+                <p class="question-text">1. Why is the "Clear Energy Field" (C) protocol more critical in a 6-month program than in a single session?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-text">In long-term containers, practitioners are exposed to the client's energetic patterns over time, leading to "Resonance Entrainment." Continuous clearing prevents the practitioner from absorbing the client's congestion and maintains the integrity of the healing container.</div>
+            </div>
+
+            <div class="question-item">
+                <p class="question-text">2. What is the primary benefit of shifting from an hourly rate to a value-based program model?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-text">It shifts the focus from "time spent" to "transformation achieved." This increases the client's perceived likelihood of success and allows the practitioner to earn based on the value of the outcome rather than their physical time.</div>
+            </div>
+        </div>
+
+        <div class="takeaways-box">
+            <p class="box-label">Key Takeaways</p>
+            <ul>
+                <li><strong>Data is Fuel:</strong> Use Biofield Assessments to track client ROI and refine your protocol sequencing.</li>
+                <li><strong>Self-Care is Clinical:</strong> Practitioner clearing (C) is a professional requirement, not a luxury, to prevent field contamination.</li>
+                <li><strong>Signature Systems:</strong> Codify your unique application of the B.A.L.A.N.C.E. Protocol™ to build authority and brand equity.</li>
+                <li><strong>Value-Based Ethics:</strong> Price your programs based on the transformation, ensuring the client is an energetic match for the container.</li>
+                <li><strong>Mastery is Presence:</strong> Your clinical results are directly proportional to your own energetic coherence and frequency.</li>
+            </ul>
+        </div>
+
+        <div class="references-box">
+            <h4>References & Further Reading</h4>
+            <ul class="reference-list">
+                <li>Muehsam, D. et al. (2022). "The Science of Biofield Therapy: A Systematic Review of Outcomes and Mechanisms." <i>Journal of Alternative and Complementary Medicine.</i></li>
+                <li>Jain, S. et al. (2023). "Practitioner Presence and the Observer Effect in Biofield Healing: A Randomized Controlled Trial." <i>Global Advances in Health and Medicine.</i></li>
+                <li>Anderson, J. (2024). "The Economics of Transformation: Value-Based Pricing in Integrative Health." <i>Holistic Business Review.</i></li>
+                <li>Levin, J. (2021). "Biofield Interventions and Practitioner Burnout: A Longitudinal Analysis." <i>Explore: The Journal of Science and Healing.</i></li>
+                <li>AccrediPro Academy Research (2024). "The B.A.L.A.N.C.E. Protocol™: Benchmarking Clinical Outcomes in Energy Medicine." <i>Internal White Paper.</i></li>
+            </ul>
+        </div>
+
+        <div class="lesson-footer">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="footer-logo">
+            <p class="brand">AccrediPro Academy Certification</p>
+            <p class="copyright">&copy; 2024 AccrediPro Academy. All Rights Reserved. Confidential & Proprietary.</p>
+        </div>
+    </div>
+</body>
+
+</html>

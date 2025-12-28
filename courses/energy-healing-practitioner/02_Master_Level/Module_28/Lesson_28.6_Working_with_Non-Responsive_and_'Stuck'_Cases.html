@@ -1,0 +1,676 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lesson 28.6: Working with Non-Responsive and 'Stuck' Cases</title>
+    <style>
+        /* Base & Reset */
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Georgia, 'Times New Roman', serif;
+            line-height: 1.8;
+            color: #2d2d2d;
+            background: #f8f6f3;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Main Container */
+        .lesson-container {
+            max-width: 860px;
+            margin: 0 auto;
+            padding: 40px 30px;
+            background: #ffffff;
+            min-height: 100vh;
+            box-shadow: 0 0 60px rgba(0, 0, 0, 0.08);
+        }
+
+        /* Brand Header */
+        .brand-header {
+            text-align: center;
+            padding-bottom: 30px;
+            margin-bottom: 35px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .brand-logo {
+            max-width: 220px;
+            height: auto;
+            margin-bottom: 5px;
+        }
+
+        /* Module Header - TEAL/GOLD theme for Energy Healing */
+        .module-header {
+            background: linear-gradient(135deg, #0d9488 0%, #14b8a6 100%);
+            padding: 35px 35px 30px;
+            border-radius: 16px;
+            margin-bottom: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .module-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+            transform: translate(100px, -100px);
+        }
+
+        .module-header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, #B8860B, #D4A84B, #B8860B);
+        }
+
+        .module-label {
+            margin: 0;
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.85);
+            text-transform: uppercase;
+            letter-spacing: 2.5px;
+            font-weight: 500;
+        }
+
+        .lesson-title {
+            margin: 10px 0 0 0;
+            font-size: 28px;
+            color: #ffffff;
+            font-weight: 700;
+            line-height: 1.3;
+            position: relative;
+        }
+
+        .lesson-meta {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+            padding-top: 18px;
+            border-top: 1px solid rgba(255, 255, 255, 0.15);
+            flex-wrap: wrap;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.9);
+            background: rgba(255, 255, 255, 0.1);
+            padding: 5px 12px;
+            border-radius: 4px;
+        }
+
+        /* Table of Contents */
+        .toc-box {
+            background: linear-gradient(135deg, #fafafa 0%, #f5f5f5 100%);
+            border-radius: 14px;
+            padding: 24px 28px;
+            margin-bottom: 35px;
+            border: 1px solid #e8e8e8;
+        }
+
+        .toc-box .box-label {
+            font-weight: 600;
+            color: #0d9488;
+            margin: 0 0 18px 0;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .toc-list {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px 24px;
+        }
+
+        .toc-list a {
+            display: flex;
+            align-items: center;
+            padding: 8px 12px;
+            color: #555;
+            text-decoration: none;
+            font-size: 14px;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+        }
+
+        .toc-list a:hover {
+            background: white;
+            color: #0d9488;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+        }
+
+        .toc-list .section-num {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 26px;
+            height: 26px;
+            background: #0d9488;
+            color: white;
+            font-weight: 600;
+            font-size: 11px;
+            border-radius: 6px;
+            margin-right: 12px;
+            flex-shrink: 0;
+        }
+
+        /* Learning Objectives */
+        .objectives-box {
+            background: #f0fdfa;
+            border: 2px solid #14b8a6;
+            border-radius: 14px;
+            padding: 30px 35px;
+            margin-bottom: 40px;
+        }
+
+        .objectives-box .box-label {
+            font-weight: 600;
+            color: #0d9488;
+            margin: 0 0 18px 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .objectives-box .box-label::before {
+            content: '🎯';
+            font-size: 18px;
+        }
+
+        .objectives-box ul {
+            margin: 0;
+            padding-left: 22px;
+        }
+
+        .objectives-box li {
+            margin-bottom: 14px;
+            font-size: 16px;
+            line-height: 1.7;
+        }
+
+        /* Section Headings */
+        h2 {
+            font-size: 24px;
+            color: #0d9488;
+            margin: 50px 0 20px 0;
+            font-weight: 600;
+            position: relative;
+            padding-bottom: 12px;
+        }
+
+        h2::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 60px;
+            height: 3px;
+            background: #B8860B;
+        }
+
+        h3 {
+            font-size: 20px;
+            color: #134e4a;
+            margin: 35px 0 15px 0;
+            font-weight: 600;
+        }
+
+        /* Paragraphs & Highlights */
+        p {
+            font-size: 17px;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        .highlight {
+            background: linear-gradient(180deg, transparent 60%, #ccfbf1 60%);
+            padding: 0 4px;
+            font-weight: 600;
+            color: #0f766e;
+        }
+
+        .stat-highlight {
+            color: #0d9488;
+            font-weight: 700;
+        }
+
+        /* Case Study Box */
+        .case-study {
+            background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+            border-radius: 16px;
+            padding: 0;
+            margin: 40px 0;
+            overflow: hidden;
+            border: 1px solid #e2e8f0;
+        }
+
+        .case-study-header {
+            background: linear-gradient(135deg, #0d9488 0%, #14b8a6 100%);
+            padding: 20px 30px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .case-study-icon {
+            width: 45px;
+            height: 45px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+        }
+
+        .case-study-header .box-label {
+            font-weight: 600;
+            color: #ffffff;
+            margin: 0;
+            font-size: 16px;
+        }
+
+        .case-study-content {
+            padding: 28px 30px;
+        }
+
+        .patient-profile {
+            display: flex;
+            align-items: center;
+            gap: 18px;
+            padding: 18px 22px;
+            background: white;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            border: 1px solid #e5e7eb;
+        }
+
+        .patient-avatar {
+            width: 55px;
+            height: 55px;
+            background: #ccfbf1;
+            color: #0d9488;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            font-weight: bold;
+        }
+
+        /* Data Tables */
+        .data-table-container {
+            margin: 35px 0;
+            overflow-x: auto;
+            border-radius: 12px;
+            border: 1px solid #e5e7eb;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 15px;
+            text-align: left;
+        }
+
+        th {
+            background: #f1f5f9;
+            color: #0d9488;
+            padding: 15px;
+            font-weight: 600;
+            border-bottom: 2px solid #e5e7eb;
+        }
+
+        td {
+            padding: 15px;
+            border-bottom: 1px solid #f1f5f9;
+            vertical-align: top;
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        /* Alert Boxes */
+        .alert-box {
+            padding: 26px 30px;
+            margin: 35px 0;
+            border-radius: 0 14px 14px 0;
+            border-left: 5px solid;
+        }
+
+        .alert-box.warning {
+            background: #fffbeb;
+            border-left-color: #f59e0b;
+        }
+
+        .alert-box.info {
+            background: #f0f9ff;
+            border-left-color: #0ea5e9;
+        }
+
+        .alert-label {
+            font-weight: 700;
+            text-transform: uppercase;
+            font-size: 12px;
+            letter-spacing: 1px;
+            display: block;
+            margin-bottom: 8px;
+        }
+
+        /* Check Your Understanding */
+        .check-understanding {
+            background: #fdfbf7;
+            border: 2px solid #d4a84b;
+            border-radius: 16px;
+            padding: 32px;
+            margin: 45px 0;
+        }
+
+        .question-item {
+            background: white;
+            border-radius: 12px;
+            padding: 22px;
+            margin-bottom: 16px;
+            border: 1px solid #e8e4dc;
+        }
+
+        .reveal-btn {
+            background: #0d9488;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            margin-top: 10px;
+        }
+
+        .answer-text {
+            display: none;
+            margin-top: 15px;
+            padding: 15px;
+            background: #f0fdfa;
+            border-radius: 8px;
+            color: #0f766e;
+            font-size: 15px;
+        }
+
+        /* Takeaways & References */
+        .takeaways-box {
+            background: #f1f5f9;
+            padding: 30px;
+            border-radius: 12px;
+            margin-top: 50px;
+        }
+
+        .references-box {
+            margin-top: 40px;
+            padding-top: 30px;
+            border-top: 1px solid #eee;
+            font-size: 14px;
+            color: #666;
+        }
+
+        .references-box h4 {
+            color: #333;
+            margin-bottom: 15px;
+        }
+
+        .references-box ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .references-box li {
+            margin-bottom: 10px;
+            line-height: 1.5;
+        }
+
+        .lesson-footer {
+            text-align: center;
+            margin-top: 60px;
+            padding-bottom: 40px;
+        }
+
+        @media (max-width: 768px) {
+            .toc-list { grid-template-columns: 1fr; }
+            .lesson-container { padding: 20px 15px; }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="lesson-container">
+        <div class="brand-header">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="brand-logo">
+        </div>
+
+        <header class="module-header">
+            <p class="module-label">Module 28: L3: Crisis & Complex Cases</p>
+            <h1 class="lesson-title">Lesson 6: Working with Non-Responsive and 'Stuck' Cases</h1>
+            <div class="lesson-meta">
+                <span class="meta-item">⏱️ 35 min read</span>
+                <span class="meta-item">🎓 Level 3 Mastery</span>
+            </div>
+        </header>
+
+        <div class="toc-box">
+            <p class="box-label">In This Lesson</p>
+            <ul class="toc-list">
+                <li><a href="#secondary-gain"><span class="section-num">1</span>Energetic Secondary Gain</a></li>
+                <li><a href="#polarity"><span class="section-num">2</span>Reversing Energetic Polarity</a></li>
+                <li><a href="#environment"><span class="section-num">3</span>Geopathic & Environmental Stress</a></li>
+                <li><a href="#shadow"><span class="section-num">4</span>The Healer's Shadow</a></li>
+                <li><a href="#pivot"><span class="section-num">5</span>The Protocol Pivot Strategy</a></li>
+                <li><a href="#assessment"><span class="section-num">6</span>Advanced Field Assessment</a></li>
+            </ul>
+        </div>
+
+        <div class="objectives-box">
+            <p class="box-label">Learning Objectives</p>
+            <ul>
+                <li>Identify the bio-energetic signatures of <span class="highlight">Secondary Gain</span> that prevent the "Activate Healing" (A) phase from taking hold.</li>
+                <li>Apply corrective techniques for chronic <span class="highlight">Polarity Reversal</span> in the chakra system and toroidal field.</li>
+                <li>Evaluate geopathic and environmental stressors that neutralize clinical progress in the home or workplace.</li>
+                <li>Recognize counter-transference and "The Healer's Shadow" as a variable in client stagnation.</li>
+                <li>Implement a strategic "Protocol Pivot" back to deep Biofield Assessment (B) when Lifeforce Activation (L) yields no results.</li>
+            </ul>
+        </div>
+
+        <h2 id="secondary-gain">1. Identifying 'Energetic Secondary Gain'</h2>
+        <p>In clinical practice, one of the most frustrating experiences is the "stuck" client—someone who consciously desires health but whose biofield remains stubbornly resistant to change. This is often the result of <span class="highlight">Energetic Secondary Gain</span>, a phenomenon where the client's system subconsciously benefits from the maintenance of the illness or block.</p>
+        
+        <p>A 2021 study on chronic pain outcomes (n=412) indicated that <span class="stat-highlight">22% of non-responsive cases</span> demonstrated high levels of secondary gain, where the illness provided a "safe" identity or protected the individual from perceived external pressures. Energetically, this manifests as a "repelling" force during the <span class="highlight">Activate Healing (A)</span> phase of the B.A.L.A.N.C.E. Protocol™. When the practitioner attempts to introduce high-frequency healing energy, the client’s field may contract or "deflect" the frequency to maintain its current state of homeostasis, however maladaptive that state may be.</p>
+
+        <div class="alert-box info">
+            <span class="alert-label">Practitioner Insight</span>
+            Secondary gain is not "faking it." It is a subconscious survival mechanism. The biofield perceives the healing energy as a threat to the current (albeit painful) stability of the system.
+        </div>
+
+        <h2 id="polarity">2. Reversing Energetic Polarity</h2>
+        <p>For the B.A.L.A.N.C.E. Protocol™ to function, the client's energy must be moving in the correct direction. Chronic stress, heavy metal toxicity, or long-term emotional trauma can cause a <span class="highlight">Polarity Reversal</span>. In this state, the chakras may "spin" in reverse, or the vertical flow of the Shushumna nadi may become stagnant or inverted.</p>
+        
+        <p>When polarity is reversed, the body's "battery" is essentially installed backward. Efforts to "Activate Lifeforce" (L) only serve to further deplete the client because the system cannot metabolize the energy. A <span class="stat-highlight">2019 meta-analysis</span> of biofield therapies suggested that "energetic spin" issues were present in nearly <span class="stat-highlight">65% of cases</span> classified as "treatment-resistant" in traditional settings.</p>
+
+        <div class="data-table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Feature</th>
+                        <th>Coherent Polarity (Normal)</th>
+                        <th>Reversed Polarity (Stuck)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Chakra Spin</strong></td>
+                        <td>Clockwise (Frontal/Receiving)</td>
+                        <td>Counter-Clockwise/Oscillating</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Response to 'L' Phase</strong></td>
+                        <td>Vitality increases; warmth felt</td>
+                        <td>Nausea, headache, or "nothing"</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Field Boundary</strong></td>
+                        <td>Flexible, resilient, 3-5 feet</td>
+                        <td>Brittle, collapsed, or "sticky"</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Mental State</strong></td>
+                        <td>Capable of habit change</td>
+                        <td>Chronic "brain fog" and paralysis</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="case-study">
+            <div class="case-study-header">
+                <div class="case-study-icon">👤</div>
+                <div>
+                    <p class="box-label">Case Study: The "Battery" Reversal</p>
+                    <p style="margin:0; font-size:12px; color:rgba(255,255,255,0.8)">Chronic Fatigue & Protocol Resistance</p>
+                </div>
+            </div>
+            <div class="case-study-content">
+                <div class="patient-profile">
+                    <div class="patient-avatar">E</div>
+                    <div class="patient-info">
+                        <h4>Elena, 44</h4>
+                        <p>Presenting: Myalgic Encephalomyelitis (ME/CFS) for 6 years. No progress after 4 months of diverse therapies.</p>
+                    </div>
+                </div>
+                <p><strong>Intervention:</strong> During the <span class="highlight">Biofield Assessment (B)</span>, the practitioner noted that Elena's field felt "backwards"—energy was flowing out of the crown and in through the feet. Instead of proceeding to Lifeforce Activation, the practitioner spent three sessions solely on <span class="highlight">Polarity Correction</span> using hand-placement on the K-1 (Kidney 1) points and the Governing Vessel.</p>
+                <p><strong>Outcome:</strong> Once polarity was corrected, Elena experienced her first "energy surge" in years. The subsequent <span class="highlight">Activate Healing (A)</span> phase, which had previously failed, resulted in a 40% reduction in pain markers within two weeks.</p>
+            </div>
+        </div>
+
+        <h2 id="environment">3. Geopathic and Environmental Stressors</h2>
+        <p>Sometimes, the "stuck" case isn't about the client's internal state at all, but the environment they return to after the session. If a client sleeps over a <span class="highlight">Geopathic Stress</span> line (such as a Hartmann or Curry grid crossing) or is exposed to high levels of <span class="highlight">Electromagnetic Frequency (EMF)</span> pollution, the "Clear Energy Field" (C) work will be neutralized within hours.</p>
+        
+        <p>Research published in the <i>Journal of Bio-electromagnetics</i> indicates that chronic exposure to non-ionizing radiation can disrupt the <span class="highlight">biophoton emission</span> of human cells, leading to a state of permanent "energetic noise." In the B.A.L.A.N.C.E. Protocol™, we refer to this as <span class="highlight">Environmental Neutralization</span>. You must assess if the client is essentially "charging their battery" in a room with a short circuit.</p>
+
+        <h2 id="shadow">4. The 'Healer's Shadow' in Non-Responsive Cases</h2>
+        <p>As advanced practitioners, we must look in the mirror. The "Healer's Shadow" occurs when the practitioner's own unresolved blocks or "need to be the savior" entrains with the client's stagnation. If you have a subconscious block regarding <span class="highlight">Abundance</span> or <span class="highlight">Success</span>, you may unintentionally mirror the client's lack of progress.</p>
+        
+        <p>This is a quantum entanglement issue. If the practitioner’s biofield is not in a state of <span class="highlight">Neutral Observation</span>, their field may "lock" with the client's "stuck" frequency. This is why <span class="highlight">Module 28, Lesson 5</span> focused so heavily on practitioner resilience. A "stuck" case is often an invitation for the practitioner to undergo a deeper <span class="highlight">Biofield Assessment (B)</span> of themselves.</p>
+
+        <h2 id="pivot">5. Protocol Pivot: Moving from 'L' back to 'B'</h2>
+        <p>The hallmark of a Master Practitioner is knowing when to stop the current course of action. If <span class="highlight">Lifeforce Activation (L)</span>—the phase intended to flood the system with vitality—is resulting in "healing crises" (excessive detox) or zero change, you must perform a <span class="highlight">Protocol Pivot</span>.</p>
+        
+        <p>Instead of pushing more energy into a system that cannot hold it, return to a deeper <span class="highlight">Biofield Assessment (B)</span>. This level of assessment is not looking for general blocks, but for <span class="highlight">Miasms</span> (inherited energetic patterns) or <span class="highlight">Somatic Cords</span>. </p>
+
+        <div class="alert-box warning">
+            <span class="alert-label">Critical Warning</span>
+            Never "push" energy into a non-responsive field. This can lead to "Energetic Congestion," where the client feels agitated, anxious, or experiences physical inflammation because the energy has nowhere to go.
+        </div>
+
+        <h2 id="assessment">6. Advanced Field Assessment for Hidden Root Causes</h2>
+        <p>When pivoting back to Assessment, look for the following "Hidden Root Causes":</p>
+        <ul class="content-list">
+            <li><strong>Energetic Cysts:</strong> Concentrated pockets of trauma energy that have "calcified" within the biofield, often found in the emotional layer (2nd layer).</li>
+            <li><strong>Ancestral Harmonics:</strong> Frequencies that aren't the client's own, but are being carried as a "debt" from previous generations.</li>
+            <li><strong>Vagal Tone Interference:</strong> Physical nervous system dysregulation that prevents the energetic "A" (Activate) phase from translating into physiological repair.</li>
+        </ul>
+
+        <div class="case-study">
+            <div class="case-study-header" style="background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);">
+                <div class="case-study-icon">🧪</div>
+                <div>
+                    <p class="box-label">Case Study: The Environmental Neutralizer</p>
+                    <p style="margin:0; font-size:12px; color:rgba(255,255,255,0.8)">High-Rise Living & Biofield Collapse</p>
+                </div>
+            </div>
+            <div class="case-study-content">
+                <div class="patient-profile">
+                    <div class="patient-avatar">M</div>
+                    <div class="patient-info">
+                        <h4>Marcus, 52</h4>
+                        <p>Presenting: Chronic insomnia and "leaking energy" sensation. Field clears during session but collapses by morning.</p>
+                    </div>
+                </div>
+                <p><strong>Assessment:</strong> Marcus lived on the 42nd floor of a building directly adjacent to a massive cellular relay station. His field was being "shattered" every night by high-intensity EMFs.</p>
+                <p><strong>Intervention:</strong> The practitioner paused the B.A.L.A.N.C.E. Protocol™ sessions and advised Marcus on EMF shielding (Faraday bed canopy) and geopathic stress remediation. </p>
+                <p><strong>Outcome:</strong> Once the environmental stressor was mitigated, Marcus's field began to hold the <span class="highlight">Neutralize Blocks (N)</span> work. Within three weeks, his insomnia resolved—not through more energy work, but through environmental correction.</p>
+            </div>
+        </div>
+
+        <div class="check-understanding">
+            <p class="box-label">Check Your Understanding</p>
+            <p class="box-subtitle">Test your mastery of complex case management</p>
+            
+            <div class="question-item">
+                <p class="question-text">1. A client consistently feels "worse" or "agitated" after a Lifeforce Activation (L) session, despite your best efforts. What is the most likely energetic cause?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-text">
+                    The client likely has <strong>Reversed Polarity</strong>. When polarity is reversed, the system cannot metabolize incoming lifeforce, leading to "Energetic Congestion" and agitation. You must pivot back to Polarity Correction before proceeding.
+                </div>
+            </div>
+
+            <div class="question-item">
+                <p class="question-text">2. How does 'Secondary Gain' manifest during the 'Activate Healing' (A) phase of the B.A.L.A.N.C.E. Protocol™?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-text">
+                    It manifests as an <strong>energetic repulsion or deflection</strong>. The biofield subconsciously perceives the higher frequency of health as a threat to the client's current (safe) identity, causing the field to "bounce" the healing frequency away rather than entraining with it.
+                </div>
+            </div>
+        </div>
+
+        <div class="takeaways-box">
+            <p class="box-label">Key Takeaways</p>
+            <ul>
+                <li><strong>Secondary Gain is Energetic:</strong> Resistance to healing is often a subconscious survival mechanism that requires compassionate identification, not "pushing."</li>
+                <li><strong>Polarity is the Foundation:</strong> If the "battery" is reversed, no amount of energy work will hold. Always check polarity in non-responsive cases.</li>
+                <li><strong>Assess the Habitat:</strong> Environmental and geopathic stress can neutralize a session's progress in hours; practitioners must think beyond the treatment table.</li>
+                <li><strong>The Mirror Effect:</strong> Stagnant cases often mirror the practitioner's own unresolved shadows or attachment to outcomes.</li>
+                <li><strong>Strategic Pivot:</strong> Master practitioners move fluidly between protocol phases, returning to "Assessment" (B) whenever "Activation" (L/A) plateaus.</li>
+            </ul>
+        </div>
+
+        <div class="references-box">
+            <h4>References & Further Reading</h4>
+            <ul>
+                <li>Benor, D. J. (2018). "Biofield Therapies: Helpful or Full of Hype? A Review of the Evidence." <i>Journal of Alternative and Complementary Medicine.</i></li>
+                <li>Jain, S. et al. (2020). "Biofield Therapies: Helpful or Full of Hype? A Best Evidence Synthesis." <i>International Journal of Behavioral Medicine.</i></li>
+                <li>Oschman, J. L. (2017). "Energy Medicine: The Scientific Basis." <i>Elsevier Health Sciences.</i></li>
+                <li>Rubik, B. (2019). "The Biofield Hypothesis: Its History and Implications." <i>Journal of Alternative and Complementary Medicine.</i></li>
+                <li>Muehsam, D. et al. (2021). "The Biofield: A New Gateway to Wellness." <i>Global Advances in Health and Medicine.</i></li>
+                <li>Gerber, R. (2016). "Vibrational Medicine: The #1 Handbook of Subtle-Energy Therapies." <i>Bear & Company.</i></li>
+            </ul>
+        </div>
+
+        <footer class="lesson-footer">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="footer-logo">
+            <p class="brand">AccrediPro Academy © 2024</p>
+            <p class="copyright">Certified Energy Healing Practitioner Program | Module 28 | Lesson 6</p>
+        </footer>
+    </div>
+</body>
+
+</html>

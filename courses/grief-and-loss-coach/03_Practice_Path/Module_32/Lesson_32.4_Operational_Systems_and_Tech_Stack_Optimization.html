@@ -1,0 +1,656 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lesson 4: Operational Systems and Tech Stack Optimization</title>
+    <style>
+        /* Base & Reset */
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Georgia, 'Times New Roman', serif;
+            line-height: 1.8;
+            color: #2d2d2d;
+            background: #f8f6f3;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Main Container */
+        .lesson-container {
+            max-width: 860px;
+            margin: 0 auto;
+            padding: 40px 30px;
+            background: #ffffff;
+            min-height: 100vh;
+            box-shadow: 0 0 60px rgba(0, 0, 0, 0.08);
+        }
+
+        /* Brand Header */
+        .brand-header {
+            text-align: center;
+            padding-bottom: 30px;
+            margin-bottom: 35px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .brand-logo {
+            max-width: 220px;
+            height: auto;
+            margin-bottom: 5px;
+        }
+
+        /* Module Header - BLUE theme for Operations/Business */
+        .module-header {
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+            padding: 35px 35px 30px;
+            border-radius: 16px;
+            margin-bottom: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .module-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+            transform: translate(100px, -100px);
+        }
+
+        .module-header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, #B8860B, #D4A84B, #B8860B);
+        }
+
+        .module-label {
+            margin: 0;
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.75);
+            text-transform: uppercase;
+            letter-spacing: 2.5px;
+            font-weight: 500;
+        }
+
+        .lesson-title {
+            margin: 10px 0 0 0;
+            font-size: 28px;
+            color: #ffffff;
+            font-weight: 700;
+            line-height: 1.3;
+            position: relative;
+        }
+
+        .lesson-meta {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+            padding-top: 18px;
+            border-top: 1px solid rgba(255, 255, 255, 0.15);
+            flex-wrap: wrap;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.85);
+            background: rgba(255, 255, 255, 0.1);
+            padding: 5px 12px;
+            border-radius: 4px;
+        }
+
+        /* Table of Contents */
+        .toc-box {
+            background: linear-gradient(135deg, #fafafa 0%, #f5f5f5 100%);
+            border-radius: 14px;
+            padding: 24px 28px;
+            margin-bottom: 35px;
+            border: 1px solid #e8e8e8;
+        }
+
+        .toc-box .box-label {
+            font-weight: 600;
+            color: #1e3a8a;
+            margin: 0 0 18px 0;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .toc-list {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px 24px;
+        }
+
+        .toc-list li {
+            margin: 0;
+        }
+
+        .toc-list a {
+            display: flex;
+            align-items: center;
+            padding: 8px 12px;
+            color: #555;
+            text-decoration: none;
+            font-size: 14px;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+        }
+
+        .toc-list a:hover {
+            background: white;
+            color: #1e3a8a;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+        }
+
+        .toc-list .section-num {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 26px;
+            height: 26px;
+            background: #1e3a8a;
+            color: white;
+            font-weight: 600;
+            font-size: 11px;
+            border-radius: 6px;
+            margin-right: 12px;
+            flex-shrink: 0;
+        }
+
+        /* Learning Objectives */
+        .objectives-box {
+            background: #f0f7ff;
+            border: 2px solid #3b82f6;
+            border-radius: 14px;
+            padding: 30px 35px;
+            margin-bottom: 40px;
+        }
+
+        .objectives-box .box-label {
+            font-weight: 600;
+            color: #1e3a8a;
+            margin: 0 0 18px 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .objectives-box .box-label::before {
+            content: '⚙️';
+            font-size: 18px;
+        }
+
+        .objectives-box ul {
+            margin: 0;
+            padding-left: 22px;
+        }
+
+        .objectives-box li {
+            margin-bottom: 14px;
+            font-size: 16px;
+            line-height: 1.7;
+        }
+
+        /* Section Headings */
+        h2 {
+            font-size: 24px;
+            color: #1e3a8a;
+            margin: 50px 0 20px 0;
+            font-weight: 600;
+            position: relative;
+            padding-bottom: 12px;
+        }
+
+        h2::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 60px;
+            height: 3px;
+            background: #B8860B;
+        }
+
+        p {
+            font-size: 17px;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        .highlight {
+            background: linear-gradient(180deg, transparent 60%, #dae8ff 60%);
+            padding: 0 4px;
+            font-weight: 500;
+        }
+
+        /* Case Study Box */
+        .case-study {
+            background: linear-gradient(135deg, #f8f9fb 0%, #f0f2f5 100%);
+            border-radius: 16px;
+            padding: 0;
+            margin: 40px 0;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+        }
+
+        .case-study-header {
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+            padding: 20px 30px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .case-study-icon {
+            width: 45px;
+            height: 45px;
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+        }
+
+        .case-study-header .box-label {
+            font-weight: 600;
+            color: #ffffff;
+            margin: 0;
+            font-size: 16px;
+        }
+
+        .case-study-content {
+            padding: 28px 30px;
+        }
+
+        /* Statistics Box */
+        .stats-box {
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+            padding: 40px;
+            border-radius: 16px;
+            margin: 35px 0;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 42px;
+            font-weight: 700;
+            color: white;
+            line-height: 1;
+            margin-bottom: 8px;
+        }
+
+        .stat-label {
+            font-size: 13px;
+            color: rgba(255, 255, 255, 0.85);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 25px;
+            position: relative;
+        }
+
+        /* Comparison Table */
+        .data-table-container {
+            overflow-x: auto;
+            margin: 35px 0;
+            border-radius: 12px;
+            border: 1px solid #e5e7eb;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 15px;
+            text-align: left;
+        }
+
+        th {
+            background: #f8fafc;
+            padding: 16px;
+            font-weight: 600;
+            color: #1e3a8a;
+            border-bottom: 2px solid #e5e7eb;
+        }
+
+        td {
+            padding: 16px;
+            border-bottom: 1px solid #f1f5f9;
+            color: #4b5563;
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        /* Check Understanding Box */
+        .check-understanding {
+            background: linear-gradient(135deg, #fdfbf7 0%, #f9f5ed 100%);
+            border: 2px solid #B8860B;
+            border-radius: 16px;
+            padding: 32px;
+            margin: 45px 0;
+        }
+
+        .question-item {
+            background: white;
+            border-radius: 12px;
+            padding: 22px 24px;
+            margin-bottom: 16px;
+            border: 1px solid #e8e4dc;
+            position: relative;
+        }
+
+        .reveal-btn {
+            background: #1e3a8a;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-size: 14px;
+            cursor: pointer;
+            font-family: inherit;
+        }
+
+        .answer-text {
+            display: none;
+            font-size: 14px;
+            color: #1e40af;
+            margin: 14px 0 0 0;
+            padding: 14px;
+            background: #eff6ff;
+            border-radius: 8px;
+        }
+
+        .answer-text.show {
+            display: block;
+        }
+
+        /* Takeaways & References */
+        .takeaways-box {
+            background: #f8fafc;
+            padding: 25px;
+            margin-top: 35px;
+            border-radius: 12px;
+            border: 1px solid #e2e8f0;
+        }
+
+        .references-box {
+            margin-top: 40px;
+            padding-top: 25px;
+            border-top: 1px solid #eee;
+            font-size: 14px;
+            color: #666;
+        }
+
+        .references-box h4 {
+            color: #1e3a8a;
+            margin-bottom: 15px;
+        }
+
+        .lesson-footer {
+            text-align: center;
+            padding-top: 50px;
+            margin-top: 60px;
+            border-top: 1px solid #eee;
+        }
+
+        .footer-logo {
+            max-width: 140px;
+            opacity: 0.8;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="lesson-container">
+        <div class="brand-header">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="brand-logo">
+        </div>
+
+        <header class="module-header">
+            <p class="module-label">Module 32: Business Operations</p>
+            <h1 class="lesson-title">Lesson 4: Operational Systems and Tech Stack Optimization</h1>
+            <div class="lesson-meta">
+                <span class="meta-item">35 min read</span>
+                <span class="meta-item">Lesson 4 of 8</span>
+            </div>
+        </header>
+
+        <div class="toc-box">
+            <p class="box-label">In This Lesson</p>
+            <ul class="toc-list">
+                <li><a href="#compliance"><span class="section-num">1</span>Compliance & EHR Selection</a></li>
+                <li><a href="#automation"><span class="section-num">2</span>Automating the Client Journey</a></li>
+                <li><a href="#telehealth"><span class="section-num">3</span>Tele-coaching Infrastructure</a></li>
+                <li><a href="#project-mgmt"><span class="section-num">4</span>Internal Practice Operations</a></li>
+                <li><a href="#outsourcing"><span class="section-num">5</span>Strategic Delegation & Hiring</a></li>
+                <li><a href="#integration"><span class="section-num">6</span>The Method Integration</a></li>
+            </ul>
+        </div>
+
+        <div class="objectives-box">
+            <p class="box-label">Learning Objectives</p>
+            <ul>
+                <li>Evaluate and select HIPAA-compliant EHR/CRM systems tailored for grief practitioners.</li>
+                <li>Design an automated client journey from initial inquiry to long-term alumni support.</li>
+                <li>Optimize tele-coaching setups for maximum security, stability, and professional presence.</li>
+                <li>Implement project management tools (Notion, Asana) to streamline internal practice scaling.</li>
+                <li>Identify the threshold for outsourcing and successfully integrate virtual support staff.</li>
+            </ul>
+        </div>
+
+        <h2 id="compliance">1. The Compliance Foundation: EHR vs. CRM</h2>
+        <p>In previous lessons, we established the legal and financial frameworks of your practice. Now, we must build the digital house that protects these assets. For a grief coach, the distinction between a <span class="highlight">Customer Relationship Manager (CRM)</span> and an <span class="highlight">Electronic Health Record (EHR)</span> is critical for both ethics and efficiency.</p>
+
+        <p>While general life coaches often use standard CRMs like Dubsado or HoneyBook, a professional grief practitioner frequently handles sensitive emotional data that borders on clinical territory. A 2022 survey of 1,200 mental health practitioners found that 18% had experienced a "near-miss" data breach due to using non-compliant communication tools. To mitigate this risk, we prioritize HIPAA-compliant platforms that provide a <span class="highlight">Business Associate Agreement (BAA)</span>.</p>
+
+        <div class="data-table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Feature</th>
+                        <th>Standard CRM (Dubsado/HoneyBook)</th>
+                        <th>Healthcare EHR (SimplePractice/Jane App)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>HIPAA Compliance</td>
+                        <td>Often No / Requires Enterprise Plan</td>
+                        <td>Built-in (Native BAA)</td>
+                    </tr>
+                    <tr>
+                        <td>Clinical Documentation</td>
+                        <td>Basic Notes Only</td>
+                        <td>Structured Notes (SOAP/DAP Templates)</td>
+                    </tr>
+                    <tr>
+                        <td>Billing</td>
+                        <td>Invoicing & Stripe Integration</td>
+                        <td>Insurance ICD-10 Coding & Superbills</td>
+                    </tr>
+                    <tr>
+                        <td>Client Portal</td>
+                        <td>Project-based</td>
+                        <td>Secure Messaging & Document Vault</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <h2 id="automation">2. Automating the Client Journey: The Seamless Experience</h2>
+        <p>Automation in a grief coaching practice is not about removing the human element; it is about <span class="highlight">removing the administrative friction</span> so the human element can shine. A grieving client is often experiencing cognitive fog (often termed "widow brain" or "grief brain"), which makes complex intake processes overwhelming. A 2021 study in the <i>Journal of Loss and Trauma</i> indicated that 64% of bereaved individuals felt "paralyzed" by administrative tasks in the first six months of loss.</p>
+
+        <div class="stats-box">
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <div class="stat-number">42%</div>
+                    <div class="stat-label">Reduction in No-Shows via Auto-Reminders</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">12hr</div>
+                    <div class="stat-label">Avg. Admin Time Saved Per Week</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">88%</div>
+                    <div class="stat-label">Client Satisfaction with Self-Scheduling</div>
+                </div>
+            </div>
+        </div>
+
+        <p>The optimized client journey follows these stages:</p>
+        <ul>
+            <li><strong>Inquiry:</strong> A website form triggers an immediate, compassionate auto-reply with a link to a "Discovery Call" calendar.</li>
+            <li><strong>Intake:</strong> Upon booking, the system automatically sends a secure link to the <span class="highlight">Informed Consent</span>, Grief Assessment, and Payment Authorization.</li>
+            <li><strong>Active Support:</strong> Automated session reminders are sent 24 hours prior via SMS and Email, including the secure video link.</li>
+            <li><strong>Offboarding:</strong> After the final session, an automated "Legacy & Growth" survey is sent, followed by an invitation to an alumni support group 30 days later.</li>
+        </ul>
+
+        <div class="case-study">
+            <div class="case-study-header">
+                <div class="case-study-icon">💼</div>
+                <div>
+                    <p class="box-label">Case Study: The Scaling Practitioner</p>
+                    <p class="subtitle">Client: Elena R., Certified Grief Coach</p>
+                </div>
+            </div>
+            <div class="case-study-content">
+                <p><strong>Scenario:</strong> Elena was spending 15 hours a week manually emailing intake forms, chasing payments, and rescheduling sessions. This "admin fatigue" was causing her to feel resentful toward her clients, impacting her ability to hold space (The Method: Presence).</p>
+                <p><strong>Intervention:</strong> Elena migrated to a HIPAA-compliant EHR (SimplePractice) and integrated her website with an automated booking workflow. She replaced manual PDF forms with digital, mobile-responsive intake assessments.</p>
+                <p><strong>Outcome:</strong> Elena reduced her weekly admin time from 15 hours to 2 hours. Her "no-show" rate dropped by 30%, and she was able to increase her client load from 10 to 18 per week without increasing her total work hours.</p>
+            </div>
+        </div>
+
+        <h2 id="telehealth">3. Tele-coaching Infrastructure: Security and Presence</h2>
+        <p>In a virtual environment, your "office" is the screen. Technical glitches are more than just annoyances; they are <span class="highlight">ruptures in the therapeutic alliance</span>. If a client is in the middle of a vulnerable narrative reconstruction and the video freezes, the safety of the container is compromised.</p>
+
+        <p>Optimization of your tech stack includes:</p>
+        <ul>
+            <li><strong>Platform Security:</strong> Use platforms that offer end-to-end encryption. While standard Zoom is common, the "Zoom for Healthcare" version or Doxy.me provides the necessary security for sensitive grief work.</li>
+            <li><strong>Audio Fidelity:</strong> Invest in a cardioid microphone. Clear audio reduces "cognitive load" for the grieving client, allowing them to focus on the emotional work rather than straining to hear.</li>
+            <li><strong>Redundancy Systems:</strong> Always have a "Plan B" communicated to the client (e.g., "If the video fails, I will call you immediately at [Phone Number]").</li>
+        </ul>
+
+        <h2 id="project-mgmt">4. Internal Practice Operations: Notion vs. Asana</h2>
+        <p>While the EHR manages client data, you need a "second brain" to manage the business. This is where <span class="highlight">Project Management (PM) tools</span> come into play. As you move toward the Master Practitioner level, you will likely be managing content creation, marketing campaigns, and perhaps a small team.</p>
+
+        <div class="principle-card">
+            <div class="principle-title">The "Single Source of Truth" Principle</div>
+            <div class="principle-text">
+                Every operational process should live in one central location. If you hire a VA, they should not have to ask "How do we handle refunds?" They should find the <span class="highlight">Standard Operating Procedure (SOP)</span> in your PM tool.
+            </div>
+            <ul>
+                <li><strong>Notion:</strong> Best for "All-in-One" workspaces (SOPs, Content Calendars, Goal Tracking).</li>
+                <li><strong>Asana/Monday.com:</strong> Best for task-heavy environments and team collaboration.</li>
+            </ul>
+        </div>
+
+        <h2 id="outsourcing">5. Strategic Delegation: When and How to Hire</h2>
+        <p>The most expensive thing in your practice is your own time spent on $20/hour tasks. A practitioner charging $150/hour who spends 5 hours a week on scheduling is effectively losing $650 in potential revenue weekly. This is the ROI of <span class="highlight">Virtual Assistants (VAs)</span>.</p>
+
+        <p>Thresholds for hiring include:</p>
+        <ol>
+            <li><strong>The 80% Capacity Rule:</strong> When your practice is 80% full, the admin burden usually begins to degrade your coaching quality.</li>
+            <li><strong>The "Zone of Genius" Audit:</strong> List every task you do. Any task that doesn't require your specific expertise (e.g., uploading podcasts, formatting newsletters) should be delegated.</li>
+        </ol>
+
+        <div class="case-study">
+            <div class="case-study-header">
+                <div class="case-study-icon">🤝</div>
+                <div>
+                    <p class="box-label">Case Study: The Intake Coordinator Model</p>
+                    <p class="subtitle">Organization: Grief Support Collective</p>
+                </div>
+            </div>
+            <div class="case-study-content">
+                <p><strong>Challenge:</strong> A group practice was losing 40% of inquiries because the practitioners were too busy to return calls within the 24-hour "window of readiness."</p>
+                <p><strong>Solution:</strong> They hired a part-time "Intake Coordinator" (a VA with specialized empathy training). This person's sole job was to handle the initial "warm" contact, verify fit, and assist with onboarding.</p>
+                <p><strong>Outcome:</strong> Conversion rates from inquiry to booking rose to 85%. The practitioners arrived at sessions with clients who were already fully onboarded and ready to work, improving the efficacy of <i>The Method: Narrative Reconstruction</i>.</p>
+            </div>
+        </div>
+
+        <div class="check-understanding">
+            <p class="box-label">Check Your Understanding</p>
+            <p class="box-subtitle">Test your knowledge of practice operations.</p>
+
+            <div class="question-item">
+                <div class="question-number">1</div>
+                <p class="question-text">Why is a Business Associate Agreement (BAA) essential when choosing a tech platform for grief coaching?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <p class="answer-text">A BAA is a legal contract required by HIPAA that ensures the service provider (the tech company) accepts responsibility for protecting the security and privacy of Protected Health Information (PHI). Without it, the practitioner is solely liable for any data breaches.</p>
+            </div>
+
+            <div class="question-item">
+                <div class="question-number">2</div>
+                <p class="question-text">What is the primary psychological benefit of automating the client intake process for a grieving individual?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <p class="answer-text">It reduces "cognitive load." Grieving individuals often suffer from executive dysfunction; a streamlined, automated process removes the need for complex multi-step communication, making it easier for them to access the support they need without additional stress.</p>
+            </div>
+        </div>
+
+        <div class="takeaways-box">
+            <p class="box-label">Key Takeaways</p>
+            <ul>
+                <li><strong>Prioritize HIPAA:</strong> Always choose platforms that offer a BAA to protect your clients' sensitive emotional data.</li>
+                <li><strong>Automate Friction:</strong> Use technology to handle the "cognitive heavy lifting" of scheduling and intake for your clients.</li>
+                <li><strong>Stability is Alliance:</strong> High-quality audio and video are essential for maintaining the therapeutic container in virtual sessions.</li>
+                <li><strong>Document SOPs:</strong> Use Notion or Asana to house Standard Operating Procedures before you hire your first VA.</li>
+                <li><strong>Delegate to Scale:</strong> Identify your hourly rate and outsource any task that costs less than your "Zone of Genius" value.</li>
+            </ul>
+        </div>
+
+        <div class="references-box">
+            <h4>References & Further Reading</h4>
+            <ul>
+                <li>Appelbaum, P. S. et al. (2020). "Privacy and Confidentiality in the Digital Age." <i>American Psychologist</i>.</li>
+                <li>Gentry, J. E. (2021). "The Impact of Administrative Stress on Practitioner Compassion Fatigue." <i>Journal of Traumatic Stress</i>.</li>
+                <li>Hilty, D. M. et al. (2022). "Telehealth for Bereavement Support: A Systematic Review of Security and Efficacy." <i>Journal of Telemedicine and Telecare</i>.</li>
+                <li>Neimeyer, R. A. (2019). "Technological Interventions in Meaning Reconstruction." <i>Death Studies</i>.</li>
+                <li>Shore, J. H. et al. (2023). "Best Practices in Videoconferencing-Based Coaching." <i>Psychiatric Services</i>.</li>
+                <li>U.S. Dept. of Health & Human Services. (2024). "Health Insurance Portability and Accountability Act (HIPAA) Guidelines for Small Practices." <i>HHS.gov</i>.</li>
+            </ul>
+        </div>
+
+        <footer class="lesson-footer">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="footer-logo">
+            <p class="brand">AccrediPro Academy: Grief and Loss Certification</p>
+            <p class="copyright">&copy; 2024 AccrediPro. All rights reserved. Confidential Professional Certification Material.</p>
+        </footer>
+    </div>
+</body>
+
+</html>

@@ -1,0 +1,643 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lesson 6: Systems for Scalability and Stewardship</title>
+    <style>
+        /* Base & Reset */
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Georgia, 'Times New Roman', serif;
+            line-height: 1.8;
+            color: #2d2d2d;
+            background: #f8f6f3;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Main Container */
+        .lesson-container {
+            max-width: 860px;
+            margin: 0 auto;
+            padding: 40px 30px;
+            background: #ffffff;
+            min-height: 100vh;
+            box-shadow: 0 0 60px rgba(0, 0, 0, 0.08);
+        }
+
+        /* Brand Header */
+        .brand-header {
+            text-align: center;
+            padding-bottom: 30px;
+            margin-bottom: 35px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .brand-logo {
+            max-width: 220px;
+            height: auto;
+            margin-bottom: 5px;
+        }
+
+        /* Module Header - BLUE/GOLD theme for Professional Practice */
+        .module-header {
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+            padding: 35px 35px 30px;
+            border-radius: 16px;
+            margin-bottom: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .module-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+            transform: translate(100px, -100px);
+        }
+
+        .module-header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, #B8860B, #D4A84B, #B8860B);
+        }
+
+        .module-label {
+            margin: 0;
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.75);
+            text-transform: uppercase;
+            letter-spacing: 2.5px;
+            font-weight: 500;
+        }
+
+        .lesson-title {
+            margin: 10px 0 0 0;
+            font-size: 28px;
+            color: #ffffff;
+            font-weight: 700;
+            line-height: 1.3;
+            position: relative;
+        }
+
+        .lesson-meta {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+            padding-top: 18px;
+            border-top: 1px solid rgba(255, 255, 255, 0.15);
+            flex-wrap: wrap;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.85);
+            background: rgba(255, 255, 255, 0.1);
+            padding: 5px 12px;
+            border-radius: 4px;
+        }
+
+        /* Table of Contents */
+        .toc-box {
+            background: linear-gradient(135deg, #fafafa 0%, #f5f5f5 100%);
+            border-radius: 14px;
+            padding: 24px 28px;
+            margin-bottom: 35px;
+            border: 1px solid #e8e8e8;
+        }
+
+        .toc-box .box-label {
+            font-weight: 600;
+            color: #1e3a8a;
+            margin: 0 0 18px 0;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .toc-list {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px 24px;
+        }
+
+        .toc-list a {
+            display: flex;
+            align-items: center;
+            padding: 8px 12px;
+            color: #555;
+            text-decoration: none;
+            font-size: 14px;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+        }
+
+        .toc-list a:hover {
+            background: white;
+            color: #3b82f6;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+        }
+
+        .toc-list .section-num {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 26px;
+            height: 26px;
+            background: #1e3a8a;
+            color: white;
+            font-weight: 600;
+            font-size: 11px;
+            border-radius: 6px;
+            margin-right: 12px;
+            flex-shrink: 0;
+        }
+
+        /* Objectives Box */
+        .objectives-box {
+            background: #f0f7ff;
+            border: 2px solid #3b82f6;
+            border-radius: 14px;
+            padding: 30px 35px;
+            margin-bottom: 40px;
+        }
+
+        .objectives-box .box-label {
+            font-weight: 600;
+            color: #1e3a8a;
+            margin: 0 0 18px 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .objectives-box .box-label::before {
+            content: '🎯';
+            font-size: 18px;
+        }
+
+        .objectives-box ul {
+            margin: 0;
+            padding-left: 22px;
+        }
+
+        .objectives-box li {
+            margin-bottom: 14px;
+            font-size: 16px;
+            line-height: 1.7;
+        }
+
+        /* Section Headings */
+        h2 {
+            font-size: 24px;
+            color: #1e3a8a;
+            margin: 50px 0 20px 0;
+            font-weight: 600;
+            position: relative;
+            padding-bottom: 12px;
+        }
+
+        h2::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 60px;
+            height: 3px;
+            background: #B8860B;
+        }
+
+        p {
+            font-size: 17px;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        .highlight {
+            background: linear-gradient(180deg, transparent 60%, #FFF59D 60%);
+            padding: 0 4px;
+            font-weight: 500;
+        }
+
+        /* Case Study Box */
+        .case-study {
+            background: linear-gradient(135deg, #f8f9fb 0%, #f0f2f5 100%);
+            border-radius: 16px;
+            padding: 0;
+            margin: 40px 0;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+        }
+
+        .case-study-header {
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+            padding: 20px 30px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .case-study-icon {
+            width: 45px;
+            height: 45px;
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+        }
+
+        .case-study-header .box-label {
+            font-weight: 600;
+            color: #ffffff;
+            margin: 0;
+            font-size: 16px;
+        }
+
+        .case-study-content {
+            padding: 28px 30px;
+        }
+
+        /* Stats Box */
+        .stats-box {
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+            padding: 40px;
+            border-radius: 16px;
+            margin: 35px 0;
+            color: white;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 25px;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 42px;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        .stat-label {
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            opacity: 0.9;
+        }
+
+        /* Data Table */
+        .data-table-container {
+            overflow-x: auto;
+            margin: 30px 0;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 15px;
+        }
+
+        th {
+            background-color: #1e3a8a;
+            color: white;
+            padding: 15px;
+            text-align: left;
+        }
+
+        td {
+            padding: 15px;
+            border-bottom: 1px solid #eee;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+
+        /* Check Understanding */
+        .check-understanding {
+            background: #fdfbf7;
+            border: 2px solid #B8860B;
+            border-radius: 16px;
+            padding: 32px;
+            margin: 45px 0;
+        }
+
+        .question-item {
+            background: white;
+            border-radius: 12px;
+            padding: 22px 24px;
+            margin-bottom: 16px;
+            border: 1px solid #e8e4dc;
+        }
+
+        .reveal-btn {
+            background: #1e3a8a;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+
+        .answer-text {
+            display: none;
+            margin-top: 15px;
+            padding: 15px;
+            background: #f0f7ff;
+            border-radius: 8px;
+        }
+
+        .answer-text.show {
+            display: block;
+        }
+
+        /* Takeaways & References */
+        .takeaways-box {
+            background: #f3f4f6;
+            padding: 25px;
+            border-radius: 12px;
+            margin-top: 40px;
+        }
+
+        .references-box {
+            margin-top: 40px;
+            padding-top: 20px;
+            border-top: 1px solid #eee;
+            font-size: 14px;
+            color: #666;
+        }
+
+        .references-box h4 {
+            color: #1e3a8a;
+            margin-bottom: 15px;
+        }
+
+        .lesson-footer {
+            text-align: center;
+            padding: 40px 0;
+            color: #888;
+            font-size: 13px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="lesson-container">
+        <div class="brand-header">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="brand-logo">
+        </div>
+
+        <header class="module-header">
+            <p class="module-label">Module 30: Building Your Practice</p>
+            <h1 class="lesson-title">Lesson 6: Systems for Scalability and Stewardship</h1>
+            <div class="lesson-meta">
+                <span class="meta-item">35 min read</span>
+                <span class="meta-item">Lesson 6 of 8</span>
+            </div>
+        </header>
+
+        <div class="toc-box">
+            <p class="box-label">In This Lesson</p>
+            <ul class="toc-list">
+                <li><a href="#crm"><span class="section-num">1</span>Selecting Your Coaching CRM</a></li>
+                <li><a href="#automation"><span class="section-num">2</span>The Automated Onboarding Flow</a></li>
+                <li><a href="#finance"><span class="section-num">3</span>Financial Stewardship & Profit First</a></li>
+                <li><a href="#time"><span class="section-num">4</span>Honoring the Sabbath in Business</a></li>
+                <li><a href="#sop"><span class="section-num">5</span>Standard Operating Procedures (SOPs)</a></li>
+                <li><a href="#scale"><span class="section-num">6</span>Scalability for Kingdom Impact</a></li>
+            </ul>
+        </div>
+
+        <div class="objectives-box">
+            <p class="box-label">Learning Objectives</p>
+            <ul>
+                <li>Evaluate and select a CRM that aligns with the F.A.I.T.H. Coaching Method™ user experience.</li>
+                <li>Design an automated onboarding sequence from initial payment to the first coaching session.</li>
+                <li>Apply "Profit First" financial principles to ensure long-term practice sustainability.</li>
+                <li>Develop a time-management framework that prioritizes rest and spiritual renewal.</li>
+                <li>Create Standard Operating Procedures (SOPs) to maintain excellence during growth.</li>
+            </ul>
+        </div>
+
+        <h2 id="crm">1. Selecting Your Coaching CRM</h2>
+        <p>In the early stages of a coaching practice, many practitioners rely on a "patchwork" of tools: a calendar link here, a PayPal invoice there, and client notes scattered across notebooks or digital files. However, true <span class="highlight">stewardship</span> requires order. A Customer Relationship Management (CRM) system is not merely a tool for efficiency; it is a digital manifestation of hospitality, ensuring no client feels neglected or forgotten.</p>
+        
+        <p>A 2022 study on professional service providers found that those using integrated CRM systems reported a <strong>34% increase in client retention</strong> and a <strong>27% reduction in administrative overhead</strong>. For the Christian coach, this "saved" time is reclaimed for deeper prayer, session preparation, and family life.</p>
+
+        <div class="data-table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Feature</th>
+                        <th>Manual/Patchwork</th>
+                        <th>Integrated CRM (e.g., Practice Better, Dubsado)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Scheduling</strong></td>
+                        <td>Back-and-forth emails</td>
+                        <td>Automated booking with time-zone syncing</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Invoicing</strong></td>
+                        <td>Manual reminders; high friction</td>
+                        <td>Auto-recurring payments and late fee triggers</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Documentation</strong></td>
+                        <td>Physical folders or scattered files</td>
+                        <td>Secure, encrypted HIPAA-compliant portals</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Client Experience</strong></td>
+                        <td>Inconsistent; looks "amateur"</td>
+                        <td>Seamless, professional, and branded</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <h2 id="automation">2. Automating the F.A.I.T.H. Onboarding Flow</h2>
+        <p>The transition from "Prospect" to "Client" is a vulnerable time. In the F.A.I.T.H. Coaching Method™, we view the <span class="highlight">Onboarding Process</span> as the beginning of the "Foundation" (F) stage. Automation ensures that the client feels held and guided from the moment they say "yes."</p>
+
+        <div class="stats-box">
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <div class="stat-number">68%</div>
+                    <div class="stat-label">Clients likely to churn if onboarding is poor</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">4.5 hrs</div>
+                    <div class="stat-label">Saved per week via automation</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">92%</div>
+                    <div class="stat-label">Higher professionalism rating</div>
+                </div>
+            </div>
+        </div>
+
+        <p>An ideal automated flow includes:</p>
+        <ul>
+            <li><strong>The Trigger:</strong> Payment is received via your CRM or website.</li>
+            <li><strong>The Welcome:</strong> An immediate email containing a personal video message and the "Client Portal" link.</li>
+            <li><strong>The Intake:</strong> Automated delivery of the F.A.I.T.H. Assessment Framework (from Module 9).</li>
+            <li><strong>The Scheduling:</strong> A link to book their first "Foundation" session, only accessible after the contract is signed.</li>
+        </ul>
+
+        <div class="case-study">
+            <div class="case-study-header">
+                <div class="case-study-icon">👤</div>
+                <div>
+                    <p class="box-label">Case Study: Sarah’s Transition to Order</p>
+                    <p class="subtitle">Overcoming Administrative Burnout</p>
+                </div>
+            </div>
+            <div class="case-study-content">
+                <p><strong>Client:</strong> Sarah (42), Christian Executive Coach.</p>
+                <p><strong>Problem:</strong> Sarah was spending 10 hours a week on billing, scheduling, and sending intake forms. She missed two follow-ups with high-level prospects because her "system" was a series of sticky notes.</p>
+                <p><strong>Intervention:</strong> Implemented a dedicated coaching CRM (Dubsado) and mapped out a 5-step automated onboarding workflow. She automated her tithing and "Profit First" transfers.</p>
+                <p><strong>Outcome:</strong> Administrative time dropped to 1.5 hours per week. She increased her client capacity by 40% without increasing her stress levels. Most importantly, her clients reported feeling "deeply cared for" before their first session even began.</p>
+            </div>
+        </div>
+
+        <h2 id="finance">3. Financial Stewardship & Profit First</h2>
+        <p>Many Christian coaches struggle with a "poverty mindset" or, conversely, a lack of financial discipline that leads to "feast or famine" cycles. We advocate for the <strong>Profit First</strong> methodology, adapted for Kingdom entrepreneurs. This system flips the traditional accounting formula (Sales - Expenses = Profit) to <span class="highlight">Sales - Profit = Expenses</span>.</p>
+        
+        <p>By taking your profit and your <span class="highlight">Tithe</span> first, you force your business to operate within the remaining margins. This encourages innovation and prevents "lifestyle creep" or "business bloat."</p>
+
+        <p><strong>The Five Core Accounts:</strong></p>
+        <ol>
+            <li><strong>Income:</strong> Where all revenue initially lands.</li>
+            <li><strong>Tithe/Giving (10%):</strong> Your first fruit, honoring the Provider.</li>
+            <li><strong>Profit (5-10%):</strong> A reward for the risk of business ownership.</li>
+            <li><strong>Owner’s Comp (35-50%):</strong> Your "salary" to support your family.</li>
+            <li><strong>Tax (15%):</strong> Setting aside what belongs to Caesar.</li>
+            <li><strong>Operating Expenses (Remainder):</strong> The budget you have left to run the practice.</li>
+        </ol>
+
+        <h2 id="time">4. Honoring the Sabbath in a High-Growth Practice</h2>
+        <p>The greatest threat to a successful coaching practice is the coach’s own burnout. In a 2023 survey of 1,200 coaches, <strong>56% reported symptoms of emotional exhaustion</strong>. Biblical stewardship includes the stewardship of your own biology and spirit.</p>
+
+        <p>Rest is not the absence of work; it is the presence of trust. When we Sabbath, we declare that the success of our practice depends on God, not our 24/7 availability. Effective systems allow your business to "run" while you are resting.</p>
+
+        <div class="alert-box info">
+            <p class="alert-label">The Productivity of Rest</p>
+            <p>Research published in the <em>Journal of Applied Psychology</em> indicates that "psychological detachment from work" during non-work time significantly predicts higher task performance and increased proactivity when returning to work. For the Christian coach, the Sabbath is your competitive advantage.</p>
+        </div>
+
+        <h2 id="sop">5. Standard Operating Procedures (SOPs)</h2>
+        <p>An SOP is a set of step-by-step instructions compiled by an organization to help workers carry out complex routine operations. Even if you are a "solopreneur," you need SOPs. They are the "blueprints" of your practice.</p>
+        
+        <p>Why create SOPs now?
+        <ul>
+            <li><strong>Consistency:</strong> Ensures every client receives the same high-quality F.A.I.T.H. experience.</li>
+            <li><strong>Delegation:</strong> You cannot hire a Virtual Assistant (VA) effectively without documented processes.</li>
+            <li><strong>Sanity:</strong> You don't have to "reinvent the wheel" every time you launch a new group program or intake a client.</li>
+        </ul></p>
+
+        <h2 id="scale">6. Scalability for Kingdom Impact</h2>
+        <p>Scalability is the ability of your practice to handle a growing amount of work in a capable manner or its potential to be enlarged to accommodate that growth. In a Kingdom context, scalability is about <span class="highlight">increasing your surface area for miracles</span>.</p>
+        
+        <p>A 1-on-1 coaching model is inherently limited by your hours. To scale, you must move toward:
+        <ol>
+            <li><strong>Group Coaching:</strong> Leveraging the "Power of Two or Three" (Matthew 18:20).</li>
+            <li><strong>Digital Products:</strong> Transforming your F.A.I.T.H. insights into courses or workbooks.</li>
+            <li><strong>Associate Coaching:</strong> Bringing other Christian coaches under your methodology and brand.</li>
+        </ol></p>
+
+        <div class="case-study">
+            <div class="case-study-header">
+                <div class="case-study-icon">📈</div>
+                <div>
+                    <p class="box-label">Case Study: David’s Scalable Ministry</p>
+                    <p class="subtitle">From 1-on-1 to Global Impact</p>
+                </div>
+            </div>
+            <div class="case-study-content">
+                <p><strong>Coach:</strong> David, specializing in Biblical Financial Transformation.</p>
+                <p><strong>System:</strong> David hit a ceiling with 15 private clients. He documented his entire 12-week process into an SOP and created a "hybrid" model: a pre-recorded video curriculum followed by a weekly group Q&A.</p>
+                <p><strong>Outcome:</strong> David now serves 150 students simultaneously. His "Profit First" system allowed him to hire a community manager, freeing him to spend 20 hours a week on a non-profit initiative for inner-city financial literacy.</p>
+            </div>
+        </div>
+
+        <div class="check-understanding">
+            <p class="box-label">Check Your Understanding</p>
+            <p class="box-subtitle">Reflect on your readiness for scalability</p>
+            
+            <div class="question-item">
+                <p class="question-text">1. Why is "Profit First" particularly relevant for a Christian Life Coach compared to traditional accounting?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-text">It prioritizes stewardship (tithing) and sustainability (profit) as non-negotiable "first fruits," preventing the coach from operating out of a deficit or neglecting their own family's needs (Owner's Comp).</div>
+            </div>
+
+            <div class="question-item">
+                <p class="question-text">2. What is the primary purpose of an SOP in a solo coaching practice?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-text">To ensure consistency in client experience and to create a "blueprint" that allows for future delegation or automation, preventing the coach from being the "bottleneck" of the business.</div>
+            </div>
+        </div>
+
+        <div class="takeaways-box">
+            <p class="box-label">Key Takeaways</p>
+            <ul>
+                <li>Systems are an act of stewardship and hospitality, not just business efficiency.</li>
+                <li>A CRM is essential for professionalizing the F.A.I.T.H. Coaching Method™ experience.</li>
+                <li>Automating onboarding reduces client churn and reclaims time for deep coaching work.</li>
+                <li>Rest (Sabbath) is a biological and spiritual necessity for a sustainable practice.</li>
+                <li>Scalability requires moving from "doing the work" to "designing the system that does the work."</li>
+            </ul>
+        </div>
+
+        <div class="references-box">
+            <h4>References & Further Reading</h4>
+            <ul>
+                <li>Michalowicz, M. (2017). "Profit First: Transform Your Business from a Cash-Eating Monster to a Money-Making Machine." Portfolio.</li>
+                <li>Sonnentag, S. et al. (2022). "Psychological Detachment from Work During Off-Job Time: The Role of Restorative Environments." Journal of Applied Psychology.</li>
+                <li>International Coaching Federation (2023). "Global Coaching Study: The State of the Industry." ICF Publications.</li>
+                <li>Wagemans, J. et al. (2021). "The Impact of CRM Systems on Professional Service Quality: A Meta-Analysis." Journal of Business Research.</li>
+                <li>Heschel, A. J. (1951). "The Sabbath." Farrar, Straus and Giroux. (Classic theological reference on rest).</li>
+                <li>Gawande, A. (2009). "The Checklist Manifesto: How to Get Things Right." Metropolitan Books. (Basis for SOP development).</li>
+            </ul>
+        </div>
+
+        <footer class="lesson-footer">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="footer-logo">
+            <p class="brand">AccrediPro Academy | Christian Life Coach Certification</p>
+            <p class="copyright">&copy; 2024 AccrediPro. All Rights Reserved.</p>
+        </footer>
+    </div>
+</body>
+
+</html>

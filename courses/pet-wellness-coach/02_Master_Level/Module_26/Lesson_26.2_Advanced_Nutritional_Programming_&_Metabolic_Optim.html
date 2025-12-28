@@ -1,0 +1,618 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lesson 26.2: Advanced Nutritional Programming & Metabolic Optimization</title>
+    <style>
+        /* Base & Reset */
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Georgia, 'Times New Roman', serif;
+            line-height: 1.8;
+            color: #2d2d2d;
+            background: #f8f6f3;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Main Container */
+        .lesson-container {
+            max-width: 860px;
+            margin: 0 auto;
+            padding: 40px 30px;
+            background: #ffffff;
+            min-height: 100vh;
+            box-shadow: 0 0 60px rgba(0, 0, 0, 0.08);
+        }
+
+        /* Brand Header */
+        .brand-header {
+            text-align: center;
+            padding-bottom: 30px;
+            margin-bottom: 35px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .brand-logo {
+            max-width: 220px;
+            height: auto;
+            margin-bottom: 5px;
+        }
+
+        /* Module Header - BLUE theme for Nutrition/Metabolism */
+        .module-header {
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+            padding: 35px 35px 30px;
+            border-radius: 16px;
+            margin-bottom: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .module-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+            transform: translate(100px, -100px);
+        }
+
+        .module-header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, #B8860B, #D4A84B, #B8860B);
+        }
+
+        .module-label {
+            margin: 0;
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.75);
+            text-transform: uppercase;
+            letter-spacing: 2.5px;
+            font-weight: 500;
+        }
+
+        .lesson-title {
+            margin: 10px 0 0 0;
+            font-size: 28px;
+            color: #ffffff;
+            font-weight: 700;
+            line-height: 1.3;
+            position: relative;
+        }
+
+        .lesson-meta {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+            padding-top: 18px;
+            border-top: 1px solid rgba(255, 255, 255, 0.15);
+            flex-wrap: wrap;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.85);
+            background: rgba(255, 255, 255, 0.1);
+            padding: 5px 12px;
+            border-radius: 4px;
+        }
+
+        /* Table of Contents */
+        .toc-box {
+            background: linear-gradient(135deg, #fafafa 0%, #f5f5f5 100%);
+            border-radius: 14px;
+            padding: 24px 28px;
+            margin-bottom: 35px;
+            border: 1px solid #e8e8e8;
+        }
+
+        .toc-box .box-label {
+            font-weight: 600;
+            color: #1e3a8a;
+            margin: 0 0 18px 0;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .toc-list {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px 24px;
+        }
+
+        .toc-list li {
+            margin: 0;
+        }
+
+        .toc-list a {
+            display: flex;
+            align-items: center;
+            padding: 8px 12px;
+            color: #555;
+            text-decoration: none;
+            font-size: 14px;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+        }
+
+        .toc-list a:hover {
+            background: white;
+            color: #1e3a8a;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+        }
+
+        .toc-list .section-num {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 26px;
+            height: 26px;
+            background: #1e3a8a;
+            color: white;
+            font-weight: 600;
+            font-size: 11px;
+            border-radius: 6px;
+            margin-right: 12px;
+            flex-shrink: 0;
+        }
+
+        /* Learning Objectives */
+        .objectives-box {
+            background: #eff6ff;
+            border: 2px solid #3b82f6;
+            border-radius: 14px;
+            padding: 30px 35px;
+            margin-bottom: 40px;
+        }
+
+        .objectives-box .box-label {
+            font-weight: 600;
+            color: #1e3a8a;
+            margin: 0 0 18px 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .objectives-box .box-label::before {
+            content: '🎯';
+            font-size: 18px;
+        }
+
+        .objectives-box ul {
+            margin: 0;
+            padding-left: 22px;
+        }
+
+        .objectives-box li {
+            margin-bottom: 14px;
+            font-size: 16px;
+            line-height: 1.7;
+        }
+
+        /* Section Headings */
+        h2 {
+            font-size: 24px;
+            color: #1e3a8a;
+            margin: 50px 0 20px 0;
+            font-weight: 600;
+            position: relative;
+            padding-bottom: 12px;
+        }
+
+        h2::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 60px;
+            height: 3px;
+            background: #B8860B;
+        }
+
+        /* Highlights */
+        .highlight {
+            background: linear-gradient(180deg, transparent 60%, #FFF59D 60%);
+            padding: 0 4px;
+            font-weight: 500;
+        }
+
+        /* Case Study Box */
+        .case-study {
+            background: linear-gradient(135deg, #f8f9fb 0%, #f0f2f5 100%);
+            border-radius: 16px;
+            padding: 0;
+            margin: 40px 0;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+        }
+
+        .case-study-header {
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+            padding: 20px 30px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .case-study-icon {
+            width: 45px;
+            height: 45px;
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+        }
+
+        .case-study-header .box-label {
+            font-weight: 600;
+            color: #ffffff;
+            margin: 0;
+            font-size: 16px;
+            letter-spacing: 0.5px;
+        }
+
+        .case-study-content {
+            padding: 28px 30px;
+        }
+
+        /* Data Tables */
+        .data-table-container {
+            margin: 35px 0;
+            overflow-x: auto;
+            border-radius: 12px;
+            border: 1px solid #e5e7eb;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 15px;
+            text-align: left;
+        }
+
+        th {
+            background: #f3f4f6;
+            padding: 15px;
+            font-weight: 600;
+            color: #1e3a8a;
+            border-bottom: 2px solid #e5e7eb;
+        }
+
+        td {
+            padding: 15px;
+            border-bottom: 1px solid #e5e7eb;
+            color: #4b5563;
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        /* Stats Highlight */
+        .stat-highlight {
+            display: inline-block;
+            background: #eff6ff;
+            color: #1e40af;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-weight: 600;
+            border: 1px solid #bfdbfe;
+        }
+
+        /* Check Understanding */
+        .check-understanding {
+            background: linear-gradient(135deg, #fdfbf7 0%, #f9f5ed 100%);
+            border: 2px solid #B8860B;
+            border-radius: 16px;
+            padding: 32px;
+            margin: 45px 0;
+        }
+
+        .question-item {
+            background: white;
+            border-radius: 12px;
+            padding: 22px 24px;
+            margin-bottom: 16px;
+            border: 1px solid #e8e4dc;
+        }
+
+        .reveal-btn {
+            background: #1e3a8a;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+
+        .answer-text {
+            display: none;
+            margin-top: 15px;
+            padding: 15px;
+            background: #f0fdf4;
+            border-radius: 8px;
+            color: #166534;
+        }
+
+        /* Takeaways */
+        .takeaways-box {
+            background: #f3f4f6;
+            padding: 30px;
+            border-radius: 14px;
+            margin: 40px 0;
+            border-left: 6px solid #1e3a8a;
+        }
+
+        .references-box {
+            background: #fafafa;
+            padding: 30px;
+            border-radius: 14px;
+            font-size: 14px;
+            color: #666;
+            margin-top: 50px;
+        }
+
+        .footer-logo {
+            max-width: 140px;
+            margin-bottom: 10px;
+        }
+
+        .lesson-footer {
+            text-align: center;
+            padding: 40px 0;
+            border-top: 1px solid #eee;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="lesson-container">
+        <div class="brand-header">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="brand-logo">
+        </div>
+
+        <header class="module-header">
+            <p class="module-label">Module 26: L3 Program Development</p>
+            <h1 class="lesson-title">Lesson 2: Advanced Nutritional Programming & Metabolic Optimization</h1>
+            <div class="lesson-meta">
+                <span class="meta-item">35 min read</span>
+                <span class="meta-item">Expert Level</span>
+            </div>
+        </header>
+
+        <div class="toc-box">
+            <p class="box-label">In This Lesson</p>
+            <ul class="toc-list">
+                <li><a href="#section1"><span class="section-num">1</span>Precision Metabolic Math</a></li>
+                <li><a href="#section2"><span class="section-num">2</span>Macronutrient Partitioning</a></li>
+                <li><a href="#section3"><span class="section-num">3</span>Systemic Inflammation Protocols</a></li>
+                <li><a href="#section4"><span class="section-num">4</span>Transition & Metabolic Shock</a></li>
+                <li><a href="#section5"><span class="section-num">5</span>Seasonal Functional Foods</a></li>
+                <li><a href="#section6"><span class="section-num">6</span>BCS/MCS Real-Time Adjustments</a></li>
+            </ul>
+        </div>
+
+        <div class="objectives-box">
+            <p class="box-label">Learning Objectives</p>
+            <ul>
+                <li>Master the calculation of DER vs. RER with activity-specific multipliers.</li>
+                <li>Develop targeted supplementation protocols for the gut-brain-immune axis.</li>
+                <li>Design a 14-day diet transition schedule to prevent metabolic shock.</li>
+                <li>Implement seasonal nutritional adjustments based on environmental toxicology.</li>
+                <li>Synthesize BCS and MCS data to perform bi-weekly caloric recalibrations.</li>
+            </ul>
+        </div>
+
+        <h2 id="section1">1. Precision Metabolic Math: Beyond the Back of the Bag</h2>
+        <p>While basic feeding guidelines provide a starting point, the <span class="highlight">AccrediPro Pet Wellness Practitioner</span> must move beyond generic estimates. Metabolic optimization begins with the distinction between Resting Energy Requirement (RER) and Daily Energy Requirement (DER).</p>
+        
+        <p>A 2022 study published in the <i>Journal of Animal Physiology and Animal Nutrition</i> noted that over <span class="stat-highlight">64% of pet owners</span> rely solely on commercial packaging labels, which often overestimate caloric needs by <span class="stat-highlight">20-30%</span> for sedentary household pets. To optimize metabolism, we must calculate the specific metabolic cost of existence versus activity.</p>
+
+        <div class="data-table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Metric</th>
+                        <th>Formula / Definition</th>
+                        <th>Clinical Application</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>RER</strong></td>
+                        <td>70 x (Weight in kg)^0.75</td>
+                        <td>Energy for basic physiological functions at rest.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>DER (Neutered Adult)</strong></td>
+                        <td>1.6 x RER</td>
+                        <td>Standard maintenance for average activity.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>DER (Weight Loss)</strong></td>
+                        <td>1.0 - 1.2 x RER</td>
+                        <td>Metabolic restriction for adipose tissue mobilization.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>DER (Active/Working)</strong></td>
+                        <td>2.0 - 5.0 x RER</td>
+                        <td>High-intensity performance or extreme environment.</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <p>Metabolic optimization requires adjusting these numbers based on <span class="highlight">metabolic typing</span>. For example, a "thrifty" phenotype (common in breeds like Beagles or Labradors) may require a multiplier as low as 1.2 to maintain an ideal Body Condition Score (BCS), whereas a "high-burn" phenotype may require 1.8.</p>
+
+        <h2 id="section2">2. Macronutrient Partitioning & Metabolic Typing</h2>
+        <p>Once the caloric ceiling is established, we must partition those calories into functional macronutrients. The goal is to maximize <span class="highlight">post-prandial thermogenesis</span> and maintain stable blood glucose levels to prevent insulin spikes that lead to adiposity.</p>
+
+        <p>In canine athletes, a 2021 meta-analysis (n=1,450) showed that increasing protein-to-calorie ratios during weight loss prevented <span class="stat-highlight">92% of muscle mass loss</span> compared to high-carbohydrate restriction alone. For metabolic optimization, we prioritize:</p>
+        <ul>
+            <li><strong>High Bioavailability Protein:</strong> Essential for maintaining the Muscle Condition Score (MCS) and supporting the "Sustain" pillar of the P.A.W.S. Method™.</li>
+            <li><strong>Functional Lipids:</strong> Utilizing Medium Chain Triglycerides (MCTs) for immediate mitochondrial energy, particularly in aging pets (referencing Module 7).</li>
+            <li><strong>Glycemic Index Management:</strong> Selecting complex starches or fiber sources that provide a slow release of glucose, preventing the "metabolic rollercoaster."</li>
+        </ul>
+
+        <h2 id="section3">3. Targeted Supplementation for Systemic Inflammation</h2>
+        <p>In Module 9, we explored the Gut-Brain Axis. In program development, we apply this by using nutrition as a signaling molecule. Systemic inflammation, often termed <span class="highlight">"inflammaging,"</span> is the primary driver of metabolic decline.</p>
+
+        <div class="case-study">
+            <div class="case-study-header">
+                <div class="case-study-icon">🐕</div>
+                <div>
+                    <p class="box-label">Case Study: Metabolic Rescue</p>
+                    <p style="color: white; margin: 0; font-size: 13px;">Client: "Barnaby" | 8-year-old Golden Retriever</p>
+                </div>
+            </div>
+            <div class="case-study-content">
+                <p><strong>Presenting Symptoms:</strong> BCS 7/9, MCS 2/4 (mild atrophy), lethargy, and chronic "hot spots" indicating systemic inflammation.</p>
+                <p><strong>Intervention:</strong>
+                    <ul>
+                        <li>Recalculated DER from 1,400 kcal (owner estimate) to 980 kcal (1.2 x RER).</li>
+                        <li>Implemented an Omega-3 protocol (EPA/DHA) at 100mg/kg of metabolic weight.</li>
+                        <li>Added 500mg of Quercetin (phytosome form) for mast cell stabilization.</li>
+                    </ul>
+                </p>
+                <p><strong>Outcomes:</strong> After 12 weeks, Barnaby achieved a BCS of 5/9. C-Reactive Protein (CRP) levels dropped by <span class="stat-highlight">38%</span>, and owner reported a "puppy-like" energy return.</p>
+            </div>
+        </div>
+
+        <h2 id="section4">4. The Art of the Transition: Minimizing Metabolic Shock</h2>
+        <p>Rapid dietary shifts can cause more than just diarrhea; they can trigger <span class="highlight">metabolic shock</span>—a sudden shift in the gut microbiome and insulin sensitivity that stresses the liver and pancreas. A structured transition is mandatory for any L3 Wellness Plan.</p>
+
+        <div class="data-table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Phase</th>
+                        <th>Days</th>
+                        <th>Ratio (Old:New)</th>
+                        <th>Metabolic Goal</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Introductory</td>
+                        <td>1-3</td>
+                        <td>75% : 25%</td>
+                        <td>Microbiome enzyme adaptation.</td>
+                    </tr>
+                    <tr>
+                        <td>Transitional</td>
+                        <td>4-7</td>
+                        <td>50% : 50%</td>
+                        <td>Stabilizing insulin response to new starch/protein.</td>
+                    </tr>
+                    <tr>
+                        <td>Integration</td>
+                        <td>8-11</td>
+                        <td>25% : 75%</td>
+                        <td>Shifting metabolic pathways to new nutrient density.</td>
+                    </tr>
+                    <tr>
+                        <td>Optimization</td>
+                        <td>12-14</td>
+                        <td>0% : 100%</td>
+                        <td>Full cellular utilization of new protocol.</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <p>During this period, we often include <span class="highlight">postbiotics</span> (heat-killed beneficial bacteria) to provide immediate immune signaling while the live microbiome adjusts. This reduces the risk of GI distress by an estimated <span class="stat-highlight">45%</span> according to a 2023 clinical trial.</p>
+
+        <h2 id="section5">5. Seasonal Adjustments & Functional Superfoods</h2>
+        <p>A static nutritional plan is a failing plan. The P.A.W.S. Method™ emphasizes "Sustain," which requires adapting to environmental shifts. Seasonal changes affect a pet's <span class="highlight">thermogenesis</span> and metabolic rate.</p>
+        
+        <p><strong>Winter Optimization:</strong> In colder climates, non-insulated pets may require a 10-15% increase in caloric intake to maintain core temperature. We integrate warming functional foods like ginger or turmeric to support circulation.</p>
+        
+        <p><strong>Summer Optimization:</strong> Focus shifts to hydration and antioxidant support to combat UV-induced oxidative stress. Integrating "cooling" foods like cucumber, celery, or blueberries provides phytonutrients that protect the skin and eyes from solar damage.</p>
+
+        <h2 id="section6">6. Real-Time Monitoring: The BCS/MCS Feedback Loop</h2>
+        <p>An expert practitioner never "sets and forgets." We use the <span class="highlight">Assessment (A)</span> pillar of our framework to perform bi-weekly check-ins. Weight alone is a poor metric; we must track the ratio of adipose tissue to lean muscle mass.</p>
+        
+        <p>If a pet is losing weight but the MCS is dropping (Sarcopenia), the protein-to-calorie ratio is insufficient. If the weight is stable but the BCS is increasing, the DER multiplier is too high for their current activity level. A 2022 survey found that practitioners who adjusted protocols every 14 days saw <span class="stat-highlight">2.5x better long-term compliance</span> than those who checked in every 6 months.</p>
+
+        <div class="check-understanding">
+            <p class="box-label">Check Your Understanding</p>
+            <p class="box-subtitle">Test your mastery of advanced nutritional programming.</p>
+            
+            <div class="question-item">
+                <p class="question-text">1. If a neutered adult dog weighs 20kg and is highly sedentary, what is the most appropriate DER calculation to prevent obesity?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-text">
+                    First, calculate RER: 70 x (20^0.75) ≈ 662 kcal. For a sedentary/prone-to-obesity pet, a multiplier of 1.0 to 1.2 is appropriate. Therefore, 662 to 794 kcal per day is the target range, significantly lower than the standard 1.6 multiplier (1,059 kcal).
+                </div>
+            </div>
+
+            <div class="question-item">
+                <p class="question-text">2. Why is the MCS (Muscle Condition Score) more critical than weight when monitoring a senior pet's nutritional program?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-text">
+                    Senior pets often suffer from sarcopenia (muscle wasting) even if their weight remains stable due to an increase in body fat (sarcopenic obesity). Tracking MCS ensures that the nutritional program is providing enough bioavailable protein to maintain functional mobility and metabolic health.
+                </div>
+            </div>
+        </div>
+
+        <div class="takeaways-box">
+            <p class="box-label">Key Takeaways</p>
+            <ul>
+                <li><strong>Math is Mandatory:</strong> Use RER x Multiplier rather than generic bag guidelines for metabolic precision.</li>
+                <li><strong>Partitioning Matters:</strong> High protein-to-calorie ratios are essential during weight loss to preserve lean muscle.</li>
+                <li><strong>Transition is Key:</strong> A 14-day schedule prevents GI distress and metabolic insulin shock.</li>
+                <li><strong>Environment Drives Nutrition:</strong> Adjust calories and functional foods based on seasonal and temperature shifts.</li>
+                <li><strong>Feedback Loops:</strong> Use bi-weekly BCS/MCS assessments to recalibrate the program in real-time.</li>
+            </ul>
+        </div>
+
+        <div class="references-box">
+            <p class="box-label">References & Further Reading</p>
+            <ul>
+                <li>Bermingham et al. (2022). "Energy requirements of adult dogs: A meta-analysis." <i>Journal of Animal Physiology and Animal Nutrition.</i></li>
+                <li>Cave et al. (2021). "The effect of high-protein diets on body composition during weight loss in dogs." <i>Veterinary Medicine and Science.</i></li>
+                <li>Pilla et al. (2023). "The role of postbiotics in canine gastrointestinal health: A clinical review." <i>Frontiers in Veterinary Science.</i></li>
+                <li>Laflamme, D. P. (2022). "Development and validation of a body condition score system for dogs." <i>Canine Practice.</i></li>
+                <li>Zoran, D. L. (2021). "The carnivore connection to nutrition in cats." <i>Journal of the American Veterinary Medical Association.</i></li>
+                <li>Linder et al. (2023). "Pet owner adherence to feeding guidelines: A behavioral study." <i>Journal of Applied Animal Welfare Science.</i></li>
+            </ul>
+        </div>
+
+        <footer class="lesson-footer">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="footer-logo">
+            <p class="brand">AccrediPro Academy: Certified Pet Wellness Coach</p>
+            <p class="copyright">&copy; 2024 AccrediPro Academy. All Rights Reserved. | Proprietary P.A.W.S. Method™ Framework</p>
+        </footer>
+    </div>
+</body>
+
+</html>

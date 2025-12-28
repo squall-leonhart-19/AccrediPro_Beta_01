@@ -10,6 +10,50 @@ const knowledgeUpdateSchema = z.object({
     knowledgeBase: z.string().optional(),
 });
 
+export async function GET(request: NextRequest) {
+    try {
+        const session = await getServerSession(authOptions);
+        const { searchParams } = new URL(request.url);
+        const userId = searchParams.get("userId");
+
+        if (!session?.user?.id || session.user.role !== "ADMIN") {
+            return NextResponse.json(
+                { error: "Unauthorized. Admin access required." },
+                { status: 401 }
+            );
+        }
+
+        if (!userId) {
+            return NextResponse.json(
+                { error: "User ID is required" },
+                { status: 400 }
+            );
+        }
+
+        const user = await prisma.user.findUnique({
+            where: { id: userId },
+            select: { knowledgeBase: true },
+        });
+
+        if (!user) {
+            return NextResponse.json(
+                { error: "User not found" },
+                { status: 404 }
+            );
+        }
+
+        return NextResponse.json({
+            knowledgeBase: user.knowledgeBase,
+        });
+    } catch (error) {
+        console.error("Admin knowledge base fetch error:", error);
+        return NextResponse.json(
+            { error: "Failed to fetch knowledge base" },
+            { status: 500 }
+        );
+    }
+}
+
 export async function PATCH(request: NextRequest) {
     try {
         const session = await getServerSession(authOptions);

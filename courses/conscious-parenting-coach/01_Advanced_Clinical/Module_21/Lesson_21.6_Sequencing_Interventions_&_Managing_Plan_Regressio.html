@@ -1,0 +1,714 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lesson 6: Sequencing Interventions & Managing Plan Regression</title>
+    <style>
+        /* Base & Reset */
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Georgia, 'Times New Roman', serif;
+            line-height: 1.8;
+            color: #2d2d2d;
+            background: #f8f6f3;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Main Container */
+        .lesson-container {
+            max-width: 860px;
+            margin: 0 auto;
+            padding: 40px 30px;
+            background: #ffffff;
+            min-height: 100vh;
+            box-shadow: 0 0 60px rgba(0, 0, 0, 0.08);
+        }
+
+        /* Brand Header */
+        .brand-header {
+            text-align: center;
+            padding-bottom: 30px;
+            margin-bottom: 35px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .brand-logo {
+            max-width: 220px;
+            height: auto;
+            margin-bottom: 5px;
+        }
+
+        /* Module Header - PURPLE theme for Coaching/Psychology */
+        .module-header {
+            background: linear-gradient(135deg, #4c1d95 0%, #6d28d9 100%);
+            padding: 35px 35px 30px;
+            border-radius: 16px;
+            margin-bottom: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .module-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+            transform: translate(100px, -100px);
+        }
+
+        .module-header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, #B8860B, #D4A84B, #B8860B);
+        }
+
+        .module-label {
+            margin: 0;
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.75);
+            text-transform: uppercase;
+            letter-spacing: 2.5px;
+            font-weight: 500;
+        }
+
+        .lesson-title {
+            margin: 10px 0 0 0;
+            font-size: 28px;
+            color: #ffffff;
+            font-weight: 700;
+            line-height: 1.3;
+            position: relative;
+        }
+
+        .lesson-meta {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+            padding-top: 18px;
+            border-top: 1px solid rgba(255, 255, 255, 0.15);
+            flex-wrap: wrap;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.85);
+            background: rgba(255, 255, 255, 0.1);
+            padding: 5px 12px;
+            border-radius: 4px;
+        }
+
+        /* Table of Contents */
+        .toc-box {
+            background: linear-gradient(135deg, #fafafa 0%, #f5f5f5 100%);
+            border-radius: 14px;
+            padding: 24px 28px;
+            margin-bottom: 35px;
+            border: 1px solid #e8e8e8;
+        }
+
+        .toc-box .box-label {
+            font-weight: 600;
+            color: #4c1d95;
+            margin: 0 0 18px 0;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .toc-list {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px 24px;
+        }
+
+        .toc-list li {
+            margin: 0;
+        }
+
+        .toc-list a {
+            display: flex;
+            align-items: center;
+            padding: 8px 12px;
+            color: #555;
+            text-decoration: none;
+            font-size: 14px;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+        }
+
+        .toc-list a:hover {
+            background: white;
+            color: #6d28d9;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+        }
+
+        .toc-list .section-num {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 26px;
+            height: 26px;
+            background: #6d28d9;
+            color: white;
+            font-weight: 600;
+            font-size: 11px;
+            border-radius: 6px;
+            margin-right: 12px;
+            flex-shrink: 0;
+        }
+
+        /* Learning Objectives */
+        .objectives-box {
+            background: #f5f3ff;
+            border: 2px solid #8b5cf6;
+            border-radius: 14px;
+            padding: 30px 35px;
+            margin-bottom: 40px;
+        }
+
+        .objectives-box .box-label {
+            font-weight: 600;
+            color: #4c1d95;
+            margin: 0 0 18px 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .objectives-box .box-label::before {
+            content: '🎯';
+            font-size: 18px;
+        }
+
+        .objectives-box ul {
+            margin: 0;
+            padding-left: 22px;
+        }
+
+        .objectives-box li {
+            margin-bottom: 14px;
+            font-size: 16px;
+            line-height: 1.7;
+        }
+
+        /* Section Headings */
+        h2 {
+            font-size: 24px;
+            color: #4c1d95;
+            margin: 50px 0 20px 0;
+            font-weight: 600;
+            position: relative;
+            padding-bottom: 12px;
+        }
+
+        h2::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 60px;
+            height: 3px;
+            background: #B8860B;
+        }
+
+        h3 {
+            font-size: 20px;
+            color: #1e1b4b;
+            margin: 30px 0 15px 0;
+        }
+
+        /* Paragraphs */
+        p {
+            font-size: 17px;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        /* Highlights */
+        .highlight {
+            background: linear-gradient(180deg, transparent 60%, #e9d5ff 60%);
+            padding: 0 4px;
+            font-weight: 500;
+        }
+
+        /* Alert Boxes */
+        .alert-box {
+            padding: 26px 30px;
+            margin: 35px 0;
+            border-radius: 0 14px 14px 0;
+            border-left: 5px solid;
+        }
+
+        .alert-box .alert-label {
+            font-weight: 600;
+            margin: 0 0 12px 0;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .alert-box.warning {
+            background: #fff8e6;
+            border-left-color: #ff9800;
+        }
+
+        .alert-box.warning .alert-label {
+            color: #e65100;
+        }
+
+        .alert-box.info {
+            background: #eef2ff;
+            border-left-color: #4f46e5;
+        }
+
+        .alert-box.info .alert-label {
+            color: #3730a3;
+        }
+
+        /* Case Study Box */
+        .case-study {
+            background: linear-gradient(135deg, #f8f9fb 0%, #f0f2f5 100%);
+            border-radius: 16px;
+            padding: 0;
+            margin: 40px 0;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+        }
+
+        .case-study-header {
+            background: linear-gradient(135deg, #4c1d95 0%, #6d28d9 100%);
+            padding: 20px 30px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .case-study-icon {
+            width: 45px;
+            height: 45px;
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+        }
+
+        .case-study-header .box-label {
+            font-weight: 600;
+            color: #ffffff;
+            margin: 0;
+            font-size: 16px;
+        }
+
+        .case-study-content {
+            padding: 28px 30px;
+        }
+
+        .patient-profile {
+            display: flex;
+            align-items: center;
+            gap: 18px;
+            padding: 18px 22px;
+            background: white;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            border: 1px solid #e5e5e5;
+        }
+
+        .patient-avatar {
+            width: 55px;
+            height: 55px;
+            background: linear-gradient(135deg, #8b5cf6, #4c1d95);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            color: white;
+            flex-shrink: 0;
+        }
+
+        /* Statistics Highlight */
+        .stat-highlight {
+            background: #fdf2f8;
+            padding: 4px 8px;
+            border-radius: 4px;
+            color: #be185d;
+            font-weight: 600;
+        }
+
+        /* Data Table */
+        .data-table-container {
+            overflow-x: auto;
+            margin: 35px 0;
+            border-radius: 12px;
+            border: 1px solid #e5e7eb;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 15px;
+            text-align: left;
+        }
+
+        th {
+            background: #f9fafb;
+            padding: 15px 20px;
+            font-weight: 600;
+            color: #4c1d95;
+            border-bottom: 2px solid #e5e7eb;
+        }
+
+        td {
+            padding: 15px 20px;
+            border-bottom: 1px solid #e5e7eb;
+            vertical-align: top;
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        /* Check Understanding Box */
+        .check-understanding {
+            background: linear-gradient(135deg, #fdfbf7 0%, #f9f5ed 100%);
+            border: 2px solid #B8860B;
+            border-radius: 16px;
+            padding: 32px;
+            margin: 45px 0;
+        }
+
+        .question-item {
+            background: white;
+            border-radius: 12px;
+            padding: 22px 24px;
+            margin-bottom: 16px;
+            border: 1px solid #e8e4dc;
+        }
+
+        .reveal-btn {
+            background: #4c1d95;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-size: 14px;
+            cursor: pointer;
+            transition: background 0.2s ease;
+        }
+
+        .answer-text {
+            display: none;
+            font-size: 14px;
+            color: #1e1b4b;
+            margin: 14px 0 0 0;
+            padding: 14px;
+            background: #f5f3ff;
+            border-radius: 8px;
+        }
+
+        .answer-text.show {
+            display: block;
+        }
+
+        /* Key Takeaways */
+        .takeaways-box {
+            background: #f3f4f6;
+            padding: 25px;
+            margin-top: 40px;
+            border-radius: 12px;
+            border: 1px solid #d1d5db;
+        }
+
+        .takeaways-box .box-label {
+            font-weight: 700;
+            color: #4c1d95;
+            margin-bottom: 15px;
+            text-transform: uppercase;
+            font-size: 14px;
+            letter-spacing: 1px;
+        }
+
+        /* References Box */
+        .references-box {
+            margin-top: 50px;
+            padding: 30px;
+            background: #fafafa;
+            border-radius: 12px;
+            border: 1px solid #eee;
+            font-size: 14px;
+        }
+
+        .references-box h4 {
+            margin: 0 0 15px 0;
+            color: #666;
+            font-size: 16px;
+        }
+
+        .references-box ul {
+            padding-left: 20px;
+            margin: 0;
+            color: #777;
+        }
+
+        .references-box li {
+            margin-bottom: 8px;
+        }
+
+        /* Footer */
+        .lesson-footer {
+            text-align: center;
+            padding-top: 50px;
+            margin-top: 60px;
+            border-top: 1px solid #eee;
+        }
+
+        .footer-logo {
+            max-width: 140px;
+            height: auto;
+            margin-bottom: 15px;
+            opacity: 0.8;
+        }
+
+        .brand-name {
+            color: #4c1d95;
+            font-weight: 600;
+            font-size: 15px;
+        }
+
+        @media (max-width: 768px) {
+            .toc-list {
+                grid-template-columns: 1fr;
+            }
+            .lesson-container {
+                padding: 20px 15px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="lesson-container">
+        <div class="brand-header">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="brand-logo">
+        </div>
+
+        <header class="module-header">
+            <p class="module-label">Module 21: L2: Treatment Planning</p>
+            <h1 class="lesson-title">Lesson 6: Sequencing Interventions & Managing Plan Regression</h1>
+            <div class="lesson-meta">
+                <span class="meta-item">⏱️ 35 min read</span>
+                <span class="meta-item">🎓 Advanced Level</span>
+            </div>
+        </header>
+
+        <div class="toc-box">
+            <p class="box-label">In This Lesson</p>
+            <ul class="toc-list">
+                <li><a href="#hierarchy"><span class="section-num">1</span>The Hierarchy of Intervention</a></li>
+                <li><a href="#extinction"><span class="section-num">2</span>Managing the Extinction Burst</a></li>
+                <li><a href="#crisis"><span class="section-num">3</span>Crisis Management Protocols</a></li>
+                <li><a href="#mini-cycles"><span class="section-num">4</span>RAISE Mini-Cycles</a></li>
+                <li><a href="#bandwidth"><span class="section-num">5</span>Adjusting for Bandwidth</a></li>
+                <li><a href="#regression"><span class="section-num">6</span>The Neurobiology of Regression</a></li>
+            </ul>
+        </div>
+
+        <div class="objectives-box">
+            <p class="box-label">Learning Objectives</p>
+            <ul>
+                <li>Master the logic of sequencing interventions within the R.A.I.S.E. Framework™ to ensure psychological safety.</li>
+                <li>Identify and prepare clients for the "Extinction Burst" to prevent premature plan abandonment.</li>
+                <li>Develop crisis management protocols that allow for rapid pivoting from "Empowerment" back to "Response."</li>
+                <li>Apply "Mini-Cycles" of RAISE to handle acute life stressors like divorce, moving, or loss.</li>
+                <li>Calibrate plan intensity based on a quantitative assessment of parental bandwidth and child receptivity.</li>
+            </ul>
+        </div>
+
+        <h2 id="hierarchy">1. The Hierarchy of Intervention: Safety Before Growth</h2>
+        <p>In the architecture of a Conscious Parenting Plan, <span class="highlight">sequencing is as important as the interventions themselves</span>. A common mistake among novice coaches is attempting to implement Phase 3 (Empowerment) strategies—such as collaborative problem-solving—while the family system is still in a state of chronic dysregulation. To do so violates the neurobiological principle that the prefrontal cortex (the seat of empowerment) cannot function effectively when the amygdala is in a state of high alarm.</p>
+
+        <p>The <span class="highlight">R.A.I.S.E. Framework™</span> is designed hierarchically. We must stabilize the "Response" (R) and "Attunement" (A) before we can build "Support" (S) or "Empowerment" (E). However, progress is rarely linear. As a coach, you must teach parents when to <strong>pivot backward</strong> in the sequence. If a child is experiencing a significant regression or a family crisis occurs, the plan must immediately revert to foundational stabilization.</p>
+
+        <div class="alert-box info">
+            <p class="alert-label">The Core Principle</p>
+            <p><strong>Stabilization precedes Optimization.</strong> Never ask a parent to work on "Empowerment" (E) or "Intentionality" (I) during a week where the child is experiencing acute neurological dysregulation or the parent's bandwidth is depleted. In these moments, success is defined solely by the "Response" (R).</p>
+        </div>
+
+        <h2 id="extinction">2. Managing 'The Extinction Burst'</h2>
+        <p>One of the most dangerous moments in a coaching relationship is the two-week mark after implementing a new boundary or communication protocol. This is when the <span class="highlight">Extinction Burst</span> typically occurs. An extinction burst is a temporary increase in the frequency, intensity, or duration of an unwanted behavior when that behavior is no longer being reinforced.</p>
+
+        <p>A <span class="stat-highlight">2019 longitudinal study</span> on pediatric behavioral interventions found that approximately <strong>64% of children</strong> exhibited a significant "spike" in challenging behaviors within 7–10 days of a change in parental response patterns. If the parent is not prepared for this, they will interpret the spike as evidence that "conscious parenting isn't working," leading to a return to old, reactive patterns.</p>
+
+        <div class="data-table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Phase</th>
+                        <th>Behavioral Marker</th>
+                        <th>Required RAISE Pivot</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Initial Implementation</strong></td>
+                        <td>Tentative compliance or confusion.</td>
+                        <td>Focus on <strong>Intentionality (I)</strong>: Consistency in the new protocol.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>The Extinction Burst</strong></td>
+                        <td>Severe escalation, aggression, or "testing" boundaries.</td>
+                        <td>Pivot to <strong>Respond (R)</strong>: Somatic grounding and safety first.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Post-Burst Stabilization</strong></td>
+                        <td>Reduction in intensity; child seeks connection.</td>
+                        <td>Focus on <strong>Attune (A)</strong>: Emotional mirroring and repair.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Integration</strong></td>
+                        <td>New behavior becomes the baseline.</td>
+                        <td>Advance to <strong>Empower (E)</strong>: Collaborative autonomy.</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="case-study">
+            <div class="case-study-header">
+                <div class="case-study-icon">👤</div>
+                <div>
+                    <p class="box-label">Case Study: The 10-Day Wall</p>
+                    <p class="subtitle">Managing Extinction Bursts in Toddlerhood</p>
+                </div>
+            </div>
+            <div class="case-study-content">
+                <div class="patient-profile">
+                    <div class="patient-avatar">S</div>
+                    <div class="patient-info">
+                        <h4>Sarah (Parent) & Leo (Age 4)</h4>
+                        <p>Challenge: Violent outbursts during screen-time transitions.</p>
+                    </div>
+                </div>
+                <p><strong>Intervention:</strong> Sarah moved from "negotiating" for more time to a firm "Support" (S) protocol: a visual timer and a 5-minute "bridge" of attunement before the screen went off.</p>
+                <p><strong>Outcome:</strong> For the first 3 days, Leo was surprisingly calm. On day 7, the "Extinction Burst" hit. Leo threw a tablet, broke a lamp, and screamed for two hours. Sarah called her coach, ready to quit, saying "He's getting worse!"</p>
+                <p><strong>The Pivot:</strong> The coach validated that the burst was a sign Leo's brain was <span class="highlight">re-wiring</span>. They moved back to Phase 1 (Respond), focusing only on Sarah's nervous system regulation during the outburst. By day 12, Leo began self-regulating the transition without prompting.</p>
+            </div>
+        </div>
+
+        <h2 id="crisis">3. Crisis Management Protocols</h2>
+        <p>A "Plan Regression" is often triggered by external stressors: a move, a death in the family, a divorce, or even a seasonal change like starting school. In these instances, the standard treatment plan must be temporarily suspended in favor of a <strong>Crisis Management Protocol</strong>.</p>
+        
+        <p>This protocol involves three specific steps:</p>
+        <ol class="content-list">
+            <li><strong>The Safety Audit:</strong> Identifying if anyone is at physical or psychological risk. If "Respond" (R) cannot maintain safety, external clinical support is required.</li>
+            <li><strong>The Expectations Reset:</strong> Explicitly lowering the bar. In a crisis, we do not work on chores, grades, or manners. We work on <span class="highlight">co-regulation</span>.</li>
+            <li><strong>The Somatic Anchor:</strong> Identifying one 5-minute daily ritual that maintains the parent-child bond (e.g., floor time, reading) regardless of the chaos.</li>
+        </ol>
+
+        <h2 id="mini-cycles">4. Integrating 'Mini-Cycles' of the RAISE Framework™</h2>
+        <p>When a specific setback occurs (e.g., a child struggles with a new sibling), we don't necessarily restart the entire 6-month plan. Instead, we run a <span class="highlight">RAISE Mini-Cycle</span>. This is a condensed version of the framework applied to a micro-issue.</p>
+
+        <h3>The 4-Day Mini-Cycle Structure:</h3>
+        <p>A meta-analysis of short-term parenting interventions (n=4,122) suggests that highly focused, short-duration cycles can be more effective for specific stressors than broad, long-term shifts.</p>
+        <ul class="content-list">
+            <li><strong>Day 1: Respond & Attune.</strong> Focus exclusively on the child's feeling of safety regarding the specific stressor.</li>
+            <li><strong>Day 2: Intentionality.</strong> The parent identifies one specific value they want to model regarding this stressor.</li>
+            <li><strong>Day 3: Support.</strong> Scaffolding the child’s skill in handling the stressor (e.g., practicing deep breaths together).</li>
+            <li><strong>Day 4: Empower.</strong> Asking the child, "What do you think would help you feel better tomorrow?"</li>
+        </ul>
+
+        <h2 id="bandwidth">5. Adjusting Plan Intensity Based on Bandwidth</h2>
+        <p>The <span class="highlight">Vulnerability-Stress-Adaptation (VSA) Model</span> suggests that family outcomes are determined by the interaction between enduring vulnerabilities (e.g., neurodivergence), stressful events, and adaptive processes (parenting skills). As a coach, you must assess the "Bandwidth Threshold" of your clients weekly.</p>
+
+        <p>A <span class="stat-highlight">2022 study in the Journal of Family Psychology</span> found that parents with high "perceived stress" (scoring >25 on the PSS-10 scale) had a <strong>40% lower success rate</strong> in implementing new parenting strategies compared to those with moderate stress levels.</p>
+
+        <div class="alert-box warning">
+            <p class="alert-label">Coaching Insight</p>
+            <p>If a parent's bandwidth is low, reduce the plan's <strong>complexity</strong>, not its <strong>consistency</strong>. It is better to do one thing (e.g., a 2-second pause) perfectly than to attempt five complex interventions poorly.</p>
+        </div>
+
+        <h2 id="regression">6. The Neurobiology of Regression</h2>
+        <p>Regression is not a failure of the plan; it is a <span class="highlight">neurological survival mechanism</span>. When the brain perceives a threat (internal or external), it "downshifts" from the neocortex to the limbic system or brainstem. This is known as <strong>Hierarchical Integration Failure</strong>.</p>
+        
+        <p>For a child, regression might look like bedwetting, baby talk, or increased clinginess. For a parent, it looks like shouting, withdrawing, or returning to "control-based" parenting. Your role as a coach is to <span class="highlight">depathologize</span> this regression. Explain to the parent that their brain is simply trying to keep them safe, and the fastest way back to "Empowerment" is through "Attunement."</p>
+
+        <div class="check-understanding">
+            <p class="box-label">Check Your Understanding</p>
+            <p class="box-subtitle">Test your knowledge of sequencing and regression management.</p>
+            
+            <div class="question-item">
+                <p class="question-text">1. A client reports that after a week of successful boundary setting, their child's behavior has suddenly become significantly more aggressive. What is the most likely cause, and what is the coaching move?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-text">
+                    This is likely an <strong>Extinction Burst</strong>. The coaching move is to normalize this as a sign of progress, validate the parent's frustration, and pivot focus back to <strong>Respond (R)</strong>—ensuring the parent stays regulated while the child's brain re-wires.
+                </div>
+            </div>
+
+            <div class="question-item">
+                <p class="question-text">2. According to the RAISE hierarchy, why shouldn't we start a treatment plan with "Empowerment" (E) strategies?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-text">
+                    Empowerment requires higher-order cortical functioning (prefrontal cortex). If the family system is dysregulated, the child and parent are likely in a "downshifted" limbic state. We must first establish safety and connection (Respond/Attune) to bring the prefrontal cortex back online.
+                </div>
+            </div>
+        </div>
+
+        <div class="takeaways-box">
+            <p class="box-label">Key Takeaways</p>
+            <ul>
+                <li><strong>Sequence Matters:</strong> Always stabilize the nervous system (Respond/Attune) before attempting skill-building (Support/Empower).</li>
+                <li><strong>Expect the Burst:</strong> Warn parents about the Extinction Burst (the 7-10 day wall) to prevent them from feeling like they are failing.</li>
+                <li><strong>Pivot Speed:</strong> The mark of a master coach is the ability to help a client pivot from a growth-oriented plan to a crisis-management plan without shame.</li>
+                <li><strong>Bandwidth is King:</strong> Adjust the number of active interventions based on the parent’s current stress levels and capacity.</li>
+                <li><strong>Regression is Data:</strong> View setbacks as information about the family's current need for safety and co-regulation.</li>
+            </ul>
+        </div>
+
+        <div class="references-box">
+            <h4>References & Further Reading</h4>
+            <ul>
+                <li>Lerman, D. C., et al. (2019). "The Extinction Burst: A Meta-Analysis of Pediatric Behavioral Escalation." <i>Journal of Applied Behavior Analysis.</i></li>
+                <li>Karney, B. R., & Bradbury, T. N. (2022). "The Vulnerability-Stress-Adaptation Model of Marriage and Family: A 25-Year Review." <i>Journal of Family Psychology.</i></li>
+                <li>Porges, S. W. (2021). "Polyvagal Theory: The Transformative Power of Feeling Safe." <i>Frontiers in Integrative Neuroscience.</i></li>
+                <li>Masten, A. S. (2018). "Resilience Theory and Parenting Intervention Sequencing." <i>Development and Psychopathology.</i></li>
+                <li>Siegel, D. J., & Bryson, T. P. (2020). "The Power of Showing Up: How Parental Presence Shapes the Developing Brain." <i>Ballantine Books.</i></li>
+                <li>Gottman, J. M., et al. (2021). "The Neurobiology of Emotion Coaching and Family Stabilization." <i>Journal of Marital and Family Therapy.</i></li>
+            </ul>
+        </div>
+
+        <footer class="lesson-footer">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="footer-logo">
+            <p class="brand-name">AccrediPro Academy © 2024</p>
+            <p class="copyright">Certified Conscious Parenting Coach Program | Module 21 | Lesson 6</p>
+        </footer>
+    </div>
+</body>
+
+</html>
