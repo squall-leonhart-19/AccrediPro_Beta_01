@@ -8,14 +8,7 @@ async function getCourses() {
     where: {
       isPublished: true,
       certificateType: { not: 'MINI_DIPLOMA' },
-      // Show ONLY the main certification course
-      slug: {
-        in: [
-          // Certified FM Practitioner ($497 → $97 XMAS)
-          'functional-medicine-complete-certification',
-          // Pro Accelerator hidden for now
-        ]
-      }
+      // Show ALL published certifications
     },
     include: {
       category: true,
