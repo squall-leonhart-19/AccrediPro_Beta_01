@@ -20,7 +20,7 @@ const UNSUBSCRIBE_URL = `${BASE_URL}/unsubscribe`;
 const emailHeader = `
   <div style="background: linear-gradient(135deg, #722F37 0%, #8B3A42 100%); padding: 40px 30px; text-align: center;">
     <h1 style="color: #D4AF37; margin: 0; font-size: 28px; font-family: Georgia, serif;">AccrediPro Academy</h1>
-    <p style="color: rgba(255,255,255,0.8); margin: 5px 0 0 0; font-size: 14px;">Functional Medicine Excellence</p>
+    <p style="color: rgba(255,255,255,0.8); margin: 5px 0 0 0; font-size: 14px;">Professional Certification Excellence</p>
   </div>
 `;
 
@@ -321,7 +321,7 @@ export async function sendWelcomeEmail(to: string, firstName: string) {
 
     <p style="color: #555; font-size: 16px;">We're so glad you're here.</p>
 
-    <p style="color: #555; font-size: 16px;">You've just taken an important step toward building a meaningful career in Functional Medicine — and we're honored to be part of your journey.</p>
+    <p style="color: #555; font-size: 16px;">You've just taken an important step toward building a meaningful new career — and we're honored to be part of your journey.</p>
 
     ${highlightBox(`
       <p style="margin: 0 0 12px 0; font-size: 15px; color: #722F37; font-weight: bold;">Your Login Credentials:</p>
@@ -330,10 +330,11 @@ export async function sendWelcomeEmail(to: string, firstName: string) {
       <p style="margin: 12px 0 0 0; font-size: 12px; color: #666; font-style: italic;">You can change your password anytime from your account settings.</p>
     `, 'cream')}
 
-    <p style="color: #555; font-size: 16px;">Inside your dashboard, you'll find everything you need to get started:</p>
+    <p style="color: #555; font-size: 16px;">Inside your dashboard, you'll find:</p>
     <ul style="color: #555; font-size: 15px; padding-left: 20px;">
+      <li style="margin: 10px 0;">Your enrolled courses</li>
       <li style="margin: 10px 0;">Direct access to your dedicated coach</li>
-      <li style="margin: 10px 0;">Resources to support you every step of the way</li>
+      <li style="margin: 10px 0;">Resources to support your certification journey</li>
     </ul>
 
     <p style="color: #555; font-size: 16px;">Take your time, explore at your own pace, and know that we're here whenever you need us.</p>
@@ -341,7 +342,7 @@ export async function sendWelcomeEmail(to: string, firstName: string) {
     ${primaryButton('Login to My Dashboard', `${BASE_URL}/login`)}
 
     <div style="background: #f8f9fa; border-radius: 8px; padding: 20px; margin-top: 30px;">
-      <p style="margin: 0; font-size: 14px; color: #666;">Questions? Just reply to this email or message your coach directly from your dashboard. We're always happy to help.</p>
+      <p style="margin: 0; font-size: 14px; color: #666;">Questions? Just reply to this email or message your coach directly from your dashboard.</p>
     </div>
 
     <p style="color: #555; font-size: 16px; margin-top: 30px;">Warmly,<br/><strong>The AccrediPro Team</strong></p>
@@ -786,15 +787,15 @@ export async function sendCourseEnrollmentEmail(to: string, firstName: string, c
       </div>
     `, 'cream')}
 
-    <p style="color: #555; font-size: 16px;">Your course includes:</p>
+    <p style="color: #555; font-size: 16px;">Your certification includes:</p>
     <ul style="color: #555; font-size: 15px; padding-left: 20px;">
-      <li style="margin: 8px 0;">Premium video lessons</li>
-      <li style="margin: 8px 0;">Downloadable resources</li>
+      <li style="margin: 8px 0;">Comprehensive lesson modules</li>
+      <li style="margin: 8px 0;">Quizzes and assessments</li>
       <li style="margin: 8px 0;">1:1 coaching support</li>
-      <li style="margin: 8px 0;">Professional certification</li>
+      <li style="margin: 8px 0;">Professional certification upon completion</li>
     </ul>
 
-    ${primaryButton('Start Learning', courseUrl)}
+    ${primaryButton('Access My Course', courseUrl)}
 
     <div style="background: #f8f9fa; border-radius: 8px; padding: 20px; margin-top: 30px;">
       <p style="margin: 0; font-size: 14px; color: #666;"><strong style="color: #722F37;">Pro Tip:</strong> Set aside dedicated time each day for learning. Even 30 minutes of focused study will help you progress quickly!</p>
@@ -809,14 +810,22 @@ export async function sendCourseEnrollmentEmail(to: string, firstName: string, c
 }
 
 // 16b. Pro Accelerator VIP Enrollment - Premium/Exclusive Email
-export async function sendProAcceleratorEnrollmentEmail(to: string, firstName: string) {
-  const courseUrl = `${BASE_URL}/courses/fm-pro-accelerator`;
+// niche: "FM" (Functional Medicine), "HN" (Holistic Nutrition), etc.
+export async function sendProAcceleratorEnrollmentEmail(to: string, firstName: string, niche: string = "FM") {
+  const nicheNames: Record<string, string> = {
+    "FM": "Functional Medicine",
+    "HN": "Holistic Nutrition",
+    "SB": "Stress & Burnout",
+    "HH": "Hormone Health",
+  };
+  const nicheName = nicheNames[niche] || niche;
+
   const dashboardUrl = `${BASE_URL}/my-courses`;
 
   const content = `
     <div style="text-align: center; margin-bottom: 30px;">
       <div style="background: linear-gradient(135deg, #D4AF37 0%, #F5D76E 100%); color: #722F37; padding: 8px 20px; border-radius: 20px; display: inline-block; font-size: 12px; font-weight: bold; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 15px;">
-        ⭐ VIP ACCESS UNLOCKED ⭐
+        VIP ACCESS UNLOCKED
       </div>
       <h2 style="color: #722F37; margin: 0; font-size: 32px;">Welcome to the Inner Circle, ${firstName}!</h2>
     </div>
@@ -825,8 +834,8 @@ export async function sendProAcceleratorEnrollmentEmail(to: string, firstName: s
 
     <div style="background: linear-gradient(135deg, #722F37 0%, #8B3A42 100%); border-radius: 16px; padding: 30px; margin: 25px 0; text-align: center;">
       <p style="margin: 0; font-size: 12px; color: #D4AF37; text-transform: uppercase; letter-spacing: 2px;">YOU'VE UNLOCKED</p>
-      <p style="margin: 15px 0 5px 0; font-size: 24px; font-weight: bold; color: white;">FM Pro Accelerator™</p>
-      <p style="margin: 0; font-size: 14px; color: rgba(255,255,255,0.8);">Advanced + Master + Practice & Income Paths</p>
+      <p style="margin: 15px 0 5px 0; font-size: 24px; font-weight: bold; color: white;">${nicheName} Pro Accelerator™</p>
+      <p style="margin: 0; font-size: 14px; color: rgba(255,255,255,0.8);">Advanced + Master + Practice Path</p>
     </div>
 
     ${highlightBox(`
@@ -838,16 +847,16 @@ export async function sendProAcceleratorEnrollmentEmail(to: string, firstName: s
 
     <p style="color: #555; font-size: 16px; margin-top: 25px;"><strong>What's waiting for you inside:</strong></p>
     <ul style="color: #555; font-size: 15px; padding-left: 20px;">
-      <li style="margin: 10px 0;">🔓 <strong>All Advanced Specialist Tracks</strong> — Hormones, Gut Health, Autoimmune & more</li>
-      <li style="margin: 10px 0;">🎓 <strong>Master-Level Training</strong> — Complex case protocols</li>
-      <li style="margin: 10px 0;">💼 <strong>Practice & Income Path</strong> — Build your $10K/month business</li>
-      <li style="margin: 10px 0;">👩‍⚕️ <strong>1:1 Coach Access</strong> — Direct support whenever you need it</li>
+      <li style="margin: 10px 0;"><strong>Advanced Clinical Training</strong> — Deep-dive specializations</li>
+      <li style="margin: 10px 0;"><strong>Master-Level Protocols</strong> — Complex case mastery</li>
+      <li style="margin: 10px 0;"><strong>Practice & Income Path</strong> — Build your $10K/month business</li>
+      <li style="margin: 10px 0;"><strong>1:1 Coach Access</strong> — Direct support whenever you need it</li>
     </ul>
 
     ${primaryButton('Access My Pro Dashboard', dashboardUrl)}
 
     <div style="background: linear-gradient(135deg, #FDF5E6 0%, #FFF8DC 100%); border: 2px solid #D4AF37; border-radius: 12px; padding: 20px; margin-top: 25px; text-align: center;">
-      <p style="margin: 0 0 10px 0; font-size: 14px; color: #722F37; font-weight: bold;">🎯 Pro Tip from Sarah</p>
+      <p style="margin: 0 0 10px 0; font-size: 14px; color: #722F37; font-weight: bold;">Pro Tip from Sarah</p>
       <p style="margin: 0; font-size: 14px; color: #555;">Start with the Advanced tracks that excite you most. Passion + expertise = premium clients.</p>
     </div>
 
@@ -858,8 +867,8 @@ export async function sendProAcceleratorEnrollmentEmail(to: string, firstName: s
 
   return sendEmail({
     to,
-    subject: `⭐ VIP Access Unlocked: Welcome to the Pro Accelerator, ${firstName}!`,
-    html: emailWrapper(content, `${firstName}, you're in! Your Pro Accelerator access is ready.`),
+    subject: `VIP Access Unlocked: Welcome to the ${nicheName} Pro Accelerator, ${firstName}!`,
+    html: emailWrapper(content, `${firstName}, you're in! Your ${nicheName} Pro Accelerator access is ready.`),
   });
 }
 

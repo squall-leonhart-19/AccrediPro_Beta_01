@@ -3,6 +3,7 @@ import crypto from "crypto";
 import bcrypt from "bcryptjs";
 import prisma from "@/lib/prisma";
 import { sendWelcomeEmail } from "@/lib/email";
+import { triggerAutoMessage } from "@/lib/auto-messages";
 
 /**
  * ClickFunnels Purchase Webhook
@@ -51,10 +52,16 @@ const PRODUCT_COURSE_MAP: Record<string, string> = {
     "integrative health": "functional-medicine-complete-certification",
 
     // === NEW 2025 CERTIFICATIONS ===
-    // 1. Holistic Nutrition
+    // 1. Holistic Nutrition (Main Certification)
     "holistic nutrition": "holistic-nutrition-coach-certification",
     "holistic-nutrition": "holistic-nutrition-coach-certification",
     "nutrition coach": "holistic-nutrition-coach-certification",
+
+    // HN Pro Accelerator Bundle ($397)
+    "hn-pro-accelerator": "hn-pro-accelerator",
+    "hn pro accelerator": "hn-pro-accelerator",
+    "holistic nutrition pro": "hn-pro-accelerator",
+    "nutrition pro accelerator": "hn-pro-accelerator",
 
     // 2. NARC Recovery
     "narc": "narc-recovery-coach-certification",
@@ -110,6 +117,9 @@ const PRODUCT_PRICES: Record<string, number> = {
     "functional-medicine-certification": 97,           // Fallback
     "fm-pro-accelerator": 397,                         // XMAS PRICE
     "fm-10-client-guarantee": 497,
+    // Holistic Nutrition
+    "holistic-nutrition-coach-certification": 97,
+    "hn-pro-accelerator": 397,
 };
 
 const PRODUCT_NAMES: Record<string, string> = {
@@ -118,6 +128,9 @@ const PRODUCT_NAMES: Record<string, string> = {
     "functional-medicine-certification": "Certified FM Practitioner",
     "fm-pro-accelerator": "FM Pro Accelerator",
     "fm-10-client-guarantee": "10-Client Guarantee Mentorship",
+    // Holistic Nutrition
+    "holistic-nutrition-coach-certification": "Certified Holistic Nutrition Coach",
+    "hn-pro-accelerator": "HN Pro Accelerator™ - Advanced, Master & Practice Path",
 };
 
 // Hash PII for Meta
@@ -456,10 +469,14 @@ export async function POST(request: NextRequest) {
         if (enrollmentId && course) {
             try {
                 // Use VIP email for Pro Accelerator, standard for others
-                if (courseSlug === 'fm-pro-accelerator' || courseSlug.includes('pro-accelerator')) {
+                if (courseSlug === 'fm-pro-accelerator' || courseSlug === 'hn-pro-accelerator' || courseSlug.includes('pro-accelerator')) {
                     const { sendProAcceleratorEnrollmentEmail } = await import("@/lib/email");
-                    await sendProAcceleratorEnrollmentEmail(normalizedEmail, firstName || "Student");
-                    console.log(`[CF Purchase] ✅ VIP Pro Accelerator email sent`);
+                    // Determine niche from course slug (fm-pro, hn-pro, etc.)
+                    const niche = courseSlug.startsWith('hn-') ? 'HN' :
+                        courseSlug.startsWith('sb-') ? 'SB' :
+                            courseSlug.startsWith('hh-') ? 'HH' : 'FM';
+                    await sendProAcceleratorEnrollmentEmail(normalizedEmail, firstName || "Student", niche);
+                    console.log(`[CF Purchase] ✅ VIP Pro Accelerator email sent (${niche})`);
                 } else {
                     const { sendCourseEnrollmentEmail } = await import("@/lib/email");
                     await sendCourseEnrollmentEmail(normalizedEmail, firstName || "Student", course.title, course.slug);
@@ -517,6 +534,23 @@ export async function POST(request: NextRequest) {
             console.log(`[CF Purchase] ✅ Added tag: ${productTagSlug}`);
         } catch (tagError) {
             console.error("[CF Purchase] Failed to add tags:", tagError);
+        }
+
+        // =====================================================
+        // 6. TRIGGER SARAH'S WELCOME DM (NEW USERS ONLY)
+        // =====================================================
+
+        if (isNewUser) {
+            try {
+                // Sarah's welcome DM with voice note (2-3 min delay built-in)
+                await triggerAutoMessage({
+                    userId: user.id,
+                    trigger: "first_login"
+                });
+                console.log(`[CF Purchase] ✅ Sarah welcome DM scheduled for new user`);
+            } catch (dmError) {
+                console.error("[CF Purchase] Failed to trigger welcome DM:", dmError);
+            }
         }
 
         // =====================================================
