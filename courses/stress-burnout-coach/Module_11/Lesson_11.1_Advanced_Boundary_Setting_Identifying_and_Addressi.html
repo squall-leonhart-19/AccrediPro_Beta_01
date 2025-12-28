@@ -1,0 +1,1146 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Advanced Boundary Setting: Identifying and Addressing Boundary Violations</title>
+    <style>
+        /* Base & Reset */
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Georgia, 'Times New Roman', serif;
+            line-height: 1.8;
+            color: #2d2d2d;
+            background: #f8f6f3;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Main Container */
+        .lesson-container {
+            max-width: 860px;
+            margin: 0 auto;
+            padding: 40px 30px;
+            background: #ffffff;
+            min-height: 100vh;
+            box-shadow: 0 0 60px rgba(0, 0, 0, 0.08);
+        }
+
+        /* Brand Header */
+        .brand-header {
+            text-align: center;
+            padding-bottom: 30px;
+            margin-bottom: 35px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .brand-logo {
+            max-width: 220px;
+            height: auto;
+            margin-bottom: 5px;
+        }
+
+        /* Module Header - GREEN theme for Gut Health */
+        .module-header {
+            background: linear-gradient(135deg, #059669 0%, #10B981 100%);
+            padding: 35px 35px 30px;
+            border-radius: 16px;
+            margin-bottom: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .module-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+            transform: translate(100px, -100px);
+        }
+
+        .module-header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, #B8860B, #D4A84B, #B8860B);
+        }
+
+        .module-label {
+            margin: 0;
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.75);
+            text-transform: uppercase;
+            letter-spacing: 2.5px;
+            font-weight: 500;
+        }
+
+        .lesson-title {
+            margin: 10px 0 0 0;
+            font-size: 28px;
+            color: #ffffff;
+            font-weight: 700;
+            line-height: 1.3;
+            position: relative;
+        }
+
+        .lesson-meta {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+            padding-top: 18px;
+            border-top: 1px solid rgba(255, 255, 255, 0.15);
+            flex-wrap: wrap;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.85);
+            background: rgba(255, 255, 255, 0.1);
+            padding: 5px 12px;
+            border-radius: 4px;
+        }
+
+        /* Table of Contents */
+        .toc-box {
+            background: linear-gradient(135deg, #fafafa 0%, #f5f5f5 100%);
+            border-radius: 14px;
+            padding: 24px 28px;
+            margin-bottom: 35px;
+            border: 1px solid #e8e8e8;
+        }
+
+        .toc-box .box-label {
+            font-weight: 600;
+            color: #059669;
+            margin: 0 0 18px 0;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .toc-list {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px 24px;
+        }
+
+        .toc-list li {
+            margin: 0;
+        }
+
+        .toc-list a {
+            display: flex;
+            align-items: center;
+            padding: 8px 12px;
+            color: #555;
+            text-decoration: none;
+            font-size: 14px;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+        }
+
+        .toc-list a:hover {
+            background: white;
+            color: #059669;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+        }
+
+        .toc-list .section-num {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 26px;
+            height: 26px;
+            background: #059669;
+            color: white;
+            font-weight: 600;
+            font-size: 11px;
+            border-radius: 6px;
+            margin-right: 12px;
+            flex-shrink: 0;
+        }
+
+        @media (max-width: 600px) {
+            .toc-list {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Learning Objectives */
+        .objectives-box {
+            background: #f0fdf4;
+            border: 2px solid #10B981;
+            border-radius: 14px;
+            padding: 30px 35px;
+            margin-bottom: 40px;
+        }
+
+        .objectives-box .box-label {
+            font-weight: 600;
+            color: #059669;
+            margin: 0 0 18px 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .objectives-box .box-label::before {
+            content: '🎯';
+            font-size: 18px;
+        }
+
+        .objectives-box ul {
+            margin: 0;
+            padding-left: 22px;
+        }
+
+        .objectives-box li {
+            margin-bottom: 14px;
+            font-size: 16px;
+            line-height: 1.7;
+        }
+
+        .objectives-box li:last-child {
+            margin-bottom: 0;
+        }
+
+        /* Key Terms Box */
+        .key-terms-box {
+            background: linear-gradient(135deg, #f0f4f8 0%, #e8ecf1 100%);
+            border-radius: 14px;
+            padding: 28px 30px;
+            margin: 40px 0;
+            border: 1px solid #d8dce0;
+        }
+
+        .key-terms-box .box-label {
+            font-weight: 600;
+            color: #059669;
+            margin: 0 0 18px 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .terms-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 16px;
+        }
+
+        .term-item {
+            background: white;
+            padding: 16px 18px;
+            border-radius: 10px;
+            border-left: 4px solid #10B981;
+        }
+
+        .term-item .term {
+            font-weight: 700;
+            color: #059669;
+            font-size: 15px;
+            margin: 0 0 6px 0;
+        }
+
+        .term-item .definition {
+            font-size: 14px;
+            color: #555;
+            margin: 0;
+            line-height: 1.6;
+        }
+
+        /* Section Headings */
+        h2 {
+            font-size: 24px;
+            color: #059669;
+            margin: 50px 0 20px 0;
+            font-weight: 600;
+            position: relative;
+            padding-bottom: 12px;
+        }
+
+        h2::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 60px;
+            height: 3px;
+            background: #B8860B;
+        }
+
+        /* Paragraphs */
+        p {
+            font-size: 17px;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        /* Highlights */
+        .highlight {
+            background: linear-gradient(180deg, transparent 60%, #FFF59D 60%);
+            padding: 0 4px;
+            font-weight: 500;
+        }
+
+        /* Welcome/Intro Box */
+        .welcome-box {
+            background: linear-gradient(135deg, #f0fdf4 0%, #ecfdf5 100%);
+            padding: 30px 35px;
+            border-radius: 14px;
+            margin-bottom: 40px;
+            border: 1px solid #bbf7d0;
+        }
+
+        .welcome-box h3 {
+            margin: 0 0 15px 0;
+            font-size: 20px;
+            color: #059669;
+            font-weight: 600;
+        }
+
+        .welcome-box p {
+            margin: 0;
+            font-size: 17px;
+            line-height: 1.8;
+            color: #444;
+        }
+
+        /* Alert Boxes */
+        .alert-box {
+            padding: 26px 30px;
+            margin: 35px 0;
+            border-radius: 0 14px 14px 0;
+            border-left: 5px solid;
+        }
+
+        .alert-box .alert-label {
+            font-weight: 600;
+            margin: 0 0 12px 0;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .alert-box p:last-child {
+            margin: 0;
+            font-size: 16px;
+            line-height: 1.7;
+        }
+
+        .alert-box.warning {
+            background: #fff8e6;
+            border-left-color: #ff9800;
+        }
+
+        .alert-box.warning .alert-label {
+            color: #e65100;
+        }
+
+        .alert-box.success {
+            background: #f0f8f0;
+            border-left-color: #4caf50;
+        }
+
+        .alert-box.success .alert-label {
+            color: #2e7d32;
+        }
+
+        .alert-box.reflect {
+            background: #f8f0fa;
+            border-left-color: #9c27b0;
+        }
+
+        .alert-box.reflect .alert-label {
+            color: #7b1fa2;
+        }
+
+        .alert-box.info {
+            background: #e3f2fd;
+            border-left-color: #2196f3;
+        }
+
+        .alert-box.info .alert-label {
+            color: #1565c0;
+        }
+
+        /* Case Study Box */
+        .case-study {
+            background: linear-gradient(135deg, #f8f9fb 0%, #f0f2f5 100%);
+            border-radius: 16px;
+            padding: 0;
+            margin: 40px 0;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+        }
+
+        .case-study-header {
+            background: linear-gradient(135deg, #059669 0%, #10B981 100%);
+            padding: 20px 30px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .case-study-icon {
+            width: 45px;
+            height: 45px;
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+        }
+
+        .case-study-header .box-label {
+            font-weight: 600;
+            color: #ffffff;
+            margin: 0;
+            font-size: 16px;
+            letter-spacing: 0.5px;
+        }
+
+        .case-study-header .subtitle {
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 13px;
+            margin: 4px 0 0 0;
+        }
+
+        .case-study-content {
+            padding: 28px 30px;
+        }
+
+        .case-study-content p {
+            font-size: 16px;
+            margin-bottom: 18px;
+        }
+
+        .case-study-content ul {
+            margin: 18px 0;
+            padding-left: 22px;
+        }
+
+        .case-study-content li {
+            margin-bottom: 10px;
+            font-size: 15px;
+        }
+
+        .patient-profile {
+            display: flex;
+            align-items: center;
+            gap: 18px;
+            padding: 18px 22px;
+            background: white;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            border: 1px solid #e5e5e5;
+        }
+
+        .patient-avatar {
+            width: 55px;
+            height: 55px;
+            background: linear-gradient(135deg, #10B981, #059669);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            flex-shrink: 0;
+        }
+
+        .patient-info h4 {
+            margin: 0 0 5px 0;
+            font-size: 17px;
+            color: #1a1a1a;
+        }
+
+        .patient-info p {
+            margin: 0;
+            font-size: 14px;
+            color: #666;
+        }
+
+        /* Comparison Cards */
+        .comparison-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+            margin: 30px 0;
+        }
+
+        .comparison-card {
+            border-radius: 14px;
+            padding: 26px;
+            border-top: 5px solid;
+            transition: transform 0.2s ease;
+        }
+
+        .comparison-card:hover {
+            transform: translateY(-3px);
+        }
+
+        .comparison-card.conventional {
+            background: #fff5f5;
+            border-top-color: #c62828;
+        }
+
+        .comparison-card.functional {
+            background: #f1f8f1;
+            border-top-color: #2e7d32;
+        }
+
+        .comparison-card .card-label {
+            font-weight: 600;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            margin: 0 0 14px 0;
+        }
+
+        .comparison-card.conventional .card-label {
+            color: #c62828;
+        }
+
+        .comparison-card.functional .card-label {
+            color: #2e7d32;
+        }
+
+        .comparison-card .card-text {
+            margin: 0;
+            font-size: 16px;
+            font-style: italic;
+            line-height: 1.6;
+        }
+
+        /* Content Lists */
+        .content-list {
+            font-size: 17px;
+            margin: 20px 0;
+            padding-left: 24px;
+        }
+
+        .content-list li {
+            margin-bottom: 14px;
+            line-height: 1.7;
+        }
+
+        .content-list li:last-child {
+            margin-bottom: 0;
+        }
+
+        /* Statistics Box */
+        .stats-box {
+            background: linear-gradient(135deg, #059669 0%, #10B981 100%);
+            padding: 40px;
+            border-radius: 16px;
+            margin: 35px 0;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stats-box::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -20%;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.08) 0%, transparent 70%);
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 25px;
+            position: relative;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 42px;
+            font-weight: 700;
+            color: white;
+            line-height: 1;
+            margin-bottom: 8px;
+        }
+
+        .stat-label {
+            font-size: 13px;
+            color: rgba(255, 255, 255, 0.85);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* Principle Cards */
+        .principle-card {
+            background: linear-gradient(to right, #fafafa, #ffffff);
+            border-left: 5px solid #059669;
+            padding: 24px 28px;
+            margin-bottom: 18px;
+            border-radius: 0 14px 14px 0;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.04);
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .principle-card:hover {
+            transform: translateX(5px);
+            box-shadow: 0 4px 18px rgba(0, 0, 0, 0.08);
+        }
+
+        .principle-card .principle-title {
+            font-weight: 700;
+            color: #059669;
+            margin: 0 0 10px 0;
+            font-size: 17px;
+        }
+
+        .principle-card .principle-text {
+            margin: 0;
+            font-size: 15px;
+            line-height: 1.7;
+        }
+
+        .principle-card ul {
+            margin: 12px 0 0 0;
+            padding-left: 20px;
+            font-size: 14px;
+        }
+
+        .principle-card li {
+            margin-bottom: 5px;
+        }
+
+        /* Check Understanding Box */
+        .check-understanding {
+            background: linear-gradient(135deg, #fdfbf7 0%, #f9f5ed 100%);
+            border: 2px solid #B8860B;
+            border-radius: 16px;
+            padding: 32px;
+            margin: 45px 0;
+        }
+
+        .check-understanding .box-label {
+            font-weight: 600;
+            color: #8B6914;
+            margin: 0 0 8px 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .check-understanding .box-subtitle {
+            font-size: 15px;
+            color: #666;
+            margin: 0 0 24px 0;
+        }
+
+        .question-item {
+            background: white;
+            border-radius: 12px;
+            padding: 22px 24px;
+            margin-bottom: 16px;
+            border: 1px solid #e8e4dc;
+            position: relative;
+        }
+
+        .question-item:last-child {
+            margin-bottom: 0;
+        }
+
+        .question-number {
+            position: absolute;
+            top: -12px;
+            left: 20px;
+            background: #059669;
+            color: white;
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            font-size: 13px;
+        }
+
+        .question-text {
+            font-size: 16px;
+            color: #333;
+            margin: 0 0 16px 0;
+            line-height: 1.6;
+            padding-top: 4px;
+        }
+
+        .reveal-btn {
+            background: #059669;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-size: 14px;
+            cursor: pointer;
+            font-family: inherit;
+            transition: background 0.2s ease;
+        }
+
+        .reveal-btn:hover {
+            background: #047857;
+        }
+
+        .answer-text {
+            display: none;
+            font-size: 14px;
+            color: #2e7d32;
+            margin: 14px 0 0 0;
+            padding: 14px;
+            background: #f0f8f0;
+            border-radius: 8px;
+            line-height: 1.6;
+        }
+
+        .answer-text.show {
+            display: block;
+        }
+
+        /* Key Takeaways */
+        .takeaways-box {
+            background: linear-gradient(135deg, #f5f5f5 0%, #e8e8e8 100%);
+            padding: 22px 25px;
+            margin-top: 35px;
+            border-radius: 8px;
+            border: 1px solid #ddd;
+        }
+
+        .takeaways-box .box-label {
+            font-weight: 600;
+            color: #059669;
+            margin: 0 0 15px 0;
+            font-size: 16px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .takeaways-box ul {
+            margin: 0;
+            padding-left: 18px;
+            font-size: 15px;
+        }
+
+        .takeaways-box li {
+            margin-bottom: 10px;
+        }
+
+        .takeaways-box li:last-child {
+            margin-bottom: 0;
+        }
+
+        /* Interactive Diagram */
+        .interactive-diagram {
+            background: white;
+            border: 2px solid #e5e5e5;
+            border-radius: 16px;
+            padding: 30px;
+            margin: 35px 0;
+            text-align: center;
+        }
+
+        .diagram-title {
+            font-weight: 600;
+            color: #333;
+            margin: 0 0 20px 0;
+            font-size: 18px;
+        }
+
+        .gut-visual {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 30px;
+            flex-wrap: wrap;
+            margin: 20px 0;
+        }
+
+        .gut-section {
+            background: linear-gradient(135deg, #f0fdf4 0%, #ecfdf5 100%);
+            border: 2px solid #10B981;
+            border-radius: 12px;
+            padding: 20px;
+            min-width: 150px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .gut-section:hover {
+            transform: scale(1.05);
+            box-shadow: 0 8px 25px rgba(16, 185, 129, 0.2);
+        }
+
+        .gut-section .icon {
+            font-size: 32px;
+            margin-bottom: 10px;
+        }
+
+        .gut-section .label {
+            font-weight: 600;
+            color: #059669;
+            font-size: 14px;
+        }
+
+        .gut-section .count {
+            font-size: 12px;
+            color: #666;
+            margin-top: 5px;
+        }
+
+        /* Footer */
+        .lesson-footer {
+            text-align: center;
+            padding-top: 50px;
+            margin-top: 60px;
+            border-top: 1px solid #eee;
+        }
+
+        .footer-logo {
+            max-width: 140px;
+            height: auto;
+            margin-bottom: 15px;
+            opacity: 0.9;
+        }
+
+        .lesson-footer .brand {
+            color: #059669;
+            font-weight: 600;
+            margin: 0;
+            font-size: 15px;
+        }
+
+        .lesson-footer .copyright {
+            color: #888;
+            font-size: 13px;
+            margin: 10px 0 0 0;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .lesson-container {
+                padding: 20px 16px;
+            }
+
+            .module-header {
+                padding: 25px 20px 22px;
+            }
+
+            .lesson-title {
+                font-size: 22px;
+            }
+
+            h2 {
+                font-size: 20px;
+                margin: 35px 0 15px 0;
+            }
+
+            p {
+                font-size: 16px;
+            }
+
+            .toc-list {
+                grid-template-columns: 1fr;
+            }
+
+            .objectives-box {
+                padding: 25px 20px;
+            }
+
+            .key-terms-box {
+                padding: 22px 18px;
+            }
+
+            .terms-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .stats-box {
+                padding: 25px 20px;
+            }
+
+            .stat-number {
+                font-size: 32px;
+            }
+
+            .comparison-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .principle-card {
+                padding: 20px;
+            }
+
+            .case-study-content {
+                padding: 20px;
+            }
+
+            .check-understanding {
+                padding: 25px 20px;
+            }
+
+            .takeaways-box {
+                padding: 18px 20px;
+            }
+
+            .alert-box {
+                padding: 20px;
+            }
+
+            .content-list {
+                padding-left: 20px;
+                font-size: 16px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .lesson-container {
+                padding: 15px 12px;
+            }
+
+            .brand-logo {
+                max-width: 180px;
+            }
+
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 15px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="lesson-container">
+        <div class="brand-header">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="brand-logo">
+        </div>
+
+        <header class="module-header">
+            <p class="module-label">Module 11: L1 Deep Dive Module 11</p>
+            <h1 class="lesson-title">Lesson 1: Advanced Boundary Setting: Identifying and Addressing Boundary Violations</h1>
+            <div class="lesson-meta">
+                <span class="meta-item">30 min read</span>
+                <span class="meta-item">Lesson 1 of 4</span>
+            </div>
+        </header>
+
+        <!-- Learning Objectives -->
+        <div class="objectives-box">
+            <p class="box-label">Learning Objectives</p>
+            <ul>
+                <li>Define different types of boundary violations (physical, emotional, intellectual, material, time).</li>
+                <li>Identify the root causes of boundary violations, such as low self-worth and fear of conflict.</li>
+                <li>Apply advanced techniques for communicating boundaries assertively and effectively.</li>
+                <li>Develop strategies for addressing boundary violations with different personality types.</li>
+                <li>Recognize the role of self-compassion in maintaining healthy boundaries and recovering from violations.</li>
+                <li>Integrate boundary setting into the R.E.S.T.O.R.E. Protocol™ for burnout prevention.</li>
+            </ul>
+        </div>
+
+        <h2>Defining Types of Boundary Violations</h2>
+        <p>Building on the foundational understanding of boundaries from Module 4, this lesson delves into the nuances of boundary violations. Recognizing these violations is the first critical step in the <span class="highlight">R</span> (Recognize) phase of the R.E.S.T.O.R.E. Protocol™. Boundary violations can manifest in various forms, impacting different aspects of an individual's well-being.</p>
+        <p>Here's a breakdown of common types:</p>
+        <ul>
+            <li><b>Physical Boundaries:</b> Violations involve unwanted physical touch, invasion of personal space, or disregard for physical comfort.</li>
+            <li><b>Emotional Boundaries:</b> Occur when someone shares inappropriate personal information, expects you to manage their emotions, or dismisses your feelings.</li>
+            <li><b>Intellectual Boundaries:</b> Involve disregarding your opinions, interrupting you frequently, or taking credit for your ideas.</li>
+            <li><b>Material Boundaries:</b> Relate to the misuse or theft of your possessions, borrowing without permission, or failing to return borrowed items.</li>
+            <li><b>Time Boundaries:</b> Involve consistently being late, overstaying visits, or demanding your time without regard for your priorities.</li>
+        </ul>
+
+        <p>It's important to note that boundary violations are not always intentional. Sometimes, they stem from a lack of awareness or differing expectations. However, regardless of intent, the impact on the individual experiencing the violation can be significant, leading to feelings of resentment, anger, and burnout.</p>
+
+        <h2>Identifying the Root Causes of Boundary Violations</h2>
+        <p>Understanding why boundary violations occur is crucial for developing effective strategies to address them. Often, these violations stem from deeper underlying issues, both within ourselves and in others. Some common root causes include:</p>
+        <ul>
+            <li><b>Low Self-Worth:</b> Individuals with low self-esteem may struggle to assert their needs and boundaries, fearing rejection or disapproval. They may believe they don't deserve to have their boundaries respected.</li>
+            <li><b>Fear of Conflict:</b> The desire to avoid confrontation can lead individuals to tolerate boundary violations rather than risk upsetting others. This is particularly common in people-pleasing personalities.</li>
+            <li><b>Lack of Awareness:</b> Some individuals may simply be unaware of social cues or the impact of their behavior on others. This can be due to cultural differences, personality traits, or a lack of social skills.</li>
+            <li><b>Entitlement:</b> In some cases, individuals may feel entitled to violate boundaries, believing their needs or desires are more important than those of others. This can be a sign of narcissistic tendencies.</li>
+            <li><b>Poor Communication Skills:</b> Difficulty expressing needs and boundaries clearly and assertively can lead to misunderstandings and violations. This can be addressed through training and practice.</li>
+        </ul>
+
+        <p>A <span class="stat-highlight">2018 study in the Journal of Social and Personal Relationships</span> found a strong correlation between low self-esteem and difficulty setting boundaries (r = -.62, p < .001). This highlights the importance of addressing self-worth issues in boundary-setting interventions. <a href="#references" class="reference-link"><sup>1</sup></a></p>
+
+        <h2>Advanced Techniques for Communicating Boundaries</h2>
+        <p>Effective communication is the cornerstone of healthy boundary setting. While assertive communication is a key skill, advanced techniques can help navigate complex situations and personalities. Here are some strategies to consider:</p>
+        <ul>
+            <li><b>"I Feel" Statements:</b> Expressing your emotions using "I feel" statements can help communicate the impact of a boundary violation without placing blame. For example, "I feel overwhelmed when I'm asked to take on additional tasks without prior notice."</li>
+            <li><b>Setting Consequences:</b> Clearly outlining the consequences of violating a boundary can deter future transgressions. For example, "If you continue to interrupt me during meetings, I will need to end the conversation."</li>
+            <li><b>Using the "Broken Record" Technique:</b> Calmly and repeatedly stating your boundary, even if the other person persists in trying to cross it. This technique can be particularly effective with persistent individuals.</li>
+            <li><b>Offering Alternatives:</b> Suggesting alternative solutions or compromises can help maintain positive relationships while still upholding your boundaries. For example, "I'm unable to take on this project right now, but I can recommend someone who might be a good fit."</li>
+            <li><b>Validating the Other Person's Perspective:</b> Acknowledging the other person's feelings or needs can help de-escalate conflict and create a more receptive environment for boundary setting. For example, "I understand you're feeling stressed about the deadline, but I'm unable to work overtime this week."</li>
+        </ul>
+
+        <p>A <span class="stat-highlight">2021 meta-analysis published in the Journal of Applied Psychology</span> (n=1,257) found that individuals trained in assertive communication techniques experienced a <span class="stat-highlight">28% reduction in reported boundary violations</span> compared to a control group. <a href="#references" class="reference-link"><sup>2</sup></a></p>
+
+        <h2>Strategies for Addressing Boundary Violations with Different Personality Types</h2>
+        <p>Not everyone responds to boundary setting in the same way. Tailoring your approach to the individual's personality type can significantly improve your chances of success. Here's a guide to adapting your strategies:</p>
+
+        <div class="data-table">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Personality Type</th>
+                        <th>Characteristics</th>
+                        <th>Effective Strategies</th>
+                        <th>Potential Challenges</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Assertive</td>
+                        <td>Respectful, direct, confident</td>
+                        <td>Direct, clear communication; focus on mutual respect</td>
+                        <td>May become defensive if they perceive criticism</td>
+                    </tr>
+                    <tr>
+                        <td>Passive</td>
+                        <td>Avoids conflict, struggles to express needs</td>
+                        <td>Gentle, encouraging approach; focus on building confidence</td>
+                        <td>May agree initially but struggle to follow through</td>
+                    </tr>
+                    <tr>
+                        <td>Aggressive</td>
+                        <td>Demanding, controlling, disrespectful</td>
+                        <td>Firm, assertive communication; set clear consequences</td>
+                        <td>May escalate conflict; require strong boundary enforcement</td>
+                    </tr>
+                    <tr>
+                        <td>Passive-Aggressive</td>
+                        <td>Indirect, resentful, avoids direct confrontation</td>
+                        <td>Address underlying issues; focus on open and honest communication</td>
+                        <td>May deny or minimize their behavior; require patience and persistence</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <h2>The Role of Self-Compassion</h2>
+        <p>Setting boundaries is not always easy, and even with the best strategies, violations can still occur. Self-compassion is essential for navigating these challenges and preventing burnout. Practicing self-compassion involves treating yourself with the same kindness, care, and understanding you would offer to a friend.</p>
+        <p>Here are some ways to cultivate self-compassion in the context of boundary setting:</p>
+        <ul>
+            <li><b>Acknowledge Your Feelings:</b> Allow yourself to feel the emotions that arise when your boundaries are violated, such as anger, frustration, or sadness. Avoid judging or suppressing these feelings.</li>
+            <li><b>Recognize Your Imperfection:</b> Understand that you are not perfect and that you will make mistakes in setting and enforcing boundaries. Forgive yourself for these imperfections.</li>
+            <li><b>Practice Self-Kindness:</b> Treat yourself with kindness and understanding, especially when you are struggling. Offer yourself words of encouragement and support.</li>
+            <li><b>Remember Common Humanity:</b> Recognize that you are not alone in your struggles with boundary setting. Many people face similar challenges.</li>
+        </ul>
+        <p>According to <span class="stat-highlight">Neff's research on self-compassion (2003)</span>, individuals with higher levels of self-compassion report greater resilience and emotional well-being, which can significantly improve boundary setting effectiveness. <a href="#references" class="reference-link"><sup>3</sup></a></p>
+
+        <h2>Integrating Boundary Setting into the R.E.S.T.O.R.E. Protocol™</h2>
+        <p>Boundary setting is a crucial component of the R.E.S.T.O.R.E. Protocol™ for burnout prevention. Specifically, it directly relates to the <span class="highlight">R</span> (Recognize), <span class="highlight">E</span> (Establish) and <span class="highlight">S</span> (Strategize) phases. By recognizing early warning signs of boundary violations (R), establishing clear and healthy boundaries (E), and strategizing how to respond to violations (S), individuals can proactively protect themselves from burnout.</p>
+        <p>Here's how boundary setting integrates into each phase:</p>
+        <ul>
+            <li><b>Recognize (R):</b> Pay attention to feelings of resentment, overwhelm, or exhaustion, which may indicate boundary violations.</li>
+            <li><b>Establish (E):</b> Define your personal boundaries and communicate them clearly to others.</li>
+            <li><b>Strategize (S):</b> Develop strategies for responding to boundary violations assertively and effectively.</li>
+            <li><b>Take Action (T):</b> Implement your boundary-setting strategies and take action to address violations.</li>
+            <li><b>Observe (O):</b> Monitor the effectiveness of your boundary-setting strategies and make adjustments as needed.</li>
+            <li><b>Reflect (R):</b> Reflect on your experiences with boundary setting and identify areas for improvement.</li>
+            <li><b>Evaluate (E):</b> Evaluate the impact of your boundary-setting efforts on your overall well-being.</li>
+        </ul>
+
+        <p>By consistently integrating boundary setting into the R.E.S.T.O.R.E. Protocol™, individuals can create a sustainable approach to burnout prevention and maintain healthy relationships.</p>
+
+        <div class="case-study">
+            <p class="case-study-title">Case Study: Sarah, a Burned-Out Social Worker</p>
+            <div class="case-study-content">
+                <p><strong>Client:</strong> Sarah, 38, Social Worker</p>
+                <p><strong>Presenting Symptoms:</strong> Sarah reported feeling chronically exhausted, cynical, and ineffective in her role. She frequently worked overtime, took on extra cases, and struggled to say no to requests from colleagues and clients. She described feeling "drained" and "resentful."</p>
+                <p><strong>Intervention:</strong> Sarah was introduced to the R.E.S.T.O.R.E. Protocol™, with a particular focus on boundary setting. She began by identifying her key boundaries related to workload, time, and emotional availability. She practiced assertive communication techniques, such as "I feel" statements and setting consequences. She also worked on cultivating self-compassion to address her fear of disappointing others.</p>
+                <p><strong>Outcomes:</strong> After several weeks of consistent effort, Sarah reported a significant improvement in her well-being. She was able to decline additional tasks without feeling guilty, delegate responsibilities effectively, and prioritize her own needs. She experienced a reduction in her feelings of exhaustion and cynicism and reported feeling more confident and empowered in her role. <span class="stat-highlight">Her scores on the Maslach Burnout Inventory decreased by 32%</span>, indicating a substantial reduction in burnout symptoms.</p>
+            </div>
+        </div>
+
+        <div class="check-understanding">
+            <p class="box-label">Check Your Understanding</p>
+
+            <p class="question">1. What are three common root causes of boundary violations?</p>
+            <button class="reveal-btn">Reveal Answer</button>
+            <div class="answer-text">Common root causes include low self-worth, fear of conflict, and lack of awareness.</div>
+
+            <p class="question">2. Describe the "broken record" technique and when it might be useful.</p>
+            <button class="reveal-btn">Reveal Answer</button>
+            <div class="answer-text">The "broken record" technique involves calmly and repeatedly stating your boundary, even if the other person persists in trying to cross it. This can be particularly effective with persistent individuals.</div>
+
+            <p class="question">3. How does self-compassion relate to effective boundary setting?</p>
+            <button class="reveal-btn">Reveal Answer</button>
+            <div class="answer-text">Self-compassion helps individuals navigate the challenges of boundary setting, preventing burnout and promoting resilience. It involves treating yourself with kindness, care, and understanding.</div>
+        </div>
+
+        <div class="takeaways-box">
+            <p class="box-label">Key Takeaways</p>
+            <ul>
+                <li>Boundary violations can manifest in various forms, impacting physical, emotional, intellectual, material, and time-related aspects of well-being.</li>
+                <li>Root causes of boundary violations often include low self-worth, fear of conflict, lack of awareness, entitlement, and poor communication skills.</li>
+                <li>Advanced communication techniques, such as "I feel" statements, setting consequences, and offering alternatives, can enhance boundary-setting effectiveness.</li>
+                <li>Tailoring your approach to different personality types is essential for successful boundary setting.</li>
+                <li>Self-compassion plays a crucial role in navigating boundary-setting challenges and preventing burnout.</li>
+            </ul>
+        </div>
+
+        <div class="references-box">
+            <p class="box-label">References & Further Reading</p>
+            <ol id="references">
+                <li>Richardson, T. et al. (2018). "The Relationship Between Self-Esteem and Boundary Setting in Young Adults." <i>Journal of Social and Personal Relationships</i>, 35(8), 1125-1144.</li>
+                <li>Smith, A. B., et al. (2021). "The Impact of Assertive Communication Training on Reducing Boundary Violations in the Workplace." <i>Journal of Applied Psychology</i>, 106(3), 412-428.</li>
+                <li>Neff, K. D. (2003). "Self-Compassion: An Alternative Conceptualization of a Healthy Attitude Toward Oneself." <i>Self and Identity</i>, 2(2), 85-101.</li>
+                <li>Brown, B. (2010). <i>The Gifts of Imperfection: Let Go of Who You Think You're Supposed to Be and Embrace Who You Are.</i> Hazelden Publishing.</li>
+                <li>Linehan, M. M. (2014). <i>DBT Skills Training Manual</i> (2nd ed.). Guilford Press.</li>
+                <li>Walker, P. (2008). <i>Complex PTSD: From Surviving to Thriving.</i> Azure Coyote Publishing.</li>
+                <li>Anderson, C. M., & Carter, D. E. (2009). <i>Understanding Narcissism: A Guide for Helpers.</i> University of Toronto Press.</li>
+            </ol>
+        </div>
+
+        <footer class="lesson-footer">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="footer-logo">
+            <p class="brand">AccrediPro Academy</p>
+            <p class="copyright">&copy; 2024 AccrediPro Academy. All rights reserved.</p>
+        </footer>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const revealButtons = document.querySelectorAll('.reveal-btn');
+
+            revealButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    const answerText = this.nextElementSibling;
+                    answerText.classList.toggle('show');
+                });
+            });
+        });
+    </script>
+</body>
+
+</html>

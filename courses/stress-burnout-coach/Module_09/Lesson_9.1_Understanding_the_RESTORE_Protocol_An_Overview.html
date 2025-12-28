@@ -1,0 +1,1175 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lesson 9.1: Understanding the RESTORE Protocol: An Overview</title>
+    <style>
+        /* Base & Reset */
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Georgia, 'Times New Roman', serif;
+            line-height: 1.8;
+            color: #2d2d2d;
+            background: #f8f6f3;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Main Container */
+        .lesson-container {
+            max-width: 860px;
+            margin: 0 auto;
+            padding: 40px 30px;
+            background: #ffffff;
+            min-height: 100vh;
+            box-shadow: 0 0 60px rgba(0, 0, 0, 0.08);
+        }
+
+        /* Brand Header */
+        .brand-header {
+            text-align: center;
+            padding-bottom: 30px;
+            margin-bottom: 35px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .brand-logo {
+            max-width: 220px;
+            height: auto;
+            margin-bottom: 5px;
+        }
+
+        /* Module Header - GREEN theme for Gut Health */
+        .module-header {
+            background: linear-gradient(135deg, #059669 0%, #10B981 100%);
+            padding: 35px 35px 30px;
+            border-radius: 16px;
+            margin-bottom: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .module-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+            transform: translate(100px, -100px);
+        }
+
+        .module-header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, #B8860B, #D4A84B, #B8860B);
+        }
+
+        .module-label {
+            margin: 0;
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.75);
+            text-transform: uppercase;
+            letter-spacing: 2.5px;
+            font-weight: 500;
+        }
+
+        .lesson-title {
+            margin: 10px 0 0 0;
+            font-size: 28px;
+            color: #ffffff;
+            font-weight: 700;
+            line-height: 1.3;
+            position: relative;
+        }
+
+        .lesson-meta {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+            padding-top: 18px;
+            border-top: 1px solid rgba(255, 255, 255, 0.15);
+            flex-wrap: wrap;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.85);
+            background: rgba(255, 255, 255, 0.1);
+            padding: 5px 12px;
+            border-radius: 4px;
+        }
+
+        /* Table of Contents */
+        .toc-box {
+            background: linear-gradient(135deg, #fafafa 0%, #f5f5f5 100%);
+            border-radius: 14px;
+            padding: 24px 28px;
+            margin-bottom: 35px;
+            border: 1px solid #e8e8e8;
+        }
+
+        .toc-box .box-label {
+            font-weight: 600;
+            color: #059669;
+            margin: 0 0 18px 0;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .toc-list {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px 24px;
+        }
+
+        .toc-list li {
+            margin: 0;
+        }
+
+        .toc-list a {
+            display: flex;
+            align-items: center;
+            padding: 8px 12px;
+            color: #555;
+            text-decoration: none;
+            font-size: 14px;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+        }
+
+        .toc-list a:hover {
+            background: white;
+            color: #059669;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+        }
+
+        .toc-list .section-num {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 26px;
+            height: 26px;
+            background: #059669;
+            color: white;
+            font-weight: 600;
+            font-size: 11px;
+            border-radius: 6px;
+            margin-right: 12px;
+            flex-shrink: 0;
+        }
+
+        @media (max-width: 600px) {
+            .toc-list {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Learning Objectives */
+        .objectives-box {
+            background: #f0fdf4;
+            border: 2px solid #10B981;
+            border-radius: 14px;
+            padding: 30px 35px;
+            margin-bottom: 40px;
+        }
+
+        .objectives-box .box-label {
+            font-weight: 600;
+            color: #059669;
+            margin: 0 0 18px 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .objectives-box .box-label::before {
+            content: '🎯';
+            font-size: 18px;
+        }
+
+        .objectives-box ul {
+            margin: 0;
+            padding-left: 22px;
+        }
+
+        .objectives-box li {
+            margin-bottom: 14px;
+            font-size: 16px;
+            line-height: 1.7;
+        }
+
+        .objectives-box li:last-child {
+            margin-bottom: 0;
+        }
+
+        /* Key Terms Box */
+        .key-terms-box {
+            background: linear-gradient(135deg, #f0f4f8 0%, #e8ecf1 100%);
+            border-radius: 14px;
+            padding: 28px 30px;
+            margin: 40px 0;
+            border: 1px solid #d8dce0;
+        }
+
+        .key-terms-box .box-label {
+            font-weight: 600;
+            color: #059669;
+            margin: 0 0 18px 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .terms-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 16px;
+        }
+
+        .term-item {
+            background: white;
+            padding: 16px 18px;
+            border-radius: 10px;
+            border-left: 4px solid #10B981;
+        }
+
+        .term-item .term {
+            font-weight: 700;
+            color: #059669;
+            font-size: 15px;
+            margin: 0 0 6px 0;
+        }
+
+        .term-item .definition {
+            font-size: 14px;
+            color: #555;
+            margin: 0;
+            line-height: 1.6;
+        }
+
+        /* Section Headings */
+        h2 {
+            font-size: 24px;
+            color: #059669;
+            margin: 50px 0 20px 0;
+            font-weight: 600;
+            position: relative;
+            padding-bottom: 12px;
+        }
+
+        h2::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 60px;
+            height: 3px;
+            background: #B8860B;
+        }
+
+        /* Paragraphs */
+        p {
+            font-size: 17px;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        /* Highlights */
+        .highlight {
+            background: linear-gradient(180deg, transparent 60%, #FFF59D 60%);
+            padding: 0 4px;
+            font-weight: 500;
+        }
+
+        /* Welcome/Intro Box */
+        .welcome-box {
+            background: linear-gradient(135deg, #f0fdf4 0%, #ecfdf5 100%);
+            padding: 30px 35px;
+            border-radius: 14px;
+            margin-bottom: 40px;
+            border: 1px solid #bbf7d0;
+        }
+
+        .welcome-box h3 {
+            margin: 0 0 15px 0;
+            font-size: 20px;
+            color: #059669;
+            font-weight: 600;
+        }
+
+        .welcome-box p {
+            margin: 0;
+            font-size: 17px;
+            line-height: 1.8;
+            color: #444;
+        }
+
+        /* Alert Boxes */
+        .alert-box {
+            padding: 26px 30px;
+            margin: 35px 0;
+            border-radius: 0 14px 14px 0;
+            border-left: 5px solid;
+        }
+
+        .alert-box .alert-label {
+            font-weight: 600;
+            margin: 0 0 12px 0;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .alert-box p:last-child {
+            margin: 0;
+            font-size: 16px;
+            line-height: 1.7;
+        }
+
+        .alert-box.warning {
+            background: #fff8e6;
+            border-left-color: #ff9800;
+        }
+
+        .alert-box.warning .alert-label {
+            color: #e65100;
+        }
+
+        .alert-box.success {
+            background: #f0f8f0;
+            border-left-color: #4caf50;
+        }
+
+        .alert-box.success .alert-label {
+            color: #2e7d32;
+        }
+
+        .alert-box.reflect {
+            background: #f8f0fa;
+            border-left-color: #9c27b0;
+        }
+
+        .alert-box.reflect .alert-label {
+            color: #7b1fa2;
+        }
+
+        .alert-box.info {
+            background: #e3f2fd;
+            border-left-color: #2196f3;
+        }
+
+        .alert-box.info .alert-label {
+            color: #1565c0;
+        }
+
+        /* Case Study Box */
+        .case-study {
+            background: linear-gradient(135deg, #f8f9fb 0%, #f0f2f5 100%);
+            border-radius: 16px;
+            padding: 0;
+            margin: 40px 0;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+        }
+
+        .case-study-header {
+            background: linear-gradient(135deg, #059669 0%, #10B981 100%);
+            padding: 20px 30px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .case-study-icon {
+            width: 45px;
+            height: 45px;
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+        }
+
+        .case-study-header .box-label {
+            font-weight: 600;
+            color: #ffffff;
+            margin: 0;
+            font-size: 16px;
+            letter-spacing: 0.5px;
+        }
+
+        .case-study-header .subtitle {
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 13px;
+            margin: 4px 0 0 0;
+        }
+
+        .case-study-content {
+            padding: 28px 30px;
+        }
+
+        .case-study-content p {
+            font-size: 16px;
+            margin-bottom: 18px;
+        }
+
+        .case-study-content ul {
+            margin: 18px 0;
+            padding-left: 22px;
+        }
+
+        .case-study-content li {
+            margin-bottom: 10px;
+            font-size: 15px;
+        }
+
+        .patient-profile {
+            display: flex;
+            align-items: center;
+            gap: 18px;
+            padding: 18px 22px;
+            background: white;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            border: 1px solid #e5e5e5;
+        }
+
+        .patient-avatar {
+            width: 55px;
+            height: 55px;
+            background: linear-gradient(135deg, #10B981, #059669);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            flex-shrink: 0;
+        }
+
+        .patient-info h4 {
+            margin: 0 0 5px 0;
+            font-size: 17px;
+            color: #1a1a1a;
+        }
+
+        .patient-info p {
+            margin: 0;
+            font-size: 14px;
+            color: #666;
+        }
+
+        /* Comparison Cards */
+        .comparison-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+            margin: 30px 0;
+        }
+
+        .comparison-card {
+            border-radius: 14px;
+            padding: 26px;
+            border-top: 5px solid;
+            transition: transform 0.2s ease;
+        }
+
+        .comparison-card:hover {
+            transform: translateY(-3px);
+        }
+
+        .comparison-card.conventional {
+            background: #fff5f5;
+            border-top-color: #c62828;
+        }
+
+        .comparison-card.functional {
+            background: #f1f8f1;
+            border-top-color: #2e7d32;
+        }
+
+        .comparison-card .card-label {
+            font-weight: 600;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            margin: 0 0 14px 0;
+        }
+
+        .comparison-card.conventional .card-label {
+            color: #c62828;
+        }
+
+        .comparison-card.functional .card-label {
+            color: #2e7d32;
+        }
+
+        .comparison-card .card-text {
+            margin: 0;
+            font-size: 16px;
+            font-style: italic;
+            line-height: 1.6;
+        }
+
+        /* Content Lists */
+        .content-list {
+            font-size: 17px;
+            margin: 20px 0;
+            padding-left: 24px;
+        }
+
+        .content-list li {
+            margin-bottom: 14px;
+            line-height: 1.7;
+        }
+
+        .content-list li:last-child {
+            margin-bottom: 0;
+        }
+
+        /* Statistics Box */
+        .stats-box {
+            background: linear-gradient(135deg, #059669 0%, #10B981 100%);
+            padding: 40px;
+            border-radius: 16px;
+            margin: 35px 0;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stats-box::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -20%;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.08) 0%, transparent 70%);
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 25px;
+            position: relative;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 42px;
+            font-weight: 700;
+            color: white;
+            line-height: 1;
+            margin-bottom: 8px;
+        }
+
+        .stat-label {
+            font-size: 13px;
+            color: rgba(255, 255, 255, 0.85);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* Principle Cards */
+        .principle-card {
+            background: linear-gradient(to right, #fafafa, #ffffff);
+            border-left: 5px solid #059669;
+            padding: 24px 28px;
+            margin-bottom: 18px;
+            border-radius: 0 14px 14px 0;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.04);
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .principle-card:hover {
+            transform: translateX(5px);
+            box-shadow: 0 4px 18px rgba(0, 0, 0, 0.08);
+        }
+
+        .principle-card .principle-title {
+            font-weight: 700;
+            color: #059669;
+            margin: 0 0 10px 0;
+            font-size: 17px;
+        }
+
+        .principle-card .principle-text {
+            margin: 0;
+            font-size: 15px;
+            line-height: 1.7;
+        }
+
+        .principle-card ul {
+            margin: 12px 0 0 0;
+            padding-left: 20px;
+            font-size: 14px;
+        }
+
+        .principle-card li {
+            margin-bottom: 5px;
+        }
+
+        /* Check Understanding Box */
+        .check-understanding {
+            background: linear-gradient(135deg, #fdfbf7 0%, #f9f5ed 100%);
+            border: 2px solid #B8860B;
+            border-radius: 16px;
+            padding: 32px;
+            margin: 45px 0;
+        }
+
+        .check-understanding .box-label {
+            font-weight: 600;
+            color: #8B6914;
+            margin: 0 0 8px 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .check-understanding .box-subtitle {
+            font-size: 15px;
+            color: #666;
+            margin: 0 0 24px 0;
+        }
+
+        .question-item {
+            background: white;
+            border-radius: 12px;
+            padding: 22px 24px;
+            margin-bottom: 16px;
+            border: 1px solid #e8e4dc;
+            position: relative;
+        }
+
+        .question-item:last-child {
+            margin-bottom: 0;
+        }
+
+        .question-number {
+            position: absolute;
+            top: -12px;
+            left: 20px;
+            background: #059669;
+            color: white;
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            font-size: 13px;
+        }
+
+        .question-text {
+            font-size: 16px;
+            color: #333;
+            margin: 0 0 16px 0;
+            line-height: 1.6;
+            padding-top: 4px;
+        }
+
+        .reveal-btn {
+            background: #059669;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-size: 14px;
+            cursor: pointer;
+            font-family: inherit;
+            transition: background 0.2s ease;
+        }
+
+        .reveal-btn:hover {
+            background: #047857;
+        }
+
+        .answer-text {
+            display: none;
+            font-size: 14px;
+            color: #2e7d32;
+            margin: 14px 0 0 0;
+            padding: 14px;
+            background: #f0f8f0;
+            border-radius: 8px;
+            line-height: 1.6;
+        }
+
+        .answer-text.show {
+            display: block;
+        }
+
+        /* Key Takeaways */
+        .takeaways-box {
+            background: linear-gradient(135deg, #f5f5f5 0%, #e8e8e8 100%);
+            padding: 22px 25px;
+            margin-top: 35px;
+            border-radius: 8px;
+            border: 1px solid #ddd;
+        }
+
+        .takeaways-box .box-label {
+            font-weight: 600;
+            color: #059669;
+            margin: 0 0 15px 0;
+            font-size: 16px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .takeaways-box ul {
+            margin: 0;
+            padding-left: 18px;
+            font-size: 15px;
+        }
+
+        .takeaways-box li {
+            margin-bottom: 10px;
+        }
+
+        .takeaways-box li:last-child {
+            margin-bottom: 0;
+        }
+
+        /* Interactive Diagram */
+        .interactive-diagram {
+            background: white;
+            border: 2px solid #e5e5e5;
+            border-radius: 16px;
+            padding: 30px;
+            margin: 35px 0;
+            text-align: center;
+        }
+
+        .diagram-title {
+            font-weight: 600;
+            color: #333;
+            margin: 0 0 20px 0;
+            font-size: 18px;
+        }
+
+        .gut-visual {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 30px;
+            flex-wrap: wrap;
+            margin: 20px 0;
+        }
+
+        .gut-section {
+            background: linear-gradient(135deg, #f0fdf4 0%, #ecfdf5 100%);
+            border: 2px solid #10B981;
+            border-radius: 12px;
+            padding: 20px;
+            min-width: 150px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .gut-section:hover {
+            transform: scale(1.05);
+            box-shadow: 0 8px 25px rgba(16, 185, 129, 0.2);
+        }
+
+        .gut-section .icon {
+            font-size: 32px;
+            margin-bottom: 10px;
+        }
+
+        .gut-section .label {
+            font-weight: 600;
+            color: #059669;
+            font-size: 14px;
+        }
+
+        .gut-section .count {
+            font-size: 12px;
+            color: #666;
+            margin-top: 5px;
+        }
+
+        /* Footer */
+        .lesson-footer {
+            text-align: center;
+            padding-top: 50px;
+            margin-top: 60px;
+            border-top: 1px solid #eee;
+        }
+
+        .footer-logo {
+            max-width: 140px;
+            height: auto;
+            margin-bottom: 15px;
+            opacity: 0.9;
+        }
+
+        .lesson-footer .brand {
+            color: #059669;
+            font-weight: 600;
+            margin: 0;
+            font-size: 15px;
+        }
+
+        .lesson-footer .copyright {
+            color: #888;
+            font-size: 13px;
+            margin: 10px 0 0 0;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .lesson-container {
+                padding: 20px 16px;
+            }
+
+            .module-header {
+                padding: 25px 20px 22px;
+            }
+
+            .lesson-title {
+                font-size: 22px;
+            }
+
+            h2 {
+                font-size: 20px;
+                margin: 35px 0 15px 0;
+            }
+
+            p {
+                font-size: 16px;
+            }
+
+            .toc-list {
+                grid-template-columns: 1fr;
+            }
+
+            .objectives-box {
+                padding: 25px 20px;
+            }
+
+            .key-terms-box {
+                padding: 22px 18px;
+            }
+
+            .terms-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .stats-box {
+                padding: 25px 20px;
+            }
+
+            .stat-number {
+                font-size: 32px;
+            }
+
+            .comparison-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .principle-card {
+                padding: 20px;
+            }
+
+            .case-study-content {
+                padding: 20px;
+            }
+
+            .check-understanding {
+                padding: 25px 20px;
+            }
+
+            .takeaways-box {
+                padding: 18px 20px;
+            }
+
+            .alert-box {
+                padding: 20px;
+            }
+
+            .content-list {
+                padding-left: 20px;
+                font-size: 16px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .lesson-container {
+                padding: 15px 12px;
+            }
+
+            .brand-logo {
+                max-width: 180px;
+            }
+
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 15px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="lesson-container">
+        <div class="brand-header">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="brand-logo">
+        </div>
+
+        <header class="module-header">
+            <p class="module-label">Module 9: L1 Deep Dive Module 9</p>
+            <h1 class="lesson-title">Lesson 9.1: Understanding the RESTORE Protocol: An Overview</h1>
+            <div class="lesson-meta">
+                <span class="meta-item">30 min read</span>
+                <span class="meta-item">Lesson 1 of 4</span>
+            </div>
+        </header>
+
+        <!-- Learning Objectives -->
+        <div class="objectives-box">
+            <p class="box-label">Learning Objectives</p>
+            <ul>
+                <li>Define the <span class="highlight">RESTORE Protocol</span>™ and its purpose in addressing stress and burnout.</li>
+                <li>Explain the rationale behind each step of the <span class="highlight">RESTORE</span> acronym.</li>
+                <li>Describe how <span class="highlight">RESTORE</span> integrates evidence-based techniques for nervous system regulation.</li>
+                <li>Identify the core principles underpinning the <span class="highlight">RESTORE Protocol</span>™.</li>
+                <li>Differentiate <span class="highlight">RESTORE</span> from traditional stress management approaches.</li>
+            </ul>
+        </div>
+
+        <section>
+            <h2>Introduction to the RESTORE Protocol™</h2>
+            <p>Welcome to Module 9, where we'll delve deeper into the practical application of the <span class="highlight">RESTORE Protocol</span>™. As we've discussed in previous modules, stress and burnout are pervasive issues affecting individuals across various demographics and professions. While conventional stress management techniques often provide temporary relief, they rarely address the underlying causes or promote sustainable well-being. The <span class="highlight">RESTORE Protocol</span>™ offers a comprehensive, evidence-based framework for addressing stress and burnout at their root, fostering long-term resilience and well-being.</p>
+            <p>The <span class="highlight">RESTORE Protocol</span>™ is designed to guide individuals from a state of chronic stress and burnout towards a state of thriving and empowerment. It's a structured yet flexible approach that allows for personalization based on individual needs and circumstances. It's not a one-size-fits-all solution but rather a roadmap to guide clients toward reclaimingtheir well-being.</p>
+        </section>
+
+        <section>
+            <h2>Deciphering the RESTORE Acronym</h2>
+            <p>The <span class="highlight">RESTORE Protocol</span>™ is built upon a simple yet powerful acronym, with each letter representing a critical step in the process of nervous system regulation and stress recovery:</p>
+            <ul>
+                <li><b>R</b> - Recognize</li>
+                <li><b>E</b> - Evaluate</li>
+                <li><b>S</b> - Strategize</li>
+                <li><b>T</b> - Tune</li>
+                <li><b>O</b> - Optimize</li>
+                <li><b>R</b> - Reintegrate</li>
+                <li><b>E</b> - Empower</li>
+            </ul>
+            <p>Let's briefly break down each component:</p>
+            <ol>
+                <li><b>Recognize:</b> This initial stage involves cultivating self-awareness and identifying the specific stressors and triggers that contribute to dysregulation.</li>
+                <li><b>Evaluate:</b> During this phase, we assess the impact of stress on various aspects of the client's life, including physical health, emotional well-being, relationships, and performance.</li>
+                <li><b>Strategize:</b> Based on the evaluation, we develop personalized strategies and interventions to address the identified stressors and promote nervous system regulation.</li>
+                <li><b>Tune:</b> This stage involves actively engaging in practices that help regulate the nervous system, such as breathwork, mindfulness, and somatic experiencing techniques.</li>
+                <li><b>Optimize:</b> Here, we focus on optimizing lifestyle factors, such as sleep, nutrition, and movement, to support overall well-being and resilience.</li>
+                <li><b>Reintegrate:</b> This crucial phase involves reintegrating healthy habits and coping mechanisms into daily life, ensuring sustainable change.</li>
+                <li><b>Empower:</b> The final stage focuses on empowering clients to take ownership of their well-being and develop the skills and resources to navigate future challenges with confidence.</li>
+            </ol>
+        </section>
+
+        <section>
+            <h2>The Scientific Rationale Behind RESTORE</h2>
+            <p>The <span class="highlight">RESTORE Protocol</span>™ isn't just a collection of techniques; it's grounded in a robust understanding of the neurobiology of stress and the principles of nervous system regulation. Each step of the protocol is informed by evidence-based practices aimed at restoring balance and promoting resilience.</p>
+            <p>For example, the "Tune" phase draws heavily on techniques like <span class="highlight">mindfulness meditation</span>, which has been shown to reduce activity in the amygdala (the brain's fear center) and increase activity in the prefrontal cortex (the area responsible for executive function and emotional regulation) (Hölzel et al., 2011). Similarly, <span class="highlight">somatic experiencing</span> techniques, which are also incorporated into the "Tune" phase, help individuals release stored trauma and tension in the body, promoting a sense of safety and grounding (Levine, 1997).</p>
+            <p>The "Optimize" phase recognizes the critical role of lifestyle factors in regulating the nervous system. <span class="highlight">Adequate sleep</span>, for instance, is essential for consolidating memories, repairing tissues, and regulating hormones. <span class="highlight">Proper nutrition</span> provides the building blocks for neurotransmitters and other essential molecules involved in mood regulation and stress response. And <span class="highlight">regular movement</span> helps release tension, improve circulation, and boost endorphins.</p>
+
+            <div class="data-table">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>RESTORE Step</th>
+                            <th>Key Focus</th>
+                            <th>Evidence-Based Techniques</th>
+                            <th>Expected Outcome</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Recognize</td>
+                            <td>Self-awareness of stressors</td>
+                            <td>Journaling, mindfulness exercises</td>
+                            <td>Improved identification of triggers</td>
+                        </tr>
+                        <tr>
+                            <td>Evaluate</td>
+                            <td>Assessing impact of stress</td>
+                            <td>Stress questionnaires, physiological measures</td>
+                            <td>Clearer understanding of stress effects</td>
+                        </tr>
+                         <tr>
+                            <td>Strategize</td>
+                            <td>Personalized intervention plans</td>
+                            <td>Goal setting, cognitive restructuring</td>
+                            <td>Targeted strategies for stress reduction</td>
+                        </tr>
+                        <tr>
+                            <td>Tune</td>
+                            <td>Nervous system regulation</td>
+                            <td>Breathwork, meditation, somatic experiencing</td>
+                            <td>Reduced anxiety and improved mood</td>
+                        </tr>
+                        <tr>
+                            <td>Optimize</td>
+                            <td>Lifestyle enhancements</td>
+                            <td>Sleep hygiene, nutrition, exercise</td>
+                            <td>Enhanced resilience and well-being</td>
+                        </tr>
+                        <tr>
+                            <td>Reintegrate</td>
+                            <td>Sustainable habit formation</td>
+                            <td>Implementation intentions, relapse prevention</td>
+                            <td>Long-term stress management</td>
+                        </tr>
+                         <tr>
+                            <td>Empower</td>
+                            <td>Building self-efficacy</td>
+                            <td>Skills training, resource identification</td>
+                            <td>Increased confidence and autonomy</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <section>
+            <h2>Core Principles of the RESTORE Protocol™</h2>
+            <p>Several core principles underpin the <span class="highlight">RESTORE Protocol</span>™, guiding its application and ensuring its effectiveness:</p>
+            <ul>
+                <li><b>Client-Centered Approach:</b> The protocol is tailored to meet the unique needs and preferences of each individual client.</li>
+                <li><b>Evidence-Based Practice:</b> All interventions are grounded in scientific research and clinical best practices.</li>
+                <li><b>Holistic Perspective:</b> The protocol addresses the interconnectedness of mind, body, and spirit, recognizing that stress impacts all aspects of well-being.</li>
+                <li><b>Empowerment and Self-Efficacy:</b> The protocol aims to empower clients to take ownership of their well-being and develop the skills and resources to navigate future challenges.</li>
+                <li><b>Sustainability:</b> The protocol focuses on creating lasting change by integrating healthy habits and coping mechanisms into daily life.</li>
+            </ul>
+        </section>
+
+        <section>
+            <h2>RESTORE vs. Traditional Stress Management</h2>
+            <p>While traditional stress management techniques, such as deep breathing exercises and time management strategies, can be helpful in managing acute stress, they often fall short of addressing the underlying causes of chronic stress and burnout. The <span class="highlight">RESTORE Protocol</span>™ takes a more comprehensive and holistic approach, focusing on restoring nervous system regulation and fostering long-term resilience.</p>
+            <p>Here's a comparison of <span class="highlight">RESTORE</span> and traditional stress management:</p>
+            <div class="comparison-grid">
+                <div class="principle-card">
+                    <h3>RESTORE Protocol™</h3>
+                    <ul>
+                        <li>Addresses root causes of stress</li>
+                        <li>Focuses on nervous system regulation</li>
+                        <li>Promotes long-term resilience</li>
+                        <li>Integrates multiple evidence-based techniques</li>
+                        <li>Emphasizes client empowerment</li>
+                    </ul>
+                </div>
+                <div class="principle-card">
+                    <h3>Traditional Stress Management</h3>
+                    <ul>
+                        <li>Often focuses on symptom management</li>
+                        <li>May not address underlying causes</li>
+                        <li>Can provide temporary relief</li>
+                        <li>May rely on a limited set of techniques</li>
+                        <li>May not fully empower clients</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <section>
+           <h2>Case Study: Implementing RESTORE</h2>
+           <div class="case-study">
+                <h3 class="case-study-title">Case Study: Sarah, a Burned-Out Teacher</h3>
+                <div class="case-study-content">
+                    <p><b>Client:</b> Sarah, 38, a high school teacher.</p>
+                    <p><b>Presenting Symptoms:</b> Sarah presented with chronic fatigue, insomnia, irritability, feelings of overwhelm, and a sense of detachment from her work. She reported feeling constantly stressed and unable to cope with the demands of her job.</p>
+                    <p><b>Intervention:</b> Sarah was guided through the <span class="highlight">RESTORE Protocol</span>™. Initially, she struggled to <span class="highlight">Recognize</span> her stress triggers, but with journaling, she identified workload and lack of support as major factors. <span class="highlight">Evaluation</span> revealed that her sleep and relationships were suffering. The <span class="highlight">Strategize</span> phase involved setting boundaries at work and delegating tasks. Regular <span class="highlight">Tune</span> sessions included breathwork and progressive muscle relaxation. <span class="highlight">Optimize</span> focused on improving her diet and incorporating short walks during lunch breaks. <span class="highlight">Reintegrate</span> involved practicing these strategies daily. Sarah was <span class="highlight">Empowered</span> by the positive changes she experienced and the skills she developed.</p>
+                    <p><b>Outcomes:</b> After 12 weeks, Sarah reported a significant reduction in fatigue, improved sleep quality, increased energy levels, and a renewed sense of purpose in her work. She also reported feeling more connected to her students and colleagues. Her scores on stress and burnout assessments decreased by <span class="stat-highlight">40%</span>. </p>
+                </div>
+            </div>
+        </section>
+
+        <div class="check-understanding">
+            <p class="box-label">Check Your Understanding</p>
+
+            <div class="question">
+                <p class="question-text">What are the seven steps of the RESTORE Protocol™?</p>
+                <button class="reveal-btn">Reveal Answer</button>
+                <div class="answer-text">The seven steps are: Recognize, Evaluate, Strategize, Tune, Optimize, Reintegrate, and Empower.</div>
+            </div>
+
+            <div class="question">
+                <p class="question-text">How does the RESTORE Protocol™ differ from traditional stress management approaches?</p>
+                <button class="reveal-btn">Reveal Answer</button>
+                <div class="answer-text">The RESTORE Protocol™ addresses the root causes of stress and burnout by focusing on nervous system regulation and promoting long-term resilience, while traditional stress management often focuses on symptom management.</div>
+            </div>
+        </div>
+
+        <div class="takeaways-box">
+            <p class="box-label">Key Takeaways</p>
+            <ul>
+                <li>The <span class="highlight">RESTORE Protocol</span>™ is a comprehensive, evidence-based framework for addressing stress and burnout.</li>
+                <li>Each step of the <span class="highlight">RESTORE</span> acronym represents a critical component of nervous system regulation and stress recovery.</li>
+                <li>The protocol is grounded in scientific research and clinical best practices.</li>
+                <li>The <span class="highlight">RESTORE Protocol</span>™ is designed to be client-centered, holistic, and empowering.</li>
+                <li>It offers a more sustainable and effective approach to stress management compared to traditional techniques.</li>
+            </ul>
+        </div>
+
+        <div class="references-box">
+            <p class="box-label">References & Further Reading</p>
+            <ul>
+                <li>Hölzel, B. K., Lazar, S. W., Gard, T., Schuman-Olivier, Z., Vago, D. R., Ott, U., ... & Davidson, R. J. (2011). "Mindfulness practice leads to increases in regional brain gray matter density." Psychiatry Research: Neuroimaging, 191(1), 36-43.</li>
+                <li>Levine, P. A. (1997). "Waking the tiger: Healing trauma." Berkeley, CA: North Atlantic Books.</li>
+                <li>Sapolsky, R. M. (2004). "Why zebras don't get ulcers: A guide to stress, stress-related diseases, and coping." New York: Henry Holt and Company.</li>
+                <li>Gerritsen, R. J. S., & Band, G. P. H. (2018). "Breath control during exercise improves performance by modulating autonomic and respiratory function." Frontiers in Physiology, 9, 1560.</li>
+                <li>Lipton, M. A., & Marik, P. E. (2013). "Propofol: friend or foe?." Best Practice & Research Clinical Anaesthesiology, 27(4), 509-521.</li>
+                 <li>van der Kolk, B. A. (2014). "The body keeps the score: Brain, mind, and body in the healing of trauma." New York: Viking.</li>
+                <li>Seppälä, E. M., Nitschke, J. B., Tudhope, S., Hayes, A., Goldstein, M. R., Nguyen, D. T., & Davidson, R. J. (2014). "Breath-based meditation decreases perceived stress and increases serenity in novice practitioners." Mindfulness, 5(1), 34-48.</li>
+            </ul>
+        </div>
+
+        <footer class="lesson-footer">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="footer-logo">
+            <p class="brand">AccrediPro Academy</p>
+            <p class="copyright">&copy; 2024 AccrediPro Academy. All rights reserved.</p>
+        </footer>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            document.querySelectorAll('.reveal-btn').forEach(button => {
+                button.addEventListener('click', () => {
+                    const answerText = button.nextElementSibling;
+                    answerText.classList.toggle('show');
+                });
+            });
+        });
+    </script>
+</body>
+
+</html>
