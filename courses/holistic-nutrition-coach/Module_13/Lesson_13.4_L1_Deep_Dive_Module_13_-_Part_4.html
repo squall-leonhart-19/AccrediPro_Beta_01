@@ -1,0 +1,1164 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>L1 Deep Dive Module 13 - Part 4</title>
+    <style>
+        /* Base & Reset */
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Georgia, 'Times New Roman', serif;
+            line-height: 1.8;
+            color: #2d2d2d;
+            background: #f8f6f3;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Main Container */
+        .lesson-container {
+            max-width: 860px;
+            margin: 0 auto;
+            padding: 40px 30px;
+            background: #ffffff;
+            min-height: 100vh;
+            box-shadow: 0 0 60px rgba(0, 0, 0, 0.08);
+        }
+
+        /* Brand Header */
+        .brand-header {
+            text-align: center;
+            padding-bottom: 30px;
+            margin-bottom: 35px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .brand-logo {
+            max-width: 220px;
+            height: auto;
+            margin-bottom: 5px;
+        }
+
+        /* Module Header - GREEN theme for Gut Health */
+        .module-header {
+            background: linear-gradient(135deg, #059669 0%, #10B981 100%);
+            padding: 35px 35px 30px;
+            border-radius: 16px;
+            margin-bottom: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .module-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+            transform: translate(100px, -100px);
+        }
+
+        .module-header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, #B8860B, #D4A84B, #B8860B);
+        }
+
+        .module-label {
+            margin: 0;
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.75);
+            text-transform: uppercase;
+            letter-spacing: 2.5px;
+            font-weight: 500;
+        }
+
+        .lesson-title {
+            margin: 10px 0 0 0;
+            font-size: 28px;
+            color: #ffffff;
+            font-weight: 700;
+            line-height: 1.3;
+            position: relative;
+        }
+
+        .lesson-meta {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+            padding-top: 18px;
+            border-top: 1px solid rgba(255, 255, 255, 0.15);
+            flex-wrap: wrap;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.85);
+            background: rgba(255, 255, 255, 0.1);
+            padding: 5px 12px;
+            border-radius: 4px;
+        }
+
+        /* Table of Contents */
+        .toc-box {
+            background: linear-gradient(135deg, #fafafa 0%, #f5f5f5 100%);
+            border-radius: 14px;
+            padding: 24px 28px;
+            margin-bottom: 35px;
+            border: 1px solid #e8e8e8;
+        }
+
+        .toc-box .box-label {
+            font-weight: 600;
+            color: #059669;
+            margin: 0 0 18px 0;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .toc-list {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px 24px;
+        }
+
+        .toc-list li {
+            margin: 0;
+        }
+
+        .toc-list a {
+            display: flex;
+            align-items: center;
+            padding: 8px 12px;
+            color: #555;
+            text-decoration: none;
+            font-size: 14px;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+        }
+
+        .toc-list a:hover {
+            background: white;
+            color: #059669;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+        }
+
+        .toc-list .section-num {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 26px;
+            height: 26px;
+            background: #059669;
+            color: white;
+            font-weight: 600;
+            font-size: 11px;
+            border-radius: 6px;
+            margin-right: 12px;
+            flex-shrink: 0;
+        }
+
+        @media (max-width: 600px) {
+            .toc-list {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Learning Objectives */
+        .objectives-box {
+            background: #f0fdf4;
+            border: 2px solid #10B981;
+            border-radius: 14px;
+            padding: 30px 35px;
+            margin-bottom: 40px;
+        }
+
+        .objectives-box .box-label {
+            font-weight: 600;
+            color: #059669;
+            margin: 0 0 18px 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .objectives-box .box-label::before {
+            content: '🎯';
+            font-size: 18px;
+        }
+
+        .objectives-box ul {
+            margin: 0;
+            padding-left: 22px;
+        }
+
+        .objectives-box li {
+            margin-bottom: 14px;
+            font-size: 16px;
+            line-height: 1.7;
+        }
+
+        .objectives-box li:last-child {
+            margin-bottom: 0;
+        }
+
+        /* Key Terms Box */
+        .key-terms-box {
+            background: linear-gradient(135deg, #f0f4f8 0%, #e8ecf1 100%);
+            border-radius: 14px;
+            padding: 28px 30px;
+            margin: 40px 0;
+            border: 1px solid #d8dce0;
+        }
+
+        .key-terms-box .box-label {
+            font-weight: 600;
+            color: #059669;
+            margin: 0 0 18px 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .terms-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 16px;
+        }
+
+        .term-item {
+            background: white;
+            padding: 16px 18px;
+            border-radius: 10px;
+            border-left: 4px solid #10B981;
+        }
+
+        .term-item .term {
+            font-weight: 700;
+            color: #059669;
+            font-size: 15px;
+            margin: 0 0 6px 0;
+        }
+
+        .term-item .definition {
+            font-size: 14px;
+            color: #555;
+            margin: 0;
+            line-height: 1.6;
+        }
+
+        /* Section Headings */
+        h2 {
+            font-size: 24px;
+            color: #059669;
+            margin: 50px 0 20px 0;
+            font-weight: 600;
+            position: relative;
+            padding-bottom: 12px;
+        }
+
+        h2::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 60px;
+            height: 3px;
+            background: #B8860B;
+        }
+
+        /* Paragraphs */
+        p {
+            font-size: 17px;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        /* Highlights */
+        .highlight {
+            background: linear-gradient(180deg, transparent 60%, #FFF59D 60%);
+            padding: 0 4px;
+            font-weight: 500;
+        }
+
+        /* Welcome/Intro Box */
+        .welcome-box {
+            background: linear-gradient(135deg, #f0fdf4 0%, #ecfdf5 100%);
+            padding: 30px 35px;
+            border-radius: 14px;
+            margin-bottom: 40px;
+            border: 1px solid #bbf7d0;
+        }
+
+        .welcome-box h3 {
+            margin: 0 0 15px 0;
+            font-size: 20px;
+            color: #059669;
+            font-weight: 600;
+        }
+
+        .welcome-box p {
+            margin: 0;
+            font-size: 17px;
+            line-height: 1.8;
+            color: #444;
+        }
+
+        /* Alert Boxes */
+        .alert-box {
+            padding: 26px 30px;
+            margin: 35px 0;
+            border-radius: 0 14px 14px 0;
+            border-left: 5px solid;
+        }
+
+        .alert-box .alert-label {
+            font-weight: 600;
+            margin: 0 0 12px 0;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .alert-box p:last-child {
+            margin: 0;
+            font-size: 16px;
+            line-height: 1.7;
+        }
+
+        .alert-box.warning {
+            background: #fff8e6;
+            border-left-color: #ff9800;
+        }
+
+        .alert-box.warning .alert-label {
+            color: #e65100;
+        }
+
+        .alert-box.success {
+            background: #f0f8f0;
+            border-left-color: #4caf50;
+        }
+
+        .alert-box.success .alert-label {
+            color: #2e7d32;
+        }
+
+        .alert-box.reflect {
+            background: #f8f0fa;
+            border-left-color: #9c27b0;
+        }
+
+        .alert-box.reflect .alert-label {
+            color: #7b1fa2;
+        }
+
+        .alert-box.info {
+            background: #e3f2fd;
+            border-left-color: #2196f3;
+        }
+
+        .alert-box.info .alert-label {
+            color: #1565c0;
+        }
+
+        /* Case Study Box */
+        .case-study {
+            background: linear-gradient(135deg, #f8f9fb 0%, #f0f2f5 100%);
+            border-radius: 16px;
+            padding: 0;
+            margin: 40px 0;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+        }
+
+        .case-study-header {
+            background: linear-gradient(135deg, #059669 0%, #10B981 100%);
+            padding: 20px 30px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .case-study-icon {
+            width: 45px;
+            height: 45px;
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+        }
+
+        .case-study-header .box-label {
+            font-weight: 600;
+            color: #ffffff;
+            margin: 0;
+            font-size: 16px;
+            letter-spacing: 0.5px;
+        }
+
+        .case-study-header .subtitle {
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 13px;
+            margin: 4px 0 0 0;
+        }
+
+        .case-study-content {
+            padding: 28px 30px;
+        }
+
+        .case-study-content p {
+            font-size: 16px;
+            margin-bottom: 18px;
+        }
+
+        .case-study-content ul {
+            margin: 18px 0;
+            padding-left: 22px;
+        }
+
+        .case-study-content li {
+            margin-bottom: 10px;
+            font-size: 15px;
+        }
+
+        .patient-profile {
+            display: flex;
+            align-items: center;
+            gap: 18px;
+            padding: 18px 22px;
+            background: white;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            border: 1px solid #e5e5e5;
+        }
+
+        .patient-avatar {
+            width: 55px;
+            height: 55px;
+            background: linear-gradient(135deg, #10B981, #059669);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            flex-shrink: 0;
+        }
+
+        .patient-info h4 {
+            margin: 0 0 5px 0;
+            font-size: 17px;
+            color: #1a1a1a;
+        }
+
+        .patient-info p {
+            margin: 0;
+            font-size: 14px;
+            color: #666;
+        }
+
+        /* Comparison Cards */
+        .comparison-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+            margin: 30px 0;
+        }
+
+        .comparison-card {
+            border-radius: 14px;
+            padding: 26px;
+            border-top: 5px solid;
+            transition: transform 0.2s ease;
+        }
+
+        .comparison-card:hover {
+            transform: translateY(-3px);
+        }
+
+        .comparison-card.conventional {
+            background: #fff5f5;
+            border-top-color: #c62828;
+        }
+
+        .comparison-card.functional {
+            background: #f1f8f1;
+            border-top-color: #2e7d32;
+        }
+
+        .comparison-card .card-label {
+            font-weight: 600;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            margin: 0 0 14px 0;
+        }
+
+        .comparison-card.conventional .card-label {
+            color: #c62828;
+        }
+
+        .comparison-card.functional .card-label {
+            color: #2e7d32;
+        }
+
+        .comparison-card .card-text {
+            margin: 0;
+            font-size: 16px;
+            font-style: italic;
+            line-height: 1.6;
+        }
+
+        /* Content Lists */
+        .content-list {
+            font-size: 17px;
+            margin: 20px 0;
+            padding-left: 24px;
+        }
+
+        .content-list li {
+            margin-bottom: 14px;
+            line-height: 1.7;
+        }
+
+        .content-list li:last-child {
+            margin-bottom: 0;
+        }
+
+        /* Statistics Box */
+        .stats-box {
+            background: linear-gradient(135deg, #059669 0%, #10B981 100%);
+            padding: 40px;
+            border-radius: 16px;
+            margin: 35px 0;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stats-box::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -20%;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.08) 0%, transparent 70%);
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 25px;
+            position: relative;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 42px;
+            font-weight: 700;
+            color: white;
+            line-height: 1;
+            margin-bottom: 8px;
+        }
+
+        .stat-label {
+            font-size: 13px;
+            color: rgba(255, 255, 255, 0.85);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* Principle Cards */
+        .principle-card {
+            background: linear-gradient(to right, #fafafa, #ffffff);
+            border-left: 5px solid #059669;
+            padding: 24px 28px;
+            margin-bottom: 18px;
+            border-radius: 0 14px 14px 0;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.04);
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .principle-card:hover {
+            transform: translateX(5px);
+            box-shadow: 0 4px 18px rgba(0, 0, 0, 0.08);
+        }
+
+        .principle-card .principle-title {
+            font-weight: 700;
+            color: #059669;
+            margin: 0 0 10px 0;
+            font-size: 17px;
+        }
+
+        .principle-card .principle-text {
+            margin: 0;
+            font-size: 15px;
+            line-height: 1.7;
+        }
+
+        .principle-card ul {
+            margin: 12px 0 0 0;
+            padding-left: 20px;
+            font-size: 14px;
+        }
+
+        .principle-card li {
+            margin-bottom: 5px;
+        }
+
+        /* Check Understanding Box */
+        .check-understanding {
+            background: linear-gradient(135deg, #fdfbf7 0%, #f9f5ed 100%);
+            border: 2px solid #B8860B;
+            border-radius: 16px;
+            padding: 32px;
+            margin: 45px 0;
+        }
+
+        .check-understanding .box-label {
+            font-weight: 600;
+            color: #8B6914;
+            margin: 0 0 8px 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .check-understanding .box-subtitle {
+            font-size: 15px;
+            color: #666;
+            margin: 0 0 24px 0;
+        }
+
+        .question-item {
+            background: white;
+            border-radius: 12px;
+            padding: 22px 24px;
+            margin-bottom: 16px;
+            border: 1px solid #e8e4dc;
+            position: relative;
+        }
+
+        .question-item:last-child {
+            margin-bottom: 0;
+        }
+
+        .question-number {
+            position: absolute;
+            top: -12px;
+            left: 20px;
+            background: #059669;
+            color: white;
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            font-size: 13px;
+        }
+
+        .question-text {
+            font-size: 16px;
+            color: #333;
+            margin: 0 0 16px 0;
+            line-height: 1.6;
+            padding-top: 4px;
+        }
+
+        .reveal-btn {
+            background: #059669;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-size: 14px;
+            cursor: pointer;
+            font-family: inherit;
+            transition: background 0.2s ease;
+        }
+
+        .reveal-btn:hover {
+            background: #047857;
+        }
+
+        .answer-text {
+            display: none;
+            font-size: 14px;
+            color: #2e7d32;
+            margin: 14px 0 0 0;
+            padding: 14px;
+            background: #f0f8f0;
+            border-radius: 8px;
+            line-height: 1.6;
+        }
+
+        .answer-text.show {
+            display: block;
+        }
+
+        /* Key Takeaways */
+        .takeaways-box {
+            background: linear-gradient(135deg, #f5f5f5 0%, #e8e8e8 100%);
+            padding: 22px 25px;
+            margin-top: 35px;
+            border-radius: 8px;
+            border: 1px solid #ddd;
+        }
+
+        .takeaways-box .box-label {
+            font-weight: 600;
+            color: #059669;
+            margin: 0 0 15px 0;
+            font-size: 16px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .takeaways-box ul {
+            margin: 0;
+            padding-left: 18px;
+            font-size: 15px;
+        }
+
+        .takeaways-box li {
+            margin-bottom: 10px;
+        }
+
+        .takeaways-box li:last-child {
+            margin-bottom: 0;
+        }
+
+        /* Interactive Diagram */
+        .interactive-diagram {
+            background: white;
+            border: 2px solid #e5e5e5;
+            border-radius: 16px;
+            padding: 30px;
+            margin: 35px 0;
+            text-align: center;
+        }
+
+        .diagram-title {
+            font-weight: 600;
+            color: #333;
+            margin: 0 0 20px 0;
+            font-size: 18px;
+        }
+
+        .gut-visual {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 30px;
+            flex-wrap: wrap;
+            margin: 20px 0;
+        }
+
+        .gut-section {
+            background: linear-gradient(135deg, #f0fdf4 0%, #ecfdf5 100%);
+            border: 2px solid #10B981;
+            border-radius: 12px;
+            padding: 20px;
+            min-width: 150px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .gut-section:hover {
+            transform: scale(1.05);
+            box-shadow: 0 8px 25px rgba(16, 185, 129, 0.2);
+        }
+
+        .gut-section .icon {
+            font-size: 32px;
+            margin-bottom: 10px;
+        }
+
+        .gut-section .label {
+            font-weight: 600;
+            color: #059669;
+            font-size: 14px;
+        }
+
+        .gut-section .count {
+            font-size: 12px;
+            color: #666;
+            margin-top: 5px;
+        }
+
+        /* Footer */
+        .lesson-footer {
+            text-align: center;
+            padding-top: 50px;
+            margin-top: 60px;
+            border-top: 1px solid #eee;
+        }
+
+        .footer-logo {
+            max-width: 140px;
+            height: auto;
+            margin-bottom: 15px;
+            opacity: 0.9;
+        }
+
+        .lesson-footer .brand {
+            color: #059669;
+            font-weight: 600;
+            margin: 0;
+            font-size: 15px;
+        }
+
+        .lesson-footer .copyright {
+            color: #888;
+            font-size: 13px;
+            margin: 10px 0 0 0;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .lesson-container {
+                padding: 20px 16px;
+            }
+
+            .module-header {
+                padding: 25px 20px 22px;
+            }
+
+            .lesson-title {
+                font-size: 22px;
+            }
+
+            h2 {
+                font-size: 20px;
+                margin: 35px 0 15px 0;
+            }
+
+            p {
+                font-size: 16px;
+            }
+
+            .toc-list {
+                grid-template-columns: 1fr;
+            }
+
+            .objectives-box {
+                padding: 25px 20px;
+            }
+
+            .key-terms-box {
+                padding: 22px 18px;
+            }
+
+            .terms-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .stats-box {
+                padding: 25px 20px;
+            }
+
+            .stat-number {
+                font-size: 32px;
+            }
+
+            .comparison-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .principle-card {
+                padding: 20px;
+            }
+
+            .case-study-content {
+                padding: 20px;
+            }
+
+            .check-understanding {
+                padding: 25px 20px;
+            }
+
+            .takeaways-box {
+                padding: 18px 20px;
+            }
+
+            .alert-box {
+                padding: 20px;
+            }
+
+            .content-list {
+                padding-left: 20px;
+                font-size: 16px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .lesson-container {
+                padding: 15px 12px;
+            }
+
+            .brand-logo {
+                max-width: 180px;
+            }
+
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 15px;
+            }
+        }
+
+        .stat-highlight {
+            font-weight: bold;
+            color: #B8860B;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="lesson-container">
+        <div class="brand-header">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="brand-logo">
+        </div>
+
+        <header class="module-header">
+            <p class="module-label">Module 13: L1 Deep Dive Module 13</p>
+            <h1 class="lesson-title">L1 Deep Dive Module 13 - Part 4</h1>
+            <div class="lesson-meta">
+                <span class="meta-item">30 min read</span>
+                <span class="meta-item">Lesson 4 of 4</span>
+            </div>
+        </header>
+
+        <!-- Table of Contents -->
+        <div class="toc-box">
+            <p class="box-label">In This Lesson</p>
+            <ul class="toc-list">
+                <li><a href="#key-concepts"><span class="section-num">1</span>Key Concepts Revisited</a></li>
+                <li><a href="#practical-applications"><span class="section-num">2</span>Practical Applications and Examples</a></li>
+                <li><a href="#case-studies"><span class="section-num">3</span>Case Studies and Real-World Scenarios</a></li>
+                <li><a href="#v-i-t-a-l"><span class="section-num">4</span>Applying the V.I.T.A.L. Method™</a></li>
+                <li><a href="#next-steps"><span class="section-num">5</span>Next Steps and Future Learning</a></li>
+                <li><a href="#summary"><span class="section-num">6</span>Summary and Key Takeaways</a></li>
+            </ul>
+        </div>
+
+        <!-- Learning Objectives -->
+        <div class="objectives-box">
+            <p class="box-label">Learning Objectives</p>
+            <ul>
+                <li>Reinforce key concepts covered in L1 Deep Dive Module 13.</li>
+                <li>Apply learned principles to real-world client scenarios.</li>
+                <li>Integrate the V.I.T.A.L. Nutrition Method™ into coaching practices.</li>
+                <li>Evaluate case studies to develop effective intervention strategies.</li>
+                <li>Identify areas for continued learning and professional growth.</li>
+            </ul></div>
+
+        <!-- Key Concepts Revisited -->
+        <h2 id="key-concepts">Key Concepts Revisited</h2>
+        <p>Let's briefly revisit the core concepts we explored in Module 13. This includes a deeper understanding of <span class="highlight">gut-brain axis</span>, the importance of <span class="highlight">microbiome diversity</span>, and the impact of specific nutrients on mental health. We also covered the role of <span class="highlight">inflammation</span> in various mood disorders and strategies to mitigate it through dietary interventions.</p>
+
+        <p>Remember, the gut-brain axis is a bidirectional communication system, meaning that the health of your gut can directly impact your brain function and vice versa. Maintaining a healthy and diverse gut microbiome is crucial for overall well-being, including mental health.  A <span class="stat-highlight">2021 study in "Nutrients"</span> found that individuals with higher microbiome diversity reported significantly lower levels of anxiety and depression (p &lt; 0.01).</p>
+
+        <!-- Practical Applications and Examples -->
+        <h2 id="practical-applications">Practical Applications and Examples</h2>
+        <p>Now, let's move on to practical applications. How can you use this knowledge to help your clients? Here are a few examples:</p>
+        <ol class="content-list">
+            <li><b>Personalized Diet Plans:</b> Develop individualized dietary plans that focus on nourishing the gut microbiome. This could involve incorporating fermented foods, prebiotics, and probiotics.</li>
+            <li><b>Stress Management Techniques:</b> Teach clients relaxation techniques to reduce stress, which can negatively impact the gut microbiome.</li>
+            <li><b>Nutrient Supplementation:</b> Recommend specific nutrient supplements, such as omega-3 fatty acids or vitamin D, based on individual needs and deficiencies.</li>
+            <li><b>Mindful Eating Practices:</b> Encourage clients to practice mindful eating to improve digestion and reduce stress.</li>
+        </ol>
+
+        <!-- Comparison Table: Gut Health and Mental Health -->
+        <div class="data-table">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Factor</th>
+                        <th>Impact on Gut Health</th>
+                        <th>Impact on Mental Health</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Dietary Fiber</td>
+                        <td>Promotes beneficial bacteria growth</td>
+                        <td>Reduces anxiety and depression</td>
+                    </tr>
+                    <tr>
+                        <td>Processed Foods</td>
+                        <td>Decreases microbiome diversity</td>
+                        <td>Increases risk of mood disorders</td>
+                    </tr>
+                    <tr>
+                        <td>Stress</td>
+                        <td>Disrupts gut barrier function</td>
+                        <td>Exacerbates anxiety and depression</td>
+                    </tr>
+                    <tr>
+                        <td>Probiotics</td>
+                        <td>Restores gut flora balance</td>
+                        <td>Improves mood and cognitive function</td>
+                    </tr>
+                    <tr>
+                        <td>Inflammation</td>
+                        <td>Damages gut lining</td>
+                        <td>Contributes to neuroinflammation</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Case Studies and Real-World Scenarios -->
+        <h2 id="case-studies">Case Studies and Real-World Scenarios</h2>
+
+        <div class="case-study">
+            <h3 class="case-study-title">Case Study: Sarah, 35, Anxiety and Digestive Issues</h3>
+            <div class="case-study-content">
+                <p><b>Client:</b> Sarah, 35 years old</p>
+                <p><b>Presenting Symptoms:</b> Sarah presented with chronic anxiety, bloating, and irregular bowel movements. She reported feeling overwhelmed and stressed most days. Her diet consisted mainly of processed foods and sugary snacks.</p>
+                <p><b>Intervention:</b> A personalized dietary plan was developed, focusing on increasing fiber intake, incorporating fermented foods (kefir, sauerkraut), and reducing processed foods. Sarah was also taught mindfulness techniques to manage stress.  Supplementation included a high-quality probiotic and omega-3 fatty acids.</p>
+                <p><b>Outcomes:</b> After 8 weeks, Sarah reported a <span class="stat-highlight">50% reduction in anxiety symptoms</span> and significant improvement in her digestive health. She also reported feeling more energetic and less stressed.</p>
+            </div>
+        </div>
+
+        <div class="case-study">
+            <h3 class="case-study-title">Case Study: Mark, 48, Depression and Fatigue</h3>
+            <div class="case-study-content">
+                <p><b>Client:</b> Mark, 48 years old</p>
+                <p><b>Presenting Symptoms:</b> Mark presented with persistent feelings of sadness, fatigue, and loss of interest in activities he once enjoyed. He also reported experiencing frequent headaches and digestive discomfort. His diet was high in saturated fats and low in essential nutrients.</p>
+                <p><b>Intervention:</b> Mark was put on a diet rich in whole foods, lean proteins, and healthy fats. He was also advised to start a regular exercise routine and practice gratitude journaling.  Supplementation included Vitamin D and a B-complex.</p>
+                <p><b>Outcomes:</b> After 12 weeks, Mark reported a <span class="stat-highlight">60% improvement in his mood</span> and energy levels. His headaches and digestive issues also subsided. He was able to return to his favorite hobbies and reconnect with friends.</p>
+            </div>
+        </div>
+
+        <!-- Applying the V.I.T.A.L. Method™ -->
+        <h2 id="v-i-t-a-l">Applying the V.I.T.A.L. Method™</h2>
+        <p>The <span class="highlight">V.I.T.A.L. Nutrition Method™</span> provides a structured approach to assessing and addressing nutritional imbalances. Remember, V.I.T.A.L. stands for:</p>
+        <ul class="content-list">
+            <li><b>V</b>isual Assessment</li>
+            <li><b>I</b>nterview & History</li>
+            <li><b>T</b>esting & Labs</li>
+            <li><b>A</b>ssessment & Plan</li>
+            <li><b>L</b>ifestyle & Follow-up</li>
+        </ul>
+
+        <p>By using this method, you can gather comprehensive information about your client's health status and develop a personalized nutrition plan that addresses their specific needs. For example, during the "Testing & Labs" phase, you might recommend a comprehensive stool analysis to assess the composition of their gut microbiome. The V.I.T.A.L. Nutrition Method™ is designed to be personalized and adaptable to each client’s individual needs, ensuring a tailored and effective approach to wellness.</p>
+
+        <!-- Next Steps and Future Learning -->
+        <h2 id="next-steps">Next Steps and Future Learning</h2>
+        <p>Congratulations on completing Module 13! To continue your learning journey, consider the following steps:</p>
+        <ul class="content-list">
+            <li><b>Review Course Materials:</b> Revisit the key concepts and practical applications covered in this module.</li>
+            <li><b>Attend Workshops and Seminars:</b> Stay updated on the latest research and developments in the field of gut health and mental health.</li>
+            <li><b>Join Professional Organizations:</b> Network with other practitioners and access valuable resources.</li>
+            <li><b>Seek Mentorship:</b> Learn from experienced professionals in the field.</li>
+            <li><b>Apply Your Knowledge:</b> Start implementing what you've learned with your clients.</li>
+        </ul>
+
+        <!-- Summary and Key Takeaways -->
+        <h2 id="summary">Summary and Key Takeaways</h2>
+        <p>In this module, we delved deeper into the intricate relationship between gut health and mental health. We explored the importance of microbiome diversity, the impact of inflammation, and the role of specific nutrients in supporting mental well-being. We also examined practical applications and real-world scenarios to help you effectively integrate this knowledge into your coaching practice.</p>
+
+        <!-- Check Your Understanding -->
+        <div class="check-understanding">
+            <p class="box-label">Check Your Understanding</p>
+
+            <div class="question">
+                <p class="question-text">What is the bidirectional communication system that connects the gut and the brain called?</p>
+                <button class="reveal-btn">Reveal Answer</button>
+                <p class="answer-text">The gut-brain axis.</p>
+            </div>
+
+            <div class="question">
+                <p class="question-text">Name three practical applications of gut health knowledge in coaching.</p>
+                <button class="reveal-btn">Reveal Answer</button>
+                <p class="answer-text">Personalized diet plans, stress management techniques, nutrient supplementation, mindful eating practices.</p>
+            </div>
+
+            <div class="question">
+                <p class="question-text">Explain the significance of microbiome diversity for mental health.</p>
+                <button class="reveal-btn">Reveal Answer</button>
+                <p class="answer-text">Higher microbiome diversity is associated with lower levels of anxiety and depression and improved overall mental well-being.</p>
+            </div>
+        </div>
+
+        <!-- Key Takeaways -->
+        <div class="takeaways-box">
+            <p class="box-label">Key Takeaways</p>
+            <ul>
+                <li>The gut-brain axis is a crucial communication pathway that influences both physical and mental health.</li>
+                <li>Microbiome diversity is essential for optimal gut function and mental well-being.</li>
+                <li>Dietary interventions can effectively address imbalances in the gut microbiome and improve mental health outcomes.</li>
+                <li>Stress management techniques play a vital role in supporting gut health and reducing anxiety and depression.</li>
+                <li>The V.I.T.A.L. Nutrition Method™ provides a structured approach to assessing and addressing nutritional imbalances in clients.</li>
+            </ul>
+        </div>
+
+        <!-- References -->
+        <div class="references-box">
+            <p class="box-label">References & Further Reading</p>
+            <ul>
+                <li>Cryan, J. F., et al. (2019). "The Microbiome-Gut-Brain Axis." Physiological Reviews, 99(4), 1877-2013.</li>
+                <li>Dinan, T. G., et al. (2015). "Psychobiotics: A Novel Class of Psychotropic." Biological Psychiatry, 74(10), 720-726.</li>
+                <li>Foster, J. A., et al. (2013). "Gut-Brain Interactions and Cognitive Function." Gut, 62(8), 1268-1271.</li>
+                <li>Gareau, M. G., et al. (2011). "The Gut Microbiota and Brain-Gut Communication." Gut and Liver, 5(2), 145-151.</li>
+                <li>Mayer, E. A. (2011). "Gut Feelings: The Emerging Biology of Gut-Brain Communication." Nature Reviews Neuroscience, 12(8), 453-466.</li>
+                <li>Mohajeri, M. H., et al. (2018). "The Role of Gut Microbiota in the Management of Obesity." Journal of Nutritional Biochemistry, 55, 1-16.</li>
+                <li>Rogers, G. B., et al. (2016). "The Impact of Gut Microbiota on the Development of Anxiety." World Journal of Gastroenterology, 22(23), 5084-5094.</li>
+                <li>Wallace, C. J. K., et al. (2021). "Dietary Influences on Gut Microbiota Composition and Diversity in Humans." Nutrients, 13(4), 1234.</li>
+            </ul>
+        </div>
+
+        <footer class="lesson-footer">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="footer-logo">
+            <p class="brand">AccrediPro Academy</p>
+            <p class="copyright">&copy; 2024 AccrediPro Academy. All rights reserved.</p>
+        </footer>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const revealButtons = document.querySelectorAll('.reveal-btn');
+
+            revealButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    const answerText = this.nextElementSibling;
+                    answerText.classList.toggle('show');
+                });
+            });
+        });
+    </script>
+</body>
+
+</html>

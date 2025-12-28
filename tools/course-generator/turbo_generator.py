@@ -25,7 +25,8 @@ from prompts import (
 )
 
 from dotenv import load_dotenv
-load_dotenv('config.env')
+# Load from external folder to keep keys safe from git/detection
+load_dotenv(os.path.expanduser('~/.accredipro-keys/config.env'))
 
 
 # ============================================================================
@@ -294,7 +295,7 @@ class TurboGenerator:
         
         return {
             'api_keys': keys,
-            'model': os.getenv('GEMINI_MODEL', 'gemini-2.5-flash-preview-05-20'),
+            'model': os.getenv('GEMINI_MODEL', 'gemini-2.0-flash'),
             'output_dir': Path(os.getenv('OUTPUT_DIR', '../../courses')),
             'reference_dir': Path(os.getenv('REFERENCE_DIR', './reference')),
             'max_retries': int(os.getenv('MAX_RETRIES', 4)),  # Fewer retries, faster

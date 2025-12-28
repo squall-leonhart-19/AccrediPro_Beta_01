@@ -279,6 +279,15 @@ export function MessagesClient({
   const audioChunksRef = useRef<Blob[]>([]);
   const recordingIntervalRef = useRef<NodeJS.Timeout | null>(null);
   const audioRefs = useRef<{ [key: string]: HTMLAudioElement }>({});
+  const isMountedRef = useRef(true); // Track if component is still mounted
+
+  // Cleanup on unmount
+  useEffect(() => {
+    isMountedRef.current = true;
+    return () => {
+      isMountedRef.current = false;
+    };
+  }, []);
 
   const isCoach = currentUserRole === "ADMIN" || currentUserRole === "INSTRUCTOR" || currentUserRole === "MENTOR";
 
@@ -290,7 +299,7 @@ export function MessagesClient({
     try {
       const response = await fetch(`/api/messages?userId=${userId}`);
       const data = await response.json();
-      if (data.success) {
+      if (data.success && isMountedRef.current) {
         setMessages(data.data);
         scrollToBottom();
       }
@@ -315,10 +324,13 @@ export function MessagesClient({
 
       // Poll for typing indicator
       const typingInterval = setInterval(async () => {
+        if (!isMountedRef.current) return;
         try {
           const res = await fetch(`/api/messages/typing?senderId=${selectedUser.id}`);
           const data = await res.json();
-          setOtherUserTyping(data.isTyping || false);
+          if (isMountedRef.current) {
+            setOtherUserTyping(data.isTyping || false);
+          }
         } catch (e) {
           console.error("Typing poll error:", e);
         }

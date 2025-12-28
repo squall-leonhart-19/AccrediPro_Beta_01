@@ -1,0 +1,1153 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>L1 Deep Dive Module 6 - Part 8</title>
+    <style>
+        /* Base & Reset */
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Georgia, 'Times New Roman', serif;
+            line-height: 1.8;
+            color: #2d2d2d;
+            background: #f8f6f3;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Main Container */
+        .lesson-container {
+            max-width: 860px;
+            margin: 0 auto;
+            padding: 40px 30px;
+            background: #ffffff;
+            min-height: 100vh;
+            box-shadow: 0 0 60px rgba(0, 0, 0, 0.08);
+        }
+
+        /* Brand Header */
+        .brand-header {
+            text-align: center;
+            padding-bottom: 30px;
+            margin-bottom: 35px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .brand-logo {
+            max-width: 220px;
+            height: auto;
+            margin-bottom: 5px;
+        }
+
+        /* Module Header - GREEN theme for Gut Health */
+        .module-header {
+            background: linear-gradient(135deg, #059669 0%, #10B981 100%);
+            padding: 35px 35px 30px;
+            border-radius: 16px;
+            margin-bottom: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .module-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+            transform: translate(100px, -100px);
+        }
+
+        .module-header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, #B8860B, #D4A84B, #B8860B);
+        }
+
+        .module-label {
+            margin: 0;
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.75);
+            text-transform: uppercase;
+            letter-spacing: 2.5px;
+            font-weight: 500;
+        }
+
+        .lesson-title {
+            margin: 10px 0 0 0;
+            font-size: 28px;
+            color: #ffffff;
+            font-weight: 700;
+            line-height: 1.3;
+            position: relative;
+        }
+
+        .lesson-meta {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+            padding-top: 18px;
+            border-top: 1px solid rgba(255, 255, 255, 0.15);
+            flex-wrap: wrap;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.85);
+            background: rgba(255, 255, 255, 0.1);
+            padding: 5px 12px;
+            border-radius: 4px;
+        }
+
+        /* Table of Contents */
+        .toc-box {
+            background: linear-gradient(135deg, #fafafa 0%, #f5f5f5 100%);
+            border-radius: 14px;
+            padding: 24px 28px;
+            margin-bottom: 35px;
+            border: 1px solid #e8e8e8;
+        }
+
+        .toc-box .box-label {
+            font-weight: 600;
+            color: #059669;
+            margin: 0 0 18px 0;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .toc-list {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px 24px;
+        }
+
+        .toc-list li {
+            margin: 0;
+        }
+
+        .toc-list a {
+            display: flex;
+            align-items: center;
+            padding: 8px 12px;
+            color: #555;
+            text-decoration: none;
+            font-size: 14px;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+        }
+
+        .toc-list a:hover {
+            background: white;
+            color: #059669;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+        }
+
+        .toc-list .section-num {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 26px;
+            height: 26px;
+            background: #059669;
+            color: white;
+            font-weight: 600;
+            font-size: 11px;
+            border-radius: 6px;
+            margin-right: 12px;
+            flex-shrink: 0;
+        }
+
+        @media (max-width: 600px) {
+            .toc-list {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Learning Objectives */
+        .objectives-box {
+            background: #f0fdf4;
+            border: 2px solid #10B981;
+            border-radius: 14px;
+            padding: 30px 35px;
+            margin-bottom: 40px;
+        }
+
+        .objectives-box .box-label {
+            font-weight: 600;
+            color: #059669;
+            margin: 0 0 18px 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .objectives-box .box-label::before {
+            content: '🎯';
+            font-size: 18px;
+        }
+
+        .objectives-box ul {
+            margin: 0;
+            padding-left: 22px;
+        }
+
+        .objectives-box li {
+            margin-bottom: 14px;
+            font-size: 16px;
+            line-height: 1.7;
+        }
+
+        .objectives-box li:last-child {
+            margin-bottom: 0;
+        }
+
+        /* Key Terms Box */
+        .key-terms-box {
+            background: linear-gradient(135deg, #f0f4f8 0%, #e8ecf1 100%);
+            border-radius: 14px;
+            padding: 28px 30px;
+            margin: 40px 0;
+            border: 1px solid #d8dce0;
+        }
+
+        .key-terms-box .box-label {
+            font-weight: 600;
+            color: #059669;
+            margin: 0 0 18px 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .terms-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 16px;
+        }
+
+        .term-item {
+            background: white;
+            padding: 16px 18px;
+            border-radius: 10px;
+            border-left: 4px solid #10B981;
+        }
+
+        .term-item .term {
+            font-weight: 700;
+            color: #059669;
+            font-size: 15px;
+            margin: 0 0 6px 0;
+        }
+
+        .term-item .definition {
+            font-size: 14px;
+            color: #555;
+            margin: 0;
+            line-height: 1.6;
+        }
+
+        /* Section Headings */
+        h2 {
+            font-size: 24px;
+            color: #059669;
+            margin: 50px 0 20px 0;
+            font-weight: 600;
+            position: relative;
+            padding-bottom: 12px;
+        }
+
+        h2::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 60px;
+            height: 3px;
+            background: #B8860B;
+        }
+
+        /* Paragraphs */
+        p {
+            font-size: 17px;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        /* Highlights */
+        .highlight {
+            background: linear-gradient(180deg, transparent 60%, #FFF59D 60%);
+            padding: 0 4px;
+            font-weight: 500;
+        }
+
+        /* Welcome/Intro Box */
+        .welcome-box {
+            background: linear-gradient(135deg, #f0fdf4 0%, #ecfdf5 100%);
+            padding: 30px 35px;
+            border-radius: 14px;
+            margin-bottom: 40px;
+            border: 1px solid #bbf7d0;
+        }
+
+        .welcome-box h3 {
+            margin: 0 0 15px 0;
+            font-size: 20px;
+            color: #059669;
+            font-weight: 600;
+        }
+
+        .welcome-box p {
+            margin: 0;
+            font-size: 17px;
+            line-height: 1.8;
+            color: #444;
+        }
+
+        /* Alert Boxes */
+        .alert-box {
+            padding: 26px 30px;
+            margin: 35px 0;
+            border-radius: 0 14px 14px 0;
+            border-left: 5px solid;
+        }
+
+        .alert-box .alert-label {
+            font-weight: 600;
+            margin: 0 0 12px 0;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .alert-box p:last-child {
+            margin: 0;
+            font-size: 16px;
+            line-height: 1.7;
+        }
+
+        .alert-box.warning {
+            background: #fff8e6;
+            border-left-color: #ff9800;
+        }
+
+        .alert-box.warning .alert-label {
+            color: #e65100;
+        }
+
+        .alert-box.success {
+            background: #f0f8f0;
+            border-left-color: #4caf50;
+        }
+
+        .alert-box.success .alert-label {
+            color: #2e7d32;
+        }
+
+        .alert-box.reflect {
+            background: #f8f0fa;
+            border-left-color: #9c27b0;
+        }
+
+        .alert-box.reflect .alert-label {
+            color: #7b1fa2;
+        }
+
+        .alert-box.info {
+            background: #e3f2fd;
+            border-left-color: #2196f3;
+        }
+
+        .alert-box.info .alert-label {
+            color: #1565c0;
+        }
+
+        /* Case Study Box */
+        .case-study {
+            background: linear-gradient(135deg, #f8f9fb 0%, #f0f2f5 100%);
+            border-radius: 16px;
+            padding: 0;
+            margin: 40px 0;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+        }
+
+        .case-study-header {
+            background: linear-gradient(135deg, #059669 0%, #10B981 100%);
+            padding: 20px 30px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .case-study-icon {
+            width: 45px;
+            height: 45px;
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+        }
+
+        .case-study-header .box-label {
+            font-weight: 600;
+            color: #ffffff;
+            margin: 0;
+            font-size: 16px;
+            letter-spacing: 0.5px;
+        }
+
+        .case-study-header .subtitle {
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 13px;
+            margin: 4px 0 0 0;
+        }
+
+        .case-study-content {
+            padding: 28px 30px;
+        }
+
+        .case-study-content p {
+            font-size: 16px;
+            margin-bottom: 18px;
+        }
+
+        .case-study-content ul {
+            margin: 18px 0;
+            padding-left: 22px;
+        }
+
+        .case-study-content li {
+            margin-bottom: 10px;
+            font-size: 15px;
+        }
+
+        .patient-profile {
+            display: flex;
+            align-items: center;
+            gap: 18px;
+            padding: 18px 22px;
+            background: white;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            border: 1px solid #e5e5e5;
+        }
+
+        .patient-avatar {
+            width: 55px;
+            height: 55px;
+            background: linear-gradient(135deg, #10B981, #059669);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            flex-shrink: 0;
+        }
+
+        .patient-info h4 {
+            margin: 0 0 5px 0;
+            font-size: 17px;
+            color: #1a1a1a;
+        }
+
+        .patient-info p {
+            margin: 0;
+            font-size: 14px;
+            color: #666;
+        }
+
+        /* Comparison Cards */
+        .comparison-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+            margin: 30px 0;
+        }
+
+        .comparison-card {
+            border-radius: 14px;
+            padding: 26px;
+            border-top: 5px solid;
+            transition: transform 0.2s ease;
+        }
+
+        .comparison-card:hover {
+            transform: translateY(-3px);
+        }
+
+        .comparison-card.conventional {
+            background: #fff5f5;
+            border-top-color: #c62828;
+        }
+
+        .comparison-card.functional {
+            background: #f1f8f1;
+            border-top-color: #2e7d32;
+        }
+
+        .comparison-card .card-label {
+            font-weight: 600;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            margin: 0 0 14px 0;
+        }
+
+        .comparison-card.conventional .card-label {
+            color: #c62828;
+        }
+
+        .comparison-card.functional .card-label {
+            color: #2e7d32;
+        }
+
+        .comparison-card .card-text {
+            margin: 0;
+            font-size: 16px;
+            font-style: italic;
+            line-height: 1.6;
+        }
+
+        /* Content Lists */
+        .content-list {
+            font-size: 17px;
+            margin: 20px 0;
+            padding-left: 24px;
+        }
+
+        .content-list li {
+            margin-bottom: 14px;
+            line-height: 1.7;
+        }
+
+        .content-list li:last-child {
+            margin-bottom: 0;
+        }
+
+        /* Statistics Box */
+        .stats-box {
+            background: linear-gradient(135deg, #059669 0%, #10B981 100%);
+            padding: 40px;
+            border-radius: 16px;
+            margin: 35px 0;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stats-box::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -20%;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.08) 0%, transparent 70%);
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 25px;
+            position: relative;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 42px;
+            font-weight: 700;
+            color: white;
+            line-height: 1;
+            margin-bottom: 8px;
+        }
+
+        .stat-label {
+            font-size: 13px;
+            color: rgba(255, 255, 255, 0.85);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* Principle Cards */
+        .principle-card {
+            background: linear-gradient(to right, #fafafa, #ffffff);
+            border-left: 5px solid #059669;
+            padding: 24px 28px;
+            margin-bottom: 18px;
+            border-radius: 0 14px 14px 0;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.04);
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .principle-card:hover {
+            transform: translateX(5px);
+            box-shadow: 0 4px 18px rgba(0, 0, 0, 0.08);
+        }
+
+        .principle-card .principle-title {
+            font-weight: 700;
+            color: #059669;
+            margin: 0 0 10px 0;
+            font-size: 17px;
+        }
+
+        .principle-card .principle-text {
+            margin: 0;
+            font-size: 15px;
+            line-height: 1.7;
+        }
+
+        .principle-card ul {
+            margin: 12px 0 0 0;
+            padding-left: 20px;
+            font-size: 14px;
+        }
+
+        .principle-card li {
+            margin-bottom: 5px;
+        }
+
+        /* Check Understanding Box */
+        .check-understanding {
+            background: linear-gradient(135deg, #fdfbf7 0%, #f9f5ed 100%);
+            border: 2px solid #B8860B;
+            border-radius: 16px;
+            padding: 32px;
+            margin: 45px 0;
+        }
+
+        .check-understanding .box-label {
+            font-weight: 600;
+            color: #8B6914;
+            margin: 0 0 8px 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .check-understanding .box-subtitle {
+            font-size: 15px;
+            color: #666;
+            margin: 0 0 24px 0;
+        }
+
+        .question-item {
+            background: white;
+            border-radius: 12px;
+            padding: 22px 24px;
+            margin-bottom: 16px;
+            border: 1px solid #e8e4dc;
+            position: relative;
+        }
+
+        .question-item:last-child {
+            margin-bottom: 0;
+        }
+
+        .question-number {
+            position: absolute;
+            top: -12px;
+            left: 20px;
+            background: #059669;
+            color: white;
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            font-size: 13px;
+        }
+
+        .question-text {
+            font-size: 16px;
+            color: #333;
+            margin: 0 0 16px 0;
+            line-height: 1.6;
+            padding-top: 4px;
+        }
+
+        .reveal-btn {
+            background: #059669;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-size: 14px;
+            cursor: pointer;
+            font-family: inherit;
+            transition: background 0.2s ease;
+        }
+
+        .reveal-btn:hover {
+            background: #047857;
+        }
+
+        .answer-text {
+            display: none;
+            font-size: 14px;
+            color: #2e7d32;
+            margin: 14px 0 0 0;
+            padding: 14px;
+            background: #f0f8f0;
+            border-radius: 8px;
+            line-height: 1.6;
+        }
+
+        .answer-text.show {
+            display: block;
+        }
+
+        /* Key Takeaways */
+        .takeaways-box {
+            background: linear-gradient(135deg, #f5f5f5 0%, #e8e8e8 100%);
+            padding: 22px 25px;
+            margin-top: 35px;
+            border-radius: 8px;
+            border: 1px solid #ddd;
+        }
+
+        .takeaways-box .box-label {
+            font-weight: 600;
+            color: #059669;
+            margin: 0 0 15px 0;
+            font-size: 16px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .takeaways-box ul {
+            margin: 0;
+            padding-left: 18px;
+            font-size: 15px;
+        }
+
+        .takeaways-box li {
+            margin-bottom: 10px;
+        }
+
+        .takeaways-box li:last-child {
+            margin-bottom: 0;
+        }
+
+        /* Interactive Diagram */
+        .interactive-diagram {
+            background: white;
+            border: 2px solid #e5e5e5;
+            border-radius: 16px;
+            padding: 30px;
+            margin: 35px 0;
+            text-align: center;
+        }
+
+        .diagram-title {
+            font-weight: 600;
+            color: #333;
+            margin: 0 0 20px 0;
+            font-size: 18px;
+        }
+
+        .gut-visual {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 30px;
+            flex-wrap: wrap;
+            margin: 20px 0;
+        }
+
+        .gut-section {
+            background: linear-gradient(135deg, #f0fdf4 0%, #ecfdf5 100%);
+            border: 2px solid #10B981;
+            border-radius: 12px;
+            padding: 20px;
+            min-width: 150px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .gut-section:hover {
+            transform: scale(1.05);
+            box-shadow: 0 8px 25px rgba(16, 185, 129, 0.2);
+        }
+
+        .gut-section .icon {
+            font-size: 32px;
+            margin-bottom: 10px;
+        }
+
+        .gut-section .label {
+            font-weight: 600;
+            color: #059669;
+            font-size: 14px;
+        }
+
+        .gut-section .count {
+            font-size: 12px;
+            color: #666;
+            margin-top: 5px;
+        }
+
+        /* Footer */
+        .lesson-footer {
+            text-align: center;
+            padding-top: 50px;
+            margin-top: 60px;
+            border-top: 1px solid #eee;
+        }
+
+        .footer-logo {
+            max-width: 140px;
+            height: auto;
+            margin-bottom: 15px;
+            opacity: 0.9;
+        }
+
+        .lesson-footer .brand {
+            color: #059669;
+            font-weight: 600;
+            margin: 0;
+            font-size: 15px;
+        }
+
+        .lesson-footer .copyright {
+            color: #888;
+            font-size: 13px;
+            margin: 10px 0 0 0;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .lesson-container {
+                padding: 20px 16px;
+            }
+
+            .module-header {
+                padding: 25px 20px 22px;
+            }
+
+            .lesson-title {
+                font-size: 22px;
+            }
+
+            h2 {
+                font-size: 20px;
+                margin: 35px 0 15px 0;
+            }
+
+            p {
+                font-size: 16px;
+            }
+
+            .toc-list {
+                grid-template-columns: 1fr;
+            }
+
+            .objectives-box {
+                padding: 25px 20px;
+            }
+
+            .key-terms-box {
+                padding: 22px 18px;
+            }
+
+            .terms-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .stats-box {
+                padding: 25px 20px;
+            }
+
+            .stat-number {
+                font-size: 32px;
+            }
+
+            .comparison-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .principle-card {
+                padding: 20px;
+            }
+
+            .case-study-content {
+                padding: 20px;
+            }
+
+            .check-understanding {
+                padding: 25px 20px;
+            }
+
+            .takeaways-box {
+                padding: 18px 20px;
+            }
+
+            .alert-box {
+                padding: 20px;
+            }
+
+            .content-list {
+                padding-left: 20px;
+                font-size: 16px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .lesson-container {
+                padding: 15px 12px;
+            }
+
+            .brand-logo {
+                max-width: 180px;
+            }
+
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 15px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="lesson-container">
+        <div class="brand-header">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="brand-logo">
+        </div>
+
+        <header class="module-header">
+            <p class="module-label">Module 6: L1 Deep Dive Module 6</p>
+            <h1 class="lesson-title">L1 Deep Dive Module 6 - Part 8</h1>
+            <div class="lesson-meta">
+                <span class="meta-item">30 min read</span>
+            </div>
+        </header>
+
+        <!-- Table of Contents -->
+        <div class="toc-box">
+            <p class="box-label">In This Lesson</p>
+            <ul class="toc-list">
+                <li><a href="#key-concepts">Key Concepts for Module 6</a></li>
+                <li><a href="#practical-applications">Practical Applications & Examples</a></li>
+                <li><a href="#case-studies">Case Studies</a></li>
+                <li><a href="#integrating-vital">Integrating the V.I.T.A.L. Method</a></li>
+                <li><a href="#check-understanding">Check Your Understanding</a></li>
+                <li><a href="#takeaways">Key Takeaways</a></li>
+            </ul>
+        </div>
+
+        <!-- Learning Objectives -->
+        <div class="objectives-box">
+            <p class="box-label">Learning Objectives</p>
+            <ul>
+                <li>Consolidate understanding of key concepts covered in L1 Deep Dive Module 6.</li>
+                <li>Apply learned principles through practical scenarios and examples.</li>
+                <li>Analyze case studies to develop effective coaching strategies.</li>
+                <li>Integrate the <span class="highlight">V.I.T.A.L. Nutrition Method™</span> framework into coaching practice.</li>
+                <li>Evaluate personal comprehension of module content.</li>
+            </ul>
+        </div>
+
+        <h2 id="key-concepts">Key Concepts for Module 6</h2>
+        <p>
+            In this module, we've explored several key areas essential for holistic nutrition coaching. We've built upon the foundations laid in Modules 1-3, and previous lessons in this module, focusing on real-world application and client-centered strategies. Remember, the goal is to empower clients to make sustainable lifestyle changes. This includes understanding the nuances of dietary needs, the impact of lifestyle factors, and theimportance of personalized coaching.
+        </p>
+
+        <p>
+            Here's a recap of some crucial concepts:
+        </p>
+
+        <ul class="content-list">
+            <li><b>Personalized Nutrition Plans:</b> Tailoring dietary recommendations to individual client needs, considering factors like genetics, lifestyle, and health goals.</li>
+            <li><b>Behavior Change Techniques:</b> Utilizing strategies such as motivational interviewing, goal setting, and cognitive restructuring to facilitate lasting change.</li>
+            <li><b>Mindful Eating Practices:</b> Encouraging clients to develop a greater awareness of their eating habits and the emotional and environmental cues that drive them.</li>
+            <li><b>Stress Management:</b> Recognizing the impact of stress on nutrition and implementing strategies to mitigate its effects. A <span class="stat-highlight">2021 study in the Journal of the Academy of Nutrition and Dietetics</span> found that chronic stress is associated with poorer dietary choices and increased risk of weight gain (Michels et al., 2021).</li>
+            <li><b>Sustainable Lifestyle Modifications:</b> Promoting gradual, realistic changes that can be maintained over the long term, rather than focusing on quick fixes.</li>
+        </ul>
+
+        <h2 id="practical-applications">Practical Applications & Examples</h2>
+
+        <p>
+            Let's consider some practical examples of how to apply these concepts in your coaching practice:
+        </p>
+
+        <ol class="content-list">
+            <li><b>Scenario:</b> A client reports feeling overwhelmed by the prospect of changing their diet.
+                <ul>
+                    <li><b>Application:</b> Use motivational interviewing to explore their ambivalence and identify their intrinsic motivation for change. Break down their goals into smaller, more manageable steps.</li>
+                </ul>
+            </li>
+            <li><b>Scenario:</b> A client struggles with emotional eating.
+                <ul>
+                    <li><b>Application:</b> Help them identify their emotional triggers and develop alternative coping mechanisms, such as mindfulness exercises or physical activity.</li>
+                </ul>
+            </li>
+            <li><b>Scenario:</b> A client has difficulty adhering to a meal plan due to a busy schedule.
+                <ul>
+                    <li><b>Application:</b> Collaborate with them to create a flexible meal plan that incorporates quick and easy recipes or strategies for meal prepping.</li>
+                </ul>
+            </li>
+            <li><b>Scenario:</b> A client has plateaued in their weight loss journey.
+                <ul>
+                    <li><b>Application:</b> Re-evaluate their current dietary and exercise habits, identify potential areas for improvement, and adjust their plan accordingly. Consider incorporating strategies to address potential metabolic adaptation.</li>
+                </ul>
+            </li>
+        </ol>
+
+        <h2 id="case-studies">Case Studies</h2>
+
+        <div class="case-study">
+            <h3 class="case-study-title">Case Study 1: Sarah, 35, Overcoming Emotional Eating</h3>
+            <div class="case-study-content">
+                <p><b>Client:</b> Sarah, a 35-year-old marketing manager.</p>
+                <p><b>Presenting Symptoms:</b> Sarah reports struggling with emotional eating, particularly in the evenings after stressful workdays. She often consumes large quantities of processed snacks and feels guilty afterward.</p>
+                <p><b>Intervention:</b>
+                    <ol class="content-list">
+                        <li><b>Mindfulness Training:</b> Sarah was guided through mindfulness exercises to increase awareness of her emotions and eating habits.</li>
+                        <li><b>Trigger Identification:</b> Sarah kept a food journal to identify specific triggers for her emotional eating.</li>
+                        <li><b>Alternative Coping Strategies:</b> Sarah learned and practiced alternative coping strategies, such as taking a walk, listening to music, or engaging in a hobby, when she felt the urge to eat emotionally.</li>
+                        <li><b>Cognitive Restructuring:</b> Sarah worked on challenging negative thoughts and beliefs related to food and her body image.</li>
+                    </ol>
+                </p>
+                <p><b>Outcomes:</b> After 8 weeks, Sarah reported a significant reduction in emotional eating episodes. She felt more in control of her eating habits and experienced less guilt and shame. She also reported improved mood and stress levels. <span class="stat-highlight">Her reported emotional eating incidents decreased by 60% based on self-report questionnaires.</span></p>
+            </div>
+        </div>
+
+        <div class="case-study">
+            <h3 class="case-study-title">Case Study 2: John, 48, Managing Type 2 Diabetes</h3>
+            <div class="case-study-content">
+                <p><b>Client:</b> John, a 48-year-old accountant recently diagnosed with type 2 diabetes.</p>
+                <p><b>Presenting Symptoms:</b> Elevated blood glucose levels, fatigue, and concerns about managing his condition through diet.</p>
+                <p><b>Intervention:</b>
+                    <ol class="content-list">
+                        <li><b>Personalized Meal Plan:</b> A meal plan was created focusing on whole, unprocessed foods, portion control, and consistent carbohydrate intake.</li>
+                        <li><b>Blood Glucose Monitoring:</b> John was taught how to monitor his blood glucose levels and adjust his diet accordingly.</li>
+                        <li><b>Exercise Recommendations:</b> John was encouraged to engage in regular physical activity, including both aerobic exercise and resistance training.</li>
+                        <li><b>Education and Support:</b> John received education about diabetes management, including the importance of medication adherence and regular check-ups.</li>
+                    </ol>
+                </p>
+                <p><b>Outcomes:</b> After 12 weeks, John's blood glucose levels had significantly improved, and he was able to reduce his medication dosage under the supervision of his physician. He also reported increased energy levels and improved overall well-being. <span class="stat-highlight">His HbA1c levels decreased from 8.2% to 6.8%.</span></p>
+            </div>
+        </div>
+
+        <h2 id="integrating-vital">Integrating the V.I.T.A.L. Method</h2>
+
+        <p>
+            The <span class="highlight">V.I.T.A.L. Nutrition Method™</span> is a powerful framework for holistic nutrition coaching. Let's review how to integrate it into your practice:
+        </p>
+
+        <ol class="content-list">
+            <li><b>Values:</b> Begin by exploring your client's core values and how their nutrition goals align with those values. This will help them stay motivated and committed to the process.</li>
+            <li><b>Insights:</b> Help your client gain insights into their current eating habits, triggers, and beliefs about food. This self-awareness is crucial for making lasting changes.</li>
+            <li><b>Tools:</b> Provide your client with practical tools and strategies, such as meal planning templates, recipes, and mindful eating exercises.</li>
+            <li><b>Action:</b> Encourage your client to take consistent action towards their goals, starting with small, manageable steps.</li>
+            <li><b>Longevity:</b> Focus on creating sustainable lifestyle changes that can be maintained over the long term. This includes addressing potential barriers and developing strategies for relapse prevention.</li>
+        </ol>
+
+        <p>
+            Remember, the <span class="highlight">V.I.T.A.L. Nutrition Method™</span> is not a rigid formula, but rather a flexible framework that can be adapted to meet the unique needs of each client.
+        </p>
+
+        <h2 id="check-understanding">Check Your Understanding</h2>
+
+        <div class="check-understanding">
+            <p class="box-label">Check Your Understanding</p>
+
+            <div class="question">
+                <p class="question-text">What are three key behavior change techniques you can use with clients?</p>
+                <button class="reveal-btn">Reveal Answer</button>
+                <div class="answer-text">Motivational interviewing, goal setting, and cognitive restructuring.</div>
+            </div>
+
+            <div class="question">
+                <p class="question-text">How can you help a client who is struggling with emotional eating?</p>
+                <button class="reveal-btn">Reveal Answer</button>
+                <div class="answer-text">Help them identify their emotional triggers, develop alternative coping mechanisms, and practice mindful eating.</div>
+            </div>
+
+            <div class="question">
+                <p class="question-text">Explain how the Values component of the V.I.T.A.L. Method can support client success.</p>
+                <button class="reveal-btn">Reveal Answer</button>
+                <div class="answer-text">Exploring a client's core values helps align their nutrition goals with what is most important to them, increasing motivation and commitment.</div>
+            </div>
+        </div>
+
+        <h2 id="takeaways">Key Takeaways</h2>
+
+        <div class="takeaways-box">
+            <p class="box-label">Key Takeaways</p>
+            <ul>
+                <li>Personalized nutrition plans are essential for meeting individual client needs and promoting adherence.</li>
+                <li>Behavior change techniques can help clients overcome barriers and make lasting lifestyle changes.</li>
+                <li>Mindful eating practices can increase awareness of eating habits and reduce emotional eating.</li>
+                <li>The <span class="highlight">V.I.T.A.L. Nutrition Method™</span> provides a comprehensive framework for holistic nutrition coaching.</li>
+                <li>Sustainable lifestyle modifications are key to long-term success.</li>
+            </ul>
+        </div>
+
+        <!-- References -->
+        <div class="references-box">
+            <p class="box-label">References & Further Reading</p>
+            <ul>
+                <li>Michels, N., et al. (2021). "The effect of chronic stress on dietary habits and the gut microbiome: A systematic review." *Journal of the Academy of Nutrition and Dietetics*, 121(5), 845-859.</li>
+                <li>Miller, W. R., & Rollnick, S. (2012). *Motivational interviewing: Helping people change* (3rd ed.). Guilford Press.</li>
+                <li>Bishop, F. L., Lau, E. Y., Shapiro, S., Carlson, L. E., Anderson, N. D., Carmody, J., ... & Devins, G. M. (2004). Mindfulness: A proposed operational definition. *Clinical Psychology: Science and Practice*, *11*(3), 230-241.</li>
+                <li>Holt, N. L., & Strean, W. B. (2001). Toward a new understanding of psychological momentum in sport. *Journal of Applied Sport Psychology*, *13*(3), 336-356.</li>
+                <li> Bandura, A. (1977). Self-efficacy: toward a unifying theory of behavioral change. *Psychological Review, 84*(2), 191-215.</li>
+                <li>Rothschild, J.,et al. (2022). Precision Nutrition: A Personalized Approach to Dietary Strategies for Weight Management. *Nutrients*, *14*(18), 3775.</li>
+                <li>Gardner, C.D., et al. (2018). Effect of low-fat vs. low-carbohydrate diet on 12-month weight loss in overweight adults and the association with genotype pattern or insulin secretion: The DIETFITS Randomized Clinical Trial. *JAMA*, 319(7), 667-679.</li>
+            </ul>
+        </div>
+
+        <footer class="lesson-footer">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="footer-logo">
+            <p class="brand">AccrediPro Academy</p>
+            <p class="copyright">&copy; 2024 AccrediPro Academy. All rights reserved.</p>
+        </footer>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const revealButtons = document.querySelectorAll('.reveal-btn');
+
+            revealButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    const answerText = this.nextElementSibling;
+                    answerText.classList.toggle('show');
+                });
+            });
+        });
+    </script>
+</body>
+
+</html>
