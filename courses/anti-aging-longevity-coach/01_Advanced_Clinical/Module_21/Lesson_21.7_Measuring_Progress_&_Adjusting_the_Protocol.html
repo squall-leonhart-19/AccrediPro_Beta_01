@@ -1,0 +1,678 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lesson 21.7: Measuring Progress & Adjusting the Protocol</title>
+    <style>
+        /* Base & Reset */
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Georgia, 'Times New Roman', serif;
+            line-height: 1.8;
+            color: #2d2d2d;
+            background: #f8f6f3;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Main Container */
+        .lesson-container {
+            max-width: 860px;
+            margin: 0 auto;
+            padding: 40px 30px;
+            background: #ffffff;
+            min-height: 100vh;
+            box-shadow: 0 0 60px rgba(0, 0, 0, 0.08);
+        }
+
+        /* Brand Header */
+        .brand-header {
+            text-align: center;
+            padding-bottom: 30px;
+            margin-bottom: 35px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .brand-logo {
+            max-width: 220px;
+            height: auto;
+            margin-bottom: 5px;
+        }
+
+        /* Module Header - GOLD theme for Advanced Treatment Planning */
+        .module-header {
+            background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
+            padding: 35px 35px 30px;
+            border-radius: 16px;
+            margin-bottom: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .module-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.05) 0%, transparent 70%);
+            transform: translate(100px, -100px);
+        }
+
+        .module-header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, #B8860B, #D4A84B, #B8860B);
+        }
+
+        .module-label {
+            margin: 0;
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.75);
+            text-transform: uppercase;
+            letter-spacing: 2.5px;
+            font-weight: 500;
+        }
+
+        .lesson-title {
+            margin: 10px 0 0 0;
+            font-size: 28px;
+            color: #ffffff;
+            font-weight: 700;
+            line-height: 1.3;
+            position: relative;
+        }
+
+        .lesson-meta {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+            padding-top: 18px;
+            border-top: 1px solid rgba(255, 255, 255, 0.15);
+            flex-wrap: wrap;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.85);
+            background: rgba(255, 255, 255, 0.1);
+            padding: 5px 12px;
+            border-radius: 4px;
+        }
+
+        /* Table of Contents */
+        .toc-box {
+            background: linear-gradient(135deg, #fafafa 0%, #f5f5f5 100%);
+            border-radius: 14px;
+            padding: 24px 28px;
+            margin-bottom: 35px;
+            border: 1px solid #e8e8e8;
+        }
+
+        .toc-box .box-label {
+            font-weight: 600;
+            color: #B8860B;
+            margin: 0 0 18px 0;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .toc-list {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px 24px;
+        }
+
+        .toc-list a {
+            display: flex;
+            align-items: center;
+            padding: 8px 12px;
+            color: #555;
+            text-decoration: none;
+            font-size: 14px;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+        }
+
+        .toc-list a:hover {
+            background: white;
+            color: #B8860B;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+        }
+
+        .toc-list .section-num {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 26px;
+            height: 26px;
+            background: #B8860B;
+            color: white;
+            font-weight: 600;
+            font-size: 11px;
+            border-radius: 6px;
+            margin-right: 12px;
+            flex-shrink: 0;
+        }
+
+        /* Learning Objectives */
+        .objectives-box {
+            background: #fffcf5;
+            border: 2px solid #D4A84B;
+            border-radius: 14px;
+            padding: 30px 35px;
+            margin-bottom: 40px;
+        }
+
+        .objectives-box .box-label {
+            font-weight: 600;
+            color: #B8860B;
+            margin: 0 0 18px 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .objectives-box .box-label::before {
+            content: '🎯';
+            font-size: 18px;
+        }
+
+        .objectives-box ul {
+            margin: 0;
+            padding-left: 22px;
+        }
+
+        .objectives-box li {
+            margin-bottom: 14px;
+            font-size: 16px;
+            line-height: 1.7;
+        }
+
+        /* Section Headings */
+        h2 {
+            font-size: 24px;
+            color: #1e293b;
+            margin: 50px 0 20px 0;
+            font-weight: 600;
+            position: relative;
+            padding-bottom: 12px;
+        }
+
+        h2::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 60px;
+            height: 3px;
+            background: #B8860B;
+        }
+
+        h3 {
+            font-size: 20px;
+            color: #334155;
+            margin: 30px 0 15px 0;
+        }
+
+        p {
+            font-size: 17px;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        .highlight {
+            background: linear-gradient(180deg, transparent 60%, #FFF59D 60%);
+            padding: 0 4px;
+            font-weight: 500;
+        }
+
+        /* Case Study Box */
+        .case-study {
+            background: linear-gradient(135deg, #f8f9fb 0%, #f0f2f5 100%);
+            border-radius: 16px;
+            padding: 0;
+            margin: 40px 0;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+        }
+
+        .case-study-header {
+            background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
+            padding: 20px 30px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .case-study-icon {
+            width: 45px;
+            height: 45px;
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+        }
+
+        .case-study-header .box-label {
+            font-weight: 600;
+            color: #ffffff;
+            margin: 0;
+            font-size: 16px;
+        }
+
+        .case-study-content {
+            padding: 28px 30px;
+        }
+
+        .patient-profile {
+            display: flex;
+            align-items: center;
+            gap: 18px;
+            padding: 18px 22px;
+            background: white;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            border: 1px solid #e5e5e5;
+        }
+
+        /* Data Table */
+        .data-table-container {
+            margin: 35px 0;
+            overflow-x: auto;
+            border-radius: 12px;
+            border: 1px solid #e2e8f0;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 15px;
+            text-align: left;
+        }
+
+        th {
+            background: #f1f5f9;
+            padding: 15px;
+            color: #1e293b;
+            font-weight: 600;
+            border-bottom: 2px solid #e2e8f0;
+        }
+
+        td {
+            padding: 15px;
+            border-bottom: 1px solid #e2e8f0;
+            color: #475569;
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        /* Stats Highlight */
+        .stat-highlight {
+            background: #f0fdf4;
+            color: #166534;
+            font-weight: 600;
+            padding: 2px 6px;
+            border-radius: 4px;
+        }
+
+        /* Check Understanding */
+        .check-understanding {
+            background: #fdfbf7;
+            border: 2px solid #B8860B;
+            border-radius: 16px;
+            padding: 32px;
+            margin: 45px 0;
+        }
+
+        .question-item {
+            background: white;
+            border-radius: 12px;
+            padding: 22px 24px;
+            margin-bottom: 16px;
+            border: 1px solid #e8e4dc;
+        }
+
+        .reveal-btn {
+            background: #B8860B;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-family: inherit;
+        }
+
+        .answer-text {
+            display: none;
+            margin-top: 15px;
+            padding: 15px;
+            background: #f0f8f0;
+            border-radius: 8px;
+            color: #166534;
+        }
+
+        /* Takeaways */
+        .takeaways-box {
+            background: #1e293b;
+            color: white;
+            padding: 30px 35px;
+            border-radius: 14px;
+            margin: 40px 0;
+        }
+
+        .takeaways-box .box-label {
+            color: #D4A84B;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            font-size: 13px;
+            font-weight: 600;
+            margin-bottom: 20px;
+            display: block;
+        }
+
+        .takeaways-box ul {
+            margin: 0;
+            padding-left: 22px;
+        }
+
+        .takeaways-box li {
+            margin-bottom: 12px;
+            color: rgba(255, 255, 255, 0.9);
+        }
+
+        /* References */
+        .references-box {
+            background: #f8fafc;
+            padding: 30px;
+            border-radius: 14px;
+            border: 1px solid #e2e8f0;
+            margin-top: 50px;
+        }
+
+        .references-box h4 {
+            margin: 0 0 15px 0;
+            font-size: 14px;
+            text-transform: uppercase;
+            color: #64748b;
+        }
+
+        .references-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            font-size: 13px;
+            color: #64748b;
+        }
+
+        .references-list li {
+            margin-bottom: 10px;
+            padding-bottom: 10px;
+            border-bottom: 1px dotted #cbd5e1;
+        }
+
+        .lesson-footer {
+            text-align: center;
+            padding-top: 50px;
+            margin-top: 60px;
+            border-top: 1px solid #eee;
+        }
+
+        .footer-logo {
+            max-width: 140px;
+            opacity: 0.8;
+        }
+
+        @media (max-width: 768px) {
+            .toc-list {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="lesson-container">
+        <div class="brand-header">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="brand-logo">
+        </div>
+
+        <header class="module-header">
+            <p class="module-label">Module 21: Advanced Treatment Planning</p>
+            <h1 class="lesson-title">Lesson 7: Measuring Progress & Adjusting the Protocol</h1>
+            <div class="lesson-meta">
+                <span class="meta-item">35 min read</span>
+                <span class="meta-item">L2 Practitioner Level</span>
+            </div>
+        </header>
+
+        <div class="toc-box">
+            <p class="box-label">In This Lesson</p>
+            <ul class="toc-list">
+                <li><a href="#biomarker-reassessment"><span class="section-num">1</span>The 6-Month Re-assessment</a></li>
+                <li><a href="#epigenetic-clocks"><span class="section-num">2</span>Interpreting Biological Age Shifts</a></li>
+                <li><a href="#troubleshooting"><span class="section-num">3</span>Troubleshooting the Plateau</a></li>
+                <li><a href="#psychology"><span class="section-num">4</span>Psychological Re-anchoring</a></li>
+                <li><a href="#metabolic-efficiency"><span class="section-num">5</span>Metabolic Efficiency Adjustments</a></li>
+                <li><a href="#protocol-evolution"><span class="section-num">6</span>The Iterative Protocol Model</a></li>
+            </ul>
+        </div>
+
+        <div class="objectives-box">
+            <p class="box-label">Learning Objectives</p>
+            <ul>
+                <li>Master the clinical interpretation of 6-month biomarker shifts in biological age metrics.</li>
+                <li>Identify the physiological drivers of the "Longevity Plateau" and apply specific troubleshooting strategies.</li>
+                <li>Communicate complex epigenetic and glycomic data to clients in an actionable, motivating manner.</li>
+                <li>Implement psychological re-anchoring techniques to maintain long-term compliance beyond numerical data.</li>
+                <li>Adjust caloric and movement programming based on improved mitochondrial efficiency and metabolic flexibility.</li>
+            </ul>
+        </div>
+
+        <h2 id="biomarker-reassessment">The 6-Month Biomarker Re-assessment (A)</h2>
+        <p>In the A.G.E.L.E.S.S. Longevity Protocol™, the "A" (Assess Biomarkers) is not a one-time event but a <span class="highlight">cyclical audit</span>. While initial assessments establish the baseline, the 6-month re-assessment is where the efficacy of the intervention is truly validated. We wait six months because biological systems, particularly DNA methylation patterns and IgG glycan structures, require sufficient "biological lead time" to reflect systemic change.</p>
+
+        <p>A 2021 study published in <i>Nature Communications</i> demonstrated that while lifestyle interventions can show epigenetic shifts in as little as 8 weeks, stable, durable changes in biological age markers are more accurately captured at the <span class="stat-highlight">180-day mark</span>. At this stage, we look for shifts in three primary domains:</p>
+        
+        <ul>
+            <li><strong>GlycanAge:</strong> Reflecting systemic inflammation and biological age through the glycosylation of IgG antibodies.</li>
+            <li><strong>Epigenetic Clocks:</strong> Specifically "Next-Generation" clocks like <i>DunedinPACE</i> or <i>GrimAge</i>, which measure the current rate of aging.</li>
+            <li><strong>Metabolic Stability:</strong> Standard blood panels focusing on HbA1c, ApoB, and hs-CRP.</li>
+        </ul>
+
+        <div class="data-table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Biomarker Category</th>
+                        <th>Target Shift (6 Months)</th>
+                        <th>Clinical Significance</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>DunedinPACE</strong></td>
+                        <td>Decrease of 0.05–0.10</td>
+                        <td>Slowing the "speedometer" of aging; reduced risk of multi-morbidity.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>GlycanAge</strong></td>
+                        <td>Reduction of 2–5 years</td>
+                        <td>Reduced "inflammaging" and improved immune system balance.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>hs-CRP</strong></td>
+                        <td>&lt; 1.0 mg/L</td>
+                        <td>Optimization of systemic inflammatory profile.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>VO2 Max</strong></td>
+                        <td>+3–5% increase</td>
+                        <td>Improved mitochondrial density and cardiovascular reserve.</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <h2 id="epigenetic-clocks">Interpreting Epigenetic Data for Clients</h2>
+        <p>As a Longevity Coach, your value lies in <span class="highlight">translation</span>. Clients often feel discouraged if their "Biological Age" doesn't drop by a decade in six months. It is critical to explain that biological age is a composite metric. A 2023 meta-analysis of 42 studies (n=8,234) found that even a <span class="stat-highlight">1-year reduction</span> in biological age relative to chronological age correlates with a 6% reduction in all-cause mortality risk.</p>
+
+        <p>When presenting data, focus on the <strong>Rate of Aging</strong>. If a client’s DunedinPACE score moves from 1.1 (aging 1.1 years for every calendar year) to 0.9, they have effectively "bought back" time. This is a more powerful motivator than a static age number. Explain that epigenetic clocks are sensitive to "noise"—stress, recent illness, or extreme overtraining can temporarily spike biological age, making the 6-month average the gold standard for adjustment.</p>
+
+        <div class="case-study">
+            <div class="case-study-header">
+                <div class="case-study-icon">👤</div>
+                <div>
+                    <p class="box-label">Case Study: The "False Positive" Spike</p>
+                    <p style="margin:0; color:rgba(255,255,255,0.8); font-size:13px;">Client: Robert, 54 | Intervention: High-Intensity Protocol</p>
+                </div>
+            </div>
+            <div class="case-study-content">
+                <p><strong>Presenting Scenario:</strong> Robert followed a strict 6-month protocol including TRF (16:8), Zone 2 training, and Senolytic supplementation. His 6-month DNAm test showed his biological age <i>increased</i> by 1.2 years despite improved body composition.</p>
+                <p><strong>Intervention:</strong> Upon review, Robert had performed a marathon three days prior to his blood draw. The acute inflammatory response and oxidative stress from the event skewed his epigenetic markers.</p>
+                <p><strong>Outcome:</strong> A re-test 4 weeks later (post-recovery) showed a 2.4-year <i>decrease</i> from baseline. <strong>Lesson:</strong> Always schedule biomarker testing at least 14 days away from extreme physical stressors or acute illness.</p>
+            </div>
+        </div>
+
+        <h2 id="troubleshooting">Troubleshooting the 'Longevity Plateau'</h2>
+        <p>A "Longevity Plateau" occurs when biomarkers stop improving or begin to regress despite continued adherence to the protocol. This is often a sign of <span class="highlight">hormetic exhaustion</span>. Longevity interventions (fasting, cold exposure, exercise) are stressors. If the body’s adaptive capacity is exceeded, the "U-shaped" dose-response curve of hormesis turns negative.</p>
+
+        <h3>Strategies for Breaking the Plateau:</h3>
+        <p>1. <strong>The Hormetic Holiday:</strong> A 2-week period of "maintenance" where cold plunges, extended fasting, and high-intensity training are paused. This allows the HPA axis to reset and reduces systemic cortisol.</p>
+        <p>2. <strong>Nutrient Density Pivot:</strong> Moving from a focus on "what to avoid" (sugar, processed foods) to "what to flood." Increasing intake of polyphenols (sirtuin activators) and cruciferous vegetables (sulforaphane) to stimulate Nrf2 pathways.</p>
+        <p>3. <strong>Microbiome Rotation:</strong> If the "G" (Gut) pillar has stalled, rotating probiotic strains or introducing fermented foods can shift the Firmicutes/Bacteroidetes ratio, which influences metabolic rate.</p>
+
+        <h2 id="psychology">Psychological Re-anchoring: Beyond the Number</h2>
+        <p>Longevity is a marathon, not a sprint. To prevent "biomarker burnout," coaches must use <span class="highlight">psychological re-anchoring</span>. This involves shifting the client's focus from invisible cellular metrics to visible functional improvements—often called "Non-Scale Victories" (NSVs).</p>
+
+        <p>A focus on functional longevity metrics provides immediate dopamine rewards. We track:</p>
+        <ul>
+            <li><strong>Sleep Architecture:</strong> Increases in Deep Sleep or REM duration (via Oura/Whoop data).</li>
+            <li><strong>Grip Strength:</strong> A proxy for biological vitality and muscle quality.</li>
+            <li><strong>Recovery HR:</strong> How quickly the heart rate drops 1 minute after peak exertion.</li>
+            <li><strong>Cognitive Clarity:</strong> Subjective measures of focus and "brain fog" reduction.</li>
+        </ul>
+
+        <h2 id="metabolic-efficiency">Adjusting Caloric & Movement Targets</h2>
+        <p>As a client’s health improves, their body becomes more <span class="highlight">metabolically efficient</span>. Mitochondria become better at ATP production, and insulin sensitivity increases. Ironically, this means the body may require <i>fewer</i> calories to maintain the same weight, or <i>higher</i> intensity to achieve the same cardiovascular stimulus.</p>
+
+        <p><strong>The "Efficiency Paradox":</strong> A 2022 study showed that as VO2 max increases, the caloric cost of Zone 2 exercise can decrease by up to 12%. If the protocol isn't adjusted, the client may experience unexpected weight gain or a plateau in fat loss.</p>
+
+        <div class="data-table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Metric</th>
+                        <th>Initial Protocol (Months 0-6)</th>
+                        <th>Optimization Phase (Months 6+)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Fasting Window</strong></td>
+                        <td>Static 16:8</td>
+                        <td>Circadian-aligned or Multi-day Fasting (1x/month)</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Protein Intake</strong></td>
+                        <td>1.2g / kg of bodyweight</td>
+                        <td>1.6g - 2.0g / kg (to support mTor/Muscle)</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Exercise Focus</strong></td>
+                        <td>General Conditioning</td>
+                        <td>Periodized Strength & VO2 Max Peak Intervals</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Biohacks</strong></td>
+                        <td>Foundational Supplements</td>
+                        <td>Targeted Senolytics / NAD+ Optimization</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <h2 id="protocol-evolution">The Iterative Protocol Model</h2>
+        <p>The transition from Module 21 (Treatment Planning) to the long-term coaching relationship requires the adoption of the <strong>Iterative Protocol Model</strong>. We move from "Resetting" the system to "Optimizing" it. This involves "Stacking" interventions based on the client's improved resilience.</p>
+
+        <p>For example, a client who has successfully lowered their hs-CRP and stabilized their blood glucose is now a candidate for more aggressive longevity interventions, such as high-dose rapamycin (under medical supervision) or prolonged fasting-mimicking diets (FMD). Conversely, a client showing signs of over-reaching must have their protocol "diluted" to prioritize recovery (the "L" in A.G.E.L.E.S.S. - Lifestyle/Sleep).</p>
+
+        <div class="check-understanding">
+            <p class="box-label">Check Your Understanding</p>
+            <p class="box-subtitle">Test your clinical reasoning for protocol adjustments.</p>
+            
+            <div class="question-item">
+                <p class="question-text">1. A client's DunedinPACE score has improved (decreased), but their GlycanAge has remained stagnant. What is the most likely physiological area requiring adjustment?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-text">
+                    This suggests that while the overall rate of aging is slowing, systemic inflammation (reflected in IgG glycosylation) remains high. You should investigate the "G" (Gut) and "E" (Eat) pillars, specifically looking for hidden food sensitivities or gut dysbiosis that maintains "inflammaging."
+                </div>
+            </div>
+
+            <div class="question-item">
+                <p class="question-text">2. Why is a "Hormetic Holiday" sometimes necessary for clients who are strictly adhering to their longevity protocols?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-text">
+                    To prevent hormetic exhaustion. Chronic exposure to stressors (fasting, cold, HIIT) without adequate recovery can lead to HPA axis dysfunction and elevated cortisol, which eventually accelerates biological aging markers.
+                </div>
+            </div>
+        </div>
+
+        <div class="takeaways-box">
+            <p class="box-label">Key Takeaways</p>
+            <ul>
+                <li>The 6-month re-assessment is the gold standard for verifying the durability of biological age interventions.</li>
+                <li>Interpret epigenetic data by focusing on the "Rate of Aging" (DunedinPACE) rather than just the "Biological Age" number.</li>
+                <li>Address the "Longevity Plateau" by cycling hormetic stressors and prioritizing nutrient density over restriction.</li>
+                <li>As metabolic efficiency improves, caloric and movement targets must be increased in intensity to maintain the same physiological stimulus.</li>
+                <li>Always screen for acute stressors (illness, overtraining) before interpreting biomarker shifts to avoid "False Positive" spikes.</li>
+            </ul>
+        </div>
+
+        <div class="references-box">
+            <h4>References & Further Reading</h4>
+            <ul class="references-list">
+                <li>Ryan, C. P. et al. (2021). "The DunedinPACE: A next-generation epigenetic clock of the pace of biological aging." <i>Nature Communications</i>.</li>
+                <li>Krištan, M. et al. (2023). "GlycanAge as a biomarker of inflammation and biological age: A meta-analysis." <i>Journal of Proteome Research</i>.</li>
+                <li>Fitzgerald, K. N. et al. (2021). "Potential reversal of epigenetic age using a diet and lifestyle intervention: A pilot randomized clinical trial." <i>Aging (Albany NY)</i>.</li>
+                <li>Longhurst, G. J. et al. (2022). "Mitochondrial efficiency and the caloric cost of exercise in trained vs. untrained populations." <i>Frontiers in Physiology</i>.</li>
+                <li>Horvath, S. & Raj, K. (2018). "DNA methylation-based biomarkers and the epigenetic clock theory of ageing." <i>Nature Reviews Genetics</i>.</li>
+                <li>Vaiserman, A. et al. (2021). "Hormesis and Longevity: A clinical perspective on stress-induced resilience." <i>Ageing Research Reviews</i>.</li>
+            </ul>
+        </div>
+
+        <footer class="lesson-footer">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="footer-logo">
+            <p class="brand">AccrediPro Academy Certified Longevity Professional</p>
+            <p class="copyright">&copy; 2024 AccrediPro Academy. All Rights Reserved. Confidential & Proprietary.</p>
+        </footer>
+    </div>
+</body>
+
+</html>

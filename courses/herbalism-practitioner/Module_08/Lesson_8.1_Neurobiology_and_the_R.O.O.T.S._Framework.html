@@ -1,0 +1,685 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lesson 8.1: Neurobiology and the R.O.O.T.S. Framework</title>
+    <style>
+        /* Base & Reset */
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Georgia, 'Times New Roman', serif;
+            line-height: 1.8;
+            color: #2d2d2d;
+            background: #f8f6f3;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Main Container */
+        .lesson-container {
+            max-width: 860px;
+            margin: 0 auto;
+            padding: 40px 30px;
+            background: #ffffff;
+            min-height: 100vh;
+            box-shadow: 0 0 60px rgba(0, 0, 0, 0.08);
+        }
+
+        /* Brand Header */
+        .brand-header {
+            text-align: center;
+            padding-bottom: 30px;
+            margin-bottom: 35px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .brand-logo {
+            max-width: 220px;
+            height: auto;
+            margin-bottom: 5px;
+        }
+
+        /* Module Header - DEEP BLUE theme for Nervous System */
+        .module-header {
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+            padding: 35px 35px 30px;
+            border-radius: 16px;
+            margin-bottom: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .module-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+            transform: translate(100px, -100px);
+        }
+
+        .module-header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, #B8860B, #D4A84B, #B8860B);
+        }
+
+        .module-label {
+            margin: 0;
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.75);
+            text-transform: uppercase;
+            letter-spacing: 2.5px;
+            font-weight: 500;
+        }
+
+        .lesson-title {
+            margin: 10px 0 0 0;
+            font-size: 28px;
+            color: #ffffff;
+            font-weight: 700;
+            line-height: 1.3;
+            position: relative;
+        }
+
+        .lesson-meta {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+            padding-top: 18px;
+            border-top: 1px solid rgba(255, 255, 255, 0.15);
+            flex-wrap: wrap;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.85);
+            background: rgba(255, 255, 255, 0.1);
+            padding: 5px 12px;
+            border-radius: 4px;
+        }
+
+        /* Table of Contents */
+        .toc-box {
+            background: linear-gradient(135deg, #fafafa 0%, #f5f5f5 100%);
+            border-radius: 14px;
+            padding: 24px 28px;
+            margin-bottom: 35px;
+            border: 1px solid #e8e8e8;
+        }
+
+        .toc-box .box-label {
+            font-weight: 600;
+            color: #1e3a8a;
+            margin: 0 0 18px 0;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .toc-list {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px 24px;
+        }
+
+        .toc-list li {
+            margin: 0;
+        }
+
+        .toc-list a {
+            display: flex;
+            align-items: center;
+            padding: 8px 12px;
+            color: #555;
+            text-decoration: none;
+            font-size: 14px;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+        }
+
+        .toc-list a:hover {
+            background: white;
+            color: #1e3a8a;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+        }
+
+        .toc-list .section-num {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 26px;
+            height: 26px;
+            background: #1e3a8a;
+            color: white;
+            font-weight: 600;
+            font-size: 11px;
+            border-radius: 6px;
+            margin-right: 12px;
+            flex-shrink: 0;
+        }
+
+        /* Learning Objectives */
+        .objectives-box {
+            background: #eff6ff;
+            border: 2px solid #3b82f6;
+            border-radius: 14px;
+            padding: 30px 35px;
+            margin-bottom: 40px;
+        }
+
+        .objectives-box .box-label {
+            font-weight: 600;
+            color: #1e3a8a;
+            margin: 0 0 18px 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .objectives-box .box-label::before {
+            content: '🎯';
+            font-size: 18px;
+        }
+
+        .objectives-box ul {
+            margin: 0;
+            padding-left: 22px;
+        }
+
+        .objectives-box li {
+            margin-bottom: 14px;
+            font-size: 16px;
+            line-height: 1.7;
+        }
+
+        /* Key Terms Box */
+        .key-terms-box {
+            background: linear-gradient(135deg, #f0f4f8 0%, #e8ecf1 100%);
+            border-radius: 14px;
+            padding: 28px 30px;
+            margin: 40px 0;
+            border: 1px solid #d8dce0;
+        }
+
+        .key-terms-box .box-label {
+            font-weight: 600;
+            color: #1e3a8a;
+            margin: 0 0 18px 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .terms-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 16px;
+        }
+
+        .term-item {
+            background: white;
+            padding: 16px 18px;
+            border-radius: 10px;
+            border-left: 4px solid #3b82f6;
+        }
+
+        .term-item .term {
+            font-weight: 700;
+            color: #1e3a8a;
+            font-size: 15px;
+            margin: 0 0 6px 0;
+        }
+
+        .term-item .definition {
+            font-size: 14px;
+            color: #555;
+            margin: 0;
+            line-height: 1.6;
+        }
+
+        /* Section Headings */
+        h2 {
+            font-size: 24px;
+            color: #1e3a8a;
+            margin: 50px 0 20px 0;
+            font-weight: 600;
+            position: relative;
+            padding-bottom: 12px;
+        }
+
+        h2::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 60px;
+            height: 3px;
+            background: #B8860B;
+        }
+
+        h3 {
+            font-size: 20px;
+            color: #1e40af;
+            margin: 30px 0 15px 0;
+            font-weight: 600;
+        }
+
+        /* Paragraphs */
+        p {
+            font-size: 17px;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        /* Highlights */
+        .highlight {
+            background: linear-gradient(180deg, transparent 60%, #cbd5e1 60%);
+            padding: 0 4px;
+            font-weight: 500;
+        }
+
+        /* Case Study Box */
+        .case-study {
+            background: linear-gradient(135deg, #f8f9fb 0%, #f0f2f5 100%);
+            border-radius: 16px;
+            padding: 0;
+            margin: 40px 0;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+        }
+
+        .case-study-header {
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+            padding: 20px 30px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .case-study-icon {
+            width: 45px;
+            height: 45px;
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+        }
+
+        .case-study-header .box-label {
+            font-weight: 600;
+            color: #ffffff;
+            margin: 0;
+            font-size: 16px;
+            letter-spacing: 0.5px;
+        }
+
+        .case-study-content {
+            padding: 28px 30px;
+        }
+
+        .patient-profile {
+            display: flex;
+            align-items: center;
+            gap: 18px;
+            padding: 18px 22px;
+            background: white;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            border: 1px solid #e5e5e5;
+        }
+
+        .patient-avatar {
+            width: 55px;
+            height: 55px;
+            background: linear-gradient(135deg, #3b82f6, #1e3a8a);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            color: white;
+            flex-shrink: 0;
+        }
+
+        /* Statistics Highlight */
+        .stat-highlight {
+            background: #f1f5f9;
+            border: 1px solid #3b82f6;
+            padding: 20px;
+            border-radius: 12px;
+            margin: 25px 0;
+            text-align: center;
+            font-weight: 600;
+            color: #1e3a8a;
+        }
+
+        /* Data Table */
+        .data-table-container {
+            overflow-x: auto;
+            margin: 30px 0;
+        }
+
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 15px;
+            text-align: left;
+        }
+
+        .data-table th {
+            background-color: #1e3a8a;
+            color: white;
+            padding: 15px;
+            border: 1px solid #e2e8f0;
+        }
+
+        .data-table td {
+            padding: 15px;
+            border: 1px solid #e2e8f0;
+            vertical-align: top;
+        }
+
+        .data-table tr:nth-child(even) {
+            background-color: #f8fafc;
+        }
+
+        /* Check Understanding Box */
+        .check-understanding {
+            background: linear-gradient(135deg, #fdfbf7 0%, #f9f5ed 100%);
+            border: 2px solid #B8860B;
+            border-radius: 16px;
+            padding: 32px;
+            margin: 45px 0;
+        }
+
+        .question-item {
+            background: white;
+            border-radius: 12px;
+            padding: 22px 24px;
+            margin-bottom: 16px;
+            border: 1px solid #e8e4dc;
+            position: relative;
+        }
+
+        .reveal-btn {
+            background: #1e3a8a;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-size: 14px;
+            cursor: pointer;
+            transition: background 0.2s ease;
+        }
+
+        .answer-text {
+            display: none;
+            font-size: 14px;
+            color: #1e40af;
+            margin: 14px 0 0 0;
+            padding: 14px;
+            background: #eff6ff;
+            border-radius: 8px;
+        }
+
+        .answer-text.show {
+            display: block;
+        }
+
+        /* Key Takeaways */
+        .takeaways-box {
+            background: linear-gradient(135deg, #f5f5f5 0%, #e8e8e8 100%);
+            padding: 22px 25px;
+            margin-top: 35px;
+            border-radius: 8px;
+            border: 1px solid #ddd;
+        }
+
+        .references-box {
+            margin-top: 40px;
+            padding: 25px;
+            background: #fff;
+            border-top: 1px solid #eee;
+            font-size: 14px;
+            color: #666;
+        }
+
+        .references-box h4 {
+            color: #1e3a8a;
+            margin-bottom: 15px;
+        }
+
+        .lesson-footer {
+            text-align: center;
+            padding: 40px 0;
+            border-top: 1px solid #eee;
+            margin-top: 40px;
+        }
+
+        @media (max-width: 768px) {
+            .toc-list { grid-template-columns: 1fr; }
+            .lesson-container { padding: 20px 15px; }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="lesson-container">
+        <div class="brand-header">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="brand-logo">
+        </div>
+
+        <header class="module-header">
+            <p class="module-label">Module 8: The Nervous System & Adaptogenic Resilience</p>
+            <h1 class="lesson-title">Lesson 1: Neurobiology and the R.O.O.T.S. Framework</h1>
+            <div class="lesson-meta">
+                <span class="meta-item">35 min read</span>
+                <span class="meta-item">Advanced Practitioner Level</span>
+            </div>
+        </header>
+
+        <div class="toc-box">
+            <p class="box-label">In This Lesson</p>
+            <ul class="toc-list">
+                <li><a href="#section1"><span class="section-num">1</span>Research: The HPA & HPT Axes</a></li>
+                <li><a href="#section2"><span class="section-num">2</span>The Blood-Brain Barrier (BBB)</a></li>
+                <li><a href="#section3"><span class="section-num">3</span>Observing Patterns: Tension vs. Exhaustion</a></li>
+                <li><a href="#section4"><span class="section-num">4</span>Neurotransmitter Modulation</a></li>
+                <li><a href="#section5"><span class="section-num">5</span>The Tonic vs. Acute Paradigm</a></li>
+                <li><a href="#section6"><span class="section-num">6</span>Clinical Application & Safety</a></li>
+            </ul>
+        </div>
+
+        <div class="objectives-box">
+            <p class="box-label">Learning Objectives</p>
+            <ul>
+                <li>Apply the 'Research' (R) pillar to the neuro-endocrine feedback loops of the HPA and HPT axes.</li>
+                <li>Explain the mechanisms of phytochemical transport across the Blood-Brain Barrier (BBB).</li>
+                <li>Differentiate between the tissue states of nervous exhaustion and nervous tension using the 'Observe Patterns' (O) framework.</li>
+                <li>Identify how specific herbal constituents modulate GABA, Serotonin, and Dopamine pathways.</li>
+                <li>Formulate strategic protocols distinguishing between long-term 'Tonic' restoration and 'Acute' symptom management.</li>
+            </ul>
+        </div>
+
+        <h2 id="section1">1. Research (R): The Neuro-Endocrine Feedback Loops</h2>
+        <p>In the R.O.O.T.S. Herbalism Method™, the <span class="highlight">Research</span> pillar demands a deep understanding of the physiological "why" behind herbal intervention. To master the nervous system, a practitioner must look beyond the brain and into the complex communication network known as the neuro-endocrine axis.</p>
+        
+        <p>The <span class="highlight">Hypothalamic-Pituitary-Adrenal (HPA) axis</span> is the primary driver of the body’s stress response. When the hypothalamus perceives a threat, it releases Corticotropin-Releasing Hormone (CRH), signaling the pituitary to release Adrenocorticotropic Hormone (ACTH), which finally triggers the adrenal cortex to produce cortisol. While this is a survival mechanism, chronic activation leads to "HPA Axis Dysregulation," often mislabeled as adrenal fatigue.</p>
+
+        <div class="stat-highlight">
+            A 2022 systematic review of 114 studies found that chronic HPA axis dysregulation is associated with a 43% increase in the risk of metabolic syndrome and a significant reduction in hippocampal volume (Effect size: -0.42).
+        </div>
+
+        <h3>The HPT Axis Interplay</h3>
+        <p>We cannot discuss the nervous system without the <span class="highlight">Hypothalamic-Pituitary-Thyroid (HPT) axis</span>. The HPA and HPT axes are intrinsically linked; high cortisol levels inhibit the conversion of T4 (inactive thyroid hormone) to T3 (active), leading to symptoms of nervous exhaustion, brain fog, and depression. As a practitioner, your research must account for this "cross-talk" when selecting herbs like <i>Withania somnifera</i> (Ashwagandha), which has been shown to support both HPA regulation and HPT function.</p>
+
+        <h2 id="section2">2. Mechanism: Crossing the Blood-Brain Barrier (BBB)</h2>
+        <p>One of the greatest challenges in neuro-herbalism is the Blood-Brain Barrier—a highly selective semipermeable border of endothelial cells. For an herbal constituent to exert a central nervous system (CNS) effect, it must navigate this barrier.</p>
+
+        <div class="data-table-container">
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>Transport Mechanism</th>
+                        <th>Description</th>
+                        <th>Herbal Examples</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Passive Diffusion</strong></td>
+                        <td>Small, lipophilic molecules pass through the endothelial cell membrane.</td>
+                        <td>Monoterpenes in Lavender (Linalool), Valerian (Valerenic acid).</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Active Transport</strong></td>
+                        <td>Molecules utilize specific carrier proteins to cross the barrier.</td>
+                        <td>Ginsenosides in Panax Ginseng, some alkaloids in Berberine-containing plants.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Retrograde Axonal Transport</strong></td>
+                        <td>Bypassing the BBB via the olfactory nerves (direct to CNS).</td>
+                        <td>Aromatic nervines used in inhalation/aromatherapy (Rosemary, Melissa).</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <p>Understanding these mechanisms allows you to choose the correct <span class="highlight">delivery method</span>. For example, essential oil-rich nervines like <i>Melissa officinalis</i> (Lemon Balm) may act rapidly via inhalation or lipophilic tincture preparations, whereas larger glycosides in adaptogens may require longer-term metabolic processing to influence the HPA axis.</p>
+
+        <h2 id="section3">3. Observe Patterns (O): Tension vs. Exhaustion</h2>
+        <p>The second pillar, <span class="highlight">Observe Patterns</span>, moves us from the laboratory to the client. In Western Herbalism and the Physiomedical tradition, we categorize the nervous system into two primary "Tissue States": <strong>Tension (Excess)</strong> and <strong>Exhaustion (Deficiency)</strong>.</p>
+
+        <div class="comparison-grid">
+            <div class="comparison-card conventional">
+                <p class="card-label">Nervous Tension (Excess/Wind)</p>
+                <p class="card-text">Characterized by hyper-reactivity, muscle spasms, "tired but wired" feeling, insomnia with racing thoughts, and a sharp, wiry pulse.</p>
+                <p style="margin-top: 10px; font-size: 14px;"><strong>Indicated Herbs:</strong> <i>Scutellaria lateriflora</i>, <i>Passiflora incarnata</i>.</p>
+            </div>
+            <div class="comparison-card functional">
+                <p class="card-label">Nervous Exhaustion (Deficiency/Dry)</p>
+                <p class="card-text">Characterized by depletion, burnout, low resilience, sensory hypersensitivity, memory lapses, and a weak, thin pulse.</p>
+                <p style="margin-top: 10px; font-size: 14px;"><strong>Indicated Herbs:</strong> <i>Avena sativa</i> (Milky Oats), <i>Withania somnifera</i>.</p>
+            </div>
+        </div>
+
+        <div class="case-study">
+            <div class="case-study-header">
+                <div class="case-study-icon">👤</div>
+                <div>
+                    <p class="box-label">Case Study: The Hyper-Vigilant Academic</p>
+                </div>
+            </div>
+            <div class="case-study-content">
+                <div class="patient-profile">
+                    <div class="patient-avatar">E</div>
+                    <div class="patient-info">
+                        <h4>Elena, 34</h4>
+                        <p>PhD Student | Presenting with chronic anxiety & jaw tension</p>
+                    </div>
+                </div>
+                <p><strong>Presentation:</strong> Elena reports "racing thoughts" that prevent sleep. She exhibits physical signs of <strong>Nervous Tension</strong>: bruxism (teeth grinding), a high-pitched voice, and a wiry pulse. She consumes high amounts of caffeine to compensate for poor sleep.</p>
+                <p><strong>Intervention:</strong> Instead of stimulating adaptogens, we utilized <i>Scutellaria lateriflora</i> (Fresh Tincture) to "relax the wind" and <i>Passiflora</i> to increase GABAergic tone. We removed caffeine to prevent further HPA stimulation.</p>
+                <p><strong>Outcome:</strong> Within 14 days, jaw tension reduced by 60% (self-reported) and sleep latency decreased from 90 minutes to 20 minutes.</p>
+            </div>
+        </div>
+
+        <h2 id="section4">4. Neurotransmitter Modulation</h2>
+        <p>As a practitioner, you must understand the "Chemical Language" of the nervous system. Our goal is rarely to "replace" a neurotransmitter, but to <span class="highlight">modulate</span> the sensitivity of receptors or the availability of the neurotransmitter in the synaptic cleft.</p>
+
+        <ul>
+            <li><strong>GABA (The Brake):</strong> The primary inhibitory neurotransmitter. Herbs like Valerian and Passionflower act on GABA-A receptors, inducing relaxation.</li>
+            <li><strong>Serotonin (The Mood Stabilizer):</strong> Involved in sleep, mood, and satiety. <i>Hypericum perforatum</i> (St. John’s Wort) inhibits the reuptake of serotonin, but requires strict safety screening for drug interactions (CYP3A4 induction).</li>
+            <li><strong>Dopamine (The Reward):</strong> Involved in focus and motivation. <i>Rhodiola rosea</i> acts as a Monoamine Oxidase Inhibitor (MAOI-B), potentially increasing dopamine availability in cases of "depressive exhaustion."</li>
+        </ul>
+
+        <div class="alert-box warning">
+            <p class="alert-label">Safety Alert: Herb-Drug Interactions (HDI)</p>
+            <p>Always screen for SSRIs or SNRIs before recommending serotonin-modulating herbs. Combining St. John’s Wort with pharmaceutical antidepressants carries a risk of <strong>Serotonin Syndrome</strong>, a potentially life-threatening condition.</p>
+        </div>
+
+        <h2 id="section5">5. The Tonic vs. Acute Paradigm</h2>
+        <p>Strategic formulation requires distinguishing between "putting out the fire" and "rebuilding the house."</p>
+
+        <h3>Acute Nervines</h3>
+        <p>These are herbs used for immediate symptom relief. They are often high in volatile oils or alkaloids and have a direct, short-term effect on the CNS. Examples: <i>Eschscholzia californica</i> (California Poppy) for acute pain/insomnia or <i>Leonurus cardiaca</i> (Motherwort) for acute panic palpitations.</p>
+
+        <h3>Tonic Trophorestoratives</h3>
+        <p>From the Greek <i>trophos</i> (to nourish), these herbs "feed" the nervous system over time. They are not necessarily sedative or stimulating but work to restore the structural and functional integrity of nerve tissue. <span class="highlight">Milky Oat Seed (Avena sativa)</span> is the premier example, indicated for long-term recovery from nervous breakdown or chronic stress.</p>
+
+        <h2 id="section6">6. Clinical Application & Safety</h2>
+        <p>When applying the R.O.O.T.S. framework to the nervous system, safety is paramount. The nervous system is the "Master Control Center"; small changes can have systemic effects.</p>
+        
+        <p>A 2023 study published in the <i>Journal of Ethnopharmacology</i> highlighted that adaptogens like <i>Panax ginseng</i> can significantly alter blood glucose levels via HPA axis modulation. Therefore, a practitioner must monitor diabetic clients closely when introducing strong adaptogens. This is the <span class="highlight">Sustainable Practice (S)</span> pillar in action—ensuring the client's long-term health is not compromised for short-term gains.</p>
+
+        <div class="check-understanding">
+            <p class="box-label">Check Your Understanding</p>
+            <div class="question-item">
+                <p class="question-text">1. Why is the HPT axis relevant to a client presenting with nervous exhaustion?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-text">High cortisol from the HPA axis inhibits the conversion of T4 to T3 in the HPT axis, leading to metabolic slowdown, fatigue, and brain fog, which exacerbates the feeling of exhaustion.</div>
+            </div>
+            <div class="question-item">
+                <p class="question-text">2. Which transport mechanism is primarily used by the volatile oils in Lavender to cross the BBB?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-text">Passive diffusion, due to the small, lipophilic nature of monoterpenes like linalool.</div>
+            </div>
+        </div>
+
+        <div class="takeaways-box">
+            <p class="box-label">Key Takeaways</p>
+            <ul>
+                <li>The <strong>HPA Axis</strong> is the thermostat of stress; its regulation is the goal of adaptogenic therapy.</li>
+                <li>The <strong>Blood-Brain Barrier</strong> dictates which constituents can reach the brain and how they must be delivered.</li>
+                <li>Distinguishing between <strong>Nervous Tension</strong> (Excess) and <strong>Exhaustion</strong> (Deficiency) is the first step in pattern recognition.</li>
+                <li><strong>Trophorestoratives</strong> like Milky Oats are essential for long-term rebuilding, while <strong>Acute Nervines</strong> provide immediate relief.</li>
+                <li>Safety research (R) must always include screening for psychiatric medications and metabolic disorders.</li>
+            </ul>
+        </div>
+
+        <div class="references-box">
+            <h4>References & Further Reading</h4>
+            <ul>
+                <li>Panossian, A., et al. (2021). "Evolution of the Adaptogen Concept: From Traditional Use to Medical Systems Biology." <i>Phytomedicine</i>.</li>
+                <li>Winston, D., & Maimes, S. (2019). "Adaptogens: Herbs for Strength, Stamina, and Stress Relief." <i>Healing Arts Press</i>.</li>
+                <li>Sarris, J., et al. (2022). "Plant-based medicines for anxiety disorders, part 2: a review of clinical studies with supporting preclinical evidence." <i>CNS Drugs</i>.</li>
+                <li>Lopresti, A. L., et al. (2023). "A randomized, double-blind, placebo-controlled, crossover study examining the hormonal and vitality effects of Ashwagandha." <i>American Journal of Men's Health</i>.</li>
+                <li>Fisher, C. (2018). "Materia Medica of Western Herbs." <i>Vitex Press</i>.</li>
+                <li>Brum, L. F., et al. (2021). "Effects of Linalool on GABAergic System: Evidence of a Central Mechanism of Action." <i>Phytotherapy Research</i>.</li>
+            </ul>
+        </div>
+
+        <footer class="lesson-footer">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="footer-logo">
+            <p class="brand">AccrediPro Academy Certified Herbalism Practitioner</p>
+            <p class="copyright">&copy; 2024 AccrediPro Academy. All rights reserved. Professional Use Only.</p>
+        </footer>
+    </div>
+</body>
+
+</html>

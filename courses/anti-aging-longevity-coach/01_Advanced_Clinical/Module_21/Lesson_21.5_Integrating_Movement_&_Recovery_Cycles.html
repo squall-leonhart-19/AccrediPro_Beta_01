@@ -1,0 +1,665 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lesson 21.5: Integrating Movement & Recovery Cycles</title>
+    <style>
+        /* Base & Reset */
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Georgia, 'Times New Roman', serif;
+            line-height: 1.8;
+            color: #2d2d2d;
+            background: #f8f6f3;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Main Container */
+        .lesson-container {
+            max-width: 860px;
+            margin: 0 auto;
+            padding: 40px 30px;
+            background: #ffffff;
+            min-height: 100vh;
+            box-shadow: 0 0 60px rgba(0, 0, 0, 0.08);
+        }
+
+        /* Brand Header */
+        .brand-header {
+            text-align: center;
+            padding-bottom: 30px;
+            margin-bottom: 35px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .brand-logo {
+            max-width: 220px;
+            height: auto;
+            margin-bottom: 5px;
+        }
+
+        /* Module Header - BLUE/DARK theme for Treatment Planning */
+        .module-header {
+            background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
+            padding: 35px 35px 30px;
+            border-radius: 16px;
+            margin-bottom: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .module-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+            transform: translate(100px, -100px);
+        }
+
+        .module-header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, #B8860B, #D4A84B, #B8860B);
+        }
+
+        .module-label {
+            margin: 0;
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.75);
+            text-transform: uppercase;
+            letter-spacing: 2.5px;
+            font-weight: 500;
+        }
+
+        .lesson-title {
+            margin: 10px 0 0 0;
+            font-size: 28px;
+            color: #ffffff;
+            font-weight: 700;
+            line-height: 1.3;
+            position: relative;
+        }
+
+        .lesson-meta {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+            padding-top: 18px;
+            border-top: 1px solid rgba(255, 255, 255, 0.15);
+            flex-wrap: wrap;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.85);
+            background: rgba(255, 255, 255, 0.1);
+            padding: 5px 12px;
+            border-radius: 4px;
+        }
+
+        /* Table of Contents */
+        .toc-box {
+            background: linear-gradient(135deg, #fafafa 0%, #f5f5f5 100%);
+            border-radius: 14px;
+            padding: 24px 28px;
+            margin-bottom: 35px;
+            border: 1px solid #e8e8e8;
+        }
+
+        .toc-box .box-label {
+            font-weight: 600;
+            color: #334155;
+            margin: 0 0 18px 0;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .toc-list {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px 24px;
+        }
+
+        .toc-list li {
+            margin: 0;
+        }
+
+        .toc-list a {
+            display: flex;
+            align-items: center;
+            padding: 8px 12px;
+            color: #555;
+            text-decoration: none;
+            font-size: 14px;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+        }
+
+        .toc-list a:hover {
+            background: white;
+            color: #1e293b;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+        }
+
+        .toc-list .section-num {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 26px;
+            height: 26px;
+            background: #334155;
+            color: white;
+            font-weight: 600;
+            font-size: 11px;
+            border-radius: 6px;
+            margin-right: 12px;
+            flex-shrink: 0;
+        }
+
+        /* Learning Objectives */
+        .objectives-box {
+            background: #f8fafc;
+            border: 2px solid #334155;
+            border-radius: 14px;
+            padding: 30px 35px;
+            margin-bottom: 40px;
+        }
+
+        .objectives-box .box-label {
+            font-weight: 600;
+            color: #1e293b;
+            margin: 0 0 18px 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .objectives-box .box-label::before {
+            content: '🎯';
+            font-size: 18px;
+        }
+
+        .objectives-box ul {
+            margin: 0;
+            padding-left: 22px;
+        }
+
+        .objectives-box li {
+            margin-bottom: 14px;
+            font-size: 16px;
+            line-height: 1.7;
+        }
+
+        /* Section Headings */
+        h2 {
+            font-size: 24px;
+            color: #1e293b;
+            margin: 50px 0 20px 0;
+            font-weight: 600;
+            position: relative;
+            padding-bottom: 12px;
+        }
+
+        h2::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 60px;
+            height: 3px;
+            background: #B8860B;
+        }
+
+        h3 {
+            font-size: 20px;
+            color: #334155;
+            margin: 35px 0 15px 0;
+            font-weight: 600;
+        }
+
+        /* Paragraphs & Lists */
+        p {
+            font-size: 17px;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        .content-list {
+            font-size: 17px;
+            margin: 20px 0;
+            padding-left: 24px;
+        }
+
+        .content-list li {
+            margin-bottom: 14px;
+            line-height: 1.7;
+        }
+
+        /* Highlights */
+        .highlight {
+            background: linear-gradient(180deg, transparent 60%, #FFF59D 60%);
+            padding: 0 4px;
+            font-weight: 500;
+        }
+
+        /* Case Study Box */
+        .case-study {
+            background: linear-gradient(135deg, #f8f9fb 0%, #f0f2f5 100%);
+            border-radius: 16px;
+            padding: 0;
+            margin: 40px 0;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+        }
+
+        .case-study-header {
+            background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
+            padding: 20px 30px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .case-study-icon {
+            width: 45px;
+            height: 45px;
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+        }
+
+        .case-study-header .box-label {
+            font-weight: 600;
+            color: #ffffff;
+            margin: 0;
+            font-size: 16px;
+        }
+
+        .case-study-content {
+            padding: 28px 30px;
+        }
+
+        .patient-profile {
+            display: flex;
+            align-items: center;
+            gap: 18px;
+            padding: 18px 22px;
+            background: white;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            border: 1px solid #e5e5e5;
+        }
+
+        /* Statistics Box */
+        .stats-box {
+            background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
+            padding: 40px;
+            border-radius: 16px;
+            margin: 35px 0;
+            color: white;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 25px;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 36px;
+            font-weight: 700;
+            margin-bottom: 8px;
+            display: block;
+        }
+
+        .stat-label {
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            opacity: 0.8;
+        }
+
+        /* Comparison Table */
+        .data-table-container {
+            overflow-x: auto;
+            margin: 35px 0;
+            border-radius: 12px;
+            border: 1px solid #e5e7eb;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 15px;
+            text-align: left;
+        }
+
+        th {
+            background: #f1f5f9;
+            padding: 15px;
+            font-weight: 600;
+            color: #1e293b;
+            border-bottom: 2px solid #e5e7eb;
+        }
+
+        td {
+            padding: 15px;
+            border-bottom: 1px solid #e5e7eb;
+            color: #4b5563;
+        }
+
+        /* Check Understanding */
+        .check-understanding {
+            background: #fdfbf7;
+            border: 2px solid #B8860B;
+            border-radius: 16px;
+            padding: 32px;
+            margin: 45px 0;
+        }
+
+        .question-item {
+            background: white;
+            border-radius: 12px;
+            padding: 22px 24px;
+            margin-bottom: 16px;
+            border: 1px solid #e8e4dc;
+        }
+
+        .reveal-btn {
+            background: #1e293b;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+
+        .answer-text {
+            display: none;
+            margin-top: 15px;
+            padding: 15px;
+            background: #f0fdf4;
+            border-radius: 8px;
+            color: #166534;
+        }
+
+        /* Takeaways & References */
+        .takeaways-box {
+            background: #f1f5f9;
+            padding: 30px;
+            border-radius: 12px;
+            margin: 40px 0;
+        }
+
+        .references-box {
+            background: #fafafa;
+            padding: 30px;
+            border-radius: 12px;
+            font-size: 14px;
+            color: #666;
+            border: 1px solid #eee;
+        }
+
+        .lesson-footer {
+            text-align: center;
+            padding-top: 40px;
+            border-top: 1px solid #eee;
+            margin-top: 40px;
+        }
+
+        .stat-highlight {
+            color: #fbbf24;
+            font-weight: bold;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="lesson-container">
+        <div class="brand-header">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="brand-logo">
+        </div>
+
+        <header class="module-header">
+            <p class="module-label">Module 21: L2: Treatment Planning</p>
+            <h1 class="lesson-title">Lesson 5: Integrating Movement & Recovery Cycles</h1>
+            <div class="lesson-meta">
+                <span class="meta-item">35 min read</span>
+                <span class="meta-item">The A.G.E.L.E.S.S. Protocol™</span>
+            </div>
+        </header>
+
+        <div class="toc-box">
+            <p class="box-label">In This Lesson</p>
+            <ul class="toc-list">
+                <li><a href="#sarcopenia"><span class="section-num">1</span>Sarcopenia Defense</a></li>
+                <li><a href="#vo2max"><span class="section-num">2</span>VO2 Max Optimization</a></li>
+                <li><a href="#recovery"><span class="section-num">3</span>The Recovery-Effort Balance</a></li>
+                <li><a href="#periodization"><span class="section-num">4</span>Longevity Periodization</a></li>
+                <li><a href="#mobility"><span class="section-num">5</span>Stability & Injury Prevention</a></li>
+                <li><a href="#integration"><span class="section-num">6</span>Clinical Application</a></li>
+            </ul>
+        </div>
+
+        <div class="objectives-box">
+            <p class="box-label">Learning Objectives</p>
+            <ul>
+                <li>Master the programming of resistance training to counter age-related <span class="highlight">dynapenia</span> and sarcopenia.</li>
+                <li>Design polarized cardiovascular protocols using Zone 2 and HIIT to maximize <span class="highlight">mitochondrial biogenesis</span>.</li>
+                <li>Analyze the relationship between training intensity and parasympathetic recovery cycles using HRV data.</li>
+                <li>Implement seasonal periodization to align movement intensity with biological stress markers.</li>
+                <li>Integrate stability and mobility frameworks to ensure long-term functional independence.</li>
+            </ul>
+        </div>
+
+        <h2 id="sarcopenia">1. Sarcopenia Defense: Programming for Muscle Longevity</h2>
+        <p>In the A.G.E.L.E.S.S. Longevity Protocol™, the "E" (Exercise) is not merely about fitness; it is about metabolic security. <span class="highlight">Sarcopenia</span>—the age-related loss of muscle mass and quality—is arguably the most significant physical threat to healthspan. Research indicates that after the age of 30, adults lose approximately <span class="stat-highlight">3% to 8%</span> of muscle mass per decade, a rate that accelerates significantly after age 60.</p>
+
+        <p>When planning a client’s resistance protocol, we must prioritize <span class="highlight">Type II (fast-twitch) muscle fibers</span>. These fibers are the first to atrophy with age and are critical for preventing falls and maintaining metabolic rate. A longevity-focused resistance plan should include:</p>
+        
+        <ul class="content-list">
+            <li><strong>Hypertrophy-Specific Loading:</strong> Utilizing loads between 60-80% of 1-Rep Max (1RM) to stimulate the <span class="highlight">mTOR pathway</span> and muscle protein synthesis.</li>
+            <li><strong>Compound Movements:</strong> Prioritizing the "Big 5" (Squat, Hinge, Push, Pull, Carry) to maximize hormonal response and functional carryover.</li>
+            <li><strong>Eccentric Control:</strong> Emphasizing the lowering phase of movements to increase mechanical tension and connective tissue resilience.</li>
+        </ul>
+
+        <div class="stats-box">
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <span class="stat-number">2.3x</span>
+                    <span class="stat-label">Higher mortality risk in low-muscle mass adults</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-number">10-15%</span>
+                    <span class="stat-label">Strength gain required to reverse 1 decade of aging</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-number">48%</span>
+                    <span class="stat-label">Reduction in fall risk with power training</span>
+                </div>
+            </div>
+        </div>
+
+        <h2 id="vo2max">2. VO2 Max Optimization: Cardiovascular Age Reversal</h2>
+        <p>If muscle is the "armor" of longevity, VO2 Max is the "engine." A 2018 meta-analysis of over 122,000 participants found that elite aerobic fitness was associated with an <span class="stat-highlight">80% reduction in mortality risk</span> compared to the lowest performers. For the longevity coach, treatment planning must balance two distinct cardiovascular zones:</p>
+
+        <h3>Zone 2 (The Metabolic Foundation)</h3>
+        <p>Zone 2 training (60-70% of Max HR) targets <span class="highlight">mitochondrial efficiency</span>. By training at a level where the body primarily utilizes fat for fuel, we improve metabolic flexibility and lower fasting insulin levels. This should comprise 80% of the cardiovascular volume.</p>
+
+        <h3>HIIT (The Peak Capacity)</h3>
+        <p>High-Intensity Interval Training (HIIT) is required to push the ceiling of VO2 Max. These sessions (90%+ Max HR) stimulate cardiac remodeling, increasing the stroke volume of the heart. For longevity, one to two "max effort" sessions per week are sufficient to maintain the cardiovascular profile of an individual 20 years younger.</p>
+
+        <div class="data-table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Metric</th>
+                        <th>Zone 2 Training</th>
+                        <th>HIIT (Zone 5)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Primary Mechanism</strong></td>
+                        <td>Mitochondrial Density/Fat Oxidation</td>
+                        <td>Stroke Volume/VO2 Max Ceiling</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Lactate Level</strong></td>
+                        <td>Below 2.0 mmol/L</td>
+                        <td>Above 8.0 mmol/L</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Longevity Impact</strong></td>
+                        <td>Metabolic Health/Insulin Sensitivity</td>
+                        <td>Cardiovascular Reserve/Mortality Risk</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Frequency</strong></td>
+                        <td>3-4 sessions (150-200 min/week)</td>
+                        <td>1-2 sessions (20-40 min/week)</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <h2 id="recovery">3. The Recovery-Effort Balance: Managing the HPA Axis</h2>
+        <p>A common mistake in longevity coaching is "over-programming" without accounting for the client’s <span class="highlight">allostatic load</span>. Exercise is a hormetic stressor; however, if the recovery cycle is insufficient, it becomes a driver of <span class="highlight">inflammaging</span>.</p>
+
+        <p>We utilize the <strong>Recovery-Effort Mapping</strong> technique. For every high-intensity training day (HIIT or heavy resistance), the plan must integrate a specific <span class="highlight">parasympathetic anchor</span>. This shifts the client from a sympathetic "fight or flight" state into the "rest and digest" state necessary for cellular repair.</p>
+
+        <ul class="content-list">
+            <li><strong>Breathwork (Box Breathing):</strong> 5-10 minutes post-workout to acutely lower cortisol.</li>
+            <li><strong>Thermal Cycling:</strong> Sauna (20 mins) followed by cold immersion (3 mins) to stimulate <span class="highlight">Heat Shock Proteins</span> and reduce systemic inflammation.</li>
+            <li><strong>Sleep Hygiene:</strong> Prioritizing the <span class="highlight">glymphatic system</span> clearance by ensuring 7-9 hours of sleep on training days.</li>
+        </ul>
+
+        <div class="case-study">
+            <div class="case-study-header">
+                <div class="case-study-icon">👤</div>
+                <div>
+                    <p class="box-label">Case Study: The Over-Trained Executive</p>
+                    <p style="color: rgba(255,255,255,0.8); margin:0; font-size:12px;">Managing Biological Stress Markers</p>
+                </div>
+            </div>
+            <div class="case-study-content">
+                <div class="patient-profile">
+                    <div>
+                        <h4 style="margin:0;">Robert, 52</h4>
+                        <p style="margin:0; font-size:13px; color:#666;">CEO, High Stress, Chronic Fatigue, HRV: 32ms</p>
+                    </div>
+                </div>
+                <p><strong>Presenting Symptoms:</strong> Robert was training 6 days a week (CrossFit) but felt "wired but tired." His bloodwork showed elevated CRP (2.4 mg/L) and low morning cortisol, indicating HPA axis dysfunction.</p>
+                <p><strong>Intervention:</strong> We restructured his plan using the A.G.E.L.E.S.S. Protocol™:
+                    <ul>
+                        <li>Reduced high-intensity days from 5 to 2.</li>
+                        <li>Added 3 days of strictly Zone 2 (Rucking/Cycling).</li>
+                        <li>Mandated 15 minutes of <span class="highlight">Yoga Nidra</span> on training days.</li>
+                    </ul>
+                </p>
+                <p><strong>Outcome:</strong> Within 12 weeks, Robert’s HRV increased from 32ms to 58ms. His CRP dropped to 0.8 mg/L, and his body fat percentage decreased by 4% despite "working out less."</p>
+            </div>
+        </div>
+
+        <h2 id="periodization">4. Periodization of Longevity: Biological Seasonal Shifting</h2>
+        <p>Unlike athletes training for a single event, the longevity client is training for the "Centenarian Decathlon." This requires <span class="highlight">periodization</span>—the systematic variation of training volume and intensity. In treatment planning, we often align these cycles with seasons or life stressors.</p>
+
+        <p><strong>The 3-Phase Longevity Cycle:</strong></p>
+        <ul class="content-list">
+            <li><strong>Phase 1: Accumulation (Spring/Summer):</strong> Focus on increasing VO2 Max and outdoor Zone 2 activity. Higher volume, moderate intensity.</li>
+            <li><strong>Phase 2: Consolidation (Autumn):</strong> Focus on maximal strength and bone mineral density. Lower volume, higher intensity resistance training.</li>
+            <li><strong>Phase 3: Restoration (Winter):</strong> Focus on mobility, gut health, and parasympathetic recovery. Maintenance-level movement with heavy emphasis on sleep and sauna.</li>
+        </ul>
+
+        <h2 id="mobility">5. Mobility and Stability: Preventing the Longevity Setback</h2>
+        <p>A single fall can end a longevity journey. A hip fracture in an individual over 65 carries a <span class="stat-highlight">20-30% mortality rate</span> within one year. Therefore, stability and mobility are non-negotiable components of the treatment plan.</p>
+        
+        <p>We distinguish between <strong>Mobility</strong> (the ability of a joint to move through a range of motion) and <strong>Stability</strong> (the ability to control that motion). Integration includes:</p>
+        <ul class="content-list">
+            <li><strong>Proprioceptive Training:</strong> Single-leg movements (Bulgarian split squats, single-leg deadlifts) to challenge the vestibular system.</li>
+            <li><strong>Dynamic Stability:</strong> Exercises like the "Farmer's Carry" to build core stiffness and grip strength (a major proxy for longevity).</li>
+            <li><strong>Controlled Articular Rotations (CARs):</strong> Daily joint maintenance to prevent "biological rust" and maintain synovial fluid health.</li>
+        </ul>
+
+        <div class="check-understanding">
+            <p class="box-label">Check Your Understanding</p>
+            <p class="box-subtitle">Test your knowledge of movement integration.</p>
+            
+            <div class="question-item">
+                <p class="question-text">1. Why is Zone 2 training prioritized over HIIT in a 80/20 ratio for longevity?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-text">Zone 2 specifically targets mitochondrial health and fat oxidation without the high systemic stress (cortisol) associated with HIIT. This builds a metabolic foundation that allows the body to handle higher intensities more effectively while minimizing the risk of overtraining and inflammation.</div>
+            </div>
+
+            <div class="question-item">
+                <p class="question-text">2. Which muscle fiber type is most susceptible to age-related loss, and how do we target them?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-text">Type II (fast-twitch) fibers. They are targeted through heavy resistance training (60-80% 1RM) and power-based movements (explosive concentric phases), which are essential for preventing falls and maintaining metabolic rate.</div>
+            </div>
+        </div>
+
+        <div class="takeaways-box">
+            <p class="box-label">Key Takeaways</p>
+            <ul>
+                <li><strong>Resistance is Essential:</strong> Target sarcopenia by prioritizing heavy compound lifts and Type II fiber recruitment 2-3 times per week.</li>
+                <li><strong>VO2 Max is the Predictor:</strong> Use a polarized approach (80% Zone 2, 20% HIIT) to maximize cardiovascular health and mitochondrial biogenesis.</li>
+                <li><strong>HRV as a Compass:</strong> Adjust training intensity based on biological stress markers and ensure every high-effort session has a recovery anchor.</li>
+                <li><strong>Stability = Safety:</strong> Integrate single-leg work and grip strength exercises to prevent the "fall-and-fracture" trajectory.</li>
+                <li><strong>Periodize for Life:</strong> Use seasonal or stress-based cycles to avoid burnout and align with the body's natural rhythms.</li>
+            </ul>
+        </div>
+
+        <div class="references-box">
+            <p class="box-label">References & Further Reading</p>
+            <ul>
+                <li>Mandsager, K., et al. (2018). "Association of Cardiorespiratory Fitness with Long-term Mortality Among Adults Undergoing Exercise Treadmill Testing." <i>JAMA Network Open</i>.</li>
+                <li>Westcott, W. L. (2012). "Resistance Training is Medicine: Effects of Strength Training on Health." <i>Current Sports Medicine Reports</i>.</li>
+                <li>San-Millán, I., & Brooks, G. A. (2019). "Assessment of Metabolic Flexibility by Means of Measuring Blood Lactate, Fat, and CHO Oxidation." <i>Sports Medicine</i>.</li>
+                <li>Harridge, S. D., & Lazarus, N. R. (2017). "Physical Activity, Aging, and Physiological Function." <i>Physiology</i>.</li>
+                <li>McLeod, J. C., et al. (2019). "Resistance Exercise Training as a Primary Countermeasure to Age-Related Chronic Disease." <i>Frontiers in Physiology</i>.</li>
+                <li>Valenzuela, T. (2012). "Efficacy of Progressive Resistance Training Interventions in Older Adults." <i>Journal of Aging and Physical Activity</i>.</li>
+            </ul>
+        </div>
+
+        <footer class="lesson-footer">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="footer-logo">
+            <p class="brand">AccrediPro Academy: Longevity Certification Program</p>
+            <p class="copyright">&copy; 2024 AccrediPro. All rights reserved. Confidential Professional Certification Material.</p>
+        </footer>
+    </div>
+</body>
+
+</html>

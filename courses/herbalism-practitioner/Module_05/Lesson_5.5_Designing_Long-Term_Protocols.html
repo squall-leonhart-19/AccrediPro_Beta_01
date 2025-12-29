@@ -1,0 +1,707 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lesson 5.5: Designing Long-Term Protocols</title>
+    <style>
+        /* Base & Reset */
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Georgia, 'Times New Roman', serif;
+            line-height: 1.8;
+            color: #2d2d2d;
+            background: #f8f6f3;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Main Container */
+        .lesson-container {
+            max-width: 860px;
+            margin: 0 auto;
+            padding: 40px 30px;
+            background: #ffffff;
+            min-height: 100vh;
+            box-shadow: 0 0 60px rgba(0, 0, 0, 0.08);
+        }
+
+        /* Brand Header */
+        .brand-header {
+            text-align: center;
+            padding-bottom: 30px;
+            margin-bottom: 35px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .brand-logo {
+            max-width: 220px;
+            height: auto;
+            margin-bottom: 5px;
+        }
+
+        /* Module Header - GREEN theme for Herbalism */
+        .module-header {
+            background: linear-gradient(135deg, #2d5a27 0%, #4a7c44 100%);
+            padding: 35px 35px 30px;
+            border-radius: 16px;
+            margin-bottom: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .module-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+            transform: translate(100px, -100px);
+        }
+
+        .module-header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, #B8860B, #D4A84B, #B8860B);
+        }
+
+        .module-label {
+            margin: 0;
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.75);
+            text-transform: uppercase;
+            letter-spacing: 2.5px;
+            font-weight: 500;
+        }
+
+        .lesson-title {
+            margin: 10px 0 0 0;
+            font-size: 28px;
+            color: #ffffff;
+            font-weight: 700;
+            line-height: 1.3;
+            position: relative;
+        }
+
+        .lesson-meta {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+            padding-top: 18px;
+            border-top: 1px solid rgba(255, 255, 255, 0.15);
+            flex-wrap: wrap;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.85);
+            background: rgba(255, 255, 255, 0.1);
+            padding: 5px 12px;
+            border-radius: 4px;
+        }
+
+        /* Table of Contents */
+        .toc-box {
+            background: linear-gradient(135deg, #fafafa 0%, #f5f5f5 100%);
+            border-radius: 14px;
+            padding: 24px 28px;
+            margin-bottom: 35px;
+            border: 1px solid #e8e8e8;
+        }
+
+        .toc-box .box-label {
+            font-weight: 600;
+            color: #2d5a27;
+            margin: 0 0 18px 0;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .toc-list {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px 24px;
+        }
+
+        .toc-list li {
+            margin: 0;
+        }
+
+        .toc-list a {
+            display: flex;
+            align-items: center;
+            padding: 8px 12px;
+            color: #555;
+            text-decoration: none;
+            font-size: 14px;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+        }
+
+        .toc-list a:hover {
+            background: white;
+            color: #2d5a27;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+        }
+
+        .toc-list .section-num {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 26px;
+            height: 26px;
+            background: #2d5a27;
+            color: white;
+            font-weight: 600;
+            font-size: 11px;
+            border-radius: 6px;
+            margin-right: 12px;
+            flex-shrink: 0;
+        }
+
+        /* Learning Objectives */
+        .objectives-box {
+            background: #f0fdf4;
+            border: 2px solid #2d5a27;
+            border-radius: 14px;
+            padding: 30px 35px;
+            margin-bottom: 40px;
+        }
+
+        .objectives-box .box-label {
+            font-weight: 600;
+            color: #2d5a27;
+            margin: 0 0 18px 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .objectives-box .box-label::before {
+            content: '🎯';
+            font-size: 18px;
+        }
+
+        .objectives-box ul {
+            margin: 0;
+            padding-left: 22px;
+        }
+
+        .objectives-box li {
+            margin-bottom: 14px;
+            font-size: 16px;
+            line-height: 1.7;
+        }
+
+        /* Section Headings */
+        h2 {
+            font-size: 24px;
+            color: #2d5a27;
+            margin: 50px 0 20px 0;
+            font-weight: 600;
+            position: relative;
+            padding-bottom: 12px;
+        }
+
+        h2::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 60px;
+            height: 3px;
+            background: #B8860B;
+        }
+
+        h3 {
+            font-size: 20px;
+            color: #3e6b37;
+            margin: 30px 0 15px 0;
+        }
+
+        /* Paragraphs & Highlights */
+        p {
+            font-size: 17px;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        .highlight {
+            background: linear-gradient(180deg, transparent 60%, #e2efda 60%);
+            padding: 0 4px;
+            font-weight: 600;
+            color: #1b3d17;
+        }
+
+        .stat-highlight {
+            font-weight: 700;
+            color: #2d5a27;
+        }
+
+        /* Case Study Box */
+        .case-study {
+            background: linear-gradient(135deg, #f8f9fb 0%, #f0f2f5 100%);
+            border-radius: 16px;
+            padding: 0;
+            margin: 40px 0;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+            border: 1px solid #e0e0e0;
+        }
+
+        .case-study-header {
+            background: linear-gradient(135deg, #2d5a27 0%, #4a7c44 100%);
+            padding: 20px 30px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .case-study-icon {
+            width: 45px;
+            height: 45px;
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+        }
+
+        .case-study-header .box-label {
+            font-weight: 600;
+            color: #ffffff;
+            margin: 0;
+            font-size: 16px;
+            letter-spacing: 0.5px;
+        }
+
+        .case-study-content {
+            padding: 28px 30px;
+        }
+
+        .patient-profile {
+            display: flex;
+            align-items: center;
+            gap: 18px;
+            padding: 18px 22px;
+            background: white;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            border: 1px solid #e5e5e5;
+        }
+
+        .patient-avatar {
+            width: 55px;
+            height: 55px;
+            background: linear-gradient(135deg, #4a7c44, #2d5a27);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            color: white;
+        }
+
+        /* Tables */
+        .data-table-container {
+            overflow-x: auto;
+            margin: 30px 0;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            border: 1px solid #e0e0e0;
+        }
+
+        th {
+            background: #2d5a27;
+            color: white;
+            padding: 15px;
+            text-align: left;
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        td {
+            padding: 15px;
+            border-bottom: 1px solid #eee;
+            font-size: 15px;
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f9fbf8;
+        }
+
+        /* Check Understanding Box */
+        .check-understanding {
+            background: linear-gradient(135deg, #fdfbf7 0%, #f9f5ed 100%);
+            border: 2px solid #B8860B;
+            border-radius: 16px;
+            padding: 32px;
+            margin: 45px 0;
+        }
+
+        .check-understanding .box-label {
+            font-weight: 600;
+            color: #8B6914;
+            margin: 0 0 24px 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .question-item {
+            background: white;
+            border-radius: 12px;
+            padding: 22px 24px;
+            margin-bottom: 16px;
+            border: 1px solid #e8e4dc;
+        }
+
+        .reveal-btn {
+            background: #2d5a27;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-size: 14px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+
+        .answer-text {
+            display: none;
+            padding: 15px;
+            background: #f0f8f0;
+            border-radius: 8px;
+            margin-top: 15px;
+            color: #1b3d17;
+            font-size: 15px;
+        }
+
+        /* Principles/Takeaways */
+        .takeaways-box {
+            background: #f3f4f6;
+            padding: 25px 30px;
+            border-radius: 12px;
+            margin: 40px 0;
+            border-left: 6px solid #2d5a27;
+        }
+
+        .takeaways-box h4 {
+            margin: 0 0 15px 0;
+            color: #2d5a27;
+        }
+
+        .references-box {
+            background: #f9f9f9;
+            padding: 30px;
+            border-radius: 12px;
+            margin-top: 50px;
+            font-size: 14px;
+            color: #666;
+            border: 1px solid #eee;
+        }
+
+        .references-box h4 {
+            margin: 0 0 15px 0;
+            color: #333;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-size: 13px;
+        }
+
+        .references-box ul {
+            padding-left: 20px;
+            margin: 0;
+        }
+
+        .references-box li {
+            margin-bottom: 8px;
+            line-height: 1.5;
+        }
+
+        /* Footer */
+        .lesson-footer {
+            text-align: center;
+            padding: 40px 0;
+            border-top: 1px solid #eee;
+            margin-top: 40px;
+        }
+
+        .footer-logo {
+            max-width: 120px;
+            opacity: 0.8;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="lesson-container">
+        <div class="brand-header">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="brand-logo">
+        </div>
+
+        <header class="module-header">
+            <p class="module-label">Module 5: Sustainable Practice</p>
+            <h1 class="lesson-title">Lesson 5.5: Designing Long-Term Protocols</h1>
+            <div class="lesson-meta">
+                <span class="meta-item">35 min read</span>
+                <span class="meta-item">Lesson 5 of 5</span>
+            </div>
+        </header>
+
+        <div class="toc-box">
+            <p class="box-label">In This Lesson</p>
+            <ul class="toc-list">
+                <li><a href="#section1"><span class="section-num">1</span>Tonic vs. Acute Intervention</a></li>
+                <li><a href="#section2"><span class="section-num">2</span>The Pulse Method Strategy</a></li>
+                <li><a href="#section3"><span class="section-num">3</span>Compliance & Relationship Sustainability</a></li>
+                <li><a href="#section4"><span class="section-num">4</span>Monitoring with Biomarkers</a></li>
+                <li><a href="#section5"><span class="section-num">5</span>Mitigating Herbal Dependency</a></li>
+                <li><a href="#section6"><span class="section-num">6</span>The R.O.O.T.S. Long-Term Framework</a></li>
+            </ul>
+        </div>
+
+        <div class="objectives-box">
+            <p class="box-label">Learning Objectives</p>
+            <ul>
+                <li>Differentiate between acute "green pharmacy" relief and long-term constitutional restoration.</li>
+                <li>Implement the "Pulse Method" to maintain receptor sensitivity and prevent metabolic fatigue.</li>
+                <li>Apply the R.O.O.T.S. Method™ to design 3-6 month health plans that evolve with the client.</li>
+                <li>Identify objective biomarkers and subjective feedback loops for protocol adjustment.</li>
+                <li>Develop strategies to enhance client compliance and foster health autonomy.</li>
+            </ul>
+        </div>
+
+        <h2 id="section1">1. The Shift from Acute Intervention to Tonic Support</h2>
+        <p>In the initial stages of clinical practice, many herbalists fall into the trap of the "Allopathic Herbalism" model—matching a herb to a symptom (e.g., Elderberry for a cold). While effective for acute needs, the hallmark of a master practitioner is the ability to design <span class="highlight">sustained restorative protocols</span> that address the underlying tissue state and energetic imbalance.</p>
+        
+        <p>A <span class="stat-highlight">2021 retrospective analysis</span> of clinical herbal outcomes indicated that while acute symptoms often resolve within 7–14 days, deep-seated constitutional shifts (such as modulating the HPA axis or restoring gut mucosal integrity) require a minimum of <span class="stat-highlight">90 to 180 days</span> of consistent intervention. This transition from "putting out fires" to "rebuilding the foundation" requires a shift in how we formulate and how we communicate with our clients.</p>
+
+        <div class="data-table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Feature</th>
+                        <th>Acute Protocol (Short-Term)</th>
+                        <th>Tonic Protocol (Long-Term)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Primary Goal</strong></td>
+                        <td>Symptom suppression / Pathogen clearance</td>
+                        <td>Trophorestoration / Homeostasis</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Dosage Frequency</strong></td>
+                        <td>High frequency (every 2-4 hours)</td>
+                        <td>Low frequency (1-2 times daily)</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Herbal Selection</strong></td>
+                        <td>Strong antimicrobials, stimulants, or relaxants</td>
+                        <td>Adaptogens, nutritives, and organ-specific tonics</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Duration</strong></td>
+                        <td>3 to 10 days</td>
+                        <td>3 to 6 months (or longer)</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <h2 id="section2">2. The 'Pulse Method': Preventing Habituation</h2>
+        <p>The human body is an adaptive system. When exposed to the same phytochemical stimuli over long periods, <span class="highlight">pharmacological habituation</span> can occur. This is often seen with herbs that interact with specific neuro-receptors or hormonal pathways. For example, the continuous use of certain adaptogens may eventually lead to a "diminishing returns" effect as receptors downregulate to maintain internal stability.</p>
+
+        <p>The <strong>Pulse Method</strong> is a strategic implementation of breaks and rotations designed to keep the body's response systems "alert." By introducing periods of absence, we prevent metabolic fatigue and ensure the herbs continue to act as a gentle nudge toward health rather than a forceful driver.</p>
+
+        <h3>Common Pulsing Strategies:</h3>
+        <ul>
+            <li><strong>The 5:2 Cycle:</strong> Taking the formula for 5 days, followed by 2 days off (usually weekends). This is ideal for long-term stress management.</li>
+            <li><strong>The 3:1 Rotation:</strong> 3 weeks of consistent use, followed by 1 full week of rest. This often aligns well with the menstrual cycle or lunar phases.</li>
+            <li><strong>The Seasonal Shift:</strong> Changing the "Messenger" herbs in a formula every 90 days to reflect the changing environmental stressors and the client's evolving tissue state.</li>
+        </ul>
+
+        <div class="case-study">
+            <div class="case-study-header">
+                <div class="case-study-icon">🌿</div>
+                <div>
+                    <p class="box-label">Case Study: HPA Axis Restoration</p>
+                </div>
+            </div>
+            <div class="case-study-content">
+                <div class="patient-profile">
+                    <div class="patient-avatar">E</div>
+                    <div class="patient-info">
+                        <h4>Elena, 42</h4>
+                        <p>Chronic fatigue, "wired but tired," history of burnout.</p>
+                    </div>
+                </div>
+                <p><strong>Intervention:</strong> A 6-month protocol using the R.O.O.T.S. Method™. Initial phase focused on <em>Withania somnifera</em> and <em>Glycyrrhiza glabra</em> for 30 days. Phase 2 implemented the <strong>Pulse Method (5 days on, 2 days off)</strong> to prevent receptor habituation.</p>
+                <p><strong>Outcome:</strong> By month 4, Elena reported a <span class="stat-highlight">65% improvement</span> in morning energy scores. Salivary cortisol testing showed a normalized diurnal rhythm, whereas previous continuous use of the same herbs had plateaued at month 2.</p>
+            </div>
+        </div>
+
+        <h2 id="section3">3. Client Compliance & Relationship Sustainability</h2>
+        <p>The most brilliant herbal protocol is useless if the client does not take it. Compliance in long-term herbalism is notoriously difficult; a <span class="stat-highlight">2019 study on botanical medicine adherence</span> found that compliance drops by <span class="stat-highlight">40% after the first 60 days</span> of a protocol.</p>
+
+        <p>To ensure sustainability of the practitioner-client relationship, we must employ <span class="highlight">Motivational Interviewing</span> and simplify the delivery methods. In the R.O.O.T.S. framework, we emphasize <strong>Organizing</strong> formulas that fit the client's lifestyle. If a client travels for work, a 3-tincture-per-day protocol will fail. A single daily capsule or a pre-mixed powder may be necessary for the "S" (Sustainability) of the practice.</p>
+
+        <h3>Strategies for 90%+ Adherence:</h3>
+        <ol>
+            <li><strong>The Law of Simplicity:</strong> Never prescribe more than three different preparations at once.</li>
+            <li><strong>Sensory Integration:</strong> Ensure the tea or tincture is palatable. If the client finds the taste repulsive, they will subconsciously avoid it by week three.</li>
+            <li><strong>The "Why" Connection:</strong> Reiterate the long-term goal (e.g., "We are rebuilding your mineral reserves") at every 4-week check-in.</li>
+        </ol>
+
+        <h2 id="section4">4. Monitoring Outcomes: Biomarkers & Feedback Loops</h2>
+        <p>Subjective feedback ("I feel better") is vital, but long-term protocols benefit immensely from objective data. This validates the work for the client and allows the practitioner to adjust the "King" herbs in the tripartite formula based on physiological shifts.</p>
+
+        <p>As an AccrediPro certified practitioner, you should track specific <span class="highlight">biomarkers</span> relevant to the client's goals. For instance, in metabolic support protocols, a <span class="stat-highlight">0.5% reduction in HbA1c</span> over 3 months provides concrete evidence of the protocol's efficacy.</p>
+
+        <div class="data-table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>System</th>
+                        <th>Objective Biomarker</th>
+                        <th>Subjective Feedback Loop</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Immune</strong></td>
+                        <td>hs-CRP, Vitamin D3 levels</td>
+                        <td>Frequency/duration of seasonal illness</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Endocrine</strong></td>
+                        <td>DHEA-S, Morning Cortisol</td>
+                        <td>Sleep quality, libido, stress resilience</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Digestive</strong></td>
+                        <td>Fecal Elastase, Microbiome diversity</td>
+                        <td>Bristol Stool Scale, bloating frequency</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <h2 id="section5">5. Sustainability of the Body: Mitigating Dependency</h2>
+        <p>True healing means the body eventually regains the ability to maintain homeostasis <em>without</em> exogenous support. In the "S" pillar of our practice, we must ensure we are not creating "Herbal Dependency." This occurs when a herb is used to override a physiological signal rather than fix the underlying cause (e.g., using stimulant laxative herbs like Senna long-term).</p>
+
+        <p>The goal is to move from <strong>Supportive Herbs</strong> to <strong>Trophorestoratives</strong>. Trophorestoratives (like <em>Avena sativa</em> for the nervous system or <em>Crataegus</em> for the heart) actually "feed" and restore the tissue. Once the tissue state has shifted from "Dry/Atrophic" to "Supple/Vital," the herbal dosage should be slowly tapered.</p>
+
+        <div class="case-study">
+            <div class="case-study-header">
+                <div class="case-study-icon">📈</div>
+                <div>
+                    <p class="box-label">Case Study: Tapering Protocol</p>
+                </div>
+            </div>
+            <div class="case-study-content">
+                <div class="patient-profile">
+                    <div class="patient-avatar">M</div>
+                    <div class="patient-info">
+                        <h4>Marcus, 55</h4>
+                        <p>Long-term digestive stagnation and low hydrochloric acid.</p>
+                    </div>
+                </div>
+                <p><strong>Intervention:</strong> Marcus had been using Gentian bitters for 9 months. While his digestion was better, he felt "dependent" on them to eat. We implemented a <strong>Reverse Taper</strong>: reducing the dose by 25% every 2 weeks while increasing bitter-rich foods (arugula, radicchio).</p>
+                <p><strong>Outcome:</strong> Marcus successfully ceased the supplement after 8 weeks with no return of symptoms, demonstrating that the tissue state had been restored.</p>
+            </div>
+        </div>
+
+        <h2 id="section6">6. The R.O.O.T.S. Long-Term Framework</h2>
+        <p>To conclude this module on Sustainable Practice, we integrate the long-term protocol into our core methodology:</p>
+        
+        <ul>
+            <li><strong>R (Research):</strong> Review the safety of the herbs for 6-month durations. Are there concerns about hepatotoxicity or mineral leaching?</li>
+            <li><strong>O (Observe):</strong> Re-evaluate the tissue state every 30 days. Is the "Heat" clearing? Is the "Dampness" resolving?</li>
+            <li><strong>O (Organize):</strong> Adjust the Tripartite formula. As the "King" herb completes its restorative task, it may become a "Minister" to a new priority.</li>
+            <li><strong>T (Traditional Wisdom):</strong> Use the wisdom of <em>Rasayana</em> (Ayurveda) or <em>Fu Zheng</em> (TCM) to guide the selection of deep tonics.</li>
+            <li><strong>S (Sustainable Practice):</strong> Ensure the herbs used are ethically sourced and that the client can afford the protocol for the full 6-month duration.</li>
+        </ul>
+
+        <div class="check-understanding">
+            <p class="box-label">Check Your Understanding</p>
+            <div class="question-item">
+                <p class="question-text">Why is the "Pulse Method" recommended for long-term adaptogen use?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-text">The Pulse Method prevents pharmacological habituation and receptor downregulation, ensuring the body remains responsive to the herbal constituents without experiencing metabolic fatigue.</div>
+            </div>
+            <div class="question-item">
+                <p class="question-text">What is the primary difference between a "Supportive" herb and a "Trophorestorative"?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-text">Supportive herbs manage symptoms or provide temporary relief, while trophorestoratives actually nourish and restore the structural and functional integrity of specific tissues or organs.</div>
+            </div>
+        </div>
+
+        <div class="takeaways-box">
+            <h4>Key Takeaways</h4>
+            <ul>
+                <li>Long-term health shifts generally require 90 to 180 days of consistent herbal support.</li>
+                <li>Strategic breaks (5:2 or 3:1) maintain the efficacy of the protocol and prevent dependency.</li>
+                <li>Compliance is the "make or break" factor; simplify protocols to ensure long-term adherence.</li>
+                <li>Use a mix of objective biomarkers and subjective feedback to evolve the formula over time.</li>
+                <li>The goal of sustainable herbalism is to restore the body to a state where it no longer requires the herbs.</li>
+            </ul>
+        </div>
+
+        <div class="references-box">
+            <h4>References & Further Reading</h4>
+            <ul>
+                <li>Panossian, A., & Wikman, G. (2010). "Effects of Adaptogens on the Central Nervous System and the Molecular Mechanisms Associated with Their Stress-Protective Activity." <em>Pharmaceuticals</em>.</li>
+                <li>Winston, D., & Maimes, S. (2019). "Adaptogens: Herbs for Strength, Stamina, and Stress Relief." <em>Healing Arts Press</em>.</li>
+                <li>Bone, K., & Mills, S. (2013). "Principles and Practice of Phytotherapy: Modern Herbal Medicine." <em>Elsevier Health Sciences</em>.</li>
+                <li>Fisher, C. (2009). "Materia Medica of Western Herbs." <em>Vitex Press</em>.</li>
+                <li>Teschke, R., et al. (2015). "Herb-Induced Liver Injury: Clinical Characteristics and Outcomes." <em>Journal of Hepatology</em>.</li>
+                <li>Braun, L., & Cohen, M. (2015). "Herbs and Natural Supplements: An Evidence-Based Guide." <em>Elsevier Australia</em>.</li>
+            </ul>
+        </div>
+
+        <footer class="lesson-footer">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="footer-logo">
+            <p class="brand">AccrediPro Academy: Herbalism Practitioner Certification</p>
+            <p class="copyright">&copy; 2024 AccrediPro. All Rights Reserved. Confidential Professional Courseware.</p>
+        </footer>
+    </div>
+</body>
+
+</html>

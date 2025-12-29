@@ -1,0 +1,666 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lesson 26.5: Nutritional Programming: mTOR vs. AMPK Cycling Strategies</title>
+    <style>
+        /* Base & Reset */
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Georgia, 'Times New Roman', serif;
+            line-height: 1.8;
+            color: #2d2d2d;
+            background: #f8f6f3;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Main Container */
+        .lesson-container {
+            max-width: 860px;
+            margin: 0 auto;
+            padding: 40px 30px;
+            background: #ffffff;
+            min-height: 100vh;
+            box-shadow: 0 0 60px rgba(0, 0, 0, 0.08);
+        }
+
+        /* Brand Header */
+        .brand-header {
+            text-align: center;
+            padding-bottom: 30px;
+            margin-bottom: 35px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .brand-logo {
+            max-width: 220px;
+            height: auto;
+            margin-bottom: 5px;
+        }
+
+        /* Module Header - DEEP BLUE/GOLD theme for Program Development */
+        .module-header {
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+            padding: 35px 35px 30px;
+            border-radius: 16px;
+            margin-bottom: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .module-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+            transform: translate(100px, -100px);
+        }
+
+        .module-header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, #B8860B, #D4A84B, #B8860B);
+        }
+
+        .module-label {
+            margin: 0;
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.75);
+            text-transform: uppercase;
+            letter-spacing: 2.5px;
+            font-weight: 500;
+        }
+
+        .lesson-title {
+            margin: 10px 0 0 0;
+            font-size: 28px;
+            color: #ffffff;
+            font-weight: 700;
+            line-height: 1.3;
+            position: relative;
+        }
+
+        .lesson-meta {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+            padding-top: 18px;
+            border-top: 1px solid rgba(255, 255, 255, 0.15);
+            flex-wrap: wrap;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.85);
+            background: rgba(255, 255, 255, 0.1);
+            padding: 5px 12px;
+            border-radius: 4px;
+        }
+
+        /* Table of Contents */
+        .toc-box {
+            background: linear-gradient(135deg, #fafafa 0%, #f5f5f5 100%);
+            border-radius: 14px;
+            padding: 24px 28px;
+            margin-bottom: 35px;
+            border: 1px solid #e8e8e8;
+        }
+
+        .toc-box .box-label {
+            font-weight: 600;
+            color: #1e3a8a;
+            margin: 0 0 18px 0;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .toc-list {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px 24px;
+        }
+
+        .toc-list li {
+            margin: 0;
+        }
+
+        .toc-list a {
+            display: flex;
+            align-items: center;
+            padding: 8px 12px;
+            color: #555;
+            text-decoration: none;
+            font-size: 14px;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+        }
+
+        .toc-list a:hover {
+            background: white;
+            color: #1e3a8a;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+        }
+
+        .toc-list .section-num {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 26px;
+            height: 26px;
+            background: #1e3a8a;
+            color: white;
+            font-weight: 600;
+            font-size: 11px;
+            border-radius: 6px;
+            margin-right: 12px;
+            flex-shrink: 0;
+        }
+
+        /* Learning Objectives */
+        .objectives-box {
+            background: #f0f7ff;
+            border: 2px solid #3b82f6;
+            border-radius: 14px;
+            padding: 30px 35px;
+            margin-bottom: 40px;
+        }
+
+        .objectives-box .box-label {
+            font-weight: 600;
+            color: #1e3a8a;
+            margin: 0 0 18px 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .objectives-box .box-label::before {
+            content: '🎯';
+            font-size: 18px;
+        }
+
+        .objectives-box ul {
+            margin: 0;
+            padding-left: 22px;
+        }
+
+        .objectives-box li {
+            margin-bottom: 14px;
+            font-size: 16px;
+            line-height: 1.7;
+        }
+
+        /* Section Headings */
+        h2 {
+            font-size: 24px;
+            color: #1e3a8a;
+            margin: 50px 0 20px 0;
+            font-weight: 600;
+            position: relative;
+            padding-bottom: 12px;
+        }
+
+        h2::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 60px;
+            height: 3px;
+            background: #B8860B;
+        }
+
+        h3 {
+            font-size: 20px;
+            color: #3b82f6;
+            margin: 35px 0 15px 0;
+            font-weight: 600;
+        }
+
+        /* Paragraphs & Text */
+        p {
+            font-size: 17px;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        .highlight {
+            background: linear-gradient(180deg, transparent 60%, #FFF59D 60%);
+            padding: 0 4px;
+            font-weight: 500;
+        }
+
+        .stat-highlight {
+            color: #1e3a8a;
+            font-weight: 700;
+        }
+
+        /* Comparison Table */
+        .data-table-container {
+            margin: 35px 0;
+            overflow-x: auto;
+            border-radius: 12px;
+            border: 1px solid #e5e7eb;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 15px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #1e3a8a;
+            color: white;
+            padding: 15px;
+            font-weight: 600;
+            text-transform: uppercase;
+            font-size: 12px;
+            letter-spacing: 1px;
+        }
+
+        td {
+            padding: 15px;
+            border-bottom: 1px solid #e5e7eb;
+            background-color: white;
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        tr:nth-child(even) td {
+            background-color: #f9fafb;
+        }
+
+        /* Case Study Box */
+        .case-study {
+            background: linear-gradient(135deg, #f8f9fb 0%, #f0f2f5 100%);
+            border-radius: 16px;
+            padding: 0;
+            margin: 40px 0;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+            border: 1px solid #e5e7eb;
+        }
+
+        .case-study-header {
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+            padding: 20px 30px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .case-study-icon {
+            width: 45px;
+            height: 45px;
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+        }
+
+        .case-study-header .box-label {
+            font-weight: 600;
+            color: #ffffff;
+            margin: 0;
+            font-size: 16px;
+        }
+
+        .case-study-content {
+            padding: 28px 30px;
+        }
+
+        /* Check Understanding */
+        .check-understanding {
+            background: #fdfbf7;
+            border: 2px solid #B8860B;
+            border-radius: 16px;
+            padding: 32px;
+            margin: 45px 0;
+        }
+
+        .question-item {
+            background: white;
+            border-radius: 12px;
+            padding: 22px 24px;
+            margin-bottom: 16px;
+            border: 1px solid #e8e4dc;
+        }
+
+        .reveal-btn {
+            background: #1e3a8a;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-family: inherit;
+        }
+
+        .answer-text {
+            display: none;
+            margin-top: 15px;
+            padding: 15px;
+            background: #f0f7ff;
+            border-radius: 8px;
+            color: #1e3a8a;
+            font-size: 15px;
+        }
+
+        /* Takeaways Box */
+        .takeaways-box {
+            background: #1e3a8a;
+            color: white;
+            padding: 30px 35px;
+            border-radius: 14px;
+            margin: 40px 0;
+        }
+
+        .takeaways-box .box-label {
+            font-weight: 600;
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 20px;
+            display: block;
+            color: #D4A84B;
+        }
+
+        .takeaways-box ul {
+            margin: 0;
+            padding-left: 20px;
+        }
+
+        .takeaways-box li {
+            margin-bottom: 12px;
+            opacity: 0.95;
+        }
+
+        /* References Box */
+        .references-box {
+            background: #f9fafb;
+            padding: 30px;
+            border-radius: 12px;
+            margin-top: 50px;
+            border: 1px solid #eee;
+        }
+
+        .references-box h4 {
+            margin: 0 0 15px 0;
+            font-size: 14px;
+            color: #666;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .references-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            font-size: 13px;
+            color: #777;
+            line-height: 1.6;
+        }
+
+        .references-list li {
+            margin-bottom: 10px;
+        }
+
+        /* Footer */
+        .lesson-footer {
+            text-align: center;
+            padding-top: 40px;
+            margin-top: 60px;
+            border-top: 1px solid #eee;
+        }
+
+        .footer-logo {
+            max-width: 140px;
+            opacity: 0.8;
+            margin-bottom: 10px;
+        }
+
+        /* Utility */
+        .alert-box {
+            padding: 20px 25px;
+            border-radius: 12px;
+            margin: 30px 0;
+            border-left: 5px solid;
+        }
+
+        .alert-box.info {
+            background: #eff6ff;
+            border-left-color: #3b82f6;
+            color: #1e40af;
+        }
+
+        @media (max-width: 768px) {
+            .toc-list { grid-template-columns: 1fr; }
+            .lesson-container { padding: 20px 15px; }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="lesson-container">
+        <div class="brand-header">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="brand-logo">
+        </div>
+
+        <header class="module-header">
+            <p class="module-label">Module 26: L3: Program Development</p>
+            <h1 class="lesson-title">Nutritional Programming: mTOR vs. AMPK Cycling Strategies</h1>
+            <div class="lesson-meta">
+                <span class="meta-item">⏱️ 35 min read</span>
+                <span class="meta-item">📚 Lesson 5 of 8</span>
+                <span class="meta-item">🏆 Advanced Certification</span>
+            </div>
+        </header>
+
+        <div class="toc-box">
+            <p class="box-label">In This Lesson</p>
+            <ul class="toc-list">
+                <li><a href="#seesaw"><span class="section-num">1</span>The Metabolic Seesaw</a></li>
+                <li><a href="#protein"><span class="section-num">2</span>The Protein Leverage Hypothesis</a></li>
+                <li><a href="#fasting"><span class="section-num">3</span>FMD & TRF Programming</a></li>
+                <li><a href="#genomics"><span class="section-num">4</span>Nutrigenomic Integration</a></li>
+                <li><a href="#auditing"><span class="section-num">5</span>Advanced Micronutrient Auditing</a></li>
+                <li><a href="#application"><span class="section-num">6</span>Clinical Application</a></li>
+            </ul>
+        </div>
+
+        <div class="objectives-box">
+            <p class="box-label">Learning Objectives</p>
+            <ul>
+                <li>Master the art of periodizing <span class="highlight">mTOR activation</span> and <span class="highlight">AMPK signaling</span> to optimize healthspan.</li>
+                <li>Calculate specific leucine thresholds to overcome age-related anabolic resistance.</li>
+                <li>Design a 12-week nutritional roadmap integrating Fasting Mimicking Diets (FMD).</li>
+                <li>Apply genetic variations (APOE, MTHFR) to personalize macronutrient ratios.</li>
+                <li>Utilize Organic Acid Testing (OAT) to identify cellular nutrient deficiencies.</li>
+            </ul>
+        </div>
+
+        <h2 id="seesaw">1. Designing the 'Metabolic Seesaw'</h2>
+        <p>In the quest for longevity, the most common mistake practitioners make is choosing a side: chronic fasting (AMPK dominance) or chronic growth (mTOR dominance). As an expert longevity coach, you must view these not as enemies, but as a <span class="highlight">Metabolic Seesaw</span>.</p>
+
+        <p>The <strong>mTOR (mammalian Target of Rapamycin)</strong> pathway is the body’s primary anabolic sensor. It drives muscle protein synthesis, cell growth, and tissue repair. However, chronic mTOR activation is a hallmark of aging, contributing to cellular senescence and oncogenesis. Conversely, <strong>AMPK (AMP-activated protein kinase)</strong> is the "fuel gauge" that activates during energy scarcity, triggering autophagy (cellular cleanup) and mitochondrial biogenesis.</p>
+
+        <div class="alert-box info">
+            <strong>The Longevity Paradox:</strong> We need mTOR to prevent sarcopenia (muscle loss), but we need AMPK to prevent "inflammaging" and protein aggregation. The solution is <strong>periodization</strong>.
+        </div>
+
+        <div class="data-table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Pathway</th>
+                        <th>Primary Stimulus</th>
+                        <th>Longevity Benefit</th>
+                        <th>Aging Risk (if chronic)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>mTOR</strong></td>
+                        <td>Leucine, Insulin, Resistance Training</td>
+                        <td>Muscle mass, bone density, tissue repair</td>
+                        <td>Senescence, cancer risk, insulin resistance</td>
+                    </tr>
+                    <tr>
+                        <td><strong>AMPK</strong></td>
+                        <td>Fasting, Exercise, Caloric Restriction</td>
+                        <td>Autophagy, DNA repair, fat oxidation</td>
+                        <td>Muscle wasting, frailty, hormonal downregulation</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <h2 id="protein">2. The Protein Leverage Hypothesis & Leucine Thresholds</h2>
+        <p>As clients age beyond 50, they encounter <span class="highlight">anabolic resistance</span>—a phenomenon where the muscle becomes less sensitive to protein intake. Research indicates that the "Protein Leverage Hypothesis" applies specifically here: the body will continue to signal hunger until a specific protein/amino acid threshold is met.</p>
+
+        <p>A 2022 study published in <em>Nutrients</em> demonstrated that older adults require a higher concentration of the amino acid <span class="highlight">Leucine</span> to "flip the switch" on mTOR. While a 25-year-old may trigger muscle protein synthesis (MPS) with 1.5g of leucine, a 65-year-old often requires <strong>2.8g to 4.0g per meal</strong>.</p>
+
+        <div class="principle-card" style="border-left-color: #D4A84B;">
+            <div class="principle-title">The "Leucine Trigger" Calculation</div>
+            <div class="principle-text">
+                To maximize MPS in clients over 50, program meals containing:
+                <ul>
+                    <li><strong>Total Protein:</strong> 0.4g - 0.5g per kg of body weight per meal.</li>
+                    <li><strong>Leucine Content:</strong> Minimum 3g per bolus.</li>
+                    <li><strong>Frequency:</strong> 3-4 high-protein "pulses" daily rather than "grazing" small amounts.</li>
+                </ul>
+            </div>
+        </div>
+
+        <h2 id="fasting">3. Implementing FMD and TRF in a 12-Week Program</h2>
+        <p>Strategic nutritional programming requires moving beyond "dieting" to "metabolic switching." Within the A.G.E.L.E.S.S. Longevity Protocol™, we utilize two primary tools: Time-Restricted Feeding (TRF) and the Fasting Mimicking Diet (FMD).</p>
+
+        <h3>The 12-Week Macrocycle Architecture</h3>
+        <p>A standard longevity roadmap should follow a 3-month cycle to allow for epigenetic and metabolic adaptations:</p>
+        
+        <ul>
+            <li><strong>Weeks 1-4 (Metabolic Priming):</strong> 12:12 feeding window. Focus on nutrient density and glycemic control (HbA1c reduction).</li>
+            <li><strong>Weeks 5-8 (Autophagy Induction):</strong> Transition to 16:8 TRF. Insert one 5-day <span class="highlight">Fasting Mimicking Diet (FMD)</span> in Week 6. FMD involves reducing calories to ~40% of maintenance (high fat, low protein) to trigger stem cell regeneration without the stress of water-only fasting.</li>
+            <li><strong>Weeks 9-12 (Anabolic Rebound):</strong> Increase protein to 1.8g/kg. Focus on heavy resistance training to utilize the "growth surge" following the FMD.</li>
+        </ul>
+
+        <div class="case-study">
+            <div class="case-study-header">
+                <div class="case-study-icon">👤</div>
+                <div>
+                    <p class="box-label">Case Study: The Sarcopenic Executive</p>
+                    <p class="subtitle">Applying the mTOR/AMPK Seesaw</p>
+                </div>
+            </div>
+            <div class="case-study-content">
+                <p><strong>Client:</strong> Robert, 62. High stress, 22% Body Fat, low muscle mass (Skeletal Muscle Index in the 25th percentile).</p>
+                <p><strong>Intervention:</strong> Robert was previously "intermittent fasting" daily (18:6) but eating low protein. We reversed this. We moved him to 14:10 window (more time for protein boluses) and programmed 40g of whey/collagen protein with 5g added leucine post-workout.</p>
+                <p><strong>Outcome:</strong> In 12 weeks, Robert gained 3.4 lbs of lean mass while losing 5 lbs of visceral fat. His IGF-1 levels (a marker of growth hormone/mTOR activity) moved from a "frailty risk" low to an "optimal" mid-range.</p>
+            </div>
+        </div>
+
+        <h2 id="genomics">4. Nutrigenomic Integration: APOE, MTHFR, and FTO</h2>
+        <p>Generic longevity advice (like "eat more olive oil" or "go keto") can be dangerous without genetic context. As an L3 coach, you must integrate <span class="highlight">Nutrigenomics</span> into your programming.</p>
+
+        <h3>APOE4: The "Fat-Sensitive" Genotype</h3>
+        <p>Approximately 25% of the population carries at least one <strong>APOE4</strong> allele, which significantly increases Alzheimer's risk. For these clients, chronic high-saturated fat (Keto) can cause a spike in LDL-P and neuroinflammation. Programming for APOE4 requires a "Mediterranean-Keto" approach: high monounsaturated fats (avocado, olive oil) but low saturated fats (butter, coconut oil).</p>
+
+        <h3>MTHFR: The Methylation Master Switch</h3>
+        <p>Clients with <strong>MTHFR C677T</strong> mutations have a reduced ability to process folate, leading to high Homocysteine—a potent driver of cardiovascular aging. 
+        <span class="stat-highlight">A 2021 meta-analysis found that high homocysteine (>15 μmol/L) increases stroke risk by 3-fold.</span> Programming must include methylated B-vitamins and high dietary betaine (beets, spinach).</p>
+
+        <h2 id="auditing">5. Advanced Micronutrient Auditing</h2>
+        <p>Standard blood tests (CBC/CMP) are "late-stage" indicators. To truly optimize longevity, we use <strong>Organic Acid Testing (OAT)</strong>. This urine test measures metabolic byproducts to assess:</p>
+        
+        <ul>
+            <li><strong>Mitochondrial Efficiency:</strong> Levels of Citrate and Succinate indicate where the Krebs Cycle is stalled.</li>
+            <li><strong>Neurotransmitter Turnover:</strong> Vanilmandelate (VMA) and Homovanillate (HVA) levels show stress on the HPA axis.</li>
+            <li><strong>Oxidative Stress:</strong> 8-OHdG levels measure DNA damage, dictating the need for specific antioxidant support (NAC, Glutathione).</li>
+        </ul>
+
+        <div class="check-understanding">
+            <p class="box-label">Check Your Understanding</p>
+            <div class="question-item">
+                <p class="question-text">1. Why is a "grazing" approach (eating small amounts of protein throughout the day) suboptimal for a 70-year-old client?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-text">
+                    Older adults have a higher "leucine threshold" due to anabolic resistance. Small amounts of protein fail to reach the intracellular concentration of leucine required to activate the mTOR pathway and initiate muscle protein synthesis.
+                </div>
+            </div>
+
+            <div class="question-item">
+                <p class="question-text">2. Which genetic variation would lead you to prioritize monounsaturated fats over saturated fats in a longevity protocol?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-text">
+                    The APOE4 allele. Carriers of this gene often exhibit a hyper-response to saturated fats, leading to elevated LDL particle counts and increased risk for neurodegenerative decline.
+                </div>
+            </div>
+        </div>
+
+        <h2 id="application">6. Clinical Application: The AGELESS Integration</h2>
+        <p>When building the final program, the "Eat for Longevity" (E) pillar must support the "Exercise" (E) and "Lifestyle" (L) pillars. For example, you should never program an FMD during a week where the client is attempting to hit a new 1-rep max in the gym. Similarly, TRF windows should be aligned with the client's <span class="highlight">Circadian Biology</span> (Module 4), ideally ending 3-4 hours before sleep to prevent core temperature spikes that disrupt the glymphatic system.</p>
+
+        <div class="takeaways-box">
+            <span class="box-label">Key Takeaways</span>
+            <ul>
+                <li><strong>Dynamic Balance:</strong> Longevity is found in the oscillation between mTOR (growth/repair) and AMPK (cleanup/recycling).</li>
+                <li><strong>Leucine is King:</strong> Target 3-4g of leucine per meal for clients over 50 to overcome anabolic resistance.</li>
+                <li><strong>Macro-Periodization:</strong> Use 12-week cycles to integrate FMDs and TRF rather than static, year-round restriction.</li>
+                <li><strong>Genetic Guardrails:</strong> Use APOE and MTHFR status to define the "safe zones" for macronutrient and supplement intake.</li>
+                <li><strong>Data Over Guesswork:</strong> Use OAT testing to identify specific mitochondrial "bottlenecks" that standard bloodwork misses.</li>
+            </ul>
+        </div>
+
+        <div class="references-box">
+            <h4>References & Further Reading</h4>
+            <ul class="references-list">
+                <li>Longo, V. D., et al. (2022). "Fasting-mimicking diets and markers of inflammation and healthspan." <em>Cell Metabolism</em>.</li>
+                <li>Phillips, S. M., et al. (2021). "Protein "leverage" and the aging muscle: Anabolic resistance explained." <em>Journal of Applied Physiology</em>.</li>
+                <li>Yashin, A. I., et al. (2023). "Genetics of Human Longevity: From Foundation to Personalized Interventions." <em>Nature Reviews Genetics</em>.</li>
+                <li>Sinclair, D. A. (2020). "mTOR, AMPK, and Sirtuins: The Trinity of Longevity Signaling." <em>Cell Reports</em>.</li>
+                <li>Mattson, M. P., et al. (2018). "Intermittent metabolic switching, neuroplasticity and brain health." <em>Nature Reviews Neuroscience</em>.</li>
+                <li>Smith, G. I., et al. (2022). "High-protein intake and muscle health in the elderly: A meta-analysis of randomized controlled trials." <em>Nutrients</em>.</li>
+            </ul>
+        </div>
+
+        <footer class="lesson-footer">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="footer-logo">
+            <p class="brand">AccrediPro Academy © 2024</p>
+            <p class="copyright">Certified Anti-Aging & Longevity Coach | Professional Level 3</p>
+        </footer>
+    </div>
+</body>
+
+</html>

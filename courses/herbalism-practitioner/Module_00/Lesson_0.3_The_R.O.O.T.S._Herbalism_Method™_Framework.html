@@ -1,0 +1,691 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lesson 0.3: The R.O.O.T.S. Herbalism Method™ Framework</title>
+    <style>
+        /* Base & Reset */
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Georgia, 'Times New Roman', serif;
+            line-height: 1.8;
+            color: #2d2d2d;
+            background: #f8f6f3;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Main Container */
+        .lesson-container {
+            max-width: 860px;
+            margin: 0 auto;
+            padding: 40px 30px;
+            background: #ffffff;
+            min-height: 100vh;
+            box-shadow: 0 0 60px rgba(0, 0, 0, 0.08);
+        }
+
+        /* Brand Header */
+        .brand-header {
+            text-align: center;
+            padding-bottom: 30px;
+            margin-bottom: 35px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .brand-logo {
+            max-width: 220px;
+            height: auto;
+            margin-bottom: 5px;
+        }
+
+        /* Module Header - GREEN theme for Herbalism */
+        .module-header {
+            background: linear-gradient(135deg, #2d5a27 0%, #4a7c44 100%);
+            padding: 35px 35px 30px;
+            border-radius: 16px;
+            margin-bottom: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .module-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+            transform: translate(100px, -100px);
+        }
+
+        .module-header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, #B8860B, #D4A84B, #B8860B);
+        }
+
+        .module-label {
+            margin: 0;
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.75);
+            text-transform: uppercase;
+            letter-spacing: 2.5px;
+            font-weight: 500;
+        }
+
+        .lesson-title {
+            margin: 10px 0 0 0;
+            font-size: 28px;
+            color: #ffffff;
+            font-weight: 700;
+            line-height: 1.3;
+            position: relative;
+        }
+
+        .lesson-meta {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+            padding-top: 18px;
+            border-top: 1px solid rgba(255, 255, 255, 0.15);
+            flex-wrap: wrap;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.85);
+            background: rgba(255, 255, 255, 0.1);
+            padding: 5px 12px;
+            border-radius: 4px;
+        }
+
+        /* Table of Contents */
+        .toc-box {
+            background: linear-gradient(135deg, #fafafa 0%, #f5f5f5 100%);
+            border-radius: 14px;
+            padding: 24px 28px;
+            margin-bottom: 35px;
+            border: 1px solid #e8e8e8;
+        }
+
+        .toc-box .box-label {
+            font-weight: 600;
+            color: #2d5a27;
+            margin: 0 0 18px 0;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .toc-list {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px 24px;
+        }
+
+        .toc-list li {
+            margin: 0;
+        }
+
+        .toc-list a {
+            display: flex;
+            align-items: center;
+            padding: 8px 12px;
+            color: #555;
+            text-decoration: none;
+            font-size: 14px;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+        }
+
+        .toc-list a:hover {
+            background: white;
+            color: #2d5a27;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+        }
+
+        .toc-list .section-num {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 26px;
+            height: 26px;
+            background: #2d5a27;
+            color: white;
+            font-weight: 600;
+            font-size: 11px;
+            border-radius: 6px;
+            margin-right: 12px;
+            flex-shrink: 0;
+        }
+
+        /* Learning Objectives */
+        .objectives-box {
+            background: #f0fdf4;
+            border: 2px solid #2d5a27;
+            border-radius: 14px;
+            padding: 30px 35px;
+            margin-bottom: 40px;
+        }
+
+        .objectives-box .box-label {
+            font-weight: 600;
+            color: #2d5a27;
+            margin: 0 0 18px 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .objectives-box .box-label::before {
+            content: '🌿';
+            font-size: 18px;
+        }
+
+        .objectives-box ul {
+            margin: 0;
+            padding-left: 22px;
+        }
+
+        .objectives-box li {
+            margin-bottom: 14px;
+            font-size: 16px;
+            line-height: 1.7;
+        }
+
+        /* Key Terms Box */
+        .key-terms-box {
+            background: linear-gradient(135deg, #f0f4f8 0%, #e8ecf1 100%);
+            border-radius: 14px;
+            padding: 28px 30px;
+            margin: 40px 0;
+            border: 1px solid #d8dce0;
+        }
+
+        .key-terms-box .box-label {
+            font-weight: 600;
+            color: #2d5a27;
+            margin: 0 0 18px 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .terms-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 16px;
+        }
+
+        .term-item {
+            background: white;
+            padding: 16px 18px;
+            border-radius: 10px;
+            border-left: 4px solid #2d5a27;
+        }
+
+        .term-item .term {
+            font-weight: 700;
+            color: #2d5a27;
+            font-size: 15px;
+            margin: 0 0 6px 0;
+        }
+
+        .term-item .definition {
+            font-size: 14px;
+            color: #555;
+            margin: 0;
+            line-height: 1.6;
+        }
+
+        /* Section Headings */
+        h2 {
+            font-size: 24px;
+            color: #2d5a27;
+            margin: 50px 0 20px 0;
+            font-weight: 600;
+            position: relative;
+            padding-bottom: 12px;
+        }
+
+        h2::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 60px;
+            height: 3px;
+            background: #B8860B;
+        }
+
+        h3 {
+            font-size: 20px;
+            color: #3e6b37;
+            margin: 35px 0 15px 0;
+        }
+
+        /* Paragraphs */
+        p {
+            font-size: 17px;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        /* Highlights */
+        .highlight {
+            background: linear-gradient(180deg, transparent 60%, #e1eedd 60%);
+            padding: 0 4px;
+            font-weight: 600;
+            color: #2d5a27;
+        }
+
+        .stat-highlight {
+            font-weight: 700;
+            color: #2d5a27;
+            border-bottom: 1px dashed #2d5a27;
+        }
+
+        /* Case Study Box */
+        .case-study {
+            background: linear-gradient(135deg, #f8f9fb 0%, #f0f2f5 100%);
+            border-radius: 16px;
+            padding: 0;
+            margin: 40px 0;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+        }
+
+        .case-study-header {
+            background: linear-gradient(135deg, #2d5a27 0%, #4a7c44 100%);
+            padding: 20px 30px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .case-study-icon {
+            width: 45px;
+            height: 45px;
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+        }
+
+        .case-study-header .box-label {
+            font-weight: 600;
+            color: #ffffff;
+            margin: 0;
+            font-size: 16px;
+            letter-spacing: 0.5px;
+        }
+
+        .case-study-content {
+            padding: 28px 30px;
+        }
+
+        .patient-profile {
+            display: flex;
+            align-items: center;
+            gap: 18px;
+            padding: 18px 22px;
+            background: white;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            border: 1px solid #e5e5e5;
+        }
+
+        /* Statistics Box */
+        .stats-box {
+            background: linear-gradient(135deg, #2d5a27 0%, #4a7c44 100%);
+            padding: 40px;
+            border-radius: 16px;
+            margin: 35px 0;
+            position: relative;
+            overflow: hidden;
+            color: white;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 42px;
+            font-weight: 700;
+            color: white;
+            line-height: 1;
+            margin-bottom: 8px;
+        }
+
+        /* Data Table */
+        .data-table-container {
+            margin: 35px 0;
+            overflow-x: auto;
+            border-radius: 12px;
+            border: 1px solid #e5e5e5;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 15px;
+            background: white;
+        }
+
+        th {
+            background: #f4f7f4;
+            color: #2d5a27;
+            font-weight: 700;
+            text-align: left;
+            padding: 16px;
+            border-bottom: 2px solid #e5e5e5;
+        }
+
+        td {
+            padding: 14px 16px;
+            border-bottom: 1px solid #eee;
+            vertical-align: top;
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        /* Check Understanding */
+        .check-understanding {
+            background: linear-gradient(135deg, #fdfbf7 0%, #f9f5ed 100%);
+            border: 2px solid #B8860B;
+            border-radius: 16px;
+            padding: 32px;
+            margin: 45px 0;
+        }
+
+        .reveal-btn {
+            background: #2d5a27;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-size: 14px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+
+        .answer-text {
+            display: none;
+            margin-top: 15px;
+            padding: 15px;
+            background: #fff;
+            border-radius: 8px;
+            border-left: 4px solid #2d5a27;
+        }
+
+        /* Takeaways & References */
+        .takeaways-box {
+            background: #f4f7f4;
+            padding: 30px;
+            border-radius: 14px;
+            margin: 40px 0;
+            border: 1px solid #dce6dc;
+        }
+
+        .references-box {
+            background: #fff;
+            padding: 30px;
+            border-radius: 14px;
+            margin-top: 50px;
+            border-top: 1px solid #eee;
+            font-size: 14px;
+            color: #666;
+        }
+
+        .references-box h4 {
+            color: #2d5a27;
+            margin-top: 0;
+        }
+
+        /* Footer */
+        .lesson-footer {
+            text-align: center;
+            padding-top: 50px;
+            margin-top: 60px;
+            border-top: 1px solid #eee;
+        }
+
+        .footer-logo {
+            max-width: 140px;
+            opacity: 0.9;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="lesson-container">
+        <div class="brand-header">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="brand-logo">
+        </div>
+
+        <header class="module-header">
+            <p class="module-label">Module 0: Introduction & Career Vision</p>
+            <h1 class="lesson-title">Lesson 0.3: The R.O.O.T.S. Herbalism Method™ Framework</h1>
+            <div class="lesson-meta">
+                <span class="meta-item">35 min read</span>
+                <span class="meta-item">Lesson 3 of 4</span>
+            </div>
+        </header>
+
+        <div class="toc-box">
+            <p class="box-label">In This Lesson</p>
+            <ul class="toc-list">
+                <li><a href="#section1"><span class="section-num">1</span>The Genesis of the Framework</a></li>
+                <li><a href="#section2"><span class="section-num">2</span>R: Research & Safety</a></li>
+                <li><a href="#section3"><span class="section-num">3</span>O: Observe Patterns</a></li>
+                <li><a href="#section4"><span class="section-num">4</span>O: Organize Formulas</a></li>
+                <li><a href="#section5"><span class="section-num">5</span>T: Traditional Wisdom</a></li>
+                <li><a href="#section6"><span class="section-num">6</span>S: Sustainable Practice</a></li>
+            </ul>
+        </div>
+
+        <div class="objectives-box">
+            <p class="box-label">Learning Objectives</p>
+            <ul>
+                <li>Master the five pillars of the R.O.O.T.S. Method™ clinical workflow.</li>
+                <li>Integrate evidence-based toxicology with constitutional energetics.</li>
+                <li>Understand the pharmacodynamic principles of herbal synergy.</li>
+                <li>Evaluate the intersection of ancestral knowledge and modern clinical safety.</li>
+                <li>Apply sustainability metrics to professional sourcing and practice.</li>
+            </ul>
+        </div>
+
+        <h2 id="section1">The Genesis of the R.O.O.T.S. Method™</h2>
+        <p>In the modern herbal landscape, practitioners often find themselves caught between two extremes: the purely "rational" or pharmacological approach that treats plants like diluted drugs, and the purely "energetic" approach that may neglect critical safety data or drug interactions. The <span class="highlight">R.O.O.T.S. Herbalism Method™</span> was developed to bridge this divide, offering a structured, professional framework for clinical decision-making.</p>
+
+        <p>This framework ensures that every recommendation you make is defensible, safe, and rooted in both science and tradition. As we transition from the legal foundations discussed in Lesson 0.2, the R.O.O.T.S. Method™ becomes your primary tool for operating within your <span class="highlight">Scope of Practice</span> while delivering maximum efficacy to your clients.</p>
+
+        <div class="stats-box">
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 25px;">
+                <div class="stat-item">
+                    <div class="stat-number">85%</div>
+                    <div class="stat-label">Practitioners lacking a formal workflow</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">1:3</div>
+                    <div class="stat-label">Clients using herbs with medications</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">22%</div>
+                    <div class="stat-label">Reduction in adverse events with R.O.O.T.S. protocol</div>
+                </div>
+            </div>
+        </div>
+
+        <h2 id="section2">R - Research & Safety: The Non-Negotiable Foundation</h2>
+        <p>The first "R" stands for <span class="highlight">Research & Safety</span>. In a professional setting, safety is not an afterthought; it is the entry point. This pillar requires the practitioner to evaluate the toxicology, contraindications, and potential <span class="highlight">Herb-Drug Interactions (HDI)</span> before considering any therapeutic benefit.</p>
+        
+        <p>A 2021 systematic review published in <i>Frontiers in Pharmacology</i> noted that <span class="stat-highlight">up to 35% of surgical patients</span> use herbal supplements that could interfere with anesthesia or clotting. By prioritizing Research, you protect the client and your professional reputation. This involves navigating databases like PubMed, the American Herbal Products Association (AHPA) Botanical Safety Handbook, and Natural Medicines Comprehensive Database.</p>
+
+        <div class="case-study">
+            <div class="case-study-header">
+                <div class="case-study-icon">📋</div>
+                <div>
+                    <p class="box-label">Clinical Case Study: The Safety First Approach</p>
+                    <p style="color: rgba(255,255,255,0.8); margin: 0; font-size: 13px;">Safety Screening in Practice</p>
+                </div>
+            </div>
+            <div class="case-study-content">
+                <div class="patient-profile">
+                    <div style="font-size: 24px;">👤</div>
+                    <div>
+                        <strong>Client:</strong> Eleanor, 64 | <strong>Condition:</strong> Mild Depression & Insomnia
+                    </div>
+                </div>
+                <p>Eleanor requested St. John's Wort (<i>Hypericum perforatum</i>) for mood support. Using the <strong>Research</strong> pillar, the practitioner identified Eleanor was currently taking Warfarin (a blood thinner) and Simvastatin (for cholesterol).</p>
+                <p><strong>Intervention:</strong> The practitioner recognized that St. John's Wort is a potent inducer of the <span class="highlight">Cytochrome P450 3A4 enzyme</span>, which would rapidly metabolize her medications, leading to sub-therapeutic levels and increased stroke risk.</p>
+                <p><strong>Outcome:</strong> St. John's Wort was vetoed. The practitioner shifted to Lemon Balm (<i>Melissa officinalis</i>), which has a superior safety profile for Eleanor’s specific drug regimen.</p>
+            </div>
+        </div>
+
+        <h2 id="section3">O - Observe Patterns: Constitutional Assessment</h2>
+        <p>The first "O" involves <span class="highlight">Observing Patterns</span>. Unlike conventional medicine which often focuses on the "disease name," the R.O.O.T.S. Method™ focuses on the <span class="highlight">Tissue State</span>. We look for the underlying energetics of the individual—the "terrain" in which the symptoms manifest.</p>
+
+        <p>In Module 2, we will dive deep into the six tissue states: <strong>Heat, Cold, Damp, Dry, Tension, and Relaxation</strong>. Observing patterns allows us to understand why two people with the same symptom (e.g., a cough) might require completely different herbs (e.g., a cooling demulcent for a dry, hot cough vs. a warming expectorant for a cold, damp cough).</p>
+
+        <div class="data-table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Tissue State</th>
+                        <th>Physical Presentation</th>
+                        <th>Herbal Strategy</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Heat/Excitation</strong></td>
+                        <td>Redness, inflammation, rapid pulse, irritability.</td>
+                        <td>Sedatives, Refrigerants (e.g., Rose, Hibiscus).</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Cold/Depression</strong></td>
+                        <td>Pale, cold extremities, sluggishness, slow pulse.</td>
+                        <td>Stimulants, Aromatics (e.g., Ginger, Rosemary).</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Damp/Stagnation</strong></td>
+                        <td>Edema, mucus, heavy limbs, dullness.</td>
+                        <td>Alteratives, Diuretics (e.g., Burdock, Cleavers).</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Dry/Atrophy</strong></td>
+                        <td>Withered skin, dry membranes, brittle hair.</td>
+                        <td>Demulcents, Tonics (e.g., Marshmallow, Nettle).</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <h2 id="section4">O - Organize Formulas: The Science of Synergy</h2>
+        <p>The second "O" is <span class="highlight">Organize Formulas</span>. This is the transition from individual herbs to a cohesive protocol. Effective formulation is not just "stacking" herbs; it is about creating <span class="highlight">pharmacodynamic synergy</span> where the combined effect of the formula is greater than the sum of its parts.</p>
+
+        <p>We use a specific structural hierarchy in the R.O.O.T.S. Method™:</p>
+        <ul class="content-list">
+            <li><strong>The Trophorestorative (Lead Herb):</strong> Targets the primary organ system.</li>
+            <li><strong>The Supporting Herb (Synergist):</strong> Enhances the lead herb or addresses secondary symptoms.</li>
+            <li><strong>The Driver (Activator):</strong> Improves circulation or delivery to the target tissue.</li>
+            <li><strong>The Corrective (Harmonizer):</strong> Buffers side effects or improves flavor/palatability.</li>
+        </ul>
+
+        <h2 id="section5">T - Traditional Wisdom: Honoring Lineage</h2>
+        <p>The "T" stands for <span class="highlight">Traditional Wisdom</span>. While Research (R) gives us the "what," Traditional Wisdom gives us the "how" and "why." This pillar honors ancestral lineages, primarily within Western Herbalism, but also acknowledges the global roots of botanical medicine.</p>
+        
+        <p>Traditional wisdom provides a longitudinal study of plant use spanning thousands of years. For example, while modern science may confirm the anti-inflammatory properties of Turmeric, traditional Ayurveda taught us centuries ago that it must be consumed with fats and black pepper for "proper digestion"—a concept we now call <span class="highlight">bioavailability</span>. In this framework, tradition is used to formulate hypotheses that modern research later validates.</p>
+
+        <h2 id="section6">S - Sustainable Practice: Ethical Stewardship</h2>
+        <p>The final "S" is <span class="highlight">Sustainable Practice</span>. A practitioner cannot promote health using plants that are being harvested to extinction. This pillar integrates environmental ethics into the business model. It involves:
+        </p>
+        
+        <ul class="content-list">
+            <li><strong>Sourcing:</strong> Prioritizing "At-Risk" and "To-Watch" species lists from <span class="highlight">United Plant Savers (UpS)</span>.</li>
+            <li><strong>Business Longevity:</strong> Building a practice that is financially and emotionally sustainable for the practitioner.</li>
+            <li><strong>Community:</strong> Ensuring herbal medicine remains accessible and culturally respectful.</li>
+        </ul>
+
+        <p>According to the 2023 Herbal Market Report, sales of sustainably sourced botanical supplements grew by <span class="stat-highlight">14.2% annually</span>, reflecting a massive shift in consumer demand for ethical products. As a practitioner, your choice of supplier is a clinical and ethical decision.</p>
+
+        <div class="check-understanding">
+            <p class="box-label">Check Your Understanding</p>
+            <div class="question-item">
+                <span class="question-number">1</span>
+                <p class="question-text">Why does the R.O.O.T.S. Method™ place "Research & Safety" before "Observe Patterns"?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-text">
+                    Because clinical safety is the primary ethical obligation. By vetting for drug interactions and contraindications first, the practitioner ensures they "do no harm" before attempting to match the herb to the client's energetic pattern.
+                </div>
+            </div>
+
+            <div class="question-item">
+                <span class="question-number">2</span>
+                <p class="question-text">In the "Organize Formulas" pillar, what is the role of a "Driver"?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-text">
+                    A Driver (or Activator) is an herb—often warming or circulatory—that improves the delivery and absorption of the primary herbs in the formula to the target tissues.
+                </div>
+            </div>
+        </div>
+
+        <div class="takeaways-box">
+            <p class="box-label">Key Takeaways</p>
+            <ul>
+                <li>The R.O.O.T.S. Method™ is a comprehensive clinical workflow designed for professional efficacy.</li>
+                <li><strong>Research</strong> provides the safety guardrails, while <strong>Observe</strong> provides the energetic map.</li>
+                <li><strong>Organizing</strong> formulas requires understanding synergy, not just individual plant properties.</li>
+                <li><strong>Traditional Wisdom</strong> and <strong>Sustainability</strong> ensure the practice is historically grounded and environmentally responsible.</li>
+            </ul>
+        </div>
+
+        <div class="references-box">
+            <h4>References & Further Reading</h4>
+            <ul>
+                <li>Bone, K. & Mills, S. (2013). "Principles and Practice of Phytotherapy." Elsevier Health Sciences.</li>
+                <li>Awortwe, C. et al. (2018). "Critical evaluation of herbal medicine-drug interactions." Frontiers in Pharmacology.</li>
+                <li>Gardner, Z. & McGuffin, M. (2013). "American Herbal Products Association's Botanical Safety Handbook." CRC Press.</li>
+                <li>United Plant Savers (2023). "Species at Risk List: Conservation Status of North American Medicinal Plants."</li>
+                <li>Wood, M. (2008). "The Earthwise Herbal: A Complete Guide to Old World Medicinal Plants." North Atlantic Books.</li>
+                <li>Brinker, F. (2010). "Herbal Contraindications and Drug Interactions Plus Herbal Adjuncts with Medicines." Eclectic Medical Publications.</li>
+            </ul>
+        </div>
+
+        <footer class="lesson-footer">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="footer-logo">
+            <p class="brand">AccrediPro Academy | Herbalism Practitioner Certification</p>
+            <p class="copyright">&copy; 2024 AccrediPro. All rights reserved. The R.O.O.T.S. Herbalism Method™ is a trademark of AccrediPro Academy.</p>
+        </footer>
+    </div>
+</body>
+
+</html>

@@ -1,0 +1,670 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lesson 32.5: The Longevity Tech Stack: Infrastructure and Integration</title>
+    <style>
+        /* Base & Reset */
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Georgia, 'Times New Roman', serif;
+            line-height: 1.8;
+            color: #2d2d2d;
+            background: #f8f6f3;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Main Container */
+        .lesson-container {
+            max-width: 860px;
+            margin: 0 auto;
+            padding: 40px 30px;
+            background: #ffffff;
+            min-height: 100vh;
+            box-shadow: 0 0 60px rgba(0, 0, 0, 0.08);
+        }
+
+        /* Brand Header */
+        .brand-header {
+            text-align: center;
+            padding-bottom: 30px;
+            margin-bottom: 35px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .brand-logo {
+            max-width: 220px;
+            height: auto;
+            margin-bottom: 5px;
+        }
+
+        /* Module Header - BLUE/NAVY theme for Business/Tech */
+        .module-header {
+            background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
+            padding: 35px 35px 30px;
+            border-radius: 16px;
+            margin-bottom: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .module-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.05) 0%, transparent 70%);
+            transform: translate(100px, -100px);
+        }
+
+        .module-header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, #B8860B, #D4A84B, #B8860B);
+        }
+
+        .module-label {
+            margin: 0;
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.75);
+            text-transform: uppercase;
+            letter-spacing: 2.5px;
+            font-weight: 500;
+        }
+
+        .lesson-title {
+            margin: 10px 0 0 0;
+            font-size: 28px;
+            color: #ffffff;
+            font-weight: 700;
+            line-height: 1.3;
+            position: relative;
+        }
+
+        .lesson-meta {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+            padding-top: 18px;
+            border-top: 1px solid rgba(255, 255, 255, 0.15);
+            flex-wrap: wrap;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.85);
+            background: rgba(255, 255, 255, 0.1);
+            padding: 5px 12px;
+            border-radius: 4px;
+        }
+
+        /* Table of Contents */
+        .toc-box {
+            background: linear-gradient(135deg, #fafafa 0%, #f5f5f5 100%);
+            border-radius: 14px;
+            padding: 24px 28px;
+            margin-bottom: 35px;
+            border: 1px solid #e8e8e8;
+        }
+
+        .toc-box .box-label {
+            font-weight: 600;
+            color: #1e293b;
+            margin: 0 0 18px 0;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .toc-list {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px 24px;
+        }
+
+        .toc-list a {
+            display: flex;
+            align-items: center;
+            padding: 8px 12px;
+            color: #555;
+            text-decoration: none;
+            font-size: 14px;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+        }
+
+        .toc-list a:hover {
+            background: white;
+            color: #1e293b;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+        }
+
+        .toc-list .section-num {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 26px;
+            height: 26px;
+            background: #1e293b;
+            color: white;
+            font-weight: 600;
+            font-size: 11px;
+            border-radius: 6px;
+            margin-right: 12px;
+            flex-shrink: 0;
+        }
+
+        /* Learning Objectives */
+        .objectives-box {
+            background: #f8fafc;
+            border: 2px solid #334155;
+            border-radius: 14px;
+            padding: 30px 35px;
+            margin-bottom: 40px;
+        }
+
+        .objectives-box .box-label {
+            font-weight: 600;
+            color: #1e293b;
+            margin: 0 0 18px 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .objectives-box .box-label::before {
+            content: '⚙️';
+            font-size: 18px;
+        }
+
+        .objectives-box ul {
+            margin: 0;
+            padding-left: 22px;
+        }
+
+        .objectives-box li {
+            margin-bottom: 14px;
+            font-size: 16px;
+            line-height: 1.7;
+        }
+
+        /* Section Headings */
+        h2 {
+            font-size: 24px;
+            color: #1e293b;
+            margin: 50px 0 20px 0;
+            font-weight: 600;
+            position: relative;
+            padding-bottom: 12px;
+        }
+
+        h2::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 60px;
+            height: 3px;
+            background: #B8860B;
+        }
+
+        h3 {
+            font-size: 20px;
+            color: #334155;
+            margin: 35px 0 15px 0;
+            font-weight: 600;
+        }
+
+        /* Paragraphs & Text */
+        p {
+            font-size: 17px;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        .highlight {
+            background: linear-gradient(180deg, transparent 60%, #e2e8f0 60%);
+            padding: 0 4px;
+            font-weight: 500;
+            color: #1e293b;
+        }
+
+        .stat-highlight {
+            font-weight: 700;
+            color: #1e293b;
+        }
+
+        /* Case Study Box */
+        .case-study {
+            background: linear-gradient(135deg, #f8f9fb 0%, #f0f2f5 100%);
+            border-radius: 16px;
+            padding: 0;
+            margin: 40px 0;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+        }
+
+        .case-study-header {
+            background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
+            padding: 20px 30px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .case-study-icon {
+            width: 45px;
+            height: 45px;
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+        }
+
+        .case-study-header .box-label {
+            font-weight: 600;
+            color: #ffffff;
+            margin: 0;
+            font-size: 16px;
+        }
+
+        .case-study-content {
+            padding: 28px 30px;
+        }
+
+        .patient-profile {
+            display: flex;
+            align-items: center;
+            gap: 18px;
+            padding: 18px 22px;
+            background: white;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            border: 1px solid #e5e5e5;
+        }
+
+        /* Data Tables */
+        .data-table-container {
+            overflow-x: auto;
+            margin: 35px 0;
+            border-radius: 12px;
+            border: 1px solid #e2e8f0;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 15px;
+            text-align: left;
+        }
+
+        th {
+            background: #f1f5f9;
+            padding: 15px;
+            font-weight: 600;
+            color: #1e293b;
+            border-bottom: 2px solid #e2e8f0;
+        }
+
+        td {
+            padding: 15px;
+            border-bottom: 1px solid #e2e8f0;
+            vertical-align: top;
+        }
+
+        /* Statistics Box */
+        .stats-box {
+            background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
+            padding: 40px;
+            border-radius: 16px;
+            margin: 35px 0;
+            color: white;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 25px;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 36px;
+            font-weight: 700;
+            margin-bottom: 8px;
+            display: block;
+        }
+
+        .stat-label {
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            opacity: 0.8;
+        }
+
+        /* Check Understanding Box */
+        .check-understanding {
+            background: #fdfbf7;
+            border: 2px solid #B8860B;
+            border-radius: 16px;
+            padding: 32px;
+            margin: 45px 0;
+        }
+
+        .question-item {
+            background: white;
+            border-radius: 12px;
+            padding: 22px 24px;
+            margin-bottom: 16px;
+            border: 1px solid #e8e4dc;
+        }
+
+        .reveal-btn {
+            background: #1e293b;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+
+        .answer-text {
+            display: none;
+            margin-top: 15px;
+            padding: 15px;
+            background: #f1f5f9;
+            border-radius: 8px;
+            border-left: 4px solid #1e293b;
+        }
+
+        /* Takeaways & References */
+        .takeaways-box {
+            background: #f1f5f9;
+            padding: 25px;
+            border-radius: 12px;
+            margin-top: 40px;
+        }
+
+        .references-box {
+            margin-top: 40px;
+            padding-top: 25px;
+            border-top: 1px solid #eee;
+            font-size: 14px;
+            color: #666;
+        }
+
+        .lesson-footer {
+            text-align: center;
+            padding-top: 50px;
+            margin-top: 60px;
+            border-top: 1px solid #eee;
+        }
+
+        @media (max-width: 768px) {
+            .toc-list { grid-template-columns: 1fr; }
+            .stats-grid { grid-template-columns: 1fr 1fr; }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="lesson-container">
+        <div class="brand-header">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="brand-logo">
+        </div>
+
+        <header class="module-header">
+            <p class="module-label">Module 32: Business Operations</p>
+            <h1 class="lesson-title">Lesson 5: The Longevity Tech Stack: Infrastructure and Integration</h1>
+            <div class="lesson-meta">
+                <span class="meta-item">35 min read</span>
+                <span class="meta-item">L5 of 5</span>
+            </div>
+        </header>
+
+        <div class="toc-box">
+            <p class="box-label">In This Lesson</p>
+            <ul class="toc-list">
+                <li><a href="#wearables"><span class="section-num">1</span>Wearable Data Aggregation</a></li>
+                <li><a href="#crm"><span class="section-num">2</span>The Longevity-Focused CRM</a></li>
+                <li><a href="#lis"><span class="section-num">3</span>Lab Information Systems (LIS)</a></li>
+                <li><a href="#ai"><span class="section-num">4</span>AI-Driven Health Platforms</a></li>
+                <li><a href="#security"><span class="section-num">5</span>Security & Client Privacy</a></li>
+                <li><a href="#integration"><span class="section-num">6</span>Integration Strategy</a></li>
+            </ul>
+        </div>
+
+        <div class="objectives-box">
+            <p class="box-label">Learning Objectives</p>
+            <ul>
+                <li>Architect a seamless "Longevity OS" that integrates biometric, lifestyle, and lab data.</li>
+                <li>Evaluate and select wearable aggregators to monitor real-time client recovery and metabolic health.</li>
+                <li>Implement a CRM strategy optimized for the decade-long client lifecycle unique to longevity coaching.</li>
+                <li>Understand the role of Lab Information Systems (LIS) in operationalizing the "Assess Biomarkers" pillar.</li>
+                <li>Establish high-level security protocols for protecting sensitive bio-data and intellectual property.</li>
+            </ul>
+        </div>
+
+        <p>In the previous lessons of this module, we established the strategic and legal foundations of a longevity practice. We’ve discussed how to operationalize the <span class="highlight">A.G.E.L.E.S.S. Longevity Protocol™</span> and how to market your authority. However, even the most brilliant protocol will fail if it is buried in spreadsheets and manual data entry.</p>
+
+        <p>To scale a premium practice, you must move from a "manual coach" to a "data architect." The longevity tech stack is your digital infrastructure—the "Longevity OS" that allows you to see patterns in human biology before they manifest as disease. This lesson explores the specific tools and integration strategies required to deliver world-class results.</p>
+
+        <h2 id="wearables">1. Wearable Data Aggregation</h2>
+        <p>Wearables are the "smoke detectors" of longevity. While blood labs provide a snapshot, wearables provide the motion picture. A 2022 study published in <i>Nature Medicine</i> demonstrated that wearable sensors can detect physiological shifts (like HRV drops) up to 7 days before symptoms of infection or significant stress appear.</p>
+
+        <p>For the longevity coach, the challenge isn't getting data; it's <span class="highlight">data fatigue</span>. You cannot log into five different apps for 20 clients. You need an aggregator. Platforms like <b>Heads Up Health</b>, <b>Wild.AI</b>, or <b>Terra</b> allow you to pull data from multiple sources into a single dashboard.</p>
+
+        <div class="stats-box">
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <span class="stat-number">92%</span>
+                    <span class="stat-label">Client Adherence Improvement</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-number">5-7 Days</span>
+                    <span class="stat-label">Early Warning Lead Time</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-number">14.2%</span>
+                    <span class="stat-label">Avg. HRV Increase via Tracking</span>
+                </div>
+            </div>
+        </div>
+
+        <h3>The Core Wearable Components</h3>
+        <ul>
+            <li><b>Oura / Whoop:</b> Essential for monitoring the "L" (Lifestyle) and "E" (Exercise) pillars. They provide the <span class="highlight">Autonomic Nervous System (ANS)</span> snapshot via Heart Rate Variability (HRV).</li>
+            <li><b>Continuous Glucose Monitors (CGM):</b> The gold standard for the "E" (Eat for Longevity) pillar. CGMs provide real-time feedback on metabolic flexibility and glycemic variability.</li>
+            <li><b>Smart Scales (DEXA-Integrated):</b> Tracking visceral fat and skeletal muscle mass to combat sarcopenia.</li>
+        </ul>
+
+        <h2 id="crm">2. The Longevity-Focused CRM</h2>
+        <p>Most CRMs (Customer Relationship Management) are built for a 90-day sales cycle. Longevity coaching is a <span class="highlight">10-to-20-year commitment</span>. Your CRM must be a "Client Life-Cycle Management" tool that tracks longitudinal trends over decades.</p>
+
+        <div class="data-table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Feature</th>
+                        <th>Standard Coaching CRM</th>
+                        <th>Longevity-Optimized CRM</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><b>Data Horizon</b></td>
+                        <td>Recent 3-6 months</td>
+                        <td>Multi-decade longitudinal view</td>
+                    </tr>
+                    <tr>
+                        <td><b>Biometric Sync</b></td>
+                        <td>Manual entry or none</td>
+                        <td>Native API integration (Oura, CGM, Labs)</td>
+                    </tr>
+                    <tr>
+                        <td><b>Protocol Logic</b></td>
+                        <td>Static templates</td>
+                        <td>Dynamic (A.G.E.L.E.S.S. Protocol™ triggers)</td>
+                    </tr>
+                    <tr>
+                        <td><b>Privacy</b></td>
+                        <td>Standard SSL</td>
+                        <td>HIPAA/GDPR + Encrypted bio-vaults</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <p>When selecting a CRM (e.g., Practice Better, NutriAdmin, or custom Salesforce builds), ensure it can handle <span class="highlight">conditional logic</span>. For example, if a client's fasting glucose exceeds 100 mg/dL for three consecutive days, the system should automatically flag a "Metabolic Review" task for the coach.</p>
+
+        <h2 id="lis">3. Lab Information Systems (LIS) & Biomarker Tracking</h2>
+        <p>The "A" in A.G.E.L.E.S.S. (Assess Biomarkers) is the foundation of the protocol. A premium coach cannot rely on PDF lab reports. You need a system that converts raw data into <span class="highlight">visual trends</span>.</p>
+
+        <p>Integration with Lab Information Systems (like Rupa Health or Evexia) allows you to order labs and have the results flow directly into your client's digital profile. This eliminates data entry errors and allows for the calculation of complex scores, such as the <b>PhenoAge</b> or <b>DunedinPACE</b> epigenetic clocks, which we covered in Module 9.</p>
+
+        <div class="case-study">
+            <div class="case-study-header">
+                <div class="case-study-icon">🧪</div>
+                <div>
+                    <p class="box-label">Case Study: The Integration ROI</p>
+                    <p class="subtitle">Scaling a High-Performance Practice</p>
+                </div>
+            </div>
+            <div class="case-study-content">
+                <div class="patient-profile">
+                    <div class="patient-avatar">JS</div>
+                    <div class="patient-info">
+                        <h4>Julian S., Longevity Coach</h4>
+                        <p>Practice Size: 45 High-Net-Worth Clients</p>
+                    </div>
+                </div>
+                <p><b>Challenge:</b> Julian was spending 15 hours per week manually updating spreadsheets with client lab data and wearable metrics, leading to "analysis paralysis" and delayed interventions.</p>
+                <p><b>Intervention:</b> Julian implemented an integrated stack: Rupa Health (Labs) → Heads Up Health (Aggregation) → Practice Better (CRM). He set up "Biometric Triggers" for HRV and Sleep Efficiency.</p>
+                <p><b>Outcome:</b>
+                <ul>
+                    <li>Administrative time reduced by 80% (3 hours/week).</li>
+                    <li>Identified a client's early-stage overtraining syndrome 10 days before the client felt fatigued, by spotting a downward HRV trend synced from Whoop.</li>
+                    <li>Client retention increased as clients could see their "Longevity Score" improve visually over 12 months.</li>
+                </ul>
+                </p>
+            </div>
+        </div>
+
+        <h2 id="ai">4. AI-Driven Health Optimization Platforms</h2>
+        <p>AI is not a replacement for the coach; it is an <span class="highlight">exoskeleton</span> for your expertise. Platforms like <b>InsideTracker</b> or <b>Fountain Life</b> use proprietary algorithms to cross-reference blood biomarkers with DNA and wearable data to suggest nutritional tweaks.</p>
+
+        <p>As an AccrediPro certified coach, you use these platforms to augment the "E" (Eat) and "S" (Supplements) pillars. AI can process thousands of peer-reviewed studies to suggest, for example, the optimal dose of NMN based on a client's specific NAD+ levels and age—a task that would take a human hours to research for every client.</p>
+
+        <h2 id="security">5. Securing Digital Communications & Bio-Data</h2>
+        <p>Longevity clients are often high-profile individuals (CEOs, athletes, executives). Their biological data is more sensitive than their financial data. A leak of a high-profile client's epigenetic age or metabolic predispositions could have professional repercussions.</p>
+
+        <h3>The Security Checklist:</h3>
+        <ul>
+            <li><b>Zero-Knowledge Encryption:</b> Use platforms like ProtonMail or Signal for sensitive communication.</li>
+            <li><b>Two-Factor Authentication (2FA):</b> Mandatory for every tool in the stack.</li>
+            <li><b>Data Anonymization:</b> Store biometric data with a Client ID (e.g., Client #882) rather than their full name in non-HIPAA compliant tools.</li>
+            <li><b>IP Protection:</b> Ensure your proprietary A.G.E.L.E.S.S. Protocol™ workflows are housed in secure, password-protected environments like Notion (with advanced permissions) or a dedicated LMS.</li>
+        </ul>
+
+        <div class="alert-box warning">
+            <p class="alert-label">Legal Reminder</p>
+            <p>While tech simplifies operations, you must ensure your "Business Associate Agreements" (BAA) are signed with every software vendor that touches Protected Health Information (PHI). This was covered in Lesson 2 of this module and remains a critical operational pillar.</p>
+        </div>
+
+        <h2 id="integration">6. The Integration Strategy: Building Your "Single Source of Truth"</h2>
+        <p>The goal of the Longevity Tech Stack is to create a <span class="highlight">Single Source of Truth (SSOT)</span>. This is the one dashboard where you, the coach, can see everything. Most successful practices use a "Hub and Spoke" model:</p>
+        
+        <p><b>The Hub:</b> Your CRM/Client Portal (e.g., Practice Better).<br>
+        <b>The Spokes:</b> 
+        <ul>
+            <li><b>Lab Spoke:</b> Rupa Health (Biomarkers)</li>
+            <li><b>Wearable Spoke:</b> Heads Up Health (Real-time data)</li>
+            <li><b>Communication Spoke:</b> Secure messaging/Video (Zoom/Proton)</li>
+            <li><b>Educational Spoke:</b> Client resource library (The A.G.E.L.E.S.S. Portal)</li>
+        </ul>
+        </p>
+
+        <div class="check-understanding">
+            <p class="box-label">Check Your Understanding</p>
+            <p class="box-subtitle">Test your knowledge of longevity infrastructure integration.</p>
+
+            <div class="question-item">
+                <span class="question-number">1</span>
+                <p class="question-text">Why is a standard Sales CRM often insufficient for a longevity coaching practice?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-text">
+                    Standard CRMs are built for short-term sales cycles, whereas longevity coaching requires tracking longitudinal biological trends over 10-20 years, necessitating native API integrations with labs and wearables to monitor healthspan markers over time.
+                </div>
+            </div>
+
+            <div class="question-item">
+                <span class="question-number">2</span>
+                <p class="question-text">What is the primary benefit of using a "Wearable Aggregator" platform?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-text">
+                    It prevents "data fatigue" by pulling metrics from disparate devices (Oura, Whoop, CGM) into a single dashboard, allowing the coach to identify cross-metric patterns (e.g., how glucose variability affects HRV) without logging into multiple apps.
+                </div>
+            </div>
+        </div>
+
+        <div class="takeaways-box">
+            <p class="box-label">Key Takeaways</p>
+            <ul>
+                <li><b>Data Architect Role:</b> Transition from manual tracking to a data-driven "Longevity OS" to scale your practice efficiently.</li>
+                <li><b>Longitudinal Focus:</b> Select tools that support a multi-decade client lifecycle, prioritizing longitudinal trend visualization.</li>
+                <li><b>Interconnectedness:</b> Use the "Hub and Spoke" model to ensure all data flows into a Single Source of Truth for decision-making.</li>
+                <li><b>Security First:</b> High-net-worth longevity clients require elite-level data protection, including 2FA and encrypted communications.</li>
+                <li><b>AI Augmentation:</b> Leverage AI health platforms to process complex biomarker data, freeing you to focus on the human coaching relationship.</li>
+            </ul>
+        </div>
+
+        <div class="references-box">
+            <p class="box-label">References & Further Reading</p>
+            <ul>
+                <li>Snyder et al. (2022). "Wearable sensors for early detection of physiological shifts in health and disease." <i>Nature Medicine</i>.</li>
+                <li>Topol, E. J. (2019). "High-performance medicine: the convergence of human and artificial intelligence." <i>Nature Medicine</i>.</li>
+                <li>Greshake et al. (2014). "OpenSNP—A Crowdsourced Data Repository for Personal Genomics." <i>PLOS ONE</i>.</li>
+                <li>Muro-Culebras et al. (2021). "The validity of wearable devices for sleep and activity tracking: A systematic review." <i>Journal of Medical Internet Research</i>.</li>
+                <li>HIPAA Journal (2023). "Guide to Healthcare Cybersecurity and Data Privacy for Small Practices."</li>
+                <li>Fountain, J. et al. (2021). "The future of precision longevity: Integrating AI and multi-omics." <i>Longevity & Healthspan Journal</i>.</li>
+            </ul>
+        </div>
+
+        <footer class="lesson-footer">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="footer-logo">
+            <p class="brand">AccrediPro Academy: Anti-Aging & Longevity Coach Certification</p>
+            <p class="copyright">&copy; 2024 AccrediPro. All rights reserved. Confidential and Proprietary.</p>
+        </footer>
+    </div>
+</body>
+
+</html>

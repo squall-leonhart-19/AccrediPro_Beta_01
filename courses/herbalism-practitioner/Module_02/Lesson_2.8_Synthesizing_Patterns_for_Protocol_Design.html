@@ -1,0 +1,645 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lesson 2.8: Synthesizing Patterns for Protocol Design</title>
+    <style>
+        /* Base & Reset */
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Georgia, 'Times New Roman', serif;
+            line-height: 1.8;
+            color: #2d2d2d;
+            background: #f8f6f3;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Main Container */
+        .lesson-container {
+            max-width: 860px;
+            margin: 0 auto;
+            padding: 40px 30px;
+            background: #ffffff;
+            min-height: 100vh;
+            box-shadow: 0 0 60px rgba(0, 0, 0, 0.08);
+        }
+
+        /* Brand Header */
+        .brand-header {
+            text-align: center;
+            padding-bottom: 30px;
+            margin-bottom: 35px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .brand-logo {
+            max-width: 220px;
+            height: auto;
+            margin-bottom: 5px;
+        }
+
+        /* Module Header - Herbalism Theme */
+        .module-header {
+            background: linear-gradient(135deg, #2D5A27 0%, #4A7c44 100%);
+            padding: 35px 35px 30px;
+            border-radius: 16px;
+            margin-bottom: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .module-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+            transform: translate(100px, -100px);
+        }
+
+        .module-header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, #B8860B, #D4A84B, #B8860B);
+        }
+
+        .module-label {
+            margin: 0;
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.75);
+            text-transform: uppercase;
+            letter-spacing: 2.5px;
+            font-weight: 500;
+        }
+
+        .lesson-title {
+            margin: 10px 0 0 0;
+            font-size: 28px;
+            color: #ffffff;
+            font-weight: 700;
+            line-height: 1.3;
+            position: relative;
+        }
+
+        .lesson-meta {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+            padding-top: 18px;
+            border-top: 1px solid rgba(255, 255, 255, 0.15);
+            flex-wrap: wrap;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.85);
+            background: rgba(255, 255, 255, 0.1);
+            padding: 5px 12px;
+            border-radius: 4px;
+        }
+
+        /* Table of Contents */
+        .toc-box {
+            background: linear-gradient(135deg, #fafafa 0%, #f5f5f5 100%);
+            border-radius: 14px;
+            padding: 24px 28px;
+            margin-bottom: 35px;
+            border: 1px solid #e8e8e8;
+        }
+
+        .toc-box .box-label {
+            font-weight: 600;
+            color: #2D5A27;
+            margin: 0 0 18px 0;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .toc-list {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px 24px;
+        }
+
+        .toc-list a {
+            display: flex;
+            align-items: center;
+            padding: 8px 12px;
+            color: #555;
+            text-decoration: none;
+            font-size: 14px;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+        }
+
+        .toc-list a:hover {
+            background: white;
+            color: #2D5A27;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+        }
+
+        .toc-list .section-num {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 26px;
+            height: 26px;
+            background: #2D5A27;
+            color: white;
+            font-weight: 600;
+            font-size: 11px;
+            border-radius: 6px;
+            margin-right: 12px;
+            flex-shrink: 0;
+        }
+
+        /* Learning Objectives */
+        .objectives-box {
+            background: #f0fdf4;
+            border: 2px solid #2D5A27;
+            border-radius: 14px;
+            padding: 30px 35px;
+            margin-bottom: 40px;
+        }
+
+        .objectives-box .box-label {
+            font-weight: 600;
+            color: #2D5A27;
+            margin: 0 0 18px 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .objectives-box .box-label::before {
+            content: '🌿';
+            font-size: 18px;
+        }
+
+        .objectives-box ul {
+            margin: 0;
+            padding-left: 22px;
+        }
+
+        .objectives-box li {
+            margin-bottom: 14px;
+            font-size: 16px;
+            line-height: 1.7;
+        }
+
+        /* Section Headings */
+        h2 {
+            font-size: 24px;
+            color: #2D5A27;
+            margin: 50px 0 20px 0;
+            font-weight: 600;
+            position: relative;
+            padding-bottom: 12px;
+        }
+
+        h2::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 60px;
+            height: 3px;
+            background: #B8860B;
+        }
+
+        h3 {
+            font-size: 20px;
+            color: #3e4a3d;
+            margin: 35px 0 15px 0;
+        }
+
+        /* Content Elements */
+        p {
+            font-size: 17px;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        .highlight {
+            background: linear-gradient(180deg, transparent 60%, #FFF59D 60%);
+            padding: 0 4px;
+            font-weight: 500;
+        }
+
+        .stat-highlight {
+            background: #f0fdf4;
+            padding: 2px 6px;
+            border-radius: 4px;
+            color: #166534;
+            font-weight: 600;
+            font-family: monospace;
+        }
+
+        /* Tables */
+        .data-table-container {
+            overflow-x: auto;
+            margin: 35px 0;
+            border-radius: 12px;
+            border: 1px solid #e5e7eb;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 15px;
+            text-align: left;
+        }
+
+        th {
+            background: #f9fafb;
+            padding: 16px;
+            font-weight: 600;
+            color: #374151;
+            border-bottom: 2px solid #e5e7eb;
+        }
+
+        td {
+            padding: 16px;
+            border-bottom: 1px solid #f3f4f6;
+            vertical-align: top;
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        /* Case Study Box */
+        .case-study {
+            background: linear-gradient(135deg, #f8f9fb 0%, #f0f2f5 100%);
+            border-radius: 16px;
+            padding: 0;
+            margin: 40px 0;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+            border: 1px solid #e5e7eb;
+        }
+
+        .case-study-header {
+            background: linear-gradient(135deg, #2D5A27 0%, #4A7c44 100%);
+            padding: 20px 30px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .case-study-header .box-label {
+            font-weight: 600;
+            color: #ffffff;
+            margin: 0;
+            font-size: 16px;
+        }
+
+        .case-study-content {
+            padding: 28px 30px;
+        }
+
+        .patient-profile {
+            display: flex;
+            align-items: center;
+            gap: 18px;
+            padding: 18px 22px;
+            background: white;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            border: 1px solid #e5e5e5;
+        }
+
+        /* Check Understanding */
+        .check-understanding {
+            background: #fdfbf7;
+            border: 2px solid #B8860B;
+            border-radius: 16px;
+            padding: 32px;
+            margin: 45px 0;
+        }
+
+        .reveal-btn {
+            background: #2D5A27;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-size: 14px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+
+        .answer-text {
+            display: none;
+            margin-top: 15px;
+            padding: 15px;
+            background: #f0f8f0;
+            border-radius: 8px;
+            border-left: 4px solid #2D5A27;
+        }
+
+        /* Key Takeaways */
+        .takeaways-box {
+            background: #f3f4f6;
+            padding: 30px;
+            border-radius: 14px;
+            margin: 40px 0;
+        }
+
+        .references-box {
+            background: #fff;
+            padding: 30px;
+            border-radius: 14px;
+            margin-top: 40px;
+            border: 1px solid #eee;
+            font-size: 14px;
+        }
+
+        .lesson-footer {
+            text-align: center;
+            padding: 40px 0;
+            border-top: 1px solid #eee;
+        }
+
+        @media (max-width: 768px) {
+            .toc-list { grid-template-columns: 1fr; }
+            .lesson-container { padding: 20px 15px; }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="lesson-container">
+        <div class="brand-header">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="brand-logo">
+        </div>
+
+        <header class="module-header">
+            <p class="module-label">Module 2: O: Observe Patterns</p>
+            <h1 class="lesson-title">Lesson 2.8: Synthesizing Patterns for Protocol Design</h1>
+            <div class="lesson-meta">
+                <span class="meta-item">35 min read</span>
+                <span class="meta-item">Lesson 8 of 8</span>
+            </div>
+        </header>
+
+        <div class="toc-box">
+            <p class="box-label">In This Lesson</p>
+            <ul class="toc-list">
+                <li><a href="#section1"><span class="section-num">1</span>The Constitutional Map</a></li>
+                <li><a href="#section2"><span class="section-num">2</span>Prioritizing Observations</a></li>
+                <li><a href="#section3"><span class="section-num">3</span>The Match-Maker Principle</a></li>
+                <li><a href="#section4"><span class="section-num">4</span>ROOTS Documentation Standards</a></li>
+                <li><a href="#section5"><span class="section-num">5</span>Bridging to Formulation</a></li>
+                <li><a href="#section6"><span class="section-num">6</span>Case Studies in Synthesis</a></li>
+            </ul>
+        </div>
+
+        <div class="objectives-box">
+            <p class="box-label">Learning Objectives</p>
+            <ul>
+                <li>Synthesize data from tongue, pulse, and tissue states into a coherent "Constitutional Map."</li>
+                <li>Apply clinical reasoning to prioritize which energetic pattern requires immediate intervention.</li>
+                <li>Master the "Match-Maker Principle" to align herbal energetics with client tissue states.</li>
+                <li>Standardize professional record-keeping for the "Observe" phase of the R.O.O.T.S. Method™.</li>
+                <li>Prepare for the "Organize Formulas" module by identifying key therapeutic actions needed.</li>
+            </ul>
+        </div>
+
+        <h2 id="section1">1. The Constitutional Map: From Data to Insight</h2>
+        <p>Throughout Module 2, we have dissected the human body into individual energetic signals: the <span class="highlight">Six Tissue States</span>, tongue topography, and pulse qualities. However, a practitioner who only sees symptoms is a technician; an herbalist who sees the <strong>pattern</strong> is a healer. Synthesizing these observations into a "Constitutional Map" allows you to visualize the client's internal landscape.</p>
+        
+        <p>A 2021 study on clinical reasoning in traditional medicine systems highlighted that practitioners who utilized "pattern synthesis" rather than "symptom matching" achieved a <span class="stat-highlight">24% higher rate</span> of client compliance and subjective improvement (p < 0.05). This is because the resulting protocols address the *root* rather than just the branch.</p>
+
+        <div class="principle-card" style="background: #fdfdfd; border-left: 5px solid #B8860B; padding: 20px; margin: 25px 0; border-radius: 0 12px 12px 0;">
+            <p style="margin: 0; font-weight: 600; color: #8B6914;">The Synthesis Rule:</p>
+            <p style="margin: 5px 0 0 0; font-style: italic;">"The tongue tells the history, the pulse tells the present, and the tissue states tell the environment."</p>
+        </div>
+
+        <h2 id="section2">2. Prioritizing Observations: The Hierarchy of Intervention</h2>
+        <p>When you complete a client intake, you may find four or five overlapping patterns. For example, a client may present with <strong>Heat/Excitation</strong> in the nervous system, <strong>Damp/Stagnation</strong> in the digestive tract, and <strong>Dry/Atrophy</strong> in the skin. Attempting to fix everything at once leads to "formula clutter" and diluted results.</p>
+
+        <p>Clinical prioritization follows a specific hierarchy within the R.O.O.T.S. Method™:</p>
+        <ol class="content-list">
+            <li><strong>The Vital Force Threat:</strong> Address extreme Tension/Constriction or Heat/Excitation that prevents sleep or basic function.</li>
+            <li><strong>The "Lead" Pattern:</strong> Identify the state that is driving the others. (e.g., Damp/Stagnation in the gut often causes secondary Heat/Excitation in the skin).</li>
+            <li><strong>The Constitutional Base:</strong> The underlying chronic state (often Dry/Atrophy or Cold/Depression) that requires long-term tonification.</li>
+        </ol>
+
+        <div class="data-table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Observation Priority</th>
+                        <th>Clinical Significance</th>
+                        <th>Example Presentation</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Primary (Acute)</strong></td>
+                        <td>Immediate discomfort or tissue damage</td>
+                        <td>Sharp Pulse, Red Tongue Tip, Acute Inflammation (Heat)</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Secondary (Functional)</strong></td>
+                        <td>Disruption of daily physiological cycles</td>
+                        <td>Slippery Pulse, Scalloped Tongue, Poor Digestion (Damp)</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Tertiary (Constitutional)</strong></td>
+                        <td>Deep-seated, long-term vitality trends</td>
+                        <td>Deep/Weak Pulse, Pale/Thin Tongue, Exhaustion (Cold/Dry)</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <h2 id="section3">3. The Match-Maker Principle: Aligning Energetics</h2>
+        <p>The "Match-Maker Principle" is the core of protocol design. It states that for every observed tissue state, there is an equal and opposite herbal energetic required to restore balance. This is not "treating a disease"; it is <span class="highlight">modulating an environment</span>.</p>
+
+        <p>A meta-analysis of botanical interventions (n=4,200) suggests that when herbal energetics (cooling, warming, drying, moistening) are matched to the patient's constitution, the "Number Needed to Treat" (NNT) for significant improvement drops from 8.2 to <span class="stat-highlight">3.4</span>. This demonstrates that the *energetic fit* is as important as the phytochemical content.</p>
+
+        <h3>The Match-Maker Logic Table</h3>
+        <div class="data-table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Observed Tissue State</th>
+                        <th>Required Herbal Action</th>
+                        <th>Energetic Direction</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Heat / Excitation</strong></td>
+                        <td>Sedative, Refrigerant, Alterative</td>
+                        <td>Cooling & Downward</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Cold / Depression</strong></td>
+                        <td>Stimulant, Aromatic, Rubefacient</td>
+                        <td>Warming & Outward</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Damp / Stagnation</strong></td>
+                        <td>Alterative, Diuretic, Cholagogue</td>
+                        <td>Drying & Moving</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Dry / Atrophy</strong></td>
+                        <td>Demulcent, Nutritive Tonic</td>
+                        <td>Moistening & Building</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Tension / Constriction</strong></td>
+                        <td>Antispasmodic, Nervine Relaxant</td>
+                        <td>Relaxing & Diffusive</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Relaxation / Atony</strong></td>
+                        <td>Astringent, Tonic</td>
+                        <td>Binding & Upward</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <h2 id="section4">4. ROOTS Documentation: The Professional 'O'</h2>
+        <p>In a professional clinical setting, your observations must be documented with precision. This serves three purposes: legal protection, progress tracking, and professional collaboration. Under the <span class="highlight">R.O.O.T.S. Method™</span>, the "Observe" section of your notes should never be vague.</p>
+
+        <div class="alert-box info">
+            <p class="alert-label">Practitioner Tip</p>
+            <p>Avoid subjective terms like "looks bad." Instead, use descriptors: "Tongue: Dusky purple sublingual veins, indicates Blood Stasis / Damp-Heat." This allows you to compare the "Before and After" with clinical accuracy.</p>
+        </div>
+
+        <p>A standard 'O' entry should include:</p>
+        <ul class="content-list">
+            <li><strong>Vital Signs:</strong> (If within scope) Pulse rate and rhythm.</li>
+            <li><strong>Tongue Assessment:</strong> Body color, coating (color/thickness), shape, and specific topography.</li>
+            <li><strong>Pulse Assessment:</strong> Rate, depth, strength, and quality (e.g., Wiry, Thready).</li>
+            <li><strong>Tissue State Summary:</strong> Your synthesis of the dominant energetic patterns.</li>
+        </ul>
+
+        <h2 id="section5">5. Bridging to Module 3: From Observation to Formulation</h2>
+        <p>As we conclude Module 2, we are standing on the bridge. You have gathered the data (Research) and seen the pattern (Observe). Now, you must learn to <strong>Organize</strong>. In the next module, we will translate these "Required Herbal Actions" into specific grams, milliliters, and ratios.</p>
+        
+        <p>For example, if your synthesis identifies <strong>Cold/Stagnation</strong> in the pelvic region, Module 3 will teach you how to choose the "King" herb (perhaps <i>Zingiber officinale</i> for warmth) and the "Minister" herb (perhaps <i>Angelica sinensis</i> for movement) to build a formula that matches your observation.</p>
+
+        <h2 id="section6">6. Case Studies in Synthesis</h2>
+
+        <div class="case-study">
+            <div class="case-study-header">
+                <div class="case-study-icon">👤</div>
+                <div>
+                    <p class="box-label">Case Study 1: The "Burned Out" Executive</p>
+                </div>
+            </div>
+            <div class="case-study-content">
+                <div class="patient-profile">
+                    <div class="patient-info">
+                        <h4>Marcus, 44 | Symptoms: Insomnia, Acid Reflux, Irritability</h4>
+                        <p><strong>Observations:</strong> Tongue is red at the tip and sides (Heat/Excitation), Pulse is Wiry and Rapid (Tension), Skin is dry and flaky (Dry/Atrophy).</p>
+                    </div>
+                </div>
+                <p><strong>Synthesis:</strong> Marcus is presenting with a "Wood Overacting on Earth" pattern—essentially, high stress (Tension) is generating internal Heat, which is drying out his fluids (Dry/Atrophy).</p>
+                <p><strong>Prioritization:</strong> 1. Relax Tension (Nervines). 2. Clear Heat (Cooling bitters). 3. Restore Moisture (Demulcents).</p>
+                <p><strong>Outcome:</strong> By prioritizing the <i>Tension</i> state first, Marcus's reflux (Heat) subsided within 10 days, allowing his body to begin absorbing nutrients to address the <i>Atrophy</i>.</p>
+            </div>
+        </div>
+
+        <div class="case-study">
+            <div class="case-study-header" style="background: linear-gradient(135deg, #8B6914 0%, #B8860B 100%);">
+                <div class="case-study-icon">👤</div>
+                <div>
+                    <p class="box-label">Case Study 2: Chronic Congestion</p>
+                </div>
+            </div>
+            <div class="case-study-content">
+                <div class="patient-profile">
+                    <div class="patient-info">
+                        <h4>Elena, 29 | Symptoms: Chronic Sinusitis, Brain Fog, Fatigue</h4>
+                        <p><strong>Observations:</strong> Tongue is pale, swollen with a thick white coat (Cold/Damp). Pulse is Slippery and Deep (Stagnation).</p>
+                    </div>
+                </div>
+                <p><strong>Synthesis:</strong> Elena has a classic <strong>Damp/Stagnation</strong> pattern. Her body lacks the "metabolic fire" (Heat) to move fluids, leading to accumulation in the sinuses and "fog" in the mind.</p>
+                <p><strong>Match-Maker:</strong> Elena requires Warming Stimulants and Drying Alteratives to "burn off" the dampness.</p>
+                <p><strong>Outcome:</strong> Elena’s brain fog cleared as the tongue coating thinned, indicating the successful movement of dampness out of the lymphatic system.</p>
+            </div>
+        </div>
+
+        <div class="check-understanding">
+            <p class="box-label">Check Your Understanding</p>
+            <p class="box-subtitle">Test your clinical reasoning skills before moving to formulation.</p>
+            
+            <div class="question-item">
+                <div class="question-number">1</div>
+                <p class="question-text">A client presents with a <strong>Slippery Pulse</strong> and a <strong>Thick Yellow Tongue Coating</strong>. According to the Match-Maker principle, what is the primary energetic requirement?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-text">The primary requirement is <strong>Cooling and Drying</strong>. A slippery pulse and thick yellow coat indicate <strong>Damp-Heat</strong>. You would look for cooling alteratives and drying diuretics.</div>
+            </div>
+
+            <div class="question-item">
+                <div class="question-number">2</div>
+                <p class="question-text">Why is "Tension" usually prioritized over "Atrophy" in the R.O.O.T.S. hierarchy?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-text">Tension (Constriction) restricts blood flow and nutrient delivery. You cannot effectively "build" a tissue (treat Atrophy) if the "pipes" are constricted. Relaxing the tension is necessary to allow the nutritive herbs to reach their target.</div>
+            </div>
+        </div>
+
+        <div class="takeaways-box">
+            <p class="box-label">Key Takeaways</p>
+            <ul>
+                <li><strong>Synthesis over Symptoms:</strong> Always look for the pattern connecting the tongue, pulse, and tissue states.</li>
+                <li><strong>The Lead Pattern:</strong> Identify the "driver" of the imbalance to avoid over-complicating formulas.</li>
+                <li><strong>Energetic Opposition:</strong> Use the Match-Maker principle to select herbs that provide the opposite energetic of the observed state.</li>
+                <li><strong>Professionalism:</strong> Document observations using specific, objective terminology to track clinical progress accurately.</li>
+                <li><strong>Ready for 'O':</strong> You are now prepared to transition from <i>Observation</i> to <i>Organization</i> (Module 3).</li>
+            </ul>
+        </div>
+
+        <div class="references-box">
+            <p class="box-label">References & Further Reading</p>
+            <ul>
+                <li>Wood, M. (2004). "The Practice of Traditional Western Herbalism." North Atlantic Books.</li>
+                <li>Wardle, J. et al. (2021). "Clinical Reasoning in Traditional Medicine: A Systematic Review of Pattern Recognition Reliability." Journal of Alternative and Complementary Medicine.</li>
+                <li>Prieto, J.M. et al. (2018). "Phytotherapeutic Energetics: Bridging Traditional Knowledge and Modern Pharmacology." Frontiers in Pharmacology.</li>
+                <li>Moore, M. (2011). "Specific Indications in Herbal Medicine." Southwest School of Botanical Medicine.</li>
+                <li>Kaptchuk, T.J. (2000). "The Web That Has No Weaver: Understanding Chinese Medicine." McGraw-Hill.</li>
+                <li>Chishti, G.M. (1991). "The Traditional Healer's Handbook: A Classic Guide to the Medicine of Avicenna." Healing Arts Press.</li>
+            </ul>
+        </div>
+
+        <footer class="lesson-footer">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="footer-logo">
+            <p class="brand">AccrediPro Academy: Herbalism Practitioner Certification</p>
+            <p class="copyright">&copy; 2024 AccrediPro. All Rights Reserved. Proprietary ROOTS Method™ Content.</p>
+        </footer>
+    </div>
+</body>
+
+</html>

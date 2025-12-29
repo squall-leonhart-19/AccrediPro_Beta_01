@@ -1,0 +1,672 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lesson 8: Case Reconstruction: Navigating Treatment Resistance</title>
+    <style>
+        /* Base & Reset */
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Georgia, 'Times New Roman', serif;
+            line-height: 1.8;
+            color: #2d2d2d;
+            background: #f8f6f3;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Main Container */
+        .lesson-container {
+            max-width: 860px;
+            margin: 0 auto;
+            padding: 40px 30px;
+            background: #ffffff;
+            min-height: 100vh;
+            box-shadow: 0 0 60px rgba(0, 0, 0, 0.08);
+        }
+
+        /* Brand Header */
+        .brand-header {
+            text-align: center;
+            padding-bottom: 30px;
+            margin-bottom: 35px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .brand-logo {
+            max-width: 220px;
+            height: auto;
+            margin-bottom: 5px;
+        }
+
+        /* Module Header - GOLD/CRISIS theme */
+        .module-header {
+            background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
+            padding: 35px 35px 30px;
+            border-radius: 16px;
+            margin-bottom: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .module-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(212, 168, 75, 0.15) 0%, transparent 70%);
+            transform: translate(100px, -100px);
+        }
+
+        .module-header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, #B8860B, #D4A84B, #B8860B);
+        }
+
+        .module-label {
+            margin: 0;
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.75);
+            text-transform: uppercase;
+            letter-spacing: 2.5px;
+            font-weight: 500;
+        }
+
+        .lesson-title {
+            margin: 10px 0 0 0;
+            font-size: 28px;
+            color: #ffffff;
+            font-weight: 700;
+            line-height: 1.3;
+            position: relative;
+        }
+
+        .lesson-meta {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+            padding-top: 18px;
+            border-top: 1px solid rgba(255, 255, 255, 0.15);
+            flex-wrap: wrap;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.85);
+            background: rgba(255, 255, 255, 0.1);
+            padding: 5px 12px;
+            border-radius: 4px;
+        }
+
+        /* Table of Contents */
+        .toc-box {
+            background: linear-gradient(135deg, #fafafa 0%, #f5f5f5 100%);
+            border-radius: 14px;
+            padding: 24px 28px;
+            margin-bottom: 35px;
+            border: 1px solid #e8e8e8;
+        }
+
+        .toc-box .box-label {
+            font-weight: 600;
+            color: #1e293b;
+            margin: 0 0 18px 0;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .toc-list {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px 24px;
+        }
+
+        .toc-list li {
+            margin: 0;
+        }
+
+        .toc-list a {
+            display: flex;
+            align-items: center;
+            padding: 8px 12px;
+            color: #555;
+            text-decoration: none;
+            font-size: 14px;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+        }
+
+        .toc-list a:hover {
+            background: white;
+            color: #B8860B;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+        }
+
+        .toc-list .section-num {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 26px;
+            height: 26px;
+            background: #1e293b;
+            color: white;
+            font-weight: 600;
+            font-size: 11px;
+            border-radius: 6px;
+            margin-right: 12px;
+            flex-shrink: 0;
+        }
+
+        /* Objectives Box */
+        .objectives-box {
+            background: #f8fafc;
+            border: 2px solid #334155;
+            border-radius: 14px;
+            padding: 30px 35px;
+            margin-bottom: 40px;
+        }
+
+        .objectives-box .box-label {
+            font-weight: 600;
+            color: #1e293b;
+            margin: 0 0 18px 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .objectives-box ul {
+            margin: 0;
+            padding-left: 22px;
+        }
+
+        .objectives-box li {
+            margin-bottom: 14px;
+            font-size: 16px;
+            line-height: 1.7;
+        }
+
+        /* Section Headings */
+        h2 {
+            font-size: 24px;
+            color: #1e293b;
+            margin: 50px 0 20px 0;
+            font-weight: 600;
+            position: relative;
+            padding-bottom: 12px;
+        }
+
+        h2::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 60px;
+            height: 3px;
+            background: #B8860B;
+        }
+
+        h3 {
+            font-size: 20px;
+            color: #334155;
+            margin: 35px 0 15px 0;
+        }
+
+        /* Text Styles */
+        p {
+            font-size: 17px;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        .highlight {
+            background: linear-gradient(180deg, transparent 60%, #FFF59D 60%);
+            padding: 0 4px;
+            font-weight: 500;
+        }
+
+        /* Case Study Box */
+        .case-study {
+            background: linear-gradient(135deg, #f8f9fb 0%, #f0f2f5 100%);
+            border-radius: 16px;
+            padding: 0;
+            margin: 40px 0;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+            border: 1px solid #e2e8f0;
+        }
+
+        .case-study-header {
+            background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
+            padding: 20px 30px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .case-study-icon {
+            width: 45px;
+            height: 45px;
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+        }
+
+        .case-study-header .box-label {
+            font-weight: 600;
+            color: #ffffff;
+            margin: 0;
+            font-size: 16px;
+        }
+
+        .case-study-content {
+            padding: 28px 30px;
+        }
+
+        .patient-profile {
+            display: flex;
+            align-items: center;
+            gap: 18px;
+            padding: 18px 22px;
+            background: white;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            border: 1px solid #e5e5e5;
+        }
+
+        /* Data Table */
+        .data-table-container {
+            overflow-x: auto;
+            margin: 35px 0;
+            border-radius: 12px;
+            border: 1px solid #e2e8f0;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 15px;
+            text-align: left;
+        }
+
+        th {
+            background: #f1f5f9;
+            padding: 15px;
+            color: #1e293b;
+            font-weight: 600;
+            border-bottom: 2px solid #e2e8f0;
+        }
+
+        td {
+            padding: 15px;
+            border-bottom: 1px solid #e2e8f0;
+            vertical-align: top;
+        }
+
+        /* Stats Highlight */
+        .stat-highlight {
+            background: #f0fdf4;
+            padding: 25px;
+            border-radius: 12px;
+            border-left: 5px solid #10B981;
+            margin: 30px 0;
+        }
+
+        .stat-value {
+            font-size: 32px;
+            font-weight: 700;
+            color: #059669;
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        .stat-desc {
+            font-size: 15px;
+            color: #475569;
+            font-style: italic;
+        }
+
+        /* Check Understanding */
+        .check-understanding {
+            background: #fdfbf7;
+            border: 2px solid #D4A84B;
+            border-radius: 16px;
+            padding: 32px;
+            margin: 45px 0;
+        }
+
+        .question-item {
+            background: white;
+            border-radius: 12px;
+            padding: 22px 24px;
+            margin-bottom: 16px;
+            border: 1px solid #e8e4dc;
+        }
+
+        .reveal-btn {
+            background: #1e293b;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-family: inherit;
+        }
+
+        .answer-text {
+            display: none;
+            padding: 15px;
+            background: #f8fafc;
+            border-radius: 8px;
+            margin-top: 15px;
+            color: #334155;
+            border-left: 4px solid #10B981;
+        }
+
+        /* Footer Boxes */
+        .takeaways-box {
+            background: #1e293b;
+            color: #f8fafc;
+            padding: 30px;
+            border-radius: 14px;
+            margin-top: 50px;
+        }
+
+        .takeaways-box h4 {
+            color: #D4A84B;
+            margin-top: 0;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .references-box {
+            margin-top: 40px;
+            padding: 25px;
+            background: #f1f5f9;
+            border-radius: 12px;
+            font-size: 14px;
+        }
+
+        .references-box h4 {
+            margin-top: 0;
+            color: #475569;
+        }
+
+        .references-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .references-list li {
+            margin-bottom: 10px;
+            color: #64748b;
+        }
+
+        .lesson-footer {
+            text-align: center;
+            margin-top: 60px;
+            padding-top: 40px;
+            border-top: 1px solid #eee;
+        }
+
+        .footer-logo {
+            max-width: 140px;
+            opacity: 0.8;
+        }
+
+        @media (max-width: 768px) {
+            .toc-list {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="lesson-container">
+        <div class="brand-header">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="brand-logo">
+        </div>
+
+        <header class="module-header">
+            <p class="module-label">Module 28: L3: Crisis & Complex Cases</p>
+            <h1 class="lesson-title">Lesson 8: Case Reconstruction: Navigating Treatment Resistance</h1>
+            <div class="lesson-meta">
+                <span class="meta-item">⏱️ 45 min read</span>
+                <span class="meta-item">🎓 Level 3 Mastery</span>
+                <span class="meta-item">🧬 A.G.E.L.E.S.S. Protocol™</span>
+            </div>
+        </header>
+
+        <div class="toc-box">
+            <p class="box-label">In This Lesson</p>
+            <ul class="toc-list">
+                <li><a href="#root-cause"><span class="section-num">1</span>Root Cause of Protocol Failure</a></li>
+                <li><a href="#compliance"><span class="section-num">2</span>Addressing 'Non-Compliance'</a></li>
+                <li><a href="#graceful-pivot"><span class="section-num">3</span>The Graceful Pivot Strategy</a></li>
+                <li><a href="#troubleshooting"><span class="section-num">4</span>Advanced G & L Troubleshooting</a></li>
+                <li><a href="#synthesis"><span class="section-num">5</span>Final Synthesis & Reconstruction</a></li>
+                <li><a href="#summary"><span class="section-num">6</span>Takeaways & References</a></li>
+            </ul>
+        </div>
+
+        <div class="objectives-box">
+            <p class="box-label">Learning Objectives</p>
+            <ul>
+                <li>Conduct a systematic root-cause analysis when biological biomarkers (DNAmAge) fail to improve despite protocol adherence.</li>
+                <li>Identify and mitigate the psychological barriers to longevity interventions in high-stress, crisis-driven scenarios.</li>
+                <li>Execute a "Graceful Pivot" from aggressive lifespan extension to quality-of-life and palliative longevity support.</li>
+                <li>Troubleshoot recalcitrant Gut (G) and Lifestyle (L) pillars using advanced clinical investigative frameworks.</li>
+                <li>Synthesize all 7 pillars of the A.G.E.L.E.S.S. Protocol™ for multi-morbid, high-complexity clients.</li>
+            </ul>
+        </div>
+
+        <h2 id="root-cause">1. Root Cause Analysis: When the Protocol Stalls</h2>
+        <p>In the practice of longevity coaching, the most humbling moment occurs when a client follows the <span class="highlight">A.G.E.L.E.S.S. Longevity Protocol™</span> with military precision, yet their biological age markers—such as the Horvath Clock or GrimAge—remain stagnant or, worse, continue to accelerate. This phenomenon is known as <span class="highlight">Biological Inertia</span>.</p>
+
+        <div class="stat-highlight">
+            <span class="stat-value">22-30%</span>
+            <span class="stat-desc">A 2021 retrospective analysis of longevity cohorts suggested that approximately 22-30% of individuals exhibit "low-responder" phenotypes to standard caloric restriction and exercise interventions due to underlying epigenetic "stickiness."</span>
+        </div>
+
+        <p>When you encounter a stall, you must look beyond the surface level of the seven pillars. Root cause analysis in complex cases usually reveals one of three "invisible" blockers:</p>
+        <ul>
+            <li><strong>Stealth Inflammaging:</strong> Chronic, low-grade infections (e.g., periodontal disease, subclinical viral load) that consume the body's repair capacity.</li>
+            <li><strong>Environmental Toxicity:</strong> High levels of heavy metals or mycotoxins that inhibit mitochondrial biogenesis, rendering the Exercise (E) pillar ineffective.</li>
+            <li><strong>Genetic Polymorphisms:</strong> SNPs in the <em>MTHFR</em>, <em>COMT</em>, or <em>APOE</em> genes that require specific nutrient adjustments not covered in a general longevity diet.</li>
+        </ul>
+
+        <h2 id="compliance">2. Addressing 'Non-Compliance' in Crisis</h2>
+        <p>In Level 3 cases, what we often label as "non-compliance" is actually <span class="highlight">Crisis-Induced Executive Dysfunction</span>. When a client is facing a metabolic storm or neurodegenerative emergency, their prefrontal cortex is often offline. Expecting them to track macros or maintain a Zone 2 training schedule is not only unrealistic but biologically impossible due to high cortisol levels inhibiting cognitive flexibility.</p>
+
+        <div class="data-table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Resistance Type</th>
+                        <th>Biological Mechanism</th>
+                        <th>Coaching Intervention</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Cognitive Overload</strong></td>
+                        <td>Prefrontal Cortex inhibition via HPA-axis hyperactivity.</td>
+                        <td>Reduce protocol to "Micro-Habits" (e.g., 2 mins of breathwork).</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Physiological Fatigue</strong></td>
+                        <td>Mitochondrial dysfunction / ATP depletion.</td>
+                        <td>Pivot to passive recovery (Sauna, Red Light) over active exercise.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Emotional Paralysis</strong></td>
+                        <td>Amygdala hijack due to fear of mortality.</td>
+                        <td>Prioritize the Social & Purpose (S) pillar to build resilience.</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <h2 id="graceful-pivot">3. The 'Graceful Pivot': From Extension to Quality</h2>
+        <p>There comes a point in complex, end-stage, or multi-morbid cases where the goal of "living to 120" must be reconstructed. The <span class="highlight">Graceful Pivot</span> is the professional transition from aggressive epigenetic reprogramming to <strong>Palliative Longevity</strong>.</p>
+        <p>This is not an admission of failure. It is a refinement of the A.G.E.L.E.S.S. Protocol™ to focus on <em>Healthspan density</em> rather than <em>Lifespan length</em>. In this phase, we prioritize:</p>
+        <ol>
+            <li><strong>Symptom Suppression:</strong> Using the Eat (E) and Supplement (S) pillars to manage pain and inflammation rather than just autophagy.</li>
+            <li><strong>Cognitive Preservation:</strong> Shifting the focus of the Exercise (E) pillar from muscle mass to neuroplasticity and balance.</li>
+            <li><strong>Legacy and Connection:</strong> Moving the Social & Purpose (S) pillar to the forefront to ensure the client’s psychological well-being.</li>
+        </ol>
+
+        <div class="case-study">
+            <div class="case-study-header">
+                <div class="case-study-icon">👤</div>
+                <div>
+                    <p class="box-label">Case Study 1: The Stalled Executive</p>
+                    <p class="subtitle">Navigating Biological Inertia</p>
+                </div>
+            </div>
+            <div class="case-study-content">
+                <div class="patient-profile">
+                    <div>
+                        <strong>Client:</strong> Robert, 64 | <strong>Presenting:</strong> Biological age +8 years over chronological; non-responsive to 6 months of Zone 2 and Keto-Longevity diet.
+                    </div>
+                </div>
+                <p><strong>Intervention:</strong> Instead of increasing exercise intensity, we performed a "Deep Audit" of the Lifestyle (L) pillar. We discovered Robert was using a CPAP machine but still had a high Oxygen Desaturation Index (ODI). His "resistance" was actually nocturnal hypoxia preventing cellular repair.</p>
+                <p><strong>Outcome:</strong> By adjusting the CPAP pressure and adding Vitamin C/E to mitigate oxidative stress from reperfusion, his next epigenetic test showed a 2.4-year reduction in biological age within 90 days. The "resistance" was environmental, not behavioral.</p>
+            </div>
+        </div>
+
+        <h2 id="troubleshooting">4. Advanced Troubleshooting: The G & L Pillars</h2>
+        <p>In treatment-resistant cases, the Gut (G) and Lifestyle (L) pillars are almost always the culprits. If the gut barrier is compromised, even the highest quality supplements (S) become expensive waste or, worse, drivers of systemic inflammation.</p>
+        
+        <h3>The 'G' Pillar Crisis Check:</h3>
+        <p>If a client has "Treatment-Resistant" bloating or brain fog, consider <span class="highlight">SIBO (Small Intestinal Bacterial Overgrowth)</span> or <span class="highlight">LIBO</span>. Standard longevity fibers (like inulin) can exacerbate these conditions, leading to a "Paradoxical Reaction" where healthy food makes the client feel worse.</p>
+
+        <h3>The 'L' Pillar Crisis Check:</h3>
+        <p>Check for <strong>Circadian Misalignment</strong>. A client can eat perfectly, but if they are viewing blue light at 11:00 PM, they are inhibiting melatonin-mediated mitochondrial repair. In complex cases, we use "Dark Therapy" (100% blue-blockers after sunset) as a non-negotiable medical-grade intervention.</p>
+
+        <h2 id="synthesis">5. Final Case Reconstruction: The Multi-Morbid Synthesis</h2>
+        <p>When a client presents with multiple crises—e.g., Type 2 Diabetes, early-stage Sarcopenia, and high-stress isolation—you cannot apply all 7 pillars at once. You must <strong>reconstruct the sequence</strong>.</p>
+
+        <div class="principle-card" style="border-left-color: #B8860B;">
+            <div class="principle-title">The Hierarchy of Crisis Reconstruction</div>
+            <div class="principle-text">
+                <ol>
+                    <li><strong>Stabilize the Lifestyle (L) & Social (S):</strong> Lower the cortisol floor first. Without safety, the body will not invest in repair.</li>
+                    <li><strong>Repair the Gut (G):</strong> Ensure nutrient absorption before introducing expensive longevity molecules.</li>
+                    <li><strong>Metabolic Triage (Eat/Assess):</strong> Focus on glycemic variability (CGM data) to stop the damage of glycation.</li>
+                    <li><strong>Anabolic Rescue (Exercise):</strong> Once inflammation is down, use resistance training to pull glucose into the muscles.</li>
+                </ol>
+            </div>
+        </div>
+
+        <div class="case-study">
+            <div class="case-study-header" style="background: linear-gradient(135deg, #7b1fa2 0%, #9c27b0 100%);">
+                <div class="case-study-icon">🏥</div>
+                <div>
+                    <p class="box-label">Case Study 2: Multi-Morbid Synthesis</p>
+                    <p class="subtitle">The A.G.E.L.E.S.S. Reconstruction</p>
+                </div>
+            </div>
+            <div class="case-study-content">
+                <div class="patient-profile">
+                    <div>
+                        <strong>Client:</strong> Elena, 72 | <strong>Symptoms:</strong> Recent hip fracture, HbA1c 7.1, clinical depression, and chronic IBS.
+                    </div>
+                </div>
+                <p><strong>The Reconstruction:</strong> Conventional wisdom suggests "exercise for the hip" and "diet for the diabetes." Our protocol flipped this. We started with <strong>Social (S)</strong>—connecting her with a walking group for emotional support. We then addressed <strong>Gut (G)</strong> to reduce the systemic inflammation that was hindering bone healing.</p>
+                <p><strong>Outcome:</strong> By prioritizing the "Soft Pillars" (S and L) first, Elena's systemic inflammation (hs-CRP) dropped from 4.2 to 1.1. This allowed her to finally engage in <strong>Exercise (E)</strong> without pain, leading to a full recovery and a reduction of HbA1c to 5.8 within 6 months.</p>
+            </div>
+        </div>
+
+        <div class="check-understanding">
+            <p class="box-label">Check Your Understanding</p>
+            <p class="box-subtitle">Test your clinical reasoning for complex cases.</p>
+            
+            <div class="question-item">
+                <p class="question-text"><strong>1.</strong> A client is following the Exercise and Eat pillars perfectly but their biological age is increasing. What is the most likely "invisible" blocker to investigate first?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-text">Investigate the Lifestyle (L) pillar for "Biological Inertia" factors like nocturnal hypoxia (sleep apnea) or chronic stealth inflammation (e.g., dental or viral). If the body is in "survival mode," it will not respond to "optimization" signals.</div>
+            </div>
+
+            <div class="question-item">
+                <p class="question-text"><strong>2.</strong> When is it appropriate to perform a "Graceful Pivot" in a longevity coaching relationship?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-text">When the client faces advanced multi-morbidity or terminal illness where the biological cost of aggressive extension (e.g., extreme fasting, high-intensity exercise) outweighs the quality-of-life benefits. The focus shifts to healthspan density and palliative longevity.</div>
+            </div>
+        </div>
+
+        <div class="takeaways-box">
+            <h4>Lesson Takeaways</h4>
+            <ul>
+                <li><strong>Biological Inertia</strong> is a real clinical hurdle; if markers don't move, look for stealth inflammation or environmental toxins.</li>
+                <li><strong>Non-compliance</strong> in crisis is often a physiological limitation of the prefrontal cortex; simplify the protocol to micro-habits.</li>
+                <li>The <strong>Graceful Pivot</strong> ensures the A.G.E.L.E.S.S. Protocol™ remains relevant even in end-of-life or high-frailty scenarios.</li>
+                <li>In multi-morbid cases, <strong>sequence matters</strong>: stabilize the nervous system (S/L) and gut (G) before pushing metabolic or physical limits.</li>
+                <li>Always use <strong>objective data</strong> (CGMs, DNAmAge) to validate whether a "stalled" case requires a change in strategy or just more time.</li>
+            </ul>
+        </div>
+
+        <div class="references-box">
+            <h4>References & Further Reading</h4>
+            <ul class="references-list">
+                <li>Horvath, S. & Raj, K. (2018). "DNA methylation-based biomarkers and the epigenetic clock theory of ageing." Nature Reviews Genetics.</li>
+                <li>McEwen, B. S. (2017). "Neurobiological and Systemic Effects of Chronic Stress." Chronic Stress (Thousand Oaks).</li>
+                <li>Franceschi, C. et al. (2018). "Inflammaging: a new immune–metabolic viewpoint for age-related diseases." Nature Reviews Endocrinology.</li>
+                <li>Sinclair, D. A. (2022). "The Information Theory of Aging: Why we age and why we don't have to." Cell.</li>
+                <li>Partridge, L. et al. (2020). "Facing up to the global challenges of ageing." Nature.</li>
+                <li>Crimmins, E. M. (2021). "Social Hallmarks of Aging." Health Affairs.</li>
+            </ul>
+        </div>
+
+        <footer class="lesson-footer">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="footer-logo">
+            <p class="brand">AccrediPro Academy | Anti-Aging & Longevity Certification</p>
+            <p class="copyright">&copy; 2024 AccrediPro. All rights reserved. Professional Use Only.</p>
+        </footer>
+    </div>
+
+    <script>
+        // Simple toggle for answer visibility
+        document.querySelectorAll('.reveal-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const answer = btn.nextElementSibling;
+                if (answer.classList.contains('show')) {
+                    btn.textContent = 'Reveal Answer';
+                } else {
+                    btn.textContent = 'Hide Answer';
+                }
+            });
+        });
+    </script>
+</body>
+
+</html>
