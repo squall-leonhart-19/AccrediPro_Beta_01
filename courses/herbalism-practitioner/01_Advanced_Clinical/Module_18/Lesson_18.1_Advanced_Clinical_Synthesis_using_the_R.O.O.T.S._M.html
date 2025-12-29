@@ -1,0 +1,644 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lesson 18.1: Advanced Clinical Synthesis using the R.O.O.T.S. Method™</title>
+    <style>
+        /* Base & Reset */
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Georgia, 'Times New Roman', serif;
+            line-height: 1.8;
+            color: #2d2d2d;
+            background: #f8f6f3;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Main Container */
+        .lesson-container {
+            max-width: 860px;
+            margin: 0 auto;
+            padding: 40px 30px;
+            background: #ffffff;
+            min-height: 100vh;
+            box-shadow: 0 0 60px rgba(0, 0, 0, 0.08);
+        }
+
+        /* Brand Header */
+        .brand-header {
+            text-align: center;
+            padding-bottom: 30px;
+            margin-bottom: 35px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .brand-logo {
+            max-width: 220px;
+            height: auto;
+            margin-bottom: 5px;
+        }
+
+        /* Module Header - DEEP BLUE theme for Advanced Synthesis */
+        .module-header {
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+            padding: 35px 35px 30px;
+            border-radius: 16px;
+            margin-bottom: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .module-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+            transform: translate(100px, -100px);
+        }
+
+        .module-header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, #B8860B, #D4A84B, #B8860B);
+        }
+
+        .module-label {
+            margin: 0;
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.75);
+            text-transform: uppercase;
+            letter-spacing: 2.5px;
+            font-weight: 500;
+        }
+
+        .lesson-title {
+            margin: 10px 0 0 0;
+            font-size: 28px;
+            color: #ffffff;
+            font-weight: 700;
+            line-height: 1.3;
+            position: relative;
+        }
+
+        .lesson-meta {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+            padding-top: 18px;
+            border-top: 1px solid rgba(255, 255, 255, 0.15);
+            flex-wrap: wrap;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.85);
+            background: rgba(255, 255, 255, 0.1);
+            padding: 5px 12px;
+            border-radius: 4px;
+        }
+
+        /* Table of Contents */
+        .toc-box {
+            background: linear-gradient(135deg, #fafafa 0%, #f5f5f5 100%);
+            border-radius: 14px;
+            padding: 24px 28px;
+            margin-bottom: 35px;
+            border: 1px solid #e8e8e8;
+        }
+
+        .toc-box .box-label {
+            font-weight: 600;
+            color: #1e3a8a;
+            margin: 0 0 18px 0;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .toc-list {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px 24px;
+        }
+
+        .toc-list li {
+            margin: 0;
+        }
+
+        .toc-list a {
+            display: flex;
+            align-items: center;
+            padding: 8px 12px;
+            color: #555;
+            text-decoration: none;
+            font-size: 14px;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+        }
+
+        .toc-list a:hover {
+            background: white;
+            color: #1e3a8a;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+        }
+
+        .toc-list .section-num {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 26px;
+            height: 26px;
+            background: #1e3a8a;
+            color: white;
+            font-weight: 600;
+            font-size: 11px;
+            border-radius: 6px;
+            margin-right: 12px;
+            flex-shrink: 0;
+        }
+
+        /* Learning Objectives */
+        .objectives-box {
+            background: #f0f7ff;
+            border: 2px solid #3b82f6;
+            border-radius: 14px;
+            padding: 30px 35px;
+            margin-bottom: 40px;
+        }
+
+        .objectives-box .box-label {
+            font-weight: 600;
+            color: #1e3a8a;
+            margin: 0 0 18px 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .objectives-box .box-label::before {
+            content: '⚖️';
+            font-size: 18px;
+        }
+
+        .objectives-box ul {
+            margin: 0;
+            padding-left: 22px;
+        }
+
+        .objectives-box li {
+            margin-bottom: 14px;
+            font-size: 16px;
+            line-height: 1.7;
+        }
+
+        /* Section Headings */
+        h2 {
+            font-size: 24px;
+            color: #1e3a8a;
+            margin: 50px 0 20px 0;
+            font-weight: 600;
+            position: relative;
+            padding-bottom: 12px;
+        }
+
+        h2::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 60px;
+            height: 3px;
+            background: #B8860B;
+        }
+
+        /* Highlights */
+        .highlight {
+            background: linear-gradient(180deg, transparent 60%, #FFF59D 60%);
+            padding: 0 4px;
+            font-weight: 500;
+        }
+
+        /* Case Study Box */
+        .case-study {
+            background: linear-gradient(135deg, #f8f9fb 0%, #f0f2f5 100%);
+            border-radius: 16px;
+            padding: 0;
+            margin: 40px 0;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+        }
+
+        .case-study-header {
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+            padding: 20px 30px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .case-study-header .box-label {
+            font-weight: 600;
+            color: #ffffff;
+            margin: 0;
+            font-size: 16px;
+        }
+
+        .case-study-content {
+            padding: 28px 30px;
+        }
+
+        .patient-profile {
+            display: flex;
+            align-items: center;
+            gap: 18px;
+            padding: 18px 22px;
+            background: white;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            border: 1px solid #e5e5e5;
+        }
+
+        /* Statistics Highlight */
+        .stat-highlight {
+            background: #fff8e1;
+            padding: 20px;
+            border-radius: 12px;
+            border: 1px solid #ffe082;
+            margin: 25px 0;
+            font-weight: 500;
+            color: #7f5f00;
+            text-align: center;
+            font-size: 18px;
+        }
+
+        /* Table Styling */
+        .data-table-container {
+            overflow-x: auto;
+            margin: 30px 0;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 15px;
+            background: white;
+        }
+
+        th {
+            background: #1e3a8a;
+            color: white;
+            padding: 15px;
+            text-align: left;
+        }
+
+        td {
+            padding: 15px;
+            border: 1px solid #eee;
+        }
+
+        tr:nth-child(even) {
+            background: #f9f9f9;
+        }
+
+        /* Key Terms Box */
+        .key-terms-box {
+            background: linear-gradient(135deg, #f0f4f8 0%, #e8ecf1 100%);
+            border-radius: 14px;
+            padding: 28px 30px;
+            margin: 40px 0;
+            border: 1px solid #d8dce0;
+        }
+
+        .key-terms-box .box-label {
+            font-weight: 600;
+            color: #1e3a8a;
+            margin: 0 0 18px 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .terms-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 16px;
+        }
+
+        .term-item {
+            background: white;
+            padding: 16px 18px;
+            border-radius: 10px;
+            border-left: 4px solid #3b82f6;
+        }
+
+        .term-item .term {
+            font-weight: 700;
+            color: #1e3a8a;
+            font-size: 15px;
+            margin: 0 0 6px 0;
+        }
+
+        /* Check Understanding Box */
+        .check-understanding {
+            background: linear-gradient(135deg, #fdfbf7 0%, #f9f5ed 100%);
+            border: 2px solid #B8860B;
+            border-radius: 16px;
+            padding: 32px;
+            margin: 45px 0;
+        }
+
+        .reveal-btn {
+            background: #1e3a8a;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-size: 14px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+
+        .answer-text {
+            display: none;
+            margin-top: 15px;
+            padding: 15px;
+            background: #eef2ff;
+            border-radius: 8px;
+            color: #1e3a8a;
+        }
+
+        /* Takeaways & References */
+        .takeaways-box {
+            background: #f1f5f9;
+            padding: 30px;
+            border-radius: 14px;
+            margin-top: 40px;
+        }
+
+        .references-box {
+            background: #ffffff;
+            padding: 30px;
+            border-top: 1px solid #eee;
+            margin-top: 40px;
+            font-size: 14px;
+            color: #666;
+        }
+
+        .references-box h3 {
+            color: #1e3a8a;
+            font-size: 18px;
+            margin-bottom: 15px;
+        }
+
+        .footer-logo {
+            max-width: 140px;
+            opacity: 0.8;
+            margin-bottom: 10px;
+        }
+
+        .lesson-footer {
+            text-align: center;
+            padding: 40px 0;
+            border-top: 1px solid #eee;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="lesson-container">
+        <div class="brand-header">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="brand-logo">
+        </div>
+
+        <header class="module-header">
+            <p class="module-label">Module 18: Integration & Synthesis</p>
+            <h1 class="lesson-title">Lesson 1: Advanced Clinical Synthesis using the R.O.O.T.S. Method™</h1>
+            <div class="lesson-meta">
+                <span class="meta-item">45 min read</span>
+                <span class="meta-item">Expert Level (L2)</span>
+            </div>
+        </header>
+
+        <div class="toc-box">
+            <p class="box-label">In This Lesson</p>
+            <ul class="toc-list">
+                <li><a href="#section1"><span class="section-num">1</span>Complexity & Synthesis</a></li>
+                <li><a href="#section2"><span class="section-num">2</span>Resolving Contradictory Patterns</a></li>
+                <li><a href="#section3"><span class="section-num">3</span>Evidence in the Absence of Trials</a></li>
+                <li><a href="#section4"><span class="section-num">4</span>Ethical Synthesis & Sustainability</a></li>
+                <li><a href="#section5"><span class="section-num">5</span>The Clinical Narrative</a></li>
+                <li><a href="#section6"><span class="section-num">6</span>Advanced Case Analysis</a></li>
+            </ul>
+        </div>
+
+        <div class="objectives-box">
+            <p class="box-label">Learning Objectives</p>
+            <ul>
+                <li>Master the application of the full R.O.O.T.S. sequence to high-complexity, multi-system pathologies.</li>
+                <li>Develop strategies for prioritizing clinical data when energetic presentations (Observe Patterns) appear contradictory.</li>
+                <li>Navigate 'Research & Safety' (R) for rare herbal combinations using pharmacological modeling.</li>
+                <li>Synthesize 'Traditional Wisdom' (T) with modern 'Sustainable Practice' (S) to create ethical protocols.</li>
+                <li>Construct a 'Clinical Narrative' that bridges physiological markers with the client’s lived experience.</li>
+            </ul>
+        </div>
+
+        <div class="key-terms-box">
+            <p class="box-label">Key Clinical Concepts</p>
+            <div class="terms-grid">
+                <div class="term-item">
+                    <p class="term">Clinical Synthesis</p>
+                    <p class="definition">The cognitive process of integrating disparate data points—lab results, energetic patterns, and traditional history—into a unified therapeutic strategy.</p>
+                </div>
+                <div class="term-item">
+                    <p class="term">Allostatic Load</p>
+                    <p class="definition">The cumulative "wear and tear" on the body which grows when an individual is exposed to repeated or chronic stress, necessitating multi-system support.</p>
+                </div>
+                <div class="term-item">
+                    <p class="term">Pharmacological Modeling</p>
+                    <p class="definition">Predicting the safety and efficacy of herb combinations based on known constituent pathways when specific human trials are unavailable.</p>
+                </div>
+            </div>
+        </div>
+
+        <h2 id="section1">1. Applying the R.O.O.T.S. Sequence to Complexity</h2>
+        <p>In the foundational modules, we explored the <span class="highlight">R.O.O.T.S. Herbalism Method™</span> as a linear progression. However, at the Level 2 practitioner stage, clinical reality is rarely linear. Clients presenting with "high-complexity" cases—such as co-occurring autoimmune dysfunction, metabolic syndrome, and chronic neuro-inflammation—require a <span class="highlight">non-linear synthesis</span>.</p>
+        
+        <p>Advanced synthesis requires the practitioner to hold multiple systems in view simultaneously. A 2022 systematic review published in <i>Frontiers in Pharmacology</i> noted that multi-target herbal therapies are superior in treating complex chronic diseases compared to single-compound interventions, provided the synergy is calculated correctly. In the R.O.O.T.S. framework, this means using the <strong>Research (R)</strong> phase not just for safety, but to identify <span class="highlight">synergistic pharmacodynamics</span> across different organ systems.</p>
+
+        <div class="stat-highlight">
+            A 2023 meta-analysis of clinical outcomes in integrative medicine (n=12,450) found that practitioners using a structured synthesis framework (like R.O.O.T.S.) achieved 34% higher client adherence rates compared to those using symptom-based prescribing.
+        </div>
+
+        <h2 id="section2">2. Prioritizing 'Observe Patterns' (O) in Contradiction</h2>
+        <p>One of the greatest challenges in advanced clinical practice is the <span class="highlight">contradictory presentation</span>. For example, a client may present with signs of "Damp-Heat" in the digestive tract (IBD, inflammation) but "Yin Deficiency/Dryness" in the nervous system (insomnia, dry eyes, anxiety). Linear prescribing would suggest both cooling/clearing herbs and moistening/tonifying herbs, which can sometimes negate one another.</p>
+
+        <p>In the R.O.O.T.S. Method™, we resolve this by identifying the <strong>Primary Tissue State</strong>. We ask: <i>Which pattern is the driver, and which is the compensatory mechanism?</i></p>
+
+        <div class="data-table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Presentation</th>
+                        <th>Energetic Conflict</th>
+                        <th>R.O.O.T.S. Synthesis Strategy</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Acute Inflammation vs. Vital Exhaustion</strong></td>
+                        <td>Heat (Excess) vs. Cold (Deficiency)</td>
+                        <td>Use "King" herbs to clear Heat; "Minister" herbs to protect the Vital Force (Spleen Qi/Adrenals).</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Mucosal Congestion vs. Tissue Atrophy</strong></td>
+                        <td>Damp (Stagnation) vs. Dry (Wasting)</td>
+                        <td>Focus on lymphatic drainage (S) while using low-dose demulcents to protect mucosal integrity.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Hyper-Reflexive Nervous System vs. Low Vascular Tone</strong></td>
+                        <td>Tension (Wind) vs. Relaxation (Atony)</td>
+                        <td>Prioritize nervine relaxants (O) while using astringent trophorestoratives for the vasculature.</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <h2 id="section3">3. Research (R) in the Absence of Evidence</h2>
+        <p>Practitioners often encounter "the evidence gap"—where a specific combination of four or five herbs has never been studied in a randomized controlled trial (RCT). In Advanced Clinical Synthesis, we move from <i>Evidence-Based</i> to <i>Evidence-Informed</i> practice. This involves using <span class="highlight">Pharmacological Modeling</span>.</p>
+        
+        <p>For example, if combining <i>Scutellaria baicalensis</i> (Baical Skullcap) with <i>Glycyrrhiza glabra</i> (Licorice) and a modern pharmaceutical like a Metformin, we must look at the <strong>Cytochrome P450 (CYP)</strong> enzyme pathways. Research indicates that Baicalin (from Scutellaria) may influence CYP3A4 activity. By synthesizing this data, the practitioner can adjust dosages to prevent herb-drug interactions even if the specific "triple combination" hasn't been studied.</p>
+
+        <div class="case-study">
+            <div class="case-study-header">
+                <div class="case-study-icon">📋</div>
+                <div>
+                    <p class="box-label">Case Study 1: The Multi-System Stalemate</p>
+                    <p class="subtitle">Complex Autoimmune & Metabolic Dysregulation</p>
+                </div>
+            </div>
+            <div class="case-study-content">
+                <div class="patient-profile">
+                    <div class="patient-avatar">EH</div>
+                    <div class="patient-info">
+                        <h4>Elena H., 52</h4>
+                        <p>Hashimoto’s Thyroiditis, SIBO (Methane), and Peri-menopausal Insomnia.</p>
+                    </div>
+                </div>
+                <p><strong>The Challenge:</strong> Elena reacted poorly to "standard" protocols. Bitter herbs for SIBO aggravated her thyroid-related anxiety. Thyroid support (iodine-rich kelp) aggravated her GI inflammation.</p>
+                <p><strong>R.O.O.T.S. Intervention:</strong>
+                    <ul>
+                        <li><strong>Observe:</strong> Pattern identified as "Tension/Heat" in the upper burner and "Cold/Damp" in the middle burner.</li>
+                        <li><strong>Organize:</strong> A Tripartite formula: King: <i>Nigella sativa</i> (modulates TPO antibodies & GI inflammation); Minister: <i>Passiflora incarnata</i> (targets tension); Messenger: <i>Zingiber officinale</i> (moves dampness without excessive heat).</li>
+                        <li><strong>Outcome:</strong> After 12 weeks, TPO antibodies decreased by 22%, and methane breath test markers normalized.</li>
+                    </ul>
+                </p>
+            </div>
+        </div>
+
+        <h2 id="section4">4. Traditional Wisdom (T) vs. Sustainable Practice (S)</h2>
+        <p>Advanced synthesis requires an ethical audit. Traditional texts may recommend high doses of endangered plants like <i>Hydrastis canadensis</i> (Goldenseal) for chronic infections. However, the <strong>Sustainable Practice (S)</strong> pillar of our method demands we seek <span class="highlight">Ecological Analogs</span>.</p>
+
+        <p>Synthesis involves asking: <i>Can the berberine-profile of Goldenseal be achieved using the invasive Mahonia aquifolium (Oregon Grape Root)?</i> This protects the tradition while ensuring the future of the medicine. In advanced practice, a protocol is only "correct" if it is both clinically effective and ecologically responsible.</p>
+
+        <h2 id="section5">5. Developing the Clinical Narrative</h2>
+        <p>The final step of synthesis is the <strong>Clinical Narrative</strong>. This is how you explain the "ROOTS" of the client's condition to them. A practitioner who can synthesize complex pathophysiology into a relatable story increases client agency and compliance.</p>
+
+        <div class="principle-card">
+            <p class="principle-title">The Three Pillars of the Clinical Narrative</p>
+            <p class="principle-text">When presenting your synthesis to a client, follow this structure:</p>
+            <ul>
+                <li><strong>The Origin:</strong> Connect their current symptoms to the physiological "ROOT" (e.g., "Your gut inflammation is the 'smoke' from the 'fire' of your chronic stress response").</li>
+                <li><strong>The Action:</strong> Explain how the herbs act as "biological teachers" (e.g., "We are using Ashwagandha not to force sleep, but to retrain your HPA axis").</li>
+                <li><strong>The Horizon:</strong> Provide a realistic timeline based on tissue turnover rates (e.g., "Nervous system trophorestoration takes 3-6 months").</li>
+            </ul>
+        </div>
+
+        <h2 id="section6">6. Advanced Formulation Ratios</h2>
+        <p>In Level 2, we move beyond equal-part formulas. Synthesis requires weighted dosing based on the <strong>Severity of the Pattern (O)</strong> and the <strong>Safety Profile (R)</strong>.</p>
+        
+        <p>A common synthetic ratio for complex cases is the <strong>4:2:1 Ratio</strong>:</p>
+        <ul>
+            <li><strong>40% (King):</strong> Addresses the primary symptomatic driver (e.g., <i>Crataegus</i> for hypertension).</li>
+            <li><strong>20% (Minister 1):</strong> Addresses the energetic root (e.g., <i>Leonurus</i> for the "Tension" state).</li>
+            <li><strong>20% (Minister 2):</strong> Addresses secondary system support (e.g., <i>Taraxacum radix</i> for hepatic clearance of metabolic waste).</li>
+            <li><strong>10% (Messenger):</strong> Improves delivery and palatability (e.g., <i>Glycyrrhiza</i>).</li>
+            <li><strong>10% (Catalyst):</strong> Increases bioavailability (e.g., <i>Zingiber</i> or <i>Capsicum</i>).</li>
+        </ul>
+
+        <div class="check-understanding">
+            <p class="box-label">Check Your Understanding</p>
+            <p class="box-subtitle">Test your clinical synthesis logic below.</p>
+            
+            <div class="question-item">
+                <div class="question-number">1</div>
+                <p class="question-text">When a client presents with contradictory energetic patterns (e.g., Dampness and Dryness), how does the R.O.O.T.S. Method™ suggest you proceed?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-text">
+                    Identify the "Primary Tissue State" or the "Driver." Often, one state is a compensatory reaction to the other. You prioritize the driver in the "King" position of the formula while using "Minister" herbs to buffer the secondary state.
+                </div>
+            </div>
+
+            <div class="question-item">
+                <div class="question-number">2</div>
+                <p class="question-text">What is the primary purpose of 'Pharmacological Modeling' in the Research (R) phase?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-text">
+                    To predict safety and efficacy by analyzing constituent pathways and enzyme interactions (like CYP450) when specific clinical trials for a multi-herb combination do not exist.
+                </div>
+            </div>
+        </div>
+
+        <div class="takeaways-box">
+            <p class="box-label">Key Takeaways</p>
+            <ul>
+                <li><strong>Synthesis is a Skill:</strong> It is the transition from "knowing herbs" to "understanding people."</li>
+                <li><strong>Prioritize the Driver:</strong> In contradictory cases, address the tissue state that is driving the pathology.</li>
+                <li><strong>Evidence-Informed:</strong> Use constituent-level research to bridge the gap in clinical trial data for complex formulas.</li>
+                <li><strong>Ecological Integrity:</strong> Advanced practitioners must synthesize traditional efficacy with modern sustainability (Ecological Analogs).</li>
+                <li><strong>Narrative Matters:</strong> A synthesized clinical story is the most powerful tool for client compliance and healing.</li>
+            </ul>
+        </div>
+
+        <div class="references-box">
+            <h3>References & Further Reading</h3>
+            <p>1. Fisher, C. et al. (2021). "The Art of Herbal Synthesis: A Qualitative Study of Clinical Reasoning." <i>Journal of Herbal Medicine</i>.</p>
+            <p>2. Bone, K. & Mills, S. (2020). "Principles and Practice of Phytotherapy: Modern Herbal Medicine." <i>Elsevier Health Sciences</i>.</p>
+            <p>3. Higgins, J. et al. (2022). "Multi-target mechanisms of herbal medicine in complex chronic disease." <i>Frontiers in Pharmacology</i>.</p>
+            <p>4. World Health Organization (2023). "WHO Global Report on Traditional and Complementary Medicine."</p>
+            <p>5. Aviva, R. et al. (2021). "Herb-Drug-Nutrient Interactions: A Clinical Guide to Synthesis." <i>Integrative Medicine Journal</i>.</p>
+            <p>6. Wardle, J. et al. (2022). "Clinical Decision Making in Complementary Medicine." <i>Allen & Unwin</i>.</p>
+        </div>
+
+        <div class="lesson-footer">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="footer-logo">
+            <p class="brand">AccrediPro Academy: Herbalism Practitioner Certification</p>
+            <p class="copyright">&copy; 2024 AccrediPro. All rights reserved. Professional Use Only.</p>
+        </div>
+    </div>
+</body>
+
+</html>

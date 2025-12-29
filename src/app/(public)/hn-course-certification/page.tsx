@@ -35,7 +35,10 @@ export default function HNCourseCertificationPage() {
     const [userEmail, setUserEmail] = useState("");
     const [messages, setMessages] = useState<{ role: string; content: string }[]>([]);
     const [inputValue, setInputValue] = useState("");
+
     const [isTyping, setIsTyping] = useState(false);
+    const [isVerifying, setIsVerifying] = useState(false);
+    const [emailError, setEmailError] = useState("");
 
     useEffect(() => {
         const handleScroll = () => {
@@ -57,28 +60,55 @@ export default function HNCourseCertificationPage() {
         return () => window.removeEventListener("scroll", handleScroll);
     }, []);
 
-    const startChat = () => {
-        if (!userName.trim()) return;
+    const startChat = async () => {
+        if (!userName.trim() || !userEmail.trim()) {
+            setEmailError("Please enter your name and email to start.");
+            return;
+        }
 
-        localStorage.setItem("chatUserName", userName);
-        if (userEmail) localStorage.setItem("chatUserEmail", userEmail);
+        setIsVerifying(true);
+        setEmailError("");
 
-        fetch("/api/chat/optin", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-                visitorId: localStorage.getItem("chatVisitorId") || `visitor_${Math.random().toString(36).substr(2, 9)}`,
-                name: userName,
-                email: userEmail || null,
-                page: "hn-course-certification"
-            })
-        }).catch(() => { });
+        try {
+            const res = await fetch("/api/verify-email", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ email: userEmail })
+            });
+            const data = await res.json();
 
-        setShowOptin(false);
-        setMessages([{
-            role: "bot",
-            content: `Hey ${userName}! 👋 So nice to meet you! I'm Sarah, your guide to becoming a Certified Holistic Nutrition Coach. Ask me anything about the certification!`
-        }]);
+            if (!data.valid) {
+                setEmailError(data.message || "Please enter a valid email address.");
+                setIsVerifying(false);
+                return;
+            }
+
+            // Success - proceed
+            localStorage.setItem("chatUserName", userName);
+            localStorage.setItem("chatUserEmail", userEmail);
+
+            fetch("/api/chat/optin", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    visitorId: localStorage.getItem("chatVisitorId") || `visitor_${Math.random().toString(36).substr(2, 9)}`,
+                    name: userName,
+                    email: userEmail,
+                    page: "hn-course-certification"
+                })
+            }).catch(() => { });
+
+            setShowOptin(false);
+            setMessages([{
+                role: "bot",
+                content: `Hey ${userName}! 👋 So nice to meet you! I'm Sarah, your guide to becoming a Certified Holistic Nutrition Coach. Ask me anything about the certification!`
+            }]);
+
+        } catch (error) {
+            setEmailError("Something went wrong. Please try again.");
+        } finally {
+            setIsVerifying(false);
+        }
     };
 
     const sendMessage = async () => {
@@ -216,7 +246,7 @@ export default function HNCourseCertificationPage() {
                         {/* Optin Form */}
                         {showOptin ? (
                             <div className="p-4 bg-white">
-                                <p className="text-sm text-gray-500 mb-3 text-center">Hey, Sarah here! How should I call you? 😊</p>
+                                <p className="text-sm text-gray-500 mb-3 text-center">Hey, Sarah here! Please introduce yourself to start chatting. 😊</p>
                                 <input
                                     type="text"
                                     placeholder="Your first name"
@@ -226,22 +256,29 @@ export default function HNCourseCertificationPage() {
                                 />
                                 <input
                                     type="email"
-                                    placeholder="Your email (in case I'm offline)"
+                                    placeholder="Your email address"
                                     value={userEmail}
-                                    onChange={(e) => setUserEmail(e.target.value)}
-                                    className="w-full border border-gray-200 rounded-lg p-3 text-sm mb-2 focus:outline-none focus:border-[#722F37]"
+                                    onChange={(e) => {
+                                        setUserEmail(e.target.value);
+                                        setEmailError("");
+                                    }}
+                                    className={`w-full border rounded-lg p-3 text-sm mb-2 focus:outline-none focus:border-[#722F37] ${emailError ? "border-red-500 bg-red-50" : "border-gray-200"}`}
                                 />
+                                {emailError && <p className="text-xs text-red-500 mb-2">{emailError}</p>}
+
                                 <button
                                     onClick={startChat}
-                                    className="w-full bg-[#722F37] text-white py-3 rounded-lg font-bold text-sm hover:bg-[#5A2435]"
+                                    disabled={isVerifying}
+                                    className="w-full bg-[#722F37] text-white py-3 rounded-lg font-bold text-sm hover:bg-[#5A2435] disabled:opacity-70 disabled:cursor-not-allowed flex items-center justify-center gap-2"
                                 >
-                                    Let&apos;s Chat!
-                                </button>
-                                <button
-                                    onClick={() => { setShowOptin(false); setUserName("Friend"); setMessages([{ role: "bot", content: "Hey there! 👋 I'm Sarah. Ask me anything about the Holistic Nutrition certification!" }]); }}
-                                    className="w-full text-center text-xs text-gray-400 mt-2 hover:text-gray-600"
-                                >
-                                    Skip, just let me ask a question
+                                    {isVerifying ? (
+                                        <>
+                                            <span className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></span>
+                                            Verifying...
+                                        </>
+                                    ) : (
+                                        "Start Chatting"
+                                    )}
                                 </button>
                             </div>
                         ) : (

@@ -1,0 +1,614 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lesson 23.2: Synergistic Formulation Logic: The Architecture of a Formula</title>
+    <style>
+        /* Base & Reset */
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Georgia, 'Times New Roman', serif;
+            line-height: 1.8;
+            color: #2d2d2d;
+            background: #f8f6f3;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Main Container */
+        .lesson-container {
+            max-width: 860px;
+            margin: 0 auto;
+            padding: 40px 30px;
+            background: #ffffff;
+            min-height: 100vh;
+            box-shadow: 0 0 60px rgba(0, 0, 0, 0.08);
+        }
+
+        /* Brand Header */
+        .brand-header {
+            text-align: center;
+            padding-bottom: 30px;
+            margin-bottom: 35px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .brand-logo {
+            max-width: 220px;
+            height: auto;
+            margin-bottom: 5px;
+        }
+
+        /* Module Header - DEEP BLUE/GOLD for Advanced Techniques */
+        .module-header {
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+            padding: 35px 35px 30px;
+            border-radius: 16px;
+            margin-bottom: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .module-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+            transform: translate(100px, -100px);
+        }
+
+        .module-header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, #B8860B, #D4A84B, #B8860B);
+        }
+
+        .module-label {
+            margin: 0;
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.75);
+            text-transform: uppercase;
+            letter-spacing: 2.5px;
+            font-weight: 500;
+        }
+
+        .lesson-title {
+            margin: 10px 0 0 0;
+            font-size: 28px;
+            color: #ffffff;
+            font-weight: 700;
+            line-height: 1.3;
+            position: relative;
+        }
+
+        .lesson-meta {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+            padding-top: 18px;
+            border-top: 1px solid rgba(255, 255, 255, 0.15);
+            flex-wrap: wrap;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.85);
+            background: rgba(255, 255, 255, 0.1);
+            padding: 5px 12px;
+            border-radius: 4px;
+        }
+
+        /* Table of Contents */
+        .toc-box {
+            background: linear-gradient(135deg, #fafafa 0%, #f5f5f5 100%);
+            border-radius: 14px;
+            padding: 24px 28px;
+            margin-bottom: 35px;
+            border: 1px solid #e8e8e8;
+        }
+
+        .toc-box .box-label {
+            font-weight: 600;
+            color: #1e3a8a;
+            margin: 0 0 18px 0;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .toc-list {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px 24px;
+        }
+
+        .toc-list li {
+            margin: 0;
+        }
+
+        .toc-list a {
+            display: flex;
+            align-items: center;
+            padding: 8px 12px;
+            color: #555;
+            text-decoration: none;
+            font-size: 14px;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+        }
+
+        .toc-list a:hover {
+            background: white;
+            color: #1e3a8a;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+        }
+
+        .toc-list .section-num {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 26px;
+            height: 26px;
+            background: #1e3a8a;
+            color: white;
+            font-weight: 600;
+            font-size: 11px;
+            border-radius: 6px;
+            margin-right: 12px;
+            flex-shrink: 0;
+        }
+
+        /* Learning Objectives */
+        .objectives-box {
+            background: #f0f7ff;
+            border: 2px solid #3b82f6;
+            border-radius: 14px;
+            padding: 30px 35px;
+            margin-bottom: 40px;
+        }
+
+        .objectives-box .box-label {
+            font-weight: 600;
+            color: #1e3a8a;
+            margin: 0 0 18px 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .objectives-box .box-label::before {
+            content: '🏛️';
+            font-size: 18px;
+        }
+
+        .objectives-box ul {
+            margin: 0;
+            padding-left: 22px;
+        }
+
+        .objectives-box li {
+            margin-bottom: 14px;
+            font-size: 16px;
+            line-height: 1.7;
+        }
+
+        /* Section Headings */
+        h2 {
+            font-size: 24px;
+            color: #1e3a8a;
+            margin: 50px 0 20px 0;
+            font-weight: 600;
+            position: relative;
+            padding-bottom: 12px;
+        }
+
+        h2::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 60px;
+            height: 3px;
+            background: #B8860B;
+        }
+
+        h3 {
+            font-size: 20px;
+            color: #3b82f6;
+            margin: 30px 0 15px 0;
+            font-weight: 600;
+        }
+
+        /* Paragraphs & Highlights */
+        p {
+            font-size: 17px;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        .highlight {
+            background: linear-gradient(180deg, transparent 60%, #FFF59D 60%);
+            padding: 0 4px;
+            font-weight: 500;
+        }
+
+        /* Data Tables */
+        .data-table-container {
+            margin: 35px 0;
+            overflow-x: auto;
+            border-radius: 12px;
+            border: 1px solid #e5e7eb;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 15px;
+            text-align: left;
+        }
+
+        th {
+            background: #f3f4f6;
+            padding: 15px;
+            font-weight: 600;
+            color: #1e3a8a;
+            border-bottom: 2px solid #e5e7eb;
+        }
+
+        td {
+            padding: 15px;
+            border-bottom: 1px solid #e5e7eb;
+            vertical-align: top;
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        /* Stat Highlight */
+        .stat-highlight {
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 25px 0;
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .stat-value {
+            font-size: 32px;
+            font-weight: 700;
+            color: #1e3a8a;
+            line-height: 1;
+        }
+
+        .stat-desc {
+            font-size: 15px;
+            color: #475569;
+            line-height: 1.5;
+        }
+
+        /* Case Study Box */
+        .case-study {
+            background: #ffffff;
+            border-radius: 16px;
+            margin: 40px 0;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            border: 1px solid #e5e7eb;
+        }
+
+        .case-study-header {
+            background: #1e3a8a;
+            padding: 20px 30px;
+            color: white;
+        }
+
+        .case-study-content {
+            padding: 30px;
+        }
+
+        .patient-profile {
+            background: #f1f5f9;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            font-size: 15px;
+        }
+
+        /* Check Understanding */
+        .check-understanding {
+            background: #fdfbf7;
+            border: 2px solid #B8860B;
+            border-radius: 16px;
+            padding: 32px;
+            margin: 45px 0;
+        }
+
+        .reveal-btn {
+            background: #1e3a8a;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+
+        .answer-text {
+            display: none;
+            margin-top: 15px;
+            padding: 15px;
+            background: #f0fdf4;
+            border-radius: 8px;
+            color: #166534;
+        }
+
+        /* Takeaways & References */
+        .takeaways-box {
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            padding: 30px;
+            border-radius: 14px;
+            margin: 40px 0;
+        }
+
+        .references-box {
+            background: #ffffff;
+            border-top: 1px solid #eee;
+            padding: 40px 0 20px;
+            font-size: 14px;
+            color: #666;
+        }
+
+        .lesson-footer {
+            text-align: center;
+            padding: 40px 0;
+            border-top: 1px solid #eee;
+        }
+
+        @media (max-width: 768px) {
+            .lesson-container { padding: 20px 15px; }
+            .toc-list { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="lesson-container">
+        <div class="brand-header">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="brand-logo">
+        </div>
+
+        <header class="module-header">
+            <p class="module-label">Module 23: Advanced Techniques</p>
+            <h1 class="lesson-title">L2: Synergistic Formulation Logic: The Architecture of a Formula</h1>
+            <div class="lesson-meta">
+                <span class="meta-item">⏱️ 35 min read</span>
+                <span class="meta-item">🎓 Level 2 Certification</span>
+            </div>
+        </header>
+
+        <div class="toc-box">
+            <p class="box-label">In This Lesson</p>
+            <ul class="toc-list">
+                <li><a href="#hierarchy"><span class="section-num">1</span>The Tripartite Hierarchy</a></li>
+                <li><a href="#mathematics"><span class="section-num">2</span>Mathematical Precision & Ratios</a></li>
+                <li><a href="#corrective"><span class="section-num">3</span>Corrective Agents: Safety Logic</a></li>
+                <li><a href="#drivers"><span class="section-num">4</span>Driver Herbs & Envoys</a></li>
+                <li><a href="#stability"><span class="section-num">5</span>Chemical Stability & Synergy</a></li>
+                <li><a href="#application"><span class="section-num">6</span>Clinical Application</a></li>
+            </ul>
+        </div>
+
+        <div class="objectives-box">
+            <p class="box-label">Learning Objectives</p>
+            <ul>
+                <li>Master the 4-tier hierarchical structure of advanced herbal formulation (King, Minister, Assistant, Envoy).</li>
+                <li>Calculate precise formulation ratios based on constituent potency and therapeutic windows.</li>
+                <li>Implement corrective agents to neutralize phytochemical harshness or side effects.</li>
+                <li>Strategically use "Driver" herbs to increase bioavailability and organ-specific delivery.</li>
+                <li>Evaluate chemical interactions to ensure formula stability and long-term efficacy.</li>
+            </ul>
+        </div>
+
+        <h2 id="hierarchy">1. The Tripartite Hierarchy: Defining Roles</h2>
+        <p>In the <span class="highlight">R.O.O.T.S. Herbalism Method™</span>, the "Organize" phase moves beyond selecting herbs for symptoms. It treats the formula as a coherent biological machine. This architecture is modeled after the traditional Chinese <i>Jun-Chen-Zuo-Shi</i> system, adapted for modern clinical phytotherapy.</p>
+
+        <p>A sophisticated formula is not a collection of equals; it is a structured hierarchy where each botanical serves a specific metabolic purpose. This structure prevents "shotgun herbalism"—the practice of throwing many herbs at a problem without a cohesive strategy.</p>
+
+        <div class="data-table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Role</th>
+                        <th>Traditional Name</th>
+                        <th>% of Formula</th>
+                        <th>Primary Function</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Chief / King</strong></td>
+                        <td>Jun</td>
+                        <td>40% - 60%</td>
+                        <td>Addresses the primary pattern (e.g., the ROOTS "Pattern"). Highest potency.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Deputy / Minister</strong></td>
+                        <td>Chen</td>
+                        <td>20% - 30%</td>
+                        <td>Supports the Chief herb or addresses secondary symptoms/tissue states.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Assistant / Adjuvant</strong></td>
+                        <td>Zuo</td>
+                        <td>10% - 15%</td>
+                        <td>Neutralizes harsh effects of the Chief or provides a counter-balancing energetic.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Envoy / Messenger</strong></td>
+                        <td>Shi</td>
+                        <td>5% - 10%</td>
+                        <td>Directs the formula to a specific organ or harmonizes all ingredients.</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <h2 id="mathematics">2. Mathematical Precision in Blending</h2>
+        <p>Advanced formulation requires moving from "drops" to <span class="highlight">precise weight-to-volume (w/v) ratios</span>. When architecture is designed, we must account for the <i>therapeutic window</i>—the range between the minimum effective dose and the threshold of toxicity.</p>
+
+        <div class="stat-highlight">
+            <div class="stat-value">3.4x</div>
+            <div class="stat-desc">A 2021 study on <i>Artemisia annua</i> synergy found that whole-plant extracts were 3.4 times more effective at inhibiting viral replication than isolated artemisinin, demonstrating the mathematical advantage of multi-constituent logic.</div>
+        </div>
+
+        <p>When calculating ratios, the practitioner must consider the <strong>Potency Factor</strong>. For example, a "King" herb that is a low-dose botanical (like <i>Aconitum</i> or <i>Atropa</i>, though rarely used in standard practice) would occupy a much smaller physical volume but maintain its "King" status in therapeutic impact. Conversely, a nutritive "King" like <i>Urtica dioica</i> (Nettle) might require a 70% volume to achieve its metabolic goal.</p>
+
+        <h3>The 10-Part Ratio System</h3>
+        <p>A standard clinical tool for practitioners is the 10-part system. If a client requires 5ml per dose:
+        <ul>
+            <li><strong>Chief:</strong> 5 parts (2.5ml)</li>
+            <li><strong>Minister:</strong> 3 parts (1.5ml)</li>
+            <li><strong>Assistant:</strong> 1.5 parts (0.75ml)</li>
+            <li><strong>Envoy:</strong> 0.5 parts (0.25ml)</li>
+        </ul>
+        </p>
+
+        <h2 id="corrective">3. Corrective Agents: Mitigating Side Effects</h2>
+        <p>The <span class="highlight">Assistant (Zuo)</span> role is perhaps the most overlooked in amateur herbalism. Its primary purpose is <span class="highlight">corrective logic</span>. Many potent herbs possess "side effects" that are simply extensions of their primary action. A practitioner's skill is shown in their ability to "buffer" these actions without reducing efficacy.</p>
+
+        <p><strong>Common Corrective Pairings:</strong></p>
+        <ul class="content-list">
+            <li><strong>Anthraquinone Laxatives (Senna/Cascara):</strong> Often cause "griping" or abdominal cramping. <i>Corrective:</i> Carminatives like <i>Foeniculum vulgare</i> (Fennel) or <i>Zingiber officinale</i> (Ginger) relax smooth muscle and prevent spasms.</li>
+            <li><strong>Alkaloid-Rich Nervines (Valerian):</strong> Can cause "heaviness" or morning grogginess in certain tissue states (Damp/Stagnation). <i>Corrective:</i> A small amount of <i>Rosmarinus</i> (Rosemary) to improve cerebral circulation.</li>
+            <li><strong>Tannin-Heavy Astringents (Geranium):</strong> Can cause excessive dryness of the mucosa. <i>Corrective:</i> A demulcent "Assistant" like <i>Althaea officinalis</i> (Marshmallow) to maintain moisture.</li>
+        </ul>
+
+        <h2 id="drivers">4. Driver Herbs & Envoys: Pharmacokinetic Direction</h2>
+        <p>An <span class="highlight">Envoy (Shi)</span> acts as a biological GPS. In modern terms, these herbs influence <strong>pharmacokinetics</strong>—the absorption, distribution, metabolism, and excretion of the other herbs in the formula.</p>
+
+        <p>There are two types of Envoys:
+        <ol>
+            <li><strong>Circulatory Stimulants (The "Drivers"):</strong> Herbs like <i>Capsicum annuum</i> (Cayenne) or <i>Zingiber</i> (Ginger) increase peripheral blood flow, ensuring the "Chief" herb reaches systemic circulation faster.</li>
+            <li><strong>Organ-Specific Envoys:</strong> Herbs that have a high affinity for specific tissues. For example, <i>Glycyrrhiza glabra</i> (Licorice) is often used as a "harmonizer" envoy because its saponins increase the solubility and absorption of other flavonoids.</li>
+        </ol>
+        </p>
+
+        <div class="stat-highlight">
+            <div class="stat-value">2000%</div>
+            <div class="stat-desc">Research on <i>Piperine</i> (from Black Pepper) as an envoy demonstrates it can increase the bioavailability of Curcumin (from Turmeric) by up to 2000% by inhibiting metabolic pathways that otherwise eliminate it.</div>
+        </div>
+
+        <div class="case-study">
+            <div class="case-study-header">
+                <strong>Case Study 1: The Chronic Sinusitis Architecture</strong>
+                <p style="margin:0; font-size: 13px; opacity: 0.9;">Applying Tripartite Logic to Respiratory Stagnation</p>
+            </div>
+            <div class="case-study-content">
+                <div class="patient-profile">
+                    <strong>Client:</strong> Marcus, 44 | <strong>Pattern:</strong> Damp-Heat in the Upper Respiratory Tract | <strong>Symptoms:</strong> Chronic thick yellow mucus, pressure, fatigue.
+                </div>
+                <p><strong>The Formula Architecture:</strong></p>
+                <ul>
+                    <li><strong>King (Chief):</strong> <i>Hydrastis canadensis</i> (Goldenseal) - 40%. Purpose: Potent antimicrobial and mucous membrane tonic (Tackling the "Heat").</li>
+                    <li><strong>Minister (Deputy):</strong> <i>Armoracia rusticana</i> (Horseradish) - 30%. Purpose: Pungent sialagogue to break up stagnant mucus (Tackling the "Damp").</li>
+                    <li><strong>Assistant (Adjuvant):</strong> <i>Euphrasia officinalis</i> (Eyebright) - 20%. Purpose: Astringent to prevent over-secretion and soothe irritation.</li>
+                    <li><strong>Envoy (Messenger):</strong> <i>Capsicum annuum</i> (Cayenne) - 10%. Purpose: "Driver" to force blood flow to the sinus capillaries for delivery.</li>
+                </ul>
+                <p><strong>Outcome:</strong> Marcus reported a "clearing" of the sinuses within 48 hours. The inclusion of the Envoy (Cayenne) was critical, as previous single-herb Goldenseal use had failed to penetrate the stagnant tissue.</p>
+            </div>
+        </div>
+
+        <h2 id="stability">5. Chemical Stability & Shelf-Life</h2>
+        <p>A formula is a reactive chemical environment. When you mix different extracts, you risk <strong>precipitation</strong>—where constituents fall out of solution and become bio-unavailable. This is a critical concern for the professional practitioner selling premium formulations.</p>
+
+        <p><strong>Key Stability Interactions:</strong></p>
+        <ul class="content-list">
+            <li><strong>Tannin-Alkaloid Precipitation:</strong> High-tannin herbs (like Oak Bark or Witch Hazel) can bind to alkaloid-rich herbs (like Goldenseal or Lobelia) in a tincture, forming an insoluble sediment at the bottom of the bottle. <i>Solution:</i> Mix these in separate doses or use a higher alcohol percentage to maintain solubility.</li>
+            <li><strong>Mucilage Breakdown:</strong> Polysaccharides (like those in Marshmallow) are stable in water but precipitate in high-alcohol environments (above 25-30% ethanol). If your "King" herb is a 90% alcohol extract, your demulcent "Assistant" will turn into a clump of "goop."</li>
+            <li><strong>pH Shifts:</strong> Adding acidic extracts (like Hibiscus or Rosehips) can change the ionization of other alkaloids, potentially altering their absorption rates in the small intestine.</li>
+        </ul>
+
+        <h2 id="application">6. Clinical Application: The ROOTS Integration</h2>
+        <p>As you move into the final modules of this Level 2 certification, remember that <strong>Synergistic Logic</strong> is the bridge between the "Observe" (Pattern) and "Organize" (Formula) pillars of the <span class="highlight">R.O.O.T.S. Method™</span>.</p>
+
+        <p>When you sit with a client, your mind should automatically begin sorting their needs into these architectural slots. If they have a "Tension" tissue state in the nervous system, your King is a relaxant nervine. But if they also have poor digestion, your Minister is a carminative. If the relaxant makes them too sleepy, your Assistant is a mild stimulant. If they have cold extremities, your Envoy is a circulatory driver.</p>
+
+        <div class="check-understanding">
+            <p class="box-label">Check Your Understanding</p>
+            <p class="box-subtitle">Test your mastery of formulation architecture.</p>
+
+            <div class="question-item">
+                <div class="question-number">1</div>
+                <p class="question-text">A practitioner is formulating for a client with severe constipation. They choose Senna as the King. Which herb would serve as the most logical <b>Assistant (Corrective)</b> to mitigate cramping?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-text">Ginger (Zingiber officinale) or Fennel (Foeniculum vulgare). These carminatives act as antispasmodics on the smooth muscle of the gut, neutralizing the "griping" effect of the anthraquinones in Senna.</div>
+            </div>
+
+            <div class="question-item">
+                <div class="question-number">2</div>
+                <p class="question-text">Why might a formula containing 70% alcohol and 10% Marshmallow root extract fail to provide demulcent (soothing) action?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-text">High alcohol concentrations (above 25-30%) cause polysaccharides/mucilage to precipitate (clump together and fall out of solution). This renders the demulcent properties of the Marshmallow physically unavailable for absorption or topical coating.</div>
+            </div>
+        </div>
+
+        <div class="takeaways-box">
+            <p class="box-label">Key Takeaways</p>
+            <ul>
+                <li><strong>Architecture over Aggregation:</strong> Formulas must have a hierarchical structure (King, Minister, Assistant, Envoy) to ensure metabolic coherence.</li>
+                <li><strong>The 10-Part System:</strong> Use a standardized ratio system (e.g., 5:3:1.5:0.5) to maintain mathematical precision in clinical dosing.</li>
+                <li><strong>Bioavailability Logic:</strong> "Driver" herbs like Cayenne or Black Pepper can increase the efficacy of a formula by 200% to 2000% via pharmacokinetic modulation.</li>
+                <li><strong>Chemical Safety:</strong> Be aware of tannin-alkaloid precipitation and alcohol-mucilage incompatibility to ensure shelf-life and efficacy.</li>
+                <li><strong>The ROOTS Method:</strong> Formulation is the "Organize" pillar where patterns of tissue states are matched with botanical roles.</li>
+            </ul>
+        </div>
+
+        <div class="references-box">
+            <p style="font-weight: 600; color: #333; margin-bottom: 15px;">References & Further Reading</p>
+            <ol>
+                <li>Efferth, T. et al. (2021). "Synergy and Antagonism in Phytotherapy." <i>Journal of Ethnopharmacology</i>.</li>
+                <li>Wagner, H. et al. (2019). "The Synergy Principle in Phytomedicine." <i>Phytomedicine Journal</i>.</li>
+                <li>Shoba, G. et al. (1998). "Influence of piperine on the pharmacokinetics of curcumin in animals and human volunteers." <i>Planta Medica</i>.</li>
+                <li>Bone, K. & Mills, S. (2013). "Principles and Practice of Phytotherapy." <i>Elsevier Health Sciences</i>.</li>
+                <li>Zhou, X. et al. (2016). "Synergistic effects of Chinese herbal medicine: A mathematical perspective." <i>Chinese Medicine</i>.</li>
+                <li>Rasoanaivo, P. et al. (2011). "Whole plant extracts versus single compounds for the treatment of malaria: synergy and secondary compounds." <i>Malaria Journal</i>.</li>
+            </ol>
+        </div>
+
+        <footer class="lesson-footer">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="footer-logo">
+            <p class="brand">AccrediPro Academy: Herbalism Practitioner Certification</p>
+            <p class="copyright">&copy; 2024 AccrediPro. All Rights Reserved. Professional Use Only.</p>
+        </footer>
+    </div>
+</body>
+
+</html>

@@ -1,0 +1,633 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lesson 23.4: Advanced Pharmacokinetics & Herb-Drug Interactions (HDI)</title>
+    <style>
+        /* Base & Reset */
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Georgia, 'Times New Roman', serif;
+            line-height: 1.8;
+            color: #2d2d2d;
+            background: #f8f6f3;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Main Container */
+        .lesson-container {
+            max-width: 860px;
+            margin: 0 auto;
+            padding: 40px 30px;
+            background: #ffffff;
+            min-height: 100vh;
+            box-shadow: 0 0 60px rgba(0, 0, 0, 0.08);
+        }
+
+        /* Brand Header */
+        .brand-header {
+            text-align: center;
+            padding-bottom: 30px;
+            margin-bottom: 35px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .brand-logo {
+            max-width: 220px;
+            height: auto;
+            margin-bottom: 5px;
+        }
+
+        /* Module Header - DEEP BLUE/GOLD theme for Advanced Module */
+        .module-header {
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+            padding: 35px 35px 30px;
+            border-radius: 16px;
+            margin-bottom: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .module-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+            transform: translate(100px, -100px);
+        }
+
+        .module-header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, #B8860B, #D4A84B, #B8860B);
+        }
+
+        .module-label {
+            margin: 0;
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.75);
+            text-transform: uppercase;
+            letter-spacing: 2.5px;
+            font-weight: 500;
+        }
+
+        .lesson-title {
+            margin: 10px 0 0 0;
+            font-size: 28px;
+            color: #ffffff;
+            font-weight: 700;
+            line-height: 1.3;
+            position: relative;
+        }
+
+        .lesson-meta {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+            padding-top: 18px;
+            border-top: 1px solid rgba(255, 255, 255, 0.15);
+            flex-wrap: wrap;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.85);
+            background: rgba(255, 255, 255, 0.1);
+            padding: 5px 12px;
+            border-radius: 4px;
+        }
+
+        /* Table of Contents */
+        .toc-box {
+            background: linear-gradient(135deg, #fafafa 0%, #f5f5f5 100%);
+            border-radius: 14px;
+            padding: 24px 28px;
+            margin-bottom: 35px;
+            border: 1px solid #e8e8e8;
+        }
+
+        .toc-box .box-label {
+            font-weight: 600;
+            color: #1e3a8a;
+            margin: 0 0 18px 0;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .toc-list {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px 24px;
+        }
+
+        .toc-list a {
+            display: flex;
+            align-items: center;
+            padding: 8px 12px;
+            color: #555;
+            text-decoration: none;
+            font-size: 14px;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+        }
+
+        .toc-list a:hover {
+            background: white;
+            color: #1e3a8a;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+        }
+
+        .toc-list .section-num {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 26px;
+            height: 26px;
+            background: #1e3a8a;
+            color: white;
+            font-weight: 600;
+            font-size: 11px;
+            border-radius: 6px;
+            margin-right: 12px;
+            flex-shrink: 0;
+        }
+
+        /* Learning Objectives */
+        .objectives-box {
+            background: #f0f9ff;
+            border: 2px solid #3b82f6;
+            border-radius: 14px;
+            padding: 30px 35px;
+            margin-bottom: 40px;
+        }
+
+        .objectives-box .box-label {
+            font-weight: 600;
+            color: #1e3a8a;
+            margin: 0 0 18px 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .objectives-box .box-label::before {
+            content: '🔬';
+            font-size: 18px;
+        }
+
+        .objectives-box li {
+            margin-bottom: 14px;
+            font-size: 16px;
+            line-height: 1.7;
+        }
+
+        /* Section Headings */
+        h2 {
+            font-size: 24px;
+            color: #1e3a8a;
+            margin: 50px 0 20px 0;
+            font-weight: 600;
+            position: relative;
+            padding-bottom: 12px;
+        }
+
+        h2::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 60px;
+            height: 3px;
+            background: #B8860B;
+        }
+
+        /* Highlights & Terms */
+        .highlight {
+            background: linear-gradient(180deg, transparent 60%, #e0e7ff 60%);
+            padding: 0 4px;
+            font-weight: 500;
+            color: #1e3a8a;
+        }
+
+        .stat-highlight {
+            color: #1e3a8a;
+            font-weight: 700;
+        }
+
+        /* Case Study Box */
+        .case-study {
+            background: linear-gradient(135deg, #f8f9fb 0%, #f0f2f5 100%);
+            border-radius: 16px;
+            margin: 40px 0;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+            border: 1px solid #e5e7eb;
+        }
+
+        .case-study-header {
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+            padding: 20px 30px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .case-study-header .box-label {
+            font-weight: 600;
+            color: #ffffff;
+            margin: 0;
+            font-size: 16px;
+        }
+
+        .case-study-content {
+            padding: 28px 30px;
+        }
+
+        .patient-profile {
+            display: flex;
+            align-items: center;
+            gap: 18px;
+            padding: 18px 22px;
+            background: white;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            border: 1px solid #e5e5e5;
+        }
+
+        /* Data Tables */
+        .data-table-container {
+            overflow-x: auto;
+            margin: 30px 0;
+            border-radius: 12px;
+            border: 1px solid #e5e7eb;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 15px;
+            text-align: left;
+        }
+
+        th {
+            background: #f1f5f9;
+            color: #1e3a8a;
+            padding: 15px;
+            font-weight: 600;
+            border-bottom: 2px solid #e2e8f0;
+        }
+
+        td {
+            padding: 15px;
+            border-bottom: 1px solid #f1f5f9;
+            vertical-align: top;
+        }
+
+        /* Stats Box */
+        .stats-box {
+            background: linear-gradient(135deg, #1e3a8a 0%, #1e40af 100%);
+            padding: 35px;
+            border-radius: 16px;
+            margin: 35px 0;
+            color: white;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 25px;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 36px;
+            font-weight: 800;
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        .stat-label {
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            opacity: 0.9;
+        }
+
+        /* Check Understanding */
+        .check-understanding {
+            background: #fffaf0;
+            border: 2px solid #d4a84b;
+            border-radius: 16px;
+            padding: 32px;
+            margin: 45px 0;
+        }
+
+        .question-item {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 15px;
+            border: 1px solid #fae8c8;
+        }
+
+        .reveal-btn {
+            background: #1e3a8a;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+
+        .answer-text {
+            display: none;
+            margin-top: 15px;
+            padding: 15px;
+            background: #f0fdf4;
+            border-radius: 8px;
+            color: #166534;
+        }
+
+        /* References & Footer */
+        .references-box {
+            background: #f9fafb;
+            padding: 30px;
+            border-radius: 12px;
+            margin-top: 50px;
+            font-size: 14px;
+            border: 1px solid #eee;
+        }
+
+        .references-box h3 {
+            margin-top: 0;
+            color: #1e3a8a;
+            font-size: 16px;
+        }
+
+        .takeaways-box {
+            background: #f8fafc;
+            border-left: 5px solid #1e3a8a;
+            padding: 25px;
+            margin: 40px 0;
+        }
+
+        .lesson-footer {
+            text-align: center;
+            padding: 40px 0;
+            border-top: 1px solid #eee;
+            margin-top: 60px;
+        }
+
+        @media (max-width: 768px) {
+            .toc-list { grid-template-columns: 1fr; }
+            .lesson-container { padding: 20px 15px; }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="lesson-container">
+        <div class="brand-header">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="brand-logo">
+        </div>
+
+        <header class="module-header">
+            <p class="module-label">Module 23: L2: Advanced Techniques</p>
+            <h1 class="lesson-title">Lesson 4: Advanced Pharmacokinetics & Herb-Drug Interactions (HDI)</h1>
+            <div class="lesson-meta">
+                <span class="meta-item">35 min read</span>
+                <span class="meta-item">Mastery Level: Advanced</span>
+            </div>
+        </header>
+
+        <div class="toc-box">
+            <p class="box-label">Lesson Navigation</p>
+            <ul class="toc-list">
+                <li><a href="#cytochromes"><span class="section-num">1</span>The CYP450 Enzyme Landscape</a></li>
+                <li><a href="#phase2"><span class="section-num">2</span>Phase II Conjugation Dynamics</a></li>
+                <li><a href="#pgp"><span class="section-num">3</span>P-glycoprotein (P-gp) Gatekeeping</a></li>
+                <li><a href="#nti"><span class="section-num">4</span>Narrow Therapeutic Index (NTI) Risks</a></li>
+                <li><a href="#pxr"><span class="section-num">5</span>The PXR/CAR Signaling Pathways</a></li>
+                <li><a href="#protocol"><span class="section-num">6</span>Clinical Screening Protocols</a></li>
+            </ul>
+        </div>
+
+        <div class="objectives-box">
+            <p class="box-label">Learning Objectives</p>
+            <ul>
+                <li>Master the molecular mechanisms of CYP450 induction vs. inhibition and their clinical timelines.</li>
+                <li>Analyze the role of P-glycoprotein in limiting or enhancing drug bioavailability.</li>
+                <li>Evaluate the high-risk profiles of Narrow Therapeutic Index (NTI) drugs in herbal practice.</li>
+                <li>Differentiate between Phase I and Phase II detoxification modulation by common botanicals.</li>
+                <li>Implement a professional HDI screening checklist based on the R.O.O.T.S. Method™.</li>
+            </ul>
+        </div>
+
+        <h2 id="cytochromes">1. The CYP450 Enzyme Landscape: Beyond the Basics</h2>
+        <p>In our foundational modules, we introduced the <span class="highlight">Cytochrome P450 (CYP450)</span> system as the primary engine for hepatic drug metabolism. At the advanced practitioner level, we must move beyond simply knowing "St. John's Wort interacts" to understanding the <span class="highlight">kinetic nuances</span> of these interactions.</p>
+        
+        <p>The CYP450 system accounts for the metabolism of approximately <span class="stat-highlight">75-80% of all pharmaceutical drugs</span>. Within this superfamily, the <span class="highlight">CYP3A4</span> isoform is the "heavy lifter," responsible for roughly <span class="stat-highlight">50%</span> of clinical drug metabolism. When a botanical constituent enters the system, it can act as either a ligand, an inhibitor, or an inducer.</p>
+
+        <div class="stats-box">
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <span class="stat-number">50%</span>
+                    <span class="stat-label">Drugs metabolized by CYP3A4</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-number">10-14 Days</span>
+                    <span class="stat-label">Time for full CYP Induction</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-number">24 Hours</span>
+                    <span class="stat-label">Time for full CYP Inhibition</span>
+                </div>
+            </div>
+        </div>
+
+        <p>Practitioners must distinguish between <strong>Enzyme Inhibition</strong> and <strong>Enzyme Induction</strong>. Inhibition occurs when a botanical (e.g., Goldenseal) binds to the enzyme, preventing the drug from being processed. This leads to <span class="highlight">increased drug serum levels</span> and potential toxicity. Induction, conversely, involves the botanical stimulating the production of *more* enzyme proteins. This leads to <span class="highlight">decreased drug serum levels</span> and potential therapeutic failure.</p>
+
+        <h2 id="phase2">2. Phase II Conjugation & Hepatic Support</h2>
+        <p>While Phase I (CYP450) modifies drugs via oxidation, reduction, or hydrolysis, <span class="highlight">Phase II Metabolism</span> involves conjugation—attaching a large, polar molecule to the drug to make it water-soluble for excretion. Key pathways include Glucuronidation (UGT enzymes), Sulfation, and Glutathione conjugation.</p>
+
+        <p>Advanced herbalism utilizes botanicals to "balance" these phases. For example, if Phase I is overactive (producing reactive intermediates) and Phase II is sluggish, <span class="highlight">hepatotoxicity</span> increases. This is a critical consideration when working with clients on chemotherapy or chronic NSAID use.</p>
+
+        <div class="data-table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Botanical</th>
+                        <th>Target Pathway</th>
+                        <th>Mechanism of Action</th>
+                        <th>Clinical Significance</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Silybum marianum</strong></td>
+                        <td>Phase II / Glucuronidation</td>
+                        <td>Upregulates UGT enzymes</td>
+                        <td>Enhances clearance of acetaminophen and some hormones.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Schisandra chinensis</strong></td>
+                        <td>Dual Phase Modulator</td>
+                        <td>Induces CYP3A4 & Phase II</td>
+                        <td>May lower levels of Tacrolimus (transplant drug).</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Curcuma longa</strong></td>
+                        <td>Glutathione-S-Transferase</td>
+                        <td>Increases GST activity</td>
+                        <td>Protective against electrophilic drug metabolites.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Hydrastis canadensis</strong></td>
+                        <td>Phase I (CYP3A4/2D6)</td>
+                        <td>Potent Inhibition</td>
+                        <td>Significantly increases levels of many benzodiazepines.</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <h2 id="pgp">3. P-glycoprotein (P-gp): The Cellular Gatekeeper</h2>
+        <p>Often overlooked in basic herbal training, <span class="highlight">P-glycoprotein (P-gp)</span> is an ATP-dependent efflux pump found in the intestinal lining, liver, kidneys, and the blood-brain barrier. Its primary job is to pump "xenobiotics" (foreign substances) out of the cell and back into the intestinal lumen or bile.</p>
+
+        <p>If an herb inhibits P-gp (e.g., <span class="highlight">Quercetin</span> or <span class="highlight">Green Tea catechins</span> at high doses), the drug stays inside the cell longer, effectively increasing its absorption and systemic concentration. Conversely, P-gp inducers (e.g., <span class="highlight">St. John's Wort</span>) ramp up these pumps, ejecting the drug before it can reach the bloodstream. This is particularly dangerous for drugs that rely on precise concentrations, such as Digoxin.</p>
+
+        <div class="case-study">
+            <div class="case-study-header">
+                <div class="case-study-icon">📋</div>
+                <div>
+                    <p class="box-label">Case Study: The "Safe" Cardiac Support</p>
+                    <p class="subtitle">Clinical Pharmacokinetics in Action</p>
+                </div>
+            </div>
+            <div class="case-study-content">
+                <div class="patient-profile">
+                    <div class="patient-avatar">👨</div>
+                    <div class="patient-info">
+                        <h4>Arthur, 68</h4>
+                        <p>History of Atrial Fibrillation, taking Digoxin (0.125mg daily).</p>
+                    </div>
+                </div>
+                <p><strong>Presentation:</strong> Arthur began self-administering a high-potency "Immune Support" blend containing 500mg of Berberine (from Goldenseal) and 1000mg of Vitamin C to prevent winter colds.</p>
+                <p><strong>Intervention Analysis:</strong> Berberine is a known <span class="highlight">P-gp inhibitor</span>. Digoxin is a P-gp substrate with a narrow therapeutic index. By inhibiting the efflux pump in the gut, the Berberine increased Arthur's Digoxin absorption by an estimated <span class="stat-highlight">22-30%</span>.</p>
+                <p><strong>Outcome:</strong> Within 10 days, Arthur presented with nausea, blurred "yellowish" vision, and bradycardia—classic signs of Digoxin toxicity. The herbalist identified the P-gp interaction, advised cessation of the berberine, and referred for serum digoxin level testing, which was found to be 2.4 ng/mL (Toxic range >2.0).</p>
+            </div>
+        </div>
+
+        <h2 id="nti">4. Narrow Therapeutic Index (NTI) Drugs: The Red Zone</h2>
+        <p>As a professional practitioner, your highest priority is identifying clients on <span class="highlight">Narrow Therapeutic Index (NTI)</span> drugs. These are medications where small differences in dose or blood concentration may lead to serious therapeutic failures or adverse drug reactions.</p>
+        
+        <p>The R.O.O.T.S. Herbalism Method™ dictates a "Safety First" approach (the 'R' for Research). For NTI drugs, herbal intervention should be extremely conservative, often requiring co-management with the prescribing physician.</p>
+
+        <ul>
+            <li><strong>Warfarin (Coumadin):</strong> Highly sensitive to CYP2C9 modulators. Herbs like <em>Salvia miltiorrhiza</em> (Dan Shen) or <em>Angelica sinensis</em> (Dong Quai) can potentiate its effects through pharmacodynamic (antiplatelet) and pharmacokinetic pathways.</li>
+            <li><strong>Lithium:</strong> Primarily cleared renally. Any herb that affects GFR (Glomerular Filtration Rate) or sodium/water balance (e.g., diuretic herbs like <em>Taraxacum</em> leaf or <em>Equisetum</em>) can cause lithium levels to spike to toxic levels.</li>
+            <li><strong>Cyclosporine/Tacrolimus:</strong> Critical for transplant patients. These are highly sensitive to CYP3A4 induction. St. John's Wort has caused documented organ rejection by dropping these drug levels by over <span class="stat-highlight">50%</span>.</li>
+        </ul>
+
+        <h2 id="pxr">5. The PXR and CAR Signaling Pathways</h2>
+        <p>How do herbs "communicate" with our DNA to produce more enzymes? This happens through nuclear receptors, primarily the <span class="highlight">Pregnane X Receptor (PXR)</span> and the <span class="highlight">Constitutive Androstane Receptor (CAR)</span>. When certain herbal constituents (like Hyperforin from St. John's Wort) bind to PXR, the receptor moves into the nucleus and "turns on" the transcription of the CYP3A4 and MDR1 (P-gp) genes.</p>
+        
+        <p>This is why induction takes <span class="stat-highlight">7 to 14 days</span> to manifest—it requires the body to physically build new protein machinery. Conversely, when the herb is stopped, the interaction persists for several days until the extra enzymes naturally degrade. This "lag time" is a crucial clinical detail for the practitioner to manage during intake and formula transitions.</p>
+
+        <h2 id="protocol">6. Clinical HDI Screening Protocol: The R.O.O.T.S. Checklist</h2>
+        <p>To ensure the highest level of safety, every client on medication should be screened using this professional protocol:</p>
+
+        <div class="case-study" style="background: #f1f5f9; border-left: 5px solid #1e3a8a;">
+            <div class="case-study-content">
+                <h4 style="margin-top:0; color:#1e3a8a;">Practitioner HDI Checklist</h4>
+                <ol>
+                    <li><strong>Identify the Drug Class:</strong> Is it an NTI drug? (Warfarin, Digoxin, Lithium, Anticonvulsants, Immunosuppressants).</li>
+                    <li><strong>Map the Metabolic Pathway:</strong> Check a professional database (e.g., Natural Medicines, Stockley’s) for CYP450 and P-gp substrates.</li>
+                    <li><strong>Assess the Dose/Duration:</strong> Is the herb a "one-off" or a chronic high-dose extract? (Concentrated extracts pose higher risk than tea).</li>
+                    <li><strong>Monitor Biomarkers:</strong> If an interaction is possible but the herb is necessary, what will you monitor? (INR for Warfarin, blood glucose for Metformin, etc.).</li>
+                    <li><strong>Implement the "Washout" Rule:</strong> If switching from a known inducer, allow 14 days for enzyme levels to normalize before starting a new sensitive medication.</li>
+                </ol>
+            </div>
+        </div>
+
+        <div class="check-understanding">
+            <p class="box-label">Check Your Understanding</p>
+            <p class="box-subtitle">Test your clinical reasoning on advanced pharmacokinetics.</p>
+
+            <div class="question-item">
+                <span class="question-number">1</span>
+                <p class="question-text">Why does an interaction involving enzyme <strong>induction</strong> take longer to appear than an interaction involving <strong>inhibition</strong>?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-text">
+                    Inhibition involves direct binding of the botanical constituent to the existing enzyme, which happens almost immediately (within hours). Induction requires the activation of nuclear receptors (PXR/CAR) and the synthesis of new enzyme proteins, which takes 7–14 days for the body to produce in significant quantities.
+                </div>
+            </div>
+
+            <div class="question-item">
+                <span class="question-number">2</span>
+                <p class="question-text">A client taking a medication metabolized by CYP3A4 begins taking a high-dose Goldenseal (Hydrastis) extract. What is the most likely pharmacokinetic outcome?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-text">
+                    Goldenseal is a potent inhibitor of CYP3A4. This will likely lead to decreased clearance of the drug, resulting in higher-than-intended serum concentrations and an increased risk of side effects or toxicity.
+                </div>
+            </div>
+        </div>
+
+        <div class="takeaways-box">
+            <p class="box-label">Key Takeaways</p>
+            <ul>
+                <li><strong>CYP3A4 is the primary target:</strong> It handles 50% of drug metabolism and is highly susceptible to modulation by common herbs like St. John's Wort (induction) and Goldenseal (inhibition).</li>
+                <li><strong>P-gp is the "Gatekeeper":</strong> Efflux pumps in the gut can limit drug absorption; inhibiting these pumps (e.g., with Berberine) can unexpectedly spike drug levels.</li>
+                <li><strong>NTI Drugs require extreme caution:</strong> Small changes in metabolism for drugs like Warfarin or Digoxin can have life-threatening consequences.</li>
+                <li><strong>The R.O.O.T.S. Method™ emphasizes "Research":</strong> Always verify metabolic pathways in peer-reviewed databases before formulating for medicated clients.</li>
+            </ul>
+        </div>
+
+        <div class="references-box">
+            <h3>References & Further Reading</h3>
+            <p>1. Hermann, M. et al. (2021). "Herb-Drug Interactions: A Review of Systematic Reviews." <em>British Journal of Clinical Pharmacology.</em></p>
+            <p>2. Fasinu, P. S. et al. (2012). "The evidence-based use of herb–drug interactions in clinical practice." <em>Evidence-Based Complementary and Alternative Medicine.</em></p>
+            <p>3. Gorski, J. C. et al. (2004). "The effect of St. John's wort on the efficacy of oral contraceptives." <em>Clinical Pharmacology & Therapeutics.</em></p>
+            <p>4. Wanwimolruk, S. et al. (2014). "Herb-drug interactions: A review of the clinical evidence." <em>Journal of Pharmacy & Pharmaceutical Sciences.</em></p>
+            <p>5. Moore, L. B. et al. (2000). "St. John's wort induces hepatic drug metabolism through activation of the pregnane X receptor." <em>Proceedings of the National Academy of Sciences.</em></p>
+            <p>6. FDA Center for Drug Evaluation and Research (2022). "Drug Development and Drug Interactions: Table of Substrates, Inhibitors and Inducers."</p>
+        </div>
+
+        <footer class="lesson-footer">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="footer-logo">
+            <p class="brand">AccrediPro Academy: Herbalism Practitioner Certification</p>
+            <p class="copyright">&copy; 2024 AccrediPro. All rights reserved. Professional Use Only.</p>
+        </footer>
+    </div>
+</body>
+
+</html>

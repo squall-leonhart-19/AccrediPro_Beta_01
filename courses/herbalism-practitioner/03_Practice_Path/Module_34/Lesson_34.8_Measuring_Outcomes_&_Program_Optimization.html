@@ -1,0 +1,678 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lesson 8: Measuring Outcomes & Program Optimization</title>
+    <style>
+        /* Base & Reset */
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Georgia, 'Times New Roman', serif;
+            line-height: 1.8;
+            color: #2d2d2d;
+            background: #f8f6f3;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Main Container */
+        .lesson-container {
+            max-width: 860px;
+            margin: 0 auto;
+            padding: 40px 30px;
+            background: #ffffff;
+            min-height: 100vh;
+            box-shadow: 0 0 60px rgba(0, 0, 0, 0.08);
+        }
+
+        /* Brand Header */
+        .brand-header {
+            text-align: center;
+            padding-bottom: 30px;
+            margin-bottom: 35px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .brand-logo {
+            max-width: 220px;
+            height: auto;
+            margin-bottom: 5px;
+        }
+
+        /* Module Header - TEAL theme for Professional Practice */
+        .module-header {
+            background: linear-gradient(135deg, #0d9488 0%, #14b8a6 100%);
+            padding: 35px 35px 30px;
+            border-radius: 16px;
+            margin-bottom: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .module-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+            transform: translate(100px, -100px);
+        }
+
+        .module-header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, #B8860B, #D4A84B, #B8860B);
+        }
+
+        .module-label {
+            margin: 0;
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.75);
+            text-transform: uppercase;
+            letter-spacing: 2.5px;
+            font-weight: 500;
+        }
+
+        .lesson-title {
+            margin: 10px 0 0 0;
+            font-size: 28px;
+            color: #ffffff;
+            font-weight: 700;
+            line-height: 1.3;
+            position: relative;
+        }
+
+        .lesson-meta {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+            padding-top: 18px;
+            border-top: 1px solid rgba(255, 255, 255, 0.15);
+            flex-wrap: wrap;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.85);
+            background: rgba(255, 255, 255, 0.1);
+            padding: 5px 12px;
+            border-radius: 4px;
+        }
+
+        /* Table of Contents */
+        .toc-box {
+            background: linear-gradient(135deg, #fafafa 0%, #f5f5f5 100%);
+            border-radius: 14px;
+            padding: 24px 28px;
+            margin-bottom: 35px;
+            border: 1px solid #e8e8e8;
+        }
+
+        .toc-box .box-label {
+            font-weight: 600;
+            color: #0d9488;
+            margin: 0 0 18px 0;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .toc-list {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px 24px;
+        }
+
+        .toc-list li {
+            margin: 0;
+        }
+
+        .toc-list a {
+            display: flex;
+            align-items: center;
+            padding: 8px 12px;
+            color: #555;
+            text-decoration: none;
+            font-size: 14px;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+        }
+
+        .toc-list a:hover {
+            background: white;
+            color: #0d9488;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+        }
+
+        .toc-list .section-num {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 26px;
+            height: 26px;
+            background: #0d9488;
+            color: white;
+            font-weight: 600;
+            font-size: 11px;
+            border-radius: 6px;
+            margin-right: 12px;
+            flex-shrink: 0;
+        }
+
+        /* Learning Objectives */
+        .objectives-box {
+            background: #f0fdfa;
+            border: 2px solid #14b8a6;
+            border-radius: 14px;
+            padding: 30px 35px;
+            margin-bottom: 40px;
+        }
+
+        .objectives-box .box-label {
+            font-weight: 600;
+            color: #0d9488;
+            margin: 0 0 18px 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .objectives-box .box-label::before {
+            content: '🎯';
+            font-size: 18px;
+        }
+
+        .objectives-box ul {
+            margin: 0;
+            padding-left: 22px;
+        }
+
+        .objectives-box li {
+            margin-bottom: 14px;
+            font-size: 16px;
+            line-height: 1.7;
+        }
+
+        /* Section Headings */
+        h2 {
+            font-size: 24px;
+            color: #0d9488;
+            margin: 50px 0 20px 0;
+            font-weight: 600;
+            position: relative;
+            padding-bottom: 12px;
+        }
+
+        h2::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 60px;
+            height: 3px;
+            background: #B8860B;
+        }
+
+        h3 {
+            font-size: 20px;
+            color: #333;
+            margin: 30px 0 15px 0;
+            font-weight: 600;
+        }
+
+        /* Paragraphs */
+        p {
+            font-size: 17px;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        /* Highlights */
+        .highlight {
+            background: linear-gradient(180deg, transparent 60%, #FFF59D 60%);
+            padding: 0 4px;
+            font-weight: 500;
+        }
+
+        .stat-highlight {
+            color: #0d9488;
+            font-weight: 700;
+        }
+
+        /* Tables */
+        .data-table-container {
+            overflow-x: auto;
+            margin: 35px 0;
+            border-radius: 12px;
+            border: 1px solid #e5e7eb;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 15px;
+            text-align: left;
+        }
+
+        th {
+            background: #f9fafb;
+            padding: 15px;
+            font-weight: 600;
+            color: #374151;
+            border-bottom: 2px solid #e5e7eb;
+        }
+
+        td {
+            padding: 15px;
+            border-bottom: 1px solid #f3f4f6;
+            color: #4b5563;
+        }
+
+        /* Case Study Box */
+        .case-study {
+            background: linear-gradient(135deg, #f8f9fb 0%, #f0f2f5 100%);
+            border-radius: 16px;
+            padding: 0;
+            margin: 40px 0;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+        }
+
+        .case-study-header {
+            background: linear-gradient(135deg, #0d9488 0%, #14b8a6 100%);
+            padding: 20px 30px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .case-study-icon {
+            width: 45px;
+            height: 45px;
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+        }
+
+        .case-study-header .box-label {
+            font-weight: 600;
+            color: #ffffff;
+            margin: 0;
+            font-size: 16px;
+        }
+
+        .case-study-content {
+            padding: 28px 30px;
+        }
+
+        /* Statistics Box */
+        .stats-box {
+            background: linear-gradient(135deg, #0d9488 0%, #14b8a6 100%);
+            padding: 30px;
+            border-radius: 16px;
+            margin: 35px 0;
+            color: white;
+            text-align: center;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 20px;
+        }
+
+        .stat-number {
+            font-size: 36px;
+            font-weight: 700;
+            display: block;
+        }
+
+        .stat-label {
+            font-size: 13px;
+            opacity: 0.9;
+            text-transform: uppercase;
+        }
+
+        /* Check Understanding */
+        .check-understanding {
+            background: #fdfbf7;
+            border: 2px solid #B8860B;
+            border-radius: 16px;
+            padding: 32px;
+            margin: 45px 0;
+        }
+
+        .question-item {
+            background: white;
+            border-radius: 12px;
+            padding: 22px 24px;
+            margin-bottom: 16px;
+            border: 1px solid #e8e4dc;
+        }
+
+        .reveal-btn {
+            background: #0d9488;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-family: inherit;
+        }
+
+        .answer-text {
+            display: none;
+            margin-top: 15px;
+            padding: 15px;
+            background: #f0fdfa;
+            border-radius: 8px;
+            color: #065f46;
+        }
+
+        /* Takeaways */
+        .takeaways-box {
+            background: #f3f4f6;
+            padding: 25px 30px;
+            border-radius: 14px;
+            margin: 40px 0;
+            border-left: 6px solid #0d9488;
+        }
+
+        .takeaways-box .box-label {
+            font-weight: 700;
+            color: #0d9488;
+            margin-bottom: 15px;
+            display: block;
+        }
+
+        /* References */
+        .references-box {
+            background: #f9fafb;
+            padding: 30px;
+            border-radius: 14px;
+            margin-top: 50px;
+            font-size: 14px;
+            color: #666;
+            border: 1px solid #eee;
+        }
+
+        .references-box h4 {
+            margin: 0 0 15px 0;
+            color: #333;
+        }
+
+        .references-box ul {
+            padding-left: 20px;
+            margin: 0;
+        }
+
+        .references-box li {
+            margin-bottom: 8px;
+        }
+
+        /* Footer */
+        .lesson-footer {
+            text-align: center;
+            padding-top: 40px;
+            margin-top: 60px;
+            border-top: 1px solid #eee;
+        }
+
+        @media (max-width: 768px) {
+            .toc-list { grid-template-columns: 1fr; }
+            .lesson-container { padding: 20px 15px; }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="lesson-container">
+        <div class="brand-header">
+            <img src="https://accredipro.com/wp-content/uploads/2023/05/AccrediPro-Logo-1.png" alt="AccrediPro Academy" class="brand-logo">
+        </div>
+
+        <header class="module-header">
+            <p class="module-label">Module 34: Group Programs & Workshops</p>
+            <h1 class="lesson-title">Lesson 8: Measuring Outcomes & Program Optimization</h1>
+            <div class="lesson-meta">
+                <span class="meta-item">35 min read</span>
+                <span class="meta-item">Lesson 8 of 8</span>
+            </div>
+        </header>
+
+        <div class="toc-box">
+            <p class="box-label">In This Lesson</p>
+            <ul class="toc-list">
+                <li><a href="#metrics"><span class="section-num">1</span>The Metrics of Transformation</a></li>
+                <li><a href="#research-safety"><span class="section-num">2</span>Tracking 'R' Pillar Efficacy</a></li>
+                <li><a href="#feedback-loop"><span class="section-num">3</span>Iterative Curriculum Design</a></li>
+                <li><a href="#long-term"><span class="section-num">4</span>Sustainability & Membership Models</a></li>
+                <li><a href="#final-project"><span class="section-num">5</span>Final Project: 4-Week Intensive</a></li>
+                <li><a href="#optimization"><span class="section-num">6</span>Optimization Strategies</a></li>
+            </ul>
+        </div>
+
+        <div class="objectives-box">
+            <p class="box-label">Learning Objectives</p>
+            <ul>
+                <li>Implement quantitative and qualitative assessment tools to measure participant progress in a group setting.</li>
+                <li>Develop a systematic protocol for tracking "Research & Safety" (R) outcomes and adverse reactions.</li>
+                <li>Apply the iterative feedback loop to refine herbal curriculum based on participant data.</li>
+                <li>Design a sustainable membership structure to transition one-off workshop attendees into long-term clients.</li>
+                <li>Execute the Final Project: A complete 4-week group herbal intensive blueprint using the ROOTS Methodology™.</li>
+            </ul>
+        </div>
+
+        <h2 id="metrics">1. The Metrics of Transformation: Beyond Testimonials</h2>
+        <p>In the professional herbal practice, particularly within the <span class="highlight">R.O.O.T.S. Herbalism Method™</span>, the success of a group program is not merely measured by "feeling better." As practitioners, we must utilize objective data to validate our interventions and demonstrate value to our participants.</p>
+        
+        <p>Measuring outcomes in a group setting requires a blend of <span class="highlight">Quantitative Data</span> (numerical scores) and <span class="highlight">Qualitative Data</span> (subjective experiences). While individual consults allow for deep clinical observation (the 'O' in ROOTS), group programs rely on standardized Patient-Reported Outcome Measures (PROMs).</p>
+
+        <div class="stats-box">
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <span class="stat-number">64%</span>
+                    <span class="stat-label">Higher adherence in group settings</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-number">28%</span>
+                    <span class="stat-label">Avg. reduction in symptom severity</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-number">4.2/5</span>
+                    <span class="stat-label">Avg. participant satisfaction score</span>
+                </div>
+            </div>
+        </div>
+
+        <p>A 2022 meta-analysis of group-based health interventions (n=12,450) found that participants who utilized <span class="highlight">pre- and post-program symptom tracking</span> reported a <span class="stat-highlight">22% higher perceived value</span> of the program compared to those who did not track metrics, even when clinical outcomes were identical. This highlights the psychological importance of "visualizing" progress.</p>
+
+        <h2 id="research-safety">2. Tracking 'Research & Safety' (R) Efficacy</h2>
+        <p>Safety is the first pillar of the ROOTS framework. In a group program, you cannot monitor every dose as closely as in a private practice. Therefore, you must build <span class="highlight">Safety Surveillance</span> into the program structure. This involves tracking "Adverse Events" (AEs) and "Minor Side Effects" (MSEs).</p>
+
+        <div class="data-table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Metric Type</th>
+                        <th>Specific Measurement Tool</th>
+                        <th>ROOTS Application</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Quantitative</strong></td>
+                        <td>Medical Symptom Questionnaire (MSQ)</td>
+                        <td>Baseline 'Observe' (O) data collection.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Safety</strong></td>
+                        <td>Adverse Event Reporting Form (Weekly)</td>
+                        <td>Upholding 'Research & Safety' (R) standards.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Qualitative</strong></td>
+                        <td>Semi-structured exit interviews</td>
+                        <td>Validating 'Traditional' (T) application effectiveness.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Behavioral</strong></td>
+                        <td>Protocol Adherence Logs</td>
+                        <td>Ensuring 'Sustainable' (S) lifestyle changes.</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <p>When tracking safety in group protocols, look for patterns. If 15% of your "Digestive Reset" group reports mild nausea after taking a <span class="highlight">T2R bitter formula</span>, your optimization step is to adjust the 'Organize' (O) phase—perhaps moving the dose from "empty stomach" to "5 minutes before food."</p>
+
+        <div class="case-study">
+            <div class="case-study-header">
+                <div class="case-study-icon">📋</div>
+                <div>
+                    <p class="box-label">Case Study: The Metabolic Reset Group</p>
+                    <p style="color:rgba(255,255,255,0.8); margin:0; font-size:13px;">Practitioner: Sarah J., RH (AHG)</p>
+                </div>
+            </div>
+            <div class="case-study-content">
+                <p><strong>Program:</strong> 6-Week Glycemic Support Intensive (n=25).<br>
+                <strong>Intervention:</strong> Use of <i>Gymnema sylvestre</i> and <i>Berberis aristata</i> alongside lifestyle modifications.</p>
+                <p><strong>Monitoring:</strong> Sarah implemented a weekly "Safety & Vitality" check-in form. In Week 2, 4 participants reported mild hypoglycemia symptoms (dizziness/shakiness). By tracking this against their 'Research' (R) data, she identified they were all taking concurrent Metformin.</p>
+                <p><strong>Outcome:</strong> Sarah adjusted the protocol for those specific individuals (reducing dose by 50%) and updated her program's intake screen to flag Metformin users more aggressively. Post-program MSQ scores showed an average 42% improvement in energy levels.</p>
+            </div>
+        </div>
+
+        <h2 id="feedback-loop">3. The Feedback Loop: Iterative Curriculum Design</h2>
+        <p>Your first workshop is a draft; your tenth is a masterpiece. Optimization is the process of using <span class="highlight">Participant Survey Data</span> to refine your teaching. This is where the practitioner transitions from "teacher" to "facilitator."</p>
+        
+        <h3>The Three Tiers of Feedback:</h3>
+        <ul>
+            <li><strong>Immediate (Reaction):</strong> Was the room comfortable? Was the webinar link functional? (NPS - Net Promoter Score).</li>
+            <li><strong>Intermediate (Learning):</strong> Can the participant identify the three tissue states discussed? (Knowledge Quiz).</li>
+            <li><strong>Long-term (Impact):</strong> Three months later, are they still using the "Nervine Tea" blend? (Sustainability Tracking).</li>
+        </ul>
+
+        <p>Data from a 2021 study on adult learning in wellness programs suggests that <span class="stat-highlight">iterative curriculum adjustments</span> based on participant feedback lead to a <span class="stat-highlight">35% increase in re-enrollment rates</span>. If participants feel the curriculum "speaks to them," they stay.</p>
+
+        <h2 id="long-term">4. Long-Term Sustainability (S): The Membership Model</h2>
+        <p>The final 'S' in ROOTS stands for <span class="highlight">Sustainable Practice</span>. One-off workshops are often exhausting and financially volatile. To build a sustainable herbal career, you must transition participants from "Event Attendees" to "Community Members."</p>
+
+        <p>A <strong>Membership Model</strong> provides ongoing support, which is critical for herbalism, as plant-based healing often takes 3–6 months to show deep constitutional shifts. This model offers:</p>
+        <ul>
+            <li><strong>Consistent Revenue:</strong> Predictable income for the practitioner.</li>
+            <li><strong>Deeper Education:</strong> Moving beyond the basics into advanced formulation.</li>
+            <li><strong>Peer Support:</strong> Leveraging the group dynamic for higher accountability.</li>
+        </ul>
+
+        <div class="case-study">
+            <div class="case-study-header">
+                <div class="case-study-icon">🌿</div>
+                <div>
+                    <p class="box-label">Case Study: Transitioning to Membership</p>
+                    <p style="color:rgba(255,255,255,0.8); margin:0; font-size:13px;">The Seasonal Wellness Collective</p>
+                </div>
+            </div>
+            <div class="case-study-content">
+                <p>Practitioner Marcus began by teaching 4 separate seasonal workshops. He noticed a 70% drop-off between seasons. He optimized by creating the "Roots & Shoots Membership."</p>
+                <p><strong>Structure:</strong> $49/month. Includes one live formulation class, access to a private forum, and a 10% discount on 1-on-1 consults. <br>
+                <strong>Outcome:</strong> His retention rate jumped from 30% to 82% over 12 months. By measuring the "Lifetime Value" (LTV) of a client, he found that members invested 4x more in their health than one-off workshop attendees.</p>
+            </div>
+        </div>
+
+        <h2 id="final-project">5. Final Project: Designing a 4-Week Group Herbal Intensive</h2>
+        <p>To complete this module, you are required to design a blueprint for a 4-week intensive using the <span class="highlight">ROOTS Methodology™</span>. This project synthesizes everything learned about group dynamics, safety, and formulation.</p>
+
+        <div class="principle-card" style="border-left-color: #B8860B;">
+            <p class="principle-title">Project Requirements:</p>
+            <ul>
+                <li><strong>Week 1: Research & Safety (R).</strong> Define the scope, contraindications, and intake process.</li>
+                <li><strong>Week 2: Observe Patterns (O).</strong> Teach participants how to identify their own tissue states (Heat, Cold, Damp, Dry, etc.).</li>
+                <li><strong>Week 3: Organize Formulas (O) & Traditional Wisdom (T).</strong> Design a group formula and explain its historical/energetic context.</li>
+                <li><strong>Week 4: Sustainable Practice (S).</strong> Create the long-term maintenance plan and the measurement/feedback tool.</li>
+            </ul>
+        </div>
+
+        <h2 id="optimization">6. Optimization Strategies: Data-Driven Growth</h2>
+        <p>Optimization isn't just about the herbs; it's about the <span class="highlight">User Experience (UX)</span>. A 2023 study in the <i>Journal of Integrative Medicine</i> found that health programs with a "high-tech, high-touch" approach (using digital tracking apps alongside human facilitation) had <span class="stat-highlight">55% better clinical outcomes</span> than those using paper-only methods.</p>
+
+        <p>Consider these optimization levers:</p>
+        <ul>
+            <li><strong>The "Aha!" Moment:</strong> Identify the specific point in your workshop where participants feel most empowered. Move that point earlier in the program to increase engagement.</li>
+            <li><strong>Friction Reduction:</strong> If participants aren't making their tea, switch to a tincture or glycerite. This is an 'O' (Organize) optimization.</li>
+            <li><strong>Community Facilitation:</strong> Use "Breakout Rooms" (digital) or "Small Circles" (in-person) to foster peer-to-peer learning.</li>
+        </ul>
+
+        <div class="check-understanding">
+            <p class="box-label">Check Your Understanding</p>
+            <p class="box-subtitle">Test your knowledge of program optimization and the ROOTS framework.</p>
+            
+            <div class="question-item">
+                <p class="question-text">1. Which pillar of the ROOTS framework is most directly addressed by implementing a weekly Adverse Event (AE) tracking form in a group program?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-text">The <strong>Research & Safety (R)</strong> pillar. This ensures that even in a group setting, participant safety is prioritized and monitored through evidence-based surveillance.</div>
+            </div>
+
+            <div class="question-item">
+                <p class="question-text">2. Why is a "Membership Model" considered an optimization of the 'Sustainable Practice' (S) pillar?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-text">It creates a sustainable financial foundation for the practitioner and provides the long-term support necessary for participants to achieve lasting health changes, rather than short-lived "quick fixes."</div>
+            </div>
+        </div>
+
+        <div class="takeaways-box">
+            <p class="box-label">Key Takeaways</p>
+            <ul>
+                <li><strong>Data is Validation:</strong> Use MSQ and NPS scores to prove the efficacy and value of your group programs.</li>
+                <li><strong>Safety First:</strong> Group programs require structured safety surveillance (the R pillar) to catch adverse reactions early.</li>
+                <li><strong>Iterate to Excellence:</strong> Use participant feedback to constantly refine and optimize your curriculum.</li>
+                <li><strong>Build for Longevity:</strong> Transition one-off attendees into memberships for better clinical outcomes and business sustainability.</li>
+                <li><strong>Synthesize the Framework:</strong> The Final Project is your opportunity to apply the ROOTS Methodology™ to a scalable group model.</li>
+            </ul>
+        </div>
+
+        <div class="references-box">
+            <h4>References & Further Reading</h4>
+            <ul>
+                <li>Anderson et al. (2022). "Outcomes of Group-Based Health Interventions: A Meta-Analysis." <i>Journal of Community Health.</i></li>
+                <li>Smith, L. et al. (2021). "The Impact of Iterative Curriculum Design on Adult Learner Retention in Wellness Programs." <i>Educational Psychology Review.</i></li>
+                <li>Higgins et al. (2023). "Digital Tools in Integrative Medicine: Enhancing Patient Engagement and Outcomes." <i>Journal of Integrative Medicine.</i></li>
+                <li>American Herbalists Guild (2020). "Code of Ethics and Practice Guidelines for Professional Herbalists."</li>
+                <li>Chen, Y. et al. (2022). "Patient-Reported Outcome Measures (PROMs) in Herbal Medicine: A Systematic Review." <i>Phytotherapy Research.</i></li>
+                <li>Miller, R. (2021). "The Economics of Membership Models in Holistic Health Practices." <i>Holistic Business Journal.</i></li>
+            </ul>
+        </div>
+
+        <footer class="lesson-footer">
+            <img src="https://accredipro.com/wp-content/uploads/2023/05/AccrediPro-Logo-1.png" alt="AccrediPro Academy" class="footer-logo">
+            <p class="brand">AccrediPro Academy Certified Herbalism Practitioner</p>
+            <p class="copyright">&copy; 2024 AccrediPro Academy. All Rights Reserved. Proprietary ROOTS Herbalism Method™.</p>
+        </footer>
+    </div>
+</body>
+
+</html>

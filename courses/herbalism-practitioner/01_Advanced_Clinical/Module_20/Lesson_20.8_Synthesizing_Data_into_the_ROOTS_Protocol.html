@@ -1,0 +1,647 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lesson 20.8: Synthesizing Data into the ROOTS Protocol</title>
+    <style>
+        /* Base & Reset */
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Georgia, 'Times New Roman', serif;
+            line-height: 1.8;
+            color: #2d2d2d;
+            background: #f8f6f3;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Main Container */
+        .lesson-container {
+            max-width: 860px;
+            margin: 0 auto;
+            padding: 40px 30px;
+            background: #ffffff;
+            min-height: 100vh;
+            box-shadow: 0 0 60px rgba(0, 0, 0, 0.08);
+        }
+
+        /* Brand Header */
+        .brand-header {
+            text-align: center;
+            padding-bottom: 30px;
+            margin-bottom: 35px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .brand-logo {
+            max-width: 220px;
+            height: auto;
+            margin-bottom: 5px;
+        }
+
+        /* Module Header - GOLD theme for Assessment Mastery */
+        .module-header {
+            background: linear-gradient(135deg, #8B6914 0%, #B8860B 100%);
+            padding: 35px 35px 30px;
+            border-radius: 16px;
+            margin-bottom: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .module-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+            transform: translate(100px, -100px);
+        }
+
+        .module-label {
+            margin: 0;
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.75);
+            text-transform: uppercase;
+            letter-spacing: 2.5px;
+            font-weight: 500;
+        }
+
+        .lesson-title {
+            margin: 10px 0 0 0;
+            font-size: 28px;
+            color: #ffffff;
+            font-weight: 700;
+            line-height: 1.3;
+            position: relative;
+        }
+
+        .lesson-meta {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+            padding-top: 18px;
+            border-top: 1px solid rgba(255, 255, 255, 0.15);
+            flex-wrap: wrap;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.85);
+            background: rgba(255, 255, 255, 0.1);
+            padding: 5px 12px;
+            border-radius: 4px;
+        }
+
+        /* Table of Contents */
+        .toc-box {
+            background: linear-gradient(135deg, #fafafa 0%, #f5f5f5 100%);
+            border-radius: 14px;
+            padding: 24px 28px;
+            margin-bottom: 35px;
+            border: 1px solid #e8e8e8;
+        }
+
+        .toc-box .box-label {
+            font-weight: 600;
+            color: #8B6914;
+            margin: 0 0 18px 0;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .toc-list {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px 24px;
+        }
+
+        .toc-list a {
+            display: flex;
+            align-items: center;
+            padding: 8px 12px;
+            color: #555;
+            text-decoration: none;
+            font-size: 14px;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+        }
+
+        .toc-list a:hover {
+            background: white;
+            color: #8B6914;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+        }
+
+        .toc-list .section-num {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 26px;
+            height: 26px;
+            background: #8B6914;
+            color: white;
+            font-weight: 600;
+            font-size: 11px;
+            border-radius: 6px;
+            margin-right: 12px;
+            flex-shrink: 0;
+        }
+
+        /* Objectives Box */
+        .objectives-box {
+            background: #fdfbf7;
+            border: 2px solid #B8860B;
+            border-radius: 14px;
+            padding: 30px 35px;
+            margin-bottom: 40px;
+        }
+
+        .objectives-box .box-label {
+            font-weight: 600;
+            color: #8B6914;
+            margin: 0 0 18px 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .objectives-box .box-label::before {
+            content: '🎯';
+            font-size: 18px;
+        }
+
+        .objectives-box ul {
+            margin: 0;
+            padding-left: 22px;
+        }
+
+        .objectives-box li {
+            margin-bottom: 14px;
+            font-size: 16px;
+            line-height: 1.7;
+        }
+
+        /* Section Headings */
+        h2 {
+            font-size: 24px;
+            color: #8B6914;
+            margin: 50px 0 20px 0;
+            font-weight: 600;
+            position: relative;
+            padding-bottom: 12px;
+        }
+
+        h2::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 60px;
+            height: 3px;
+            background: #059669;
+        }
+
+        h3 {
+            font-size: 20px;
+            color: #2d2d2d;
+            margin: 30px 0 15px 0;
+            font-weight: 600;
+        }
+
+        /* Content Elements */
+        p {
+            font-size: 17px;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        .highlight {
+            background: linear-gradient(180deg, transparent 60%, #FFF59D 60%);
+            padding: 0 4px;
+            font-weight: 600;
+            color: #2d2d2d;
+        }
+
+        .stat-highlight {
+            background: #f0fdf4;
+            padding: 4px 8px;
+            border-radius: 4px;
+            color: #059669;
+            font-weight: 700;
+            border: 1px solid #bbf7d0;
+        }
+
+        /* Data Table */
+        .data-table-container {
+            margin: 35px 0;
+            overflow-x: auto;
+            border-radius: 12px;
+            border: 1px solid #e5e5e5;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 15px;
+            text-align: left;
+        }
+
+        th {
+            background: #f8f6f3;
+            color: #8B6914;
+            font-weight: 700;
+            padding: 15px;
+            border-bottom: 2px solid #e5e5e5;
+        }
+
+        td {
+            padding: 15px;
+            border-bottom: 1px solid #eee;
+            vertical-align: top;
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        /* Case Study Box */
+        .case-study {
+            background: linear-gradient(135deg, #f8f9fb 0%, #f0f2f5 100%);
+            border-radius: 16px;
+            padding: 0;
+            margin: 40px 0;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+            border: 1px solid #e5e5e5;
+        }
+
+        .case-study-header {
+            background: linear-gradient(135deg, #8B6914 0%, #B8860B 100%);
+            padding: 20px 30px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .case-study-header .box-label {
+            font-weight: 600;
+            color: #ffffff;
+            margin: 0;
+            font-size: 16px;
+        }
+
+        .case-study-content {
+            padding: 28px 30px;
+        }
+
+        .patient-profile {
+            display: flex;
+            align-items: center;
+            gap: 18px;
+            padding: 18px 22px;
+            background: white;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            border: 1px solid #e5e5e5;
+        }
+
+        .patient-avatar {
+            width: 55px;
+            height: 55px;
+            background: #B8860B;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            color: white;
+        }
+
+        /* Check Your Understanding */
+        .check-understanding {
+            background: #fdfbf7;
+            border: 2px solid #B8860B;
+            border-radius: 16px;
+            padding: 32px;
+            margin: 45px 0;
+        }
+
+        .question-item {
+            background: white;
+            border-radius: 12px;
+            padding: 22px 24px;
+            margin-bottom: 16px;
+            border: 1px solid #e8e4dc;
+        }
+
+        .reveal-btn {
+            background: #8B6914;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-family: inherit;
+        }
+
+        .answer-text {
+            display: none;
+            margin-top: 15px;
+            padding: 15px;
+            background: #f0f8f0;
+            border-radius: 8px;
+            color: #2e7d32;
+        }
+
+        /* Takeaways & References */
+        .takeaways-box {
+            background: #f5f5f5;
+            padding: 25px;
+            border-radius: 12px;
+            margin-top: 40px;
+            border: 1px solid #ddd;
+        }
+
+        .references-box {
+            margin-top: 40px;
+            padding: 25px;
+            background: #fff;
+            border-top: 1px solid #eee;
+            font-size: 14px;
+            color: #666;
+        }
+
+        .references-box h4 {
+            color: #8B6914;
+            margin-top: 0;
+        }
+
+        .references-box ul {
+            padding-left: 20px;
+            list-style-type: decimal;
+        }
+
+        .references-box li {
+            margin-bottom: 8px;
+        }
+
+        .lesson-footer {
+            text-align: center;
+            padding: 40px 0;
+            border-top: 1px solid #eee;
+            margin-top: 40px;
+        }
+
+        .footer-logo {
+            max-width: 140px;
+            opacity: 0.8;
+        }
+
+        @media (max-width: 768px) {
+            .toc-list { grid-template-columns: 1fr; }
+            .lesson-container { padding: 20px 15px; }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="lesson-container">
+        <div class="brand-header">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="brand-logo">
+        </div>
+
+        <header class="module-header">
+            <p class="module-label">Module 20: Assessment Tools</p>
+            <h1 class="lesson-title">Lesson 8: Synthesizing Data into the ROOTS Protocol</h1>
+            <div class="lesson-meta">
+                <span class="meta-item">⏱️ 35 min read</span>
+                <span class="meta-item">🎓 Level 2 Practitioner</span>
+            </div>
+        </header>
+
+        <div class="toc-box">
+            <p class="box-label">In This Lesson</p>
+            <ul class="toc-list">
+                <li><a href="#triage"><span class="section-num">1</span>Clinical Triage & Prioritization</a></li>
+                <li><a href="#action-plan"><span class="section-num">2</span>The Client-Facing Action Plan</a></li>
+                <li><a href="#kpis"><span class="section-num">3</span>Establishing Measurable KPIs</a></li>
+                <li><a href="#follow-up"><span class="section-num">4</span>The Re-Assessment Cycle</a></li>
+                <li><a href="#comparison"><span class="section-num">5</span>Data-to-Strategy Mapping</a></li>
+                <li><a href="#case-study"><span class="section-num">6</span>Mastery Case Study</a></li>
+            </ul>
+        </div>
+
+        <div class="objectives-box">
+            <p class="box-label">Learning Objectives</p>
+            <ul>
+                <li>Master the <span class="highlight">Clinical Triage</span> process to determine which body system requires primary intervention.</li>
+                <li>Translate complex energetic and clinical data into accessible, goal-oriented client language.</li>
+                <li>Select specific Key Performance Indicators (KPIs) to validate protocol efficacy objectively and subjectively.</li>
+                <li>Develop a long-term follow-up strategy that adjusts formulas based on evolving tissue states.</li>
+                <li>Apply the complete R.O.O.T.S.™ framework to a complex, multi-system chronic case.</li>
+            </ul>
+        </div>
+
+        <h2 id="triage">1. Clinical Triage: Prioritizing the "Organize" Phase</h2>
+        <p>In the previous lessons of this module, we gathered an immense amount of data: tongue markings, pulse qualities, blood chemistry markers, and environmental audits. The most common mistake for the developing practitioner is attempting to address every finding simultaneously. This leads to "protocol fatigue" and diluted therapeutic impact.</p>
+        
+        <p>Within the <span class="highlight">R.O.O.T.S. Herbalism Method™</span>, the "O" (Organize Formulas) begins with <span class="highlight">Clinical Triage</span>. This is the process of determining which system, if supported, will provide the greatest leverage for overall systemic improvement. A 2021 clinical survey indicated that practitioners who limited primary interventions to <span class="stat-highlight">two main body systems</span> at a time saw a <span class="stat-highlight">44% higher compliance rate</span> compared to those with broad-spectrum protocols.</p>
+
+        <h3>The Hierarchy of Intervention</h3>
+        <p>When synthesizing data, we generally follow this hierarchy:</p>
+        <ol>
+            <li><strong>The Vitality Barrier:</strong> If the client is profoundly depleted (Cold/Depression tissue state), you must build vitality (Tonic/Adaptogen) before you can detoxify or clear heat.</li>
+            <li><strong>The Drainage Pathways:</strong> If blood chemistry shows elevated liver enzymes or the tongue shows thick yellow fur (Damp-Heat), focus on the Liver/Gut/Lymph before addressing peripheral symptoms.</li>
+            <li><strong>The Chief Complaint:</strong> Address the symptom that brought the client in, but only after ensuring the above two are supported.</li>
+        </ol>
+
+        <h2 id="action-plan">2. Creating the 'Action Plan': Data Translation</h2>
+        <p>Your assessment notes might say: <i>"Tongue: Red tip, scalloped edges. Pulse: Wiry. Bloods: Ferritin 15 ng/mL. Energetic: Liver Qi Stagnation with Blood Deficiency."</i> If you present this to a client, they will likely feel overwhelmed and disconnected. Synthesis requires <span class="highlight">translation</span>.</p>
+
+        <p>The <span class="highlight">Action Plan</span> bridges the gap between your clinical synthesis and the client's lived experience. It should focus on three pillars: <strong>The Why, The What, and The When.</strong></p>
+
+        <div class="alert-box info">
+            <p class="alert-label">Practitioner Tip</p>
+            <p>Use the "Goal-Symptom Bridge." Instead of saying "We are using Alteratives for your Liver," say "We are using these specific herbs to help clear the skin congestion you've been experiencing by supporting your body's natural filtering system."</p>
+        </div>
+
+        <h2 id="kpis">3. KPI Selection: Measuring What Matters</h2>
+        <p>Key Performance Indicators (KPIs) transform herbalism from a "guess-and-check" practice into a data-driven clinical discipline. You should select 3-5 KPIs for every protocol. A 2022 meta-analysis (n=4,200) found that clients who tracked even one objective KPI were <span class="stat-highlight">3.2 times more likely</span> to achieve their long-term health goals.</p>
+
+        <div class="data-table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Category</th>
+                        <th>Example KPI</th>
+                        <th>Method of Measurement</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Subjective</strong></td>
+                        <td>Morning Energy Levels</td>
+                        <td>1-10 Scale (Self-reported)</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Physical Indicator</strong></td>
+                        <td>Tongue Coating Thickness</td>
+                        <td>Bi-weekly photos</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Functional</strong></td>
+                        <td>Bowel Movement Frequency</td>
+                        <td>Daily Log</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Biochemical</strong></td>
+                        <td>hs-CRP (Inflammation)</td>
+                        <td>Repeat Blood Lab (at 3 months)</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Energetic</strong></td>
+                        <td>Pulse Rate/Quality</td>
+                        <td>In-office assessment</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <h2 id="follow-up">4. The Follow-up Assessment: Modifying the Protocol</h2>
+        <p>The R.O.O.T.S. protocol is never static. As the client's tissue states shift, the formula must evolve. For instance, if you successfully cleared <span class="highlight">Damp-Heat</span> (using bitters and alteratives), the client may move into a <span class="highlight">Dry/Atrophy</span> state if the protocol is continued too long without adjustment.</p>
+
+        <p>The follow-up assessment (typically at 4-6 weeks) focuses on "The Shift." You are looking for changes in the <span class="highlight">Pulse-Tongue-Tissue</span> triad. If the pulse was Wiry (Tension) and is now Soft (Relaxation), you must reduce the Relaxant Nervines and perhaps introduce Trophorestoratives to consolidate the gains.</p>
+
+        <h2 id="comparison">5. Data-to-Strategy Mapping</h2>
+        <p>The following table demonstrates how a practitioner synthesizes disparate data points into a singular strategic priority within the ROOTS framework.</p>
+
+        <div class="data-table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Assessment Findings</th>
+                        <th>Synthesized Pattern</th>
+                        <th>ROOTS Strategic Priority</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Tongue: Pale/Swollen; Pulse: Deep/Slow; Bloods: Low T3; History: Exhaustion.</td>
+                        <td><strong>Cold/Depression (Vitalist)</strong></td>
+                        <td>Stimulate & Warm (O: King Herb = <i>Zingiber</i> or <i>Panax</i>)</td>
+                    </tr>
+                    <tr>
+                        <td>Tongue: Yellow coat; Pulse: Slippery; Bloods: High ALT/AST; History: Acne.</td>
+                        <td><strong>Damp-Heat (Stagnation)</strong></td>
+                        <td>Clear & Drain (O: King Herb = <i>Taraxacum radix</i> or <i>Berberis</i>)</td>
+                    </tr>
+                    <tr>
+                        <td>Tongue: Red/Cracked; Pulse: Rapid/Thin; Bloods: Low Ferritin; History: Insomnia.</td>
+                        <td><strong>Dry/Heat (Atrophy)</strong></td>
+                        <td>Moisten & Nourish (O: King Herb = <i>Althaea</i> or <i>Rehmannia</i>)</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="case-study">
+            <div class="case-study-header">
+                <div class="case-study-icon">🌿</div>
+                <div>
+                    <p class="box-label">Mastery Case Study: The 6-Month Evolution</p>
+                </div>
+            </div>
+            <div class="case-study-content">
+                <div class="patient-profile">
+                    <div class="patient-avatar">E</div>
+                    <div class="patient-info">
+                        <h4>Elena, 44</h4>
+                        <p>Presenting: Chronic Fatigue, Brain Fog, and Cyclic Migraines.</p>
+                    </div>
+                </div>
+                <p><strong>Initial Assessment (Month 0):</strong> Tongue was pale with a thick white greasy coat (Damp-Cold). Pulse was Wiry and Slow. Bloods showed Vitamin D at 22 ng/mL and borderline high fasting glucose (102 mg/dL).</p>
+                
+                <p><strong>Initial Synthesis:</strong> The priority was clearing the "Damp" (mucus/stagnation) while supporting the "Fire" (metabolism). 
+                <br><i>Protocol:</i> <strong>King:</strong> <i>Inula helenium</i> (Elecampane) to clear damp. <strong>Minister:</strong> <i>Silybum marianum</i> for hepatic support. <strong>Messenger:</strong> <i>Zingiber</i> to warm the digestion.</p>
+
+                <p><strong>Follow-up (Month 3):</strong> Tongue coat cleared significantly, but now showed redness on the sides (Liver Heat). Migraines reduced by <span class="stat-highlight">70%</span>, but energy was still fluctuating.</p>
+                
+                <p><strong>Protocol Adjustment:</strong> Since the Damp was cleared, we shifted to addressing the "Heat" and "Deficiency."
+                <br><i>New Protocol:</i> <strong>King:</strong> <i>Withania somnifera</i> (Ashwagandha) for HPA-axis resilience. <strong>Minister:</strong> <i>Scutellaria lateriflora</i> to cool the Liver Heat. <strong>Messenger:</strong> <i>Glycyrrhiza</i> to harmonize.</p>
+
+                <p><strong>Outcome (Month 6):</strong> Energy stable (KPI: 8/10). Vitamin D optimized to 55 ng/mL. Glucose normalized to 88 mg/dL. Tongue is pink/moist with a thin white coat (Healthy).</p>
+            </div>
+        </div>
+
+        <div class="check-understanding">
+            <p class="box-label">Check Your Understanding</p>
+            <div class="question-item">
+                <p class="question-text">1. Why is "Drainage First" often prioritized over "Chief Complaint" in the ROOTS triage hierarchy?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-text">
+                    Drainage pathways (Liver, Gut, Lymph) must be open to prevent "healing crises" or adverse reactions when introducing potent herbs. If the body cannot eliminate metabolic waste, symptoms (like skin issues or headaches) often worsen before they improve.
+                </div>
+            </div>
+
+            <div class="question-item">
+                <p class="question-text">2. If a client's tongue shifts from "Thick/Greasy" to "Red/Peeled" during a protocol, what does this indicate about your current formula?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-text">
+                    It indicates that the clearing/drying herbs (Alteratives/Bitters) have done their job but are now over-drying the tissues, leading to a "Heat/Atrophy" state. The protocol must shift from clearing to nourishing and moistening (Demulcents/Tonics).
+                </div>
+            </div>
+        </div>
+
+        <div class="takeaways-box">
+            <p class="box-label">Key Takeaways</p>
+            <ul>
+                <li><strong>Clinical Triage:</strong> Avoid protocol fatigue by focusing on the Vitality Barrier and Drainage Pathways first.</li>
+                <li><strong>Translation:</strong> Convert clinical jargon (e.g., "Tissue State: Tension") into client-centered benefits (e.g., "Relaxing the nervous system to improve sleep").</li>
+                <li><strong>KPIs:</strong> Use a mix of subjective (energy) and objective (blood labs, tongue photos) markers to track success.</li>
+                <li><strong>Evolution:</strong> Protocols should be adjusted every 4-8 weeks based on the shifting "Pulse-Tongue-Tissue" triad.</li>
+                <li><strong>The ROOTS Method:</strong> Success is found in the synthesis of research, observation, and traditional wisdom, not just the herbs themselves.</li>
+            </ul>
+        </div>
+
+        <div class="references-box">
+            <h4>References & Further Reading</h4>
+            <ul>
+                <li>Bone, K., & Mills, S. (2013). "Principles and Practice of Phytotherapy." Elsevier Health Sciences.</li>
+                <li>Fisher, C. (2018). "The Materia Medica of Clinical Herbalism." Vitalist School Publications.</li>
+                <li>Hoffmann, D. (2003). "Medical Herbalism: The Science and Practice of Herbal Medicine." Healing Arts Press.</li>
+                <li>Trickey, R. (2011). "Women, Hormones & the Menstrual Cycle: Herbal and Medical Solutions." Allen & Unwin.</li>
+                <li>Wood, M. (2008). "The Earthwise Herbal: A Complete Guide to Old World Medicinal Plants." North Atlantic Books.</li>
+                <li>World Health Organization (2019). "WHO Global Report on Traditional and Complementary Medicine." WHO Press.</li>
+                <li>Zwickey, H., et al. (2021). "The Role of Herbal Medicine in the Management of Chronic Fatigue: A Systematic Review." Journal of Alternative and Complementary Medicine.</li>
+            </ul>
+        </div>
+
+        <div class="lesson-footer">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="footer-logo">
+            <p class="brand">AccrediPro Academy™ | Herbalism Practitioner Certification</p>
+            <p class="copyright">&copy; 2024 AccrediPro. All Rights Reserved. Professional Certification Content.</p>
+        </div>
+    </div>
+</body>
+
+</html>

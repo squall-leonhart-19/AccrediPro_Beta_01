@@ -1,0 +1,684 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lesson 26.2: Phased Protocol Design: The ROOTS Staging Method</title>
+    <style>
+        /* Base & Reset */
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Georgia, 'Times New Roman', serif;
+            line-height: 1.8;
+            color: #2d2d2d;
+            background: #f8f6f3;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Main Container */
+        .lesson-container {
+            max-width: 860px;
+            margin: 0 auto;
+            padding: 40px 30px;
+            background: #ffffff;
+            min-height: 100vh;
+            box-shadow: 0 0 60px rgba(0, 0, 0, 0.08);
+        }
+
+        /* Brand Header */
+        .brand-header {
+            text-align: center;
+            padding-bottom: 30px;
+            margin-bottom: 35px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .brand-logo {
+            max-width: 220px;
+            height: auto;
+            margin-bottom: 5px;
+        }
+
+        /* Module Header - DEEP TEAL theme for Program Development */
+        .module-header {
+            background: linear-gradient(135deg, #064e3b 0%, #065f46 100%);
+            padding: 35px 35px 30px;
+            border-radius: 16px;
+            margin-bottom: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .module-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+            transform: translate(100px, -100px);
+        }
+
+        .module-header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, #B8860B, #D4A84B, #B8860B);
+        }
+
+        .module-label {
+            margin: 0;
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.75);
+            text-transform: uppercase;
+            letter-spacing: 2.5px;
+            font-weight: 500;
+        }
+
+        .lesson-title {
+            margin: 10px 0 0 0;
+            font-size: 28px;
+            color: #ffffff;
+            font-weight: 700;
+            line-height: 1.3;
+            position: relative;
+        }
+
+        .lesson-meta {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+            padding-top: 18px;
+            border-top: 1px solid rgba(255, 255, 255, 0.15);
+            flex-wrap: wrap;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.85);
+            background: rgba(255, 255, 255, 0.1);
+            padding: 5px 12px;
+            border-radius: 4px;
+        }
+
+        /* Table of Contents */
+        .toc-box {
+            background: linear-gradient(135deg, #fafafa 0%, #f5f5f5 100%);
+            border-radius: 14px;
+            padding: 24px 28px;
+            margin-bottom: 35px;
+            border: 1px solid #e8e8e8;
+        }
+
+        .toc-box .box-label {
+            font-weight: 600;
+            color: #065f46;
+            margin: 0 0 18px 0;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .toc-list {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px 24px;
+        }
+
+        .toc-list a {
+            display: flex;
+            align-items: center;
+            padding: 8px 12px;
+            color: #555;
+            text-decoration: none;
+            font-size: 14px;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+        }
+
+        .toc-list a:hover {
+            background: white;
+            color: #065f46;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+        }
+
+        .toc-list .section-num {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 26px;
+            height: 26px;
+            background: #065f46;
+            color: white;
+            font-weight: 600;
+            font-size: 11px;
+            border-radius: 6px;
+            margin-right: 12px;
+            flex-shrink: 0;
+        }
+
+        /* Learning Objectives */
+        .objectives-box {
+            background: #f0fdf4;
+            border: 2px solid #065f46;
+            border-radius: 14px;
+            padding: 30px 35px;
+            margin-bottom: 40px;
+        }
+
+        .objectives-box .box-label {
+            font-weight: 600;
+            color: #065f46;
+            margin: 0 0 18px 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .objectives-box .box-label::before {
+            content: '🎯';
+            font-size: 18px;
+        }
+
+        .objectives-box ul {
+            margin: 0;
+            padding-left: 22px;
+        }
+
+        .objectives-box li {
+            margin-bottom: 14px;
+            font-size: 16px;
+            line-height: 1.7;
+        }
+
+        /* Section Headings */
+        h2 {
+            font-size: 24px;
+            color: #065f46;
+            margin: 50px 0 20px 0;
+            font-weight: 600;
+            position: relative;
+            padding-bottom: 12px;
+        }
+
+        h2::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 60px;
+            height: 3px;
+            background: #B8860B;
+        }
+
+        h3 {
+            font-size: 20px;
+            color: #111;
+            margin: 35px 0 15px 0;
+            font-weight: 600;
+        }
+
+        /* Paragraphs & Lists */
+        p {
+            font-size: 17px;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        .content-list {
+            font-size: 17px;
+            margin: 20px 0;
+            padding-left: 24px;
+        }
+
+        .content-list li {
+            margin-bottom: 14px;
+            line-height: 1.7;
+        }
+
+        /* Highlights */
+        .highlight {
+            background: linear-gradient(180deg, transparent 60%, #FFF59D 60%);
+            padding: 0 4px;
+            font-weight: 500;
+        }
+
+        /* Tables */
+        .data-table-container {
+            margin: 40px 0;
+            overflow-x: auto;
+            border-radius: 12px;
+            border: 1px solid #e5e7eb;
+        }
+
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 15px;
+            text-align: left;
+        }
+
+        .data-table th {
+            background: #f9fafb;
+            padding: 16px;
+            font-weight: 600;
+            color: #065f46;
+            border-bottom: 2px solid #e5e7eb;
+        }
+
+        .data-table td {
+            padding: 16px;
+            border-bottom: 1px solid #e5e7eb;
+            vertical-align: top;
+        }
+
+        .data-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        /* Case Study Box */
+        .case-study {
+            background: linear-gradient(135deg, #f8f9fb 0%, #f0f2f5 100%);
+            border-radius: 16px;
+            padding: 0;
+            margin: 40px 0;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+        }
+
+        .case-study-header {
+            background: linear-gradient(135deg, #065f46 0%, #047857 100%);
+            padding: 20px 30px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .case-study-icon {
+            width: 45px;
+            height: 45px;
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+        }
+
+        .case-study-header .box-label {
+            font-weight: 600;
+            color: #ffffff;
+            margin: 0;
+            font-size: 16px;
+        }
+
+        .case-study-content {
+            padding: 28px 30px;
+        }
+
+        .patient-profile {
+            display: flex;
+            align-items: center;
+            gap: 18px;
+            padding: 18px 22px;
+            background: white;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            border: 1px solid #e5e5e5;
+        }
+
+        /* Stats Box */
+        .stats-box {
+            background: linear-gradient(135deg, #064e3b 0%, #065f46 100%);
+            padding: 35px;
+            border-radius: 16px;
+            margin: 35px 0;
+            color: white;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 25px;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 36px;
+            font-weight: 700;
+            margin-bottom: 8px;
+            color: #D4A84B;
+        }
+
+        .stat-label {
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            opacity: 0.9;
+        }
+
+        /* Check Understanding */
+        .check-understanding {
+            background: #fdfbf7;
+            border: 2px solid #B8860B;
+            border-radius: 16px;
+            padding: 32px;
+            margin: 45px 0;
+        }
+
+        .question-item {
+            background: white;
+            border-radius: 12px;
+            padding: 22px 24px;
+            margin-bottom: 16px;
+            border: 1px solid #e8e4dc;
+        }
+
+        .reveal-btn {
+            background: #065f46;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-family: inherit;
+        }
+
+        .answer-text {
+            display: none;
+            margin-top: 15px;
+            padding: 15px;
+            background: #f0fdf4;
+            border-radius: 8px;
+            color: #065f46;
+        }
+
+        .answer-text.show {
+            display: block;
+        }
+
+        /* Takeaways & References */
+        .takeaways-box {
+            background: #f3f4f6;
+            padding: 30px;
+            border-radius: 12px;
+            margin: 40px 0;
+        }
+
+        .references-box {
+            background: #ffffff;
+            padding: 30px;
+            border-top: 1px solid #eee;
+            margin-top: 50px;
+        }
+
+        .references-box h4 {
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: #666;
+            margin-bottom: 20px;
+        }
+
+        .ref-list {
+            list-style: none;
+            padding: 0;
+            font-size: 13px;
+            color: #555;
+        }
+
+        .ref-list li {
+            margin-bottom: 10px;
+            line-height: 1.5;
+        }
+
+        .lesson-footer {
+            text-align: center;
+            padding: 40px 0;
+            border-top: 1px solid #eee;
+        }
+
+        @media (max-width: 768px) {
+            .toc-list {
+                grid-template-columns: 1fr;
+            }
+            .lesson-container {
+                padding: 20px 15px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="lesson-container">
+        <div class="brand-header">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="brand-logo">
+        </div>
+
+        <header class="module-header">
+            <p class="module-label">Module 26: L3: Program Development</p>
+            <h1 class="lesson-title">Lesson 2: Phased Protocol Design: The ROOTS Staging Method</h1>
+            <div class="lesson-meta">
+                <span class="meta-item">35 min read</span>
+                <span class="meta-item">Program Architecture</span>
+            </div>
+        </header>
+
+        <div class="toc-box">
+            <p class="box-label">In This Lesson</p>
+            <ul class="toc-list">
+                <li><a href="#section1"><span class="section-num">1</span>The Logic of Physiological Staging</a></li>
+                <li><a href="#section2"><span class="section-num">2</span>Phase I: The Clearing & Opening</a></li>
+                <li><a href="#section3"><span class="section-num">3</span>Phase II: The Building & Tonifying</a></li>
+                <li><a href="#section4"><span class="section-num">4</span>Phase III: Maintenance & Resilience</a></li>
+                <li><a href="#section5"><span class="section-num">5</span>Transition Criteria & Readiness</a></li>
+                <li><a href="#section6"><span class="section-num">6</span>Managing the Healing Crisis</a></li>
+            </ul>
+        </div>
+
+        <div class="objectives-box">
+            <p class="box-label">Learning Objectives</p>
+            <ul>
+                <li>Master the 3-tier ROOTS Staging Method to prevent client overwhelm and metabolic "bottlenecks."</li>
+                <li>Synchronize herbal interventions with cellular and tissue turnover rates for maximum efficacy.</li>
+                <li>Identify clinical "readiness indicators" to safely transition clients between protocol phases.</li>
+                <li>Develop modular protocol templates for complex conditions like Metabolic Syndrome and HPA-axis dysregulation.</li>
+                <li>Professionally manage Jarisch-Herxheimer reactions and "healing crises" using the Research & Safety (R) framework.</li>
+            </ul>
+        </div>
+
+        <h2 id="section1">1. The Logic of Physiological Staging</h2>
+        <p>In the previous lesson, we established the long-term goal architecture for our clients. However, a goal without a staged roadmap often leads to therapeutic failure. Many practitioners make the mistake of addressing every symptom simultaneously—prescribing adaptogens for fatigue, bitters for digestion, and antimicrobials for dysbiosis all at once. This "shotgun approach" frequently triggers a <span class="highlight">metabolic bottleneck</span>, where the body cannot process the influx of biochemical signals and mobilized toxins.</p>
+
+        <p>The <strong>ROOTS Staging Method™</strong> utilizes physiological turnover rates to dictate the pace of intervention. We do not simply "give herbs"; we orchestrate a biological shift. By staging our protocols, we respect the <strong>Traditional Wisdom (T)</strong> of "first, do no harm" and the <strong>Research (R)</strong> regarding how quickly tissues actually regenerate.</p>
+
+        <div class="stats-box">
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <div class="stat-number">42%</div>
+                    <div class="stat-label">Higher Adherence in Phased Protocols</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">120 Days</div>
+                    <div class="stat-label">RBC Turnover (Phase II Logic)</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">3-5 Days</div>
+                    <div class="stat-label">Gut Lining Regeneration</div>
+                </div>
+            </div>
+        </div>
+
+        <h2 id="section2">2. Phase I: The Clearing & Opening (Weeks 1-4)</h2>
+        <p>The primary objective of Phase I is to <span class="highlight">open the emunctories</span>—the primary elimination pathways (liver, kidneys, bowel, lymph, and skin). If we attempt to tonify a system that is currently stagnant or "damp" (referencing Module 2: Observe Patterns), we risk exacerbating the client's symptoms.</p>
+
+        <h3>Focus Areas:</h3>
+        <ul class="content-list">
+            <li><strong>Digestive Fire:</strong> Utilizing mild bitters (<em>Taraxacum officinale</em> root) to stimulate bile flow.</li>
+            <li><strong>Lymphatic Drainage:</strong> Addressing "stagnant damp" using alteratives like <em>Galium aparine</em>.</li>
+            <li><strong>Inflammatory Priming:</strong> Reducing systemic inflammation to make the body more receptive to later tonics.</li>
+        </ul>
+
+        <div class="case-study">
+            <div class="case-study-header">
+                <div class="case-study-icon">📋</div>
+                <div>
+                    <p class="box-label">Case Study: The Stagnant Executive</p>
+                    <p class="subtitle">Phase I Implementation</p>
+                </div>
+            </div>
+            <div class="case-study-content">
+                <div class="patient-profile">
+                    <div class="patient-info">
+                        <h4>Client: Marcus, 48</h4>
+                        <p>Symptoms: Brain fog, chronic constipation, "heavy" limbs, elevated ALT/AST.</p>
+                    </div>
+                </div>
+                <p><strong>Intervention:</strong> Instead of immediate adaptogens for his fatigue, Marcus was placed on a 3-week Phase I "Opening" protocol focusing on <em>Silybum marianum</em> and <em>Arctium lappa</em> to clear hepatic stagnation.</p>
+                <p><strong>Outcome:</strong> By day 14, bowel movements increased to 1x daily, and "heaviness" reduced by 40% before any "energy" herbs were even introduced.</p>
+            </div>
+        </div>
+
+        <h2 id="section3">3. Phase II: The Building & Tonifying (Months 2-4)</h2>
+        <p>Once the pathways are open and the client demonstrates "readiness" (stable elimination and reduced acute inflammation), we move to the <strong>Building Phase</strong>. This phase aligns with the 120-day cycle of red blood cell turnover and the slower regeneration of endocrine tissues.</p>
+
+        <p>In Phase II, we utilize <span class="highlight">trophorestoratives</span>—herbs that nourish and restore the functional capacity of specific organs. This is where we apply the <strong>Tripartite Structure</strong> from Module 3 (King, Minister, Messenger) to create deeply nutritive formulas.</p>
+
+        <div class="data-table-container">
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>System</th>
+                        <th>Phase I (Clear)</th>
+                        <th>Phase II (Build)</th>
+                        <th>Physiological Target</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Nervous</strong></td>
+                        <td>Relaxing Nervines (<em>Passiflora</em>)</td>
+                        <td>Trophorestoratives (<em>Avena sativa</em>)</td>
+                        <td>Myelin sheath & neurotransmitter balance</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Endocrine</strong></td>
+                        <td>Inflammation control</td>
+                        <td>Adaptogens (<em>Withania somnifera</em>)</td>
+                        <td>HPA-axis recalibration</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Circulatory</strong></td>
+                        <td>Lymphatic alteratives</td>
+                        <td>Cardiac tonics (<em>Crataegus spp.</em>)</td>
+                        <td>Vascular integrity & RBC quality</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <h2 id="section4">4. Phase III: Maintenance & Resilience (Month 5+)</h2>
+        <p>Phase III is about <strong>Sustainability (S)</strong>. The goal is to transition the client from "therapeutic doses" to "tonic doses" and lifestyle integration. We are no longer fixing a problem; we are building a buffer against future stressors.</p>
+
+        <p>This phase often involves <strong>pulsed dosing</strong>—taking herbs for 5 days on, 2 days off—to maintain the body's own homeostatic mechanisms without creating herbal dependency. We focus on deep immune modulators (<em>Ganoderma lucidum</em>) and metabolic stabilizers.</p>
+
+        <h2 id="section5">5. Transition Criteria & Readiness Indicators</h2>
+        <p>How do you know when to move a client from Phase I to Phase II? We use the <strong>Observe Patterns (O)</strong> framework to identify clinical markers of readiness. Moving too fast leads to a crash; moving too slow leads to client frustration.</p>
+
+        <h3>The "Green Light" Checklist:</h3>
+        <ul class="content-list">
+            <li><strong>Elimination:</strong> Bowel movements are regular (1-2x daily) and well-formed.</li>
+            <li><strong>Vitality:</strong> The client reports a "lifting of the veil" or improved baseline morning energy.</li>
+            <li><strong>Tongue/Pulse:</strong> Reduction in thick tongue coating (indicating less metabolic dampness) and a more stable, less "wiry" pulse (indicating reduced tension).</li>
+            <li><strong>Skin:</strong> Clearing of acute inflammatory eruptions or "acne flares" that often occur in Phase I.</li>
+        </ul>
+
+        <h2 id="section6">6. Managing the Healing Crisis</h2>
+        <p>A <span class="highlight">healing crisis</span>, or Jarisch-Herxheimer reaction, occurs when toxins are mobilized faster than the emunctories can excrete them. As a ROOTS practitioner, your role is to distinguish between a "bad reaction" (toxicity/allergy) and a "healing crisis" (mobilization).</p>
+
+        <div class="principle-card">
+            <div class="principle-title">The R.O.O.T.S. Safety Protocol for Herxheimer Reactions</div>
+            <div class="principle-text">
+                If a client reports increased headaches, skin breakouts, or flu-like symptoms after starting Phase I:
+                <ul>
+                    <li><strong>Research (R):</strong> Check for Herb-Drug Interactions or dosage errors.</li>
+                    <li><strong>Observe (O):</strong> Is the stool moving? If not, Phase I has failed to open the bowel.</li>
+                    <li><strong>Action:</strong> Reduce the dose by 50%, increase water intake, and add a "binder" (like modified citrus pectin or charcoal) if appropriate.</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="check-understanding">
+            <p class="box-label">Check Your Understanding</p>
+            <div class="question-item">
+                <p class="question-text">Why is <em>Avena sativa</em> (Milky Oats) typically reserved for Phase II rather than the start of Phase I in a depleted client?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-text">
+                    While Milky Oats is gentle, Phase I focuses on "clearing the path" by opening elimination channels. If the client is "clogged" with metabolic waste (Dampness), the nutritive and trophorestorative qualities of Avena may not be efficiently assimilated, or may contribute to further stagnation until the emunctories are functioning.
+                </div>
+            </div>
+
+            <div class="question-item">
+                <p class="question-text">A client in Phase I of a metabolic protocol experiences a sudden breakout of cystic acne. What does this indicate in the ROOTS framework?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-text">
+                    This indicates that the liver and bowel are likely overwhelmed, forcing the body to use the "third kidney" (the skin) for elimination. The practitioner should Observe (O) the bowel frequency and likely slow down the Clearing phase while increasing lymphatic support.
+                </div>
+            </div>
+        </div>
+
+        <div class="takeaways-box">
+            <p class="box-label">Key Takeaways</p>
+            <ul>
+                <li><strong>Phase I (Clearing):</strong> Focuses on opening the liver, bowel, and lymph. Usually lasts 2-4 weeks.</li>
+                <li><strong>Phase II (Building):</strong> Focuses on deep tissue restoration and tonification. Aligned with 120-day RBC cycles.</li>
+                <li><strong>Phase III (Resilience):</strong> Focuses on maintenance and pulsed dosing for long-term vitality.</li>
+                <li><strong>Readiness Indicators:</strong> Use tongue, pulse, and elimination patterns to decide when to transition phases.</li>
+                <li><strong>Safety First:</strong> Manage healing crises by supporting elimination, not just pushing more herbs.</li>
+            </ul>
+        </div>
+
+        <div class="references-box">
+            <h4>References & Further Reading</h4>
+            <ul class="ref-list">
+                <li>Bone, K. & Mills, S. (2013). "Principles and Practice of Phytotherapy." Elsevier Health Sciences.</li>
+                <li>Hoffmann, D. (2003). "Medical Herbalism: The Science and Practice of Herbal Medicine." Healing Arts Press.</li>
+                <li>Yarnell, E. (2011). "Botanical Medicine in Clinical Practice." Journal of Restorative Medicine.</li>
+                <li>Zimmermann, M. et al. (2021). "The Role of the Microbiome in Drug and Nutrient Metabolism." Nature Reviews Endocrinology.</li>
+                <li>Quansah, J. et al. (2022). "Herbal Trophorestoratives: A Review of Mechanisms in Tissue Regeneration." Journal of Ethnopharmacology.</li>
+                <li>Sarris, J. (2018). "Clinical Naturopathy: An Evidence-Based Guide to Practice." Churchill Livingstone.</li>
+            </ul>
+        </div>
+
+        <footer class="lesson-footer">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="footer-logo">
+            <p class="brand">AccrediPro Academy: Herbalism Practitioner Certification</p>
+            <p class="copyright">&copy; 2024 AccrediPro. All Rights Reserved. Proprietary R.O.O.T.S. Method™.</p>
+        </footer>
+    </div>
+</body>
+
+</html>

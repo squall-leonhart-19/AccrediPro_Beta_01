@@ -1,0 +1,709 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lesson 20.4: Pulse Analysis in Clinical Practice</title>
+    <style>
+        /* Base & Reset */
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Georgia, 'Times New Roman', serif;
+            line-height: 1.8;
+            color: #2d2d2d;
+            background: #f8f6f3;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Main Container */
+        .lesson-container {
+            max-width: 860px;
+            margin: 0 auto;
+            padding: 40px 30px;
+            background: #ffffff;
+            min-height: 100vh;
+            box-shadow: 0 0 60px rgba(0, 0, 0, 0.08);
+        }
+
+        /* Brand Header */
+        .brand-header {
+            text-align: center;
+            padding-bottom: 30px;
+            margin-bottom: 35px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .brand-logo {
+            max-width: 220px;
+            height: auto;
+            margin-bottom: 5px;
+        }
+
+        /* Module Header - DEEP TEAL theme for Assessment */
+        .module-header {
+            background: linear-gradient(135deg, #0f4c5c 0%, #1a7589 100%);
+            padding: 35px 35px 30px;
+            border-radius: 16px;
+            margin-bottom: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .module-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+            transform: translate(100px, -100px);
+        }
+
+        .module-header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, #B8860B, #D4A84B, #B8860B);
+        }
+
+        .module-label {
+            margin: 0;
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.75);
+            text-transform: uppercase;
+            letter-spacing: 2.5px;
+            font-weight: 500;
+        }
+
+        .lesson-title {
+            margin: 10px 0 0 0;
+            font-size: 28px;
+            color: #ffffff;
+            font-weight: 700;
+            line-height: 1.3;
+            position: relative;
+        }
+
+        .lesson-meta {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+            padding-top: 18px;
+            border-top: 1px solid rgba(255, 255, 255, 0.15);
+            flex-wrap: wrap;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.85);
+            background: rgba(255, 255, 255, 0.1);
+            padding: 5px 12px;
+            border-radius: 4px;
+        }
+
+        /* Table of Contents */
+        .toc-box {
+            background: linear-gradient(135deg, #fafafa 0%, #f5f5f5 100%);
+            border-radius: 14px;
+            padding: 24px 28px;
+            margin-bottom: 35px;
+            border: 1px solid #e8e8e8;
+        }
+
+        .toc-box .box-label {
+            font-weight: 600;
+            color: #0f4c5c;
+            margin: 0 0 18px 0;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .toc-list {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px 24px;
+        }
+
+        .toc-list a {
+            display: flex;
+            align-items: center;
+            padding: 8px 12px;
+            color: #555;
+            text-decoration: none;
+            font-size: 14px;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+        }
+
+        .toc-list a:hover {
+            background: white;
+            color: #0f4c5c;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+        }
+
+        .toc-list .section-num {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 26px;
+            height: 26px;
+            background: #0f4c5c;
+            color: white;
+            font-weight: 600;
+            font-size: 11px;
+            border-radius: 6px;
+            margin-right: 12px;
+            flex-shrink: 0;
+        }
+
+        /* Learning Objectives */
+        .objectives-box {
+            background: #f0f7f9;
+            border: 2px solid #1a7589;
+            border-radius: 14px;
+            padding: 30px 35px;
+            margin-bottom: 40px;
+        }
+
+        .objectives-box .box-label {
+            font-weight: 600;
+            color: #0f4c5c;
+            margin: 0 0 18px 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .objectives-box .box-label::before {
+            content: '🎯';
+            font-size: 18px;
+        }
+
+        .objectives-box ul {
+            margin: 0;
+            padding-left: 22px;
+        }
+
+        .objectives-box li {
+            margin-bottom: 14px;
+            font-size: 16px;
+            line-height: 1.7;
+        }
+
+        /* Key Terms Box */
+        .key-terms-box {
+            background: linear-gradient(135deg, #f0f4f8 0%, #e8ecf1 100%);
+            border-radius: 14px;
+            padding: 28px 30px;
+            margin: 40px 0;
+            border: 1px solid #d8dce0;
+        }
+
+        .key-terms-box .box-label {
+            font-weight: 600;
+            color: #0f4c5c;
+            margin: 0 0 18px 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .terms-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 16px;
+        }
+
+        .term-item {
+            background: white;
+            padding: 16px 18px;
+            border-radius: 10px;
+            border-left: 4px solid #1a7589;
+        }
+
+        .term-item .term {
+            font-weight: 700;
+            color: #0f4c5c;
+            font-size: 15px;
+            margin: 0 0 6px 0;
+        }
+
+        .term-item .definition {
+            font-size: 14px;
+            color: #555;
+            margin: 0;
+            line-height: 1.6;
+        }
+
+        /* Section Headings */
+        h2 {
+            font-size: 24px;
+            color: #0f4c5c;
+            margin: 50px 0 20px 0;
+            font-weight: 600;
+            position: relative;
+            padding-bottom: 12px;
+        }
+
+        h2::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 60px;
+            height: 3px;
+            background: #B8860B;
+        }
+
+        h3 {
+            font-size: 20px;
+            color: #1a7589;
+            margin: 35px 0 15px 0;
+            font-weight: 600;
+        }
+
+        /* Paragraphs */
+        p {
+            font-size: 17px;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        /* Highlights */
+        .highlight {
+            background: linear-gradient(180deg, transparent 60%, #FFF59D 60%);
+            padding: 0 4px;
+            font-weight: 500;
+        }
+
+        /* Welcome/Intro Box */
+        .welcome-box {
+            background: linear-gradient(135deg, #f0f7f9 0%, #e6f2f5 100%);
+            padding: 30px 35px;
+            border-radius: 14px;
+            margin-bottom: 40px;
+            border: 1px solid #cce4e9;
+        }
+
+        .welcome-box h3 {
+            margin: 0 0 15px 0;
+            font-size: 20px;
+            color: #0f4c5c;
+            font-weight: 600;
+        }
+
+        /* Case Study Box */
+        .case-study {
+            background: linear-gradient(135deg, #f8f9fb 0%, #f0f2f5 100%);
+            border-radius: 16px;
+            padding: 0;
+            margin: 40px 0;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+        }
+
+        .case-study-header {
+            background: linear-gradient(135deg, #0f4c5c 0%, #1a7589 100%);
+            padding: 20px 30px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .case-study-icon {
+            width: 45px;
+            height: 45px;
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+        }
+
+        .case-study-header .box-label {
+            font-weight: 600;
+            color: #ffffff;
+            margin: 0;
+            font-size: 16px;
+        }
+
+        .case-study-content {
+            padding: 28px 30px;
+        }
+
+        .patient-profile {
+            display: flex;
+            align-items: center;
+            gap: 18px;
+            padding: 18px 22px;
+            background: white;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            border: 1px solid #e5e5e5;
+        }
+
+        .patient-avatar {
+            width: 55px;
+            height: 55px;
+            background: linear-gradient(135deg, #1a7589, #0f4c5c);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            color: white;
+            flex-shrink: 0;
+        }
+
+        /* Data Table */
+        .data-table-container {
+            margin: 35px 0;
+            overflow-x: auto;
+            border-radius: 12px;
+            border: 1px solid #e0e0e0;
+        }
+
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 15px;
+            text-align: left;
+        }
+
+        .data-table th {
+            background: #0f4c5c;
+            color: white;
+            padding: 15px;
+            font-weight: 600;
+        }
+
+        .data-table td {
+            padding: 15px;
+            border-bottom: 1px solid #eee;
+            background: white;
+        }
+
+        .data-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        /* Statistics Highlight */
+        .stat-highlight {
+            background: #fdf2f2;
+            padding: 20px;
+            border-radius: 12px;
+            border-left: 5px solid #c53030;
+            margin: 30px 0;
+        }
+
+        .stat-value {
+            font-size: 28px;
+            font-weight: 800;
+            color: #c53030;
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        /* Check Understanding */
+        .check-understanding {
+            background: #fdfbf7;
+            border: 2px solid #B8860B;
+            border-radius: 16px;
+            padding: 32px;
+            margin: 45px 0;
+        }
+
+        .reveal-btn {
+            background: #0f4c5c;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-size: 14px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+
+        .answer-text {
+            display: none;
+            margin-top: 15px;
+            padding: 15px;
+            background: #f0f7f9;
+            border-radius: 8px;
+            border-left: 4px solid #0f4c5c;
+        }
+
+        /* Takeaways & References */
+        .takeaways-box {
+            background: #f4f4f4;
+            padding: 25px;
+            border-radius: 12px;
+            margin-top: 40px;
+        }
+
+        .references-box {
+            margin-top: 40px;
+            padding-top: 25px;
+            border-top: 1px solid #eee;
+            font-size: 14px;
+            color: #666;
+        }
+
+        .lesson-footer {
+            text-align: center;
+            padding: 40px 0;
+            border-top: 1px solid #eee;
+            margin-top: 40px;
+        }
+
+        .brand-name {
+            color: #0f4c5c;
+            font-weight: 700;
+            letter-spacing: 1px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="lesson-container">
+        <div class="brand-header">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="brand-logo">
+        </div>
+
+        <header class="module-header">
+            <p class="module-label">Module 20: Assessment Tools</p>
+            <h1 class="lesson-title">Lesson 4: Pulse Analysis in Clinical Practice</h1>
+            <div class="lesson-meta">
+                <span class="meta-item">⏱️ 35 min read</span>
+                <span class="meta-item">📜 Practitioner Level 2</span>
+            </div>
+        </header>
+
+        <div class="toc-box">
+            <p class="box-label">In This Lesson</p>
+            <ul class="toc-list">
+                <li><a href="#methodology"><span class="section-num">1</span>Radial Palpation Methodology</a></li>
+                <li><a href="#positions"><span class="section-num">2</span>The Three Positions & Depths</a></li>
+                <li><a href="#wiry-slippery"><span class="section-num">3</span>Wiry vs. Slippery Qualities</a></li>
+                <li><a href="#thready"><span class="section-num">4</span>The Thready Pulse & Atrophy</a></li>
+                <li><a href="#roots-integration"><span class="section-num">5</span>Integrating the ROOTS Method</a></li>
+                <li><a href="#calibration"><span class="section-num">6</span>Calibrating Tactile Sensitivity</a></li>
+            </ul>
+        </div>
+
+        <div class="objectives-box">
+            <p class="box-label">Learning Objectives</p>
+            <ul>
+                <li>Master the anatomical placement and pressure gradients for radial pulse assessment.</li>
+                <li>Differentiate between "Wiry," "Slippery," and "Thready" pulse qualities with clinical precision.</li>
+                <li>Correlate pulse findings with the Six Tissue States, specifically Tension, Dampness, and Atrophy.</li>
+                <li>Apply pulse data to the "Observe Patterns" (O) phase of the R.O.O.T.S. Herbalism Method™.</li>
+                <li>Utilize pulse analysis to validate findings from tongue assessment and client intake.</li>
+            </ul>
+        </div>
+
+        <div class="welcome-box">
+            <h3>Beyond the Heart Rate</h3>
+            <p>While modern medicine utilizes the pulse primarily to measure heart rate and rhythm, the herbal practitioner views the radial artery as a <span class="highlight">dynamic messenger of the Vital Force</span>. Pulse analysis—a cornerstone of both TCM and Western Physiomedicalism—provides a real-time window into arterial compliance, blood volume, and the state of the autonomic nervous system. By mastering this skill, you move from "guessing" a client's tissue state to "feeling" it.</p>
+        </div>
+
+        <h2 id="methodology">1. The Methodology of Radial Palpation</h2>
+        <p>In the clinical setting, pulse analysis is performed at the radial artery, just proximal to the wrist crease. To ensure accuracy, the practitioner must use the <span class="highlight">index, middle, and ring fingers</span>. The index finger is placed closest to the wrist (the "Cun" or Inch position), the middle finger over the radial styloid process (the "Guan" or Gate position), and the ring finger proximal to that (the "Chi" or Foot position).</p>
+
+        <div class="stat-highlight">
+            <span class="stat-value">84.2% Accuracy</span>
+            A 2021 study published in the <i>Journal of Alternative and Complementary Medicine</i> demonstrated that experienced practitioners could identify "Wiry" pulses with 84.2% inter-rater reliability, correlating strongly with elevated sympathetic nervous system activity and arterial stiffness markers.
+        </div>
+
+        <p>To perform a professional assessment, follow these procedural steps:</p>
+        <ol>
+            <li><strong>Client Positioning:</strong> Ensure the client's arm is at heart level, palm facing up, and they have been resting for at least 5 minutes.</li>
+            <li><strong>Finger Placement:</strong> Use the pads of your fingers, which have the highest density of mechanoreceptors (Meissner's corpuscles).</li>
+            <li><strong>Pressure Gradients:</strong> Apply pressure in three distinct stages: light (superficial), moderate (middle), and heavy (deep).</li>
+        </ol>
+
+        <h2 id="positions">2. The Three Positions and Three Depths</h2>
+        <p>The ROOTS framework integrates traditional mapping with modern physiology. Each position and depth offers specific insights into the client's energetic and physical landscape.</p>
+
+        <div class="data-table-container">
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>Position</th>
+                        <th>Traditional Association (Left)</th>
+                        <th>Traditional Association (Right)</th>
+                        <th>Physiological Correlation</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Cun (Inch)</strong></td>
+                        <td>Heart / Mental State</td>
+                        <td>Lungs / Respiration</td>
+                        <td>Upper Jiao / Thoracic Circulation</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Guan (Gate)</strong></td>
+                        <td>Liver / Gallbladder</td>
+                        <td>Spleen / Stomach</td>
+                        <td>Middle Jiao / Digestive Integrity</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Chi (Foot)</strong></td>
+                        <td>Kidney Yin / Pelvic Organs</td>
+                        <td>Kidney Yang / Vital Fire</td>
+                        <td>Lower Jiao / Endocrine & Elimination</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <h3>The Three Depths:</h3>
+        <ul>
+            <li><strong>Superficial (Floating):</strong> Felt with light touch. Indicates the state of the "Qi" or the external defense (immune response). If strong and floating, it may indicate an acute "Heat" or "Wind" pattern.</li>
+            <li><strong>Middle:</strong> Indicates the state of "Blood" and the Spleen/Stomach (digestive) health. It reflects the nutritive capacity of the body.</li>
+            <li><strong>Deep:</strong> Felt only with heavy pressure against the bone. Indicates the state of the "Yin" and the deep internal organs (Kidneys/Adrenals). A weak deep pulse often points toward <span class="highlight">Atrophy or Exhaustion</span>.</li>
+        </ul>
+
+        <h2 id="wiry-slippery">3. Identifying 'Wiry' vs. 'Slippery' Pulses</h2>
+        <p>These are the two most common pathological qualities you will encounter in clinical practice. Differentiating them is critical for choosing between <span class="highlight">relaxant nervines</span> and <span class="highlight">stimulating bitters</span>.</p>
+
+        <h3>The Wiry Pulse (Xuan Mai)</h3>
+        <p>A wiry pulse feels like a taut guitar string pushing back against your fingers. It is straight, long, and forceful. In the ROOTS method, this corresponds to the <span class="highlight">Tension Tissue State</span> (Module 2). It suggests a state of constriction, often driven by Liver Qi stagnation or chronic sympathetic dominance.</p>
+        <p><strong>Clinical Significance:</strong> Chronic stress, pain, hypertension, or PMS. Herbs like <i>Chelidonium majus</i> or <i>Viburnum opulus</i> are often indicated to "soften" this pulse.</p>
+
+        <h3>The Slippery Pulse (Hua Mai)</h3>
+        <p>Contrastingly, a slippery pulse is described as "pearls rolling in a basin." It feels smooth, rounded, and fluid, as if the blood is overly "oily" or moving with excessive momentum. This corresponds to the <span class="highlight">Damp-Heat Tissue State</span>.</p>
+        <p><strong>Clinical Significance:</strong> Excess mucus, pregnancy, digestive stagnation, or systemic inflammation. A 2019 meta-analysis (n=1,240) linked the slippery pulse quality to increased blood viscosity and metabolic syndrome markers.</p>
+
+        <div class="case-study">
+            <div class="case-study-header">
+                <div class="case-study-icon">👤</div>
+                <div>
+                    <p class="box-label">Case Study 1: The High-Stakes Executive</p>
+                    <p style="margin:0; font-size:12px; color:rgba(255,255,255,0.8)">Liver Tension & Stagnation</p>
+                </div>
+            </div>
+            <div class="case-study-content">
+                <div class="patient-profile">
+                    <div class="patient-avatar">M</div>
+                    <div class="patient-info">
+                        <h4>Marcus, 48</h4>
+                        <p>Symptoms: Chronic migraines, irritability, hypertension (145/95), and "tightness" in the hypochondrium.</p>
+                    </div>
+                </div>
+                <p><strong>Pulse Assessment:</strong> Strong, <span class="highlight">Wiry</span> pulse felt most prominently at the Left Guan (Liver) position. The pulse did not yield to pressure, indicating a "Hard" or "Tense" arterial wall.</p>
+                <p><strong>Intervention:</strong> Focused on the <strong>O: Observe Patterns</strong> step. Pattern identified: Liver Qi Stagnation with Wind-Agitation. Formula included <i>Scutellaria lateriflora</i> (Relaxant) and <i>Taraxacum officinale radix</i> (Cholagogue).</p>
+                <p><strong>Outcome:</strong> After 4 weeks, pulse quality shifted from Wiry to "Soft." Blood pressure stabilized to 128/82. Marcus reported a 70% reduction in migraine frequency.</p>
+            </div>
+        </div>
+
+        <h2 id="thready">4. The 'Thready' Pulse: Recognizing Exhaustion</h2>
+        <p>The <strong>Thready (Xi Mai)</strong> pulse feels like a fine silk thread under the fingers. It is distinct but very thin. This is the hallmark of <span class="highlight">Blood Deficiency</span> or <span class="highlight">Nervous System Exhaustion</span> (Atrophy Tissue State).</p>
+        <p>When you feel a thready pulse, the body is signaling that its "reservoirs" are low. There is insufficient volume to fill the vessel. In our ROOTS Deep Dives (Modules 6-9), we discussed the HPA-axis; a thready pulse is often the tactile representation of <span class="highlight">stage 3 adrenal fatigue</span>.</p>
+
+        <p><strong>Key Indicators for Thready Pulses:</strong>
+            <ul>
+                <li>Thinness: Feels like it occupies only a fraction of the radial artery's width.</li>
+                <li>Weakness: Often disappears if you press too hard (Deep depth).</li>
+                <li>Associated Symptoms: Insomnia, dizziness, dry skin, and "burnout."</li>
+            </ul>
+
+        <h2 id="roots-integration">5. Integrating Pulse Data with the ROOTS Method</h2>
+        <p>Pulse analysis is not a standalone diagnostic tool; it is a validation tool within the <strong>Observe Patterns (O)</strong> step of the R.O.O.T.S. Herbalism Method™. You must triangulate your findings:</p>
+
+        <div class="principle-card">
+            <div class="principle-title">The Triangulation Rule</div>
+            <p class="principle-text">Never formulate based on pulse alone. Look for the "Golden Thread" across three data points:</p>
+            <ul>
+                <li><strong>Intake (R):</strong> Client reports "feeling wired but tired."</li>
+                <li><strong>Tongue (O):</strong> Red tip with a thin, dry coating.</li>
+                <li><strong>Pulse (O):</strong> Thready and Rapid.</li>
+            </ul>
+            <p class="principle-text"><strong>Conclusion:</strong> This confirms a <i>Yin Deficiency with Empty Heat</i> pattern, requiring nourishing adaptogens (e.g., <i>Withania somnifera</i>) rather than harsh sedatives.</p>
+        </div>
+
+        <h2 id="calibration">6. Practical Exercises: Calibrating Tactile Sensitivity</h2>
+        <p>Tactile sensitivity is a "muscle" that must be trained. As a premium practitioner, your hands are your most sophisticated diagnostic instruments.</p>
+
+        <h3>Exercise A: The Pressure Test</h3>
+        <p>Practice on yourself. Find your radial pulse. Press until you can no longer feel it (this is the "occlusion point"). Slowly release. Note the depth at which the pulse "rebounds" against your finger. This trains your brain to distinguish between the three depths.</p>
+
+        <h3>Exercise B: The Texture Contrast</h3>
+        <p>Palpate the pulse of someone significantly younger (e.g., a child) and someone significantly older. Notice the difference in arterial elasticity. An older pulse is often naturally more "wiry" or "hard" due to arteriosclerosis, whereas a child's pulse is "soft" and "full."</p>
+
+        <div class="check-understanding">
+            <p class="box-label">Check Your Understanding</p>
+            <p class="box-subtitle">Test your clinical reasoning with these scenarios.</p>
+            
+            <div class="question-item">
+                <span class="question-number">1</span>
+                <p class="question-text">A client presents with edema, a heavy sensation in the limbs, and a thick greasy tongue coating. What pulse quality do you expect to find?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-text">
+                    A <strong>Slippery (Hua)</strong> pulse. The combination of edema and a greasy tongue indicates a "Damp" tissue state, which typically manifests as a slippery, fluid-like pulse quality.
+                </div>
+            </div>
+
+            <div class="question-item">
+                <span class="question-number">2</span>
+                <p class="question-text">How does the ROOTS method categorize a pulse that is felt only at the deep level and feels thin like a thread?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-text">
+                    This is a <strong>Thready and Deep</strong> pulse, categorized under the <strong>Atrophy/Exhaustion Tissue State</strong>. It suggests a deficiency of Yin, Blood, or Essence (Vital Force).
+                </div>
+            </div>
+        </div>
+
+        <div class="takeaways-box">
+            <p class="box-label">Key Takeaways</p>
+            <ul>
+                <li>Pulse analysis provides real-time data on the <strong>Tissue States</strong>: Tension (Wiry), Damp (Slippery), and Atrophy (Thready).</li>
+                <li>Use three fingers at three depths to map the Upper, Middle, and Lower Jiao.</li>
+                <li>The <strong>Wiry pulse</strong> indicates constriction and is the tactile hallmark of the Tension state.</li>
+                <li>The <strong>Slippery pulse</strong> indicates excess fluid or heat and is the hallmark of the Damp state.</li>
+                <li>Always integrate pulse findings with tongue and intake data using the <strong>R.O.O.T.S. Triangulation</strong> approach.</li>
+            </ul>
+        </div>
+
+        <div class="references-box">
+            <p class="box-label">References & Further Reading</p>
+            <p>1. Wang et al. (2021). "Reliability of Pulse Palpation in Traditional Medicine: A Systematic Review." <i>Journal of Alternative and Complementary Medicine</i>.</p>
+            <p>2. Zhang, L. et al. (2019). "Correlation Between Slippery Pulse and Blood Viscosity in Patients with Metabolic Syndrome." <i>Chinese Journal of Integrative Medicine</i>.</p>
+            <p>3. Wood, M. (2004). "The Practice of Traditional Western Herbalism." North Atlantic Books. (Focus on Physiomedicalist pulse assessments).</p>
+            <p>4. Hammer, L. (2005). "Dragon Rises, Red Bird Flies: Psychology & Chinese Medicine." Eastland Press. (Advanced pulse qualities).</p>
+            <p>5. Kim et al. (2022). "Arterial Stiffness and Pulse Wave Velocity: Bridging Traditional Pulse Diagnosis and Modern Cardiology." <i>Frontiers in Cardiovascular Medicine</i>.</p>
+            <p>6. AccrediPro Clinical Guidelines (2023). "The R.O.O.T.S. Method: Practitioner Assessment Standards."</p>
+        </div>
+
+        <footer class="lesson-footer">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="footer-logo" style="max-width:120px; opacity:0.6;">
+            <p class="brand-name">ACCREDIPRO ACADEMY</p>
+            <p class="copyright">© 2024 AccrediPro Academy. All Rights Reserved. Professional Certification Program.</p>
+        </footer>
+    </div>
+</body>
+
+</html>

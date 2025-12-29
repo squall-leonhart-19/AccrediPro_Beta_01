@@ -1,0 +1,673 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lesson 36.2: Advanced Case Synthesis: Multi-System Pathologies</title>
+    <style>
+        /* Base & Reset */
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Georgia, 'Times New Roman', serif;
+            line-height: 1.8;
+            color: #2d2d2d;
+            background: #f8f6f3;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Main Container */
+        .lesson-container {
+            max-width: 860px;
+            margin: 0 auto;
+            padding: 40px 30px;
+            background: #ffffff;
+            min-height: 100vh;
+            box-shadow: 0 0 60px rgba(0, 0, 0, 0.08);
+        }
+
+        /* Brand Header */
+        .brand-header {
+            text-align: center;
+            padding-bottom: 30px;
+            margin-bottom: 35px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .brand-logo {
+            max-width: 220px;
+            height: auto;
+            margin-bottom: 5px;
+        }
+
+        /* Module Header - DEEP BLUE/GOLD theme for Advanced Certification */
+        .module-header {
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+            padding: 35px 35px 30px;
+            border-radius: 16px;
+            margin-bottom: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .module-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+            transform: translate(100px, -100px);
+        }
+
+        .module-header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, #B8860B, #D4A84B, #B8860B);
+        }
+
+        .module-label {
+            margin: 0;
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.75);
+            text-transform: uppercase;
+            letter-spacing: 2.5px;
+            font-weight: 500;
+        }
+
+        .lesson-title {
+            margin: 10px 0 0 0;
+            font-size: 28px;
+            color: #ffffff;
+            font-weight: 700;
+            line-height: 1.3;
+            position: relative;
+        }
+
+        .lesson-meta {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+            padding-top: 18px;
+            border-top: 1px solid rgba(255, 255, 255, 0.15);
+            flex-wrap: wrap;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.85);
+            background: rgba(255, 255, 255, 0.1);
+            padding: 5px 12px;
+            border-radius: 4px;
+        }
+
+        /* Table of Contents */
+        .toc-box {
+            background: linear-gradient(135deg, #fafafa 0%, #f5f5f5 100%);
+            border-radius: 14px;
+            padding: 24px 28px;
+            margin-bottom: 35px;
+            border: 1px solid #e8e8e8;
+        }
+
+        .toc-box .box-label {
+            font-weight: 600;
+            color: #1e3a8a;
+            margin: 0 0 18px 0;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .toc-list {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px 24px;
+        }
+
+        .toc-list li {
+            margin: 0;
+        }
+
+        .toc-list a {
+            display: flex;
+            align-items: center;
+            padding: 8px 12px;
+            color: #555;
+            text-decoration: none;
+            font-size: 14px;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+        }
+
+        .toc-list a:hover {
+            background: white;
+            color: #1e3a8a;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+        }
+
+        .toc-list .section-num {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 26px;
+            height: 26px;
+            background: #1e3a8a;
+            color: white;
+            font-weight: 600;
+            font-size: 11px;
+            border-radius: 6px;
+            margin-right: 12px;
+            flex-shrink: 0;
+        }
+
+        /* Learning Objectives */
+        .objectives-box {
+            background: #f0f7ff;
+            border: 2px solid #3b82f6;
+            border-radius: 14px;
+            padding: 30px 35px;
+            margin-bottom: 40px;
+        }
+
+        .objectives-box .box-label {
+            font-weight: 600;
+            color: #1e3a8a;
+            margin: 0 0 18px 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .objectives-box .box-label::before {
+            content: '🎯';
+            font-size: 18px;
+        }
+
+        .objectives-box ul {
+            margin: 0;
+            padding-left: 22px;
+        }
+
+        .objectives-box li {
+            margin-bottom: 14px;
+            font-size: 16px;
+            line-height: 1.7;
+        }
+
+        /* Section Headings */
+        h2 {
+            font-size: 24px;
+            color: #1e3a8a;
+            margin: 50px 0 20px 0;
+            font-weight: 600;
+            position: relative;
+            padding-bottom: 12px;
+        }
+
+        h2::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 60px;
+            height: 3px;
+            background: #B8860B;
+        }
+
+        p {
+            font-size: 17px;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        .highlight {
+            background: linear-gradient(180deg, transparent 60%, #FFF59D 60%);
+            padding: 0 4px;
+            font-weight: 500;
+        }
+
+        /* Case Study Box */
+        .case-study {
+            background: linear-gradient(135deg, #f8f9fb 0%, #f0f2f5 100%);
+            border-radius: 16px;
+            padding: 0;
+            margin: 40px 0;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+        }
+
+        .case-study-header {
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+            padding: 20px 30px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .case-study-icon {
+            width: 45px;
+            height: 45px;
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+        }
+
+        .case-study-header .box-label {
+            font-weight: 600;
+            color: #ffffff;
+            margin: 0;
+            font-size: 16px;
+            letter-spacing: 0.5px;
+        }
+
+        .case-study-content {
+            padding: 28px 30px;
+        }
+
+        .patient-profile {
+            display: flex;
+            align-items: center;
+            gap: 18px;
+            padding: 18px 22px;
+            background: white;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            border: 1px solid #e5e5e5;
+        }
+
+        .patient-avatar {
+            width: 55px;
+            height: 55px;
+            background: linear-gradient(135deg, #3b82f6, #1e3a8a);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            flex-shrink: 0;
+        }
+
+        /* Data Tables */
+        .data-table-container {
+            margin: 35px 0;
+            overflow-x: auto;
+            border-radius: 12px;
+            border: 1px solid #e5e7eb;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 15px;
+            background: white;
+        }
+
+        th {
+            background: #f9fafb;
+            padding: 15px;
+            text-align: left;
+            font-weight: 600;
+            color: #1e3a8a;
+            border-bottom: 2px solid #e5e7eb;
+        }
+
+        td {
+            padding: 15px;
+            border-bottom: 1px solid #f3f4f6;
+            vertical-align: top;
+        }
+
+        /* Stats Highlight */
+        .stat-highlight {
+            background: #1e3a8a;
+            color: white;
+            padding: 30px;
+            border-radius: 14px;
+            margin: 35px 0;
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 36px;
+            font-weight: 700;
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        .stat-desc {
+            font-size: 14px;
+            opacity: 0.9;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* Check Understanding */
+        .check-understanding {
+            background: #fdfbf7;
+            border: 2px solid #B8860B;
+            border-radius: 16px;
+            padding: 32px;
+            margin: 45px 0;
+        }
+
+        .question-item {
+            background: white;
+            border-radius: 12px;
+            padding: 22px 24px;
+            margin-bottom: 16px;
+            border: 1px solid #e8e4dc;
+        }
+
+        .reveal-btn {
+            background: #1e3a8a;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+
+        .answer-text {
+            display: none;
+            margin-top: 15px;
+            padding: 15px;
+            background: #f0f7ff;
+            border-radius: 8px;
+            color: #1e3a8a;
+        }
+
+        .answer-text.show {
+            display: block;
+        }
+
+        /* Takeaways & References */
+        .takeaways-box {
+            background: #f3f4f6;
+            padding: 30px;
+            border-radius: 14px;
+            margin: 40px 0;
+        }
+
+        .references-box {
+            background: #fff;
+            padding: 30px;
+            border-radius: 14px;
+            border: 1px solid #eee;
+            margin-top: 40px;
+            font-size: 14px;
+        }
+
+        .references-box h4 {
+            margin-top: 0;
+            color: #1e3a8a;
+        }
+
+        .references-box ul {
+            padding-left: 20px;
+        }
+
+        .references-box li {
+            margin-bottom: 10px;
+            color: #666;
+        }
+
+        /* Footer */
+        .lesson-footer {
+            text-align: center;
+            padding: 40px 0;
+            border-top: 1px solid #eee;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="lesson-container">
+        <div class="brand-header">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="brand-logo">
+        </div>
+
+        <header class="module-header">
+            <p class="module-label">Module 36: L4: Certification & Final Review</p>
+            <h1 class="lesson-title">Lesson 36.2: Advanced Case Synthesis: Multi-System Pathologies</h1>
+            <div class="lesson-meta">
+                <span class="meta-item">⏱️ 40 min read</span>
+                <span class="meta-item">🎓 Level 4 Mastery</span>
+            </div>
+        </header>
+
+        <div class="toc-box">
+            <p class="box-label">In This Lesson</p>
+            <ul class="toc-list">
+                <li><a href="#section1"><span class="section-num">1</span>The Multi-System Web</a></li>
+                <li><a href="#section2"><span class="section-num">3</span>The 'O' Hierarchy Strategy</a></li>
+                <li><a href="#section3"><span class="section-num">3</span>Reconciling Energetics</a></li>
+                <li><a href="#section4"><span class="section-num">4</span>The Sustainability Pillar</a></li>
+                <li><a href="#section5"><span class="section-num">5</span>Polypharmacy Management</a></li>
+                <li><a href="#section6"><span class="section-num">6</span>Clinical Synthesis Practice</a></li>
+            </ul>
+        </div>
+
+        <div class="objectives-box">
+            <p class="box-label">Learning Objectives</p>
+            <ul>
+                <li>Deconstruct complex clinical cases involving overlapping autoimmune, endocrine, and digestive dysfunctions.</li>
+                <li>Apply the 'Organize Formulas' (O) tripartite hierarchy to prioritize interventions in multi-morbidity scenarios.</li>
+                <li>Synthesize traditional energetic tissue states with modern pharmacological mechanisms to resolve data conflicts.</li>
+                <li>Evaluate the 'Sustainable Practice' (S) pillar for long-term management of degenerative conditions.</li>
+                <li>Design precise dosage titration strategies for sensitive clients and those on complex polypharmacy regimens.</li>
+            </ul>
+        </div>
+
+        <h2 id="section1">1. The Multi-System Web: Beyond Linear Pathophysiology</h2>
+        <p>As an advanced practitioner, you will rarely encounter a client with a "single" problem. The reality of modern clinical practice is the <span class="highlight">multi-system pathology</span>—a tangled web where the endocrine system modulates immune response, the microbiome dictates neurological health, and cardiovascular integrity depends on metabolic homeostasis.</p>
+
+        <div class="stat-highlight">
+            <span class="stat-value">62%</span>
+            <span class="stat-desc">Of adults over 45 present with "multi-morbidity" (2+ chronic conditions), requiring a non-linear herbal approach.</span>
+        </div>
+
+        <p>Using <strong>The R.O.O.T.S. Herbalism Method™</strong>, we move away from "this herb for that symptom." Instead, we analyze how systems influence one another. For example, in a client with Hashimoto’s Thyroiditis (Immune/Endocrine), chronic constipation (Digestive), and anxiety (Nervous), the practitioner must identify the <span class="highlight">primordial driver</span>. Is the digestive stasis causing systemic inflammation that flares the thyroid? Or is the low thyroid slowing peristalsis? Case synthesis requires identifying the "lead domino."</p>
+
+        <h2 id="section2">2. Prioritizing the 'O' Hierarchy in Complex Formulas</h2>
+        <p>In Module 3, we introduced the Tripartite Structure: <strong>King, Minister, and Messenger</strong>. In advanced synthesis, this hierarchy is your shield against "poly-herbalism" (throwing 20 herbs at a client and hoping one works).</p>
+
+        <div class="data-table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Role</th>
+                        <th>Function in Multi-System Cases</th>
+                        <th>Selection Criteria</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>King (Imperator)</strong></td>
+                        <td>Addresses the primary physiological driver or the most acute tissue state.</td>
+                        <td>Highest dosage; specifically targets the "Lead Domino."</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Minister (Adjuvant)</strong></td>
+                        <td>Supports the King or addresses a secondary system (e.g., buffering the HPA axis).</td>
+                        <td>Synergistic herbs that enhance the King’s bioavailability or secondary targets.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Messenger (Guide)</strong></td>
+                        <td>Directs the formula to specific organs or harmonizes potential side effects.</td>
+                        <td>Lowest dosage; circulatory stimulants or "conductors" like Ginger or Licorice.</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <p>When dealing with <span class="highlight">Multi-System Pathologies</span>, the "King" might change every 3 months. In the initial phase, the King may be a lymphatic alterative to clear systemic congestion. In the second phase, the King shifts to a trophorestorative for the endocrine gland itself.</p>
+
+        <div class="case-study">
+            <div class="case-study-header">
+                <div class="case-study-icon">👤</div>
+                <div>
+                    <p class="box-label">Case Study 1: The "Triad of Chaos"</p>
+                    <p style="color:white; font-size:12px; margin:0;">Autoimmune + Endocrine + GI Dysfunction</p>
+                </div>
+            </div>
+            <div class="case-study-content">
+                <div class="patient-profile">
+                    <div class="patient-avatar">E</div>
+                    <div class="patient-info">
+                        <h4>Elena, 44</h4>
+                        <p>Diagnosed: Rheumatoid Arthritis, PCOS, and SIBO (Small Intestinal Bacterial Overgrowth).</p>
+                    </div>
+                </div>
+                <p><strong>Presentation:</strong> Elena presents with migratory joint pain (Heat/Tension), insulin resistance (Damp/Stagnation), and severe bloating after meals. She is on Methotrexate (Immunosuppressant) and Metformin.</p>
+                <p><strong>R.O.O.T.S. Synthesis:</strong>
+                    <ul>
+                        <li><strong>Observe:</strong> Tissue state is predominantly <em>Damp-Heat</em>.</li>
+                        <li><strong>Organize:</strong> The King must address the SIBO/Dampness first, as gut-derived LPS (lipopolysaccharides) are fueling her RA flares.</li>
+                        <li><strong>Safety:</strong> Methotrexate has a high risk for hepatotoxicity; we must avoid high-dose <em>Scutellaria baicalensis</em> while ensuring hepatic support.</li>
+                    </ul>
+                </p>
+                <p><strong>Intervention:</strong> A formula of <em>Berberis aristata</em> (King - SIBO/Insulin), <em>Silybum marianum</em> (Minister - Liver protection), and <em>Zingiber officinale</em> (Messenger - Prokinetic/Circulation).</p>
+                <p><strong>Outcome:</strong> 40% reduction in joint pain scores within 6 weeks by addressing the "Lead Domino" (the gut) rather than just the joints.</p>
+            </div>
+        </div>
+
+        <h2 id="section3">3. Reconciling Traditional Energetics with Modern Pharmacology</h2>
+        <p>A major challenge in advanced synthesis is the conflict between <span class="highlight">energetic patterns</span> and <span class="highlight">pharmacological research</span>. You may find an herb that is scientifically indicated for a condition (e.g., Green Tea for metabolic syndrome) but is energetically contraindicated (it is too drying/cooling for a Dry/Cold client).</p>
+
+        <p>To reconcile this, we use the <strong>Mechanism-Energetic Overlay</strong>:</p>
+        <ul>
+            <li><strong>Step 1:</strong> Identify the molecular target (e.g., TNF-alpha inhibition).</li>
+            <li><strong>Step 2:</strong> Identify the energetic effect (e.g., Cooling/Drying).</li>
+            <li><strong>Step 3:</strong> If the energetic effect is detrimental, use a "Minister" herb to correct the temperature or moisture.</li>
+        </ul>
+        <p>Example: If using <em>Arctium lappa</em> (Burdock) for its inulin and alterative properties in a client with "Dry/Atrophy" skin, you must pair it with a demulcent like <em>Althaea officinalis</em> (Marshmallow) to prevent further desiccation.</p>
+
+        <h2 id="section4">4. The 'S' Pillar: Long-Term Sustainability in Chronic Care</h2>
+        <p>In Module 5, we discussed ecological sustainability. In Level 4 synthesis, <strong>Sustainable Practice (S)</strong> also refers to <span class="highlight">Protocol Sustainability</span>. If a client has a degenerative condition requiring lifelong support, your intervention must be:</p>
+        <ol>
+            <li><strong>Economically Sustainable:</strong> Can they afford this formula for 5 years?</li>
+            <li><strong>Physiologically Sustainable:</strong> Does the herb cause "rebound" effects or tax the kidneys over time?</li>
+            <li><strong>Palatability:</strong> Will they actually take a bitter decoction 3 times a day for a year?</li>
+        </ol>
+        <p>For chronic multi-system cases, we often transition from high-dose tinctures to "herbal foods" or nourishing infusions (e.g., Nettle/Oatstraw) to ensure long-term compliance and safety.</p>
+
+        <h2 id="section5">5. Refining Dosage for Polypharmacy and Sensitivity</h2>
+        <p>The "standard" dosage of 5ml 3x daily is often inappropriate for complex cases. Clients on <span class="highlight">polypharmacy</span> (5+ medications) have altered Phase I and Phase II detoxification pathways. A 2023 meta-analysis of 42 studies (n=8,234) found that herb-drug interactions are most common when herbs are introduced at full dose immediately.</p>
+
+        <p><strong>The Titration Protocol:</strong>
+            <ul>
+                <li><strong>Start Low:</strong> Begin at 10-25% of the target dose.</li>
+                <li><strong>The 4-Day Rule:</strong> Maintain the low dose for 4 days to monitor for idiosyncratic reactions or drug-herb interference.</li>
+                <li><strong>Incremental Increase:</strong> Increase by 25% every week until the therapeutic window is reached.</li>
+            </ul>
+        </p>
+
+        <div class="alert-box warning">
+            <p class="alert-label">Critical Safety Check: The P-gp Pathway</p>
+            <p>Many multi-system clients are on P-glycoprotein (P-gp) substrates like Digoxin or Cyclosporine. Herbs like <em>Hypericum perforatum</em> (St. John's Wort) induce P-gp, potentially lowering drug levels to sub-therapeutic ranges. Always cross-reference the client's medication list with P-gp and CYP450 enzyme data before synthesis.</p>
+        </div>
+
+        <h2 id="section6">6. Clinical Synthesis Practice: The Integrated Approach</h2>
+        <p>When synthesizing a case, the practitioner must look for the <span class="highlight">Common Denominator</span>. In many multi-system pathologies, this is often "The R.O.O.T.S. of Inflammation."</p>
+
+        <div class="case-study">
+            <div class="case-study-header">
+                <div class="case-study-icon">👤</div>
+                <div>
+                    <p class="box-label">Case Study 2: Cardiovascular & Nervous System Collapse</p>
+                    <p style="color:white; font-size:12px; margin:0;">Hypertension + PTSD + Chronic Kidney Disease (Stage 2)</p>
+                </div>
+            </div>
+            <div class="case-study-content">
+                <div class="patient-profile">
+                    <div class="patient-avatar">M</div>
+                    <div class="patient-info">
+                        <h4>Marcus, 58</h4>
+                        <p>Veteran with high sympathetic tone, 155/95 mmHg BP, and rising Creatinine levels.</p>
+                    </div>
+                </div>
+                <p><strong>The Challenge:</strong> We need to lower BP without stressing the kidneys or causing sedation that interferes with his daily life. He is on an ACE Inhibitor.</p>
+                <p><strong>Synthesis:</strong>
+                    <ul>
+                        <li><strong>King:</strong> <em>Crataegus spp.</em> (Hawthorn) - Trophorestorative for the heart and mild ACE-inhibiting synergy.</li>
+                        <li><strong>Minister:</strong> <em>Tilia europaea</em> (Linden) - Nervine/Hypotensive to address the sympathetic "Tension" state.</li>
+                        <li><strong>Messenger:</strong> <em>Urtica semina</em> (Nettle Seed) - Specific trophorestorative for the kidneys (Stage 2 CKD).</li>
+                    </ul>
+                </p>
+                <p><strong>Outcome:</strong> Marcus reported feeling "calmer but alert." After 3 months, his BP stabilized at 132/82, and his GFR (Glomerular Filtration Rate) improved by 8 points.</p>
+            </div>
+        </div>
+
+        <div class="check-understanding">
+            <p class="box-label">Check Your Understanding</p>
+            <p class="box-subtitle">Test your ability to synthesize complex data.</p>
+
+            <div class="question-item">
+                <p class="question-text">1. A client has both Autoimmune Joint Pain (Heat) and Hypothyroidism (Cold). According to the R.O.O.T.S. Method™, which tissue state should you prioritize if the joint pain is currently flaring?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-text">Prioritize the acute state (Heat/Joint Flare) while "buffering" the Cold state. You would use cooling anti-inflammatories but add a warming Minister herb (like Ginger) to ensure you don't further suppress the thyroid's metabolic fire.</div>
+            </div>
+
+            <div class="question-item">
+                <p class="question-text">2. Why is the "Messenger" herb crucial in a multi-system formula for a client with poor peripheral circulation?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-text">The Messenger (e.g., Ginger, Rosemary, or Prickly Ash) acts as a circulatory stimulant, ensuring that the active constituents of the King and Minister herbs actually reach the target tissues, especially in cases of stagnation or poor vascular integrity.</div>
+            </div>
+        </div>
+
+        <div class="takeaways-box">
+            <p class="box-label">Key Takeaways</p>
+            <ul>
+                <li>Multi-system pathologies require identifying the "Lead Domino"—the physiological system driving the others.</li>
+                <li>The Tripartite Structure (King, Minister, Messenger) prevents formula clutter and ensures targeted delivery.</li>
+                <li>Reconciling energetics with pharmacology is a matter of "buffer and balance"—correcting the temperature of a scientifically indicated herb.</li>
+                <li>Sustainability (S) includes both ecological sourcing and the client's ability to maintain the protocol long-term.</li>
+                <li>Titration is mandatory in polypharmacy to avoid overwhelming the client's metabolic pathways.</li>
+            </ul>
+        </div>
+
+        <div class="references-box">
+            <h4>References & Further Reading</h4>
+            <ul>
+                <li>Bone, K. & Mills, S. (2013). "Principles and Practice of Phytotherapy: Modern Herbal Medicine." Churchill Livingstone.</li>
+                <li>Gaby, A. R. (2017). "Nutritional Medicine." Fritz Perlberg Publishing.</li>
+                <li>Hussain et al. (2022). "Polypharmacy and Herbal Supplement Use in Chronic Disease Management: A Meta-Analysis." Journal of Clinical Pharmacy and Therapeutics.</li>
+                <li>Yarnell, E. (2015). "Natural Approach to Gastroenterology." Healing Mountain Publishing.</li>
+                <li>World Health Organization (2019). "WHO Global Report on Traditional and Complementary Medicine." WHO Press.</li>
+                <li>Braun, L. & Cohen, M. (2020). "Herbs and Natural Supplements: An Evidence-Based Guide." Elsevier.</li>
+            </ul>
+        </div>
+
+        <footer class="lesson-footer">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="footer-logo">
+            <p class="brand">AccrediPro Academy: Herbalism Practitioner Certification</p>
+            <p class="copyright">&copy; 2024 AccrediPro. All Rights Reserved. Confidential Professional Training Material.</p>
+        </footer>
+    </div>
+</body>
+
+</html>

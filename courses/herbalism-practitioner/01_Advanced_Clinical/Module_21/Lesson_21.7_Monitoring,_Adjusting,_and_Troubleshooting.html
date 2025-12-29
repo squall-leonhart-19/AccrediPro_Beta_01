@@ -1,0 +1,488 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lesson 21.7: Monitoring, Adjusting, and Troubleshooting</title>
+    <style>
+        /* Base & Reset */
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Georgia, 'Times New Roman', serif;
+            line-height: 1.8;
+            color: #2d2d2d;
+            background: #f8f6f3;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Main Container */
+        .lesson-container {
+            max-width: 860px;
+            margin: 0 auto;
+            padding: 40px 30px;
+            background: #ffffff;
+            min-height: 100vh;
+            box-shadow: 0 0 60px rgba(0, 0, 0, 0.08);
+        }
+
+        /* Brand Header */
+        .brand-header {
+            text-align: center;
+            padding-bottom: 30px;
+            margin-bottom: 35px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .brand-logo {
+            max-width: 220px;
+            height: auto;
+            margin-bottom: 5px;
+        }
+
+        /* Module Header - DEEP TEAL for Practitioner level */
+        .module-header {
+            background: linear-gradient(135deg, #064e3b 0%, #065f46 100%);
+            padding: 35px 35px 30px;
+            border-radius: 16px;
+            margin-bottom: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .module-header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, #B8860B, #D4A84B, #B8860B);
+        }
+
+        .module-label {
+            margin: 0;
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.75);
+            text-transform: uppercase;
+            letter-spacing: 2.5px;
+            font-weight: 500;
+        }
+
+        .lesson-title {
+            margin: 10px 0 0 0;
+            font-size: 28px;
+            color: #ffffff;
+            font-weight: 700;
+            line-height: 1.3;
+        }
+
+        .lesson-meta {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+            padding-top: 18px;
+            border-top: 1px solid rgba(255, 255, 255, 0.15);
+        }
+
+        .meta-item {
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.85);
+            background: rgba(255, 255, 255, 0.1);
+            padding: 5px 12px;
+            border-radius: 4px;
+        }
+
+        /* Table of Contents */
+        .toc-box {
+            background: #f9f9f9;
+            border-radius: 14px;
+            padding: 24px 28px;
+            margin-bottom: 35px;
+            border: 1px solid #e8e8e8;
+        }
+
+        .toc-box .box-label {
+            font-weight: 600;
+            color: #064e3b;
+            margin: 0 0 18px 0;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            border-bottom: 1px solid #e0e0e0;
+            padding-bottom: 10px;
+        }
+
+        .toc-list {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px 24px;
+        }
+
+        .toc-list a {
+            color: #444;
+            text-decoration: none;
+            font-size: 14px;
+            transition: color 0.2s;
+        }
+
+        .toc-list a:hover {
+            color: #064e3b;
+        }
+
+        /* Objectives */
+        .objectives-box {
+            background: #f0fdf4;
+            border: 2px solid #10B981;
+            border-radius: 14px;
+            padding: 30px 35px;
+            margin-bottom: 40px;
+        }
+
+        .objectives-box .box-label {
+            font-weight: 600;
+            color: #059669;
+            margin: 0 0 18px 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        /* Section Headings */
+        h2 {
+            font-size: 24px;
+            color: #064e3b;
+            margin: 50px 0 20px 0;
+            border-bottom: 2px solid #eee;
+            padding-bottom: 10px;
+        }
+
+        h3 {
+            font-size: 20px;
+            color: #065f46;
+            margin: 30px 0 15px 0;
+        }
+
+        /* Case Study */
+        .case-study {
+            background: #f4f7f6;
+            border-radius: 16px;
+            margin: 40px 0;
+            border: 1px solid #e2e8f0;
+            overflow: hidden;
+        }
+
+        .case-study-header {
+            background: #064e3b;
+            color: white;
+            padding: 15px 25px;
+            font-weight: 600;
+        }
+
+        .case-study-content {
+            padding: 25px;
+        }
+
+        .patient-profile {
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            border: 1px solid #eee;
+        }
+
+        /* Tables */
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 25px 0;
+            font-size: 15px;
+        }
+
+        .data-table th {
+            background: #064e3b;
+            color: white;
+            padding: 12px;
+            text-align: left;
+        }
+
+        .data-table td {
+            padding: 12px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .data-table tr:nth-child(even) {
+            background: #f9f9f9;
+        }
+
+        /* Key Highlights */
+        .highlight {
+            color: #064e3b;
+            font-weight: 600;
+            background: #ecfdf5;
+            padding: 2px 4px;
+            border-radius: 3px;
+        }
+
+        .stat-highlight {
+            font-weight: 700;
+            color: #059669;
+        }
+
+        /* Check Understanding */
+        .check-understanding {
+            background: #fffcf0;
+            border: 1px solid #e9d5ff;
+            border-radius: 16px;
+            padding: 30px;
+            margin: 40px 0;
+        }
+
+        .reveal-btn {
+            background: #064e3b;
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+
+        .answer-text {
+            display: none;
+            margin-top: 15px;
+            padding: 15px;
+            background: #f0fdf4;
+            border-radius: 8px;
+        }
+
+        /* Takeaways */
+        .takeaways-box {
+            background: #f1f5f9;
+            padding: 25px;
+            border-radius: 12px;
+            margin-top: 40px;
+        }
+
+        .references-box {
+            margin-top: 40px;
+            font-size: 14px;
+            color: #666;
+            border-top: 1px solid #eee;
+            padding-top: 20px;
+        }
+
+        .lesson-footer {
+            text-align: center;
+            margin-top: 60px;
+            padding-bottom: 40px;
+            color: #999;
+            font-size: 12px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="lesson-container">
+        <div class="brand-header">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="brand-logo">
+        </div>
+
+        <header class="module-header">
+            <p class="module-label">Module 21: L2: Treatment Planning</p>
+            <h1 class="lesson-title">Lesson 7: Monitoring, Adjusting, and Troubleshooting</h1>
+            <div class="lesson-meta">
+                <span class="meta-item">35 min read</span>
+                <span class="meta-item">ROOTS Method™ Advanced Application</span>
+            </div>
+        </header>
+
+        <div class="toc-box">
+            <p class="box-label">In This Lesson</p>
+            <ul class="toc-list">
+                <li><a href="#metrics">The 4-Week Review Metrics</a></li>
+                <li><a href="#crisis">Healing Crisis vs. Adverse Reactions</a></li>
+                <li><a href="#pivot">The 'Pivot Protocol' Framework</a></li>
+                <li><a href="#observe">Refining the Observe Pillar</a></li>
+                <li><a href="#plateaus">Breaking Through Plateaus</a></li>
+                <li><a href="#clinical">Clinical Data & Case Studies</a></li>
+            </ul>
+        </div>
+
+        <div class="objectives-box">
+            <p class="box-label">Learning Objectives</p>
+            <ul>
+                <li>Implement quantitative and qualitative tracking tools to measure clinical efficacy.</li>
+                <li>Differentiate between a physiological healing response and a negative herbal reaction.</li>
+                <li>Execute a 4-step systematic protocol when a formula fails to produce results.</li>
+                <li>Apply the 'Observe Patterns' (O) pillar to re-evaluate tissue states mid-treatment.</li>
+                <li>Identify the physiological mechanisms behind healing plateaus and how to stimulate the Vital Force.</li>
+            </ul>
+        </div>
+
+        <h2 id="metrics">1. The 4-Week Review: Quantitative and Qualitative Metrics</h2>
+        <p>In the <span class="highlight">R.O.O.T.S. Herbalism Method™</span>, the initial consultation is merely a hypothesis. The true clinical work begins during the follow-up. We utilize a 4-week interval for the first review because it aligns with the 28-day cycle of skin cell turnover and many hormonal fluctuations, providing enough time for <span class="highlight">trophorestorative</span> herbs to begin structural change.</p>
+
+        <p>A 2021 study on clinical decision-making found that practitioners who utilized standardized symptom tracking had a <span class="stat-highlight">24% higher rate of long-term client retention</span> and significantly better outcomes in chronic inflammatory cases. To achieve this, we use two primary metrics:</p>
+
+        <ul>
+            <li><strong>The MSQ (Medical Symptom Questionnaire):</strong> A quantitative tool where clients rate symptoms across 15 systems. A reduction of <span class="stat-highlight">20% or more</span> in the total score indicates the protocol is on the right track.</li>
+            <li><strong>The VAS (Visual Analog Scale):</strong> Used for specific complaints like pain or fatigue (0-10 scale).</li>
+            <li><strong>Qualitative "Wins":</strong> Often, a client will report their "main" symptom is still present, but they are sleeping better, have more energy, or their digestion has regulated. These are signs of systemic improvement.</li>
+        </ul>
+
+        <h2 id="crisis">2. Healing Crisis vs. Adverse Reactions</h2>
+        <p>One of the most difficult tasks for a practitioner is determining whether a client’s worsening symptoms are a sign of progress (a <span class="highlight">Healing Crisis</span> or Jarisch-Herxheimer reaction) or an adverse effect of the herbs.</p>
+
+        <p>A <span class="highlight">Healing Crisis</span> typically occurs when the body begins to eliminate metabolic waste or when the immune system is significantly upregulated. This is common with antimicrobials (e.g., *Berberis vulgaris*) or deep metabolic alteratives (e.g., *Arctium lappa*).</p>
+
+        <table class="data-table">
+            <thead>
+                <tr>
+                    <th>Feature</th>
+                    <th>Healing Crisis (Herxheimer)</th>
+                    <th>Adverse Reaction / Allergy</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><strong>Onset</strong></td>
+                    <td>Usually 24-72 hours after starting.</td>
+                    <td>Often immediate or within first 12 hours.</td>
+                </tr>
+                <tr>
+                    <td><strong>Duration</strong></td>
+                    <td>Short-lived (24-48 hours).</td>
+                    <td>Persists as long as the herb is taken.</td>
+                </tr>
+                <tr>
+                    <td><strong>Symptom Type</strong></td>
+                    <td>Flu-like, fatigue, "old" symptoms resurfacing.</td>
+                    <td>Rashes, hives, acute GI distress, palpitations.</td>
+                </tr>
+                <tr>
+                    <td><strong>Vitality</strong></td>
+                    <td>Client often feels "good" despite the flare.</td>
+                    <td>Client feels depleted and anxious.</td>
+                </tr>
+                <tr>
+                    <td><strong>Intervention</strong></td>
+                    <td>Hydration, reduce dose, support drainage.</td>
+                    <td><strong>Stop herb immediately.</strong></td>
+                </tr>
+            </tbody>
+        </table>
+
+        <div class="case-study">
+            <div class="case-study-header">Case Study 1: The Alterative Flare</div>
+            <div class="case-study-content">
+                <div class="patient-profile">
+                    <strong>Client:</strong> Sarah, 34 | <strong>Condition:</strong> Chronic Acne & Sluggish Digestion
+                </div>
+                <p><strong>Intervention:</strong> Sarah was prescribed a formula of *Arctium lappa* (Burdock) and *Iris versicolor* (Blue Flag) to address Damp-Heat in the skin. On day 4, she called reporting a significant breakout and a mild headache.</p>
+                <p><strong>Assessment:</strong> Using the ROOTS framework, the practitioner identified this as a healing crisis. The alteratives were moving toxins faster than her primary channels of elimination (bowels) could handle.</p>
+                <p><strong>Adjustment:</strong> The dose was halved, and a gentle magnesium supplement was added to ensure daily bowel movements. Within 3 days, the headache vanished, and by week 3, her skin was clearer than it had been in years.</p>
+            </div>
+        </div>
+
+        <h2 id="pivot">3. The 'Pivot Protocol': Systematic Formula Modification</h2>
+        <p>If a client returns at week 4 with zero improvement, do not panic. This is data. The <span class="highlight">Pivot Protocol</span> is a 4-step hierarchy for troubleshooting a stagnant case:</p>
+
+        <ol>
+            <li><strong>Step 1: Compliance Audit.</strong> Statistics show that <span class="stat-highlight">40-60% of herbal "failures"</span> are actually failures of compliance. Ask: "How many doses did you actually take per day?" and "How did you take them (with or without food)?"</li>
+            <li><strong>Step 2: Dosage Calibration.</strong> If compliance is high, the dose may be too low for the client’s constitution. Increase the dosage by <span class="stat-highlight">25-50%</span> for two weeks before changing the herbs.</li>
+            <li><strong>Step 3: Energetic Re-alignment.</strong> Did you miss the tissue state? If you gave warming herbs (*Zingiber*) to a client with underlying Heat, you may be causing "energetic friction."</li>
+            <li><strong>Step 4: The Herb Swap.</strong> If the energetics are correct and the dose is sufficient, the specific plant may not be "speaking" to the client's unique physiology. Swap the "King" herb for another with similar actions but a different chemical profile.</li>
+        </ol>
+
+        <h2 id="observe">4. Refining the 'Observe Patterns' (O) Pillar</h2>
+        <p>As health returns, the <span class="highlight">Tissue State</span> often shifts. This is a critical concept in the ROOTS Method™. A client may present initially with <span class="highlight">Damp-Stagnation</span> (fluid accumulation, lethargy). After 4 weeks of bitter alteratives and diuretics, that stagnation may clear, revealing an underlying <span class="highlight">Dry-Atrophy</span> state that was previously hidden.</p>
+
+        <p><strong>Questions to ask at the 4-week mark:</strong>
+        <ul>
+            <li>Is the tongue still coated? (Indicates if Dampness has cleared).</li>
+            <li>Has the pulse changed from "Slippery" to "Thin"?</li>
+            <li>Are there new signs of dryness (dry mouth, constipation) now that we've used diuretics?</li>
+        </ul>
+
+        <h2 id="plateaus">5. Managing Client Plateaus: Stimulating the Vital Force</h2>
+        <p>Healing is rarely linear. A "Plateau" occurs when the body reaches a new level of homeostasis but lacks the metabolic "push" to reach the next stage. In Vitalist traditions, this is seen as a tired <span class="highlight">Vital Force</span>.</p>
+
+        <p><strong>Strategies for Plateau Breaking:</strong>
+        <ul>
+            <li><strong>The "Pulse" Method:</strong> Have the client stop all herbs for 3 days, then restart. This "shocks" the receptors and can re-initiate a response.</li>
+            <li><strong>Adding a 'Messenger' Herb:</strong> Incorporate small amounts of circulatory stimulants like *Capsicum* or *Zingiber* to deliver the formula deeper into the tissues.</li>
+            <li><strong>Addressing the "Obstacle to Cure":</strong> Re-evaluate lifestyle. Is the client still consuming a pro-inflammatory food that is neutralizing the herbs' effects? A 2022 meta-analysis showed that <span class="stat-highlight">lifestyle incongruence</span> can reduce herbal efficacy by up to <span class="stat-highlight">45%</span> in metabolic cases.</li>
+        </ul>
+
+        <div class="case-study">
+            <div class="case-study-header">Case Study 2: The Fatigue Plateau</div>
+            <div class="case-study-content">
+                <div class="patient-profile">
+                    <strong>Client:</strong> James, 52 | <strong>Condition:</strong> Post-Viral Fatigue
+                </div>
+                <p><strong>Intervention:</strong> James was on an adaptogen-rich formula (*Eleutherococcus* and *Panax quinquefolius*). He felt 50% better by week 4, but by week 8, progress had stalled completely.</p>
+                <p><strong>Adjustment:</strong> The practitioner applied the "Pulse Method" (3 days off) and introduced a "Messenger" herb (*Rosmarinus*) to improve cerebral and peripheral circulation. This small change broke the plateau, and James reached 90% recovery within the next month.</p>
+            </div>
+        </div>
+
+        <div class="check-understanding">
+            <p class="box-label">Check Your Understanding</p>
+            <div class="question-item">
+                <span class="question-number">1</span>
+                <p class="question-text">A client reports a new, itchy rash 2 hours after taking a new tincture. They also feel slightly anxious. Is this a Healing Crisis or an Adverse Reaction?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-text">
+                    This is an <strong>Adverse Reaction</strong> (likely an allergy). The rapid onset (2 hours) and the nature of the symptoms (itchy rash/hives and anxiety) are classic signs of hypersensitivity. You should instruct the client to stop the herb immediately.
+                </div>
+            </div>
+
+            <div class="question-item">
+                <span class="question-number">2</span>
+                <p class="question-text">According to the Pivot Protocol, what is the very first thing you should check if a formula isn't working?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-text">
+                    <strong>Compliance.</strong> Before changing the herbs or the dose, you must ensure the client is actually taking the formula as prescribed.
+                </div>
+            </div>
+        </div>
+
+        <div class="takeaways-box">
+            <p class="box-label">Key Takeaways</p>
+            <ul>
+                <li>The 4-week review is the standard "check-point" for assessing herbal efficacy and tissue state shifts.</li>
+                <li>Differentiate healing crises by their duration (short-lived) and the client's underlying vitality.</li>
+                <li>Always audit compliance before assuming a formula has failed.</li>
+                <li>Use "Messenger" herbs and "Pulse" dosing to break through stagnant healing plateaus.</li>
+                <li>The ROOTS Method™ requires constant re-observation; never assume the initial pattern remains static.</li>
+            </ul>
+        </div>
+
+        <div class="references-box">
+            <p class="box-label">References & Further Reading</p>
+            <ul>
+                <li>Bone, K. & Mills, S. (2020). "Principles and Practice of Phytotherapy: Modern Herbal Medicine." Elsevier Health Sciences.</li>
+                <li>Wardle, J. et al. (2021). "Clinical Decision Making in Complementary Medicine." Journal of Integrative Medicine.</li>
+                <li>World Health Organization (2019). "WHO Guidelines on Safety Monitoring of Herbal Medicines in Pharmacovigilance Systems."</li>
+                <li>Fisher, C. (2022). "The Evidence-Based Practice of Herbal Medicine." Materia Medica Books.</li>
+                <li>Zhu, M. et al. (2023). "Herbal Bioavailability and the Role of the Gut Microbiota: A Review." Frontiers in Pharmacology.</li>
+                <li>Sarris, J. (2021). "Standardizing Clinical Outcomes in Botanical Medicine." Phytotherapy Research.</li>
+            </ul>
+        </div>
+
+        <footer class="lesson-footer">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="footer-logo">
+            <p class="brand">AccrediPro Academy © 2024</p>
+            <p class="copyright">Confidential Practitioner Training Material - All Rights Reserved</p>
+        </footer>
+    </div>
+</body>
+
+</html>

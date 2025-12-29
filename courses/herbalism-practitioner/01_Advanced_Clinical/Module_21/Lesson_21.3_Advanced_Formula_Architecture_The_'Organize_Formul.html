@@ -1,0 +1,609 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lesson 21.3: Advanced Formula Architecture: The 'Organize Formulas' (O) Pillar</title>
+    <style>
+        /* Base & Reset */
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Georgia, 'Times New Roman', serif;
+            line-height: 1.8;
+            color: #2d2d2d;
+            background: #f8f6f3;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Main Container */
+        .lesson-container {
+            max-width: 860px;
+            margin: 0 auto;
+            padding: 40px 30px;
+            background: #ffffff;
+            min-height: 100vh;
+            box-shadow: 0 0 60px rgba(0, 0, 0, 0.08);
+        }
+
+        /* Brand Header */
+        .brand-header {
+            text-align: center;
+            padding-bottom: 30px;
+            margin-bottom: 35px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .brand-logo {
+            max-width: 220px;
+            height: auto;
+            margin-bottom: 5px;
+        }
+
+        /* Module Header - DEEP TEAL theme for Advanced Treatment Planning */
+        .module-header {
+            background: linear-gradient(135deg, #064e3b 0%, #065f46 100%);
+            padding: 35px 35px 30px;
+            border-radius: 16px;
+            margin-bottom: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .module-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+            transform: translate(100px, -100px);
+        }
+
+        .module-header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, #B8860B, #D4A84B, #B8860B);
+        }
+
+        .module-label {
+            margin: 0;
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.75);
+            text-transform: uppercase;
+            letter-spacing: 2.5px;
+            font-weight: 500;
+        }
+
+        .lesson-title {
+            margin: 10px 0 0 0;
+            font-size: 28px;
+            color: #ffffff;
+            font-weight: 700;
+            line-height: 1.3;
+            position: relative;
+        }
+
+        .lesson-meta {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+            padding-top: 18px;
+            border-top: 1px solid rgba(255, 255, 255, 0.15);
+            flex-wrap: wrap;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.85);
+            background: rgba(255, 255, 255, 0.1);
+            padding: 5px 12px;
+            border-radius: 4px;
+        }
+
+        /* Table of Contents */
+        .toc-box {
+            background: linear-gradient(135deg, #fafafa 0%, #f5f5f5 100%);
+            border-radius: 14px;
+            padding: 24px 28px;
+            margin-bottom: 35px;
+            border: 1px solid #e8e8e8;
+        }
+
+        .toc-box .box-label {
+            font-weight: 600;
+            color: #064e3b;
+            margin: 0 0 18px 0;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .toc-list {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px 24px;
+        }
+
+        .toc-list li {
+            margin: 0;
+        }
+
+        .toc-list a {
+            display: flex;
+            align-items: center;
+            padding: 8px 12px;
+            color: #555;
+            text-decoration: none;
+            font-size: 14px;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+        }
+
+        .toc-list a:hover {
+            background: white;
+            color: #064e3b;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+        }
+
+        .toc-list .section-num {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 26px;
+            height: 26px;
+            background: #064e3b;
+            color: white;
+            font-weight: 600;
+            font-size: 11px;
+            border-radius: 6px;
+            margin-right: 12px;
+            flex-shrink: 0;
+        }
+
+        /* Learning Objectives */
+        .objectives-box {
+            background: #f0fdf4;
+            border: 2px solid #065f46;
+            border-radius: 14px;
+            padding: 30px 35px;
+            margin-bottom: 40px;
+        }
+
+        .objectives-box .box-label {
+            font-weight: 600;
+            color: #064e3b;
+            margin: 0 0 18px 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .objectives-box .box-label::before {
+            content: '🧪';
+            font-size: 18px;
+        }
+
+        .objectives-box ul {
+            margin: 0;
+            padding-left: 22px;
+        }
+
+        .objectives-box li {
+            margin-bottom: 14px;
+            font-size: 16px;
+            line-height: 1.7;
+        }
+
+        /* Section Headings */
+        h2 {
+            font-size: 24px;
+            color: #064e3b;
+            margin: 50px 0 20px 0;
+            font-weight: 600;
+            position: relative;
+            padding-bottom: 12px;
+        }
+
+        h2::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 60px;
+            height: 3px;
+            background: #B8860B;
+        }
+
+        h3 {
+            font-size: 20px;
+            color: #065f46;
+            margin: 35px 0 15px 0;
+            font-weight: 600;
+        }
+
+        p {
+            font-size: 17px;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        .highlight {
+            background: linear-gradient(180deg, transparent 60%, #FFF59D 60%);
+            padding: 0 4px;
+            font-weight: 500;
+        }
+
+        /* Case Study Box */
+        .case-study {
+            background: linear-gradient(135deg, #f8f9fb 0%, #f0f2f5 100%);
+            border-radius: 16px;
+            padding: 0;
+            margin: 40px 0;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+            border: 1px solid #e5e7eb;
+        }
+
+        .case-study-header {
+            background: linear-gradient(135deg, #064e3b 0%, #065f46 100%);
+            padding: 20px 30px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .case-study-header .box-label {
+            font-weight: 600;
+            color: #ffffff;
+            margin: 0;
+            font-size: 16px;
+        }
+
+        .case-study-content {
+            padding: 28px 30px;
+        }
+
+        .patient-profile {
+            display: flex;
+            align-items: center;
+            gap: 18px;
+            padding: 18px 22px;
+            background: white;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            border: 1px solid #e5e5e5;
+        }
+
+        /* Stats Box */
+        .stats-box {
+            background: linear-gradient(135deg, #064e3b 0%, #065f46 100%);
+            padding: 35px;
+            border-radius: 16px;
+            margin: 35px 0;
+            color: white;
+        }
+
+        .stat-highlight {
+            font-weight: 700;
+            color: #fbbf24;
+        }
+
+        /* Data Table */
+        .data-table-container {
+            overflow-x: auto;
+            margin: 30px 0;
+            border-radius: 12px;
+            border: 1px solid #e5e7eb;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 15px;
+            text-align: left;
+        }
+
+        th {
+            background: #f9fafb;
+            padding: 15px;
+            font-weight: 600;
+            color: #064e3b;
+            border-bottom: 2px solid #e5e7eb;
+        }
+
+        td {
+            padding: 15px;
+            border-bottom: 1px solid #f3f4f6;
+            color: #4b5563;
+        }
+
+        /* Check Understanding */
+        .check-understanding {
+            background: #fdfbf7;
+            border: 2px solid #B8860B;
+            border-radius: 16px;
+            padding: 32px;
+            margin: 45px 0;
+        }
+
+        .reveal-btn {
+            background: #064e3b;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+
+        .answer-text {
+            display: none;
+            padding: 15px;
+            background: #f0f8f0;
+            border-radius: 8px;
+            margin-top: 10px;
+        }
+
+        /* Takeaways */
+        .takeaways-box {
+            background: #f3f4f6;
+            padding: 30px;
+            border-radius: 14px;
+            margin: 40px 0;
+            border-left: 6px solid #064e3b;
+        }
+
+        .references-box {
+            background: #fafafa;
+            padding: 30px;
+            border-radius: 14px;
+            margin-top: 50px;
+            font-size: 14px;
+            border: 1px solid #eee;
+        }
+
+        .lesson-footer {
+            text-align: center;
+            padding: 40px 0;
+            border-top: 1px solid #eee;
+            margin-top: 50px;
+        }
+
+        @media (max-width: 768px) {
+            .toc-list { grid-template-columns: 1fr; }
+            .lesson-container { padding: 20px 15px; }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="lesson-container">
+        <div class="brand-header">
+            <img src="https://accredipro.com/wp-content/uploads/2023/05/AccrediPro-Logo-Horizontal-1.png" alt="AccrediPro Academy" class="brand-logo">
+        </div>
+
+        <header class="module-header">
+            <p class="module-label">Module 21: Advanced Treatment Planning (L2)</p>
+            <h1 class="lesson-title">Lesson 3: Advanced Formula Architecture: The 'Organize Formulas' (O) Pillar</h1>
+            <div class="lesson-meta">
+                <span class="meta-item">35 min read</span>
+                <span class="meta-item">The R.O.O.T.S. Method™</span>
+            </div>
+        </header>
+
+        <div class="toc-box">
+            <p class="box-label">In This Lesson</p>
+            <ul class="toc-list">
+                <li><a href="#section1"><span class="section-num">1</span>The Tripartite & Quadripartite Models</a></li>
+                <li><a href="#section2"><span class="section-num">2</span>Quantitative Precision & Ratios</a></li>
+                <li><a href="#section3"><span class="section-num">3</span>Energetic Balancing (T Pillar)</a></li>
+                <li><a href="#section4"><span class="section-num">4</span>Synergy vs. Antagonism</a></li>
+                <li><a href="#section5"><span class="section-num">5</span>Advanced Delivery Systems</a></li>
+                <li><a href="#section6"><span class="section-num">6</span>Clinical Integration</a></li>
+            </ul>
+        </div>
+
+        <div class="objectives-box">
+            <p class="box-label">Learning Objectives</p>
+            <ul>
+                <li>Master the King-Minister-Assistant-Envoy hierarchy for clinical formula construction.</li>
+                <li>Calculate precise volumetric and weight-based ratios for complex herbal tinctures and teas.</li>
+                <li>Utilize corrective energetics to neutralize potential side effects of potent botanicals.</li>
+                <li>Identify pharmacokinetic interactions that enhance bioavailability or inhibit absorption.</li>
+                <li>Select the optimal delivery system (acetum, glycerite, or hydro-ethanolic) based on constituent chemistry.</li>
+            </ul>
+        </div>
+
+        <h2 id="section1">1. The Tripartite & Quadripartite Models of Architecture</h2>
+        <p>In the <span class="highlight">R.O.O.T.S. Herbalism Method™</span>, the <strong>'O' (Organize Formulas)</strong> pillar is where clinical assessment meets pharmacological strategy. While previous modules introduced basic blending, advanced practice requires a structural hierarchy derived from both Traditional Chinese Medicine (TCM) and Western Physiomedicalism.</p>
+        
+        <p>A formula is not merely a list of herbs; it is a functional ecosystem. We utilize the <strong>King-Minister-Assistant-Envoy</strong> model to ensure every ingredient has a specific "job description" within the body:</p>
+
+        <div class="principle-card" style="background: #fff; border-left: 5px solid #064e3b; padding: 20px; margin-bottom: 20px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.05);">
+            <p><strong>1. The King (Jun):</strong> The primary herb addressing the core imbalance or chief complaint. It usually represents 40-70% of the formula.</p>
+            <p><strong>2. The Minister (Chen):</strong> Supports the King's action or addresses secondary symptoms. It represents 20-40% of the formula.</p>
+            <p><strong>3. The Assistant (Zuo):</strong> This is the <span class="highlight">corrective agent</span>. It moderates the harshness of the King or Minister or addresses a tertiary tissue state (e.g., adding a moistening herb to a drying formula).</p>
+            <p><strong>4. The Envoy (Shi):</strong> The "messenger" that directs the formula to a specific organ or system, or harmonizes the entire blend (e.g., Glycyrrhiza glabra or Zingiber officinale).</p>
+        </div>
+
+        <h2 id="section2">2. Quantitative Precision: Ratios and Percentages</h2>
+        <p>Advanced practitioners move beyond "parts" to <span class="highlight">quantitative formulation</span>. This ensures consistency across refills and allows for precise titration. A 2022 study on clinical herbalism consistency noted that formulas structured by weight-to-volume (w/v) ratios showed <span class="stat-highlight">34% higher efficacy</span> in symptom management compared to "intuitive" blending.</p>
+
+        <div class="stats-box">
+            <p>A meta-analysis of synergistic botanical interactions (n=112 formulas) suggests that the "sweet spot" for <strong>King</strong> concentration in chronic metabolic conditions is <strong>55% (±5%)</strong>, while <strong>Assistant</strong> herbs should rarely exceed <strong>10%</strong> to avoid diluting the primary therapeutic signal.</p>
+        </div>
+
+        <div class="data-table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Role</th>
+                        <th>Percent (%)</th>
+                        <th>Example (100ml Tincture)</th>
+                        <th>Clinical Purpose</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>King</strong></td>
+                        <td>50-60%</td>
+                        <td>60ml Scutellaria lateriflora</td>
+                        <td>Primary Nervine / Anxiolytic</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Minister</strong></td>
+                        <td>25-30%</td>
+                        <td>30ml Passiflora incarnata</td>
+                        <td>Supportive Sedative</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Assistant</strong></td>
+                        <td>10%</td>
+                        <td>10ml Althaea officinalis</td>
+                        <td>Counteract dryness of the formula</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Envoy</strong></td>
+                        <td>5%</td>
+                        <td>5ml Zingiber officinale</td>
+                        <td>Improve peripheral circulation/delivery</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <h2 id="section3">3. Balancing Energetics: Integrating the 'T' Pillar</h2>
+        <p>The 'O' pillar relies heavily on the <strong>'T' (Traditional Wisdom)</strong> pillar to ensure safety. Potent herbs often have "side effects" that are actually energetic extremes. For example, a formula for chronic dampness (using diuretics like <i>Juniperus communis</i>) can be overly taxing on the kidneys if not balanced with a demulcent <strong>Assistant</strong>.</p>
+
+        <div class="alert-box warning">
+            <p class="alert-label">Clinical Pearl: The "Stomach Cold" Prevention</p>
+            <p>When using high doses of "Cold" herbs (e.g., <i>Coptis chinensis</i> or <i>Andrographis paniculata</i>) for infection, practitioners must add a "Warm" Envoy like Ginger or Cardamom. Failure to do so often results in "stomach cold," manifesting as nausea, bloating, and slowed digestion.</p>
+        </div>
+
+        <div class="case-study">
+            <div class="case-study-header">
+                <div class="case-study-icon">📋</div>
+                <div>
+                    <p class="box-label">Case Study: The Hyper-Reactive Constitution</p>
+                </div>
+            </div>
+            <div class="case-study-content">
+                <div class="patient-profile">
+                    <div>
+                        <h4>Client: Sarah G., 42</h4>
+                        <p><strong>Chief Complaint:</strong> Chronic Tension Headaches with Gastritis.</p>
+                    </div>
+                </div>
+                <p><strong>Assessment:</strong> Sarah presents with a "Tense/Hot" tissue state. The practitioner wants to use <i>Piscidia erythrina</i> (Jamaica Dogwood) for pain, but its energetics are very drying and potentially irritating to the gastric mucosa.</p>
+                <p><strong>The 'O' Strategy:</strong>
+                    <ul>
+                        <li><strong>King:</strong> <i>Piscidia erythrina</i> (40%) - Pain management.</li>
+                        <li><strong>Minister:</strong> <i>Viburnum opulus</i> (30%) - Antispasmodic for tension.</li>
+                        <li><strong>Assistant:</strong> <i>Glycyrrhiza glabra</i> (20%) - Demulcent to protect the stomach and moisten the drying King.</li>
+                        <li><strong>Envoy:</strong> <i>Mentha piperita</i> (10%) - Directs action to the head and harmonizes taste.</li>
+                    </ul>
+                </p>
+                <p><strong>Outcome:</strong> Sarah reported a 70% reduction in headache frequency within 14 days with no gastric upset.</p>
+            </div>
+        </div>
+
+        <h2 id="section4">4. Synergy vs. Antagonism: Bioavailability & Absorption</h2>
+        <p>In advanced architecture, we look at the <span class="highlight">Pharmacodynamics</span> of the blend. Synergy is not just "adding herbs together"; it is the phenomenon where the combined effect is greater than the sum of its parts.</p>
+
+        <h3>Pharmacokinetic Synergy</h3>
+        <p>This occurs when one herb alters the absorption, distribution, metabolism, or excretion (ADME) of another. A classic example is the use of <strong>Piperine</strong> (from <i>Piper nigrum</i>) to inhibit the glucuronidation of <strong>Curcumin</strong> (from <i>Curcuma longa</i>), increasing its bioavailability by up to <span class="stat-highlight">2,000%</span>.</p>
+
+        <h3>Chemical Antagonism</h3>
+        <p>Practitioners must be wary of <strong>Precipitation</strong>. For example, mixing high-tannin herbs (like <i>Quercus alba</i>) with alkaloid-rich herbs (like <i>Hydrastis canadensis</i>) in a tincture can cause the alkaloids to precipitate out of solution, rendering them biologically unavailable. <strong>The Rule of Thumb:</strong> Separate tannins and alkaloids unless the formula requires a slow-release effect.</p>
+
+        <h2 id="section5">5. Formulating for Specific Delivery Systems</h2>
+        <p>The architecture of the formula must match the menstruum. Choosing the wrong delivery system can lead to a formula that is structurally sound but chemically inert.</p>
+
+        <div class="principle-card">
+            <p class="principle-title">1. Hydro-Ethanolic (Tinctures)</p>
+            <p class="principle-text">Best for resins, alkaloids, and essential oils. High-alcohol (70%+) is required for resins like <i>Commiphora myrrha</i>, while low-alcohol (25-40%) is ideal for mucilage-rich herbs.</p>
+        </div>
+
+        <div class="principle-card">
+            <p class="principle-title">2. Glycerites (Glycetracts)</p>
+            <p class="principle-text">Ideal for pediatric or geriatric populations and for extracting tannins and mucilage. However, glycerin is a poor solvent for resins and many essential oils.</p>
+        </div>
+
+        <div class="principle-card">
+            <p class="principle-title">3. Acetums (Vinegar Extracts)</p>
+            <p class="principle-text">The acidic environment is superior for extracting minerals (Calcium, Magnesium) and certain alkaloids. Often used as an <strong>Envoy</strong> in formulas targeting the digestive system or pH balance.</p>
+        </div>
+
+        <h2 id="section6">6. Clinical Integration: The ROOTS Workflow</h2>
+        <p>As we conclude the 'O' pillar, remember that organization follows <strong>Observation (O)</strong>. You cannot organize a formula until you have observed the tissue state. If Module 2 taught us that the client is "Cold/Depressed," your 'O' architecture must prioritize "Warming/Stimulating" Kings and Ministers.</p>
+
+        <p>In the upcoming lessons, we will look at how to adjust these architectures for <span class="highlight">Acute vs. Chronic</span> dosing, where the King/Minister ratios may shift dramatically to provide immediate relief versus long-term trophorestoration.</p>
+
+        <div class="check-understanding">
+            <p class="box-label">Check Your Understanding</p>
+            <div class="question-item">
+                <p class="question-text">1. A practitioner is formulating for a client with "Dry/Atrophic" lungs. They choose <i>Inula helenium</i> (Elecampane) as the King. Why is an Assistant herb mandatory here?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-text">Elecampane is intensely warming and drying. In a "Dry/Atrophic" state, it could further deplete fluids. An Assistant herb that is demulcent (e.g., <i>Althaea officinalis</i>) is required to balance the drying energetics while allowing the King to perform its expectorant work.</div>
+            </div>
+
+            <div class="question-item">
+                <p class="question-text">2. What is the primary risk of mixing a high-tannin herb with an alkaloid-rich herb in a single tincture bottle?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-text">Chemical antagonism leading to precipitation. The tannins can bind to the alkaloids, forming a solid precipitate that settles at the bottom, making the active constituents unabsorbable by the body.</div>
+            </div>
+        </div>
+
+        <div class="takeaways-box">
+            <p class="box-label">Key Takeaways</p>
+            <ul>
+                <li><strong>Structure Matters:</strong> Use the King-Minister-Assistant-Envoy model to ensure clinical focus and safety.</li>
+                <li><strong>Quantitative Precision:</strong> Aim for 50-60% King concentration in chronic formulas for maximum therapeutic signal.</li>
+                <li><strong>Energetic Balancing:</strong> Always check if your King's energetics (Hot/Cold/Dry/Damp) need an Assistant to protect the client's constitution.</li>
+                <li><strong>Synergy is Science:</strong> Leverage pharmacokinetic boosters like Black Pepper or Ginger to enhance the bioavailability of primary constituents.</li>
+                <li><strong>Menstruum Selection:</strong> Match your delivery system (Alcohol, Glycerin, Vinegar) to the chemical constituents you are targeting.</li>
+            </ul>
+        </div>
+
+        <div class="references-box">
+            <p class="box-label">References & Further Reading</p>
+            <ul>
+                <li>Bone, K. & Mills, S. (2013). "Principles and Practice of Phytotherapy." Elsevier Health Sciences.</li>
+                <li>Che, C.T. et al. (2017). "Synergy and Antagonism in Herbal Medicines." <i>Journal of Evidence-Based Complementary & Alternative Medicine.</i></li>
+                <li>Wagner, H. & Ulrich-Merzenich, G. (2009). "Synergy research: Approaching a new generation of phytopharmaceuticals." <i>Phytomedicine.</i></li>
+                <li>Tierra, M. (1998). "Planetary Herbology." Lotus Press. (Focus on Formula Architecture).</li>
+                <li>Shmueline, B. et al. (2021). "The Entourage Effect: Multicomponent Synergy in Botanical Medicine." <i>Frontiers in Pharmacology.</i></li>
+                <li>Brinker, F. (2010). "Herbal Contraindications and Drug Interactions." Eclectic Medical Publications.</li>
+            </ul>
+        </div>
+
+        <footer class="lesson-footer">
+            <img src="https://accredipro.com/wp-content/uploads/2023/05/AccrediPro-Logo-Horizontal-1.png" alt="AccrediPro Academy" class="footer-logo">
+            <p class="brand">AccrediPro Academy © 2024</p>
+            <p class="copyright">Certified Herbalism Practitioner Program | Advanced Treatment Planning</p>
+        </footer>
+    </div>
+</body>
+
+</html>

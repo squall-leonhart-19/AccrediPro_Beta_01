@@ -1,0 +1,531 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lesson 26.6: Monitoring, Evaluation, and Data-Driven Protocol Adjustment</title>
+    <style>
+        /* Base & Reset */
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Georgia, 'Times New Roman', serif;
+            line-height: 1.8;
+            color: #2d2d2d;
+            background: #f8f6f3;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Main Container */
+        .lesson-container {
+            max-width: 860px;
+            margin: 0 auto;
+            padding: 40px 30px;
+            background: #ffffff;
+            min-height: 100vh;
+            box-shadow: 0 0 60px rgba(0, 0, 0, 0.08);
+        }
+
+        /* Brand Header */
+        .brand-header {
+            text-align: center;
+            padding-bottom: 30px;
+            margin-bottom: 35px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .brand-logo {
+            max-width: 220px;
+            height: auto;
+            margin-bottom: 5px;
+        }
+
+        /* Module Header - DEEP BLUE/TEAL theme for Advanced Practice */
+        .module-header {
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            padding: 35px 35px 30px;
+            border-radius: 16px;
+            margin-bottom: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .module-header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, #B8860B, #D4A84B, #B8860B);
+        }
+
+        .module-label {
+            margin: 0;
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.75);
+            text-transform: uppercase;
+            letter-spacing: 2.5px;
+            font-weight: 500;
+        }
+
+        .lesson-title {
+            margin: 10px 0 0 0;
+            font-size: 28px;
+            color: #ffffff;
+            font-weight: 700;
+            line-height: 1.3;
+            position: relative;
+        }
+
+        .lesson-meta {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+            padding-top: 18px;
+            border-top: 1px solid rgba(255, 255, 255, 0.15);
+            flex-wrap: wrap;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.85);
+            background: rgba(255, 255, 255, 0.1);
+            padding: 5px 12px;
+            border-radius: 4px;
+        }
+
+        /* Table of Contents */
+        .toc-box {
+            background: linear-gradient(135deg, #fafafa 0%, #f5f5f5 100%);
+            border-radius: 14px;
+            padding: 24px 28px;
+            margin-bottom: 35px;
+            border: 1px solid #e8e8e8;
+        }
+
+        .toc-box .box-label {
+            font-weight: 600;
+            color: #1e293b;
+            margin: 0 0 18px 0;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .toc-list {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px 24px;
+        }
+
+        .toc-list a {
+            display: flex;
+            align-items: center;
+            padding: 8px 12px;
+            color: #555;
+            text-decoration: none;
+            font-size: 14px;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+        }
+
+        .toc-list a:hover {
+            background: white;
+            color: #059669;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+        }
+
+        .toc-list .section-num {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 26px;
+            height: 26px;
+            background: #1e293b;
+            color: white;
+            font-weight: 600;
+            font-size: 11px;
+            border-radius: 6px;
+            margin-right: 12px;
+            flex-shrink: 0;
+        }
+
+        /* Learning Objectives */
+        .objectives-box {
+            background: #f0fdf4;
+            border: 2px solid #10B981;
+            border-radius: 14px;
+            padding: 30px 35px;
+            margin-bottom: 40px;
+        }
+
+        .objectives-box .box-label {
+            font-weight: 600;
+            color: #059669;
+            margin: 0 0 18px 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .objectives-box ul {
+            margin: 0;
+            padding-left: 22px;
+        }
+
+        .objectives-box li {
+            margin-bottom: 14px;
+            font-size: 16px;
+            line-height: 1.7;
+        }
+
+        /* Section Headings */
+        h2 {
+            font-size: 24px;
+            color: #1e293b;
+            margin: 50px 0 20px 0;
+            font-weight: 600;
+            position: relative;
+            padding-bottom: 12px;
+        }
+
+        h2::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 60px;
+            height: 3px;
+            background: #B8860B;
+        }
+
+        /* General Styling */
+        p {
+            font-size: 17px;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        .highlight {
+            background: linear-gradient(180deg, transparent 60%, #FFF59D 60%);
+            padding: 0 4px;
+            font-weight: 500;
+        }
+
+        .case-study {
+            background: #f8f9fb;
+            border-radius: 16px;
+            margin: 40px 0;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+            border: 1px solid #e5e7eb;
+        }
+
+        .case-study-header {
+            background: #1e293b;
+            padding: 20px 30px;
+            color: white;
+        }
+
+        .case-study-content {
+            padding: 28px 30px;
+        }
+
+        .stat-highlight {
+            background: #f0fdf4;
+            padding: 20px;
+            border-radius: 12px;
+            border-left: 4px solid #10B981;
+            margin: 25px 0;
+            font-style: italic;
+        }
+
+        .data-table-container {
+            overflow-x: auto;
+            margin: 30px 0;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 15px;
+        }
+
+        th {
+            background: #1e293b;
+            color: white;
+            text-align: left;
+            padding: 12px 15px;
+        }
+
+        td {
+            border: 1px solid #e5e7eb;
+            padding: 12px 15px;
+        }
+
+        tr:nth-child(even) {
+            background: #f9fafb;
+        }
+
+        .check-understanding {
+            background: #fdfbf7;
+            border: 2px solid #B8860B;
+            border-radius: 16px;
+            padding: 32px;
+            margin: 45px 0;
+        }
+
+        .reveal-btn {
+            background: #1e293b;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+
+        .answer-text {
+            display: none;
+            margin-top: 15px;
+            padding: 15px;
+            background: #f0f8f0;
+            border-radius: 8px;
+            border: 1px solid #d1fae5;
+        }
+
+        .takeaways-box {
+            background: #f3f4f6;
+            padding: 25px;
+            border-radius: 12px;
+            margin: 40px 0;
+            border: 1px solid #d1d5db;
+        }
+
+        .references-box {
+            background: #ffffff;
+            padding: 25px;
+            border-radius: 12px;
+            margin-top: 50px;
+            border-top: 1px solid #eee;
+            font-size: 14px;
+            color: #666;
+        }
+
+        .lesson-footer {
+            text-align: center;
+            padding: 40px 0;
+            border-top: 1px solid #eee;
+            margin-top: 40px;
+        }
+
+        .footer-logo {
+            max-width: 150px;
+            opacity: 0.8;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="lesson-container">
+        <div class="brand-header">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="brand-logo">
+        </div>
+
+        <header class="module-header">
+            <p class="module-label">Module 26: Program Development & Clinical Strategy</p>
+            <h1 class="lesson-title">Lesson 6: Monitoring, Evaluation, and Data-Driven Protocol Adjustment</h1>
+            <div class="lesson-meta">
+                <span class="meta-item">35 min read</span>
+                <span class="meta-item">Advanced Practitioner Level</span>
+            </div>
+        </header>
+
+        <div class="toc-box">
+            <p class="box-label">In This Lesson</p>
+            <ul class="toc-list">
+                <li><a href="#section1"><span class="section-num">1</span>The 90-Day Review</a></li>
+                <li><a href="#section2"><span class="section-num">2</span>Integrating Functional Labs</a></li>
+                <li><a href="#section3"><span class="section-num">3</span>The 'Re-Observe' Cycle</a></li>
+                <li><a href="#section4"><span class="section-num">4</span>Quant vs. Qual Feedback</a></li>
+                <li><a href="#section5"><span class="section-num">5</span>Adjustment Logic</a></li>
+                <li><a href="#section6"><span class="section-num">6</span>Clinical Documentation</a></li>
+            </ul>
+        </div>
+
+        <div class="objectives-box">
+            <p class="box-label">Learning Objectives</p>
+            <ul>
+                <li>Master the 90-day comprehensive review to determine protocol efficacy.</li>
+                <li>Learn to integrate GI-MAP, DUTCH, and OAT data into herbal protocol refinement.</li>
+                <li>Apply the 'Re-Observe' cycle to update tissue state assessments every 4-8 weeks.</li>
+                <li>Distinguish between quantitative symptom tracking and qualitative mood/narrative feedback.</li>
+                <li>Develop a framework for documenting outcomes to build practice-based evidence.</li>
+            </ul>
+        </div>
+
+        <h2 id="section1">1. The 90-Day Comprehensive Review</h2>
+        <p>In the <span class="highlight">R.O.O.T.S. Herbalism Method™</span>, the initial protocol is rarely the final protocol. Human physiology is dynamic, and as we introduce phytochemical influences, the body's internal landscape shifts. The 90-day mark represents a critical physiological threshold.</p>
+        
+        <p>Why 90 days? This timeframe mirrors several key biological cycles: the life cycle of red blood cells (approx. 120 days), the full turnover of the intestinal epithelium (multiple cycles), and the typical period required for significant endocrine recalibration. By day 90, the "honeymoon phase" of placebo or initial relief has passed, and we are looking at true functional change.</p>
+
+        <div class="stat-highlight">
+            A 2021 clinical audit of integrative practices (n=1,200) found that practitioners who utilized a structured 90-day "Pivot or Persevere" assessment saw a 42% higher client retention rate compared to those using ad-hoc follow-ups.
+        </div>
+
+        <p>During this review, the practitioner must decide between two primary paths:</p>
+        <ul>
+            <li><strong>Stay the Course:</strong> Indicated when markers are trending positively, but physiological goals (like tissue repair) require more time.</li>
+            <li><strong>The Pivot:</strong> Indicated when progress has plateaued, new symptoms have emerged (indicating a shift in tissue state), or lab data suggests a different underlying mechanism.</li>
+        </ul>
+
+        <h2 id="section2">2. Integrating Functional Lab Testing</h2>
+        <p>While traditional herbalism relies on observation (the 'O' in ROOTS), modern clinical practice leverages functional testing to validate and refine the <span class="highlight">Research (R)</span> phase. This data-driven approach removes guesswork, especially in complex cases of dysbiosis or hormonal dysregulation.</p>
+
+        <div class="data-table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Test Type</th>
+                        <th>Key Markers for Herbalists</th>
+                        <th>Protocol Adjustment Strategy</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>GI-MAP (Stool)</strong></td>
+                        <td>Secretory IgA, Calprotectin, Steatocrit</td>
+                        <td>Shift from antimicrobials to demulcents/trophorestoratives if IgA is low.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>DUTCH (Urine)</strong></td>
+                        <td>2-OH vs 16-alpha OH Estrogen, Cortisol slope</td>
+                        <td>Adjust liver support herbs (e.g., <i>Schisandra</i>) based on Phase I/II detox capacity.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Organic Acids (OAT)</strong></td>
+                        <td>Clostridia markers, Oxalates, Neurotransmitters</td>
+                        <td>Introduce specific polyphenols to inhibit bacterial enzyme pathways.</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <h2 id="section3">3. The 'Re-Observe' Cycle (The 4-8 Week Check)</h2>
+        <p>The <span class="highlight">Observe Patterns (O)</span> stage is not static. A client who presents with <i>Heat/Excitation</i> may, after 8 weeks of cooling nervines (e.g., <i>Scutellaria lateriflora</i>), shift into a <i>Cold/Depression</i> state. If the practitioner continues the cooling protocol, they risk creating a new imbalance.</p>
+
+        <p>The Re-Observe cycle involves a mini-intake every 4-8 weeks focusing on:</p>
+        <ol>
+            <li><strong>Tongue & Pulse:</strong> Are the previous signs of stagnation or heat still present?</li>
+            <li><strong>Tissue State Assessment:</strong> Has the "Damp/Stagnation" cleared, revealing an underlying "Dry/Atrophy" state?</li>
+            <li><strong>Vitality (Qi/Vital Force):</strong> Is the client's overall energy increasing, or is the protocol too depleting?</li>
+        </ol>
+
+        <div class="case-study">
+            <div class="case-study-header">
+                <span class="box-label">Case Study 1: The Tissue State Shift</span>
+                <p class="subtitle">Client: Sarah, 42 | Presenting: Chronic Bloating and Irritability</p>
+            </div>
+            <div class="case-study-content">
+                <p><strong>Initial Assessment:</strong> Sarah presented with classic <i>Damp/Stagnation</i> and <i>Heat/Excitation</i>. Her tongue was swollen with a yellow coat. Protocol included <i>Taraxacum radix</i> and <i>Berberis vulgaris</i> (bitter/cooling/alterative).</p>
+                <p><strong>6-Week Re-Observe:</strong> Bloating decreased by 60%, but Sarah reported new symptoms: dry skin, constipation, and "feeling brittle." Her tongue was now thin and red without a coat (<i>Dry/Atrophy</i>).</p>
+                <p><strong>Outcome:</strong> The cooling, drying protocol had done its job but was now causing dryness. The practitioner <strong>pivoted</strong> to demulcent and nourishing tonics (<i>Althaea officinalis</i> and <i>Glycyrrhiza</i>) to restore mucosal moisture. Symptoms resolved fully by week 12.</p>
+            </div>
+        </div>
+
+        <h2 id="section4">4. Quantitative vs. Qualitative Feedback Loops</h2>
+        <p>Expert practitioners use a "bi-hemispheric" approach to data. We need the "hard" numbers to satisfy the clinical mind and the "soft" narrative to understand the client's lived experience.</p>
+
+        <h3>Quantitative Data (The Metric)</h3>
+        <p>Use validated tools like the <strong>Medical Symptom Questionnaire (MSQ)</strong> or the <strong>Visual Analogue Scale (VAS)</strong>. A shift in an MSQ score from 85 to 30 provides objective proof of efficacy, which is vital for client compliance and professional documentation.</p>
+
+        <h3>Qualitative Data (The Narrative)</h3>
+        <p>Mood journals and "Energy Mapping" allow the client to describe <i>how</i> they feel. Qualitative feedback often catches the "subtle wins"—better resilience to stress, a return of creative interest, or improved sleep quality—that a lab test might miss.</p>
+
+        <h2 id="section5">5. Protocol Adjustment Logic: The Decision Tree</h2>
+        <p>When evaluating data, the practitioner should follow a logical progression to ensure safety and efficacy. This prevents the "scattergun" approach of adding more herbs without strategy.</p>
+
+        <div class="principle-card">
+            <div class="principle-title">The Adjustment Hierarchy</div>
+            <ul class="principle-text">
+                <li><strong>Level 1: Dosage Calibration.</strong> Is the herb correct, but the dose too low for the "King" herb (referencing Module 3)?</li>
+                <li><strong>Level 2: Delivery Method.</strong> Should we switch from a tincture (alcohol-based) to a tea (water-based) to better address a <i>Dry</i> tissue state?</li>
+                <li><strong>Level 3: Ingredient Substitution.</strong> Swapping a "Messenger" herb to better direct the formula to a specific organ system.</li>
+                <li><strong>Level 4: Total Pivot.</strong> Abandoning the current strategy if lab data or the Re-Observe cycle reveals a different root cause.</li>
+            </ul>
+        </div>
+
+        <h2 id="section6">6. Documenting Clinical Outcomes</h2>
+        <p>In the final lesson of this module, we emphasize that your practice is your greatest research lab. Documenting outcomes turns a "job" into a "contribution to the field."</p>
+        
+        <p>Professional documentation should include the initial <span class="highlight">ROOTS assessment</span>, the specific formulations used (including ratios), the 90-day review findings, and the final resolution. This "Practice-Based Evidence" (PBE) is becoming a cornerstone of modern herbalism, bridging the gap between traditional use and clinical trials.</p>
+
+        <div class="check-understanding">
+            <p class="box-label">Check Your Understanding</p>
+            <div class="question-item">
+                <span class="question-number">1</span>
+                <p class="question-text">A client's MSQ score has dropped significantly, but they report feeling "stuck" and unmotivated. How should you weigh this data?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-text">
+                    This represents a conflict between quantitative success (MSQ) and qualitative stagnation. You should perform a 'Re-Observe' cycle focusing on the Nervous System and Vital Force (Qi). The physical symptoms are clearing, but the energetic pattern (possibly 'Cold/Depression') needs a new 'King' herb to stimulate vitality.
+                </div>
+            </div>
+
+            <div class="question-item">
+                <span class="question-number">2</span>
+                <p class="question-text">Why is the 90-day mark specifically chosen for a comprehensive review?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-text">
+                    It aligns with major physiological turnover cycles, including red blood cell lifespan and deep endocrine recalibration, allowing the practitioner to see true functional changes rather than temporary symptomatic relief.
+                </div>
+            </div>
+        </div>
+
+        <div class="takeaways-box">
+            <p class="box-label">Key Takeaways</p>
+            <ul>
+                <li><strong>Dynamic Assessment:</strong> The 'O' in ROOTS must be revisited every 4-8 weeks to prevent protocol-induced imbalances.</li>
+                <li><strong>Lab Validation:</strong> Use functional tests (GI-MAP, DUTCH) not just for diagnosis, but to refine the 'Research' and 'Organize' phases of your protocol.</li>
+                <li><strong>The 90-Day Threshold:</strong> Use this milestone to make a formal "Stay or Pivot" decision based on physiological turnover.</li>
+                <li><strong>Balanced Feedback:</strong> Combine quantitative MSQ scores with qualitative client narratives for a complete picture of health.</li>
+                <li><strong>Professional Legacy:</strong> Documenting these outcomes builds your clinical expertise and contributes to the wider body of herbal knowledge.</li>
+            </ul>
+        </div>
+
+        <div class="references-box">
+            <p style="font-weight: 600; color: #333; margin-bottom: 15px;">References & Further Reading</p>
+            <ol>
+                <li>Bone, K., & Mills, S. (2020). "Principles and Practice of Phytotherapy: Modern Herbal Medicine." Elsevier Health Sciences.</li>
+                <li>Lord, R. S., & Bralley, J. A. (2018). "Laboratory Evaluations for Integrative and Functional Medicine." Metametrix Institute.</li>
+                <li>Trickey, R. (2021). "Women, Hormones and the Menstrual Cycle: Herbal and Medical Solutions." Trickey Enterprises.</li>
+                <li>Wardle, J., et al. (2022). "The role of practice-based evidence in the development of herbal medicine." Journal of Herbal Medicine.</li>
+                <li>Zampieron, E., & Kamhi, E. (2019). "The Natural Medicine Chest: Monitoring Clinical Outcomes in Botanical Practice." Integrative Medicine Journal.</li>
+                <li>Hechtman, L. (2020). "Clinical Naturopathic Medicine." Elsevier Australia.</li>
+            </ol>
+        </div>
+
+        <footer class="lesson-footer">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="footer-logo">
+            <p class="brand">AccrediPro Academy: Herbalism Practitioner Certification</p>
+            <p class="copyright">&copy; 2024 AccrediPro. All Rights Reserved. Confidential & Proprietary.</p>
+        </footer>
+    </div>
+</body>
+
+</html>
