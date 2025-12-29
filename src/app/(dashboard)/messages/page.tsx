@@ -1,6 +1,7 @@
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import prisma from "@/lib/prisma";
+import { Prisma } from "@prisma/client";
 import { MessagesClient } from "@/components/messages/messages-client";
 // Force dynamic rendering - no caching
 export const dynamic = "force-dynamic";
@@ -11,126 +12,137 @@ interface MessagesPageProps {
 }
 
 async function getConversations(userId: string, isAdmin: boolean) {
-  // Get all users the current user has exchanged messages with
-  const sentTo = await prisma.message.findMany({
-    where: { senderId: userId },
-    select: { receiverId: true },
-    distinct: ["receiverId"],
-  });
-
-  const receivedFrom = await prisma.message.findMany({
-    where: { receiverId: userId },
-    select: { senderId: true },
-    distinct: ["senderId"],
-  });
-
-  const userIds = new Set([
-    ...sentTo.map((m) => m.receiverId),
-    ...receivedFrom.map((m) => m.senderId),
+  // Step 1: Get all unique conversation partners (users we've exchanged messages with)
+  const [sentTo, receivedFrom] = await Promise.all([
+    prisma.message.findMany({
+      where: { senderId: userId },
+      select: { receiverId: true },
+      distinct: ["receiverId"],
+    }),
+    prisma.message.findMany({
+      where: { receiverId: userId },
+      select: { senderId: true },
+      distinct: ["senderId"],
+    }),
   ]);
 
-  // Get user details and last message for each conversation
-  const conversations = await Promise.all(
-    Array.from(userIds).map(async (otherUserId) => {
-      const [user, lastMessage, unreadCount] = await Promise.all([
-        prisma.user.findUnique({
-          where: { id: otherUserId },
-          include: {
-            // Include enrollments for admin/coach view
-            enrollments: isAdmin ? {
-              include: {
-                course: {
-                  select: {
-                    id: true,
-                    title: true,
-                    slug: true,
-                  },
-                },
-              },
-            } : false,
-            // Include streak data for admin/coach view
-            streak: isAdmin,
-            // Include badges for admin/coach view
-            badges: isAdmin ? {
-              include: {
-                badge: {
-                  select: {
-                    name: true,
-                    icon: true,
-                  },
-                },
-              },
-              orderBy: { earnedAt: "desc" },
-              take: 6,
-            } : false,
-          },
-        }),
-        prisma.message.findFirst({
-          where: {
-            OR: [
-              { senderId: userId, receiverId: otherUserId },
-              { senderId: otherUserId, receiverId: userId },
-            ],
-          },
-          orderBy: { createdAt: "desc" },
-        }),
-        prisma.message.count({
-          where: {
-            senderId: otherUserId,
-            receiverId: userId,
-            isRead: false,
-          },
-        }),
-      ]);
+  const userIds = Array.from(new Set([
+    ...sentTo.map((m) => m.receiverId),
+    ...receivedFrom.map((m) => m.senderId),
+  ]));
 
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const enrollments = user?.enrollments as any[] | undefined;
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const badges = user?.badges as any[] | undefined;
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const streak = user?.streak as any | undefined;
+  if (userIds.length === 0) return [];
 
-      return {
-        user: user ? {
-          id: user.id,
-          firstName: user.firstName,
-          lastName: user.lastName,
-          email: user.email,
-          avatar: user.avatar,
-          role: user.role,
-          enrollments: isAdmin && enrollments ? enrollments.map((e) => ({
-            id: e.id,
-            progress: Number(e.progress),
-            status: e.status,
-            course: e.course,
-          })) : undefined,
-          badges: isAdmin && badges ? badges.map((b) => ({
-            id: b.id,
-            earnedAt: b.earnedAt,
-            badge: {
-              name: b.badge.name,
-              icon: b.badge.icon,
-            },
-          })) : undefined,
-          streak: isAdmin && streak ? {
-            currentStreak: streak.currentStreak,
-            longestStreak: streak.longestStreak,
-            totalPoints: streak.totalPoints,
-          } : undefined,
-        } : null,
-        lastMessage,
-        unreadCount,
-      };
-    })
-  );
+  // Step 2: Batch fetch ALL user details at once (instead of one-by-one)
+  const users = await prisma.user.findMany({
+    where: { id: { in: userIds } },
+    include: {
+      enrollments: isAdmin ? {
+        include: {
+          course: {
+            select: { id: true, title: true, slug: true },
+          },
+        },
+      } : false,
+      streak: isAdmin,
+      badges: isAdmin ? {
+        include: {
+          badge: {
+            select: { name: true, icon: true },
+          },
+        },
+        orderBy: { earnedAt: "desc" },
+        take: 6,
+      } : false,
+    },
+  });
 
-  return conversations
-    .filter((c) => c.user)
-    .sort((a, b) => {
-      const aTime = a.lastMessage?.createdAt.getTime() || 0;
-      const bTime = b.lastMessage?.createdAt.getTime() || 0;
-      return bTime - aTime;
-    });
+  // Step 3: Batch fetch last messages for ALL conversations
+  const allMessages = await prisma.message.findMany({
+    where: {
+      OR: userIds.flatMap((otherUserId) => [
+        { senderId: userId, receiverId: otherUserId },
+        { senderId: otherUserId, receiverId: userId },
+      ]),
+    },
+    orderBy: { createdAt: "desc" },
+  });
+
+  // Step 4: Batch count unread messages
+  const unreadCounts = await prisma.$queryRaw<Array<{ senderId: string; count: bigint }>>`
+    SELECT "senderId", COUNT(*)::integer as count
+    FROM "Message"
+    WHERE "receiverId" = ${userId}
+      AND "isRead" = false
+      AND "senderId" IN (${Prisma.join(userIds)})
+    GROUP BY "senderId"
+  `;
+
+  // Create lookup maps for O(1) access
+  const userMap = new Map(users.map((u) => [u.id, u]));
+  const unreadMap = new Map(unreadCounts.map((uc) => [uc.senderId, Number(uc.count)]));
+
+  // Group messages by conversation
+  const messagesByConversation = new Map<string, typeof allMessages>();
+  for (const msg of allMessages) {
+    const otherUserId = msg.senderId === userId ? msg.receiverId : msg.senderId;
+    if (!messagesByConversation.has(otherUserId)) {
+      messagesByConversation.set(otherUserId, []);
+    }
+    messagesByConversation.get(otherUserId)!.push(msg);
+  }
+
+  // Build conversation objects
+  const conversations = userIds.map((otherUserId) => {
+    const user = userMap.get(otherUserId);
+    if (!user) return null;
+
+    const conversationMsgs = messagesByConversation.get(otherUserId) || [];
+    const lastMessage = conversationMsgs[0] || null; // Already sorted desc
+
+    const enrollments = user.enrollments as any[] | undefined;
+    const badges = user.badges as any[] | undefined;
+    const streak = user.streak as any | undefined;
+
+    return {
+      user: {
+        id: user.id,
+        firstName: user.firstName,
+        lastName: user.lastName,
+        email: user.email,
+        avatar: user.avatar,
+        role: user.role,
+        enrollments: isAdmin && enrollments ? enrollments.map((e) => ({
+          id: e.id,
+          progress: Number(e.progress),
+          status: e.status,
+          course: e.course,
+        })) : undefined,
+        badges: isAdmin && badges ? badges.map((b) => ({
+          id: b.id,
+          earnedAt: b.earnedAt,
+          badge: {
+            name: b.badge.name,
+            icon: b.badge.icon,
+          },
+        })) : undefined,
+        streak: isAdmin && streak ? {
+          currentStreak: streak.currentStreak,
+          longestStreak: streak.longestStreak,
+          totalPoints: streak.totalPoints,
+        } : undefined,
+      },
+      lastMessage,
+      unreadCount: unreadMap.get(otherUserId) || 0,
+    };
+  }).filter((c): c is NonNullable<typeof c> => c !== null);
+
+  // Sort by last message time
+  return conversations.sort((a, b) => {
+    const aTime = a.lastMessage?.createdAt.getTime() || 0;
+    const bTime = b.lastMessage?.createdAt.getTime() || 0;
+    return bTime - aTime;
+  });
 }
 
 async function getMentors() {
