@@ -536,10 +536,27 @@ export function MessagesClient({
   };
 
   // Voice recording functions
+  // Prefer audio/mp4 for Safari/iOS compatibility, fallback to webm
+  const getAudioMimeType = (): string => {
+    if (MediaRecorder.isTypeSupported('audio/mp4')) {
+      return 'audio/mp4';
+    } else if (MediaRecorder.isTypeSupported('audio/webm;codecs=opus')) {
+      return 'audio/webm;codecs=opus';
+    } else if (MediaRecorder.isTypeSupported('audio/webm')) {
+      return 'audio/webm';
+    } else if (MediaRecorder.isTypeSupported('audio/ogg;codecs=opus')) {
+      return 'audio/ogg;codecs=opus';
+    }
+    return 'audio/webm'; // default fallback
+  };
+
   const startRecording = async () => {
     try {
       const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-      const mediaRecorder = new MediaRecorder(stream);
+      const mimeType = getAudioMimeType();
+      console.log(`[Voice] Recording with format: ${mimeType}`);
+
+      const mediaRecorder = new MediaRecorder(stream, { mimeType });
       mediaRecorderRef.current = mediaRecorder;
       audioChunksRef.current = [];
 
@@ -548,7 +565,7 @@ export function MessagesClient({
       };
 
       mediaRecorder.onstop = () => {
-        const newAudioBlob = new Blob(audioChunksRef.current, { type: "audio/webm" });
+        const newAudioBlob = new Blob(audioChunksRef.current, { type: mimeType });
         setAudioBlob(newAudioBlob);
         stream.getTracks().forEach((track) => track.stop());
       };
@@ -595,7 +612,9 @@ export function MessagesClient({
 
     try {
       const formData = new FormData();
-      const file = new File([audioBlob], `voice-${Date.now()}.webm`, { type: "audio/webm" });
+      // Get file extension from blob type (audio/mp4 -> mp4, audio/webm -> webm)
+      const ext = audioBlob.type.split('/')[1]?.split(';')[0] || 'webm';
+      const file = new File([audioBlob], `voice-${Date.now()}.${ext}`, { type: audioBlob.type });
       formData.append("file", file);
       formData.append("type", "voice");
 

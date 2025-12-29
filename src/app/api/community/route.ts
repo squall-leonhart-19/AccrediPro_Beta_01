@@ -83,6 +83,7 @@ export async function DELETE(request: NextRequest) {
 }
 
 // Banned keywords for auto-moderation (server-side check)
+// Using word boundaries to avoid false positives (e.g., "assume" containing "sue")
 const BANNED_KEYWORDS = [
   "refund",
   "scam",
@@ -97,9 +98,17 @@ const BANNED_KEYWORDS = [
   "mlm",
 ];
 
-function containsBannedContent(text: string): boolean {
+function containsBannedContent(text: string): { banned: boolean; keyword?: string } {
   const lowerText = text.toLowerCase();
-  return BANNED_KEYWORDS.some(keyword => lowerText.includes(keyword));
+  for (const keyword of BANNED_KEYWORDS) {
+    // Use word boundary regex to match whole words only
+    const regex = new RegExp(`\\b${keyword.replace(/\s+/g, '\\s+')}\\b`, 'i');
+    if (regex.test(lowerText)) {
+      console.log(`[MODERATION] Blocked content containing: "${keyword}"`);
+      return { banned: true, keyword };
+    }
+  }
+  return { banned: false };
 }
 
 export async function POST(request: NextRequest) {
@@ -123,9 +132,11 @@ export async function POST(request: NextRequest) {
     }
 
     // Server-side moderation check
-    if (containsBannedContent(title) || containsBannedContent(content)) {
+    const titleCheck = containsBannedContent(title);
+    const contentCheck = containsBannedContent(content);
+    if (titleCheck.banned || contentCheck.banned) {
       return NextResponse.json(
-        { success: false, error: "Your post contains content that violates community guidelines. Please review and try again." },
+        { success: false, error: `Your post contains content that violates community guidelines (detected: "${titleCheck.keyword || contentCheck.keyword}"). Please review and try again.` },
         { status: 400 }
       );
     }

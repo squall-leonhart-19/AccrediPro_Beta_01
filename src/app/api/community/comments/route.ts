@@ -4,6 +4,7 @@ import { authOptions } from "@/lib/auth";
 import prisma from "@/lib/prisma";
 
 // Banned keywords for auto-moderation (server-side check)
+// Using word boundaries to avoid false positives
 const BANNED_KEYWORDS = [
   "refund",
   "scam",
@@ -18,9 +19,16 @@ const BANNED_KEYWORDS = [
   "mlm",
 ];
 
-function containsBannedContent(text: string): boolean {
+function containsBannedContent(text: string): { banned: boolean; keyword?: string } {
   const lowerText = text.toLowerCase();
-  return BANNED_KEYWORDS.some(keyword => lowerText.includes(keyword));
+  for (const keyword of BANNED_KEYWORDS) {
+    const regex = new RegExp(`\\b${keyword.replace(/\s+/g, '\\s+')}\\b`, 'i');
+    if (regex.test(lowerText)) {
+      console.log(`[MODERATION] Blocked comment containing: "${keyword}"`);
+      return { banned: true, keyword };
+    }
+  }
+  return { banned: false };
 }
 
 export async function POST(request: NextRequest) {
@@ -44,9 +52,10 @@ export async function POST(request: NextRequest) {
     }
 
     // Server-side moderation check
-    if (containsBannedContent(content)) {
+    const contentCheck = containsBannedContent(content);
+    if (contentCheck.banned) {
       return NextResponse.json(
-        { success: false, error: "Your comment contains content that violates community guidelines. Please review and try again." },
+        { success: false, error: `Your comment contains content that violates community guidelines (detected: "${contentCheck.keyword}"). Please review and try again.` },
         { status: 400 }
       );
     }
