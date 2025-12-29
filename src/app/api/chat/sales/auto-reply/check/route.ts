@@ -25,7 +25,7 @@ function detectPersona(page: string | null): keyof typeof COACH_PERSONAS {
     if (p.includes("yoga") || p.includes("somatic") || p.includes("movement") || p.includes("breath") || p.includes("sound") || p.includes("music") || p.includes("meditation")) return "yoga-movement";
 
     // 🐾 PET (Bella)
-    if (p.includes("pet") || p.includes("animal") || p.includes("equine") || p.includes("dog") || p.includes("cat")) return "pet";
+    if (p.includes("pet") || p.includes("animal") || p.includes("equine") || p.includes("canine") || p.includes("feline")) return "pet";
 
     // 👨‍👩‍👧 PARENTING (Emma)
     if (p.includes("parent") || p.includes("family") || p.includes("kid") || p.includes("teen") || p.includes("couple")) return "parenting";
