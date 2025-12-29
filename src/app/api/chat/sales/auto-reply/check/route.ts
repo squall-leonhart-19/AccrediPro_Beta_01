@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
-import OpenAI from "openai";
+import Anthropic from "@anthropic-ai/sdk";
 
 // Check for conversations that need auto-reply
 export async function GET() {
@@ -68,47 +68,52 @@ export async function GET() {
     }
 }
 
-async function sendAutoReply(messages: any[], visitorId: string) {
-    // Lazy initialize OpenAI only when needed (avoids build-time errors)
-    const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
+async function sendAutoReply(conversationMsgs: any[], visitorId: string) {
+    // Lazy initialize Anthropic only when needed (avoids build-time errors)
+    const anthropic = new Anthropic({
+        apiKey: process.env.ANTHROPIC_API_KEY,
+    });
 
     // Build conversation history for AI
-    const conversationHistory: OpenAI.ChatCompletionMessageParam[] = messages.map((m) => ({
+    const messages = conversationMsgs.map((m) => ({
         role: m.isFromVisitor ? ("user" as const) : ("assistant" as const),
         content: m.message,
     }));
 
-    // System prompt for Sarah
-    const systemPrompt = `You are Sarah, a friendly and knowledgeable sales advisor for AccrediPro Academy's Functional Medicine Practitioner Certification.
+    // System prompt (same as manual AI reply)
+    const systemPrompt = `You are Sarah, the lead instructor and mentor at AccrediPro Academy. You're having a live chat with a potential student on the FM Certification sales page.
 
-Key facts to mention when relevant:
-- $97 certification (80% off regular $497 price)
-- 9 international certifications included
-- 30-day mentorship with Sarah
-- Lifetime access
-- No medical background needed
-- DEPTH Method teaches everything from scratch
-- 30-Day Certification Guarantee (complete program, pass exam, get refund if not satisfied)
-- Graduates typically charge $75-200/hour
-- 4-5 clients/week = $5,000-10,000/month from home
-- Complete in 30 days, but lifetime access to go at own pace
+Your personality:
+- Warm, friendly, and genuinely helpful
+- Passionate about functional medicine and helping women build coaching careers
+- Confident but not pushy
+- Conversational and personable
 
-Be conversational, helpful, and address all their questions in one comprehensive reply. Keep responses concise but complete.`;
+Key information about the FM Certification:
+- Price: $97 (80% off, normally $497) - Christmas special
+- 9 International Certifications
+- 30-Day DEPTH Method™ Training
+- FREE 30-Day Personal Mentorship with you (Sarah)
+- Private Community of 1,247+ coaches
+- Coach Workspace Portal
+- 14 Bonuses worth $4,959
+- Lifetime access & future updates
+- 30-Day Certification Guarantee
 
-    const response = await openai.chat.completions.create({
-        model: "gpt-4o-mini",
-        messages: [
-            { role: "system", content: systemPrompt },
-            ...conversationHistory,
-        ],
-        temperature: 0.8,
-        max_tokens: 500,
+Keep responses conversational, 2-4 sentences max. Sound like a real person texting.`;
+
+    const response = await anthropic.messages.create({
+        model: "claude-haiku-4-5-20251001",
+        max_tokens: 300,
+        system: systemPrompt,
+        messages: messages.length > 0 ? messages : [{ role: "user", content: "Hi" }],
     });
 
-    const aiReply = response.choices[0]?.message?.content || "Thanks for reaching out! How can I help you today?";
+    const textBlock = response.content.find((block) => block.type === "text");
+    const aiReply = textBlock?.type === "text" ? textBlock.text : "Thanks for reaching out! How can I help you today?";
 
     // Get visitor info for page
-    const firstMsg = messages[0];
+    const firstMsg = conversationMsgs[0];
 
     // Save AI reply to database
     await prisma.salesChat.create({
