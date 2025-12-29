@@ -1,0 +1,734 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lesson 22.8: Weight Manipulation and Athlete Welfare</title>
+    <style>
+        /* Base & Reset */
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Georgia, 'Times New Roman', serif;
+            line-height: 1.8;
+            color: #2d2d2d;
+            background: #f8f6f3;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Main Container */
+        .lesson-container {
+            max-width: 860px;
+            margin: 0 auto;
+            padding: 40px 30px;
+            background: #ffffff;
+            min-height: 100vh;
+            box-shadow: 0 0 60px rgba(0, 0, 0, 0.08);
+        }
+
+        /* Brand Header */
+        .brand-header {
+            text-align: center;
+            padding-bottom: 30px;
+            margin-bottom: 35px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .brand-logo {
+            max-width: 220px;
+            height: auto;
+            margin-bottom: 5px;
+        }
+
+        /* Module Header - BLUE/NAVY theme for Ethics/Professionalism */
+        .module-header {
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+            padding: 35px 35px 30px;
+            border-radius: 16px;
+            margin-bottom: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .module-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+            transform: translate(100px, -100px);
+        }
+
+        .module-header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, #B8860B, #D4A84B, #B8860B);
+        }
+
+        .module-label {
+            margin: 0;
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.75);
+            text-transform: uppercase;
+            letter-spacing: 2.5px;
+            font-weight: 500;
+        }
+
+        .lesson-title {
+            margin: 10px 0 0 0;
+            font-size: 28px;
+            color: #ffffff;
+            font-weight: 700;
+            line-height: 1.3;
+            position: relative;
+        }
+
+        .lesson-meta {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+            padding-top: 18px;
+            border-top: 1px solid rgba(255, 255, 255, 0.15);
+            flex-wrap: wrap;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.85);
+            background: rgba(255, 255, 255, 0.1);
+            padding: 5px 12px;
+            border-radius: 4px;
+        }
+
+        /* Table of Contents */
+        .toc-box {
+            background: linear-gradient(135deg, #fafafa 0%, #f5f5f5 100%);
+            border-radius: 14px;
+            padding: 24px 28px;
+            margin-bottom: 35px;
+            border: 1px solid #e8e8e8;
+        }
+
+        .toc-box .box-label {
+            font-weight: 600;
+            color: #1e3a8a;
+            margin: 0 0 18px 0;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .toc-list {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px 24px;
+        }
+
+        .toc-list a {
+            display: flex;
+            align-items: center;
+            padding: 8px 12px;
+            color: #555;
+            text-decoration: none;
+            font-size: 14px;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+        }
+
+        .toc-list a:hover {
+            background: white;
+            color: #3b82f6;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+        }
+
+        .toc-list .section-num {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 26px;
+            height: 26px;
+            background: #1e3a8a;
+            color: white;
+            font-weight: 600;
+            font-size: 11px;
+            border-radius: 6px;
+            margin-right: 12px;
+            flex-shrink: 0;
+        }
+
+        /* Learning Objectives */
+        .objectives-box {
+            background: #eff6ff;
+            border: 2px solid #3b82f6;
+            border-radius: 14px;
+            padding: 30px 35px;
+            margin-bottom: 40px;
+        }
+
+        .objectives-box .box-label {
+            font-weight: 600;
+            color: #1e3a8a;
+            margin: 0 0 18px 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .objectives-box .box-label::before {
+            content: '⚖️';
+            font-size: 18px;
+        }
+
+        .objectives-box ul {
+            margin: 0;
+            padding-left: 22px;
+        }
+
+        .objectives-box li {
+            margin-bottom: 14px;
+            font-size: 16px;
+            line-height: 1.7;
+        }
+
+        /* Section Headings */
+        h2 {
+            font-size: 24px;
+            color: #1e3a8a;
+            margin: 50px 0 20px 0;
+            font-weight: 600;
+            position: relative;
+            padding-bottom: 12px;
+        }
+
+        h2::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 60px;
+            height: 3px;
+            background: #B8860B;
+        }
+
+        /* Paragraphs */
+        p {
+            font-size: 17px;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        /* Highlights */
+        .highlight {
+            background: linear-gradient(180deg, transparent 60%, #FFF59D 60%);
+            padding: 0 4px;
+            font-weight: 500;
+        }
+
+        /* Alert Boxes */
+        .alert-box {
+            padding: 26px 30px;
+            margin: 35px 0;
+            border-radius: 0 14px 14px 0;
+            border-left: 5px solid;
+        }
+
+        .alert-box .alert-label {
+            font-weight: 600;
+            margin: 0 0 12px 0;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .alert-box.warning {
+            background: #fff8e6;
+            border-left-color: #ff9800;
+        }
+
+        .alert-box.warning .alert-label {
+            color: #e65100;
+        }
+
+        /* Case Study Box */
+        .case-study {
+            background: linear-gradient(135deg, #f8f9fb 0%, #f0f2f5 100%);
+            border-radius: 16px;
+            padding: 0;
+            margin: 40px 0;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+        }
+
+        .case-study-header {
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+            padding: 20px 30px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .case-study-icon {
+            width: 45px;
+            height: 45px;
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+        }
+
+        .case-study-header .box-label {
+            font-weight: 600;
+            color: #ffffff;
+            margin: 0;
+            font-size: 16px;
+        }
+
+        .case-study-content {
+            padding: 28px 30px;
+        }
+
+        .patient-profile {
+            display: flex;
+            align-items: center;
+            gap: 18px;
+            padding: 18px 22px;
+            background: white;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            border: 1px solid #e5e5e5;
+        }
+
+        .patient-avatar {
+            width: 55px;
+            height: 55px;
+            background: linear-gradient(135deg, #3b82f6, #1e3a8a);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            flex-shrink: 0;
+        }
+
+        /* Statistics Box */
+        .stats-box {
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+            padding: 40px;
+            border-radius: 16px;
+            margin: 35px 0;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 25px;
+            position: relative;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 38px;
+            font-weight: 700;
+            color: white;
+            line-height: 1;
+            margin-bottom: 8px;
+        }
+
+        .stat-label {
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.85);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* Data Table */
+        .data-table-container {
+            margin: 35px 0;
+            overflow-x: auto;
+            border-radius: 12px;
+            border: 1px solid #e5e5e5;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 15px;
+        }
+
+        th {
+            background: #f1f5f9;
+            color: #1e3a8a;
+            font-weight: 600;
+            padding: 15px;
+            text-align: left;
+            border-bottom: 2px solid #e2e8f0;
+        }
+
+        td {
+            padding: 15px;
+            border-bottom: 1px solid #f1f5f9;
+            color: #444;
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        /* Check Understanding Box */
+        .check-understanding {
+            background: linear-gradient(135deg, #fdfbf7 0%, #f9f5ed 100%);
+            border: 2px solid #B8860B;
+            border-radius: 16px;
+            padding: 32px;
+            margin: 45px 0;
+        }
+
+        .check-understanding .box-label {
+            font-weight: 600;
+            color: #8B6914;
+            margin: 0 0 8px 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .question-item {
+            background: white;
+            border-radius: 12px;
+            padding: 22px 24px;
+            margin-bottom: 16px;
+            border: 1px solid #e8e4dc;
+        }
+
+        .reveal-btn {
+            background: #1e3a8a;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-size: 14px;
+            cursor: pointer;
+            transition: background 0.2s ease;
+        }
+
+        .answer-text {
+            display: none;
+            font-size: 14px;
+            color: #1e3a8a;
+            margin: 14px 0 0 0;
+            padding: 14px;
+            background: #eff6ff;
+            border-radius: 8px;
+        }
+
+        .answer-text.show {
+            display: block;
+        }
+
+        /* Key Takeaways */
+        .takeaways-box {
+            background: linear-gradient(135deg, #f5f5f5 0%, #e8e8e8 100%);
+            padding: 22px 25px;
+            margin-top: 35px;
+            border-radius: 8px;
+            border: 1px solid #ddd;
+        }
+
+        .takeaways-box .box-label {
+            font-weight: 600;
+            color: #1e3a8a;
+            margin: 0 0 15px 0;
+            font-size: 16px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* References Box */
+        .references-box {
+            margin-top: 40px;
+            padding: 25px;
+            background: #fafafa;
+            border-radius: 12px;
+            font-size: 13px;
+            color: #666;
+            border: 1px solid #eee;
+        }
+
+        .references-box h4 {
+            margin: 0 0 15px 0;
+            color: #333;
+            font-size: 15px;
+        }
+
+        .references-box ul {
+            padding-left: 18px;
+            margin: 0;
+        }
+
+        .references-box li {
+            margin-bottom: 8px;
+        }
+
+        /* Footer */
+        .lesson-footer {
+            text-align: center;
+            padding-top: 50px;
+            margin-top: 60px;
+            border-top: 1px solid #eee;
+        }
+
+        .footer-logo {
+            max-width: 140px;
+            opacity: 0.9;
+        }
+
+        @media (max-width: 768px) {
+            .lesson-container { padding: 20px 16px; }
+            .toc-list { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="lesson-container">
+        <div class="brand-header">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="brand-logo">
+        </div>
+
+        <header class="module-header">
+            <p class="module-label">Module 22: Ethical Considerations & Professionalism</p>
+            <h1 class="lesson-title">Lesson 8: Weight Manipulation and Athlete Welfare</h1>
+            <div class="lesson-meta">
+                <span class="meta-item">35 min read</span>
+                <span class="meta-item">Lesson 8 of 8</span>
+            </div>
+        </header>
+
+        <div class="toc-box">
+            <p class="box-label">In This Lesson</p>
+            <ul class="toc-list">
+                <li><a href="#section1"><span class="section-num">1</span>The Weight-Class Paradox</a></li>
+                <li><a href="#section2"><span class="section-num">2</span>RWL vs. Periodized Nutrition</a></li>
+                <li><a href="#section3"><span class="section-num">3</span>Metabolic & Hormonal Costs</a></li>
+                <li><a href="#section4"><span class="section-num">4</span>Psychological Safeguards</a></li>
+                <li><a href="#section5"><span class="section-num">5</span>Informed Consent Framework</a></li>
+                <li><a href="#section6"><span class="section-num">6</span>Duty of Care: Health vs. Podium</a></li>
+            </ul>
+        </div>
+
+        <div class="objectives-box">
+            <p class="box-label">Learning Objectives</p>
+            <ul>
+                <li>Critically evaluate the ethical implications of weight manipulation in combat and aesthetic sports.</li>
+                <li>Differentiate between the physiological impact of Rapid Weight Loss (RWL) and Periodized Nutrition.</li>
+                <li>Implement psychological screening and safeguards for athletes in aggressive calorie deficits.</li>
+                <li>Develop a professional informed consent process for weight manipulation protocols.</li>
+                <li>Uphold the coach's primary ethical duty to prioritize long-term health over short-term competitive success.</li>
+            </ul>
+        </div>
+
+        <h2 id="section1">1. The Weight-Class Paradox</h2>
+        <p>In the high-stakes world of combat sports (MMA, wrestling, boxing) and aesthetic disciplines (bodybuilding, gymnastics), weight is often viewed as a <span class="highlight">controllable variable</span> for competitive advantage. The logic is simple: compete as the largest, strongest person in the smallest possible weight class. However, this pursuit often leads to a paradox where the methods used to "make weight" significantly impair the very performance the athlete seeks to optimize.</p>
+
+        <div class="stats-box">
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <div class="stat-number">91%</div>
+                    <div class="stat-label">Combat athletes using RWL</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">5-10%</div>
+                    <div class="stat-label">Body mass lost in <48 hrs</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">3.2x</div>
+                    <div class="stat-label">Higher injury risk in RWL</div>
+                </div>
+            </div>
+        </div>
+
+        <p>Ethically, the Sports Nutrition Coach must navigate the tension between the athlete's desire to win and the physiological reality of extreme weight manipulation. As we discussed in <span class="highlight">Module 22, Lesson 3</span> regarding disordered eating, the line between "discipline" and "pathology" is often blurred in these environments. Our role is to provide the <span class="highlight">Mental Edge (M)</span> and structural integrity to ensure the athlete remains a healthy human being first.</p>
+
+        <h2 id="section2">2. RWL vs. Periodized Nutrition</h2>
+        <p>The core of the ethical debate lies in the *methodology* of weight change. <span class="highlight">Rapid Weight Loss (RWL)</span>, characterized by acute dehydration, laxative use, and extreme caloric restriction, stands in direct opposition to the <span class="highlight">P.E.R.F.O.R.M. Athletic Method™</span>. Ethical practitioners advocate for <span class="highlight">Periodized Nutrition (P)</span>, where body composition changes are mapped across the macrocycle to minimize metabolic stress.</p>
+
+        <div class="data-table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Feature</th>
+                        <th>Rapid Weight Loss (RWL)</th>
+                        <th>Periodized Nutrition (PERFORM™)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Timeline</strong></td>
+                        <td>24–72 hours prior to weigh-in</td>
+                        <td>8–16 weeks (Macrocycle integration)</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Primary Loss</strong></td>
+                        <td>Water, Glycogen, Lean Mass</td>
+                        <td>Adipose Tissue (Fat Mass)</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Hormonal Impact</strong></td>
+                        <td>Acute Cortisol spike; T3/T4 crash</td>
+                        <td>Managed metabolic adaptation</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Cognitive Function</strong></td>
+                        <td>Significant impairment (Reaction time)</td>
+                        <td>Maintained or optimized (Mental Edge)</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Ethical Risk</strong></td>
+                        <td>High (Organ failure, Heat stroke)</td>
+                        <td>Low (Focus on sustainable health)</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <p>A 2023 meta-analysis of 42 studies (n=1,240) found that athletes utilizing RWL (>5% body mass in 1 week) experienced a <span class="highlight">mean reduction in aerobic capacity of 12%</span> and a 15% decrease in cognitive processing speed during the rehydration phase, calling into question the "advantage" of the weight cut.</p>
+
+        <h2 id="section3">3. Metabolic & Hormonal Costs</h2>
+        <p>The ethical practitioner must be transparent about the <span class="highlight">biological tax</span> of extreme leanness or rapid cutting. This is not merely about "feeling tired"; it is about systemic downregulation. We must monitor for <span class="highlight">Relative Energy Deficiency in Sport (RED-S)</span>, which we explored in earlier modules, but here we view it through the lens of <span class="highlight">Informed Consent</span>.</p>
+
+        <div class="alert-box warning">
+            <p class="alert-label">Critical Physiological Risks</p>
+            <p>Extreme weight manipulation can lead to:
+            <ul>
+                <li><strong>Hypogonadism:</strong> Significant drops in testosterone (males) and estrogen (females), impacting bone mineral density.</li>
+                <li><strong>Renal Strain:</strong> Acute kidney injury (AKI) is common during 5-10% water cuts.</li>
+                <li><strong>Cardiovascular Stress:</strong> Increased blood viscosity leads to higher stroke risk during high-intensity efforts post-cut.</li>
+            </ul>
+            </p>
+        </div>
+
+        <p>In aesthetic sports, the "stage-ready" look often requires body fat percentages below physiological safety limits (e.g., <5% for men, <12% for women). Ethically, the coach must define the <span class="highlight">duration</span> of these states. Chronic maintenance of extreme leanness is a failure of coaching ethics and a violation of athlete welfare.</p>
+
+        <div class="case-study">
+            <div class="case-study-header">
+                <div class="case-study-icon">👤</div>
+                <div>
+                    <p class="box-label">Case Study: The "Weight-Cutter's" Wall</p>
+                    <p class="subtitle">MMA Professional - Flyweight Division</p>
+                </div>
+            </div>
+            <div class="case-study-content">
+                <div class="patient-profile">
+                    <div class="patient-avatar">M</div>
+                    <div class="patient-info">
+                        <h4>Marcus, 26</h4>
+                        <p>Professional MMA Athlete | History of 8kg cuts in 48 hours</p>
+                    </div>
+                </div>
+                <p><strong>Presenting Symptoms:</strong> Marcus presented with chronic fatigue, recurring staph infections, and "brain fog." He was missing his weight target by 1-2kg despite extreme sauna use, leading to fight cancellations.</p>
+                <p><strong>Intervention:</strong> Using the <strong>P.E.R.F.O.R.M.™ Protocol</strong>, we shifted his "walking weight" closer to his competition weight (from 15% over to 8% over). We implemented a 12-week <strong>Periodized (P)</strong> descent focusing on high-protein, moderate-carb fueling to preserve lean mass.</p>
+                <p><strong>Outcomes:</strong> Marcus made weight with only a 2kg water manipulation. His <strong>Results Tracking (R)</strong> showed a 22% increase in sparring volume capacity compared to previous camps. Most importantly, his resting heart rate dropped from 58 to 48 bpm, indicating improved cardiovascular recovery.</p>
+            </div>
+        </div>
+
+        <h2 id="section4">4. Psychological Safeguards</h2>
+        <p>Weight manipulation is as much a psychological challenge as a physiological one. The ethical coach must implement safeguards to prevent the development of <span class="highlight">Eating Disorders (ED)</span> and <span class="highlight">Body Dysmorphic Disorder (BDD)</span>. A 2021 study (n=850) indicated that 46% of female and 22% of male athletes in "lean" sports met the criteria for disordered eating behaviors during the competitive season.</p>
+
+        <p><strong>Psychological Monitoring Tools:</strong>
+        <ul class="content-list">
+            <li><strong>The EAT-26 Survey:</strong> Periodically administered to track attitudes toward food.</li>
+            <li><strong>Biofeedback Loops:</strong> Using the <strong>Mental Edge (M)</strong> framework to assess mood, irritability, and sleep quality as proxies for neurological stress.</li>
+            <li><strong>Neutral Language:</strong> Avoiding moralizing food (e.g., "clean" vs "dirty") and focusing on "fueling for the objective."</li>
+        </ul></p>
+
+        <h2 id="section5">5. Informed Consent Framework</h2>
+        <p>Ethical practice requires that the athlete is a <span class="highlight">fully informed partner</span> in the process. Informed consent in sports nutrition is not a one-time signature; it is an ongoing dialogue about the risks of the chosen path. Before implementing an aggressive weight-loss protocol, the practitioner should document that the athlete understands:</p>
+
+        <div class="principle-card">
+            <div class="principle-title">The "Triple-Risk" Disclosure</div>
+            <p class="principle-text">The athlete must acknowledge in writing:</p>
+            <ul>
+                <li><strong>Short-term Performance Risk:</strong> Potential for reduced strength, power, and cognitive clarity on game day.</li>
+                <li><strong>Long-term Health Risk:</strong> Potential for hormonal imbalances, bone density loss, and metabolic adaptation.</li>
+                <li><strong>The "Exit Strategy":</strong> A pre-defined plan for post-competition weight regain to a healthy "off-season" range.</li>
+            </ul>
+        </div>
+
+        <h2 id="section6">6. Duty of Care: Health vs. Podium</h2>
+        <p>As an AccrediPro Certified Coach, your ultimate ethical mandate is the <span class="highlight">Duty of Care</span>. This means you must be willing to "pull the plug" on a weight cut if the athlete's safety is compromised. This requires courage, as it may mean a client loses a fight or misses a competition.</p>
+
+        <p>The <strong>PERFORM™ Method</strong> teaches us that sustainable success is built on the foundation of health. A podium finish that results in a three-year recovery from metabolic damage is not a victory—it is a failure of the performance team. We must educate coaches, parents, and athletes that <span class="highlight">biological longevity</span> is the ultimate performance metric.</p>
+
+        <div class="check-understanding">
+            <p class="box-label">Check Your Understanding</p>
+            <div class="question-item">
+                <p class="question-text">An athlete is 4kg over weight with 24 hours to go and is showing signs of confusion and cold, clammy skin. What is your ethical obligation?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-text">Immediate cessation of the weight cut and medical referral. These are signs of severe dehydration and potential heat illness/organ stress. Performance goals never supersede clinical safety.</div>
+            </div>
+            <div class="question-item">
+                <p class="question-text">Why is "Periodized Nutrition" considered more ethical than "Rapid Weight Loss"?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-text">It targets fat mass rather than vital water/muscle, reduces the acute stress on the renal and cardiovascular systems, and allows for maintained cognitive function (the Mental Edge), thereby protecting the athlete's long-term health.</div>
+            </div>
+        </div>
+
+        <div class="takeaways-box">
+            <p class="box-label">Key Takeaways</p>
+            <ul>
+                <li><strong>Health First:</strong> The coach's primary duty is to protect the athlete's long-term biological and psychological welfare.</li>
+                <li><strong>Transparency:</strong> Informed consent must include specific discussions on hormonal, metabolic, and injury risks.</li>
+                <li><strong>Monitor the Mind:</strong> Psychological safeguards are essential to prevent the transition from "making weight" to disordered eating.</li>
+                <li><strong>The PERFORM™ Standard:</strong> Advocate for long-term body composition changes (Periodization) over acute, dangerous weight spikes.</li>
+            </ul>
+        </div>
+
+        <div class="references-box">
+            <h4>References & Further Reading</h4>
+            <ul>
+                <li>Franchini, E., et al. (2022). "Weight Loss in Combat Sports: Physiological and Psychological Implications." <em>Journal of Strength and Conditioning Research.</em></li>
+                <li>Mountjoy, M., et al. (2018). "IOC Consensus Statement on Relative Energy Deficiency in Sport (RED-S): 2018 Update." <em>British Journal of Sports Medicine.</em></li>
+                <li>Barley, O. R., et al. (2019). "The Current State of Weight-Cutting in Combat Sports." <em>Sports (Basel).</em></li>
+                <li>Sundgot-Borgen, J., & Garthe, I. (2011). "Elite Athletes in Aesthetic and Weight-Class Sports and the Challenge of Body Weight and Body Composition." <em>Journal of Sports Sciences.</em></li>
+                <li>Petrie, T. A., et al. (2021). "Disordered Eating and Weight Pressures in Collegiate Athletes." <em>Psychology of Sport and Exercise.</em></li>
+                <li>Reale, R., et al. (2017). "Individualized Weight Management Solutions for Combat Sports." <em>International Journal of Sport Nutrition and Exercise Metabolism.</em></li>
+            </ul>
+        </div>
+
+        <footer class="lesson-footer">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="footer-logo">
+            <p class="brand">AccrediPro Academy™ | Sports Nutrition Coach Certification</p>
+            <p class="copyright">&copy; 2024 AccrediPro. All rights reserved. The P.E.R.F.O.R.M. Method™ is a proprietary framework.</p>
+        </footer>
+    </div>
+</body>
+
+</html>

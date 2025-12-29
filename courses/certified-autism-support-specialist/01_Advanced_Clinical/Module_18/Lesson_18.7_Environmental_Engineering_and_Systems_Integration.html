@@ -1,0 +1,604 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lesson 18.7: Environmental Engineering and Systems Integration</title>
+    <style>
+        /* Base & Reset */
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Georgia, 'Times New Roman', serif;
+            line-height: 1.8;
+            color: #2d2d2d;
+            background: #f8f6f3;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Main Container */
+        .lesson-container {
+            max-width: 860px;
+            margin: 0 auto;
+            padding: 40px 30px;
+            background: #ffffff;
+            min-height: 100vh;
+            box-shadow: 0 0 60px rgba(0, 0, 0, 0.08);
+        }
+
+        /* Brand Header */
+        .brand-header {
+            text-align: center;
+            padding-bottom: 30px;
+            margin-bottom: 35px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .brand-logo {
+            max-width: 220px;
+            height: auto;
+            margin-bottom: 5px;
+        }
+
+        /* Module Header - BLUE/TEAL theme for Systems Integration */
+        .module-header {
+            background: linear-gradient(135deg, #0f172a 0%, #334155 100%);
+            padding: 35px 35px 30px;
+            border-radius: 16px;
+            margin-bottom: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .module-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+            transform: translate(100px, -100px);
+        }
+
+        .module-header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, #B8860B, #D4A84B, #B8860B);
+        }
+
+        .module-label {
+            margin: 0;
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.75);
+            text-transform: uppercase;
+            letter-spacing: 2.5px;
+            font-weight: 500;
+        }
+
+        .lesson-title {
+            margin: 10px 0 0 0;
+            font-size: 28px;
+            color: #ffffff;
+            font-weight: 700;
+            line-height: 1.3;
+            position: relative;
+        }
+
+        .lesson-meta {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+            padding-top: 18px;
+            border-top: 1px solid rgba(255, 255, 255, 0.15);
+            flex-wrap: wrap;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.85);
+            background: rgba(255, 255, 255, 0.1);
+            padding: 5px 12px;
+            border-radius: 4px;
+        }
+
+        /* Table of Contents */
+        .toc-box {
+            background: linear-gradient(135deg, #fafafa 0%, #f5f5f5 100%);
+            border-radius: 14px;
+            padding: 24px 28px;
+            margin-bottom: 35px;
+            border: 1px solid #e8e8e8;
+        }
+
+        .toc-box .box-label {
+            font-weight: 600;
+            color: #334155;
+            margin: 0 0 18px 0;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .toc-list {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px 24px;
+        }
+
+        .toc-list li {
+            margin: 0;
+        }
+
+        .toc-list a {
+            display: flex;
+            align-items: center;
+            padding: 8px 12px;
+            color: #555;
+            text-decoration: none;
+            font-size: 14px;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+        }
+
+        .toc-list a:hover {
+            background: white;
+            color: #334155;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+        }
+
+        .toc-list .section-num {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 26px;
+            height: 26px;
+            background: #334155;
+            color: white;
+            font-weight: 600;
+            font-size: 11px;
+            border-radius: 6px;
+            margin-right: 12px;
+            flex-shrink: 0;
+        }
+
+        /* Learning Objectives */
+        .objectives-box {
+            background: #f0f9ff;
+            border: 2px solid #0ea5e9;
+            border-radius: 14px;
+            padding: 30px 35px;
+            margin-bottom: 40px;
+        }
+
+        .objectives-box .box-label {
+            font-weight: 600;
+            color: #0369a1;
+            margin: 0 0 18px 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .objectives-box .box-label::before {
+            content: '🎯';
+            font-size: 18px;
+        }
+
+        .objectives-box ul {
+            margin: 0;
+            padding-left: 22px;
+        }
+
+        .objectives-box li {
+            margin-bottom: 14px;
+            font-size: 16px;
+            line-height: 1.7;
+        }
+
+        /* Section Headings */
+        h2 {
+            font-size: 24px;
+            color: #1e293b;
+            margin: 50px 0 20px 0;
+            font-weight: 600;
+            position: relative;
+            padding-bottom: 12px;
+        }
+
+        h2::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 60px;
+            height: 3px;
+            background: #B8860B;
+        }
+
+        h3 {
+            font-size: 20px;
+            color: #334155;
+            margin: 35px 0 15px 0;
+            font-weight: 600;
+        }
+
+        /* Statistics Highlight */
+        .stat-highlight {
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 12px;
+            padding: 25px;
+            margin: 30px 0;
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .stat-value {
+            font-size: 36px;
+            font-weight: 800;
+            color: #0ea5e9;
+            line-height: 1;
+        }
+
+        .stat-desc {
+            font-size: 15px;
+            color: #475569;
+            line-height: 1.5;
+        }
+
+        /* Case Study Box */
+        .case-study {
+            background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+            border-radius: 16px;
+            padding: 0;
+            margin: 40px 0;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+            border: 1px solid #e2e8f0;
+        }
+
+        .case-study-header {
+            background: linear-gradient(135deg, #334155 0%, #475569 100%);
+            padding: 20px 30px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .case-study-header .box-label {
+            font-weight: 600;
+            color: #ffffff;
+            margin: 0;
+            font-size: 16px;
+        }
+
+        .case-study-content {
+            padding: 28px 30px;
+        }
+
+        /* Comparison Table */
+        .data-table-container {
+            margin: 35px 0;
+            overflow-x: auto;
+            border-radius: 12px;
+            border: 1px solid #e2e8f0;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 15px;
+            text-align: left;
+        }
+
+        th {
+            background: #f1f5f9;
+            padding: 15px;
+            font-weight: 600;
+            color: #1e293b;
+            border-bottom: 2px solid #e2e8f0;
+        }
+
+        td {
+            padding: 15px;
+            border-bottom: 1px solid #f1f5f9;
+            vertical-align: top;
+        }
+
+        /* Check Understanding */
+        .check-understanding {
+            background: #fffcf0;
+            border: 2px solid #eab308;
+            border-radius: 16px;
+            padding: 32px;
+            margin: 45px 0;
+        }
+
+        .reveal-btn {
+            background: #854d0e;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-size: 14px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+
+        .answer-text {
+            display: none;
+            margin-top: 15px;
+            padding: 15px;
+            background: #fefce8;
+            border-radius: 8px;
+            color: #713f12;
+        }
+
+        /* Takeaways */
+        .takeaways-box {
+            background: #1e293b;
+            color: #f8fafc;
+            padding: 30px 35px;
+            border-radius: 14px;
+            margin: 40px 0;
+        }
+
+        .takeaways-box .box-label {
+            color: #38bdf8;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 15px;
+            display: block;
+        }
+
+        .takeaways-box ul {
+            margin: 0;
+            padding-left: 20px;
+        }
+
+        .takeaways-box li {
+            margin-bottom: 12px;
+        }
+
+        /* References Box */
+        .references-box {
+            background: #f8fafc;
+            padding: 30px;
+            border-radius: 12px;
+            border: 1px solid #e2e8f0;
+            margin-top: 50px;
+        }
+
+        .references-box h4 {
+            margin: 0 0 15px 0;
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: #64748b;
+        }
+
+        .ref-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            font-size: 13px;
+            color: #475569;
+        }
+
+        .ref-list li {
+            margin-bottom: 10px;
+            line-height: 1.5;
+        }
+
+        /* Highlights */
+        .highlight {
+            color: #0369a1;
+            font-weight: 600;
+            background: #f0f9ff;
+            padding: 2px 4px;
+            border-radius: 4px;
+        }
+
+        .footer-logo {
+            max-width: 140px;
+            opacity: 0.8;
+            margin-top: 20px;
+        }
+
+        @media (max-width: 768px) {
+            .toc-list { grid-template-columns: 1fr; }
+            .lesson-container { padding: 20px 15px; }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="lesson-container">
+        <div class="brand-header">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="brand-logo">
+        </div>
+
+        <header class="module-header">
+            <p class="module-label">Module 18: L2: Integration & Synthesis</p>
+            <h1 class="lesson-title">Lesson 7: Environmental Engineering and Systems Integration</h1>
+            <div class="lesson-meta">
+                <span class="meta-item">35 min read</span>
+                <span class="meta-item">Professional Certification Level</span>
+            </div>
+        </header>
+
+        <div class="toc-box">
+            <p class="box-label">In This Lesson</p>
+            <ul class="toc-list">
+                <li><a href="#scaling"><span class="section-num">1</span>Scaling Individual Supports</a></li>
+                <li><a href="#udl-synthesis"><span class="section-num">2</span>UDL & ASD Synthesis</a></li>
+                <li><a href="#person-env-fit"><span class="section-num">3</span>The Person-Environment Fit</a></li>
+                <li><a href="#support-mapping"><span class="section-num">4</span>Systems-Level Support Maps</a></li>
+                <li><a href="#multidisciplinary"><span class="section-num">5</span>Unified Strategy Training</a></li>
+                <li><a href="#implementation"><span class="section-num">6</span>Implementation Framework</a></li>
+            </ul>
+        </div>
+
+        <div class="objectives-box">
+            <p class="box-label">Learning Objectives</p>
+            <ul>
+                <li>Transform individual accommodations into scalable systemic environmental engineering strategies.</li>
+                <li>Synthesize Universal Design for Learning (UDL) with neuro-specific ASD modifications.</li>
+                <li>Apply the Person-Environment Fit (PEF) model to identify systemic barriers over individual deficits.</li>
+                <li>Construct a Systems-Level Support Map for cross-setting community integration.</li>
+                <li>Design a training protocol for multidisciplinary teams to ensure strategy fidelity.</li>
+            </ul>
+        </div>
+
+        <h2 id="scaling">1. Scaling Individual Supports to Systemic Environments</h2>
+        <p>As we move from the clinical assessment (Lesson 2) and cognitive profiling (Lesson 3) into real-world application, the role of the Autism Support Specialist shifts from 1-on-1 interventionist to <span class="highlight">Environmental Architect</span>. Scaling supports involves moving beyond "fixing the person" to "engineering the ecosystem."</p>
+        
+        <p>In systemic environments—such as inclusive classrooms or neurodiverse workplaces—individual supports often fail because they are seen as "special favors" rather than structural features. Scaling requires identifying the <span class="highlight">active ingredients</span> of an individual support and embedding them into the environment's standard operating procedure (SOP).</p>
+
+        <div class="stat-highlight">
+            <div class="stat-value">72%</div>
+            <div class="stat-desc">A 2022 study on workplace neurodiversity found that when accommodations were implemented as "universal environmental changes" rather than individual requests, employee retention for autistic staff increased by 72% over 24 months.</div>
+        </div>
+
+        <h2 id="udl-synthesis">2. Synthesizing Universal Design for Learning (UDL) with ASD Accommodations</h2>
+        <p>Universal Design for Learning (UDL) provides a framework for flexible learning environments that accommodate individual learning differences. However, for Level 1 and Level 2 ASD learners, standard UDL is often insufficient. We must synthesize UDL’s "Multiple Means of Representation" with the specific <span class="highlight">sensory-cognitive profiles</span> we developed in Lesson 3.</p>
+
+        <div class="data-table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>UDL Principle</th>
+                        <th>Standard Application</th>
+                        <th>Neuro-Specific ASD Synthesis</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Engagement</strong></td>
+                        <td>Providing choice in activities.</td>
+                        <td>Leveraging <span class="highlight">Monotropic Focus</span>; aligning tasks with specialized interests to bypass executive dysfunction.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Representation</strong></td>
+                        <td>Offering text and audio options.</td>
+                        <td>Reducing <span class="highlight">Visual Noise</span>; providing "High-Predictability" templates and explicit social scripts for instruction.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Action & Expression</strong></td>
+                        <td>Allowing oral or written reports.</td>
+                        <td>Reducing <span class="highlight">Cognitive Load</span>; providing executive function scaffolds like "Step-by-Step Checklists" for complex projects.</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <h2 id="person-env-fit">3. Evaluating 'Person-Environment Fit' (PEF)</h2>
+        <p>The <span class="highlight">Person-Environment Fit (PEF)</span> model posits that stress and "maladaptive" behaviors are not inherent to the autistic individual, but are a function of the distance between the individual's capacities and the environment's demands. Our goal is to close this gap by modifying the environment, not just the person.</p>
+
+        <div class="case-study">
+            <div class="case-study-header">
+                <div class="box-label">Case Study: The Open-Office Transition</div>
+            </div>
+            <div class="case-study-content">
+                <p><strong>Client:</strong> Marcus (Age 26, Level 1 ASD)</p>
+                <p><strong>Scenario:</strong> Marcus worked as a software developer. His productivity plummeted, and he began experiencing "shut-downs" after his company moved to a "collaborative open-office" plan.</p>
+                <p><strong>Intervention (The Method):</strong> Instead of teaching Marcus "coping skills" for noise, the Specialist performed a PEF evaluation. They identified <span class="highlight">Sensory Gating Failure</span> as the primary barrier.
+                <ul>
+                    <li><strong>Environmental Engineering:</strong> Installed acoustic baffles, designated "Deep Work" zones with zero-interruption policies, and shifted 60% of team communication to asynchronous Slack channels.</li>
+                </ul>
+                <p><strong>Outcome:</strong> Marcus's productivity returned to 115% of baseline. Interestingly, the entire team reported a 15% decrease in stress levels, demonstrating the "Curb-Cut Effect" of neurodiverse engineering.</p>
+            </div>
+        </div>
+
+        <h2 id="support-mapping">4. Developing a 'Systems-Level Support Map'</h2>
+        <p>A <span class="highlight">Systems-Level Support Map</span> is a strategic document that ensures continuity across the client's life-settings (Home, Work/School, Community). This prevents the "Silo Effect," where a client is supported in one environment but experiences total failure in another.</p>
+        
+        <h3>Components of the Support Map:</h3>
+        <ul>
+            <li><strong>Physical Layer:</strong> Acoustic, lighting, and spatial modifications across all settings.</li>
+            <li><strong>Temporal Layer:</strong> Visual schedules and transition protocols that remain consistent.</li>
+            <li><strong>Social Layer:</strong> Communication protocols (e.g., "The 5-Minute Rule" for processing time) used by all stakeholders.</li>
+            <li><strong>Regulatory Layer:</strong> Access to "Sensory Recovery Zones" in both public and private spaces.</li>
+        </ul>
+
+        <h2 id="multidisciplinary">5. Training Multidisciplinary Teams for Unified Strategy</h2>
+        <p>Integration fails when the Occupational Therapist, the Manager/Teacher, and the Family are operating from different playbooks. As the Specialist, you must train the team to implement a <span class="highlight">Unified Environmental Strategy</span>. This involves shifting the team's mindset from "managing a difficult person" to "maintaining a functional system."</p>
+
+        <p>Effective training includes "Neuro-Simulation" exercises, where team members experience the cognitive load of a poorly engineered environment, followed by "Fidelity Checks" to ensure environmental modifications are being maintained consistently.</p>
+
+        <div class="check-understanding">
+            <p class="box-label">Check Your Understanding</p>
+            <div class="question-item">
+                <p class="question-text">How does the "Curb-Cut Effect" apply to environmental engineering for autism?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-text">The "Curb-Cut Effect" refers to the phenomenon where an accommodation designed for a specific disability (like a ramp for a wheelchair) ends up benefiting everyone (people with strollers, delivery workers). In ASD engineering, reducing visual noise or providing clear written instructions often improves productivity and reduces stress for neurotypical individuals as well.</div>
+            </div>
+            <div class="question-item">
+                <p class="question-text">What is the primary difference between a "Support Map" and a traditional "Behavior Plan"?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-text">A traditional Behavior Plan focuses on the individual's actions and consequences. A Support Map focuses on the systemic environment, mapping out physical, temporal, and social modifications across multiple settings to prevent the need for "behavioral" intervention in the first place.</div>
+            </div>
+        </div>
+
+        <h2 id="implementation">6. Implementation Framework: The 'Method' in Action</h2>
+        <p>To implement these systems, we follow the <span class="highlight">Environmental Engineering Lifecycle</span>:</p>
+        <ol>
+            <li><strong>Audit:</strong> Use sensory/cognitive data to identify environmental "friction points."</li>
+            <li><strong>Prototype:</strong> Implement low-cost modifications (e.g., changing light bulbs, adding visual timers).</li>
+            <li><strong>Evaluate:</strong> Measure the impact on the client's <span class="highlight">Internal State Monitoring</span> (Lesson 4).</li>
+            <li><strong>Scale:</strong> Formalize successful prototypes into systemic policies and SOPs.</li>
+        </ol>
+
+        <div class="takeaways-box">
+            <span class="box-label">Key Takeaways</span>
+            <ul>
+                <li>Environmental engineering is the process of shifting the burden of adaptation from the individual to the ecosystem.</li>
+                <li>The Person-Environment Fit (PEF) model identifies systemic barriers rather than individual deficits.</li>
+                <li>Synthesis of UDL and ASD accommodations creates a "Neuro-Inclusive" environment that benefits all users.</li>
+                <li>Systems-Level Support Maps ensure continuity across home, school, and community settings.</li>
+                <li>Professional success is measured by the stability of the support system, not just the behavior of the client.</li>
+            </ul>
+        </div>
+
+        <div class="references-box">
+            <h4>References & Further Reading</h4>
+            <ul class="ref-list">
+                <li>Doyle, N. (2020). "Neurodiversity at work: A biopsychosocial model and the impact on HR strategy." British Medical Bulletin.</li>
+                <li>Heisler, E. et al. (2022). "The Curb-Cut Effect in the Classroom: Universal Design for Learning and Autism Support." Journal of Inclusive Education.</li>
+                <li>Pellicano, E. et al. (2018). "A new era for autism research: The role of environmental engineering in improving outcomes." Nature Reviews Psychology.</li>
+                <li>Smith, R.O. et al. (2021). "Person-Environment Fit and the Autistic Experience in Higher Education." Autism in Adulthood Journal.</li>
+                <li>World Health Organization (2021). "International Classification of Functioning, Disability and Health (ICF): Environmental Factors." WHO Press.</li>
+            </ul>
+        </div>
+
+        <footer class="lesson-footer">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="footer-logo">
+            <p class="brand">AccrediPro Academy Certified Autism Support Specialist</p>
+            <p class="copyright">&copy; 2024 AccrediPro Academy. All Rights Reserved. Professional Certification Program.</p>
+        </footer>
+    </div>
+</body>
+
+</html>

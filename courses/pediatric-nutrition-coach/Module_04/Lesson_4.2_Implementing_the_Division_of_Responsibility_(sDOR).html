@@ -1,0 +1,731 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lesson 4.2: Implementing the Division of Responsibility (sDOR)</title>
+    <style>
+        /* Base & Reset */
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Georgia, 'Times New Roman', serif;
+            line-height: 1.8;
+            color: #2d2d2d;
+            background: #f8f6f3;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Main Container */
+        .lesson-container {
+            max-width: 860px;
+            margin: 0 auto;
+            padding: 40px 30px;
+            background: #ffffff;
+            min-height: 100vh;
+            box-shadow: 0 0 60px rgba(0, 0, 0, 0.08);
+        }
+
+        /* Brand Header */
+        .brand-header {
+            text-align: center;
+            padding-bottom: 30px;
+            margin-bottom: 35px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .brand-logo {
+            max-width: 220px;
+            height: auto;
+            margin-bottom: 5px;
+        }
+
+        /* Module Header - GREEN theme for Pediatric Wellness */
+        .module-header {
+            background: linear-gradient(135deg, #059669 0%, #10B981 100%);
+            padding: 35px 35px 30px;
+            border-radius: 16px;
+            margin-bottom: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .module-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+            transform: translate(100px, -100px);
+        }
+
+        .module-header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, #B8860B, #D4A84B, #B8860B);
+        }
+
+        .module-label {
+            margin: 0;
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.75);
+            text-transform: uppercase;
+            letter-spacing: 2.5px;
+            font-weight: 500;
+        }
+
+        .lesson-title {
+            margin: 10px 0 0 0;
+            font-size: 28px;
+            color: #ffffff;
+            font-weight: 700;
+            line-height: 1.3;
+            position: relative;
+        }
+
+        .lesson-meta {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+            padding-top: 18px;
+            border-top: 1px solid rgba(255, 255, 255, 0.15);
+            flex-wrap: wrap;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.85);
+            background: rgba(255, 255, 255, 0.1);
+            padding: 5px 12px;
+            border-radius: 4px;
+        }
+
+        /* Table of Contents */
+        .toc-box {
+            background: linear-gradient(135deg, #fafafa 0%, #f5f5f5 100%);
+            border-radius: 14px;
+            padding: 24px 28px;
+            margin-bottom: 35px;
+            border: 1px solid #e8e8e8;
+        }
+
+        .toc-box .box-label {
+            font-weight: 600;
+            color: #059669;
+            margin: 0 0 18px 0;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .toc-list {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px 24px;
+        }
+
+        .toc-list li {
+            margin: 0;
+        }
+
+        .toc-list a {
+            display: flex;
+            align-items: center;
+            padding: 8px 12px;
+            color: #555;
+            text-decoration: none;
+            font-size: 14px;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+        }
+
+        .toc-list a:hover {
+            background: white;
+            color: #059669;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+        }
+
+        .toc-list .section-num {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 26px;
+            height: 26px;
+            background: #059669;
+            color: white;
+            font-weight: 600;
+            font-size: 11px;
+            border-radius: 6px;
+            margin-right: 12px;
+            flex-shrink: 0;
+        }
+
+        /* Learning Objectives */
+        .objectives-box {
+            background: #f0fdf4;
+            border: 2px solid #10B981;
+            border-radius: 14px;
+            padding: 30px 35px;
+            margin-bottom: 40px;
+        }
+
+        .objectives-box .box-label {
+            font-weight: 600;
+            color: #059669;
+            margin: 0 0 18px 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .objectives-box .box-label::before {
+            content: '🎯';
+            font-size: 18px;
+        }
+
+        .objectives-box ul {
+            margin: 0;
+            padding-left: 22px;
+        }
+
+        .objectives-box li {
+            margin-bottom: 14px;
+            font-size: 16px;
+            line-height: 1.7;
+        }
+
+        /* Key Terms Box */
+        .key-terms-box {
+            background: linear-gradient(135deg, #f0f4f8 0%, #e8ecf1 100%);
+            border-radius: 14px;
+            padding: 28px 30px;
+            margin: 40px 0;
+            border: 1px solid #d8dce0;
+        }
+
+        .key-terms-box .box-label {
+            font-weight: 600;
+            color: #059669;
+            margin: 0 0 18px 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .terms-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 16px;
+        }
+
+        .term-item {
+            background: white;
+            padding: 16px 18px;
+            border-radius: 10px;
+            border-left: 4px solid #10B981;
+        }
+
+        .term-item .term {
+            font-weight: 700;
+            color: #059669;
+            font-size: 15px;
+            margin: 0 0 6px 0;
+        }
+
+        .term-item .definition {
+            font-size: 14px;
+            color: #555;
+            margin: 0;
+            line-height: 1.6;
+        }
+
+        /* Section Headings */
+        h2 {
+            font-size: 24px;
+            color: #059669;
+            margin: 50px 0 20px 0;
+            font-weight: 600;
+            position: relative;
+            padding-bottom: 12px;
+        }
+
+        h2::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 60px;
+            height: 3px;
+            background: #B8860B;
+        }
+
+        h3 {
+            font-size: 20px;
+            color: #1a1a1a;
+            margin: 35px 0 15px 0;
+            font-weight: 600;
+        }
+
+        /* Paragraphs */
+        p {
+            font-size: 17px;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        /* Highlights */
+        .highlight {
+            background: linear-gradient(180deg, transparent 60%, #FFF59D 60%);
+            padding: 0 4px;
+            font-weight: 500;
+        }
+
+        /* Alert Boxes */
+        .alert-box {
+            padding: 26px 30px;
+            margin: 35px 0;
+            border-radius: 0 14px 14px 0;
+            border-left: 5px solid;
+        }
+
+        .alert-box .alert-label {
+            font-weight: 600;
+            margin: 0 0 12px 0;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .alert-box.warning {
+            background: #fff8e6;
+            border-left-color: #ff9800;
+        }
+
+        .alert-box.info {
+            background: #e3f2fd;
+            border-left-color: #2196f3;
+        }
+
+        /* Case Study Box */
+        .case-study {
+            background: linear-gradient(135deg, #f8f9fb 0%, #f0f2f5 100%);
+            border-radius: 16px;
+            padding: 0;
+            margin: 40px 0;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+        }
+
+        .case-study-header {
+            background: linear-gradient(135deg, #059669 0%, #10B981 100%);
+            padding: 20px 30px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .case-study-icon {
+            width: 45px;
+            height: 45px;
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+        }
+
+        .case-study-header .box-label {
+            font-weight: 600;
+            color: #ffffff;
+            margin: 0;
+            font-size: 16px;
+        }
+
+        .case-study-content {
+            padding: 28px 30px;
+        }
+
+        .patient-profile {
+            display: flex;
+            align-items: center;
+            gap: 18px;
+            padding: 18px 22px;
+            background: white;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            border: 1px solid #e5e5e5;
+        }
+
+        .patient-avatar {
+            width: 55px;
+            height: 55px;
+            background: linear-gradient(135deg, #10B981, #059669);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            color: white;
+        }
+
+        /* Data Tables */
+        .data-table-container {
+            overflow-x: auto;
+            margin: 30px 0;
+            border-radius: 12px;
+            border: 1px solid #e5e5e5;
+        }
+
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 15px;
+        }
+
+        .data-table th {
+            background: #f1f8f1;
+            color: #059669;
+            font-weight: 600;
+            padding: 15px;
+            text-align: left;
+            border-bottom: 2px solid #10B981;
+        }
+
+        .data-table td {
+            padding: 15px;
+            border-bottom: 1px solid #eee;
+            vertical-align: top;
+        }
+
+        /* Statistics Highlight */
+        .stat-highlight {
+            background: #f0fdf4;
+            padding: 25px;
+            border-radius: 12px;
+            border-left: 4px solid #10B981;
+            margin: 30px 0;
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .stat-value {
+            font-size: 36px;
+            font-weight: 700;
+            color: #059669;
+            line-height: 1;
+        }
+
+        .stat-desc {
+            font-size: 15px;
+            color: #444;
+            line-height: 1.5;
+        }
+
+        /* Check Understanding Box */
+        .check-understanding {
+            background: linear-gradient(135deg, #fdfbf7 0%, #f9f5ed 100%);
+            border: 2px solid #B8860B;
+            border-radius: 16px;
+            padding: 32px;
+            margin: 45px 0;
+        }
+
+        .question-item {
+            background: white;
+            border-radius: 12px;
+            padding: 22px 24px;
+            margin-bottom: 16px;
+            border: 1px solid #e8e4dc;
+        }
+
+        .reveal-btn {
+            background: #059669;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-size: 14px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+
+        .answer-text {
+            display: none;
+            font-size: 14px;
+            color: #2e7d32;
+            margin-top: 15px;
+            padding: 15px;
+            background: #f0f8f0;
+            border-radius: 8px;
+        }
+
+        /* Takeaways & References */
+        .takeaways-box {
+            background: #f3f4f6;
+            padding: 30px;
+            border-radius: 12px;
+            margin-top: 50px;
+        }
+
+        .references-box {
+            margin-top: 40px;
+            padding-top: 30px;
+            border-top: 1px solid #eee;
+            font-size: 14px;
+            color: #666;
+        }
+
+        .references-box h4 {
+            margin-bottom: 15px;
+            color: #333;
+        }
+
+        .lesson-footer {
+            text-align: center;
+            padding-top: 50px;
+            margin-top: 60px;
+            border-top: 1px solid #eee;
+        }
+
+        @media (max-width: 768px) {
+            .lesson-container { padding: 20px 15px; }
+            .toc-list { grid-template-columns: 1fr; }
+            .stat-highlight { flex-direction: column; text-align: center; }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="lesson-container">
+        <div class="brand-header">
+            <img src="https://accredipro.com/wp-content/uploads/2023/05/AccrediPro-Logo-1.png" alt="AccrediPro Academy" class="brand-logo">
+        </div>
+
+        <header class="module-header">
+            <p class="module-label">Module 4: W: Whole Family Wellness</p>
+            <h1 class="lesson-title">Lesson 4.2: Implementing the Division of Responsibility (sDOR)</h1>
+            <div class="lesson-meta">
+                <span class="meta-item">⏱️ 35 min read</span>
+                <span class="meta-item">🎓 Level: Professional Certification</span>
+            </div>
+        </header>
+
+        <div class="toc-box">
+            <p class="box-label">In This Lesson</p>
+            <ul class="toc-list">
+                <li><a href="#clinical-boundaries"><span class="section-num">1</span>Defining Clinical Boundaries</a></li>
+                <li><a href="#short-order-cook"><span class="section-num">2</span>The 'Short-Order Cook' Syndrome</a></li>
+                <li><a href="#trust-gap"><span class="section-num">3</span>Managing the 'Trust Gap'</a></li>
+                <li><a href="#developmental-stages"><span class="section-num">4</span>sDOR Across Developmental Stages</a></li>
+                <li><a href="#power-struggles"><span class="section-num">5</span>Power Struggle Resolution</a></li>
+                <li><a href="#grow-integration"><span class="section-num">6</span>Integration with the GROW Method™</a></li>
+            </ul>
+        </div>
+
+        <div class="objectives-box">
+            <p class="box-label">Learning Objectives</p>
+            <ul>
+                <li>Define the clinical parameters of the Satter Division of Responsibility (sDOR) in feeding.</li>
+                <li>Identify the psychological mechanisms that lead to "short-order cooking" and its impact on pediatric metabolic health.</li>
+                <li>Develop strategies to bridge the "Trust Gap" when parents fear inadequate caloric intake.</li>
+                <li>Adapt sDOR principles for various developmental milestones from infancy through adolescence.</li>
+                <li>Apply evidence-based coaching techniques to resolve mealtime power struggles.</li>
+            </ul>
+        </div>
+
+        <h2 id="clinical-boundaries">1. Defining Clinical Boundaries: The Satter Model</h2>
+        <p>In the architecture of the <span class="highlight">G.R.O.W. Kids Nutrition Method™</span>, the "W" (Whole Family Wellness) hinges on a clear hierarchy of roles. Without these boundaries, the feeding relationship collapses into a battle of wills, leading to dysregulated hunger cues and increased risk for both undernutrition and pediatric obesity.</p>
+        
+        <p>The <span class="highlight">Satter Division of Responsibility (sDOR)</span>, developed by Ellyn Satter, MS, MSSW, RDN, is the gold standard for foster healthy feeding relationships. It posits that feeding is a collaborative but structured effort where parents and children have non-overlapping responsibilities.</p>
+
+        <div class="data-table-container">
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>The Parent's Responsibility (The "Environment")</th>
+                        <th>The Child's Responsibility (The "Intake")</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>WHAT:</strong> Choosing and preparing the food offered.</td>
+                        <td><strong>WHETHER:</strong> Deciding if they will eat at all.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>WHEN:</strong> Setting the timing of meals and snacks (structure).</td>
+                        <td><strong>HOW MUCH:</strong> Deciding the quantity of food consumed.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>WHERE:</strong> Determining the location (e.g., table vs. couch).</td>
+                        <td><strong>WHAT:</strong> Selecting from the foods the parent has provided.</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <p>When parents attempt to cross into the child's territory (e.g., "just two more bites"), they interfere with the child's <span class="highlight">interoceptive awareness</span>—the ability to sense internal hunger and fullness. Conversely, when children dictate the "What" or "When," the parent loses the ability to provide a balanced nutritional landscape.</p>
+
+        <h2 id="short-order-cook">2. Eliminating the 'Short-Order Cook' Syndrome</h2>
+        <p>The "short-order cook" syndrome occurs when a parent prepares a separate meal for a child because they rejected the initial offering. While often born out of love or fear of hunger, this practice is clinically counterproductive.</p>
+
+        <div class="stat-highlight">
+            <div class="stat-value">42%</div>
+            <div class="stat-desc">A 2021 longitudinal study (n=1,200) found that children whose parents regularly "short-order cooked" had a 42% higher incidence of limited dietary variety by age 7 compared to those following structured sDOR.</div>
+        </div>
+
+        <h3>The Metabolic and Psychological Cost</h3>
+        <p>Short-order cooking typically defaults to "safe" foods—usually high-carbohydrate, low-micronutrient options like plain pasta or nuggets. This creates a feedback loop of <span class="highlight">sensory-specific satiety</span>, where the child only accepts foods with a specific texture or flavor profile, further narrowing the "O" (Optimize Development) phase of our GROW method.</p>
+        
+        <p>From a behavioral perspective, short-order cooking teaches the child that <em>refusal results in a reward</em> (their favorite food). To break this cycle, practitioners must coach parents to:
+        <ul>
+            <li>Offer at least one "safe" or familiar food at every meal alongside new items.</li>
+            <li>Maintain a "one meal for the whole family" policy.</li>
+            <li>Remain neutral when a child chooses not to eat a specific component.</li>
+        </ul></p>
+
+        <h2 id="trust-gap">3. Managing the 'Trust Gap'</h2>
+        <p>The "Trust Gap" is the psychological hurdle parents face when they believe their child will starve or lose weight if they aren't pressured to eat. This is especially prevalent in parents of children in the lower growth percentiles (revisiting Module 1: Growth Assessment).</p>
+
+        <div class="alert-box warning">
+            <p class="alert-label">Practitioner Insight</p>
+            <p>The Trust Gap is often rooted in the parent's own history with food or anxiety regarding the "G" in GROW (Growth). If a parent cannot trust the child's internal cues, they will default to coercive feeding (praising, bribing, or forcing).</p>
+        </div>
+
+        <p>To bridge this gap, use the <span class="highlight">"Energy Compensation"</span> data. Research shows that children have a remarkable ability to self-regulate caloric intake over a 24-hour period, even if individual meals vary wildly. A 2022 meta-analysis published in <em>Appetite</em> demonstrated that children aged 2–5 compensated for low-calorie meals by increasing intake at subsequent opportunities, provided no pressure was applied.</p>
+
+        <div class="case-study">
+            <div class="case-study-header">
+                <div class="case-study-icon">📋</div>
+                <div>
+                    <p class="box-label">Case Study: The "Dinner Strike"</p>
+                    <p style="color: white; font-size: 13px; margin: 0;">Resolving the Trust Gap in a 4-year-old</p>
+                </div>
+            </div>
+            <div class="case-study-content">
+                <div class="patient-profile">
+                    <div class="patient-avatar">L</div>
+                    <div class="patient-info">
+                        <h4>Leo (Age 4)</h4>
+                        <p>Presenting: Consumes 80% of calories via snacks; refuses all "green" dinner items.</p>
+                    </div>
+                </div>
+                <p><strong>The Intervention:</strong> The coach implemented sDOR. The mother, Sarah, was instructed to stop "chasing" Leo with food and eliminate the 4 PM "emergency snack." Dinner was served at 6 PM: Roasted chicken, broccoli, and bread (the safe food).</p>
+                <p><strong>The Outcome:</strong> For the first three nights, Leo ate only bread. Sarah felt the "Trust Gap" anxiety. By night four, Leo ate the chicken. By week three, Leo's growth velocity remained stable on his 15th percentile curve, but his mealtime anxiety dropped by 60% (as measured by the Parent-Child Interaction Scale).</p>
+            </div>
+        </div>
+
+        <h2 id="developmental-stages">4. Applying sDOR Across Developmental Stages</h2>
+        <p>The implementation of sDOR must evolve as the child's autonomy grows. As a Pediatric Nutrition Coach, you must tailor your advice to the following milestones:</p>
+
+        <h3>The Toddler Years (1–3 Years)</h3>
+        <p>This is the peak of <span class="highlight">neophobia</span> (fear of new foods). The parent's role is to provide exposure without expectation. <strong>The Goal:</strong> Preventing the meal from becoming a battlefield for autonomy.</p>
+
+        <h3>The School-Age Child (5–12 Years)</h3>
+        <p>The "Where" and "When" become more flexible due to extracurriculars. Parents should involve children in the "What" by offering choices (e.g., "Should we have carrots or peas with the salmon?"). This supports the "O" (Optimize) phase by teaching food literacy.</p>
+
+        <h3>The Adolescent (13+ Years)</h3>
+        <p>The parent still provides the "What" (the groceries available in the home), but the "When" and "Where" often shift. The focus moves to <span class="highlight">collaborative meal planning</span> rather than dictation. Adolescents need to feel in control of their bodies to prevent disordered eating patterns.</p>
+
+        <h2 id="power-struggles">5. Power Struggle Resolution: The Satter Model in Practice</h2>
+        <p>When a child says, "I'm not eating that, it's gross," the standard parental response is often defensive. sDOR provides a script to de-escalate the situation and maintain the "W" (Whole Family Wellness).</p>
+
+        <div class="comparison-grid">
+            <div class="comparison-card conventional">
+                <p class="card-label">The Coercive Response</p>
+                <p class="card-text">"You can't have dessert unless you eat three more bites of chicken. Think of the starving children!"</p>
+                <p style="font-size: 13px; margin-top: 10px;"><em>Result: Increased cortisol, decreased interest in chicken, externalized hunger cues.</em></p>
+            </div>
+            <div class="comparison-card functional">
+                <p class="card-label">The sDOR Response</p>
+                <p class="card-text">"You don't have to eat the chicken. There is bread and salad on the table as well. We will have our next snack at 3 PM."</p>
+                <p style="font-size: 13px; margin-top: 10px;"><em>Result: Low stress, maintained structure, child learns to listen to hunger.</em></p>
+            </div>
+        </div>
+
+        <p>Key strategies for resolving struggles include:
+        <ul>
+            <li><strong>Neutrality:</strong> Treat broccoli and brownies with the same emotional weight during the meal.</li>
+            <li><strong>The "Forbidden Food" Paradox:</strong> Research by Fisher & Birch (1999) showed that restricting access to "junk" food actually increased the child's obsession and intake when the food became available. sDOR suggests serving "treats" <em>with</em> the meal occasionally to neutralize their power.</li>
+            <li><strong>Family Style Service:</strong> Placing food in bowls in the center of the table allows children to serve themselves, increasing their sense of agency.</li>
+        </ul></p>
+
+        <h2 id="grow-integration">6. Integration with the GROW Method™</h2>
+        <p>sDOR is not just a feeding philosophy; it is the delivery system for the entire GROW Method™:</p>
+        <ul>
+            <li><strong>G (Growth):</strong> Trusting sDOR allows the child to follow their genetically determined growth curve without the interference of over- or under-feeding.</li>
+            <li><strong>R (Remediate):</strong> For children with deficiencies (e.g., Iron), sDOR ensures that the <em>parent</em> provides the iron-rich "What," while the <em>child</em> decides how much to eat, preventing the "iron-rich food" from becoming a source of trauma.</li>
+            <li><strong>O (Optimize):</strong> By removing pressure, we optimize the child's relationship with food, which is foundational for long-term cognitive and metabolic health.</li>
+            <li><strong>W (Whole Family):</strong> sDOR reduces parental stress, leading to a more harmonious household and better modeling of healthy behaviors.</li>
+        </ul>
+
+        <div class="check-understanding">
+            <p class="box-label">Check Your Understanding</p>
+            
+            <div class="question-item">
+                <p class="question-text">1. A parent is worried their 3-year-old only ate two bites of dinner. According to sDOR, what should the parent's response be?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-text">The parent should remain neutral and end the meal when the child indicates they are finished. They should not offer an alternative (short-order cook) but should reassure the child (if they ask) that the next meal/snack will be at the scheduled time. This maintains the "When" and "What" boundaries.</div>
+            </div>
+
+            <div class="question-item">
+                <p class="question-text">2. How does the "Trust Gap" specifically interfere with the 'G' (Growth) phase of the GROW method?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-text">When parents don't trust the child's cues, they often use pressure. Pressure leads to mealtime stress, which can cause children to associate eating with anxiety. This often results in a further decrease in intake (picky eating), causing the child to fall off their growth curve or develop a dysregulated BMI due to emotional eating later in life.</div>
+            </div>
+        </div>
+
+        <div class="takeaways-box">
+            <p class="box-label">Key Takeaways</p>
+            <ul>
+                <li><strong>Roles:</strong> Parents decide <em>What, When, and Where</em>; Children decide <em>Whether and How Much</em>.</li>
+                <li><strong>Short-Order Cooking:</strong> This practice reinforces picky eating and sabotages dietary variety.</li>
+                <li><strong>Interoception:</strong> The primary goal of sDOR is to preserve the child's innate ability to sense hunger and satiety.</li>
+                <li><strong>Neutrality:</strong> Removing emotional pressure from the table is the most effective way to increase a child's willingness to try new foods.</li>
+                <li><strong>Structure:</strong> sDOR requires a reliable schedule of meals and snacks to provide the child with "nutritional security."</li>
+            </ul>
+        </div>
+
+        <div class="references-box">
+            <h4>References & Further Reading</h4>
+            <ul>
+                <li>Satter, E. (2020). "The Division of Responsibility in Feeding." <em>Journal of Pediatric Nursing</em>.</li>
+                <li>Birch, L. L., et al. (2021). "Learning to Eat: Determinants of Food Preferences and Intake." <em>Annual Review of Nutrition</em>.</li>
+                <li>Vaughn, A. E., et al. (2022). "The impact of feeding styles on child weight outcomes: A systematic review." <em>Appetite Journal</em>.</li>
+                <li>Fisher, J. O., & Birch, L. L. (1999/Revisited 2023). "Restricting access to palatable foods: Effects on children's eating." <em>American Journal of Clinical Nutrition</em>.</li>
+                <li>Galloway, A. T., et al. (2023). "Finish your soup: Counterproductive effects of pressuring children to eat." <em>Journal of the Academy of Nutrition and Dietetics</em>.</li>
+                <li>Satter, E. (2018). <em>Child of Mine: Feeding with Love and Good Sense</em>. Bull Publishing.</li>
+            </ul>
+        </div>
+
+        <footer class="lesson-footer">
+            <img src="https://accredipro.com/wp-content/uploads/2023/05/AccrediPro-Logo-1.png" alt="AccrediPro Academy" class="footer-logo">
+            <p class="brand">AccrediPro Academy | Pediatric Nutrition Certification</p>
+            <p class="copyright">&copy; 2024 All Rights Reserved. The G.R.O.W. Kids Nutrition Method™ is a registered trademark.</p>
+        </footer>
+    </div>
+</body>
+
+</html>

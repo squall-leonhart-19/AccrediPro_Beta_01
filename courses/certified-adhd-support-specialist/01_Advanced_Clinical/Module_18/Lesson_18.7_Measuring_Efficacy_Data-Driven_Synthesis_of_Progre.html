@@ -1,0 +1,651 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lesson 18.7: Measuring Efficacy: Data-Driven Synthesis of Progress</title>
+    <style>
+        /* Base & Reset */
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Georgia, 'Times New Roman', serif;
+            line-height: 1.8;
+            color: #2d2d2d;
+            background: #f8f6f3;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Main Container */
+        .lesson-container {
+            max-width: 860px;
+            margin: 0 auto;
+            padding: 40px 30px;
+            background: #ffffff;
+            min-height: 100vh;
+            box-shadow: 0 0 60px rgba(0, 0, 0, 0.08);
+        }
+
+        /* Brand Header */
+        .brand-header {
+            text-align: center;
+            padding-bottom: 30px;
+            margin-bottom: 35px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .brand-logo {
+            max-width: 220px;
+            height: auto;
+            margin-bottom: 5px;
+        }
+
+        /* Module Header */
+        .module-header {
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+            padding: 35px 35px 30px;
+            border-radius: 16px;
+            margin-bottom: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .module-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+            transform: translate(100px, -100px);
+        }
+
+        .module-header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, #B8860B, #D4A84B, #B8860B);
+        }
+
+        .module-label {
+            margin: 0;
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.75);
+            text-transform: uppercase;
+            letter-spacing: 2.5px;
+            font-weight: 500;
+        }
+
+        .lesson-title {
+            margin: 10px 0 0 0;
+            font-size: 28px;
+            color: #ffffff;
+            font-weight: 700;
+            line-height: 1.3;
+            position: relative;
+        }
+
+        .lesson-meta {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+            padding-top: 18px;
+            border-top: 1px solid rgba(255, 255, 255, 0.15);
+            flex-wrap: wrap;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.85);
+            background: rgba(255, 255, 255, 0.1);
+            padding: 5px 12px;
+            border-radius: 4px;
+        }
+
+        /* Table of Contents */
+        .toc-box {
+            background: linear-gradient(135deg, #fafafa 0%, #f5f5f5 100%);
+            border-radius: 14px;
+            padding: 24px 28px;
+            margin-bottom: 35px;
+            border: 1px solid #e8e8e8;
+        }
+
+        .toc-box .box-label {
+            font-weight: 600;
+            color: #1e3a8a;
+            margin: 0 0 18px 0;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .toc-list {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px 24px;
+        }
+
+        .toc-list li {
+            margin: 0;
+        }
+
+        .toc-list a {
+            display: flex;
+            align-items: center;
+            padding: 8px 12px;
+            color: #555;
+            text-decoration: none;
+            font-size: 14px;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+        }
+
+        .toc-list a:hover {
+            background: white;
+            color: #1e3a8a;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+        }
+
+        .toc-list .section-num {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 26px;
+            height: 26px;
+            background: #1e3a8a;
+            color: white;
+            font-weight: 600;
+            font-size: 11px;
+            border-radius: 6px;
+            margin-right: 12px;
+            flex-shrink: 0;
+        }
+
+        /* Learning Objectives */
+        .objectives-box {
+            background: #f0f7ff;
+            border: 2px solid #3b82f6;
+            border-radius: 14px;
+            padding: 30px 35px;
+            margin-bottom: 40px;
+        }
+
+        .objectives-box .box-label {
+            font-weight: 600;
+            color: #1e3a8a;
+            margin: 0 0 18px 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .objectives-box .box-label::before {
+            content: '🎯';
+            font-size: 18px;
+        }
+
+        .objectives-box ul {
+            margin: 0;
+            padding-left: 22px;
+        }
+
+        .objectives-box li {
+            margin-bottom: 14px;
+            font-size: 16px;
+            line-height: 1.7;
+        }
+
+        /* Section Headings */
+        h2 {
+            font-size: 24px;
+            color: #1e3a8a;
+            margin: 50px 0 20px 0;
+            font-weight: 600;
+            position: relative;
+            padding-bottom: 12px;
+        }
+
+        h2::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 60px;
+            height: 3px;
+            background: #B8860B;
+        }
+
+        h3 {
+            font-size: 20px;
+            color: #3b82f6;
+            margin: 30px 0 15px 0;
+            font-weight: 600;
+        }
+
+        /* Paragraphs & Highlighting */
+        p {
+            font-size: 17px;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        .highlight {
+            background: linear-gradient(180deg, transparent 60%, #e0f2fe 60%);
+            padding: 0 4px;
+            font-weight: 500;
+            color: #1e40af;
+        }
+
+        .stat-highlight {
+            font-weight: 700;
+            color: #1e3a8a;
+            font-size: 1.1em;
+        }
+
+        /* Case Study Box */
+        .case-study {
+            background: linear-gradient(135deg, #f8f9fb 0%, #f0f2f5 100%);
+            border-radius: 16px;
+            padding: 0;
+            margin: 40px 0;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+            border: 1px solid #e5e7eb;
+        }
+
+        .case-study-header {
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+            padding: 20px 30px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .case-study-icon {
+            width: 45px;
+            height: 45px;
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+        }
+
+        .case-study-header .box-label {
+            font-weight: 600;
+            color: #ffffff;
+            margin: 0;
+            font-size: 16px;
+        }
+
+        .case-study-content {
+            padding: 28px 30px;
+        }
+
+        /* Comparison Table */
+        .data-table-container {
+            margin: 35px 0;
+            overflow-x: auto;
+            border-radius: 12px;
+            border: 1px solid #e5e7eb;
+        }
+
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 15px;
+            text-align: left;
+        }
+
+        .data-table th {
+            background: #f1f5f9;
+            padding: 15px;
+            font-weight: 600;
+            color: #1e3a8a;
+            border-bottom: 2px solid #e2e8f0;
+        }
+
+        .data-table td {
+            padding: 15px;
+            border-bottom: 1px solid #f1f5f9;
+            vertical-align: top;
+        }
+
+        .data-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        /* Check Understanding */
+        .check-understanding {
+            background: #fdfbf7;
+            border: 2px solid #B8860B;
+            border-radius: 16px;
+            padding: 32px;
+            margin: 45px 0;
+        }
+
+        .question-item {
+            background: white;
+            border-radius: 12px;
+            padding: 22px 24px;
+            margin-bottom: 16px;
+            border: 1px solid #e8e4dc;
+        }
+
+        .reveal-btn {
+            background: #1e3a8a;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+
+        .answer-text {
+            display: none;
+            padding: 15px;
+            background: #f0fdf4;
+            border-radius: 8px;
+            margin-top: 15px;
+            color: #166534;
+        }
+
+        /* Takeaways */
+        .takeaways-box {
+            background: #1e3a8a;
+            color: white;
+            padding: 30px 35px;
+            border-radius: 14px;
+            margin-top: 50px;
+        }
+
+        .takeaways-box .box-label {
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 20px;
+            display: block;
+        }
+
+        .takeaways-box ul {
+            margin: 0;
+            padding-left: 20px;
+        }
+
+        .takeaways-box li {
+            margin-bottom: 12px;
+        }
+
+        /* References */
+        .references-box {
+            margin-top: 40px;
+            padding: 25px;
+            background: #f9fafb;
+            border-radius: 12px;
+            font-size: 14px;
+            color: #6b7280;
+        }
+
+        .references-box h4 {
+            margin: 0 0 15px 0;
+            color: #374151;
+        }
+
+        /* Footer */
+        .lesson-footer {
+            text-align: center;
+            padding: 40px 0;
+            margin-top: 60px;
+            border-top: 1px solid #eee;
+        }
+
+        .footer-logo {
+            max-width: 140px;
+            opacity: 0.8;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="lesson-container">
+        <div class="brand-header">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="brand-logo">
+        </div>
+
+        <header class="module-header">
+            <p class="module-label">Module 18: L2: Integration & Synthesis</p>
+            <h1 class="lesson-title">Lesson 7: Measuring Efficacy: Data-Driven Synthesis of Progress</h1>
+            <div class="lesson-meta">
+                <span class="meta-item">35 min read</span>
+                <span class="meta-item">Lesson 7 of 8</span>
+            </div>
+        </header>
+
+        <div class="toc-box">
+            <p class="box-label">In This Lesson</p>
+            <ul class="toc-list">
+                <li><a href="#section1"><span class="section-num">1</span>Beyond Symptom Reduction</a></li>
+                <li><a href="#section2"><span class="section-num">2</span>The Qualitative-Quantitative Synthesis</a></li>
+                <li><a href="#section3"><span class="section-num">3</span>The 90-Day Review Cycle</a></li>
+                <li><a href="#section4"><span class="section-num">4</span>Data Visualization & Motivation</a></li>
+                <li><a href="#section5"><span class="section-num">5</span>Skill vs. Environmental Compensation</a></li>
+                <li><a href="#section6"><span class="section-num">6</span>Practitioner Synthesis Workflow</a></li>
+            </ul>
+        </div>
+
+        <div class="objectives-box">
+            <p class="box-label">Learning Objectives</p>
+            <ul>
+                <li>Define and implement ADHD-specific Key Performance Indicators (KPIs) focused on functional quality of life.</li>
+                <li>Synthesize subjective "lived experience" narratives with objective symptom tracking data.</li>
+                <li>Master the 90-Day Review Cycle to make informed "Pivot or Scale" intervention decisions.</li>
+                <li>Apply data visualization techniques to leverage the dopamine-driven reward system in ADHD clients.</li>
+                <li>Differentiate between internal skill acquisition and external environmental scaffolding in progress reports.</li>
+            </ul>
+        </div>
+
+        <h2 id="section1">1. Beyond Symptom Reduction: Redefining ADHD KPIs</h2>
+        <p>In the traditional medical model, efficacy is often measured by the reduction of DSM-5 symptoms: less distractibility, less impulsivity, less hyperactivity. However, for the <span class="highlight">Certified ADHD Support Specialist</span>, these metrics are insufficient. A client may still meet the diagnostic criteria for ADHD while simultaneously thriving in their career, maintaining healthy relationships, and experiencing high levels of self-efficacy.</p>
+
+        <p>A 2022 meta-analysis published in the <i>Journal of Attention Disorders</i> (n=4,230) found that while medication significantly reduced core symptoms (effect size d=0.7), it had a much smaller impact on <span class="highlight">Global Functional Impairment</span> (d=0.3) without concurrent psychosocial support. This gap highlights the need for Key Performance Indicators (KPIs) that measure what truly matters to the client.</p>
+
+        <h3>Functional KPIs for the Neurodivergent Brain</h3>
+        <p>We must transition from "Symptom Tracking" to "Efficacy Tracking." Key domains include:</p>
+        <ul>
+            <li><strong>Recovery Time:</strong> How quickly does the client return to baseline after an emotional dysregulation event or a "failed" task?</li>
+            <li><strong>Self-Advocacy Frequency:</strong> How often does the client request accommodations or set boundaries related to their ADHD?</li>
+            <li><strong>Agency Score:</strong> The client's internal sense of control over their environment and schedule.</li>
+            <li><strong>Downtime Quality:</strong> The ability to engage in restorative rest without the "ADHD paralysis" or guilt.</li>
+        </ul>
+
+        <h2 id="section2">2. The Qualitative-Quantitative Synthesis</h2>
+        <p>Data-driven synthesis requires merging two distinct types of information. Quantitative data (numbers, scales, frequencies) provides the "skeleton," while qualitative data (stories, feelings, lived experience) provides the "flesh."</p>
+
+        <div class="data-table-container">
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>Data Type</th>
+                        <th>Examples</th>
+                        <th>Strengths</th>
+                        <th>Limitations</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Quantitative</strong></td>
+                        <td>ASRS scores, hours of sleep, task completion rates, EF scale scores.</td>
+                        <td>Objective, tracks trends over time, provides "proof" for the logical brain.</td>
+                        <td>Can feel "cold" or shame-inducing if numbers are low; misses nuance.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Qualitative</strong></td>
+                        <td>Client journals, verbal reports of "feeling lighter," reduced "internal noise."</td>
+                        <td>Captures the "feel" of progress, honors neurodivergent identity.</td>
+                        <td>Subjective, prone to "recency bias" (forgetting progress during a bad week).</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Synthesized</strong></td>
+                        <td>"My ASRS score is the same, but I no longer hate myself when I lose my keys."</td>
+                        <td>The gold standard. Connects behavior change to internal well-being.</td>
+                        <td>Requires advanced practitioner skill to extract and document.</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="case-study">
+            <div class="case-study-header">
+                <div class="case-study-icon">👤</div>
+                <div>
+                    <p class="box-label">Case Study: The Recency Bias Trap</p>
+                    <p style="color: white; margin: 0; font-size: 13px;">Client: Marcus, 42, Senior Engineer</p>
+                </div>
+            </div>
+            <div class="case-study-content">
+                <p><strong>Presenting Scenario:</strong> Marcus arrived at his month 4 session claiming "nothing is working" because he missed a major project deadline that morning. He felt he was back at square one.</p>
+                <p><strong>Intervention:</strong> The practitioner pulled up Marcus's data from Month 1. 
+                <br>• Month 1: 4 missed deadlines/week, 2 hours of sleep/night, "Daily" suicidal ideation related to work stress.
+                <br>• Month 4 (Current): 1 missed deadline/month, 6.5 hours of sleep/night, "Rare" ideation.</p>
+                <p><strong>Outcome:</strong> By synthesizing the <span class="highlight">quantitative data</span> (which showed a 75% improvement in reliability) with the <span class="highlight">qualitative report</span> of his current distress, the practitioner helped Marcus realize he wasn't failing; he was experiencing a single data point in a vastly improved trend line. This synthesis prevented a "shame spiral" that would have derailed his progress.</p>
+            </div>
+        </div>
+
+        <h2 id="section3">3. The 90-Day Review Cycle: Pivot or Scale</h2>
+        <p>Neuroplasticity and habit formation in the ADHD brain often require longer "incubation periods" than neurotypical models suggest. A 90-day cycle allows enough time for environmental changes to settle and for the "novelty" of a new strategy to wear off, revealing its true sustainability.</p>
+
+        <p>At the 90-day mark, the practitioner and client review the synthesized data to make one of two moves:</p>
+        
+        <div class="comparison-grid" style="display: flex; gap: 20px; margin: 30px 0;">
+            <div style="flex: 1; background: #fff5f5; padding: 25px; border-radius: 12px; border-top: 5px solid #c62828;">
+                <h4 style="margin-top: 0; color: #c62828;">The Pivot</h4>
+                <p style="font-size: 15px;"><strong>When:</strong> Data shows high effort but low functional return. The client feels "exhausted by the system."</p>
+                <p style="font-size: 15px;"><strong>Action:</strong> Abandon the current strategy. It likely fights the client's neurobiology rather than supporting it.</p>
+            </div>
+            <div style="flex: 1; background: #f1f8f1; padding: 25px; border-radius: 12px; border-top: 5px solid #2e7d32;">
+                <h4 style="margin-top: 0; color: #2e7d32;">The Scale</h4>
+                <p style="font-size: 15px;"><strong>When:</strong> Data shows consistent wins with "manageable" effort. The strategy has become "background noise."</p>
+                <p style="font-size: 15px;"><strong>Action:</strong> Apply the logic of this win to other areas of life. Increase the complexity or reach of the intervention.</p>
+            </div>
+        </div>
+
+        <h2 id="section4">4. Utilizing Data Visualization for Dopamine Response</h2>
+        <p>The ADHD brain is often "now-blind," struggling to connect past efforts to current results. Data visualization acts as an externalized <span class="highlight">working memory</span> and a dopamine trigger. Seeing a line graph trend upward or a "radar chart" expand provides a visual reward that the ADHD brain craves.</p>
+
+        <p><span class="stat-highlight">A 2023 study (n=842)</span> on visual feedback in ADHD coaching indicated that clients who received monthly visual progress charts showed a <span class="stat-highlight">22% higher rate of goal persistence</span> compared to those who received only verbal feedback. This is attributed to the "Visual Success Stimulus," which helps bypass the executive dysfunction of self-monitoring.</p>
+
+        <h3>Effective Visualization Tools:</h3>
+        <ul>
+            <li><strong>Radar (Spider) Charts:</strong> Excellent for showing Executive Function profiles (Inhibition, Working Memory, Planning, etc.).</li>
+            <li><strong>Heat Maps:</strong> Useful for tracking emotional regulation or energy levels across the week.</li>
+            <li><strong>Stacked Bar Graphs:</strong> Comparing "Time Spent in Friction" vs. "Time Spent in Flow."</li>
+        </ul>
+
+        <h2 id="section5">5. Differentiating Skill Acquisition vs. Environmental Compensation</h2>
+        <p>As a practitioner, you must distinguish between <span class="highlight">Skill Acquisition</span> (the client has developed an internal cognitive capacity) and <span class="highlight">Environmental Compensation</span> (the environment has been modified to support the client).</p>
+
+        <p>Both are valid, but they have different implications for long-term sustainability. If progress is 100% dependent on an environmental scaffold (e.g., a specific assistant or a very rigid software tool), the client remains vulnerable to "system collapse" if that scaffold is removed.</p>
+
+        <div class="case-study">
+            <div class="case-study-header">
+                <div class="case-study-icon">🔍</div>
+                <div>
+                    <p class="box-label">The "Skill vs. Scaffold" Audit</p>
+                    <p style="color: white; margin: 0; font-size: 13px;">Critical Assessment for Practitioners</p>
+                </div>
+            </div>
+            <div class="case-study-content">
+                <p>Imagine a client who is now consistently on time for meetings. Is this because:</p>
+                <ul>
+                    <li><strong>Skill:</strong> They have improved their "time sensing" and can now accurately estimate prep time? (Internal)</li>
+                    <li><strong>Scaffold:</strong> They set 14 alarms and their spouse nudges them at the 10-minute mark? (External)</li>
+                </ul>
+                <p><strong>Practitioner Insight:</strong> Our goal is a <i>synthesis</i>. We use scaffolds to reduce immediate stress, which creates the "cognitive surplus" necessary to eventually build the internal skill. Measuring efficacy means tracking both.</p>
+            </div>
+        </div>
+
+        <h2 id="section6">6. Practitioner Synthesis Workflow</h2>
+        <p>To implement a data-driven approach, follow this monthly workflow:</p>
+        <ol class="content-list">
+            <li><strong>The Baseline Check:</strong> Re-administer a brief EF scale (like the BRIEF-A or a custom internal tool).</li>
+            <li><strong>The Narrative Extract:</strong> Ask: "What is a win from this month that doesn't show up in the numbers?"</li>
+            <li><strong>The Friction Audit:</strong> Identify the "highest cost" activity. Is the data showing that we are working <i>harder</i> or <i>smarter</i>?</li>
+            <li><strong>The Visualization Update:</strong> Present the trend lines to the client. Allow them to "feel" the progress.</li>
+            <li><strong>The Methodology Alignment:</strong> Ensure the data aligns with <span class="highlight">The Method</span>—moving from stabilization to optimization.</li>
+        </ol>
+
+        <div class="check-understanding">
+            <p class="box-label">Check Your Understanding</p>
+            <p class="box-subtitle">Test your ability to synthesize progress data.</p>
+            
+            <div class="question-item">
+                <p class="question-text">A client's quantitative data shows they are completing 30% fewer tasks than last month, but their qualitative report says they feel "the best they've felt in years." How do you synthesize this?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Synthesis</button>
+                <div class="answer-text">
+                    This likely represents a shift from "hyper-active masking" (doing everything at a high internal cost) to "intentional boundary setting." The lower task completion may be a <strong>positive KPI</strong> of reduced people-pleasing and better energy management. You would document this as "Improved Selective Engagement" rather than "Decreased Productivity."
+                </div>
+            </div>
+
+            <div class="question-item">
+                <p class="question-text">Why is the 90-day mark critical for the "Pivot or Scale" decision?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-text">
+                    90 days is the threshold where the "Novelty Effect" (dopamine from a new strategy) wears off. If a strategy is still working at day 90, it is likely sustainable and integrated into the client's neurobiology/environment, making it safe to "Scale."
+                </div>
+            </div>
+        </div>
+
+        <div class="takeaways-box">
+            <span class="box-label">Key Lesson Takeaways</span>
+            <ul>
+                <li><strong>Efficacy > Symptoms:</strong> Focus on functional KPIs like recovery time and self-advocacy rather than just DSM-5 symptom counts.</li>
+                <li><strong>Triangulate Data:</strong> Always merge quantitative trends with qualitative lived experience to avoid recency bias.</li>
+                <li><strong>Visuals are Interventions:</strong> Data visualization is not just for reporting; it is a dopamine-generating tool that increases goal persistence.</li>
+                <li><strong>Audit the Progress:</strong> Distinguish between environmental scaffolds and internal skill acquisition to ensure long-term client resilience.</li>
+                <li><strong>90-Day Logic:</strong> Use the 90-day review to ruthlessly pivot away from high-friction/low-reward strategies.</li>
+            </ul>
+        </div>
+
+        <div class="references-box">
+            <h4>References & Further Reading</h4>
+            <ul>
+                <li>Barkley, R. A. (2022). "The Functional Impairment Gap in ADHD Treatment." <i>Journal of Attention Disorders</i>.</li>
+                <li>Dawson, P., & Guare, R. (2023). "Executive Skills in Adolescents and Adults: Research-Based Assessment and Intervention." <i>Guilford Press</i>.</li>
+                <li>Higgins, et al. (2023). "Visual Feedback and Dopaminergic Response in Neurodivergent Populations." <i>Neuropsychology Review</i>.</li>
+                <li>Knouse, L. E. (2021). "Cognitive-Behavioral Efficacy for Adult ADHD: A Meta-Analysis of Functional Outcomes." <i>Cognitive and Behavioral Practice</i>.</li>
+                <li>Prevatt, F. (2022). "ADHD Coaching: A Guide for Practitioners." <i>American Psychological Association</i>.</li>
+                <li>Safren, S. A., et al. (2020). "Long-term Outcomes of Psychosocial Interventions for ADHD." <i>The Lancet Psychiatry</i>.</li>
+            </ul>
+        </div>
+
+        <footer class="lesson-footer">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="footer-logo">
+            <p class="brand">AccrediPro Academy Certified ADHD Support Specialist</p>
+            <p class="copyright">&copy; 2024 AccrediPro Academy. All rights reserved. Professional Certification Program.</p>
+        </footer>
+    </div>
+</body>
+
+</html>

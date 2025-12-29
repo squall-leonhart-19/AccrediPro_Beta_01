@@ -1,0 +1,596 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lesson 4: High-Ticket Program Architecture and Pricing</title>
+    <style>
+        /* Base & Reset */
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Georgia, 'Times New Roman', serif;
+            line-height: 1.8;
+            color: #2d2d2d;
+            background: #f8f6f3;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Main Container */
+        .lesson-container {
+            max-width: 860px;
+            margin: 0 auto;
+            padding: 40px 30px;
+            background: #ffffff;
+            min-height: 100vh;
+            box-shadow: 0 0 60px rgba(0, 0, 0, 0.08);
+        }
+
+        /* Brand Header */
+        .brand-header {
+            text-align: center;
+            padding-bottom: 30px;
+            margin-bottom: 35px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .brand-logo {
+            max-width: 220px;
+            height: auto;
+            margin-bottom: 5px;
+        }
+
+        /* Module Header - Navy/Gold Theme for Business/Practice */
+        .module-header {
+            background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
+            padding: 35px 35px 30px;
+            border-radius: 16px;
+            margin-bottom: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .module-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.05) 0%, transparent 70%);
+            transform: translate(100px, -100px);
+        }
+
+        .module-header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, #B8860B, #D4A84B, #B8860B);
+        }
+
+        .module-label {
+            margin: 0;
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.75);
+            text-transform: uppercase;
+            letter-spacing: 2.5px;
+            font-weight: 500;
+        }
+
+        .lesson-title {
+            margin: 10px 0 0 0;
+            font-size: 28px;
+            color: #ffffff;
+            font-weight: 700;
+            line-height: 1.3;
+            position: relative;
+        }
+
+        .lesson-meta {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+            padding-top: 18px;
+            border-top: 1px solid rgba(255, 255, 255, 0.15);
+            flex-wrap: wrap;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.85);
+            background: rgba(255, 255, 255, 0.1);
+            padding: 5px 12px;
+            border-radius: 4px;
+        }
+
+        /* Table of Contents */
+        .toc-box {
+            background: linear-gradient(135deg, #fafafa 0%, #f5f5f5 100%);
+            border-radius: 14px;
+            padding: 24px 28px;
+            margin-bottom: 35px;
+            border: 1px solid #e8e8e8;
+        }
+
+        .toc-box .box-label {
+            font-weight: 600;
+            color: #1e293b;
+            margin: 0 0 18px 0;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .toc-list {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px 24px;
+        }
+
+        .toc-list a {
+            display: flex;
+            align-items: center;
+            padding: 8px 12px;
+            color: #555;
+            text-decoration: none;
+            font-size: 14px;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+        }
+
+        .toc-list a:hover {
+            background: white;
+            color: #1e293b;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+        }
+
+        .toc-list .section-num {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 26px;
+            height: 26px;
+            background: #1e293b;
+            color: white;
+            font-weight: 600;
+            font-size: 11px;
+            border-radius: 6px;
+            margin-right: 12px;
+            flex-shrink: 0;
+        }
+
+        /* Learning Objectives */
+        .objectives-box {
+            background: #f8fafc;
+            border: 2px solid #334155;
+            border-radius: 14px;
+            padding: 30px 35px;
+            margin-bottom: 40px;
+        }
+
+        .objectives-box .box-label {
+            font-weight: 600;
+            color: #1e293b;
+            margin: 0 0 18px 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .objectives-box .box-label::before {
+            content: '🎯';
+        }
+
+        .objectives-box ul {
+            margin: 0;
+            padding-left: 22px;
+        }
+
+        .objectives-box li {
+            margin-bottom: 14px;
+            font-size: 16px;
+        }
+
+        /* Section Headings */
+        h2 {
+            font-size: 24px;
+            color: #1e293b;
+            margin: 50px 0 20px 0;
+            font-weight: 600;
+            position: relative;
+            padding-bottom: 12px;
+        }
+
+        h2::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 60px;
+            height: 3px;
+            background: #B8860B;
+        }
+
+        h3 {
+            font-size: 20px;
+            color: #334155;
+            margin: 30px 0 15px 0;
+        }
+
+        /* Paragraphs & Highlighting */
+        p {
+            font-size: 17px;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        .highlight {
+            background: linear-gradient(180deg, transparent 60%, #FFF59D 60%);
+            padding: 0 4px;
+            font-weight: 500;
+        }
+
+        /* Statistics Highlight */
+        .stat-highlight {
+            background: #f1f5f9;
+            padding: 25px;
+            border-radius: 12px;
+            border-left: 5px solid #B8860B;
+            margin: 30px 0;
+        }
+
+        /* Case Study Box */
+        .case-study {
+            background: #fdfdfd;
+            border-radius: 16px;
+            margin: 40px 0;
+            overflow: hidden;
+            border: 1px solid #e2e8f0;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+        }
+
+        .case-study-header {
+            background: #1e293b;
+            padding: 20px 30px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            color: white;
+        }
+
+        .case-study-content {
+            padding: 30px;
+        }
+
+        /* Data Tables */
+        .data-table-container {
+            overflow-x: auto;
+            margin: 35px 0;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 15px;
+        }
+
+        th {
+            background: #1e293b;
+            color: white;
+            text-align: left;
+            padding: 15px;
+        }
+
+        td {
+            padding: 15px;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        tr:nth-child(even) {
+            background: #f8fafc;
+        }
+
+        /* Check Your Understanding */
+        .check-understanding {
+            background: #fdfbf7;
+            border: 2px solid #B8860B;
+            border-radius: 16px;
+            padding: 32px;
+            margin: 45px 0;
+        }
+
+        .reveal-btn {
+            background: #1e293b;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+
+        .answer-text {
+            display: none;
+            margin-top: 15px;
+            padding: 15px;
+            background: #f1f5f9;
+            border-radius: 8px;
+        }
+
+        /* Takeaways */
+        .takeaways-box {
+            background: #1e293b;
+            color: white;
+            padding: 30px;
+            border-radius: 14px;
+            margin: 40px 0;
+        }
+
+        .takeaways-box .box-label {
+            color: #D4A84B;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            font-size: 13px;
+            margin-bottom: 15px;
+            display: block;
+        }
+
+        /* References Box */
+        .references-box {
+            background: #f8f9fa;
+            padding: 30px;
+            border-radius: 14px;
+            font-size: 14px;
+            color: #666;
+            margin-top: 50px;
+        }
+
+        .references-box h4 {
+            margin-top: 0;
+            color: #333;
+        }
+
+        /* Footer */
+        .lesson-footer {
+            text-align: center;
+            padding-top: 40px;
+            border-top: 1px solid #eee;
+            margin-top: 40px;
+        }
+
+        .footer-logo {
+            max-width: 140px;
+            opacity: 0.8;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="lesson-container">
+        <div class="brand-header">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="brand-logo">
+        </div>
+
+        <header class="module-header">
+            <p class="module-label">Module 30: Practice Development & Business Mastery</p>
+            <h1 class="lesson-title">Lesson 4: High-Ticket Program Architecture and Pricing</h1>
+            <div class="lesson-meta">
+                <span class="meta-item">35 min read</span>
+                <span class="meta-item">Expert Level</span>
+            </div>
+        </header>
+
+        <div class="toc-box">
+            <p class="box-label">In This Lesson</p>
+            <ul class="toc-list">
+                <li><a href="#commodity"><span class="section-num">1</span>The Commodity Trap</a></li>
+                <li><a href="#value-based"><span class="section-num">2</span>Value-Based Pricing Models</a></li>
+                <li><a href="#perform-arch"><span class="section-num">3</span>Architecting the PERFORM™ Package</a></li>
+                <li><a href="#psychology"><span class="section-num">4</span>Psychology of the Elite Athlete</a></li>
+                <li><a href="#subscription"><span class="section-num">5</span>Subscription vs. Block Models</a></li>
+                <li><a href="#ltv-metrics"><span class="section-num">6</span>Maximizing Lifetime Value (LTV)</a></li>
+            </ul>
+        </div>
+
+        <div class="objectives-box">
+            <p class="box-label">Learning Objectives</p>
+            <ul>
+                <li>Transition from hourly billing to outcome-oriented, high-ticket packaging.</li>
+                <li>Structure a comprehensive 'Elite Performance Package' using all seven PERFORM™ pillars.</li>
+                <li>Apply psychological pricing strategies to anchor value for pro and semi-pro clients.</li>
+                <li>Design periodized coaching blocks that mirror the physiological demands of the athlete's season.</li>
+                <li>Implement advanced retention strategies to increase LTV through 'Mental Edge' maintenance.</li>
+            </ul>
+        </div>
+
+        <h2 id="commodity">1. The Commodity Trap: Why Hourly Rates Fail Athletes</h2>
+        <p>In the early stages of a career, many sports nutritionists fall into the <span class="highlight">commodity trap</span>: trading hours for dollars. While this model is intuitive, it fundamentally misaligns the incentives of the coach and the athlete. In a per-hour model, the coach is rewarded for inefficiency, and the athlete views the service as a cost center rather than an investment in performance.</p>
+
+        <div class="stat-highlight">
+            A 2023 industry survey of 1,200 performance coaches (n=1,200) found that practitioners using package-based pricing reported <strong>42% higher annual revenues</strong> and <strong>31% higher client adherence rates</strong> compared to those billing hourly.
+        </div>
+
+        <p>For the elite athlete, nutrition is not a discrete event; it is a continuous physiological requirement. By billing hourly, you suggest that your value only exists when you are speaking. In reality, your value lies in the <span class="highlight">asynchronous oversight</span>, the periodized planning (P), and the results tracking (R) that happen behind the scenes. High-ticket architecture moves the focus from "input" (time) to "output" (podium finishes, reduced injury rates, and career longevity).</p>
+
+        <h2 id="value-based">2. Value-Based Pricing: Positioning for the Podium</h2>
+        <p>Value-based pricing is the practice of setting prices primarily on the perceived or estimated value of a product or service to the customer rather than on the cost of the product or historical prices. For a professional athlete, a 1% improvement in recovery (R) or mental clarity (M) can be the difference between a multi-million dollar contract renewal and retirement.</p>
+
+        <div class="data-table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Feature</th>
+                        <th>Hourly/Low-Ticket Model</th>
+                        <th>High-Ticket PERFORM™ Model</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Primary Focus</strong></td>
+                        <td>Information delivery</td>
+                        <td>Outcome & Transformation</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Client Perception</strong></td>
+                        <td>Expense/Cost</td>
+                        <td>Strategic Investment</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Communication</strong></td>
+                        <td>Reactive (scheduled calls)</td>
+                        <td>Proactive (daily monitoring)</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Revenue Type</strong></td>
+                        <td>Fluctuating/Unpredictable</td>
+                        <td>Stable/Recurring</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Integration</strong></td>
+                        <td>Isolated nutrition advice</td>
+                        <td>Full 7-Pillar Integration</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <h2 id="perform-arch">3. Architecting the 'Elite Performance Package'</h2>
+        <p>Your high-ticket offer should be a physical manifestation of the <span class="highlight">The PERFORM Athletic Method™</span>. It is not just "nutrition coaching"; it is a comprehensive performance management system. To justify a premium price point (typically $1,500–$5,000+ per quarter), you must integrate every pillar:</p>
+
+        <ul>
+            <li><strong>P (Periodize):</strong> Macrocycle and mesocycle planning aligned with their competition schedule.</li>
+            <li><strong>E (Energy Systems):</strong> Metabolic testing and specific fueling for their sport's bioenergetics.</li>
+            <li><strong>R (Recovery):</strong> Personalized supplement protocols and anti-inflammatory strategies.</li>
+            <li><strong>F (Functional Foods):</strong> Custom meal plans featuring ergogenic bioactives.</li>
+            <li><strong>O (Optimize Hydration):</strong> Sweat rate testing and electrolyte periodization.</li>
+            <li><strong>R (Results Tracking):</strong> Weekly body composition and performance metric audits.</li>
+            <li><strong>M (Mental Edge):</strong> Neuro-nutrition for cognitive precision under pressure.</li>
+        </ul>
+
+        <div class="case-study">
+            <div class="case-study-header">
+                <div class="case-study-icon">🏆</div>
+                <div>
+                    <p class="box-label">Case Study: The Pro-Contract Transition</p>
+                    <p class="subtitle">Client: Marcus (24, Professional Soccer Player)</p>
+                </div>
+            </div>
+            <div class="case-study-content">
+                <p><strong>Presenting Scenario:</strong> Marcus was paying $150 per session for occasional nutrition advice. He struggled with late-game fatigue (E) and slow recovery between matches (R).</p>
+                <p><strong>Intervention:</strong> Transitioned to a 6-month "Elite Pitch Performance" package at $1,200/month. This included daily WhatsApp support, integration with his wearable data (R), and a specific "Mental Edge" protocol for pre-match anxiety (M).</p>
+                <p><strong>Outcomes:</strong> Marcus reported a 15% increase in high-intensity running distance in the final 15 minutes of matches. He secured a contract extension valued at $2.2M, citing his physical readiness as a key factor. The coach's revenue from this single client increased from ~$450/mo to $1,200/mo while providing significantly more value.</p>
+            </div>
+        </div>
+
+        <h2 id="psychology">4. Psychology of Pricing: Anchoring and Scarcity</h2>
+        <p>Elite athletes and high-performers are often <span class="highlight">price-sensitive in reverse</span>. If a service is too cheap, they assume it is "general population" advice and not tailored to the demands of elite sport. To position your practice at the premium level, use the following psychological levers:</p>
+
+        <h3>Price Anchoring</h3>
+        <p>Always present your highest-tier "Gold/Olympic" package first. Even if the athlete chooses the "Silver/Pro" tier, the higher price anchors the value of your expertise. A $5,000 package makes a $2,500 package look like a bargain, whereas presenting only a $2,500 package may feel expensive in a vacuum.</p>
+
+        <h3>The "Performance Insurance" Reframe</h3>
+        <p>Position your fee not as a cost, but as "Performance Insurance." For an athlete earning $500k a year, a $10k annual investment in nutrition is only 2% of their income to protect 100% of their earning potential. This shift in perspective is crucial for high-ticket closing.</p>
+
+        <h2 id="subscription">5. Subscription Models vs. Periodized Coaching Blocks</h2>
+        <p>The "P" in PERFORM™ (Periodization) should be reflected in your business model. Athletes do not have linear needs throughout the year. Your pricing architecture should accommodate the <span class="highlight">Off-Season, Pre-Season, and In-Season</span> cycles.</p>
+
+        <h3>The Hybrid Model</h3>
+        <p>Many successful coaches use a <strong>High-Intensity Block</strong> (e.g., a 12-week "Metabolic Reset" or "Hypertrophy Phase") followed by a lower-priced <strong>Maintenance Subscription</strong>. This mirrors the mesocycles of training. During the block, contact is frequent and pricing is high. During maintenance, the focus shifts to the "R" (Results Tracking) and "M" (Mental Edge) pillars to ensure the gains are preserved.</p>
+
+        <div class="stat-highlight">
+            Data from 2024 performance business analytics (n=450 practices) shows that "Hybrid" models (Initial high-ticket block + monthly recurring maintenance) have a <strong>65% higher Lifetime Value (LTV)</strong> than one-off transformation packages.
+        </div>
+
+        <h2 id="ltv-metrics">6. Maximizing Lifetime Value (LTV) and Retention</h2>
+        <p>It is 5 to 7 times more expensive to acquire a new client than to retain an existing one. In sports nutrition, high retention is achieved by evolving the service as the athlete evolves. Once the "P" and "E" pillars are stabilized, the coach must lean into the <span class="highlight">M (Mental Edge)</span> and <span class="highlight">R (Recovery)</span> pillars to maintain relevance.</p>
+
+        <p>Advanced strategies for LTV include:</p>
+        <ul>
+            <li><strong>Quarterly Bio-Audits:</strong> Deep-dive blood work or body comp analysis every 90 days to reset goals.</li>
+            <li><strong>Exclusive Community Access:</strong> Bringing your high-ticket athletes together (virtually or in-person) to share "Mental Edge" strategies.</li>
+            <li><strong>The "Alumni" Maintenance Tier:</strong> A lower-friction, data-only monitoring service for athletes who have completed their primary transformation but want the security of an expert "eye" on their metrics.</li>
+        </ul>
+
+        <div class="case-study">
+            <div class="case-study-header">
+                <div class="case-study-icon">🚴‍♀️</div>
+                <div>
+                    <p class="box-label">Case Study: The Executive Athlete</p>
+                    <p class="subtitle">Client: Elena (48, CEO & Ironman Competitor)</p>
+                </div>
+            </div>
+            <div class="case-study-content">
+                <p><strong>Presenting Scenario:</strong> Elena had high disposable income but zero time. She was frustrated by "cookie-cutter" apps that didn't account for her 60-hour work weeks and travel.</p>
+                <p><strong>Intervention:</strong> A "Concierge Performance" package ($2,500/month). The coach coordinated directly with her personal chef and travel assistant to ensure "F" (Functional Foods) and "O" (Hydration) were handled globally.</p>
+                <p><strong>Outcomes:</strong> Elena achieved a PB at Ironman Cozumel while simultaneously managing a corporate merger. By solving the <em>logistical</em> burden of nutrition, the coach created a "sticky" service that Elena has maintained for over 3 years (LTV: $90,000).</p>
+            </div>
+        </div>
+
+        <div class="check-understanding">
+            <p class="box-label">Check Your Understanding</p>
+            <p class="box-subtitle">Test your mastery of program architecture and pricing psychology.</p>
+            
+            <div class="question-item">
+                <div class="question-number">1</div>
+                <p class="question-text">Why is the "Performance Insurance" reframe particularly effective for professional athletes?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-text">It shifts the athlete's perception from "spending money" to "protecting their asset" (their body and career). By comparing the coaching fee to their total contract value, the price becomes a small percentage of the risk they are mitigating.</div>
+            </div>
+
+            <div class="question-item">
+                <div class="question-number">2</div>
+                <p class="question-text">In a "Hybrid" business model, what is the primary purpose of the 'Maintenance Subscription' after an initial high-ticket block?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-text">The maintenance tier focuses on long-term Results Tracking (R) and Mental Edge (M) consistency. It increases Lifetime Value (LTV) by preventing client churn and ensuring the athlete maintains their physiological gains throughout the season.</div>
+            </div>
+        </div>
+
+        <div class="takeaways-box">
+            <span class="box-label">Key Takeaways</span>
+            <ul>
+                <li><strong>Ditch the Clock:</strong> Hourly billing creates a ceiling on your income and devalues the asynchronous expertise you provide.</li>
+                <li><strong>Sell the Result:</strong> High-ticket packages should be priced based on the magnitude of the transformation and the athlete's earning potential.</li>
+                <li><strong>Full Integration:</strong> A premium price requires a premium service; ensure all 7 PERFORM™ pillars are visible in your offer.</li>
+                <li><strong>Anchor High:</strong> Use psychological pricing to establish authority and make your core offers appear as high-value investments.</li>
+                <li><strong>Retention is Revenue:</strong> Use periodized maintenance tiers to keep athletes engaged for years, not just weeks.</li>
+            </ul>
+        </div>
+
+        <div class="references-box">
+            <h4>References & Further Reading</h4>
+            <ul>
+                <li>Baker et al. (2022). "Economic Value of Performance Nutrition in Professional Sport." <em>Journal of Sports Economics & Management.</em></li>
+                <li>Grant, J. (2023). "The Psychology of Premium Pricing in High-Performance Coaching." <em>International Journal of Sports Marketing.</em></li>
+                <li>Williams et al. (2021). "Adherence Rates in Outcome-Based vs. Time-Based Nutrition Interventions." <em>Sports Medicine Open.</em></li>
+                <li>AccrediPro Research Group. (2024). "Business Metrics of the PERFORM™ Practitioner: A Multi-Year Analysis." <em>Internal Practitioner Review.</em></li>
+                <li>Doherty, R. et al. (2023). "The Impact of Practitioner Availability on Athlete Satisfaction and Performance Outcomes." <em>Journal of Applied Sport Psychology.</em></li>
+            </ul>
+        </div>
+
+        <footer class="lesson-footer">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="footer-logo">
+            <p class="brand">AccrediPro Academy © 2024</p>
+            <p class="copyright">Sports Nutrition Coach Certification | Module 30 | Lesson 4</p>
+        </footer>
+    </div>
+</body>
+
+</html>

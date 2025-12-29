@@ -1,0 +1,596 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lesson 24.5: Precision Hydration: Sweat Testing and Thermoregulation</title>
+    <style>
+        /* Base & Reset */
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Georgia, 'Times New Roman', serif;
+            line-height: 1.8;
+            color: #2d2d2d;
+            background: #f8f6f3;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Main Container */
+        .lesson-container {
+            max-width: 860px;
+            margin: 0 auto;
+            padding: 40px 30px;
+            background: #ffffff;
+            min-height: 100vh;
+            box-shadow: 0 0 60px rgba(0, 0, 0, 0.08);
+        }
+
+        /* Brand Header */
+        .brand-header {
+            text-align: center;
+            padding-bottom: 30px;
+            margin-bottom: 35px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .brand-logo {
+            max-width: 220px;
+            height: auto;
+            margin-bottom: 5px;
+        }
+
+        /* Module Header - BLUE theme for Hydration */
+        .module-header {
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+            padding: 35px 35px 30px;
+            border-radius: 16px;
+            margin-bottom: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .module-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+            transform: translate(100px, -100px);
+        }
+
+        .module-header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, #B8860B, #D4A84B, #B8860B);
+        }
+
+        .module-label {
+            margin: 0;
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.75);
+            text-transform: uppercase;
+            letter-spacing: 2.5px;
+            font-weight: 500;
+        }
+
+        .lesson-title {
+            margin: 10px 0 0 0;
+            font-size: 28px;
+            color: #ffffff;
+            font-weight: 700;
+            line-height: 1.3;
+            position: relative;
+        }
+
+        .lesson-meta {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+            padding-top: 18px;
+            border-top: 1px solid rgba(255, 255, 255, 0.15);
+            flex-wrap: wrap;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.85);
+            background: rgba(255, 255, 255, 0.1);
+            padding: 5px 12px;
+            border-radius: 4px;
+        }
+
+        /* Table of Contents */
+        .toc-box {
+            background: linear-gradient(135deg, #fafafa 0%, #f5f5f5 100%);
+            border-radius: 14px;
+            padding: 24px 28px;
+            margin-bottom: 35px;
+            border: 1px solid #e8e8e8;
+        }
+
+        .toc-box .box-label {
+            font-weight: 600;
+            color: #1e3a8a;
+            margin: 0 0 18px 0;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .toc-list {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px 24px;
+        }
+
+        .toc-list li {
+            margin: 0;
+        }
+
+        .toc-list a {
+            display: flex;
+            align-items: center;
+            padding: 8px 12px;
+            color: #555;
+            text-decoration: none;
+            font-size: 14px;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+        }
+
+        .toc-list a:hover {
+            background: white;
+            color: #1e3a8a;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+        }
+
+        .toc-list .section-num {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 26px;
+            height: 26px;
+            background: #1e3a8a;
+            color: white;
+            font-weight: 600;
+            font-size: 11px;
+            border-radius: 6px;
+            margin-right: 12px;
+            flex-shrink: 0;
+        }
+
+        /* Learning Objectives */
+        .objectives-box {
+            background: #eff6ff;
+            border: 2px solid #3b82f6;
+            border-radius: 14px;
+            padding: 30px 35px;
+            margin-bottom: 40px;
+        }
+
+        .objectives-box .box-label {
+            font-weight: 600;
+            color: #1e3a8a;
+            margin: 0 0 18px 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .objectives-box .box-label::before {
+            content: '🎯';
+            font-size: 18px;
+        }
+
+        .objectives-box ul {
+            margin: 0;
+            padding-left: 22px;
+        }
+
+        .objectives-box li {
+            margin-bottom: 14px;
+            font-size: 16px;
+            line-height: 1.7;
+        }
+
+        /* Section Headings */
+        h2 {
+            font-size: 24px;
+            color: #1e3a8a;
+            margin: 50px 0 20px 0;
+            font-weight: 600;
+            position: relative;
+            padding-bottom: 12px;
+        }
+
+        h2::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 60px;
+            height: 3px;
+            background: #B8860B;
+        }
+
+        /* Highlights */
+        .highlight {
+            background: linear-gradient(180deg, transparent 60%, #dbeafe 60%);
+            padding: 0 4px;
+            font-weight: 500;
+        }
+
+        /* Statistics Box */
+        .stats-box {
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+            padding: 40px;
+            border-radius: 16px;
+            margin: 35px 0;
+            color: white;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 25px;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 36px;
+            font-weight: 700;
+            display: block;
+        }
+
+        .stat-label {
+            font-size: 12px;
+            text-transform: uppercase;
+            opacity: 0.9;
+        }
+
+        /* Case Study Box */
+        .case-study {
+            background: #f8fafc;
+            border-radius: 16px;
+            margin: 40px 0;
+            border: 1px solid #e2e8f0;
+            overflow: hidden;
+        }
+
+        .case-study-header {
+            background: #1e3a8a;
+            color: white;
+            padding: 20px 30px;
+        }
+
+        .case-study-content {
+            padding: 30px;
+        }
+
+        /* Comparison Table */
+        .data-table-container {
+            margin: 35px 0;
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 15px;
+        }
+
+        th {
+            background: #1e3a8a;
+            color: white;
+            padding: 15px;
+            text-align: left;
+        }
+
+        td {
+            padding: 15px;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        tr:nth-child(even) {
+            background: #f1f5f9;
+        }
+
+        /* Check Your Understanding */
+        .check-understanding {
+            background: #fffbeb;
+            border: 2px solid #f59e0b;
+            border-radius: 16px;
+            padding: 30px;
+            margin: 40px 0;
+        }
+
+        .reveal-btn {
+            background: #1e3a8a;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 6px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+
+        .answer-text {
+            display: none;
+            margin-top: 15px;
+            padding: 15px;
+            background: #fef3c7;
+            border-radius: 6px;
+        }
+
+        /* Takeaways & References */
+        .takeaways-box {
+            background: #f1f5f9;
+            padding: 30px;
+            border-radius: 12px;
+            margin-top: 40px;
+        }
+
+        .references-box {
+            font-size: 14px;
+            color: #64748b;
+            margin-top: 40px;
+            padding-top: 20px;
+            border-top: 1px solid #e2e8f0;
+        }
+
+        .footer-logo {
+            max-width: 140px;
+            opacity: 0.8;
+            margin-top: 20px;
+        }
+
+        .lesson-footer {
+            text-align: center;
+            padding: 40px 0;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="lesson-container">
+        <div class="brand-header">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="brand-logo">
+        </div>
+
+        <header class="module-header">
+            <p class="module-label">Module 24: L3: Master Practitioner Skills</p>
+            <h1 class="lesson-title">Lesson 5: Precision Hydration: Sweat Testing and Thermoregulation</h1>
+            <div class="lesson-meta">
+                <span class="meta-item">⏱️ 35 min read</span>
+                <span class="meta-item">📚 Lesson 5 of 8</span>
+            </div>
+        </header>
+
+        <div class="toc-box">
+            <p class="box-label">In This Lesson</p>
+            <ul class="toc-list">
+                <li><a href="#sweat-testing"><span class="section-num">1</span>Sweat Rate & Sodium Analysis</a></li>
+                <li><a href="#thermoregulation"><span class="section-num">2</span>The Physiology of Heat Strain</a></li>
+                <li><a href="#hyperhydration"><span class="section-num">3</span>Advanced Pre-loading Strategies</a></li>
+                <li><a href="#hyponatremia"><span class="section-num">4</span>Exertional Hyponatremia</a></li>
+                <li><a href="#plasma-volume"><span class="section-num">5</span>Plasma Volume Expansion</a></li>
+                <li><a href="#multiday"><span class="section-num">6</span>Multi-Day Stage Recovery</a></li>
+            </ul>
+        </div>
+
+        <div class="objectives-box">
+            <p class="box-label">Learning Objectives</p>
+            <ul>
+                <li>Master the calculation of whole-body sweat rate and interpretation of sodium concentration data.</li>
+                <li>Analyze the impact of plasma volume on cardiovascular efficiency and thermoregulatory capacity.</li>
+                <li>Design evidence-based hyperhydration protocols using glycerol and sodium boluses for extreme environments.</li>
+                <li>Differentiate between dehydration and exertional hyponatremia to implement safe emergency nutritional responses.</li>
+                <li>Integrate advanced hydration monitoring into multi-day tournament and stage-race protocols.</li>
+            </ul>
+        </div>
+
+        <h2 id="sweat-testing">1. Beyond "Drink to Thirst": Advanced Sweat Analysis</h2>
+        <p>In the PERFORM Method™, the <strong>"O" (Optimize Hydration)</strong> moves from general guidelines to precision metrics at the Master Practitioner level. While "drinking to thirst" may suffice for recreational activity, elite performance in thermally challenging environments requires an objective understanding of an athlete's unique <span class="highlight">sweat signature</span>.</p>
+
+        <p>A 2022 systematic review highlighted that sweat sodium concentrations can range from <strong>20 mmol/L to over 100 mmol/L</strong> in healthy athletes. A "salty sweater" losing 2.5 liters of fluid per hour during a marathon could lose over 5,000mg of sodium—far exceeding standard sports drink formulations.</p>
+
+        <div class="stats-box">
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <span class="stat-number">2.0%</span>
+                    <span class="stat-label">Body Mass Loss = Cognitive Decline</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-number">45-70%</span>
+                    <span class="stat-label">Variance in Sweat Na+ Concentration</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-number">1.5L</span>
+                    <span class="stat-label">Max Fluid Absorption per Hour</span>
+                </div>
+            </div>
+        </div>
+
+        <h2 id="thermoregulation">2. The Physiology of Thermoregulatory Strain</h2>
+        <p>Thermoregulation is the body's ability to maintain a core temperature within a narrow range (approx. 37°C). During exercise, <strong>75-80% of energy conversion</strong> is released as heat. If heat dissipation (primarily through evaporation) fails to match heat production, core temperature rises, leading to a cascade of performance decrements:</p>
+        
+        <ul>
+            <li><strong>Cardiovascular Drift:</strong> As plasma volume decreases due to sweating, stroke volume drops. To maintain cardiac output, heart rate must increase, leading to premature fatigue.</li>
+            <li><strong>Splanchnic Hypoperfusion:</strong> Blood is shunted away from the GI tract to the skin for cooling. This increases gut permeability (leaky gut) and reduces nutrient absorption.</li>
+            <li><strong>Glycogen Sparing Failure:</strong> High core temperatures increase the rate of muscle glycogen utilization, accelerating the "bonk."</li>
+        </ul>
+
+        <h2 id="hyperhydration">3. Hyperhydration: Glycerol and Sodium Boluses</h2>
+        <p>For athletes competing in high heat/humidity (e.g., Kona Ironman, Tokyo Olympics), starting "euhydrated" (normal status) may not be enough. <span class="highlight">Hyperhydration</span> involves expanding total body water (TBW) beyond normal physiological limits to provide a "buffer" for fluid loss.</p>
+
+        <div class="principle-card" style="border-left-color: #3b82f6;">
+            <div class="principle-title">The Glycerol Protocol</div>
+            <div class="principle-text">
+                Glycerol is an osmotic agent that, when consumed with large volumes of water, creates an osmotic gradient that pulls fluid into the intracellular and interstitial spaces, reducing urinary output.
+                <ul>
+                    <li><strong>Dosage:</strong> 1.2 – 1.5g per kg of body mass.</li>
+                    <li><strong>Fluid:</strong> 25 – 35mL per kg of body mass.</li>
+                    <li><strong>Timing:</strong> Consumed over 60–90 minutes, finishing 30 minutes before exercise.</li>
+                    <li><strong>Outcome:</strong> Can increase TBW by ~600–1000mL, lowering core temperature during the first hour of effort.</li>
+                </ul>
+            </div>
+        </div>
+
+        <h2 id="hyponatremia">4. Exertional Hyponatremia (EAH)</h2>
+        <p>While dehydration is the common fear, <strong>Exertional Hyponatremia (EAH)</strong> is often more dangerous. EAH occurs when serum sodium levels fall below 135 mmol/L, typically due to the over-consumption of hypotonic fluids (water or low-sodium sports drinks) in excess of sweat losses.</p>
+
+        <div class="data-table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Feature</th>
+                        <th>Dehydration (Hypovolemia)</th>
+                        <th>Hyponatremia (EAH)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Mechanism</strong></td>
+                        <td>Fluid loss > Fluid intake</td>
+                        <td>Fluid intake > Fluid loss (usually)</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Body Weight</strong></td>
+                        <td>Decreased (>2-3%)</td>
+                        <td>Stable or Increased</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Primary Symptom</strong></td>
+                        <td>Thirst, dry mouth, high HR</td>
+                        <td>Nausea, confusion, "puffiness"</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Sodium Status</strong></td>
+                        <td>Often Hypernatremic (High)</td>
+                        <td>Hyponatremic (Low < 135 mmol/L)</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Intervention</strong></td>
+                        <td>Hypotonic fluid + Electrolytes</td>
+                        <td>Fluid restriction + Hypertonic saline</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="case-study">
+            <div class="case-study-header">
+                <p style="margin:0; font-weight:bold;">CASE STUDY: The "Salty" Marathoner</p>
+                <p style="margin:0; font-size:12px; opacity:0.9;">Precision Hydration in Action</p>
+            </div>
+            <div class="case-study-content">
+                <div style="display:flex; align-items:center; gap:15px; background:white; padding:15px; border-radius:10px; border:1px solid #eee; margin-bottom:20px;">
+                    <div style="font-size:30px;">🏃‍♂️</div>
+                    <div>
+                        <p style="margin:0; font-weight:bold;">Client: Marcus, 34, Elite Amateur Triathlete</p>
+                        <p style="margin:0; font-size:14px; color:#666;">Goal: Ironman 70.3 in 32°C (90°F) humidity.</p>
+                    </div>
+                </div>
+                <p><strong>Presentation:</strong> Marcus consistently suffered from severe cramping and "brain fog" in the final 5km of the run, despite drinking 800ml/hr of a standard sports drink.</p>
+                <p><strong>Assessment:</strong> 
+                    <ul>
+                        <li>Sweat Rate Test: 1.8 L/hr in race-pace conditions.</li>
+                        <li>Sweat Sodium Test: 1,150 mg/L (High).</li>
+                        <li>Total Sodium Loss: ~2,070 mg per hour.</li>
+                    </ul>
+                </p>
+                <p><strong>Intervention:</strong> Switched from a 400mg/L drink to a custom 1,500mg/L sodium solution. Implemented a pre-race sodium bolus (3,000mg Na+ in 1L water 2 hours before start).</p>
+                <p><strong>Outcome:</strong> Finished the run 8 minutes faster than his previous best in similar heat; no cramping or cognitive decline reported. Post-race body mass loss was maintained at 1.8%.</p>
+            </div>
+        </div>
+
+        <h2 id="plasma-volume">5. Plasma Volume Expansion & Cardiovascular Efficiency</h2>
+        <p>The Master Practitioner understands that <span class="highlight">Plasma Volume (PV)</span> is the "liquid conveyor belt" of performance. PV expansion occurs naturally during heat acclimation, but can be acutely manipulated through nutrition. Increased PV allows for:</p>
+        <ol>
+            <li><strong>Higher Stroke Volume:</strong> More blood returning to the heart per beat.</li>
+            <li><strong>Increased Skin Blood Flow:</strong> Improved ability to move heat from the core to the periphery.</li>
+            <li><strong>Reduced Viscosity:</strong> Lowering the "thickness" of blood, making it easier to pump through micro-capillaries in working muscle.</li>
+        </ol>
+        <p>A 2023 study (n=24) demonstrated that a high-sodium bolus (160 mmol/L Na+) expanded plasma volume by <strong>8.5% ± 2.1%</strong> within 90 minutes, significantly improving time-to-exhaustion in 35°C heat compared to a low-sodium control.</p>
+
+        <h2 id="multiday">6. Multi-Day Integration: The Stage Race Protocol</h2>
+        <p>In multi-day events (e.g., Tour de France, CrossFit Games), hydration is a 24-hour cycle. The goal is to restore TBW before the next day's start. The PERFORM™ protocol for stage recovery includes:</p>
+        
+        <div class="principle-card">
+            <div class="principle-title">The 150% Rehydration Rule</div>
+            <div class="principle-text">
+                To account for ongoing obligatory urine losses, athletes should consume 1.5L of fluid for every 1kg of body mass lost during the stage.
+            </div>
+        </div>
+
+        <p>However, volume alone is insufficient. Without sufficient sodium, the kidneys will simply excrete the water, leading to further electrolyte dilution. Master Practitioners utilize <strong>High-Sodium Recovery Broths</strong> or milk-based beverages, which have a high <span class="highlight">Beverage Hydration Index (BHI)</span> due to their electrolyte and protein content.</p>
+
+        <div class="check-understanding">
+            <p class="box-label">Check Your Understanding</p>
+            <div style="margin-bottom:20px;">
+                <p><strong>1. Why is glycerol used in hyperhydration protocols despite being a caloric substrate?</strong></p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-text">Glycerol acts as an osmotic agent. It is rapidly absorbed and distributed throughout the total body water (except the brain), creating an osmotic pressure that "holds" extra water in the body, effectively delaying the onset of dehydration and reducing urinary output during the pre-exercise period.</div>
+            </div>
+            <div>
+                <p><strong>2. An athlete gains 1kg of weight during a 4-hour ultramarathon and feels confused. What is the most likely diagnosis?</strong></p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-text">Exertional Hyponatremia (EAH). Weight gain during exercise is a hallmark sign of over-drinking (fluid intake exceeding sweat/urinary loss). Confusion indicates neurological distress due to cerebral edema (swelling of the brain) from low serum sodium.</div>
+            </div>
+        </div>
+
+        <div class="takeaways-box">
+            <p class="box-label">Key Takeaways</p>
+            <ul>
+                <li><strong>Individualize:</strong> Sweat sodium concentration is genetically determined and highly variable; testing is mandatory for elite precision.</li>
+                <li><strong>Volume vs. Concentration:</strong> Dehydration is a volume problem; Hyponatremia is a concentration problem. Both impair the "O" in PERFORM™.</li>
+                <li><strong>Pre-Load:</strong> Hyperhydration (Glycerol + Sodium) provides a physiological "cushion" for athletes in extreme heat.</li>
+                <li><strong>Recover with Sodium:</strong> Rehydration requires 150% of lost mass, paired with high sodium to ensure fluid retention.</li>
+            </ul>
+        </div>
+
+        <div class="references-box">
+            <p><strong>References & Further Reading:</strong></p>
+            <ul>
+                <li>Barnes, K.A. et al. (2022). "Sweat sodium concentration in athletes: A narrative review of the literature." <i>Journal of the International Society of Sports Nutrition.</i></li>
+                <li>Goulet, E.D.B. (2021). "Effect of glycerol-induced hyperhydration on endurance performance: A meta-analysis." <i>Sports Medicine.</i></li>
+                <li>Hew-Butler, T. et al. (2020). "Updated consensus statement on exertional hyponatremia." <i>Clinical Journal of Sport Medicine.</i></li>
+                <li>Maughan, R.J. et al. (2023). "A randomized trial to assess the beverage hydration index of common drinks." <i>American Journal of Clinical Nutrition.</i></li>
+                <li>Périard, J.D. et al. (2021). "Adaptations to exercise in the heat." <i>Scandinavian Journal of Medicine & Science in Sports.</i></li>
+            </ul>
+        </div>
+
+        <footer class="lesson-footer">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="footer-logo">
+            <p class="brand">AccrediPro Academy: Sports Nutrition Coach Certification</p>
+            <p class="copyright">&copy; 2024 AccrediPro Academy. All rights reserved. The PERFORM Method™ is a registered trademark.</p>
+        </footer>
+    </div>
+</body>
+
+</html>

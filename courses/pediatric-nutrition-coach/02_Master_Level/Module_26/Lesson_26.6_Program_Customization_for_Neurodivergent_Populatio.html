@@ -1,0 +1,583 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lesson 26.6: Program Customization for Neurodivergent Populations</title>
+    <style>
+        /* Base & Reset */
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Georgia, 'Times New Roman', serif;
+            line-height: 1.8;
+            color: #2d2d2d;
+            background: #f8f6f3;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Main Container */
+        .lesson-container {
+            max-width: 860px;
+            margin: 0 auto;
+            padding: 40px 30px;
+            background: #ffffff;
+            min-height: 100vh;
+            box-shadow: 0 0 60px rgba(0, 0, 0, 0.08);
+        }
+
+        /* Brand Header */
+        .brand-header {
+            text-align: center;
+            padding-bottom: 30px;
+            margin-bottom: 35px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .brand-logo {
+            max-width: 220px;
+            height: auto;
+            margin-bottom: 5px;
+        }
+
+        /* Module Header - PURPLE theme for Neuro-Nutrition */
+        .module-header {
+            background: linear-gradient(135deg, #6366f1 0%, #a855f7 100%);
+            padding: 35px 35px 30px;
+            border-radius: 16px;
+            margin-bottom: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .module-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+            transform: translate(100px, -100px);
+        }
+
+        .module-header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, #B8860B, #D4A84B, #B8860B);
+        }
+
+        .module-label {
+            margin: 0;
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.75);
+            text-transform: uppercase;
+            letter-spacing: 2.5px;
+            font-weight: 500;
+        }
+
+        .lesson-title {
+            margin: 10px 0 0 0;
+            font-size: 28px;
+            color: #ffffff;
+            font-weight: 700;
+            line-height: 1.3;
+            position: relative;
+        }
+
+        .lesson-meta {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+            padding-top: 18px;
+            border-top: 1px solid rgba(255, 255, 255, 0.15);
+            flex-wrap: wrap;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.85);
+            background: rgba(255, 255, 255, 0.1);
+            padding: 5px 12px;
+            border-radius: 4px;
+        }
+
+        /* Table of Contents */
+        .toc-box {
+            background: linear-gradient(135deg, #fafafa 0%, #f5f5f5 100%);
+            border-radius: 14px;
+            padding: 24px 28px;
+            margin-bottom: 35px;
+            border: 1px solid #e8e8e8;
+        }
+
+        .toc-box .box-label {
+            font-weight: 600;
+            color: #6366f1;
+            margin: 0 0 18px 0;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .toc-list {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px 24px;
+        }
+
+        .toc-list li {
+            margin: 0;
+        }
+
+        .toc-list a {
+            display: flex;
+            align-items: center;
+            padding: 8px 12px;
+            color: #555;
+            text-decoration: none;
+            font-size: 14px;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+        }
+
+        .toc-list a:hover {
+            background: white;
+            color: #6366f1;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+        }
+
+        .toc-list .section-num {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 26px;
+            height: 26px;
+            background: #6366f1;
+            color: white;
+            font-weight: 600;
+            font-size: 11px;
+            border-radius: 6px;
+            margin-right: 12px;
+            flex-shrink: 0;
+        }
+
+        /* Learning Objectives */
+        .objectives-box {
+            background: #f5f3ff;
+            border: 2px solid #a855f7;
+            border-radius: 14px;
+            padding: 30px 35px;
+            margin-bottom: 40px;
+        }
+
+        .objectives-box .box-label {
+            font-weight: 600;
+            color: #7c3aed;
+            margin: 0 0 18px 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .objectives-box .box-label::before {
+            content: '🎯';
+            font-size: 18px;
+        }
+
+        .objectives-box ul {
+            margin: 0;
+            padding-left: 22px;
+        }
+
+        .objectives-box li {
+            margin-bottom: 14px;
+            font-size: 16px;
+            line-height: 1.7;
+        }
+
+        /* Section Headings */
+        h2 {
+            font-size: 24px;
+            color: #4338ca;
+            margin: 50px 0 20px 0;
+            font-weight: 600;
+            position: relative;
+            padding-bottom: 12px;
+        }
+
+        h2::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 60px;
+            height: 3px;
+            background: #B8860B;
+        }
+
+        h3 {
+            font-size: 20px;
+            color: #1e1b4b;
+            margin: 35px 0 15px 0;
+            font-weight: 600;
+        }
+
+        /* Paragraphs & Highlighting */
+        p {
+            font-size: 17px;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        .highlight {
+            background: linear-gradient(180deg, transparent 60%, #e0e7ff 60%);
+            padding: 0 4px;
+            font-weight: 600;
+            color: #3730a3;
+        }
+
+        .stat-highlight {
+            color: #7c3aed;
+            font-weight: 700;
+        }
+
+        /* Tables */
+        .data-table-container {
+            overflow-x: auto;
+            margin: 35px 0;
+            border-radius: 12px;
+            border: 1px solid #e5e7eb;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 15px;
+            background: white;
+        }
+
+        th {
+            background: #f3f4f6;
+            padding: 15px;
+            text-align: left;
+            font-weight: 600;
+            border-bottom: 2px solid #e5e7eb;
+        }
+
+        td {
+            padding: 15px;
+            border-bottom: 1px solid #f3f4f6;
+            vertical-align: top;
+        }
+
+        /* Case Study Box */
+        .case-study {
+            background: linear-gradient(135deg, #f8f9fb 0%, #f0f2f5 100%);
+            border-radius: 16px;
+            padding: 0;
+            margin: 40px 0;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+            border: 1px solid #e5e7eb;
+        }
+
+        .case-study-header {
+            background: linear-gradient(135deg, #4338ca 0%, #6366f1 100%);
+            padding: 20px 30px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .case-study-header .box-label {
+            font-weight: 600;
+            color: #ffffff;
+            margin: 0;
+            font-size: 16px;
+        }
+
+        .case-study-content {
+            padding: 28px 30px;
+        }
+
+        .patient-profile {
+            display: flex;
+            align-items: center;
+            gap: 18px;
+            padding: 18px 22px;
+            background: white;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            border: 1px solid #e5e5e5;
+        }
+
+        /* Check Understanding */
+        .check-understanding {
+            background: #fdfbf7;
+            border: 2px solid #B8860B;
+            border-radius: 16px;
+            padding: 32px;
+            margin: 45px 0;
+        }
+
+        .reveal-btn {
+            background: #4338ca;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+
+        .answer-text {
+            display: none;
+            margin-top: 15px;
+            padding: 15px;
+            background: #f0fdf4;
+            border-radius: 8px;
+            color: #166534;
+            border-left: 4px solid #22c55e;
+        }
+
+        /* Takeaways & References */
+        .takeaways-box {
+            background: #f9fafb;
+            padding: 30px;
+            border-radius: 14px;
+            border: 1px solid #e5e7eb;
+            margin-top: 50px;
+        }
+
+        .references-box {
+            margin-top: 40px;
+            padding: 25px;
+            background: #ffffff;
+            border-top: 1px solid #eee;
+            font-size: 14px;
+            color: #666;
+        }
+
+        .footer-brand {
+            text-align: center;
+            padding: 40px 0;
+            border-top: 1px solid #eee;
+            margin-top: 40px;
+        }
+
+        @media (max-width: 768px) {
+            .lesson-container { padding: 20px 15px; }
+            .toc-list { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="lesson-container">
+        <div class="brand-header">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="brand-logo">
+        </div>
+
+        <header class="module-header">
+            <p class="module-label">Module 26: Program Development & Customization</p>
+            <h1 class="lesson-title">Lesson 6: Program Customization for Neurodivergent Populations</h1>
+            <div class="lesson-meta">
+                <span class="meta-item">35 min read</span>
+                <span class="meta-item">Premium Certification Content</span>
+            </div>
+        </header>
+
+        <div class="toc-box">
+            <p class="box-label">In This Lesson</p>
+            <ul class="toc-list">
+                <li><a href="#adhd-executive"><span class="section-num">1</span>ADHD & Executive Function</a></li>
+                <li><a href="#autism-sensory"><span class="section-num">2</span>Autism & Sensory Preferences</a></li>
+                <li><a href="#low-arousal"><span class="section-num">3</span>Low-Arousal Mealtime Design</a></li>
+                <li><a href="#supplementation"><span class="section-num">4</span>Neuro-Supplementation Protocols</a></li>
+                <li><a href="#gi-axis"><span class="section-num">5</span>The Gut-Brain-Immune Axis</a></li>
+                <li><a href="#interdisciplinary"><span class="section-num">6</span>Collaborative Care Models</a></li>
+            </ul>
+        </div>
+
+        <div class="objectives-box">
+            <p class="box-label">Learning Objectives</p>
+            <ul>
+                <li>Adapt the G.R.O.W. Method™ to support executive function and blood sugar stability in ADHD.</li>
+                <li>Design protocols for Autism Spectrum Disorder (ASD) that manage extreme sensory selectivity and GI distress.</li>
+                <li>Implement environmental modifications to create low-arousal dining experiences.</li>
+                <li>Evaluate evidence-based supplementation for neuro-inflammation within a coaching scope.</li>
+                <li>Coordinate care effectively with Occupational Therapists (OT) and Speech Language Pathologists (SLP).</li>
+            </ul>
+        </div>
+
+        <h2 id="adhd-executive">1. Adapting the G.R.O.W. Method™ for ADHD</h2>
+        <p>In the context of Attention Deficit Hyperactivity Disorder (ADHD), the <span class="highlight">G.R.O.W. Kids Nutrition Method™</span> must pivot from general wellness to specific <strong>metabolic and executive support</strong>. Children with ADHD often struggle with dopamine regulation, which frequently translates to "seeking" behaviors—specifically seeking high-dopamine, high-sugar foods.</p>
+
+        <p>A 2022 systematic review published in <i>Nutrients</i> found that children with ADHD exhibit <span class="stat-highlight">34% higher rates</span> of erratic eating patterns compared to neurotypical peers. This is often exacerbated by stimulant medications, which can lead to significant <strong>appetite suppression</strong> during the day followed by "rebound hunger" and binge-eating in the evening.</p>
+
+        <h3>Strategic Customization:</h3>
+        <ul>
+            <li><strong>G (Growth):</strong> Frequent monitoring is critical. Stimulant medication can lead to a drop in growth velocity. We must prioritize <i>caloric density</i> over volume.</li>
+            <li><strong>R (Remediate):</strong> Focus on Magnesium and Zinc. A meta-analysis of 12 studies (n=1,024) indicated that Zinc levels are significantly lower in children with ADHD, impacting dopamine synthesis.</li>
+            <li><strong>O (Optimize):</strong> Blood sugar stability is the "anchor." We utilize the <i>"Protein First"</i> rule to prevent the glucose spikes and crashes that exacerbate irritability and distractibility.</li>
+        </ul>
+
+        <div class="case-study">
+            <div class="case-study-header">
+                <div class="box-label">Case Study: Executive Function Support</div>
+            </div>
+            <div class="case-study-content">
+                <div class="patient-profile">
+                    <div class="patient-info">
+                        <h4>Leo, Age 9</h4>
+                        <p>Diagnosis: ADHD (Combined Type). Symptoms: Evening meltdowns, poor focus, weight plateau.</p>
+                    </div>
+                </div>
+                <p><strong>Intervention:</strong> Leo’s coach implemented "Mechanical Eating" during the day—scheduled, protein-rich snacks every 2.5 hours, even if he wasn't hungry, to prevent the 4:00 PM blood sugar crash. We added a "Second Dinner" high in complex carbs and tryptophan (e.g., oats with almond butter) at 7:30 PM.</p>
+                <p><strong>Outcome:</strong> After 6 weeks, Leo showed a 40% reduction in evening meltdowns and gained 1.2 lbs, returning to his previous growth curve.</p>
+            </div>
+        </div>
+
+        <h2 id="autism-sensory">2. Autism-Specific Design: Sensory & GI Management</h2>
+        <p>When working with Autism Spectrum Disorder (ASD), the coach is often dealing with <span class="highlight">ARFID-adjacent</span> behaviors (Avoidant/Restrictive Food Intake Disorder). Sensory processing differences mean that a "crunchy" carrot isn't just a vegetable; it can be an overwhelming sensory assault.</p>
+
+        <p>Furthermore, the prevalence of Gastrointestinal (GI) symptoms in ASD is staggering. Research indicates that children with ASD are <span class="stat-highlight">3.5 to 4 times more likely</span> to experience GI distress (constipation, diarrhea, abdominal pain) than neurotypical children (McElhanon et al., 2014).</p>
+
+        <div class="data-table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Sensory Profile</th>
+                        <th>Nutritional Challenge</th>
+                        <th>G.R.O.W. Strategy</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Hypersensitive (Tactile)</strong></td>
+                        <td>Refusal of slimy/wet textures (mushy fruit, sauces).</td>
+                        <td>Focus on "Dry & Crunchy" remediation. Dehydrate fruits; serve components separately.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Hyposensitive (Oral)</strong></td>
+                        <td>Seeking intense flavors (very spicy, very salty, or crunchy).</td>
+                        <td>"Flavor Bombing" nutrient-dense foods with safe spices or high-contrast textures.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Visual Rigidity</strong></td>
+                        <td>Refusal if food looks "different" (e.g., broken cracker).</td>
+                        <td>Bridge using "Food Chaining"—changing one small visual attribute at a time.</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <h2 id="low-arousal">3. Low-Arousal Mealtime Environment Design</h2>
+        <p>Program customization isn't just about <i>what</i> is on the plate, but <i>where</i> the plate is placed. For neurodivergent children, the "Family Table" can be a source of extreme autonomic arousal. As a Pediatric Nutrition Coach, you must design <strong>Low-Arousal Environments</strong>.</p>
+
+        <p>A 2023 study in the <i>Journal of Sensory Studies</i> demonstrated that reducing ambient noise and using "muted" visual plating reduced cortisol levels in ASD children during meals by <span class="stat-highlight">22%</span>. This is the <strong>W (Whole Family Wellness)</strong> pillar in action.</p>
+
+        <h3>Low-Arousal Checklist for Coaches:</h3>
+        <ul>
+            <li><strong>Visual:</strong> Remove clutter from the table. Use solid-colored plates (avoid patterns).</li>
+            <li><strong>Auditory:</strong> Minimize background noise (no TV, no dishwasher running). Consider "noise-dampening" mats under plates.</li>
+            <li><strong>Proprioceptive:</strong> Ensure the child’s feet are supported (90-90-90 sitting rule). A dangling foot increases anxiety and decreases focus on eating.</li>
+            <li><strong>Social:</strong> Implement "No-Pressure" zones where the goal is simply <i>sitting</i>, not <i>eating</i>.</li>
+        </ul>
+
+        <h2 id="supplementation">4. Supplementation for Neuro-inflammation & Neurotransmitters</h2>
+        <p>While coaches do not prescribe, we <i>recommend</i> evidence-based protocols to be cleared by the child’s physician. Neurodivergent populations often present with "neuro-inflammation," a state where microglia in the brain are overactive.</p>
+
+        <p>Key supplements to consider in your customized program design include:</p>
+        <ul>
+            <li><strong>Omega-3 Fatty Acids (EPA/DHA):</strong> A 2018 meta-analysis (n=2,140) found that Omega-3 supplementation improved clinical symptoms of ADHD (inattention, hyperactivity). Aim for high EPA ratios.</li>
+            <li><strong>Magnesium Threonate or Bisglycinate:</strong> Crucial for calming the nervous system and supporting over 300 enzymatic reactions. <span class="highlight">Magnesium Threonate</span> is particularly noted for crossing the blood-brain barrier effectively.</li>
+            <li><strong>Probiotics (Psychobiotics):</strong> Specific strains like <i>L. plantarum</i> PS128 have shown promise in reducing anxiety-like behaviors in ASD by modulating dopamine and serotonin pathways.</li>
+        </ul>
+
+        <div class="alert-box info">
+            <p class="alert-label">Practitioner Note</p>
+            <p>Always verify the "Clean Label" status of supplements for neurodivergent clients. Many are sensitive to artificial dyes (Red 40, Yellow 5) and fillers, which can exacerbate hyperactivity in some individuals.</p>
+        </div>
+
+        <h2 id="gi-axis">5. Managing the Gut-Brain-Immune Axis</h2>
+        <p>In neurodivergent populations, the gut is often the "second patient." Customizing a program requires addressing the <span class="highlight">Intestinal Permeability</span> (Leaky Gut) that is frequently present. When the gut barrier is compromised, undigested food particles and lipopolysaccharides (LPS) enter the bloodstream, triggering systemic inflammation that reaches the brain.</p>
+
+        <p><strong>The "R" (Remediate) Protocol for ASD Gut Health:</strong>
+            1. <strong>Remove:</strong> Common triggers (often gluten/casein, though evidence is individualized).
+            2. <strong>Replace:</strong> Digestive enzymes if malabsorption is suspected (common in ASD).
+            3. <strong>Reinnoculate:</strong> Targeted probiotics and prebiotic fibers (if tolerated).
+            4. <strong>Repair:</strong> L-glutamine, Zinc Carnosine, and Aloe Vera to support mucosal integrity.
+        </p>
+
+        <h2 id="interdisciplinary">6. Collaboration with OT and SLP</h2>
+        <p>You are part of a care team. A Pediatric Nutrition Coach provides the <i>fuel</i>, but the Occupational Therapist (OT) and Speech Language Pathologist (SLP) provide the <i>mechanics</i>. Program customization must respect these boundaries.</p>
+
+        <p><strong>OT Integration:</strong> If the child has sensory processing disorder (SPD), the OT works on desensitization. Your role is to provide the nutrient-dense versions of the foods the OT is introducing.</p>
+        <p><strong>SLP Integration:</strong> If the child has oral-motor delays (common in ASD), the SLP ensures the child can safely chew and swallow. Your role is to customize the <i>viscosity</i> and <i>texture</i> of the nutrition plan to match the SLP’s safety guidelines.</p>
+
+        <div class="check-understanding">
+            <p class="box-label">Check Your Understanding</p>
+            <div class="question-item">
+                <p class="question-text">1. Why is the "Protein First" rule particularly important for children with ADHD taking stimulant medication?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-text">Stimulants often cause daytime appetite suppression and evening "rebound" hunger. Protein helps stabilize blood sugar throughout the day, preventing the extreme glucose crashes and irritability that occur as medication wears off.</div>
+            </div>
+            <div class="question-item">
+                <p class="question-text">2. What is the "90-90-90 rule" in environmental design, and why does it matter for neurodivergent eaters?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-text">It refers to 90-degree angles at the hips, knees, and ankles (with foot support). Proper postural stability reduces the "proprioceptive load" on the brain, allowing the child to focus on the sensory task of eating rather than trying to stay upright.</div>
+            </div>
+        </div>
+
+        <div class="takeaways-box">
+            <p class="box-label">Key Takeaways</p>
+            <ul>
+                <li><strong>Metabolic Anchoring:</strong> ADHD programs must prioritize blood sugar stability to manage dopamine-seeking behaviors and medication side effects.</li>
+                <li><strong>Sensory-First Remediation:</strong> In ASD, nutritional gaps are often sensory-driven; use "Food Chaining" to expand the palate without triggering trauma.</li>
+                <li><strong>Environmental Control:</strong> A low-arousal dining environment is as important as the nutrient profile for improving intake.</li>
+                <li><strong>Gut-Brain Connection:</strong> GI distress is a primary driver of behavioral issues in neurodivergent populations; prioritize "R" (Remediate) protocols for the microbiome.</li>
+                <li><strong>Team Synergy:</strong> Successful customization requires alignment with OT/SLP goals regarding sensory and motor capabilities.</li>
+            </ul>
+        </div>
+
+        <div class="references-box">
+            <p><strong>References & Further Reading:</strong></p>
+            <ul>
+                <li>McElhanon, B. O., et al. (2014). "Gastrointestinal Symptoms in Autism Spectrum Disorder: A Meta-analysis." <i>Pediatrics</i>.</li>
+                <li>Chang, J. P., et al. (2018). "Omega-3 Polyunsaturated Fatty Acids in ADHD: Current Evidence and Future Directions." <i>Neuropsychopharmacology</i>.</li>
+                <li>Skotko, B. G., et al. (2022). "Nutritional Status and Dietary Intake in Children with Neurodevelopmental Disorders." <i>Current Opinion in Pediatrics</i>.</li>
+                <li>Li, Q., et al. (2021). "The Gut Microbiota and Autism Spectrum Disorder: A Review of Current Evidence." <i>Frontiers in Cellular and Infection Microbiology</i>.</li>
+                <li>Villagomez, A., & Ramtekkar, U. (2014). "Iron, Magnesium, Vitamin D, and Zinc Deficiencies in Children Presenting with Symptoms of ADHD." <i>Children</i>.</li>
+                <li>Adams, J. B., et al. (2018). "Comprehensive Nutritional and Dietary Intervention for Autism Spectrum Disorder—A Randomized, Controlled 12-Month Trial." <i>Nutrients</i>.</li>
+            </ul>
+        </div>
+
+        <div class="footer-brand">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" style="max-width:120px; opacity:0.6;">
+            <p style="font-size:12px; color:#999; margin-top:10px;">&copy; 2024 AccrediPro Academy. All Rights Reserved. Pediatric Nutrition Coach Certification.</p>
+        </div>
+    </div>
+</body>
+
+</html>

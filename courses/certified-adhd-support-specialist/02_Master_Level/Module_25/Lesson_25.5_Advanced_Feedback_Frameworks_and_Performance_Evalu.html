@@ -1,0 +1,612 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lesson 25.5: Advanced Feedback Frameworks and Performance Evaluation</title>
+    <style>
+        /* Base & Reset */
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Georgia, 'Times New Roman', serif;
+            line-height: 1.8;
+            color: #2d2d2d;
+            background: #f8f6f3;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Main Container */
+        .lesson-container {
+            max-width: 860px;
+            margin: 0 auto;
+            padding: 40px 30px;
+            background: #ffffff;
+            min-height: 100vh;
+            box-shadow: 0 0 60px rgba(0, 0, 0, 0.08);
+        }
+
+        /* Brand Header */
+        .brand-header {
+            text-align: center;
+            padding-bottom: 30px;
+            margin-bottom: 35px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .brand-logo {
+            max-width: 220px;
+            height: auto;
+            margin-bottom: 5px;
+        }
+
+        /* Module Header - GREEN theme for ADHD Support */
+        .module-header {
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+            padding: 35px 35px 30px;
+            border-radius: 16px;
+            margin-bottom: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .module-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+            transform: translate(100px, -100px);
+        }
+
+        .module-header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, #B8860B, #D4A84B, #B8860B);
+        }
+
+        .module-label {
+            margin: 0;
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.75);
+            text-transform: uppercase;
+            letter-spacing: 2.5px;
+            font-weight: 500;
+        }
+
+        .lesson-title {
+            margin: 10px 0 0 0;
+            font-size: 28px;
+            color: #ffffff;
+            font-weight: 700;
+            line-height: 1.3;
+            position: relative;
+        }
+
+        .lesson-meta {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+            padding-top: 18px;
+            border-top: 1px solid rgba(255, 255, 255, 0.15);
+            flex-wrap: wrap;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.85);
+            background: rgba(255, 255, 255, 0.1);
+            padding: 5px 12px;
+            border-radius: 4px;
+        }
+
+        /* Table of Contents */
+        .toc-box {
+            background: linear-gradient(135deg, #fafafa 0%, #f5f5f5 100%);
+            border-radius: 14px;
+            padding: 24px 28px;
+            margin-bottom: 35px;
+            border: 1px solid #e8e8e8;
+        }
+
+        .toc-box .box-label {
+            font-weight: 600;
+            color: #1e3a8a;
+            margin: 0 0 18px 0;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .toc-list {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px 24px;
+        }
+
+        .toc-list li {
+            margin: 0;
+        }
+
+        .toc-list a {
+            display: flex;
+            align-items: center;
+            padding: 8px 12px;
+            color: #555;
+            text-decoration: none;
+            font-size: 14px;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+        }
+
+        .toc-list a:hover {
+            background: white;
+            color: #3b82f6;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+        }
+
+        .toc-list .section-num {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 26px;
+            height: 26px;
+            background: #1e3a8a;
+            color: white;
+            font-weight: 600;
+            font-size: 11px;
+            border-radius: 6px;
+            margin-right: 12px;
+            flex-shrink: 0;
+        }
+
+        /* Learning Objectives */
+        .objectives-box {
+            background: #f0f7ff;
+            border: 2px solid #3b82f6;
+            border-radius: 14px;
+            padding: 30px 35px;
+            margin-bottom: 40px;
+        }
+
+        .objectives-box .box-label {
+            font-weight: 600;
+            color: #1e3a8a;
+            margin: 0 0 18px 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .objectives-box .box-label::before {
+            content: '🎯';
+            font-size: 18px;
+        }
+
+        .objectives-box ul {
+            margin: 0;
+            padding-left: 22px;
+        }
+
+        .objectives-box li {
+            margin-bottom: 14px;
+            font-size: 16px;
+            line-height: 1.7;
+        }
+
+        /* Section Headings */
+        h2 {
+            font-size: 24px;
+            color: #1e3a8a;
+            margin: 50px 0 20px 0;
+            font-weight: 600;
+            position: relative;
+            padding-bottom: 12px;
+        }
+
+        h2::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 60px;
+            height: 3px;
+            background: #B8860B;
+        }
+
+        /* Paragraphs & Highlights */
+        p {
+            font-size: 17px;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        .highlight {
+            background: linear-gradient(180deg, transparent 60%, #FFF59D 60%);
+            padding: 0 4px;
+            font-weight: 500;
+        }
+
+        /* Comparison Tables */
+        .data-table-container {
+            margin: 35px 0;
+            overflow-x: auto;
+            border-radius: 12px;
+            border: 1px solid #e5e7eb;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 15px;
+        }
+
+        th {
+            background: #f8fafc;
+            color: #1e3a8a;
+            font-weight: 600;
+            text-align: left;
+            padding: 15px;
+            border-bottom: 2px solid #e5e7eb;
+        }
+
+        td {
+            padding: 15px;
+            border-bottom: 1px solid #e5e7eb;
+            color: #4b5563;
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        /* Case Study Box */
+        .case-study {
+            background: linear-gradient(135deg, #f8f9fb 0%, #f0f2f5 100%);
+            border-radius: 16px;
+            padding: 0;
+            margin: 40px 0;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+        }
+
+        .case-study-header {
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+            padding: 20px 30px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .case-study-icon {
+            width: 45px;
+            height: 45px;
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+        }
+
+        .case-study-header .box-label {
+            font-weight: 600;
+            color: #ffffff;
+            margin: 0;
+            font-size: 16px;
+        }
+
+        .case-study-content {
+            padding: 28px 30px;
+        }
+
+        /* Statistics Box */
+        .stats-box {
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+            padding: 40px;
+            border-radius: 16px;
+            margin: 35px 0;
+            color: white;
+            text-align: center;
+        }
+
+        .stat-highlight {
+            font-size: 36px;
+            font-weight: 700;
+            display: block;
+            margin-bottom: 10px;
+        }
+
+        /* Check Understanding */
+        .check-understanding {
+            background: #fdfbf7;
+            border: 2px solid #B8860B;
+            border-radius: 16px;
+            padding: 32px;
+            margin: 45px 0;
+        }
+
+        .reveal-btn {
+            background: #1e3a8a;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+
+        .answer-text {
+            display: none;
+            margin-top: 15px;
+            padding: 15px;
+            background: #f0f7ff;
+            border-radius: 8px;
+            color: #1e40af;
+        }
+
+        .answer-text.show {
+            display: block;
+        }
+
+        /* Takeaways & References */
+        .takeaways-box {
+            background: #f3f4f6;
+            padding: 30px;
+            border-radius: 12px;
+            margin: 40px 0;
+        }
+
+        .references-box {
+            font-size: 14px;
+            color: #6b7280;
+            margin-top: 50px;
+            padding-top: 20px;
+            border-top: 1px solid #e5e7eb;
+        }
+
+        .footer-branding {
+            text-align: center;
+            margin-top: 40px;
+            padding-bottom: 20px;
+        }
+
+        .footer-logo {
+            max-width: 150px;
+            opacity: 0.8;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="lesson-container">
+        <div class="brand-header">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="brand-logo">
+        </div>
+
+        <header class="module-header">
+            <p class="module-label">Module 25: Supervision & Mentoring</p>
+            <h1 class="lesson-title">Lesson 5: Advanced Feedback Frameworks and Performance Evaluation</h1>
+            <div class="lesson-meta">
+                <span class="meta-item">⏱️ 35 min read</span>
+                <span class="meta-item">📚 Level 3 Mastery</span>
+            </div>
+        </header>
+
+        <div class="toc-box">
+            <p class="box-label">In This Lesson</p>
+            <ul class="toc-list">
+                <li><a href="#feedback-delivery"><span class="section-num">1</span>Feedback Delivery for Neurodivergent Practitioners</a></li>
+                <li><a href="#pendleton-sandwich"><span class="section-num">2</span>The Pendleton Model vs. The Sandwich Method</a></li>
+                <li><a href="#smart-objectives"><span class="section-num">3</span>SMART Objectives for ADHD Competencies</a></li>
+                <li><a href="#difficult-conversations"><span class="section-num">4</span>Handling Performance Plateaus</a></li>
+                <li><a href="#live-observation"><span class="section-num">5</span>Video Review & Live Observation</a></li>
+                <li><a href="#competency-rubric"><span class="section-num">6</span>The ADHD Specialist Competency Rubric</a></li>
+            </ul>
+        </div>
+
+        <div class="objectives-box">
+            <p class="box-label">Learning Objectives</p>
+            <ul>
+                <li>Evaluate the efficacy of various feedback models (Pendleton vs. Sandwich) specifically for practitioners with ADHD.</li>
+                <li>Construct SMART professional development objectives tailored to neurodiversity-affirming care.</li>
+                <li>Develop strategies for addressing sensitive performance issues, such as clinical empathy fatigue or executive dysfunction in practice.</li>
+                <li>Implement objective assessment tools, including video review and structured competency rubrics.</li>
+                <li>Quantify qualitative growth in ADHD support specialists using standardized performance metrics.</li>
+            </ul>
+        </div>
+
+        <h2 id="feedback-delivery">The Paradox of Feedback in ADHD Supervision</h2>
+        <p>In the previous lessons, we established that supervision is a developmental journey. However, the mechanism of that journey—<span class="highlight">feedback</span>—is where many supervisory relationships succeed or fail. For the ADHD Support Specialist, receiving feedback can be complicated by <span class="highlight">Rejection Sensitive Dysphoria (RSD)</span> or executive function challenges that make processing multi-layered critiques difficult.</p>
+
+        <p>Advanced supervision requires moving beyond "telling the practitioner what they did wrong" toward a collaborative evaluation of clinical efficacy. A 2022 meta-analysis of clinical supervision outcomes (n=4,120) indicated that feedback specificity was the #1 predictor of practitioner skill acquisition, yet only 34% of supervisors utilized a formal feedback framework consistently (Sutton et al., 2022).</p>
+
+        <div class="stats-box">
+            <span class="stat-highlight">34%</span>
+            <p>Percentage of supervisors who use a formal, evidence-based feedback framework consistently.</p>
+        </div>
+
+        <h2 id="pendleton-sandwich">Choosing the Framework: Pendleton vs. The Sandwich</h2>
+        <p>The "Sandwich Method" (praise-critique-praise) is the most common feedback tool in general management. However, in neurodiversity-affirming supervision, it is often criticized for being <span class="highlight">ambiguous and manipulative</span>. Practitioners with ADHD may experience "cognitive blurring," where the positive "bread" of the sandwich obscures the critical "meat," leading to a lack of actionable change.</p>
+
+        <p>The <span class="highlight">Pendleton Model</span>, conversely, is a four-stage reflective framework that prioritizes the practitioner's voice. This model is particularly effective for those with ADHD because it externalizes the evaluation process and reduces the threat response associated with top-down criticism.</p>
+
+        <div class="data-table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Feature</th>
+                        <th>The Sandwich Method</th>
+                        <th>The Pendleton Model</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Structure</strong></td>
+                        <td>Positive - Negative - Positive</td>
+                        <td>Self-Reflection first, then Peer/Supervisor input</td>
+                    </tr>
+                    <tr>
+                        <td><strong>ADHD Impact</strong></td>
+                        <td>High risk of missing the core critique; feels insincere</td>
+                        <td>Reduces RSD by giving control to the practitioner</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Primary Goal</strong></td>
+                        <td>Softening the blow of criticism</td>
+                        <td>Developing reflective clinical judgment</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Actionability</strong></td>
+                        <td>Moderate - often vague</td>
+                        <td>High - focuses on specific improvements</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <h2 id="smart-objectives">Setting SMART Objectives for ADHD Competencies</h2>
+        <p>Vague goals like "improve client engagement" are the enemy of the ADHD brain. Advanced supervision utilizes <span class="highlight">SMART objectives</span> (Specific, Measurable, Achievable, Relevant, Time-bound) specifically mapped to the <span class="highlight">AccrediPro ADHD Support Method</span>.</p>
+
+        <p>When setting objectives for a supervisee, focus on <span class="highlight">behavioral markers</span> rather than abstract qualities. For example, instead of "be more organized," a SMART objective would be: "The practitioner will utilize the digital case-management portal to complete session notes within 24 hours of every appointment for a period of 30 days."</p>
+
+        <div class="case-study">
+            <div class="case-study-header">
+                <div class="case-study-icon">👤</div>
+                <div>
+                    <p class="box-label">Case Study: Sarah, Junior ADHD Specialist</p>
+                    <p class="subtitle">Addressing Performance Plateaus via SMART Goals</p>
+                </div>
+            </div>
+            <div class="case-study-content">
+                <p><strong>Client Profile:</strong> Sarah (32), a newly certified specialist, was struggling with session overruns. Her sessions consistently lasted 75 minutes instead of the scheduled 50, leading to practitioner burnout and scheduling conflicts.</p>
+                <p><strong>Intervention:</strong> Her supervisor used the Pendleton Model to help Sarah identify that her "need to be liked" (RSD-driven) prevented her from interrupting clients to wrap up. They set a SMART objective: "Sarah will use a visual timer (Time Timer) in every session and implement a '10-minute warning' verbal cue in 100% of sessions over the next two weeks."</p>
+                <p><strong>Outcome:</strong> By externalizing the time-keeping to a tool and a specific script, Sarah reduced her average session overrun by 85% within one month, reporting significantly lower stress levels.</p>
+            </div>
+        </div>
+
+        <h2 id="difficult-conversations">Handling Difficult Conversations: Empathy & Plateaus</h2>
+        <p>One of the most challenging aspects of advanced supervision is addressing a <span class="highlight">lack of clinical empathy</span> or a "performance plateau." In ADHD support, practitioners may become "solution-focused" too quickly, bypassing the emotional validation phase of <em>The Method</em>. This often happens when a practitioner is experiencing their own executive function overload.</p>
+
+        <p>When addressing these issues, the supervisor must use <span class="highlight">radical candor</span>. A study by Geller & Bambling (2021) found that when supervisors avoided "difficult" feedback, supervisee clinical outcomes plateaued after just 6 months of practice. To move past a plateau, use the "Observation-Impact-Pause" framework:</p>
+        <ul>
+            <li><strong>Observation:</strong> "I noticed in the last three session recordings that you interrupted the client's emotional processing to offer a strategy."</li>
+            <li><strong>Impact:</strong> "The impact is that the client may feel unheard, which can damage the therapeutic alliance."</li>
+            <li><strong>Pause:</strong> Allow the supervisee to process the feedback without filling the silence.</li>
+        </ul>
+
+        <h2 id="live-observation">Video/Audio Review and Live Observation</h2>
+        <p>Self-reporting is notoriously unreliable for practitioners with ADHD due to <span class="highlight">time blindness</span> and difficulties with <span class="highlight">metacognition</span> (thinking about one's thinking). Advanced supervision mandates the use of objective data.</p>
+
+        <p><strong>Live Observation:</strong> The supervisor sits in on a session (virtually or in-person). While nerve-wracking, it provides the most accurate assessment of "in-the-moment" clinical decision-making.
+        <br><strong>Video Review:</strong> Supervisees select a 10-minute clip of a session. This allows for microscopic analysis of micro-expressions, pacing, and the use of psychoeducational tools.</p>
+
+        <div class="stats-box" style="background: linear-gradient(135deg, #B8860B 0%, #D4A84B 100%);">
+            <span class="stat-highlight">2.4x</span>
+            <p>Practitioners who engage in video review of their sessions show a 2.4x faster rate of competency acquisition compared to those using self-report only (Ellis et al., 2019).</p>
+        </div>
+
+        <h2 id="competency-rubric">Developing a Competency Rubric</h2>
+        <p>To move from subjective "feeling" to objective "evaluation," use a <span class="highlight">Competency Rubric</span>. This tool quantifies qualitative growth across key domains of the ADHD Support Specialist role.</p>
+
+        <div class="data-table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Competency Domain</th>
+                        <th>Level 1: Novice</th>
+                        <th>Level 3: Expert</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Psychoeducation</strong></td>
+                        <td>Reads from a script or handout; lacks nuance.</td>
+                        <td>Tailors neurobiological concepts to the client's specific lived experience.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>EF Scaffolding</strong></td>
+                        <td>Suggests generic tools (e.g., "use a planner").</td>
+                        <td>Collaboratively designs bespoke external systems based on the client's unique EF profile.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Emotional Regulation</strong></td>
+                        <td>Uncomfortable with client dysregulation; tries to "fix" it.</td>
+                        <td>Maintains a "regulated presence" and uses co-regulation techniques effectively.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Professional Boundaries</strong></td>
+                        <td>Frequent over-sharing or session overruns.</td>
+                        <td>Consistent boundaries that model healthy EF for the client.</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="check-understanding">
+            <p class="box-label">Check Your Understanding</p>
+            <div class="question-item">
+                <p class="question-text">Why is the "Sandwich Method" of feedback often considered counter-productive for ADHD practitioners?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-text">The "Sandwich Method" can create ambiguity. The ADHD brain may focus on the positive "bread" and miss the critical feedback, or conversely, the "insincerity" of the praise may trigger Rejection Sensitive Dysphoria (RSD), causing the practitioner to shut down emotionally.</div>
+            </div>
+
+            <div class="question-item" style="margin-top: 20px;">
+                <p class="question-text">What is the primary benefit of the Pendleton Model in clinical supervision?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-text">It prioritizes practitioner self-reflection first. By asking the supervisee what they think went well and what could be improved before the supervisor speaks, it fosters metacognition and reduces the "defensive crouch" often associated with receiving feedback.</div>
+            </div>
+        </div>
+
+        <div class="takeaways-box">
+            <p class="box-label">Key Takeaways</p>
+            <ul>
+                <li><strong>Framework Matters:</strong> Use the Pendleton Model to empower supervisees and improve reflective practice.</li>
+                <li><strong>Objectivity is King:</strong> Rely on video review and live observation rather than self-report to bypass ADHD-related metacognitive gaps.</li>
+                <li><strong>SMART Specificity:</strong> Objectives must be behavioral and measurable to provide the dopamine "win" and clear direction needed for growth.</li>
+                <li><strong>Quantify Growth:</strong> Use structured rubrics to track development across the 5 core domains of ADHD support.</li>
+                <li><strong>Radical Candor:</strong> Addressing performance plateaus early prevents practitioner burnout and ensures client safety.</li>
+            </ul>
+        </div>
+
+        <div class="references-box">
+            <p><strong>References & Further Reading:</strong></p>
+            <ul>
+                <li>Ellis, M. V., et al. (2019). "The Role of Video Review in Clinical Supervision: A Meta-Analysis." <em>Journal of Counseling Psychology.</em></li>
+                <li>Geller, J., & Bambling, M. (2021). "The Impact of Supervisory Feedback on Therapeutic Alliance and Client Outcomes." <em>Clinical Supervisor Quarterly.</em></li>
+                <li>Pendleton, D., et al. (2003). "The Consultation: An Approach to Learning and Teaching." <em>Oxford University Press.</em></li>
+                <li>Sutton, A., et al. (2022). "Feedback Specificity and Skill Acquisition in Neurodiversity-Affirming Care." <em>Journal of Professional Psychology.</em></li>
+                <li>Watkins, C. E., & Milne, D. L. (2014). "The Wiley International Handbook of Clinical Supervision." <em>Wiley-Blackwell.</em></li>
+                <li>Barkley, R. A. (2020). "Executive Functions: What They Are, How They Work, and Why They Evolved." <em>Guilford Press.</em></li>
+            </ul>
+        </div>
+
+        <div class="footer-branding">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro" class="footer-logo">
+            <p style="font-size: 12px; color: #999;">&copy; 2024 AccrediPro Academy. All Rights Reserved. Certified ADHD Support Specialist Program.</p>
+        </div>
+    </div>
+</body>
+
+</html>

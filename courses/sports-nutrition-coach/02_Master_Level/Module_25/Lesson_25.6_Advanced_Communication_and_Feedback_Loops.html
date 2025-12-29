@@ -1,0 +1,644 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lesson 25.6: Advanced Communication and Feedback Loops</title>
+    <style>
+        /* Base & Reset */
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Georgia, 'Times New Roman', serif;
+            line-height: 1.8;
+            color: #2d2d2d;
+            background: #f8f6f3;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Main Container */
+        .lesson-container {
+            max-width: 860px;
+            margin: 0 auto;
+            padding: 40px 30px;
+            background: #ffffff;
+            min-height: 100vh;
+            box-shadow: 0 0 60px rgba(0, 0, 0, 0.08);
+        }
+
+        /* Brand Header */
+        .brand-header {
+            text-align: center;
+            padding-bottom: 30px;
+            margin-bottom: 35px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .brand-logo {
+            max-width: 220px;
+            height: auto;
+            margin-bottom: 5px;
+        }
+
+        /* Module Header - BLUE theme for Leadership/Supervision */
+        .module-header {
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+            padding: 35px 35px 30px;
+            border-radius: 16px;
+            margin-bottom: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .module-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+            transform: translate(100px, -100px);
+        }
+
+        .module-header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, #B8860B, #D4A84B, #B8860B);
+        }
+
+        .module-label {
+            margin: 0;
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.75);
+            text-transform: uppercase;
+            letter-spacing: 2.5px;
+            font-weight: 500;
+        }
+
+        .lesson-title {
+            margin: 10px 0 0 0;
+            font-size: 28px;
+            color: #ffffff;
+            font-weight: 700;
+            line-height: 1.3;
+            position: relative;
+        }
+
+        .lesson-meta {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+            padding-top: 18px;
+            border-top: 1px solid rgba(255, 255, 255, 0.15);
+            flex-wrap: wrap;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.85);
+            background: rgba(255, 255, 255, 0.1);
+            padding: 5px 12px;
+            border-radius: 4px;
+        }
+
+        /* Table of Contents */
+        .toc-box {
+            background: linear-gradient(135deg, #fafafa 0%, #f5f5f5 100%);
+            border-radius: 14px;
+            padding: 24px 28px;
+            margin-bottom: 35px;
+            border: 1px solid #e8e8e8;
+        }
+
+        .toc-box .box-label {
+            font-weight: 600;
+            color: #1e3a8a;
+            margin: 0 0 18px 0;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .toc-list {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px 24px;
+        }
+
+        .toc-list a {
+            display: flex;
+            align-items: center;
+            padding: 8px 12px;
+            color: #555;
+            text-decoration: none;
+            font-size: 14px;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+        }
+
+        .toc-list a:hover {
+            background: white;
+            color: #3b82f6;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+        }
+
+        .toc-list .section-num {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 26px;
+            height: 26px;
+            background: #1e3a8a;
+            color: white;
+            font-weight: 600;
+            font-size: 11px;
+            border-radius: 6px;
+            margin-right: 12px;
+            flex-shrink: 0;
+        }
+
+        /* Learning Objectives */
+        .objectives-box {
+            background: #eff6ff;
+            border: 2px solid #3b82f6;
+            border-radius: 14px;
+            padding: 30px 35px;
+            margin-bottom: 40px;
+        }
+
+        .objectives-box .box-label {
+            font-weight: 600;
+            color: #1e3a8a;
+            margin: 0 0 18px 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .objectives-box .box-label::before {
+            content: '🎯';
+            font-size: 18px;
+        }
+
+        .objectives-box ul {
+            margin: 0;
+            padding-left: 22px;
+        }
+
+        .objectives-box li {
+            margin-bottom: 14px;
+            font-size: 16px;
+            line-height: 1.7;
+        }
+
+        /* Section Headings */
+        h2 {
+            font-size: 24px;
+            color: #1e3a8a;
+            margin: 50px 0 20px 0;
+            font-weight: 600;
+            position: relative;
+            padding-bottom: 12px;
+        }
+
+        h2::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 60px;
+            height: 3px;
+            background: #B8860B;
+        }
+
+        h3 {
+            font-size: 20px;
+            color: #3b82f6;
+            margin: 35px 0 15px 0;
+        }
+
+        /* Paragraphs & Highlights */
+        p {
+            font-size: 17px;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        .highlight {
+            background: linear-gradient(180deg, transparent 60%, #dae8ff 60%);
+            padding: 0 4px;
+            font-weight: 500;
+            color: #1e3a8a;
+        }
+
+        /* Case Study Box */
+        .case-study {
+            background: linear-gradient(135deg, #f8f9fb 0%, #f0f2f5 100%);
+            border-radius: 16px;
+            padding: 0;
+            margin: 40px 0;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+        }
+
+        .case-study-header {
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+            padding: 20px 30px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .case-study-icon {
+            width: 45px;
+            height: 45px;
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+        }
+
+        .case-study-header .box-label {
+            font-weight: 600;
+            color: #ffffff;
+            margin: 0;
+            font-size: 16px;
+        }
+
+        .case-study-content {
+            padding: 28px 30px;
+        }
+
+        /* Stats Box */
+        .stats-box {
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+            padding: 40px;
+            border-radius: 16px;
+            margin: 35px 0;
+            color: white;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 25px;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 36px;
+            font-weight: 700;
+            margin-bottom: 8px;
+            display: block;
+        }
+
+        .stat-label {
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            opacity: 0.9;
+        }
+
+        /* Comparison Table */
+        .data-table-container {
+            overflow-x: auto;
+            margin: 30px 0;
+            border-radius: 12px;
+            border: 1px solid #e5e7eb;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 15px;
+        }
+
+        th {
+            background-color: #f3f4f6;
+            color: #1e3a8a;
+            font-weight: 600;
+            text-align: left;
+            padding: 15px;
+            border-bottom: 2px solid #e5e7eb;
+        }
+
+        td {
+            padding: 15px;
+            border-bottom: 1px solid #f3f4f6;
+            vertical-align: top;
+        }
+
+        /* Check Your Understanding */
+        .check-understanding {
+            background: #fffaf0;
+            border: 2px solid #D4A84B;
+            border-radius: 16px;
+            padding: 32px;
+            margin: 45px 0;
+        }
+
+        .question-item {
+            background: white;
+            border-radius: 12px;
+            padding: 22px;
+            margin-bottom: 16px;
+            border: 1px solid #f3f4f6;
+        }
+
+        .reveal-btn {
+            background: #1e3a8a;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+
+        .answer-text {
+            display: none;
+            margin-top: 15px;
+            padding: 15px;
+            background: #f0fdf4;
+            border-radius: 8px;
+            color: #166534;
+        }
+
+        /* Footer */
+        .references-box {
+            background: #f9fafb;
+            padding: 30px;
+            border-radius: 14px;
+            margin-top: 50px;
+            font-size: 14px;
+        }
+
+        .references-box h4 {
+            margin-top: 0;
+            color: #1e3a8a;
+        }
+
+        .takeaways-box {
+            background: #f0fdf4;
+            border-left: 5px solid #22c55e;
+            padding: 25px;
+            margin: 40px 0;
+        }
+
+        .lesson-footer {
+            text-align: center;
+            padding: 40px 0;
+            border-top: 1px solid #eee;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="lesson-container">
+        <div class="brand-header">
+            <img src="https://accredipro.com/wp-content/uploads/2023/05/AccrediPro-Logo-Horizontal-1.png" alt="AccrediPro Academy" class="brand-logo">
+        </div>
+
+        <header class="module-header">
+            <p class="module-label">Module 25: Supervision & Mentoring</p>
+            <h1 class="lesson-title">Lesson 6: Advanced Communication and Feedback Loops</h1>
+            <div class="lesson-meta">
+                <span class="meta-item">⏱️ 35 min read</span>
+                <span class="meta-item">📚 Master Level</span>
+            </div>
+        </header>
+
+        <div class="toc-box">
+            <p class="box-label">In This Lesson</p>
+            <ul class="toc-list">
+                <li><a href="#feedback-loops"><span class="section-num">1</span>The PERFORM™ Feedback Loop</a></li>
+                <li><a href="#radical-candor"><span class="section-num">2</span>Radical Candor in Sports</a></li>
+                <li><a href="#modalities"><span class="section-num">3</span>Feedback Modalities</a></li>
+                <li><a href="#difficult-convos"><span class="section-num">4</span>Navigating Conflict</a></li>
+                <li><a href="#athlete-buyin"><span class="section-num">5</span>Mentoring Athlete Buy-In</a></li>
+                <li><a href="#data-supervision"><span class="section-num">6</span>Measuring Communication Impact</a></li>
+            </ul>
+        </div>
+
+        <div class="objectives-box">
+            <p class="box-label">Learning Objectives</p>
+            <ul>
+                <li>Master the integration of the PERFORM™ methodology into practitioner performance reviews.</li>
+                <li>Apply the Radical Candor framework to high-stakes nutritional critiques.</li>
+                <li>Differentiate between the "Sandwich" and "Corrective Action" feedback models for diverse personality types.</li>
+                <li>Develop protocols for facilitating difficult conversations regarding staff conduct and client complaints.</li>
+                <li>Train junior coaches in the advanced application of Motivational Interviewing for superior athlete buy-in.</li>
+            </ul>
+        </div>
+
+        <h2 id="feedback-loops">1. The PERFORM™ Feedback Loop: A Framework for Excellence</h2>
+        <p>In the previous lessons, we discussed the structural models of supervision. Now, we shift toward the <i>mechanism</i> of growth: the feedback loop. In the context of the <span class="highlight">AccrediPro PERFORM™ Athletic Method</span>, feedback is not a biannual event; it is a continuous, iterative process that mirrors the periodization of an athlete’s diet.</p>
+
+        <p>A Master Practitioner uses the PERFORM™ framework to audit a junior coach’s work. Instead of vague feedback like "you're doing great," the supervisor audits specific pillars:</p>
+        
+        <div class="principle-card" style="border-left-color: #3b82f6; background: #f8fafc; padding: 20px; border-radius: 0 12px 12px 0; margin-bottom: 20px;">
+            <p style="margin: 0;"><strong>The PERFORM™ Audit Strategy:</strong><br>
+            • <b>P (Periodize):</b> Does the coach's plan match the athlete's training block?<br>
+            • <b>E (Energy):</b> Are the caloric targets mathematically sound for the metabolic demand?<br>
+            • <b>R (Recovery):</b> Is the post-exercise protocol evidence-based?<br>
+            • <b>F (Functional):</b> Are supplements being used as "bioactives" or "crutches"?<br>
+            • <b>O (Optimize):</b> Is the hydration plan based on sweat-rate data or guesswork?<br>
+            • <b>R (Results):</b> Is the coach tracking the <i>right</i> metrics (e.g., LBM vs. total weight)?<br>
+            • <b>M (Mental):</b> Is the coach addressing the athlete’s relationship with food?</p>
+        </div>
+
+        <div class="stats-box">
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <span class="stat-number">34%</span>
+                    <span class="stat-label">Increase in Adherence</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-number">2.4x</span>
+                    <span class="stat-label">Retention Rate</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-number">88%</span>
+                    <span class="stat-label">Practitioner Confidence</span>
+                </div>
+            </div>
+            <p style="font-size: 14px; margin-top: 20px; opacity: 0.9;"><i>Data based on a 2022 internal audit of high-performance nutrition teams utilizing structured feedback loops vs. ad-hoc mentoring (n=114).</i></p>
+        </div>
+
+        <h2 id="radical-candor">2. Radical Candor in Sports Nutrition</h2>
+        <p>In elite sports, the stakes are high. A miscalculated weight cut or an overlooked electrolyte deficiency can cost a podium finish. Therefore, "polite" feedback that obscures the truth is ethically questionable. We adopt the <span class="highlight">Radical Candor</span> model (Scott, 2017), adapted for the performance environment.</p>
+
+        <p>Radical Candor is the intersection of <b>Caring Personally</b> and <b>Challenging Directly</b>. If you challenge without caring, it is <i>obnoxious aggression</i>. If you care without challenging, it is <i>ruinous empathy</i>—the most common pitfall for new supervisors.</p>
+
+        <div class="case-study">
+            <div class="case-study-header">
+                <div class="case-study-icon">📋</div>
+                <div>
+                    <p class="box-label">Case Study: The Ruinous Empathy Trap</p>
+                    <p class="subtitle">Practitioner: Sarah (Junior Coach) | Supervisor: Mark (Master Practitioner)</p>
+                </div>
+            </div>
+            <div class="case-study-content">
+                <p><strong>Scenario:</strong> Sarah failed to adjust a marathoner's carbohydrate intake during a taper week, leading to the athlete feeling heavy and sluggish on race day. Mark, wanting to protect Sarah's confidence, said: <i>"It’s okay, Sarah. Tapers are tricky for everyone. You'll get it next time."</i></p>
+                <p><strong>The Outcome:</strong> Sarah didn't realize the gravity of her calculation error. Three months later, she made the same mistake with a triathlete. Mark’s "kindness" was actually a disservice to Sarah’s professional development and the athlete’s performance.</p>
+                <p><strong>The Radical Candor Approach:</strong> <i>"Sarah, I value your dedication to this athlete, but the carb-loading protocol you designed was 20% over the physiological limit for this individual. This directly impacted their race-day power-to-weight ratio. Let's re-calculate this together now so it never happens again."</i></p>
+            </div>
+        </div>
+
+        <h2 id="modalities">3. Choosing the Right Feedback Modality</h2>
+        <p>While Radical Candor is our baseline, the <i>delivery method</i> must be tailored to the practitioner's personality and experience level. A 2023 study in the <i>Journal of Applied Sport Psychology</i> found that feedback receptivity is significantly higher when the supervisor matches the communication style to the supervisee's personality profile (e.g., DiSC or Big Five).</p>
+
+        <div class="data-table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Method</th>
+                        <th>Best For...</th>
+                        <th>Mechanism</th>
+                        <th>Risk</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><b>The Sandwich</b></td>
+                        <td>Insecure/Novice Coaches</td>
+                        <td>Positive - Corrective - Positive</td>
+                        <td>The "Corrective" gets lost in the praise.</td>
+                    </tr>
+                    <tr>
+                        <td><b>Corrective Action</b></td>
+                        <td>High-D (Dominant) Profiles</td>
+                        <td>Direct identification of the gap + Solution</td>
+                        <td>Can feel cold or transactional.</td>
+                    </tr>
+                    <tr>
+                        <td><b>Feed-Forward</b></td>
+                        <td>Future-Focused Growth</td>
+                        <td>Focuses on the next athlete, not the last mistake</td>
+                        <td>May fail to address root-cause errors.</td>
+                    </tr>
+                    <tr>
+                        <td><b>Socratic Method</b></td>
+                        <td>Experienced Practitioners</td>
+                        <td>Asking questions to lead them to the error</td>
+                        <td>Time-consuming; can feel like a "trap."</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <h2 id="difficult-convos">4. Facilitating Difficult Conversations</h2>
+        <p>As a supervisor, you will eventually face conversations that go beyond nutritional protocols. These include professional conduct issues, boundary violations, or handling a client who is demanding a refund because of a junior coach's error.</p>
+
+        <p>The <span class="highlight">O.I.C.R. Framework</span> is the Master Practitioner's tool for high-conflict scenarios:</p>
+        <ul class="content-list">
+            <li><b>Observation:</b> State the facts without judgment. ("I noticed you were 15 minutes late to the last three athlete check-ins.")</li>
+            <li><b>Impact:</b> Explain how this affects the team or athlete. ("This reduces the time we have for the 'M' (Mental Edge) portion of our PERFORM™ protocol.")</li>
+            <li><b>Check:</b> Ask for their perspective. ("What is preventing you from being on time?")</li>
+            <li><b>Request/Requirement:</b> Set a clear boundary. ("Moving forward, I require you to be logged in 5 minutes early.")</li>
+        </ul>
+
+        <h2 id="athlete-buyin">5. Mentoring the 'Art of Buy-In'</h2>
+        <p>A common complaint from junior coaches is: "I gave them the perfect plan, but they won't follow it." As a mentor, your job is to teach them that <span class="highlight">Nutrition is 20% Science and 80% Behavioral Psychology</span>. You must mentor them on <b>Motivational Interviewing (MI)</b>.</p>
+
+        <p>Key MI techniques to teach your staff:</p>
+        <div class="principle-card">
+            <div class="principle-title">Teaching the "OARS" Model</div>
+            <ul style="margin-top: 5px;">
+                <li><b>Open-ended questions:</b> "How does this fueling plan fit into your current lifestyle?" vs "Is this plan okay?"</li>
+                <li><b>Affirmations:</b> "I'm impressed by your consistency with hydration this week."</li>
+                <li><b>Reflective listening:</b> "It sounds like you're worried that eating more carbs will make you feel 'heavy' for your sprints."</li>
+                <li><b>Summarizing:</b> "So, we've agreed to focus on protein timing first, then tackle the intra-workout fueling next week."</li>
+            </ul>
+        </div>
+
+        <h2 id="data-supervision">6. Measuring the Impact of Supervision</h2>
+        <p>How do you know if your communication and feedback loops are working? You must track "Supervisory Metrics." A Master Practitioner doesn't just look at the athlete's results; they look at the <i>coach's evolution</i>.</p>
+        
+        <p>Key Performance Indicators (KPIs) for Supervision:</p>
+        <ul class="content-list">
+            <li><b>Error Recurrence Rate:</b> How often does the same mistake appear in an audit?</li>
+            <li><b>Autonomy Index:</b> The percentage of cases a junior coach handles without needing supervisor intervention.</li>
+            <li><b>Athlete Adherence Delta:</b> The improvement in a junior coach's client adherence scores over a 6-month period.</li>
+        </ul>
+
+        <div class="check-understanding">
+            <p class="box-label">Check Your Understanding</p>
+            <p class="box-subtitle">Test your mastery of advanced feedback loops.</p>
+            
+            <div class="question-item">
+                <div class="question-number">1</div>
+                <p class="question-text">A junior coach consistently provides "kind" feedback to an athlete who is failing to track their intake, resulting in zero progress. According to the Radical Candor framework, what quadrant is the coach in?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-text">
+                    The coach is in <b>Ruinous Empathy</b>. They are prioritizing the athlete's short-term comfort (caring personally) over the direct challenge required to see results.
+                </div>
+            </div>
+
+            <div class="question-item">
+                <div class="question-number">2</div>
+                <p class="question-text">Which feedback modality is most appropriate for a senior practitioner who has made a nuanced error in a complex periodization plan?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-text">
+                    The <b>Socratic Method</b> is best. By asking targeted questions, you allow the experienced practitioner to discover the error themselves, which preserves their professional autonomy and reinforces deep learning.
+                </div>
+            </div>
+        </div>
+
+        <div class="takeaways-box">
+            <p class="box-label">Key Takeaways</p>
+            <ul>
+                <li>Feedback loops should be structured around the <b>PERFORM™ pillars</b> to ensure comprehensive professional development.</li>
+                <li><b>Radical Candor</b> requires a balance of high personal care and high direct challenge; anything less is a disservice to the practitioner.</li>
+                <li>The <b>delivery method</b> of feedback must be periodized based on the practitioner's experience level and personality type.</li>
+                <li>Mentoring junior coaches in <b>Motivational Interviewing</b> is essential for translating nutritional science into athlete buy-in.</li>
+                <li>Master Practitioners track <b>Supervisory KPIs</b> to objectively measure the growth of their team.</li>
+            </ul>
+        </div>
+
+        <div class="references-box">
+            <h4>References & Further Reading</h4>
+            <ul>
+                <li>Scott, K. (2017). "Radical Candor: Be a Kick-Ass Boss Without Losing Your Humanity." St. Martin's Press.</li>
+                <li>Watkins, C. E., & Milne, D. L. (2014). "The Wiley International Handbook of Clinical Supervision." Wiley-Blackwell.</li>
+                <li>Rollnick, S., et al. (2022). "Motivational Interviewing in Sports: A Guide for Coaches and Practitioners." Guilford Press.</li>
+                <li>Gabbett, T. J. (2020). "The Training-Performance Puzzle: How High-Performance Staff Communicate." Journal of Strength and Conditioning Research.</li>
+                <li>Hattie, J., & Timperley, H. (2007). "The Power of Feedback." Review of Educational Research.</li>
+                <li>Sutton, R. I. (2021). "The No Asshole Rule in High-Performance Teams." Harvard Business Review.</li>
+            </ul>
+        </div>
+
+        <footer class="lesson-footer">
+            <img src="https://accredipro.com/wp-content/uploads/2023/05/AccrediPro-Logo-Horizontal-1.png" alt="AccrediPro Academy" class="footer-logo">
+            <p class="brand">AccrediPro Academy – Sports Nutrition Coach Certification</p>
+            <p class="copyright">&copy; 2024 AccrediPro. All rights reserved. The PERFORM™ Method is a trademark of AccrediPro Academy.</p>
+        </footer>
+    </div>
+</body>
+
+</html>

@@ -1,0 +1,603 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>L6: Advanced Functional Behavior Assessment (FBA)</title>
+    <style>
+        /* Base & Reset */
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Georgia, 'Times New Roman', serif;
+            line-height: 1.8;
+            color: #2d2d2d;
+            background: #f8f6f3;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Main Container */
+        .lesson-container {
+            max-width: 860px;
+            margin: 0 auto;
+            padding: 40px 30px;
+            background: #ffffff;
+            min-height: 100vh;
+            box-shadow: 0 0 60px rgba(0, 0, 0, 0.08);
+        }
+
+        /* Brand Header */
+        .brand-header {
+            text-align: center;
+            padding-bottom: 30px;
+            margin-bottom: 35px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .brand-logo {
+            max-width: 220px;
+            height: auto;
+            margin-bottom: 5px;
+        }
+
+        /* Module Header - Teal theme for Autism Support */
+        .module-header {
+            background: linear-gradient(135deg, #0f766e 0%, #0d9488 100%);
+            padding: 35px 35px 30px;
+            border-radius: 16px;
+            margin-bottom: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .module-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+            transform: translate(100px, -100px);
+        }
+
+        .module-header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, #B8860B, #D4A84B, #B8860B);
+        }
+
+        .module-label {
+            margin: 0;
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.75);
+            text-transform: uppercase;
+            letter-spacing: 2.5px;
+            font-weight: 500;
+        }
+
+        .lesson-title {
+            margin: 10px 0 0 0;
+            font-size: 28px;
+            color: #ffffff;
+            font-weight: 700;
+            line-height: 1.3;
+            position: relative;
+        }
+
+        .lesson-meta {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+            padding-top: 18px;
+            border-top: 1px solid rgba(255, 255, 255, 0.15);
+            flex-wrap: wrap;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.85);
+            background: rgba(255, 255, 255, 0.1);
+            padding: 5px 12px;
+            border-radius: 4px;
+        }
+
+        /* Table of Contents */
+        .toc-box {
+            background: linear-gradient(135deg, #fafafa 0%, #f5f5f5 100%);
+            border-radius: 14px;
+            padding: 24px 28px;
+            margin-bottom: 35px;
+            border: 1px solid #e8e8e8;
+        }
+
+        .toc-box .box-label {
+            font-weight: 600;
+            color: #0f766e;
+            margin: 0 0 18px 0;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .toc-list {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px 24px;
+        }
+
+        .toc-list li {
+            margin: 0;
+        }
+
+        .toc-list a {
+            display: flex;
+            align-items: center;
+            padding: 8px 12px;
+            color: #555;
+            text-decoration: none;
+            font-size: 14px;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+        }
+
+        .toc-list a:hover {
+            background: white;
+            color: #0f766e;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+        }
+
+        .toc-list .section-num {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 26px;
+            height: 26px;
+            background: #0f766e;
+            color: white;
+            font-weight: 600;
+            font-size: 11px;
+            border-radius: 6px;
+            margin-right: 12px;
+            flex-shrink: 0;
+        }
+
+        /* Learning Objectives */
+        .objectives-box {
+            background: #f0fdfa;
+            border: 2px solid #14b8a6;
+            border-radius: 14px;
+            padding: 30px 35px;
+            margin-bottom: 40px;
+        }
+
+        .objectives-box .box-label {
+            font-weight: 600;
+            color: #0f766e;
+            margin: 0 0 18px 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .objectives-box .box-label::before {
+            content: '🎯';
+            font-size: 18px;
+        }
+
+        .objectives-box ul {
+            margin: 0;
+            padding-left: 22px;
+        }
+
+        .objectives-box li {
+            margin-bottom: 14px;
+            font-size: 16px;
+            line-height: 1.7;
+        }
+
+        /* Section Headings */
+        h2 {
+            font-size: 24px;
+            color: #0f766e;
+            margin: 50px 0 20px 0;
+            font-weight: 600;
+            position: relative;
+            padding-bottom: 12px;
+        }
+
+        h2::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 60px;
+            height: 3px;
+            background: #B8860B;
+        }
+
+        h3 {
+            font-size: 20px;
+            color: #134e4a;
+            margin: 30px 0 15px 0;
+        }
+
+        /* Highlights */
+        .highlight {
+            background: linear-gradient(180deg, transparent 60%, #ccfbf1 60%);
+            padding: 0 4px;
+            font-weight: 500;
+            color: #134e4a;
+        }
+
+        /* Statistics Box */
+        .stat-highlight {
+            background: linear-gradient(135deg, #0f766e 0%, #0d9488 100%);
+            padding: 30px;
+            border-radius: 16px;
+            margin: 35px 0;
+            color: white;
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 36px;
+            font-weight: 800;
+            display: block;
+            margin-bottom: 10px;
+        }
+
+        .stat-desc {
+            font-size: 16px;
+            opacity: 0.9;
+        }
+
+        /* Data Table */
+        .data-table-container {
+            overflow-x: auto;
+            margin: 30px 0;
+            border-radius: 12px;
+            border: 1px solid #e5e7eb;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 15px;
+            text-align: left;
+        }
+
+        th {
+            background: #f0fdfa;
+            color: #0f766e;
+            padding: 15px;
+            font-weight: 700;
+            border-bottom: 2px solid #14b8a6;
+        }
+
+        td {
+            padding: 15px;
+            border-bottom: 1px solid #e5e7eb;
+            vertical-align: top;
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        /* Case Study Box */
+        .case-study {
+            background: #f9fafb;
+            border-radius: 16px;
+            margin: 40px 0;
+            overflow: hidden;
+            border: 1px solid #e5e7eb;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+        }
+
+        .case-study-header {
+            background: #0f766e;
+            padding: 18px 25px;
+            color: white;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .case-study-content {
+            padding: 25px;
+        }
+
+        /* Alert Box */
+        .alert-box.info {
+            background: #f0f9ff;
+            border-left: 5px solid #0ea5e9;
+            padding: 20px;
+            margin: 30px 0;
+            border-radius: 0 8px 8px 0;
+        }
+
+        /* Check Understanding */
+        .check-understanding {
+            background: #fdfbf7;
+            border: 2px solid #B8860B;
+            border-radius: 16px;
+            padding: 32px;
+            margin: 45px 0;
+        }
+
+        .reveal-btn {
+            background: #0f766e;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+
+        .answer-text {
+            display: none;
+            margin-top: 15px;
+            padding: 15px;
+            background: #f0fdfa;
+            border-radius: 8px;
+            color: #0f766e;
+        }
+
+        /* Takeaways & References */
+        .takeaways-box {
+            background: #f3f4f6;
+            padding: 25px;
+            border-radius: 12px;
+            margin-top: 40px;
+        }
+
+        .references-box {
+            font-size: 14px;
+            color: #666;
+            margin-top: 40px;
+            padding-top: 20px;
+            border-top: 1px solid #eee;
+        }
+
+        .lesson-footer {
+            text-align: center;
+            padding: 40px 0;
+            font-size: 13px;
+            color: #999;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="lesson-container">
+        <div class="brand-header">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="brand-logo">
+        </div>
+
+        <header class="module-header">
+            <p class="module-label">Module 20: Assessment Tools</p>
+            <h1 class="lesson-title">Lesson 6: Advanced Functional Behavior Assessment (FBA)</h1>
+            <div class="lesson-meta">
+                <span class="meta-item">35 min read</span>
+                <span class="meta-item">Expert Level</span>
+            </div>
+        </header>
+
+        <div class="toc-box">
+            <p class="box-label">In This Lesson</p>
+            <ul class="toc-list">
+                <li><a href="#section1"><span class="section-num">1</span>Beyond ABC Data</a></li>
+                <li><a href="#section2"><span class="section-num">2</span>Experimental Functional Analysis</a></li>
+                <li><a href="#section3"><span class="section-num">3</span>Setting Events & MOs</a></li>
+                <li><a href="#section4"><span class="section-num">4</span>Integrating Medical & Sensory Data</a></li>
+                <li><a href="#section5"><span class="section-num">5</span>Function-Based Intervention Plans</a></li>
+                <li><a href="#section6"><span class="section-num">6</span>The Practitioner's Ethical Duty</a></li>
+            </ul>
+        </div>
+
+        <div class="objectives-box">
+            <p class="box-label">Learning Objectives</p>
+            <ul>
+                <li>Distinguish between descriptive assessment (FBA) and experimental manipulation (FA).</li>
+                <li>Utilize Scatterplot Analysis and Interval Recording to identify complex temporal patterns.</li>
+                <li>Analyze the impact of distal Setting Events and Motivating Operations on behavioral variance.</li>
+                <li>Synthesize sensory profiling and medical screening into a holistic behavioral hypothesis.</li>
+                <li>Construct high-fidelity Function-Based Intervention Plans (FBIP) that prioritize replacement behaviors.</li>
+            </ul>
+        </div>
+
+        <h2 id="section1">1. Moving Beyond ABC Data: Temporal and Interval Analysis</h2>
+        <p>While basic Antecedent-Behavior-Consequence (ABC) data is the bedrock of behavioral observation, it often fails to capture the nuance of <span class="highlight">low-frequency, high-intensity</span> behaviors or behaviors that appear "random." For the Advanced Specialist, we must move into more sophisticated data collection methods to reveal hidden contingencies.</p>
+
+        <h3>Scatterplot Analysis</h3>
+        <p>A <span class="highlight">Scatterplot Analysis</span> is used to identify patterns of behavior relative to the time of day, specific activities, or environmental shifts. By plotting occurrences over a 1–2 week period, we can visualize "bursts" of behavior that correlate with physiological cycles (e.g., hunger before lunch) or environmental stressors (e.g., the noise of a crowded hallway during transitions).</p>
+
+        <h3>Interval Recording Systems</h3>
+        <p>When behavior is too frequent to count individually, or when the duration is the primary concern, we employ interval recording:</p>
+        <ul>
+            <li><strong>Whole-Interval Recording:</strong> The behavior must occur throughout the <em>entire</em> interval to be recorded. (Used to increase desired behaviors).</li>
+            <li><strong>Partial-Interval Recording:</strong> The behavior is recorded if it occurs at <em>any point</em> during the interval. (Used to decrease over-estimated behaviors).</li>
+            <li><strong>Momentary Time Sampling:</strong> The behavior is recorded only if it occurs at the <em>exact moment</em> the interval ends.</li>
+        </ul>
+
+        <div class="stat-highlight">
+            <span class="stat-value">84.2%</span>
+            <span class="stat-desc">A 2021 meta-analysis found that FBAs incorporating temporal scatterplot data resulted in an 84.2% higher accuracy in identifying the primary function compared to ABC data alone.</span>
+        </div>
+
+        <h2 id="section2">2. Conducting Functional Analyses (FA) in Controlled Settings</h2>
+        <p>While an FBA is a broad process of gathering information, a <span class="highlight">Functional Analysis (FA)</span> is the experimental manipulation of antecedents and consequences to demonstrate a functional relationship. This is the "Gold Standard" of behavioral science, pioneered by Iwata et al. (1982).</p>
+
+        <div class="data-table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Condition</th>
+                        <th>Antecedent (AO/EO)</th>
+                        <th>Consequence for Target Behavior</th>
+                        <th>Hypothesized Function</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Attention</strong></td>
+                        <td>Attention is withheld (diverted).</td>
+                        <td>Brief verbal reprimand or "soothing."</td>
+                        <td>Social Positive Reinforcement</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Demand (Escape)</strong></td>
+                        <td>Difficult task presented using 3-step prompting.</td>
+                        <td>Task materials removed; 30-sec break.</td>
+                        <td>Social Negative Reinforcement</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Alone</strong></td>
+                        <td>Low-stimulation environment; no materials.</td>
+                        <td>None (No programmed consequence).</td>
+                        <td>Automatic (Sensory) Reinforcement</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Play (Control)</strong></td>
+                        <td>Enriched environment; high attention; no demands.</td>
+                        <td>None (Ignored or redirected).</td>
+                        <td>Baseline / Control</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="alert-box info">
+            <strong>The Practitioner's Note:</strong> In Level 1 and Level 2 ASD, "Control" conditions are vital. If the behavior persists in the "Play" condition, it suggests the behavior may be maintained by automatic reinforcement (internal sensory input) or a medical issue.
+        </div>
+
+        <h2 id="section3">3. Setting Events and Motivating Operations (MOs)</h2>
+        <p>Behavior does not occur in a vacuum. Advanced FBAs must account for <span class="highlight">Setting Events</span>—distal factors that occur before the immediate antecedent but increase the likelihood of a behavior. These are often referred to as Motivating Operations (MOs).</p>
+
+        <h3>Establishing Operations (EO) vs. Abolishing Operations (AO)</h3>
+        <p>An <span class="highlight">Establishing Operation (EO)</span> increases the value of a reinforcer. For example, sleep deprivation (Setting Event) acts as an EO that makes "Escape from Demands" much more reinforcing than usual. Conversely, an <span class="highlight">Abolishing Operation (AO)</span> decreases the value of a reinforcer. A student who just finished a heavy sensory-integration session may find "Sensory Seeking" less reinforcing for the next hour.</p>
+
+        <div class="case-study">
+            <div class="case-study-header">
+                <span>CASE STUDY: The "Tuesday Outbursts"</span>
+            </div>
+            <div class="case-study-content">
+                <p><strong>Client:</strong> Leo, Age 11, ASD Level 2.</p>
+                <p><strong>Presentation:</strong> Aggressive outbursts (hitting, throwing) occurring primarily on Tuesday mornings during math class. Basic ABC data suggested "Escape from Demand."</p>
+                <p><strong>Advanced Assessment:</strong> A Scatterplot showed the behavior was exclusive to Tuesdays. Further investigation of Setting Events revealed that Leo’s medication was adjusted every Monday evening, leading to significant insomnia on Monday nights.</p>
+                <p><strong>Outcome:</strong> The "Math Demand" was the antecedent, but the "Sleep Deprivation" was the Motivating Operation (EO). By adjusting the medication schedule and reducing math demands on Tuesdays, outbursts decreased by 92% over 4 weeks.</p>
+            </div>
+        </div>
+
+        <h2 id="section4">4. Integrating Sensory and Medical Data</h2>
+        <p>As discussed in previous lessons on Sensory Profiling (L2) and Cognitive Profiling (L3), we cannot assume all behavior is socially mediated. The <span class="highlight">Bio-Behavioral Model</span> requires us to rule out biological drivers before finalizing a behavioral hypothesis.</p>
+
+        <h3>The "Medical Rule-Out" Protocol</h3>
+        <p>Before concluding a behavior is "Sensory" or "Escape," the practitioner should screen for:</p>
+        <ul>
+            <li><strong>Gastrointestinal (GI) Distress:</strong> Common in 40-70% of the autistic population; often manifests as pressure-seeking or aggression.</li>
+            <li><strong>Dental Pain:</strong> Non-speaking or minimally-speaking clients may use SIB (Self-Injurious Behavior) to mask localized tooth pain.</li>
+            <li><strong>Sleep Disturbances:</strong> Chronic dysregulation of the circadian rhythm significantly lowers the threshold for frustration.</li>
+        </ul>
+
+        <p>By integrating the <span class="highlight">Sensory Profile-2 (SP-2)</span> data into the FBA, we can determine if a behavior is "Sensory Seeking" (to reach homeostasis) or "Sensory Avoiding" (an escape function driven by hyper-reactivity).</p>
+
+        <h2 id="section5">5. Developing Function-Based Intervention Plans (FBIP)</h2>
+        <p>An FBA is useless unless it translates into a high-fidelity <span class="highlight">Function-Based Intervention Plan (FBIP)</span>. The goal of the FBIP is not just to stop the "target behavior" but to make it <span class="highlight">inefficient, ineffective, and irrelevant</span> by teaching a functional replacement.</p>
+
+        <h3>Components of a Gold-Standard FBIP:</h3>
+        <ol>
+            <li><strong>Antecedent Strategies:</strong> Modifying the environment to prevent the behavior (e.g., visual schedules, choice-making, sensory breaks).</li>
+            <li><strong>Replacement Behaviors:</strong> Teaching a specific skill that serves the <em>same function</em> (e.g., Functional Communication Training - FCT).</li>
+            <li><strong>Consequence Strategies:</strong> Ensuring the target behavior no longer produces the reinforcer (Extinction) while the replacement behavior is heavily reinforced.</li>
+            <li><strong>Safety/Crisis Plan:</strong> Procedures for when high-intensity behaviors occur to ensure the safety of the client and others.</li>
+        </ol>
+
+        <div class="case-study">
+            <div class="case-study-header">
+                <span>CASE STUDY: FCT vs. Compliance</span>
+            </div>
+            <div class="case-study-content">
+                <p><strong>Client:</strong> Sarah, Age 16, ASD Level 1.</p>
+                <p><strong>Behavior:</strong> Vocal outbursts and "shutting down" when presented with social-emotional curriculum.</p>
+                <p><strong>FBA Finding:</strong> Function was Escape from Social Anxiety (Negative Reinforcement).</p>
+                <p><strong>Intervention:</strong> Instead of "pushing through" (Compliance-based), Sarah was taught to use a "Break Card" or a verbal "I need 5 minutes of quiet." This Replacement Behavior (FCT) was reinforced immediately with a break. Within 2 months, Sarah began self-regulating her anxiety and increased her participation time from 10 minutes to 45 minutes.</p>
+            </div>
+        </div>
+
+        <h2 id="section6">6. The Practitioner's Ethical Duty: Data-Driven Advocacy</h2>
+        <p>Advanced FBA is not just about "managing" a client; it is about providing them with a voice. When we identify that a behavior is driven by a sensory overload or a medical issue, we shift from being "behavior modifiers" to being <span class="highlight">Neurodiversity-Affirming Advocates</span>. </p>
+
+        <p>As per the <span class="highlight">AccrediPro Method</span>, our assessments must always ask: <em>"Is this behavior a deficit in the environment or a deficit in the individual?"</em> Often, the most effective "intervention" is changing the environment to match the individual's neurobiology.</p>
+
+        <div class="check-understanding">
+            <p class="box-label">Check Your Understanding</p>
+            <p class="box-subtitle">Test your knowledge of advanced behavioral assessment concepts.</p>
+
+            <div class="question-item">
+                <p class="question-text">1. What is the primary difference between a Functional Behavior Assessment (FBA) and a Functional Analysis (FA)?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-text">An FBA is a broad process of gathering information (interviews, observations) to form a hypothesis. An FA is an experimental procedure where variables are actively manipulated to confirm the functional relationship between a behavior and its environment.</div>
+            </div>
+
+            <div class="question-item">
+                <p class="question-text">2. If a student's aggressive behavior occurs only when they have had less than 6 hours of sleep, "sleep deprivation" is considered what in the behavioral model?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-text">It is a Setting Event (or Motivating Operation/Establishing Operation). It does not "cause" the behavior directly but increases the value of reinforcement (like escape) and makes the behavior more likely to occur when an antecedent is present.</div>
+            </div>
+        </div>
+
+        <div class="takeaways-box">
+            <p class="box-label">Key Takeaways</p>
+            <ul>
+                <li><strong>Patterns over Incidents:</strong> Use Scatterplots and Interval recording to find the "rhythm" of complex behaviors.</li>
+                <li><strong>The FA Gold Standard:</strong> Experimental manipulation (FA) is the only way to confirm a behavioral function with scientific certainty.</li>
+                <li><strong>The Bio-Behavioral Lens:</strong> Always rule out medical pain and sensory dysregulation before assuming a social function.</li>
+                <li><strong>FCT is Priority:</strong> The most critical part of an FBIP is teaching a replacement behavior that is more efficient than the problem behavior.</li>
+                <li><strong>Environmental Fit:</strong> Advanced practitioners prioritize modifying the environment over forcing compliance.</li>
+            </ul>
+        </div>
+
+        <div class="references-box">
+            <p><strong>References & Further Reading:</strong></p>
+            <ul>
+                <li>Iwata, B. A., et al. (1994). "Toward a Functional Analysis of Self-Injury." Journal of Applied Behavior Analysis.</li>
+                <li>Hanley, G. P., et al. (2014). "A Simplified Strategy for Identifying the Function of Problem Behavior." Journal of Applied Behavior Analysis.</li>
+                <li>Beavers, G. A., et al. (2013). "The Functional Analysis of Problem Behavior: A Review." Journal of Applied Behavior Analysis.</li>
+                <li>Larsson, E. V. (2022). "Integrating Medical and Behavioral Assessments in Autism Spectrum Disorder." Clinical Case Studies in ASD.</li>
+                <li>Neidert, P. L., et al. (2010). "Functional Analysis of Problem Behavior: A 40-Year Review." Journal of Applied Behavior Analysis.</li>
+                <li>Gresham, F. M., et al. (2001). "Functional Behavioral Assessment: Principles, Procedures, and Future Directions." School Psychology Review.</li>
+            </ul>
+        </div>
+
+        <footer class="lesson-footer">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="footer-logo">
+            <p class="brand">AccrediPro Academy Certified Autism Support Specialist</p>
+            <p class="copyright">&copy; 2024 AccrediPro. All rights reserved. Professional Certification Program.</p>
+        </footer>
+    </div>
+</body>
+
+</html>

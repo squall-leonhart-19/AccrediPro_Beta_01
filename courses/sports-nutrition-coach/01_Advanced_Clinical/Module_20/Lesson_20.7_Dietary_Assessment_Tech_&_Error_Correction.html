@@ -1,0 +1,575 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lesson 20.7: Dietary Assessment Tech & Error Correction</title>
+    <style>
+        /* Base & Reset */
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Georgia, 'Times New Roman', serif;
+            line-height: 1.8;
+            color: #2d2d2d;
+            background: #f8f6f3;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Main Container */
+        .lesson-container {
+            max-width: 860px;
+            margin: 0 auto;
+            padding: 40px 30px;
+            background: #ffffff;
+            min-height: 100vh;
+            box-shadow: 0 0 60px rgba(0, 0, 0, 0.08);
+        }
+
+        /* Brand Header */
+        .brand-header {
+            text-align: center;
+            padding-bottom: 30px;
+            margin-bottom: 35px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .brand-logo {
+            max-width: 220px;
+            height: auto;
+            margin-bottom: 5px;
+        }
+
+        /* Module Header - Performance Blue Theme */
+        .module-header {
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+            padding: 35px 35px 30px;
+            border-radius: 16px;
+            margin-bottom: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .module-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+            transform: translate(100px, -100px);
+        }
+
+        .module-header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, #B8860B, #D4A84B, #B8860B);
+        }
+
+        .module-label {
+            margin: 0;
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.75);
+            text-transform: uppercase;
+            letter-spacing: 2.5px;
+            font-weight: 500;
+        }
+
+        .lesson-title {
+            margin: 10px 0 0 0;
+            font-size: 28px;
+            color: #ffffff;
+            font-weight: 700;
+            line-height: 1.3;
+            position: relative;
+        }
+
+        .lesson-meta {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+            padding-top: 18px;
+            border-top: 1px solid rgba(255, 255, 255, 0.15);
+            flex-wrap: wrap;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.85);
+            background: rgba(255, 255, 255, 0.1);
+            padding: 5px 12px;
+            border-radius: 4px;
+        }
+
+        /* Table of Contents */
+        .toc-box {
+            background: linear-gradient(135deg, #fafafa 0%, #f5f5f5 100%);
+            border-radius: 14px;
+            padding: 24px 28px;
+            margin-bottom: 35px;
+            border: 1px solid #e8e8e8;
+        }
+
+        .toc-box .box-label {
+            font-weight: 600;
+            color: #1e3a8a;
+            margin: 0 0 18px 0;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .toc-list {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px 24px;
+        }
+
+        .toc-list li {
+            margin: 0;
+        }
+
+        .toc-list a {
+            display: flex;
+            align-items: center;
+            padding: 8px 12px;
+            color: #555;
+            text-decoration: none;
+            font-size: 14px;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+        }
+
+        .toc-list a:hover {
+            background: white;
+            color: #1e3a8a;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+        }
+
+        .toc-list .section-num {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 26px;
+            height: 26px;
+            background: #1e3a8a;
+            color: white;
+            font-weight: 600;
+            font-size: 11px;
+            border-radius: 6px;
+            margin-right: 12px;
+            flex-shrink: 0;
+        }
+
+        /* Learning Objectives */
+        .objectives-box {
+            background: #eff6ff;
+            border: 2px solid #3b82f6;
+            border-radius: 14px;
+            padding: 30px 35px;
+            margin-bottom: 40px;
+        }
+
+        .objectives-box .box-label {
+            font-weight: 600;
+            color: #1e3a8a;
+            margin: 0 0 18px 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .objectives-box .box-label::before {
+            content: '🎯';
+            font-size: 18px;
+        }
+
+        .objectives-box ul {
+            margin: 0;
+            padding-left: 22px;
+        }
+
+        .objectives-box li {
+            margin-bottom: 14px;
+            font-size: 16px;
+            line-height: 1.7;
+        }
+
+        /* Section Headings */
+        h2 {
+            font-size: 24px;
+            color: #1e3a8a;
+            margin: 50px 0 20px 0;
+            font-weight: 600;
+            position: relative;
+            padding-bottom: 12px;
+        }
+
+        h2::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 60px;
+            height: 3px;
+            background: #B8860B;
+        }
+
+        h3 {
+            font-size: 20px;
+            color: #3b82f6;
+            margin: 30px 0 15px 0;
+        }
+
+        /* Paragraphs & Terms */
+        p {
+            font-size: 17px;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        .highlight {
+            background: linear-gradient(180deg, transparent 60%, #FFF59D 60%);
+            padding: 0 4px;
+            font-weight: 500;
+        }
+
+        /* Case Study Box */
+        .case-study {
+            background: linear-gradient(135deg, #f8f9fb 0%, #f0f2f5 100%);
+            border-radius: 16px;
+            padding: 0;
+            margin: 40px 0;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+        }
+
+        .case-study-header {
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+            padding: 20px 30px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .case-study-header .box-label {
+            font-weight: 600;
+            color: #ffffff;
+            margin: 0;
+            font-size: 16px;
+        }
+
+        .case-study-content {
+            padding: 28px 30px;
+        }
+
+        .patient-profile {
+            display: flex;
+            align-items: center;
+            gap: 18px;
+            padding: 18px 22px;
+            background: white;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            border: 1px solid #e5e5e5;
+        }
+
+        /* Stats & Tables */
+        .stat-highlight {
+            font-weight: 700;
+            color: #1e3a8a;
+            background: #eff6ff;
+            padding: 2px 6px;
+            border-radius: 4px;
+        }
+
+        .data-table-container {
+            overflow-x: auto;
+            margin: 30px 0;
+            border-radius: 12px;
+            border: 1px solid #e5e5e5;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 15px;
+        }
+
+        th {
+            background: #f1f5f9;
+            padding: 15px;
+            text-align: left;
+            font-weight: 600;
+            color: #1e3a8a;
+            border-bottom: 2px solid #e2e8f0;
+        }
+
+        td {
+            padding: 15px;
+            border-bottom: 1px solid #e2e8f0;
+            color: #444;
+        }
+
+        /* Check Understanding */
+        .check-understanding {
+            background: #fdfbf7;
+            border: 2px solid #B8860B;
+            border-radius: 16px;
+            padding: 32px;
+            margin: 45px 0;
+        }
+
+        .reveal-btn {
+            background: #1e3a8a;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+
+        .answer-text {
+            display: none;
+            margin-top: 15px;
+            padding: 15px;
+            background: #f0fdf4;
+            border-radius: 8px;
+            color: #166534;
+        }
+
+        /* Footer */
+        .references-box {
+            background: #f9fafb;
+            padding: 30px;
+            border-radius: 14px;
+            margin-top: 40px;
+            font-size: 14px;
+            color: #666;
+        }
+
+        .takeaways-box {
+            background: #1e3a8a;
+            color: white;
+            padding: 30px;
+            border-radius: 14px;
+            margin: 40px 0;
+        }
+
+        .takeaways-box h4 {
+            margin-top: 0;
+            color: #D4A84B;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .lesson-footer {
+            text-align: center;
+            padding: 40px 0;
+            border-top: 1px solid #eee;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="lesson-container">
+        <div class="brand-header">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="brand-logo">
+        </div>
+
+        <header class="module-header">
+            <p class="module-label">Module 20: Assessment Tools | L2 Advanced Practitioner</p>
+            <h1 class="lesson-title">Lesson 7: Dietary Assessment Tech & Error Correction</h1>
+            <div class="lesson-meta">
+                <span class="meta-item">⏱️ 35 min read</span>
+                <span class="meta-item">🎓 Level 2 Certification</span>
+            </div>
+        </header>
+
+        <div class="toc-box">
+            <p class="box-label">Lesson Contents</p>
+            <ul class="toc-list">
+                <li><a href="#rfpm"><span class="section-num">1</span>The RFPM Advantage</a></li>
+                <li><a href="#bias"><span class="section-num">2</span>Correcting Reporting Bias</a></li>
+                <li><a href="#automated"><span class="section-num">3</span>Automated Nutrient Analysis</a></li>
+                <li><a href="#temporal"><span class="section-num">4</span>Time-to-Fuel Assessment</a></li>
+                <li><a href="#validation"><span class="section-num">5</span>Validation vs. Gold Standards</a></li>
+                <li><a href="#perform"><span class="section-num">6</span>The PERFORM™ Integration</a></li>
+            </ul>
+        </div>
+
+        <div class="objectives-box">
+            <p class="box-label">Learning Objectives</p>
+            <ul>
+                <li>Master the implementation of the Remote Food Photography Method (RFPM) over traditional logs.</li>
+                <li>Quantify and correct for under-reporting and social desirability bias using the Goldberg cut-off.</li>
+                <li>Analyze temporal distribution of nutrients to optimize the "P" (Periodization) pillar.</li>
+                <li>Compare digital tracking accuracy against Doubly Labeled Water (DLW) and metabolic ward data.</li>
+                <li>Leverage automated software for deep-dive amino acid and micronutrient profiling.</li>
+            </ul>
+        </div>
+
+        <h2 id="rfpm">1. The Shift to Remote Food Photography Method (RFPM)</h2>
+        <p>For decades, the "Gold Standard" of field-based dietary assessment was the 3-day or 7-day weighed food diary. However, in elite athletic populations, the <span class="highlight">participant burden</span> of weighing every morsel of food leads to significant data degradation. Recent research indicates that traditional diaries can lead to a change in actual eating behavior—a phenomenon known as the <em>Hawthorne Effect</em>—where the athlete eats "better" simply because they are being watched.</p>
+
+        <p>The <span class="highlight">Remote Food Photography Method (RFPM)</span> utilizes smartphone technology to capture images of food before and after consumption. This method significantly reduces cognitive load and memory bias. A 2021 study involving NCAA Division I athletes found that RFPM captured <span class="stat-highlight">18% more "hidden" calories</span> (condiments, snacks, beverages) that were typically omitted in written logs.</p>
+
+        <div class="data-table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Feature</th>
+                        <th>3-Day Weighed Diary</th>
+                        <th>RFPM (Digital Photo)</th>
+                        <th>AI-Automated Tracking</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>User Burden</strong></td>
+                        <td>High (Requires scale/writing)</td>
+                        <td>Low (Point and shoot)</td>
+                        <td>Minimal (Passive scanning)</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Accuracy (Energy)</strong></td>
+                        <td>Variable (Under-reporting common)</td>
+                        <td>High (Visual portion verification)</td>
+                        <td>Moderate (Improving with ML)</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Temporal Data</strong></td>
+                        <td>Poor (Retrospective entry)</td>
+                        <td>Excellent (Timestamped)</td>
+                        <td>Excellent (Real-time)</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Context</strong></td>
+                        <td>Minimal</td>
+                        <td>High (Environment/Plate size)</td>
+                        <td>Moderate</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <h2 id="bias">2. Identifying and Correcting Reporting Bias</h2>
+        <p>The "Human Factor" remains the greatest hurdle in dietary assessment. Two primary psychological barriers exist: <span class="highlight">Under-reporting</span> (unintentional omission) and <span class="highlight">Social Desirability Bias</span> (intentional alteration to appear "healthier").</p>
+
+        <p>A meta-analysis of 42 studies (n=8,234) revealed that athletes, particularly those in weight-sensitive sports (gymnastics, combat sports, distance running), under-report their intake by an average of <span class="stat-highlight">22% to 37%</span>. To correct for this, advanced practitioners use the <span class="highlight">Goldberg Cut-off Limit</span>, which compares reported Energy Intake (EI) to estimated Basal Metabolic Rate (BMR).</p>
+
+        <div class="case-study">
+            <div class="case-study-header">
+                <div class="case-study-icon">🚴</div>
+                <div>
+                    <p class="box-label">Case Study: The "Ghost" Deficit</p>
+                    <p class="subtitle">Elite Cyclist Tracking Analysis</p>
+                </div>
+            </div>
+            <div class="case-study-content">
+                <div class="patient-profile">
+                    <div class="patient-avatar">MA</div>
+                    <div class="patient-info">
+                        <h4>Marcus A. (Age 26)</h4>
+                        <p>Professional Road Cyclist | Presenting with: Unexplained Fatigue & Low Power Output</p>
+                    </div>
+                </div>
+                <p><strong>Initial Assessment:</strong> Marcus submitted a 5-day digital log showing an average intake of 2,800 kcal/day. His calculated TDEE (Total Daily Energy Expenditure) was 4,200 kcal/day. Marcus claimed he was "eating until full."</p>
+                <p><strong>Intervention:</strong> Switched to RFPM with a "Fiducial Marker" (a reference object of known size). Analysis revealed Marcus was consistently under-estimating portion sizes of high-density fats and mid-ride carbohydrates.</p>
+                <p><strong>Outcome:</strong> Real intake was actually 3,400 kcal. While still in a deficit, the "missing" 600 kcal were identified as Social Desirability Bias (omitting sports drinks and gels). Correcting the log allowed for a precise 400 kcal surplus for recovery.</p>
+            </div>
+        </div>
+
+        <h2 id="automated">3. Automated Nutrient Analysis: Beyond Macros</h2>
+        <p>Modern practitioners must look beyond the "Big Three" (Carbs, Protein, Fat). Automated software now allows for the rapid assessment of <span class="highlight">Amino Acid Profiles</span> and <span class="highlight">Micronutrient Density</span> relative to training load.</p>
+
+        <p>In the PERFORM™ Method, we specifically analyze the <span class="highlight">Leucine Trigger</span>. For optimal Muscle Protein Synthesis (MPS), an athlete requires ~2.5g to 3g of Leucine per meal. Automated tools can now flag meals that fall below this threshold, even if the total protein for the day appears adequate. Furthermore, tracking <span class="highlight">Iron, Vitamin D, and Magnesium</span> intake in real-time allows for proactive intervention before clinical deficiencies appear in blood work (referencing Lesson 20.4 on Biomarkers).</p>
+
+        <h2 id="temporal">4. Assessment of 'Time-to-Fuel': Temporal Distribution</h2>
+        <p>The <em>when</em> is often as critical as the <em>what</em>. <span class="highlight">Temporal Distribution Analysis</span> involves mapping nutrient intake against training timestamps. This is the bedrock of the "P" (Periodize) and "R" (Recovery) pillars of the PERFORM™ Method.</p>
+
+        <p>Key metrics for the Advanced Coach include:
+        <ul>
+            <li><strong>Pre-Exercise Window:</strong> Carbohydrate availability 0–4 hours pre-session.</li>
+            <li><strong>Intra-Workout Delivery:</strong> Grams of CHO per hour during sessions >90 mins.</li>
+            <li><strong>The Anabolic Window:</strong> Protein and CHO proximity to the cessation of exercise.</li>
+            <li><strong>Pre-Sleep Casein:</strong> Presence of slow-digesting protein within 60 minutes of sleep.</li>
+        </ul></p>
+
+        <p>A 2022 study published in the <em>Journal of the International Society of Sports Nutrition</em> showed that athletes who achieved <span class="stat-highlight">even protein distribution</span> (±10g across 4-5 meals) saw a 12% greater increase in lean mass compared to those with "skewed" distribution (back-loading protein at dinner), despite identical total daily protein.</p>
+
+        <h2 id="validation">5. Validating Digital Apps against 'Gold Standards'</h2>
+        <p>While consumer apps (MyFitnessPal, Chronometer) are convenient, they often possess database errors of <span class="stat-highlight">10-15%</span>. For elite precision, we compare these against <span class="highlight">Metabolic Ward Data</span> and <span class="highlight">Doubly Labeled Water (DLW)</span>.</p>
+
+        <p>DLW is the "Gold Standard" for measuring energy expenditure in free-living conditions. By comparing an athlete's reported intake to their DLW-measured expenditure (assuming weight stability), we can calculate the exact <span class="highlight">Reporting Error Percentage</span>. As a coach, if an athlete's weight remains stable but their log suggests a 1,000 kcal deficit, you have a validation error that must be addressed before adjusting the plan.</p>
+
+        <div class="check-understanding">
+            <p class="box-label">Check Your Understanding</p>
+            <div class="question-item">
+                <p class="question-text">1. Why is the Remote Food Photography Method (RFPM) generally preferred over traditional weighed diaries in elite sport?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-text">RFPM reduces participant burden, minimizes memory bias, provides timestamped temporal data, and reduces the Hawthorne Effect (altering behavior due to the complexity of recording).</div>
+            </div>
+            <div class="question-item">
+                <p class="question-text">2. What is the "Goldberg Cut-off" used for in a nutritional assessment?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-text">It is a mathematical method to identify "implausible" energy intake reports by comparing the reported intake to the athlete's basal metabolic rate (BMR) and physical activity level (PAL).</div>
+            </div>
+        </div>
+
+        <h2 id="perform">6. Integrating Assessment into the PERFORM™ Method</h2>
+        <p>Assessment is not a one-time event; it is a feedback loop. In the PERFORM™ Method, we use dietary tech to calibrate the <span class="highlight">Energy Systems (E)</span>. If an athlete is struggling with high-intensity glycolytic efforts (Module 2), we look at the 'Time-to-Fuel' data to see if carbohydrate delivery is lagging during the 4-hour pre-training window.</p>
+
+        <p>By correcting for reporting errors, we ensure that the <span class="highlight">Results Tracking (R)</span> is based on reality, not fiction. This allows the coach to make surgical adjustments to the macrocycle, moving from "guessing" to "precision engineering" of the athlete's physiology.</p>
+
+        <div class="takeaways-box">
+            <h4>Key Takeaways</h4>
+            <ul>
+                <li><strong>Tech Superiority:</strong> RFPM and timestamped digital logs provide significantly more actionable data than retrospective paper diaries.</li>
+                <li><strong>Bias Awareness:</strong> Expect under-reporting of 20%+ in weight-conscious athletes; use the Goldberg cut-off to validate logs.</li>
+                <li><strong>Temporal Matters:</strong> Analyze the distribution of nutrients, specifically protein (leucine trigger) and carbohydrates (pre/intra workout).</li>
+                <li><strong>Validation:</strong> Use weight stability and performance markers to "ground-truth" digital tracking data.</li>
+            </ul>
+        </div>
+
+        <div class="references-box">
+            <p class="box-label">References & Further Reading</p>
+            <ul>
+                <li>Capling, L. et al. (2017). "Validity of Dietary Assessment in Athletes: A Systematic Review." <em>Nutrients</em>.</li>
+                <li>Burke, L. M. et al. (2021). "Remote Food Photography Method for Estimating Energy and Nutrient Intake in Elite Athletes." <em>International Journal of Sport Nutrition and Exercise Metabolism</em>.</li>
+                <li>Trolle, E. et al. (2022). "Under-reporting of Energy Intake in Athletes and Its Impact on Nutritional Recommendations." <em>Sports Medicine</em>.</li>
+                <li>Heiss, C. J. et al. (2020). "Evaluation of Smartphone Apps for Dietary Assessment in Athletic Populations." <em>Journal of the Academy of Nutrition and Dietetics</em>.</li>
+                <li>Schoeller, D. A. (2018). "The Doubly Labeled Water Method for Measuring Total Daily Energy Expenditure." <em>American Journal of Clinical Nutrition</em>.</li>
+            </ul>
+        </div>
+
+        <footer class="lesson-footer">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="footer-logo">
+            <p class="brand">AccrediPro Academy | Sports Nutrition Coach Certification</p>
+            <p class="copyright">&copy; 2024 AccrediPro. All rights reserved. The PERFORM Athletic Method™ is a proprietary framework.</p>
+        </footer>
+    </div>
+</body>
+
+</html>

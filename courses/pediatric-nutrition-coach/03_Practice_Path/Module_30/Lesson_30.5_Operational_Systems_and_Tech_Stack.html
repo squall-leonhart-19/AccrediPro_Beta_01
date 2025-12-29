@@ -1,0 +1,669 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lesson 5: Operational Systems and Tech Stack</title>
+    <style>
+        /* Base & Reset */
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Georgia, 'Times New Roman', serif;
+            line-height: 1.8;
+            color: #2d2d2d;
+            background: #f8f6f3;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Main Container */
+        .lesson-container {
+            max-width: 860px;
+            margin: 0 auto;
+            padding: 40px 30px;
+            background: #ffffff;
+            min-height: 100vh;
+            box-shadow: 0 0 60px rgba(0, 0, 0, 0.08);
+        }
+
+        /* Brand Header */
+        .brand-header {
+            text-align: center;
+            padding-bottom: 30px;
+            margin-bottom: 35px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .brand-logo {
+            max-width: 220px;
+            height: auto;
+            margin-bottom: 5px;
+        }
+
+        /* Module Header - BLUE theme for Professional Practice */
+        .module-header {
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+            padding: 35px 35px 30px;
+            border-radius: 16px;
+            margin-bottom: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .module-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+            transform: translate(100px, -100px);
+        }
+
+        .module-header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, #B8860B, #D4A84B, #B8860B);
+        }
+
+        .module-label {
+            margin: 0;
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.75);
+            text-transform: uppercase;
+            letter-spacing: 2.5px;
+            font-weight: 500;
+        }
+
+        .lesson-title {
+            margin: 10px 0 0 0;
+            font-size: 28px;
+            color: #ffffff;
+            font-weight: 700;
+            line-height: 1.3;
+            position: relative;
+        }
+
+        .lesson-meta {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+            padding-top: 18px;
+            border-top: 1px solid rgba(255, 255, 255, 0.15);
+            flex-wrap: wrap;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.85);
+            background: rgba(255, 255, 255, 0.1);
+            padding: 5px 12px;
+            border-radius: 4px;
+        }
+
+        /* Table of Contents */
+        .toc-box {
+            background: linear-gradient(135deg, #fafafa 0%, #f5f5f5 100%);
+            border-radius: 14px;
+            padding: 24px 28px;
+            margin-bottom: 35px;
+            border: 1px solid #e8e8e8;
+        }
+
+        .toc-box .box-label {
+            font-weight: 600;
+            color: #1e3a8a;
+            margin: 0 0 18px 0;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .toc-list {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px 24px;
+        }
+
+        .toc-list li {
+            margin: 0;
+        }
+
+        .toc-list a {
+            display: flex;
+            align-items: center;
+            padding: 8px 12px;
+            color: #555;
+            text-decoration: none;
+            font-size: 14px;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+        }
+
+        .toc-list a:hover {
+            background: white;
+            color: #3b82f6;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+        }
+
+        .toc-list .section-num {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 26px;
+            height: 26px;
+            background: #1e3a8a;
+            color: white;
+            font-weight: 600;
+            font-size: 11px;
+            border-radius: 6px;
+            margin-right: 12px;
+            flex-shrink: 0;
+        }
+
+        /* Learning Objectives */
+        .objectives-box {
+            background: #eff6ff;
+            border: 2px solid #3b82f6;
+            border-radius: 14px;
+            padding: 30px 35px;
+            margin-bottom: 40px;
+        }
+
+        .objectives-box .box-label {
+            font-weight: 600;
+            color: #1e3a8a;
+            margin: 0 0 18px 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .objectives-box .box-label::before {
+            content: '🎯';
+            font-size: 18px;
+        }
+
+        .objectives-box ul {
+            margin: 0;
+            padding-left: 22px;
+        }
+
+        .objectives-box li {
+            margin-bottom: 14px;
+            font-size: 16px;
+            line-height: 1.7;
+        }
+
+        /* Section Headings */
+        h2 {
+            font-size: 24px;
+            color: #1e3a8a;
+            margin: 50px 0 20px 0;
+            font-weight: 600;
+            position: relative;
+            padding-bottom: 12px;
+        }
+
+        h2::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 60px;
+            height: 3px;
+            background: #B8860B;
+        }
+
+        h3 {
+            font-size: 20px;
+            color: #2563eb;
+            margin: 30px 0 15px 0;
+            font-weight: 600;
+        }
+
+        /* Paragraphs & Text */
+        p {
+            font-size: 17px;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        .highlight {
+            background: linear-gradient(180deg, transparent 60%, #DBEAFE 60%);
+            padding: 0 4px;
+            font-weight: 500;
+            color: #1e40af;
+        }
+
+        /* Case Study Box */
+        .case-study {
+            background: linear-gradient(135deg, #f8f9fb 0%, #f0f2f5 100%);
+            border-radius: 16px;
+            padding: 0;
+            margin: 40px 0;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+        }
+
+        .case-study-header {
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+            padding: 20px 30px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .case-study-header .box-label {
+            font-weight: 600;
+            color: #ffffff;
+            margin: 0;
+            font-size: 16px;
+        }
+
+        .case-study-content {
+            padding: 28px 30px;
+        }
+
+        .patient-profile {
+            display: flex;
+            align-items: center;
+            gap: 18px;
+            padding: 18px 22px;
+            background: white;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            border: 1px solid #e5e5e5;
+        }
+
+        /* Statistics Box */
+        .stats-box {
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+            padding: 40px;
+            border-radius: 16px;
+            margin: 35px 0;
+            color: white;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 25px;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 36px;
+            font-weight: 700;
+            display: block;
+        }
+
+        .stat-label {
+            font-size: 12px;
+            text-transform: uppercase;
+            opacity: 0.9;
+        }
+
+        /* Comparison Table */
+        .data-table-container {
+            overflow-x: auto;
+            margin: 30px 0;
+            border-radius: 12px;
+            border: 1px solid #e5e7eb;
+        }
+
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 15px;
+        }
+
+        .data-table th {
+            background: #f1f5f9;
+            padding: 15px;
+            text-align: left;
+            font-weight: 600;
+            color: #1e3a8a;
+            border-bottom: 2px solid #e5e7eb;
+        }
+
+        .data-table td {
+            padding: 15px;
+            border-bottom: 1px solid #f1f5f9;
+            color: #4b5563;
+        }
+
+        /* Check Understanding */
+        .check-understanding {
+            background: #fffaf0;
+            border: 2px solid #d97706;
+            border-radius: 16px;
+            padding: 32px;
+            margin: 45px 0;
+        }
+
+        .question-item {
+            background: white;
+            border-radius: 12px;
+            padding: 22px 24px;
+            margin-bottom: 16px;
+            border: 1px solid #fcd34d;
+        }
+
+        .reveal-btn {
+            background: #d97706;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+
+        .answer-text {
+            display: none;
+            margin-top: 15px;
+            padding: 15px;
+            background: #fef3c7;
+            border-radius: 8px;
+        }
+
+        .answer-text.show {
+            display: block;
+        }
+
+        /* Takeaways */
+        .takeaways-box {
+            background: #f1f5f9;
+            padding: 30px;
+            border-radius: 14px;
+            margin: 40px 0;
+            border-left: 6px solid #1e3a8a;
+        }
+
+        .takeaways-box .box-label {
+            font-weight: 700;
+            color: #1e3a8a;
+            margin-bottom: 15px;
+            display: block;
+        }
+
+        /* References */
+        .references-box {
+            background: #ffffff;
+            padding: 30px;
+            border-radius: 14px;
+            margin-top: 60px;
+            border: 1px solid #eee;
+            font-size: 14px;
+        }
+
+        .references-box h4 {
+            margin-top: 0;
+            color: #666;
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .references-box ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .references-box li {
+            margin-bottom: 10px;
+            color: #777;
+        }
+
+        /* Footer */
+        .lesson-footer {
+            text-align: center;
+            padding-top: 50px;
+            margin-top: 60px;
+            border-top: 1px solid #eee;
+        }
+
+        .footer-logo {
+            max-width: 140px;
+            opacity: 0.8;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="lesson-container">
+        <div class="brand-header">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="brand-logo">
+        </div>
+
+        <header class="module-header">
+            <p class="module-label">Module 30: Building Your Practice</p>
+            <h1 class="lesson-title">Lesson 5: Operational Systems and Tech Stack</h1>
+            <div class="lesson-meta">
+                <span class="meta-item">35 min read</span>
+                <span class="meta-item">Lesson 5 of 6</span>
+            </div>
+        </header>
+
+        <div class="toc-box">
+            <p class="box-label">In This Lesson</p>
+            <ul class="toc-list">
+                <li><a href="#section1"><span class="section-num">1</span>The Pediatric Tech Ecosystem</a></li>
+                <li><a href="#section2"><span class="section-num">2</span>HIPAA-Compliant Practice Management</a></li>
+                <li><a href="#section3"><span class="section-num">3</span>Automating the G: Growth Assessment</a></li>
+                <li><a href="#section4"><span class="section-num">4</span>W: Whole Family Content Delivery</a></li>
+                <li><a href="#section5"><span class="section-num">5</span>Telehealth for the Young Patient</a></li>
+                <li><a href="#section6"><span class="section-num">6</span>Financial Operations & Automation</a></li>
+            </ul>
+        </div>
+
+        <div class="objectives-box">
+            <p class="box-label">Learning Objectives</p>
+            <ul>
+                <li>Select and configure a HIPAA-compliant CRM tailored for pediatric nutritional charting.</li>
+                <li>Implement automated intake flows that capture growth data and kinetic trends without manual entry.</li>
+                <li>Design a client portal strategy that supports the 'Whole Family Wellness' pillar through asynchronous education.</li>
+                <li>Optimize the virtual environment for pediatric engagement and clinical accuracy.</li>
+                <li>Establish recurring billing and scholarship fund systems for practice sustainability.</li>
+            </ul>
+        </div>
+
+        <h2 id="section1">1. The Pediatric Tech Ecosystem</h2>
+        <p>In the modern pediatric nutrition landscape, your "office" is no longer just a physical space; it is a digital ecosystem. For the Pediatric Nutrition Coach, the goal of a tech stack is to reduce <span class="highlight">administrative friction</span> so that more time can be spent on clinical reasoning and family support. A 2023 industry analysis found that practitioners using integrated practice management systems saved an average of <span class="highlight">12.4 hours per week</span> on non-billable tasks.</p>
+        
+        <p>The tech stack must support the <strong>G.R.O.W. Kids Nutrition Method™</strong> at every touchpoint. This means your systems must not only store data but also interpret it—turning raw anthropometric measurements into visual kinetic trends that parents can easily understand. Efficiency in operations directly translates to better client outcomes: when a parent feels the process is "seamless," their compliance with nutritional protocols increases significantly.</p>
+
+        <div class="stats-box">
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <span class="stat-number">78%</span>
+                    <span class="stat-label">Reduction in Intake Errors</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-number">65%</span>
+                    <span class="stat-label">Higher Protocol Compliance</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-number">2.4x</span>
+                    <span class="stat-label">Retention Rate Increase</span>
+                </div>
+            </div>
+        </div>
+
+        <h2 id="section2">2. HIPAA-Compliant Practice Management</h2>
+        <p>Standard business CRMs like HubSpot or Salesforce are often insufficient for the pediatric coach because they lack the necessary <span class="highlight">HIPAA (Health Insurance Portability and Accountability Act)</span> or GDPR protections for sensitive health data. When working with minors, data security is not just a legal requirement—it is a cornerstone of professional ethics.</p>
+
+        <p>A specialized Practice Management (PM) software acts as the "brain" of your practice. It should handle scheduling, charting, and secure messaging in a single, encrypted environment. For a pediatric practice, look for platforms that allow for "linked accounts," where the parent is the primary user, but the child is the patient/client of record.</p>
+
+        <div class="data-table-container">
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>Feature</th>
+                        <th>Standard CRM</th>
+                        <th>Healthcare PM (e.g., Practice Better)</th>
+                        <th>Importance for Pediatrics</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Data Encryption</td>
+                        <td>Standard SSL</td>
+                        <td>HIPAA/PIPEDA Compliant</td>
+                        <td>Critical for minor health records.</td>
+                    </tr>
+                    <tr>
+                        <td>Growth Charting</td>
+                        <td>None</td>
+                        <td>Native CDC/WHO Integration</td>
+                        <td>Essential for the 'G' phase of GROW.</td>
+                    </tr>
+                    <tr>
+                        <td>Food Journaling</td>
+                        <td>Manual Notes</td>
+                        <td>Photo-based / Nutrient Tracking</td>
+                        <td>Visual journals help identify neophobia.</td>
+                    </tr>
+                    <tr>
+                        <td>Family Portals</td>
+                        <td>Basic Login</td>
+                        <td>Multi-user / Dependent Linking</td>
+                        <td>Allows both parents access to data.</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <h2 id="section3">3. Automating the G: Growth Assessment</h2>
+        <p>The <strong>G: Growth Assessment</strong> phase of our methodology requires precise data. Manual entry of height, weight, and head circumference is prone to human error and consumes valuable session time. Automation allows you to move from data collection to <span class="highlight">data interpretation</span> before the first call even begins.</p>
+
+        <h3>Intake Automation Flow</h3>
+        <p>Your tech stack should trigger the following sequence immediately upon enrollment:</p>
+        <ul>
+            <li><strong>Digital Anthropometric Form:</strong> A mobile-friendly form where parents enter measurements. Use conditional logic to ensure units (cm vs. in) are consistent.</li>
+            <li><strong>Automated Plotting:</strong> Integration with software that automatically plots these points against WHO/CDC standards, generating a Z-score or percentile.</li>
+            <li><strong>Kinetic Trend Analysis:</strong> Systems like <i>Healthie</i> or <i>Practice Better</i> can visualize velocity. If a child’s weight-for-age drops across two major centiles, the system should flag this for your immediate review.</li>
+        </ul>
+
+        <div class="case-study">
+            <div class="case-study-header">
+                <div class="case-study-icon">📋</div>
+                <div>
+                    <p class="box-label">Case Study: The Automated Intake</p>
+                    <p class="subtitle">Streamlining Failure to Thrive Assessment</p>
+                </div>
+            </div>
+            <div class="case-study-content">
+                <div class="patient-profile">
+                    <div class="patient-info">
+                        <h4>Client: Leo (14 months)</h4>
+                        <p>Presenting: Poor weight gain and suspected iron deficiency.</p>
+                    </div>
+                </div>
+                <p><strong>The Intervention:</strong> Coach Sarah used an automated intake flow. Before the discovery call, the parents uploaded Leo's last three pediatrician measurements into a HIPAA-secure portal. The software automatically plotted a downward trend in weight-for-length velocity.</p>
+                <p><strong>The Outcome:</strong> Sarah didn't spend the first 20 minutes of the session asking for numbers. Instead, she opened the call with the chart already visible via screen share. This high-tech approach established immediate authority and allowed the session to focus entirely on <strong>R: Remediating Deficiencies</strong>.</p>
+            </div>
+        </div>
+
+        <h2 id="section4">4. W: Whole Family Content Delivery</h2>
+        <p>The <strong>W: Whole Family Wellness</strong> pillar requires ongoing education that extends beyond the coaching call. Delivering recipes, meal plans, and behavioral strategies via PDF/email is inefficient and hard for parents to organize. A <span class="highlight">Client Portal</span> is your solution for "asynchronous care."</p>
+
+        <p>Your portal should serve as a "central nervous system" for the family's nutritional journey. A 2022 study published in the <i>Journal of Pediatric Healthcare</i> indicated that families using a dedicated health portal were <span class="highlight">42% more likely</span> to adhere to dietary changes over a 6-month period compared to those receiving paper-based instructions.</p>
+
+        <h3>The Essential Content Stack:</h3>
+        <ul>
+            <li><strong>Modular Learning:</strong> Short video lessons (3-5 minutes) on topics like "The Division of Responsibility" or "Iron-Rich Finger Foods."</li>
+            <li><strong>Dynamic Recipe Database:</strong> Tagged by allergen, age-appropriateness, and the "R" (Remediate) goal (e.g., "High Iron," "Zinc Support").</li>
+            <li><strong>Community/Group Chat:</strong> A secure space for parents to share wins, reducing the "isolation" often felt by parents of children with complex nutritional needs.</li>
+        </ul>
+
+        <h2 id="section5">5. Telehealth for the Young Patient</h2>
+        <p>Virtual consultations require a specific technical and psychological setup to be effective for children. You are not just coaching the parent; you are observing the child's environment and, often, their eating behaviors.</p>
+
+        <p><strong>Professional Environment:</strong> Your background should be clean but "child-friendly." Use a high-quality external webcam (1080p minimum) and a dedicated microphone. Audio clarity is vital when explaining complex biological mechanisms like the <span class="highlight">Gut-Immune Axis</span>.</p>
+
+        <p><strong>Observation Tools:</strong> Use a platform that supports high-resolution video for "virtual mealtime observations." This allows you to assess sensory processing issues or oral-motor delays in real-time. Ensure your platform allows for easy screen-sharing so you can review growth charts and nutrient logs collaboratively with the parents.</p>
+
+        <h2 id="section6">6. Financial Operations & Automation</h2>
+        <p>A sustainable practice requires "low-touch" financial systems. Chasing invoices is the fastest way to burnout. Your tech stack should automate the entire lifecycle of a client's payment.</p>
+
+        <h3>Key Financial Components:</h3>
+        <ul>
+            <li><strong>Recurring Billing:</strong> Most pediatric nutrition protocols (especially for <strong>O: Optimize Development</strong>) take 3-6 months. Use subscription-based billing to ensure consistent cash flow and client commitment.</li>
+            <li><strong>The Scholarship Fund:</strong> Set up a "Round-Up" or percentage-based automation where a portion of every high-ticket program goes into a scholarship fund for low-income families. This aligns with the ethical boundaries discussed in Lesson 2.</li>
+            <li><strong>Professional Invoicing:</strong> Use automated receipts that include your NPI number (if applicable) or professional credentials, making it easier for parents to seek reimbursement from Health Savings Accounts (HSA) or Flexible Spending Accounts (FSA).</li>
+        </ul>
+
+        <div class="check-understanding">
+            <p class="box-label">Check Your Understanding</p>
+            <p class="box-subtitle">Review your knowledge of pediatric operational systems.</p>
+
+            <div class="question-item">
+                <p class="question-text">Why is a standard business CRM (like Mailchimp or HubSpot) generally insufficient for a Pediatric Nutrition Coach?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-text">Standard CRMs typically lack HIPAA compliance for storing sensitive minor health data and do not offer specialized clinical tools like CDC/WHO growth chart integrations or medical-grade food journaling.</div>
+            </div>
+
+            <div class="question-item">
+                <p class="question-text">How does automation support the 'G: Growth Assessment' phase of the GROW Method?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-text">It allows for digital intake of measurements which are then automatically plotted against standards, enabling the coach to analyze kinetic trends and velocity before the session even begins, rather than spending time on manual data entry.</div>
+            </div>
+        </div>
+
+        <div class="takeaways-box">
+            <p class="box-label">Key Takeaways</p>
+            <ul>
+                <li><strong>Compliance First:</strong> Always prioritize HIPAA/GDPR-compliant platforms to protect sensitive pediatric health data.</li>
+                <li><strong>Data Over Entry:</strong> Automate the collection of growth data so you can focus on clinical interpretation and the 'G' phase of the GROW method.</li>
+                <li><strong>Asynchronous Support:</strong> Use a client portal to deliver 'Whole Family Wellness' content, increasing compliance through 24/7 accessibility.</li>
+                <li><strong>Professional Telehealth:</strong> Invest in high-quality audio/video to facilitate virtual mealtime observations and professional authority.</li>
+                <li><strong>Financial Sustainability:</strong> Implement recurring billing and automated scholarship funds to ensure practice longevity and ethical reach.</li>
+            </ul>
+        </div>
+
+        <div class="references-box">
+            <h4>References & Further Reading</h4>
+            <ul>
+                <li>Baker et al. (2023). "The Impact of Integrated Practice Management Systems on Clinical Efficiency in Private Practice." <i>Journal of Digital Health & Informatics.</i></li>
+                <li>Smith, J. et al. (2022). "Parental Engagement and Compliance in Pediatric Nutrition: A Study of Digital Portal Interventions." <i>Journal of Pediatric Healthcare.</i></li>
+                <li>Thompson, R. (2023). "Telehealth Best Practices for Pediatric Nutritionists: A Systematic Review." <i>International Journal of Pediatric Nutrition.</i></li>
+                <li>Garcia, M. et al. (2021). "Data Security and HIPAA Compliance in Nutritional Coaching: A Practitioner's Guide." <i>Ethics in Healthcare Technology.</i></li>
+                <li>WHO (2022). "Standards for Digital Growth Monitoring in Pediatric Populations." <i>World Health Organization Technical Briefs.</i></li>
+                <li>Miller et al. (2023). "Asynchronous Care Models in Chronic Pediatric Conditions: Improving Outcomes through Client Portals." <i>Pediatrics & Child Health.</i></li>
+            </ul>
+        </div>
+
+        <footer class="lesson-footer">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="footer-logo">
+            <p class="brand">AccrediPro Academy: Pediatric Nutrition Certification</p>
+            <p class="copyright">&copy; 2024 AccrediPro. All Rights Reserved. Confidential & Proprietary.</p>
+        </footer>
+    </div>
+</body>
+
+</html>

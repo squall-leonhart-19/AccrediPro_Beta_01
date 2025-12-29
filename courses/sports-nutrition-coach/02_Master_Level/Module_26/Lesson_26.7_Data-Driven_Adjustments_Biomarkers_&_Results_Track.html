@@ -1,0 +1,602 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lesson 26.7: Data-Driven Adjustments: Biomarkers & Results Tracking</title>
+    <style>
+        /* Base & Reset */
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Georgia, 'Times New Roman', serif;
+            line-height: 1.8;
+            color: #2d2d2d;
+            background: #f8f6f3;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Main Container */
+        .lesson-container {
+            max-width: 860px;
+            margin: 0 auto;
+            padding: 40px 30px;
+            background: #ffffff;
+            min-height: 100vh;
+            box-shadow: 0 0 60px rgba(0, 0, 0, 0.08);
+        }
+
+        /* Brand Header */
+        .brand-header {
+            text-align: center;
+            padding-bottom: 30px;
+            margin-bottom: 35px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .brand-logo {
+            max-width: 220px;
+            height: auto;
+            margin-bottom: 5px;
+        }
+
+        /* Module Header - BLUE theme for Program Development/Data */
+        .module-header {
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+            padding: 35px 35px 30px;
+            border-radius: 16px;
+            margin-bottom: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .module-header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, #B8860B, #D4A84B, #B8860B);
+        }
+
+        .module-label {
+            margin: 0;
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.75);
+            text-transform: uppercase;
+            letter-spacing: 2.5px;
+            font-weight: 500;
+        }
+
+        .lesson-title {
+            margin: 10px 0 0 0;
+            font-size: 28px;
+            color: #ffffff;
+            font-weight: 700;
+            line-height: 1.3;
+            position: relative;
+        }
+
+        .lesson-meta {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+            padding-top: 18px;
+            border-top: 1px solid rgba(255, 255, 255, 0.15);
+            flex-wrap: wrap;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.85);
+            background: rgba(255, 255, 255, 0.1);
+            padding: 5px 12px;
+            border-radius: 4px;
+        }
+
+        /* Table of Contents */
+        .toc-box {
+            background: linear-gradient(135deg, #fafafa 0%, #f5f5f5 100%);
+            border-radius: 14px;
+            padding: 24px 28px;
+            margin-bottom: 35px;
+            border: 1px solid #e8e8e8;
+        }
+
+        .toc-box .box-label {
+            font-weight: 600;
+            color: #1e3a8a;
+            margin: 0 0 18px 0;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .toc-list {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px 24px;
+        }
+
+        .toc-list a {
+            display: flex;
+            align-items: center;
+            padding: 8px 12px;
+            color: #555;
+            text-decoration: none;
+            font-size: 14px;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+        }
+
+        .toc-list a:hover {
+            background: white;
+            color: #1e3a8a;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+        }
+
+        .toc-list .section-num {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 26px;
+            height: 26px;
+            background: #1e3a8a;
+            color: white;
+            font-weight: 600;
+            font-size: 11px;
+            border-radius: 6px;
+            margin-right: 12px;
+            flex-shrink: 0;
+        }
+
+        /* Learning Objectives */
+        .objectives-box {
+            background: #eff6ff;
+            border: 2px solid #3b82f6;
+            border-radius: 14px;
+            padding: 30px 35px;
+            margin-bottom: 40px;
+        }
+
+        .objectives-box .box-label {
+            font-weight: 600;
+            color: #1e3a8a;
+            margin: 0 0 18px 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .objectives-box .box-label::before {
+            content: '🎯';
+            font-size: 18px;
+        }
+
+        .objectives-box li {
+            margin-bottom: 14px;
+            font-size: 16px;
+            line-height: 1.7;
+        }
+
+        /* Section Headings */
+        h2 {
+            font-size: 24px;
+            color: #1e3a8a;
+            margin: 50px 0 20px 0;
+            font-weight: 600;
+            position: relative;
+            padding-bottom: 12px;
+        }
+
+        h2::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 60px;
+            height: 3px;
+            background: #B8860B;
+        }
+
+        h3 {
+            font-size: 20px;
+            color: #2563eb;
+            margin: 30px 0 15px 0;
+        }
+
+        /* Highlights */
+        .highlight {
+            background: linear-gradient(180deg, transparent 60%, #dae7ff 60%);
+            padding: 0 4px;
+            font-weight: 600;
+        }
+
+        /* Case Study Box */
+        .case-study {
+            background: linear-gradient(135deg, #f8f9fb 0%, #f0f2f5 100%);
+            border-radius: 16px;
+            margin: 40px 0;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+        }
+
+        .case-study-header {
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+            padding: 20px 30px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .case-study-header .box-label {
+            font-weight: 600;
+            color: #ffffff;
+            margin: 0;
+        }
+
+        .case-study-content {
+            padding: 28px 30px;
+        }
+
+        .patient-profile {
+            display: flex;
+            align-items: center;
+            gap: 18px;
+            padding: 18px 22px;
+            background: white;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            border: 1px solid #e5e5e5;
+        }
+
+        /* Statistics Box */
+        .stats-box {
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+            padding: 40px;
+            border-radius: 16px;
+            margin: 35px 0;
+            color: white;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 25px;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 36px;
+            font-weight: 700;
+            display: block;
+        }
+
+        .stat-label {
+            font-size: 12px;
+            text-transform: uppercase;
+            opacity: 0.9;
+        }
+
+        /* Table Styling */
+        .data-table-container {
+            overflow-x: auto;
+            margin: 30px 0;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 15px;
+        }
+
+        th {
+            background-color: #1e3a8a;
+            color: white;
+            text-align: left;
+            padding: 12px;
+        }
+
+        td {
+            padding: 12px;
+            border-bottom: 1px solid #eee;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f9fafb;
+        }
+
+        /* Check Understanding */
+        .check-understanding {
+            background: #fdfbf7;
+            border: 2px solid #B8860B;
+            border-radius: 16px;
+            padding: 32px;
+            margin: 45px 0;
+        }
+
+        .reveal-btn {
+            background: #1e3a8a;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+
+        .answer-text {
+            display: none;
+            padding: 15px;
+            background: #f0f8f0;
+            border-radius: 8px;
+            margin-top: 10px;
+            color: #166534;
+        }
+
+        .answer-text.show {
+            display: block;
+        }
+
+        .takeaways-box {
+            background: #f3f4f6;
+            padding: 25px;
+            border-radius: 12px;
+            border-left: 5px solid #1e3a8a;
+            margin-top: 40px;
+        }
+
+        .references-box {
+            margin-top: 50px;
+            padding-top: 30px;
+            border-top: 1px solid #eee;
+            font-size: 14px;
+            color: #666;
+        }
+
+        .lesson-footer {
+            text-align: center;
+            padding: 40px 0;
+            color: #999;
+            font-size: 12px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="lesson-container">
+        <div class="brand-header">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="brand-logo">
+        </div>
+
+        <header class="module-header">
+            <p class="module-label">Module 26: Program Development</p>
+            <h1 class="lesson-title">Lesson 7: Data-Driven Adjustments: Biomarkers & Results Tracking</h1>
+            <div class="lesson-meta">
+                <span class="meta-item">35 min read</span>
+                <span class="meta-item">The PERFORM Method™</span>
+            </div>
+        </header>
+
+        <div class="toc-box">
+            <p class="box-label">In This Lesson</p>
+            <ul class="toc-list">
+                <li><a href="#biomarkers"><span class="section-num">1</span>Performance Biomarkers</a></li>
+                <li><a href="#bodycomp"><span class="section-num">2</span>Advanced Body Composition</a></li>
+                <li><a href="#subjective"><span class="section-num">3</span>Subjective Data Integration</a></li>
+                <li><a href="#pivot"><span class="section-num">4</span>The Pivot Protocol</a></li>
+                <li><a href="#tools"><span class="section-num">5</span>Monitoring Software Stack</a></li>
+                <li><a href="#integration"><span class="section-num">6</span>Longitudinal Synthesis</a></li>
+            </ul>
+        </div>
+
+        <div class="objectives-box">
+            <p class="box-label">Learning Objectives</p>
+            <ul>
+                <li>Interpret critical blood biomarkers (Ferritin, Vitamin D, C:T ratio) within an athletic context.</li>
+                <li>Differentiate between DEXA and skinfold precision for lean mass quality monitoring.</li>
+                <li>Correlate subjective RPE and adherence metrics to identify "noisy" vs. "clean" performance data.</li>
+                <li>Execute the "Pivot Protocol" to systematically adjust macronutrients during plateaus.</li>
+                <li>Select appropriate software tools for professional-grade athlete data visualization.</li>
+            </ul>
+        </div>
+
+        <p>In the previous lesson, we mastered <strong>Precision Hydration</strong>, moving beyond generic fluid guidelines to individualized electrolyte modeling. However, even the most perfect hydration and fueling strategy will eventually hit a plateau. As a Sports Nutrition Coach, your value lies not just in the initial plan, but in your ability to <span class="highlight">read the athlete's biological feedback</span> and pivot intelligently.</p>
+
+        <p>This lesson focuses on the "R" (Results Tracking) of the <strong>PERFORM Method™</strong>, specifically how to synthesize objective biomarkers with subjective biofeedback to ensure the micro-cycle adjustments we discussed in Lesson 2 remain aligned with long-term macro-cycle goals.</p>
+
+        <h2 id="biomarkers">1. The Biomarker Blueprint: Beyond Clinical Normals</h2>
+        <p>Standard clinical laboratory ranges are designed to identify pathology (disease), not to optimize performance. For the elite athlete, being "within range" is often insufficient. We focus on three critical pillars that dictate metabolic capacity and recovery potential.</p>
+
+        <h3>Iron Status & Ferritin</h3>
+        <p>Ferritin is the primary storage protein for iron. While clinical "low" might be 12-15 ng/mL, athletic performance—specifically the efficiency of the <strong>Oxidative Phosphorylation system</strong> (Module 2)—begins to degrade when ferritin drops below 30-50 ng/mL. A 2021 study of 1,162 competitive athletes found that <strong>24% of females</strong> and 11% of males were iron deficient despite normal hemoglobin levels.</p>
+
+        <h3>Vitamin D (25-Hydroxyvitamin D)</h3>
+        <p>Vitamin D acts as a pro-hormone influencing muscle protein synthesis and immune function. We target 40–60 ng/mL. Values <30 ng/mL are associated with increased risk of stress fractures and reduced Type II muscle fiber cross-sectional area.</p>
+
+        <div class="stats-box">
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <span class="stat-number">30%</span>
+                    <span class="stat-label">T:C Ratio Drop</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-number">>50 ng/mL</span>
+                    <span class="stat-label">Target Ferritin</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-number">85%</span>
+                    <span class="stat-label">Adherence Threshold</span>
+                </div>
+            </div>
+        </div>
+
+        <h2 id="bodycomp">2. Advanced Body Composition: Quality Over Quantity</h2>
+        <p>While Lesson 6.2 introduced body composition basics, at the Program Development level, we must distinguish between <strong>absolute mass</strong> and <strong>tissue quality</strong>. We utilize a dual-tracking approach to minimize the margin of error.</p>
+
+        <div class="data-table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Metric</th>
+                        <th>DEXA (Dual-Energy X-Ray)</th>
+                        <th>7-Site Skinfold (Harpenden)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Primary Use</strong></td>
+                        <td>Visceral fat & Bone Mineral Density</td>
+                        <td>Subcutaneous fat & Micro-changes</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Frequency</strong></td>
+                        <td>Every 12-16 weeks</td>
+                        <td>Every 2-4 weeks</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Margin of Error</strong></td>
+                        <td>1.5% - 2.5% (Hydration sensitive)</td>
+                        <td>3% - 5% (Technician sensitive)</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Key Strength</strong></td>
+                        <td>Regional lean mass distribution</td>
+                        <td>Cost-effective, rapid feedback</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <p>When tracking a hypertrophy phase, we look for a <span class="highlight">Lean Mass to Fat Mass gain ratio of at least 2:1</span>. If the data shows a 1:1 ratio, the "Pivot Protocol" is triggered to reduce the caloric surplus or adjust the protein-to-carbohydrate distribution.</p>
+
+        <div class="case-study">
+            <div class="case-study-header">
+                <div class="case-study-icon">📋</div>
+                <div>
+                    <p class="box-label">Case Study: The Overtrained Triathlete</p>
+                    <p class="subtitle">Identifying Functional Overreaching via Biomarkers</p>
+                </div>
+            </div>
+            <div class="case-study-content">
+                <div class="patient-profile">
+                    <div class="patient-avatar">M</div>
+                    <div class="patient-info">
+                        <h4>Marcus, 34</h4>
+                        <p>Ironman Competitor | 15-18 Training Hours/Week</p>
+                    </div>
+                </div>
+                <p><strong>Symptoms:</strong> Unexplained fatigue, heart rate variability (HRV) decline, and a 5% drop in power at VO2 max intervals over 3 weeks.</p>
+                <p><strong>Intervention:</strong> Blood panel revealed Ferritin at 18 ng/mL (Clinical "Normal" but Athletic "Low") and a Cortisol-to-Testosterone ratio increase of 25%. </p>
+                <p><strong>Outcome:</strong> Nutrition was pivoted to include heme-iron supplementation (100mg/day with Vit C), and carbohydrates were increased by 1.5g/kg on high-intensity days. Within 6 weeks, Ferritin rose to 42 ng/mL, and power output returned to baseline.</p>
+            </div>
+        </div>
+
+        <h2 id="subjective">3. Subjective Data Integration: The Adherence Filter</h2>
+        <p>Data is only as good as its context. We use the <strong>Adherence-Outcome Matrix</strong> to determine if a program is failing or if the execution is failing. We track three primary subjective markers:</p>
+        
+        <ul>
+            <li><strong>RPE (Rate of Perceived Exertion):</strong> If RPE for a standard "Zone 2" session increases from 3 to 6 over two weeks, it suggests glycogen depletion or systemic fatigue.</li>
+            <li><strong>Sleep Quality (1-10):</strong> Correlates strongly with <span class="highlight">Muscle Protein Synthesis</span> efficiency. Scores <6 for three consecutive nights trigger a recovery-focused nutritional micro-cycle.</li>
+            <li><strong>Nutritional Adherence (%):</strong> Calculated as (Meals on Plan / Total Meals).</li>
+        </ul>
+
+        <div class="alert-box info">
+            <p class="alert-label">The 85% Rule</p>
+            <p>In the PERFORM Method™, we do not make physiological pivots based on performance plateaus unless nutritional adherence is ≥85%. Adjusting macros for a client who is only 60% adherent creates "noise" and prevents accurate metabolic assessment.</p>
+        </div>
+
+        <h2 id="pivot">4. The Pivot Protocol: When to Change the Plan</h2>
+        <p>The Pivot Protocol is a systematic decision tree used to adjust macronutrient ratios when performance or body composition stalls for more than 14 days (two micro-cycles).</p>
+
+        <div class="comparison-grid">
+            <div class="comparison-card conventional">
+                <p class="card-label">Scenario A: Stalled Fat Loss</p>
+                <p class="card-text">If adherence is >90% and weight is stable for 14 days, reduce fats by 10-15% while maintaining protein to preserve lean mass. Do not drop carbs if training intensity is high.</p>
+            </div>
+            <div class="comparison-card functional">
+                <p class="card-label">Scenario B: Performance Drop</p>
+                <p class="card-text">If RPE is rising and biomarkers show low ferritin/glucose, increase daily carbohydrates by 50-75g, specifically in the peri-workout window, regardless of body weight goals.</p>
+            </div>
+        </div>
+
+        <h2 id="tools">5. Software and Tools for Professional Monitoring</h2>
+        <p>In the modern era, the Sports Nutrition Coach must be proficient in data visualization. Spreadsheets are a baseline, but professional athlete management systems (AMS) allow for real-time synthesis.</p>
+        
+        <ul class="content-list">
+            <li><strong>TrainingPeaks / WKO5:</strong> Excellent for correlating nutritional logs with power data and Training Stress Scores (TSS).</li>
+            <li><strong>InsideTracker / AthleteBloodTest:</strong> Platforms specifically designed to track biomarkers against "Athletic Optimal" ranges rather than clinical ranges.</li>
+            <li><strong>MacroFactor / MyFitnessPal:</strong> Tools for tracking adherence and micronutrient density.</li>
+            <li><strong>Whoop / Oura:</strong> Essential for monitoring recovery (HRV and Sleep Architecture) to inform daily fueling adjustments.</li>
+        </ul>
+
+        <h2 id="integration">6. Longitudinal Synthesis: The Yearly Review</h2>
+        <p>Finally, data tracking must be summarized annually. We look for trends across the <strong>Macrocycle</strong> (Module 1). Did the athlete perform best at a specific body fat percentage? Did their Ferritin levels always dip during the competitive phase? This longitudinal data becomes the blueprint for the following year's programming, moving the coach from "reactive adjusting" to "proactive planning."</p>
+
+        <div class="check-understanding">
+            <p class="box-label">Check Your Understanding</p>
+            <div class="question-item">
+                <span class="question-number">1</span>
+                <p class="question-text">An athlete presents with "normal" clinical ferritin (20 ng/mL) but reports significant fatigue during endurance sessions. Based on the PERFORM Method™, what is the recommended action?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-text">The athlete is likely experiencing Stage 1 iron deficiency. Since performance degrades below 30-50 ng/mL, the coach should recommend a ferritin-focused nutritional intervention (iron-rich foods + Vit C) and potentially refer to a physician for supplementation, as 20 ng/mL is sub-optimal for athletic oxidative capacity.</div>
+            </div>
+            <div class="question-item">
+                <span class="question-number">2</span>
+                <p class="question-text">A strength athlete has hit a plateau in muscle gain. Adherence is 70%. Should you increase their caloric surplus?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-text">No. According to the "85% Rule," nutritional adjustments should not be made based on plateaus if adherence is below 85%. The focus should be on behavioral strategies to improve adherence before changing the physiological prescription.</div>
+            </div>
+        </div>
+
+        <div class="takeaways-box">
+            <p class="box-label">Key Takeaways</p>
+            <ul>
+                <li><strong>Athletic Norms:</strong> Use performance-specific ranges for biomarkers; ferritin should be >30-50 ng/mL and Vitamin D 40-60 ng/mL.</li>
+                <li><strong>Dual Tracking:</strong> Use DEXA for long-term tissue quality and skinfolds for short-term subcutaneous trends.</li>
+                <li><strong>Adherence First:</strong> Never pivot a program based on "noisy" data from low-adherence clients.</li>
+                <li><strong>The Pivot Protocol:</strong> Systematically adjust macros (usually carbs for performance or fats for weight) in 10-15% increments when 14-day plateaus occur.</li>
+                <li><strong>Tech Integration:</strong> Leverage AMS tools to correlate subjective RPE with objective physiological metrics.</li>
+            </ul>
+        </div>
+
+        <div class="references-box">
+            <p class="box-label">References & Further Reading</p>
+            <ul>
+                <li>Sim et al. (2019). "Iron considerations for the athlete: a narrative review." <i>European Journal of Applied Physiology.</i></li>
+                <li>Owens et al. (2018). "Vitamin D and the Athlete: Current Perspectives and New Challenges." <i>Sports Medicine.</i></li>
+                <li>Heikura et al. (2018). "Low Energy Availability Is Difficult to Assess but Outcomes Have Important Health and Performance Implications." <i>Current Opinion in Endocrine and Metabolic Research.</i></li>
+                <li>Ackerman et al. (2019). "The Female Athlete Triad and Low Energy Availability: A Review." <i>Journal of Sports Sciences.</i></li>
+                <li>Larson-Meyer et al. (2018). "Vitamin D and Physical Performance: The Evidence." <i>Current Sports Medicine Reports.</i></li>
+                <li>Sawyer et al. (2020). "Reliability of DEXA for Measuring Body Composition in Athletes." <i>Journal of Strength and Conditioning Research.</i></li>
+            </ul>
+        </div>
+
+        <footer class="lesson-footer">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="footer-logo">
+            <p class="brand">AccrediPro Academy: Sports Nutrition Coach Certification</p>
+            <p class="copyright">&copy; 2024 AccrediPro. All rights reserved. The PERFORM Method™ is a proprietary framework.</p>
+        </footer>
+    </div>
+</body>
+
+</html>

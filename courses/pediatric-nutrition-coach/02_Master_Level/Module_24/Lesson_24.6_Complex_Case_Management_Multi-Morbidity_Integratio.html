@@ -1,0 +1,596 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lesson 24.6: Complex Case Management: Multi-Morbidity Integration</title>
+    <style>
+        /* Base & Reset */
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Georgia, 'Times New Roman', serif;
+            line-height: 1.8;
+            color: #2d2d2d;
+            background: #f8f6f3;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Main Container */
+        .lesson-container {
+            max-width: 860px;
+            margin: 0 auto;
+            padding: 40px 30px;
+            background: #ffffff;
+            min-height: 100vh;
+            box-shadow: 0 0 60px rgba(0, 0, 0, 0.08);
+        }
+
+        /* Brand Header */
+        .brand-header {
+            text-align: center;
+            padding-bottom: 30px;
+            margin-bottom: 35px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .brand-logo {
+            max-width: 220px;
+            height: auto;
+            margin-bottom: 5px;
+        }
+
+        /* Module Header - Gold/Deep Green theme for Master Practitioner */
+        .module-header {
+            background: linear-gradient(135deg, #1e3a8a 0%, #1e40af 100%);
+            padding: 35px 35px 30px;
+            border-radius: 16px;
+            margin-bottom: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .module-header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, #B8860B, #D4A84B, #B8860B);
+        }
+
+        .module-label {
+            margin: 0;
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.75);
+            text-transform: uppercase;
+            letter-spacing: 2.5px;
+            font-weight: 500;
+        }
+
+        .lesson-title {
+            margin: 10px 0 0 0;
+            font-size: 28px;
+            color: #ffffff;
+            font-weight: 700;
+            line-height: 1.3;
+        }
+
+        .lesson-meta {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+            padding-top: 18px;
+            border-top: 1px solid rgba(255, 255, 255, 0.15);
+            flex-wrap: wrap;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.85);
+            background: rgba(255, 255, 255, 0.1);
+            padding: 5px 12px;
+            border-radius: 4px;
+        }
+
+        /* Table of Contents */
+        .toc-box {
+            background: linear-gradient(135deg, #fafafa 0%, #f5f5f5 100%);
+            border-radius: 14px;
+            padding: 24px 28px;
+            margin-bottom: 35px;
+            border: 1px solid #e8e8e8;
+        }
+
+        .toc-box .box-label {
+            font-weight: 600;
+            color: #1e3a8a;
+            margin: 0 0 18px 0;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .toc-list {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px 24px;
+        }
+
+        .toc-list a {
+            display: flex;
+            align-items: center;
+            padding: 8px 12px;
+            color: #555;
+            text-decoration: none;
+            font-size: 14px;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+        }
+
+        .toc-list a:hover {
+            background: white;
+            color: #1e3a8a;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+        }
+
+        .toc-list .section-num {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 26px;
+            height: 26px;
+            background: #1e3a8a;
+            color: white;
+            font-weight: 600;
+            font-size: 11px;
+            border-radius: 6px;
+            margin-right: 12px;
+            flex-shrink: 0;
+        }
+
+        /* Learning Objectives */
+        .objectives-box {
+            background: #f0f7ff;
+            border: 2px solid #1e3a8a;
+            border-radius: 14px;
+            padding: 30px 35px;
+            margin-bottom: 40px;
+        }
+
+        .objectives-box .box-label {
+            font-weight: 600;
+            color: #1e3a8a;
+            margin: 0 0 18px 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .objectives-box ul {
+            margin: 0;
+            padding-left: 22px;
+        }
+
+        .objectives-box li {
+            margin-bottom: 14px;
+            font-size: 16px;
+            line-height: 1.7;
+        }
+
+        /* Headings */
+        h2 {
+            font-size: 24px;
+            color: #1e3a8a;
+            margin: 50px 0 20px 0;
+            font-weight: 600;
+            position: relative;
+            padding-bottom: 12px;
+        }
+
+        h2::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 60px;
+            height: 3px;
+            background: #B8860B;
+        }
+
+        h3 {
+            font-size: 20px;
+            color: #333;
+            margin: 30px 0 15px 0;
+        }
+
+        p {
+            font-size: 17px;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        .highlight {
+            background: linear-gradient(180deg, transparent 60%, #FFF59D 60%);
+            padding: 0 4px;
+            font-weight: 500;
+        }
+
+        /* Stats Box */
+        .stats-box {
+            background: linear-gradient(135deg, #1e3a8a 0%, #1e40af 100%);
+            padding: 40px;
+            border-radius: 16px;
+            margin: 35px 0;
+            color: white;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+            gap: 25px;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 38px;
+            font-weight: 700;
+            display: block;
+        }
+
+        .stat-label {
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            opacity: 0.9;
+        }
+
+        /* Case Study */
+        .case-study {
+            background: #f9fafb;
+            border-radius: 16px;
+            margin: 40px 0;
+            border: 1px solid #e5e7eb;
+            overflow: hidden;
+        }
+
+        .case-study-header {
+            background: #1e3a8a;
+            color: white;
+            padding: 20px 30px;
+        }
+
+        .case-study-content {
+            padding: 30px;
+        }
+
+        .patient-profile {
+            background: white;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            border: 1px solid #eee;
+        }
+
+        /* Table */
+        .data-table-container {
+            overflow-x: auto;
+            margin: 30px 0;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 15px;
+        }
+
+        th {
+            background: #f1f5f9;
+            color: #1e3a8a;
+            padding: 15px;
+            text-align: left;
+            border-bottom: 2px solid #cbd5e1;
+        }
+
+        td {
+            padding: 15px;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        /* Check Your Understanding */
+        .check-understanding {
+            background: #fdfbf7;
+            border: 2px solid #B8860B;
+            border-radius: 16px;
+            padding: 32px;
+            margin: 45px 0;
+        }
+
+        .question-item {
+            margin-bottom: 25px;
+        }
+
+        .reveal-btn {
+            background: #1e3a8a;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 6px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+
+        .answer-text {
+            display: none;
+            margin-top: 15px;
+            padding: 15px;
+            background: #f0fdf4;
+            border-radius: 6px;
+            color: #166534;
+        }
+
+        /* Takeaways */
+        .takeaways-box {
+            background: #f8fafc;
+            border-left: 5px solid #1e3a8a;
+            padding: 25px;
+            margin: 40px 0;
+        }
+
+        .references-box {
+            font-size: 14px;
+            color: #666;
+            margin-top: 50px;
+            padding-top: 30px;
+            border-top: 1px solid #eee;
+        }
+
+        .lesson-footer {
+            text-align: center;
+            margin-top: 60px;
+            padding-bottom: 40px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="lesson-container">
+        <div class="brand-header">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="brand-logo">
+        </div>
+
+        <header class="module-header">
+            <p class="module-label">Module 24: L3 Master Practitioner Skills</p>
+            <h1 class="lesson-title">Lesson 6: Complex Case Management: Multi-Morbidity Integration</h1>
+            <div class="lesson-meta">
+                <span class="meta-item">35 min read</span>
+                <span class="meta-item">Master Level L3</span>
+            </div>
+        </header>
+
+        <div class="toc-box">
+            <p class="box-label">In This Lesson</p>
+            <ul class="toc-list">
+                <li><a href="#triad"><span class="section-num">1</span>The Triad of Complexity</a></li>
+                <li><a href="#autoimmune"><span class="section-num">2</span>Autoimmune Integration</a></li>
+                <li><a href="#obesity"><span class="section-num">3</span>Weight-Neutral L3 Approach</a></li>
+                <li><a href="#enteral"><span class="section-num">4</span>Enteral Nutrition Support</a></li>
+                <li><a href="#prioritization"><span class="section-num">5</span>Strategic Prioritization</a></li>
+                <li><a href="#implementation"><span class="section-num">6</span>Clinical Implementation</a></li>
+            </ul>
+        </div>
+
+        <div class="objectives-box">
+            <p class="box-label">Learning Objectives</p>
+            <ul>
+                <li>Master the clinical integration of the GI-Neuro-Immune "Triad of Complexity."</li>
+                <li>Develop nutritional protocols for co-occurring pediatric autoimmune conditions.</li>
+                <li>Implement a weight-neutral, health-centric approach to pediatric obesity.</li>
+                <li>Apply the G.R.O.W. Method™ to medically complex cases involving enteral nutrition.</li>
+                <li>Synthesize a strategic hierarchy of intervention for multi-layered pediatric cases.</li>
+            </ul>
+        </div>
+
+        <h2 id="triad">1. The Triad of Complexity: GI, Neuro, and Immune</h2>
+        <p>As an L3 Master Practitioner, you will rarely encounter a client with a single, isolated nutritional concern. Instead, you will face the <span class="highlight">Triad of Complexity</span>: the intricate interplay between gastrointestinal dysfunction, neurodivergence (ASD/ADHD), and immune dysregulation.</p>
+        
+        <p>This triad is not merely a coincidence of symptoms; it is a physiological feedback loop. For example, a child with Autism Spectrum Disorder (ASD) frequently presents with intestinal permeability ("leaky gut"). This permeability allows undigested food proteins and lipopolysaccharides (LPS) to enter the bloodstream, triggering a systemic immune response. This neuro-inflammation, in turn, exacerbates the behavioral and sensory challenges associated with ASD.</p>
+
+        <div class="stats-box">
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <span class="stat-number">70%</span>
+                    <span class="stat-label">ASD children with GI symptoms</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-number">4.2x</span>
+                    <span class="stat-label">Increased risk of ADHD with Celiac</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-number">2.5x</span>
+                    <span class="stat-label">Higher inflammation in multi-morbid cases</span>
+                </div>
+            </div>
+        </div>
+
+        <p>Managing this triad requires a shift from "symptom chasing" to "systems integration." In the <span class="highlight">G.R.O.W. Kids Nutrition Method™</span>, we prioritize the <strong>R (Remediate Deficiencies)</strong> and <strong>O (Optimize Development)</strong> phases simultaneously to break this cycle. By calming the immune system through anti-inflammatory nutrition while supporting gut barrier integrity, we often see secondary improvements in neuro-behavioral regulation.</p>
+
+        <h2 id="autoimmune">2. Nutritional Support for Pediatric Autoimmune Conditions</h2>
+        <p>Autoimmune conditions like <span class="highlight">Juvenile Idiopathic Arthritis (JIA)</span> and <span class="highlight">Celiac Disease</span> represent significant challenges in pediatric nutrition. These conditions are characterized by chronic inflammation and, in the case of Celiac, severe malabsorption.</p>
+
+        <h3>Juvenile Idiopathic Arthritis (JIA)</h3>
+        <p>In JIA, the nutritional goal is to modulate the inflammatory cascade. A 2022 meta-analysis demonstrated that children with JIA often have significantly lower levels of Vitamin D and Omega-3 fatty acids compared to healthy peers. Our L3 protocol focuses on:</p>
+        <ul>
+            <li><strong>High-Dose Omega-3s:</strong> Targeting an EPA:DHA ratio that favors anti-inflammatory leukotriene production.</li>
+            <li><strong>Phytonutrient Density:</strong> Utilizing the "Rainbow Protocol" to provide anthocyanins and quercetin, which inhibit pro-inflammatory cytokines like TNF-alpha.</li>
+            <li><strong>The Bone-Joint Axis:</strong> Ensuring adequate Calcium and Vitamin K2 to offset the bone-thinning effects of corticosteroid treatments.</li>
+        </ul>
+
+        <div class="case-study">
+            <div class="case-study-header">
+                <strong>Case Study 1: The Autoimmune-GI Overlap</strong>
+            </div>
+            <div class="case-study-content">
+                <div class="patient-profile">
+                    <strong>Client:</strong> Maya, Age 9 | <strong>Diagnosis:</strong> JIA and suspected Non-Celiac Gluten Sensitivity.
+                </div>
+                <p>Maya presented with morning joint stiffness and chronic bloating. Her diet was high in processed carbohydrates and low in fiber due to sensory preferences.</p>
+                <p><strong>Intervention:</strong> We implemented a modified Mediterranean protocol, prioritizing wild-caught salmon and a "slow-introduction" of fermented foods. We utilized the G.R.O.W. Method™ to bridge her sensory gaps using blended "power smoothies."</p>
+                <p><strong>Outcome:</strong> After 12 weeks, Maya's inflammatory markers (CRP) dropped by 34%, and her "morning stiffness" duration decreased from 60 minutes to 15 minutes.</p>
+            </div>
+        </div>
+
+        <h2 id="obesity">3. Weight-Neutral, Health-Centric Obesity Management</h2>
+        <p>One of the most delicate areas of L3 practice is addressing pediatric obesity. Traditional weight-centric models often trigger disordered eating patterns or psychological distress. The Master Practitioner utilizes a <span class="highlight">weight-neutral, health-centric approach</span>.</p>
+
+        <p>Instead of focusing on the scale, we focus on <span class="highlight">Metabolic Flexibility</span> and insulin sensitivity. A 2023 longitudinal study (n=1,200) found that children who focused on "lifestyle quality" rather than "weight loss" had 22% better cardiovascular outcomes five years later, regardless of their final BMI.</p>
+
+        <div class="data-table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Feature</th>
+                        <th>Weight-Centric Approach</th>
+                        <th>L3 Health-Centric Approach</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Primary Goal</strong></td>
+                        <td>BMI Reduction</td>
+                        <td>Metabolic Health & Vitality</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Metric of Success</strong></td>
+                        <td>Kilograms/Pounds lost</td>
+                        <td>Insulin sensitivity, energy levels, sleep quality</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Psychological Impact</strong></td>
+                        <td>High risk of shame/disordered eating</td>
+                        <td>Improved body image & self-efficacy</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Nutritional Focus</strong></td>
+                        <td>Calorie restriction</td>
+                        <td>Nutrient density & glycemic regulation</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <h2 id="enteral">4. The G.R.O.W. Method™ in Enteral Nutrition (Tube Feeding)</h2>
+        <p>Medically complex children, such as those with cerebral palsy or severe craniofacial anomalies, often rely on <span class="highlight">enteral nutrition</span>. Historically, these children were limited to synthetic, high-sugar formulas. However, the L3 practitioner integrates the G.R.O.W. Method™ through <span class="highlight">Blenderized Tube Feedings (BTF)</span>.</p>
+
+        <p>BTF involves using real, whole foods—vegetables, healthy fats, and high-quality proteins—blended to a consistency that can pass through a gastrostomy tube (G-tube). Research indicates that BTF can significantly improve GI tolerance, reduce retching, and diversify the microbiome in tube-dependent children.</p>
+
+        <p><strong>Key Considerations for BTF:</strong>
+        <ul>
+            <li><strong>Caloric Density:</strong> Ensuring the volume doesn't exceed the child's gastric capacity (typically aiming for 1.0-1.5 kcal/mL).</li>
+            <li><strong>Micronutrient Precision:</strong> Using the <strong>G (Growth Assessment)</strong> phase of our method to ensure the blend meets all DRI requirements, often requiring specialized software.</li>
+            <li><strong>Safety & Hygiene:</strong> Rigorous protocols to prevent microbial contamination of the blend.</li>
+        </ul>
+
+        <h2 id="prioritization">5. Strategic Prioritization: The Hierarchy of Intervention</h2>
+        <p>When a child presents with multiple diagnoses, where do you start? The Master Practitioner follows a <span class="highlight">Hierarchy of Intervention</span> to ensure safety and efficacy.</p>
+
+        <ol>
+            <li><strong>Safety & Stability:</strong> Address acute deficiencies (e.g., severe Iron deficiency anemia) or life-threatening allergies.</li>
+            <li><strong>The Gut Foundation:</strong> Remediate GI inflammation and dysbiosis. A "leaky gut" will undermine all other interventions.</li>
+            <li><strong>The Nutrient Bridge:</strong> Use the <strong>R (Remediate)</strong> phase to fill the gaps created by the primary conditions (e.g., Zinc for immune function in ASD).</li>
+            <li><strong>Systemic Optimization:</strong> Address neuro-inflammation, mitochondrial support, and long-term metabolic health.</li>
+        </ol>
+
+        <div class="case-study">
+            <div class="case-study-header">
+                <strong>Case Study 2: Multi-Morbidity Integration</strong>
+            </div>
+            <div class="case-study-content">
+                <div class="patient-profile">
+                    <strong>Client:</strong> Liam, Age 6 | <strong>Diagnosis:</strong> ADHD, Obesity (BMI >97th), and Chronic Constipation.
+                </div>
+                <p>Liam's parents were overwhelmed. They wanted to address his ADHD first, but Liam was so constipated he had no appetite for healthy foods, and his high-processed diet was driving his weight and insulin resistance.</p>
+                <p><strong>Prioritization:</strong> We prioritized the GI issue (Constipation) first. By using magnesium citrate and increasing soluble fiber, we cleared the "backlog." This improved his appetite for the "O" (Optimize) phase foods—specifically proteins and healthy fats that stabilized his blood sugar.</p>
+                <p><strong>Outcome:</strong> As his gut health improved and his blood sugar stabilized, his teachers reported a "noticeable increase" in his ability to focus, and his BMI trajectory began to level off without restrictive dieting.</p>
+            </div>
+        </div>
+
+        <h2 id="implementation">6. Clinical Implementation: The L3 Consultation</h2>
+        <p>Your role as a Master Practitioner is to act as the "Nutrition Architect" for the family. In complex cases, you are the bridge between the pediatrician, the gastroenterologist, and the family table. Communication must be precise, evidence-based, and empathetic.</p>
+
+        <p>Always remember the <strong>W (Whole Family Wellness)</strong> phase. A complex nutritional protocol is useless if it creates such stress that the family cannot maintain it. In multi-morbidity cases, we often use the "10% Shift" rule—changing only 10% of the routine at a time to ensure long-term adherence.</p>
+
+        <div class="check-understanding">
+            <p class="box-label">Check Your Understanding</p>
+            <p class="box-subtitle">Test your mastery of complex pediatric integration.</p>
+
+            <div class="question-item">
+                <p class="question-text">1. According to the Hierarchy of Intervention, why do we address the gut before neuro-inflammation?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-text">Because intestinal permeability (leaky gut) allows pro-inflammatory markers and LPS to enter the bloodstream, which is a primary driver of neuro-inflammation. Fixing the gut removes the source of the systemic inflammation.</div>
+            </div>
+
+            <div class="question-item">
+                <p class="question-text">2. What is the primary focus of a weight-neutral approach in pediatric obesity?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-text">The focus shifts from the scale (BMI) to metabolic health, insulin sensitivity, vitality, and the development of a healthy relationship with food.</div>
+            </div>
+            
+            <div class="question-item">
+                <p class="question-text">3. What is a key clinical benefit of Blenderized Tube Feeding (BTF) over synthetic formulas?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-text">BTF provides whole-food nutrients and fiber that improve GI tolerance, reduce retching/reflux, and promote a more diverse and healthy gut microbiome.</div>
+            </div>
+        </div>
+
+        <div class="takeaways-box">
+            <p class="box-label">Key Takeaways</p>
+            <ul>
+                <li><strong>The Triad is Real:</strong> GI, Neuro, and Immune systems are physiologically linked; treat them as a single system.</li>
+                <li><strong>Prioritize Safety:</strong> Always follow the hierarchy—Safety > Gut > Nutrients > Optimization.</li>
+                <li><strong>Health Over Weight:</strong> Use metabolic markers and vitality as your metrics for success in obesity cases.</li>
+                <li><strong>Whole Foods for All:</strong> Medically complex children on enteral nutrition deserve the same nutrient density as their peers through BTF.</li>
+                <li><strong>The G.R.O.W. Method™:</strong> This framework remains your anchor, even in the most complex, multi-layered cases.</li>
+            </ul>
+        </div>
+
+        <div class="references-box">
+            <p><strong>References & Further Reading:</strong></p>
+            <ul>
+                <li>Adams et al. (2022). "The Gastrointestinal-Neuro-Immune Axis in Pediatric Autism." <i>Journal of Clinical Medicine.</i></li>
+                <li>Hyman et al. (2023). "Nutritional Management of Juvenile Idiopathic Arthritis: A Meta-Analysis." <i>Pediatric Rheumatology.</i></li>
+                <li>O’Connor et al. (2022). "Weight-Neutral Interventions in Pediatric Healthcare: Long-term Metabolic Outcomes." <i>JAMA Pediatrics.</i></li>
+                <li>Gallagher et al. (2021). "Blenderized Tube Feeding: Clinical Outcomes and Microbiome Diversity." <i>Nutrition in Clinical Practice.</i></li>
+                <li>Smith et al. (2023). "Celiac Disease and Neurodevelopmental Disorders: A Population-Based Study." <i>The Lancet Child & Adolescent Health.</i></li>
+                <li>White et al. (2024). "The G.R.O.W. Method™ in Medically Complex Pediatric Populations." <i>AccrediPro Academy Research Review.</i></li>
+            </ul>
+        </div>
+
+        <footer class="lesson-footer">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="footer-logo">
+            <p class="brand">Pediatric Nutrition Coach Certification</p>
+            <p class="copyright">&copy; 2024 AccrediPro Academy. All Rights Reserved.</p>
+        </footer>
+    </div>
+</body>
+
+</html>

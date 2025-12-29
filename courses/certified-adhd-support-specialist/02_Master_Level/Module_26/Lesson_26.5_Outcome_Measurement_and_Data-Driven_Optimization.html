@@ -1,0 +1,647 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lesson 26.5: Outcome Measurement and Data-Driven Optimization</title>
+    <style>
+        /* Base & Reset */
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Georgia, 'Times New Roman', serif;
+            line-height: 1.8;
+            color: #2d2d2d;
+            background: #f8f6f3;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Main Container */
+        .lesson-container {
+            max-width: 860px;
+            margin: 0 auto;
+            padding: 40px 30px;
+            background: #ffffff;
+            min-height: 100vh;
+            box-shadow: 0 0 60px rgba(0, 0, 0, 0.08);
+        }
+
+        /* Brand Header */
+        .brand-header {
+            text-align: center;
+            padding-bottom: 30px;
+            margin-bottom: 35px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .brand-logo {
+            max-width: 220px;
+            height: auto;
+            margin-bottom: 5px;
+        }
+
+        /* Module Header - BLUE/NAVY theme for Professionalism/Data */
+        .module-header {
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+            padding: 35px 35px 30px;
+            border-radius: 16px;
+            margin-bottom: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .module-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+            transform: translate(100px, -100px);
+        }
+
+        .module-header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, #B8860B, #D4A84B, #B8860B);
+        }
+
+        .module-label {
+            margin: 0;
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.75);
+            text-transform: uppercase;
+            letter-spacing: 2.5px;
+            font-weight: 500;
+        }
+
+        .lesson-title {
+            margin: 10px 0 0 0;
+            font-size: 28px;
+            color: #ffffff;
+            font-weight: 700;
+            line-height: 1.3;
+            position: relative;
+        }
+
+        .lesson-meta {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+            padding-top: 18px;
+            border-top: 1px solid rgba(255, 255, 255, 0.15);
+            flex-wrap: wrap;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.85);
+            background: rgba(255, 255, 255, 0.1);
+            padding: 5px 12px;
+            border-radius: 4px;
+        }
+
+        /* Table of Contents */
+        .toc-box {
+            background: linear-gradient(135deg, #fafafa 0%, #f5f5f5 100%);
+            border-radius: 14px;
+            padding: 24px 28px;
+            margin-bottom: 35px;
+            border: 1px solid #e8e8e8;
+        }
+
+        .toc-box .box-label {
+            font-weight: 600;
+            color: #1e3a8a;
+            margin: 0 0 18px 0;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .toc-list {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px 24px;
+        }
+
+        .toc-list li {
+            margin: 0;
+        }
+
+        .toc-list a {
+            display: flex;
+            align-items: center;
+            padding: 8px 12px;
+            color: #555;
+            text-decoration: none;
+            font-size: 14px;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+        }
+
+        .toc-list a:hover {
+            background: white;
+            color: #1e3a8a;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+        }
+
+        .toc-list .section-num {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 26px;
+            height: 26px;
+            background: #1e3a8a;
+            color: white;
+            font-weight: 600;
+            font-size: 11px;
+            border-radius: 6px;
+            margin-right: 12px;
+            flex-shrink: 0;
+        }
+
+        /* Learning Objectives */
+        .objectives-box {
+            background: #eff6ff;
+            border: 2px solid #3b82f6;
+            border-radius: 14px;
+            padding: 30px 35px;
+            margin-bottom: 40px;
+        }
+
+        .objectives-box .box-label {
+            font-weight: 600;
+            color: #1e3a8a;
+            margin: 0 0 18px 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .objectives-box .box-label::before {
+            content: '📊';
+            font-size: 18px;
+        }
+
+        .objectives-box ul {
+            margin: 0;
+            padding-left: 22px;
+        }
+
+        .objectives-box li {
+            margin-bottom: 14px;
+            font-size: 16px;
+            line-height: 1.7;
+        }
+
+        /* Section Headings */
+        h2 {
+            font-size: 24px;
+            color: #1e3a8a;
+            margin: 50px 0 20px 0;
+            font-weight: 600;
+            position: relative;
+            padding-bottom: 12px;
+        }
+
+        h2::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 60px;
+            height: 3px;
+            background: #B8860B;
+        }
+
+        /* Paragraphs & Terms */
+        p {
+            font-size: 17px;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        .highlight {
+            background: linear-gradient(180deg, transparent 60%, #e0e7ff 60%);
+            padding: 0 4px;
+            font-weight: 500;
+            color: #1e3a8a;
+        }
+
+        /* Statistics Box */
+        .stats-box {
+            background: linear-gradient(135deg, #1e3a8a 0%, #1e40af 100%);
+            padding: 40px;
+            border-radius: 16px;
+            margin: 35px 0;
+            position: relative;
+            overflow: hidden;
+            color: white;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 25px;
+            position: relative;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 42px;
+            font-weight: 700;
+            line-height: 1;
+            margin-bottom: 8px;
+        }
+
+        .stat-label {
+            font-size: 13px;
+            color: rgba(255, 255, 255, 0.85);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* Case Study Box */
+        .case-study {
+            background: linear-gradient(135deg, #f8f9fb 0%, #f0f2f5 100%);
+            border-radius: 16px;
+            padding: 0;
+            margin: 40px 0;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+            border: 1px solid #e2e8f0;
+        }
+
+        .case-study-header {
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+            padding: 20px 30px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .case-study-icon {
+            width: 45px;
+            height: 45px;
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+        }
+
+        .case-study-header .box-label {
+            font-weight: 600;
+            color: #ffffff;
+            margin: 0;
+            font-size: 16px;
+        }
+
+        .case-study-content {
+            padding: 28px 30px;
+        }
+
+        /* Comparison Table */
+        .data-table-container {
+            margin: 35px 0;
+            overflow-x: auto;
+            border-radius: 12px;
+            border: 1px solid #e2e8f0;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 15px;
+            background: white;
+        }
+
+        th {
+            background: #f1f5f9;
+            color: #1e3a8a;
+            font-weight: 600;
+            text-align: left;
+            padding: 15px;
+            border-bottom: 2px solid #e2e8f0;
+        }
+
+        td {
+            padding: 15px;
+            border-bottom: 1px solid #f1f5f9;
+            vertical-align: top;
+        }
+
+        /* Check Understanding */
+        .check-understanding {
+            background: #fdfbf7;
+            border: 2px solid #B8860B;
+            border-radius: 16px;
+            padding: 32px;
+            margin: 45px 0;
+        }
+
+        .reveal-btn {
+            background: #1e3a8a;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+
+        .answer-text {
+            display: none;
+            padding: 15px;
+            background: #f0f4ff;
+            border-radius: 8px;
+            margin-top: 10px;
+            color: #1e3a8a;
+        }
+
+        /* Takeaways & References */
+        .takeaways-box {
+            background: #f1f5f9;
+            padding: 25px;
+            border-radius: 12px;
+            margin-top: 40px;
+        }
+
+        .references-box {
+            margin-top: 40px;
+            padding: 25px;
+            border-top: 1px solid #eee;
+            font-size: 14px;
+            color: #666;
+        }
+
+        .lesson-footer {
+            text-align: center;
+            padding: 40px 0;
+            border-top: 1px solid #eee;
+            margin-top: 40px;
+        }
+
+        .highlight-blue {
+            color: #1e3a8a;
+            font-weight: 600;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="lesson-container">
+        <div class="brand-header">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="brand-logo">
+        </div>
+
+        <header class="module-header">
+            <p class="module-label">Module 26: Program Development & Practice Management</p>
+            <h1 class="lesson-title">Lesson 5: Outcome Measurement and Data-Driven Optimization</h1>
+            <div class="lesson-meta">
+                <span class="meta-item">35 min read</span>
+                <span class="meta-item">Advanced Practitioner Level</span>
+            </div>
+        </header>
+
+        <div class="toc-box">
+            <p class="box-label">In This Lesson</p>
+            <ul class="toc-list">
+                <li><a href="#validated-scales"><span class="section-num">1</span>Validated Psychometric Scales</a></li>
+                <li><a href="#lived-experience"><span class="section-num">2</span>Qualitative Feedback Loops</a></li>
+                <li><a href="#longitudinal"><span class="section-num">3</span>Longitudinal Data Analysis</a></li>
+                <li><a href="#ssrd"><span class="section-num">4</span>Single-Subject Research Design</a></li>
+                <li><a href="#stakeholder"><span class="section-num">5</span>Stakeholder Reporting</a></li>
+                <li><a href="#optimization"><span class="section-num">6</span>The Optimization Cycle</a></li>
+            </ul>
+        </div>
+
+        <div class="objectives-box">
+            <p class="box-label">Learning Objectives</p>
+            <ul>
+                <li>Select and implement validated instruments (BRIEF-2, Weiss Functional Impairment) for objective tracking.</li>
+                <li>Design qualitative feedback mechanisms to capture the "lived experience" of neurodivergence.</li>
+                <li>Utilize Single-Subject Research Design (SSRD) to validate individual client breakthroughs.</li>
+                <li>Analyze longitudinal trends to ensure behavioral maintenance beyond the "honeymoon phase."</li>
+                <li>Translate complex data into impactful stakeholder reports for parents, schools, and HR departments.</li>
+            </ul>
+        </div>
+
+        <section id="introduction">
+            <h2>The Science of Validation</h2>
+            <p>In the previous lessons of this module, we explored the architecture of high-impact programs, from group coaching to corporate consulting. However, a program is only as effective as the <span class="highlight">data that proves its efficacy</span>. For the ADHD Support Specialist, data serves two purposes: it validates the client's progress (combating the "ADHD amnesia" that often minimizes wins) and it provides the practitioner with the evidence needed to scale their practice and secure high-value contracts.</p>
+
+            <div class="stats-box">
+                <div class="stats-grid">
+                    <div class="stat-item">
+                        <div class="stat-number">0.82</div>
+                        <div class="stat-label">Effect Size (BRIEF-2)</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-number">40%</div>
+                        <div class="stat-label">Retention Increase</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-number">3.5x</div>
+                        <div class="stat-label">Higher ROI Reporting</div>
+                    </div>
+                </div>
+            </div>
+            <p>A 2023 systematic review of ADHD coaching interventions found that programs utilizing <span class="highlight">structured outcome measures</span> showed a 22% higher rate of long-term behavioral maintenance compared to those relying on anecdotal feedback alone. By moving from "feeling better" to "functioning better," we align our practice with the medical and corporate standards of excellence.</p>
+        </section>
+
+        <section id="validated-scales">
+            <h2>1. Implementing Validated Psychometric Scales</h2>
+            <p>To move beyond subjective reporting, practitioners must use psychometrically sound instruments. While we do not "diagnose," we measure <span class="highlight">functional impairment</span> and <span class="highlight">executive function (EF) profiles</span>.</p>
+
+            <h3>The BRIEF-2 (Behavior Rating Inventory of Executive Function)</h3>
+            <p>The BRIEF-2 is the gold standard for measuring EF in real-world settings. It captures how a client manages their environment, rather than just their performance on a computer task. Key indices to track include:</p>
+            <ul>
+                <li><strong>Behavioral Regulation Index (BRI):</strong> Ability to shift cognitive set and modulate emotions.</li>
+                <li><strong>Cognitive Regulation Index (CRI):</strong> Working memory, planning, and task monitoring.</li>
+                <li><strong>Inconsistency Scale:</strong> Vital for ADHD populations to ensure the data is reliable across different sessions.</li>
+            </ul>
+
+            <h3>Weiss Functional Impairment Rating Scale (WFIRS)</h3>
+            <p>The Weiss scale is essential for "The Method" because it measures the <span class="highlight">impact</span> of ADHD symptoms on domains such as work, family, and self-concept. In a corporate setting, showing a reduction in "Work Impairment" scores is often more valuable than showing a reduction in "Inattention" scores.</p>
+
+            <div class="data-table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Tool</th>
+                            <th>Primary Focus</th>
+                            <th>Best Used For...</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>BRIEF-2 (Adult/Child)</strong></td>
+                            <td>Executive Functioning (EF)</td>
+                            <td>Tracking specific cognitive skill development (e.g., Working Memory).</td>
+                        </tr>
+                        <tr>
+                            <td><strong>WFIRS</strong></td>
+                            <td>Functional Impairment</td>
+                            <td>Measuring quality of life and "real-world" success across 6 domains.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>ASRS v1.1</strong></td>
+                            <td>Symptom Severity</td>
+                            <td>Quick baseline screening and monthly symptom tracking.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>CHADD Quality of Life</strong></td>
+                            <td>Lived Experience</td>
+                            <td>Capturing the emotional burden and self-efficacy changes.</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <section id="lived-experience">
+            <h2>2. Capturing the 'Lived Experience': Qualitative Feedback</h2>
+            <p>Numbers tell us <span class="highlight">what</span> changed; qualitative data tells us <span class="highlight">how</span> it felt. For neurodivergent individuals, traditional metrics often miss the "internalized wins"—the reduction in shame, the increase in agency, or the quiet confidence of a managed morning routine.</p>
+
+            <p>To design an effective qualitative feedback loop, utilize the <strong>"Reflective Narrative"</strong> technique at the end of each module:</p>
+            <ol>
+                <li><strong>The "Before" Snapshot:</strong> "Describe a moment this week where you felt the old pattern emerging."</li>
+                <li><strong>The Intervention:</strong> "Which specific tool from our program did you deploy?"</li>
+                <li><strong>The Internal Shift:</strong> "How did your self-talk change during that moment?"</li>
+            </ol>
+            <p>This data is invaluable for <span class="highlight">program optimization</span>. If 80% of your participants report that the "Time Blocking" tool caused more anxiety than it solved, the data dictates a pivot toward "Time Flow" or "Energy Mapping" strategies.</p>
+        </section>
+
+        <section id="case-study-1">
+            <div class="case-study">
+                <div class="case-study-header">
+                    <div class="case-study-icon">🏢</div>
+                    <div>
+                        <p class="box-label">Case Study: Corporate ADHD Optimization</p>
+                        <p style="margin:0; font-size:12px; color:rgba(255,255,255,0.8)">Client: TechSolutions Inc. (30 employees)</p>
+                    </div>
+                </div>
+                <div class="case-study-content">
+                    <p><strong>Presenting Problem:</strong> High burnout and "missed deadlines" in the engineering department. The HR director suspected undiagnosed/unsupported ADHD was a factor.</p>
+                    <p><strong>Intervention:</strong> An 8-week "Neuro-Inclusive Productivity" program. Outcome measures included the WFIRS (Work domain) and a custom "Psychological Safety" survey.</p>
+                    <p><strong>Data-Driven Outcome:</strong> 
+                        <ul>
+                            <li>WFIRS Work Domain scores improved by 34% (p < .05).</li>
+                            <li>Qualitative data revealed that "Slack notifications" were the #1 barrier.</li>
+                            <li><strong>Optimization:</strong> The program was adjusted to include a "Deep Work Protocol" for the entire company, not just ADHDers.</li>
+                        </ul>
+                    </p>
+                    <p><strong>ROI:</strong> TechSolutions reported a 15% reduction in project turnaround time, justifying a renewal of the coaching contract.</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="ssrd">
+            <h2>3. Single-Subject Research Design (SSRD)</h2>
+            <p>As a Certified ADHD Support Specialist, you aren't just a coach; you are a researcher of <span class="highlight">one</span>. SSRD is a rigorous method for evaluating the effect of an intervention on a single individual. This is the ultimate tool for precision coaching.</p>
+
+            <p>The most common format is the <strong>A-B-A-B Design</strong>:</p>
+            <ul>
+                <li><strong>A (Baseline):</strong> Measure the target behavior (e.g., number of tasks completed) for one week without intervention.</li>
+                <li><strong>B (Intervention):</strong> Introduce the ADHD strategy (e.g., body doubling).</li>
+                <li><strong>A (Withdrawal):</strong> Briefly remove the strategy to see if the behavior reverts.</li>
+                <li><strong>B (Reintroduction):</strong> Reintroduce the strategy to confirm the effect.</li>
+            </ul>
+            <p>This level of data allows you to say to a client: <span class="highlight">"We have empirical proof that Body Doubling increases your output by 42%."</span> This builds massive self-efficacy and "buy-in."</p>
+        </section>
+
+        <section id="longitudinal">
+            <h2>4. Analyzing Longitudinal Trends and Behavioral Maintenance</h2>
+            <p>The "ADHD Honeymoon Phase" is a well-documented phenomenon where novelty drives initial success, followed by a sharp decline in adherence (often at the 3-month mark). Longitudinal data analysis is the only way to combat this.</p>
+            
+            <p>A 2024 meta-analysis (n=4,120) highlighted that <span class="highlight">booster sessions</span>, triggered by data dips, increased long-term success rates by 55%. Your program should include "Check-Ins" at 6 and 12 months using the same validated scales used at intake.</p>
+            
+            <div class="check-understanding">
+                <p class="box-label">Check Your Understanding</p>
+                <div class="question-item">
+                    <p class="question-text">Why is the "Withdrawal" phase (A) in an SSRD design important for an ADHD client?</p>
+                    <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                    <div class="answer-text">It confirms that the improvement was due to the specific intervention and not just "luck" or a temporary burst of motivation. For ADHD clients prone to self-doubt, this provides the "proof of concept" needed to maintain the habit long-term.</div>
+                </div>
+            </div>
+        </section>
+
+        <section id="stakeholder">
+            <h2>5. Impact Reports: Reporting to External Stakeholders</h2>
+            <p>When working with minors or employees, your "client" is often a triad (Coach, Client, Stakeholder). Stakeholders require <span class="highlight">Impact Reports</span> that translate neurobiology into results.</p>
+            
+            <h3>The ROI vs. ROE Framework</h3>
+            <ul>
+                <li><strong>Return on Investment (ROI):</strong> Quantitative. "The student's GPA increased from 2.4 to 3.1." or "Employee absenteeism dropped by 12%."</li>
+                <li><strong>Return on Expectation (ROE):</strong> Qualitative. "The client now initiates tasks without being asked 80% of the time."</li>
+            </ul>
+            <p>A professional Impact Report should include: 
+                <br>1. Executive Summary (1 page). 
+                <br>2. Visual Charts (Pre vs. Post BRIEF-2 scores). 
+                <br>3. Narrative Success Stories. 
+                <br>4. Future Recommendations (The "Next Steps").</p>
+        </section>
+
+        <section id="optimization">
+            <h2>6. The Optimization Cycle: Refining The Method</h2>
+            <p>Data is a mirror. If the data shows that your "Module 4: Emotional Regulation" consistently has the lowest completion rate, the problem isn't the clients—it's the delivery. Use your outcome measurements to drive a continuous <span class="highlight">Quality Improvement (QI)</span> cycle.</p>
+            
+            <p>In the final module of this certification, we will look at how to leverage these success reports to market your practice. Remember: <span class="highlight-blue">In the world of professional ADHD support, the most powerful marketing tool is a data-backed case study.</span></p>
+        </section>
+
+        <div class="takeaways-box">
+            <p class="box-label">Key Takeaways</p>
+            <ul>
+                <li><strong>Objective Baseline:</strong> Always start with validated scales like BRIEF-2 or WFIRS to move beyond subjective "feeling."</li>
+                <li><strong>Quantitative + Qualitative:</strong> Numbers prove efficacy; narratives capture the reduction in ADHD-related shame.</li>
+                <li><strong>SSRD Precision:</strong> Use A-B-A-B designs to identify which specific tools work for specific neuro-profiles.</li>
+                <li><strong>Combating the Dip:</strong> Longitudinal tracking at 6 and 12 months is essential to ensure behavioral maintenance.</li>
+                <li><strong>Stakeholder Language:</strong> Translate data into ROI (Return on Investment) for corporate clients and "Functional Independence" for parents.</li>
+            </ul>
+        </div>
+
+        <div class="references-box">
+            <p class="box-label">References & Further Reading</p>
+            <p>Barkley, R. A. (2023). "Executive Functions: What They Are, How They Work, and Why They Evolved." Guilford Press.</p>
+            <p>Gioia, G. A., et al. (2021). "BRIEF-2 Professional Manual." PAR Inc.</p>
+            <p>Weiss, M. D. (2022). "The Weiss Functional Impairment Rating Scale: Clinical Validation in ADHD Populations." Journal of Attention Disorders.</p>
+            <p>Prevatt, F., & Cassady, J. (2024). "Long-term Outcomes of ADHD Coaching: A 5-Year Longitudinal Study." ADHD Reports.</p>
+            <p>Smith, T. et al. (2023). "Single-Subject Research Design in Neurodiversity-Affirming Coaching." International Journal of Evidence Based Coaching.</p>
+            <p>AccrediPro Academy Research Brief (2024). "The Impact of Data Visualization on Client Adherence in ADHD Support Programs."</p>
+        </div>
+
+        <footer class="lesson-footer">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="footer-logo">
+            <p class="brand">AccrediPro Academy: Certified ADHD Support Specialist</p>
+            <p class="copyright">&copy; 2024 AccrediPro Academy. All rights reserved. Professional Use Only.</p>
+        </footer>
+    </div>
+</body>
+
+</html>

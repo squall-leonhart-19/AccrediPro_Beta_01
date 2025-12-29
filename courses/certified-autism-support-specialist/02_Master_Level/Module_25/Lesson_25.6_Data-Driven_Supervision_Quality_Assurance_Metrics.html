@@ -1,0 +1,635 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lesson 25.6: Data-Driven Supervision: Quality Assurance Metrics</title>
+    <style>
+        /* Base & Reset */
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Georgia, 'Times New Roman', serif;
+            line-height: 1.8;
+            color: #2d2d2d;
+            background: #f8f6f3;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Main Container */
+        .lesson-container {
+            max-width: 860px;
+            margin: 0 auto;
+            padding: 40px 30px;
+            background: #ffffff;
+            min-height: 100vh;
+            box-shadow: 0 0 60px rgba(0, 0, 0, 0.08);
+        }
+
+        /* Brand Header */
+        .brand-header {
+            text-align: center;
+            padding-bottom: 30px;
+            margin-bottom: 35px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .brand-logo {
+            max-width: 220px;
+            height: auto;
+            margin-bottom: 5px;
+        }
+
+        /* Module Header - BLUE theme for Supervision */
+        .module-header {
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+            padding: 35px 35px 30px;
+            border-radius: 16px;
+            margin-bottom: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .module-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+            transform: translate(100px, -100px);
+        }
+
+        .module-header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, #B8860B, #D4A84B, #B8860B);
+        }
+
+        .module-label {
+            margin: 0;
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.75);
+            text-transform: uppercase;
+            letter-spacing: 2.5px;
+            font-weight: 500;
+        }
+
+        .lesson-title {
+            margin: 10px 0 0 0;
+            font-size: 28px;
+            color: #ffffff;
+            font-weight: 700;
+            line-height: 1.3;
+            position: relative;
+        }
+
+        .lesson-meta {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+            padding-top: 18px;
+            border-top: 1px solid rgba(255, 255, 255, 0.15);
+            flex-wrap: wrap;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.85);
+            background: rgba(255, 255, 255, 0.1);
+            padding: 5px 12px;
+            border-radius: 4px;
+        }
+
+        /* Table of Contents */
+        .toc-box {
+            background: linear-gradient(135deg, #fafafa 0%, #f5f5f5 100%);
+            border-radius: 14px;
+            padding: 24px 28px;
+            margin-bottom: 35px;
+            border: 1px solid #e8e8e8;
+        }
+
+        .toc-box .box-label {
+            font-weight: 600;
+            color: #1e3a8a;
+            margin: 0 0 18px 0;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .toc-list {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px 24px;
+        }
+
+        .toc-list li {
+            margin: 0;
+        }
+
+        .toc-list a {
+            display: flex;
+            align-items: center;
+            padding: 8px 12px;
+            color: #555;
+            text-decoration: none;
+            font-size: 14px;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+        }
+
+        .toc-list a:hover {
+            background: white;
+            color: #1e3a8a;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+        }
+
+        .toc-list .section-num {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 26px;
+            height: 26px;
+            background: #1e3a8a;
+            color: white;
+            font-weight: 600;
+            font-size: 11px;
+            border-radius: 6px;
+            margin-right: 12px;
+            flex-shrink: 0;
+        }
+
+        /* Learning Objectives */
+        .objectives-box {
+            background: #eff6ff;
+            border: 2px solid #3b82f6;
+            border-radius: 14px;
+            padding: 30px 35px;
+            margin-bottom: 40px;
+        }
+
+        .objectives-box .box-label {
+            font-weight: 600;
+            color: #1e3a8a;
+            margin: 0 0 18px 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .objectives-box .box-label::before {
+            content: '📊';
+            font-size: 18px;
+        }
+
+        .objectives-box ul {
+            margin: 0;
+            padding-left: 22px;
+        }
+
+        .objectives-box li {
+            margin-bottom: 14px;
+            font-size: 16px;
+            line-height: 1.7;
+        }
+
+        /* Section Headings */
+        h2 {
+            font-size: 24px;
+            color: #1e3a8a;
+            margin: 50px 0 20px 0;
+            font-weight: 600;
+            position: relative;
+            padding-bottom: 12px;
+        }
+
+        h2::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 60px;
+            height: 3px;
+            background: #B8860B;
+        }
+
+        /* Paragraphs & Highlighting */
+        p {
+            font-size: 17px;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        .highlight {
+            background: linear-gradient(180deg, transparent 60%, #dae7ff 60%);
+            padding: 0 4px;
+            font-weight: 500;
+            color: #1e3a8a;
+        }
+
+        /* Case Study Box */
+        .case-study {
+            background: linear-gradient(135deg, #f8f9fb 0%, #f0f2f5 100%);
+            border-radius: 16px;
+            padding: 0;
+            margin: 40px 0;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+        }
+
+        .case-study-header {
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+            padding: 20px 30px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .case-study-icon {
+            width: 45px;
+            height: 45px;
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+        }
+
+        .case-study-header .box-label {
+            font-weight: 600;
+            color: #ffffff;
+            margin: 0;
+            font-size: 16px;
+        }
+
+        .case-study-content {
+            padding: 28px 30px;
+        }
+
+        /* Statistics Box */
+        .stats-box {
+            background: linear-gradient(135deg, #1e3a8a 0%, #1e40af 100%);
+            padding: 40px;
+            border-radius: 16px;
+            margin: 35px 0;
+            color: white;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+            gap: 25px;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 36px;
+            font-weight: 700;
+            margin-bottom: 8px;
+            display: block;
+        }
+
+        .stat-label {
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            opacity: 0.9;
+        }
+
+        /* Data Table */
+        .data-table-container {
+            overflow-x: auto;
+            margin: 30px 0;
+            border-radius: 12px;
+            border: 1px solid #e5e7eb;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: left;
+            font-size: 15px;
+        }
+
+        th {
+            background: #f1f5f9;
+            padding: 15px;
+            font-weight: 600;
+            color: #1e3a8a;
+            border-bottom: 2px solid #e2e8f0;
+        }
+
+        td {
+            padding: 15px;
+            border-bottom: 1px solid #f1f5f9;
+            color: #4b5563;
+        }
+
+        /* Check Understanding Box */
+        .check-understanding {
+            background: #fffcf0;
+            border: 2px solid #B8860B;
+            border-radius: 16px;
+            padding: 32px;
+            margin: 45px 0;
+        }
+
+        .question-item {
+            background: white;
+            border-radius: 12px;
+            padding: 22px 24px;
+            margin-bottom: 16px;
+            border: 1px solid #e8e4dc;
+        }
+
+        .reveal-btn {
+            background: #1e3a8a;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        .answer-text {
+            display: none;
+            padding: 15px;
+            background: #f0fdf4;
+            border-radius: 8px;
+            margin-top: 10px;
+            color: #166534;
+        }
+
+        /* Takeaways Box */
+        .takeaways-box {
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            padding: 30px;
+            border-radius: 14px;
+            margin: 40px 0;
+        }
+
+        .takeaways-box .box-label {
+            color: #1e3a8a;
+            font-weight: 700;
+            text-transform: uppercase;
+            font-size: 13px;
+            margin-bottom: 20px;
+            display: block;
+        }
+
+        /* References Box */
+        .references-box {
+            background: #f1f5f9;
+            padding: 30px;
+            border-radius: 14px;
+            font-size: 14px;
+            color: #475569;
+            margin-top: 50px;
+        }
+
+        .references-box h4 {
+            margin: 0 0 15px 0;
+            color: #1e3a8a;
+        }
+
+        .references-box ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .references-box li {
+            margin-bottom: 10px;
+            padding-left: 20px;
+            position: relative;
+        }
+
+        .references-box li::before {
+            content: '•';
+            position: absolute;
+            left: 0;
+            color: #3b82f6;
+        }
+
+        /* Footer */
+        .lesson-footer {
+            text-align: center;
+            padding-top: 50px;
+            margin-top: 60px;
+            border-top: 1px solid #eee;
+        }
+
+        .footer-logo {
+            max-width: 140px;
+            opacity: 0.8;
+        }
+
+        @media (max-width: 768px) {
+            .lesson-container { padding: 20px 15px; }
+            .toc-list { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="lesson-container">
+        <div class="brand-header">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="brand-logo">
+        </div>
+
+        <header class="module-header">
+            <p class="module-label">Module 25: Supervision & Mentoring</p>
+            <h1 class="lesson-title">Lesson 6: Data-Driven Supervision: Quality Assurance Metrics</h1>
+            <div class="lesson-meta">
+                <span class="meta-item">35 min read</span>
+                <span class="meta-item">Expert Level</span>
+            </div>
+        </header>
+
+        <div class="toc-box">
+            <p class="box-label">In This Lesson</p>
+            <ul class="toc-list">
+                <li><a href="#kpis"><span class="section-num">1</span>Beyond Hours: Clinical KPIs</a></li>
+                <li><a href="#ioa"><span class="section-num">2</span>Inter-observer Agreement (IOA)</a></li>
+                <li><a href="#stagnant"><span class="section-num">3</span>Identifying Stagnant Caseloads</a></li>
+                <li><a href="#fidelity"><span class="section-num">4</span>Internal Audits & Fidelity</a></li>
+                <li><a href="#visual"><span class="section-num">5</span>Visual Analysis of Performance</a></li>
+                <li><a href="#integration"><span class="section-num">6</span>The Method: Metric Integration</a></li>
+            </ul>
+        </div>
+
+        <div class="objectives-box">
+            <p class="box-label">Learning Objectives</p>
+            <ul>
+                <li>Define and implement Key Performance Indicators (KPIs) that prioritize clinical impact over administrative volume.</li>
+                <li>Utilize Inter-observer Agreement (IOA) to calibrate clinical assessments across a multi-disciplinary team.</li>
+                <li>Analyze client progress data as a direct metric for evaluating supervisory effectiveness.</li>
+                <li>Conduct internal audits for treatment plan fidelity and documentation compliance.</li>
+                <li>Perform visual analysis of supervisee performance data to identify trends and variability in service delivery.</li>
+            </ul>
+        </div>
+
+        <h2 id="kpis">1. Beyond Hours: Defining High-Impact KPIs</h2>
+        <p>In traditional supervision, the primary metric of "success" is often the completion of clinical hours required for certification. However, a <span class="highlight">Certified Autism Support Specialist</span> must move beyond mere attendance. High-impact supervision requires Key Performance Indicators (KPIs) that measure the actual quality of the intervention and the growth of the practitioner.</p>
+        
+        <p>A 2021 study by Sellers et al. suggested that when supervision focuses solely on administrative compliance, supervisee skill acquisition lags by up to 30% compared to models using behavioral skill training (BST) and objective performance metrics. We categorize these KPIs into three tiers:</p>
+
+        <div class="data-table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Metric Tier</th>
+                        <th>Traditional Focus</th>
+                        <th>Data-Driven Focus (High Impact)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Administrative</strong></td>
+                        <td>Hours logged / Time on site</td>
+                        <td>Documentation turnaround time (< 24 hrs)</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Clinical Skill</strong></td>
+                        <td>Subjective "feeling" of competence</td>
+                        <td>Fidelity score on specific protocols (> 90%)</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Client Impact</strong></td>
+                        <td>Anecdotal progress reports</td>
+                        <td>Rate of goal mastery per 10 hours of service</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <h2 id="ioa">2. Inter-observer Agreement (IOA) as a Calibration Tool</h2>
+        <p><span class="highlight">Inter-observer Agreement (IOA)</span> is traditionally used in research to ensure data reliability. In a supervisory context, it serves as a powerful tool for calibrating a team. If two practitioners observe the same social interaction in a Level 1 autistic client but record different levels of "social reciprocity," the clinical intervention will be inconsistent.</p>
+
+        <p>Supervisors should aim for an IOA of at least 80% across the team. When IOA falls below this threshold, it indicates a need for <span class="highlight">operational definition refinement</span>. For example, what exactly constitutes a "self-advocacy attempt"? Without data calibration, the supervisor cannot trust the data being used to make clinical decisions.</p>
+
+        <div class="stats-box">
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <span class="stat-number">80%+</span>
+                    <span class="stat-label">Target IOA Score</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-number">22%</span>
+                    <span class="stat-label">Reduction in Error</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-number">3:1</span>
+                    <span class="stat-label">Observation Ratio</span>
+                </div>
+            </div>
+        </div>
+
+        <h2 id="stagnant">3. Analyzing Client Progress as a Proxy for Supervision</h2>
+        <p>One of the most profound shifts in advanced supervision is viewing <span class="highlight">client stagnation</span> not as a client failure, but as a supervisory metric. If a supervisee’s caseload shows flat trendlines across multiple clients, the supervisor must evaluate their own feedback loops.</p>
+
+        <div class="case-study">
+            <div class="case-study-header">
+                <div class="case-study-icon">👤</div>
+                <div>
+                    <p class="box-label">Case Study: The "Busy" Supervisee</p>
+                    <p style="margin:0; font-size:12px; opacity:0.9">Supervisee: Sarah | Client: Leo (Age 9, Level 2 ASD)</p>
+                </div>
+            </div>
+            <div class="case-study-content">
+                <p><strong>Scenario:</strong> Sarah was highly praised for her rapport and perfect attendance. However, a quarterly data audit revealed that Leo had not mastered a new skill in 14 weeks, despite 120 hours of direct service.</p>
+                <p><strong>Intervention:</strong> The supervisor implemented a "Rate of Mastery" KPI. They discovered Sarah was inadvertently reinforcing Leo's prompt dependency. Supervision shifted from "checking in" to "live coaching" on prompt fading.</p>
+                <p><strong>Outcome:</strong> Within 3 weeks, Leo mastered three stalled goals. Sarah’s clinical impact score rose from 0.08 to 0.45 goals per session.</p>
+            </div>
+        </div>
+
+        <h2 id="fidelity">4. Internal Audits: Fidelity and Documentation</h2>
+        <p>Quality assurance is not a one-time event; it is a systematic process. Internal audits should focus on <span class="highlight">Treatment Plan Fidelity</span>—the degree to which the practitioner is actually implementing the plan as written. A 2023 meta-analysis of clinical outcomes found that even a 15% drop in fidelity can result in a 50% decrease in the rate of client skill acquisition.</p>
+
+        <p>Audits should include:</p>
+        <ul>
+            <li><strong>Instructional Fidelity:</strong> Are the steps of the protocol followed exactly?</li>
+            <li><strong>Data Integrity:</strong> Is data being recorded in real-time or "back-filled" at the end of the day?</li>
+            <li><strong>Generalization Checks:</strong> Is the supervisee testing skills across different environments and people?</li>
+        </ul>
+
+        <h2 id="visual">5. Visual Analysis of Supervisee Performance Data</h2>
+        <p>Just as we graph client progress, we must graph supervisee performance. Visual analysis allows a supervisor to see the "Level, Trend, and Variability" of a practitioner's skills.</p>
+        
+        <p>Consider a graph of a supervisee’s "Positive Reinforcement Rate." If the <span class="highlight">variability</span> is high (ranging from 1 to 10 reinforcers per minute), the practitioner is inconsistent. If the <span class="highlight">trend</span> is downward, burnout or "drift" may be occurring. This objective visual evidence removes the "personal" nature of corrective feedback, making it about the data rather than the person.</p>
+
+        <h2 id="integration">6. The Method: Metric Integration in Practice</h2>
+        <p>In the <strong>AccrediPro Method</strong>, we integrate these metrics into a "Supervision Dashboard." This dashboard allows the supervisor to see, at a glance, which supervisees are thriving and which require immediate support. This proactive approach prevents "clinical drift"—the slow, unperceived movement away from evidence-based practice over time.</p>
+
+        <div class="check-understanding">
+            <p class="box-label">Check Your Understanding</p>
+            <div class="question-item">
+                <p class="question-text">1. Why is Inter-observer Agreement (IOA) considered a "calibration tool" in supervision?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-text">It ensures that all team members are defining and observing behaviors in the same way, which leads to consistent data collection and more reliable clinical decision-making.</div>
+            </div>
+            <div class="question-item">
+                <p class="question-text">2. If a client's progress is stagnant, what does this suggest about the supervision process?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-text">It suggests that the supervisor's feedback loops or the supervisee's implementation of the protocol may be ineffective, requiring the supervisor to analyze their own effectiveness as a mentor.</div>
+            </div>
+        </div>
+
+        <div class="takeaways-box">
+            <p class="box-label">Key Takeaways</p>
+            <ul>
+                <li><strong>Outcome Over Output:</strong> Prioritize KPIs that measure client progress and supervisee skill mastery over administrative hours.</li>
+                <li><strong>Reliability is Key:</strong> Use IOA to ensure your team is "speaking the same language" clinically.</li>
+                <li><strong>Data as a Shield:</strong> Use visual analysis to provide objective, non-confrontational feedback to supervisees.</li>
+                <li><strong>Fidelity Matters:</strong> Regular audits are necessary to prevent clinical drift and ensure the integrity of the intervention.</li>
+            </ul>
+        </div>
+
+        <div class="references-box">
+            <h4>References & Further Reading</h4>
+            <ul>
+                <li>Sellers, T. P., et al. (2021). "A Review of Supervisor Training Programs in Applied Behavior Analysis." <i>Journal of Organizational Behavior Management.</i></li>
+                <li>Hartley, B. K., et al. (2016). "The Effects of Supervisor Feedback on the Fidelity of Implementation." <i>Behavior Analysis in Practice.</i></li>
+                <li>Casella, S. E., et al. (2022). "Using Data-Based Decision Making to Improve Supervision Outcomes." <i>Journal of Applied Behavior Analysis.</i></li>
+                <li>Behavior Analyst Certification Board (2020). "Supervision Training Curriculum Outline (2.0)." <i>BACB Guidelines.</i></li>
+                <li>Turner, L. B., et al. (2023). "The Relationship Between Treatment Fidelity and Client Outcomes in Autism Services." <i>Clinical Psychology Review.</i></li>
+            </ul>
+        </div>
+
+        <footer class="lesson-footer">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="footer-logo">
+            <p class="brand">AccrediPro Academy: Certified Autism Support Specialist</p>
+            <p class="copyright">&copy; 2024 AccrediPro. All Rights Reserved. Confidential Professional Certification Material.</p>
+        </footer>
+    </div>
+</body>
+
+</html>

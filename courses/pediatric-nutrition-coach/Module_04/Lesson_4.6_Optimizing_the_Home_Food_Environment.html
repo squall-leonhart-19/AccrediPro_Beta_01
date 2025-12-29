@@ -1,0 +1,606 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lesson 4.6: Optimizing the Home Food Environment</title>
+    <style>
+        /* Base & Reset */
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Georgia, 'Times New Roman', serif;
+            line-height: 1.8;
+            color: #2d2d2d;
+            background: #f8f6f3;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Main Container */
+        .lesson-container {
+            max-width: 860px;
+            margin: 0 auto;
+            padding: 40px 30px;
+            background: #ffffff;
+            min-height: 100vh;
+            box-shadow: 0 0 60px rgba(0, 0, 0, 0.08);
+        }
+
+        /* Brand Header */
+        .brand-header {
+            text-align: center;
+            padding-bottom: 30px;
+            margin-bottom: 35px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .brand-logo {
+            max-width: 220px;
+            height: auto;
+            margin-bottom: 5px;
+        }
+
+        /* Module Header - PURPLE/BLUE theme for Wellness */
+        .module-header {
+            background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
+            padding: 35px 35px 30px;
+            border-radius: 16px;
+            margin-bottom: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .module-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+            transform: translate(100px, -100px);
+        }
+
+        .module-header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, #B8860B, #D4A84B, #B8860B);
+        }
+
+        .module-label {
+            margin: 0;
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.75);
+            text-transform: uppercase;
+            letter-spacing: 2.5px;
+            font-weight: 500;
+        }
+
+        .lesson-title {
+            margin: 10px 0 0 0;
+            font-size: 28px;
+            color: #ffffff;
+            font-weight: 700;
+            line-height: 1.3;
+            position: relative;
+        }
+
+        .lesson-meta {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+            padding-top: 18px;
+            border-top: 1px solid rgba(255, 255, 255, 0.15);
+            flex-wrap: wrap;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.85);
+            background: rgba(255, 255, 255, 0.1);
+            padding: 5px 12px;
+            border-radius: 4px;
+        }
+
+        /* Table of Contents */
+        .toc-box {
+            background: linear-gradient(135deg, #fafafa 0%, #f5f5f5 100%);
+            border-radius: 14px;
+            padding: 24px 28px;
+            margin-bottom: 35px;
+            border: 1px solid #e8e8e8;
+        }
+
+        .toc-box .box-label {
+            font-weight: 600;
+            color: #4f46e5;
+            margin: 0 0 18px 0;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .toc-list {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px 24px;
+        }
+
+        .toc-list a {
+            display: flex;
+            align-items: center;
+            padding: 8px 12px;
+            color: #555;
+            text-decoration: none;
+            font-size: 14px;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+        }
+
+        .toc-list a:hover {
+            background: white;
+            color: #4f46e5;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+        }
+
+        .toc-list .section-num {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 26px;
+            height: 26px;
+            background: #4f46e5;
+            color: white;
+            font-weight: 600;
+            font-size: 11px;
+            border-radius: 6px;
+            margin-right: 12px;
+            flex-shrink: 0;
+        }
+
+        /* Learning Objectives */
+        .objectives-box {
+            background: #f5f3ff;
+            border: 2px solid #7c3aed;
+            border-radius: 14px;
+            padding: 30px 35px;
+            margin-bottom: 40px;
+        }
+
+        .objectives-box .box-label {
+            font-weight: 600;
+            color: #4f46e5;
+            margin: 0 0 18px 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .objectives-box .box-label::before {
+            content: '🎯';
+            font-size: 18px;
+        }
+
+        .objectives-box ul {
+            margin: 0;
+            padding-left: 22px;
+        }
+
+        .objectives-box li {
+            margin-bottom: 14px;
+            font-size: 16px;
+            line-height: 1.7;
+        }
+
+        /* Section Headings */
+        h2 {
+            font-size: 24px;
+            color: #4f46e5;
+            margin: 50px 0 20px 0;
+            font-weight: 600;
+            position: relative;
+            padding-bottom: 12px;
+        }
+
+        h2::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 60px;
+            height: 3px;
+            background: #B8860B;
+        }
+
+        /* Paragraphs & Highlights */
+        p {
+            font-size: 17px;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        .highlight {
+            background: linear-gradient(180deg, transparent 60%, #e0e7ff 60%);
+            padding: 0 4px;
+            font-weight: 600;
+            color: #3730a3;
+        }
+
+        .stat-highlight {
+            color: #4f46e5;
+            font-weight: 700;
+        }
+
+        /* Case Study Box */
+        .case-study {
+            background: linear-gradient(135deg, #f8f9fb 0%, #f0f2f5 100%);
+            border-radius: 16px;
+            margin: 40px 0;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+            border: 1px solid #e5e7eb;
+        }
+
+        .case-study-header {
+            background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
+            padding: 20px 30px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .case-study-header .box-label {
+            font-weight: 600;
+            color: #ffffff;
+            margin: 0;
+            font-size: 16px;
+        }
+
+        .case-study-content {
+            padding: 28px 30px;
+        }
+
+        .patient-profile {
+            display: flex;
+            align-items: center;
+            gap: 18px;
+            padding: 18px 22px;
+            background: white;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            border: 1px solid #e5e5e5;
+        }
+
+        /* Data Table */
+        .data-table-container {
+            margin: 35px 0;
+            overflow-x: auto;
+            border-radius: 12px;
+            border: 1px solid #e5e7eb;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 15px;
+            text-align: left;
+        }
+
+        th {
+            background: #f3f4f6;
+            padding: 15px;
+            font-weight: 600;
+            color: #4f46e5;
+            border-bottom: 2px solid #e5e7eb;
+        }
+
+        td {
+            padding: 15px;
+            border-bottom: 1px solid #f3f4f6;
+            color: #4b5563;
+        }
+
+        /* Principle Cards */
+        .principle-card {
+            background: white;
+            border-left: 5px solid #4f46e5;
+            padding: 20px 25px;
+            margin-bottom: 20px;
+            border-radius: 0 12px 12px 0;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.04);
+        }
+
+        .principle-title {
+            font-weight: 700;
+            color: #4f46e5;
+            margin-bottom: 8px;
+        }
+
+        /* Check Understanding */
+        .check-understanding {
+            background: #fdfbf7;
+            border: 2px solid #B8860B;
+            border-radius: 16px;
+            padding: 32px;
+            margin: 45px 0;
+        }
+
+        .reveal-btn {
+            background: #4f46e5;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+
+        .answer-text {
+            display: none;
+            margin-top: 15px;
+            padding: 15px;
+            background: #f0fdf4;
+            border-radius: 8px;
+            color: #166534;
+        }
+
+        /* Takeaways */
+        .takeaways-box {
+            background: #f9fafb;
+            padding: 30px;
+            margin-top: 40px;
+            border-radius: 12px;
+            border: 1px solid #e5e7eb;
+        }
+
+        .takeaways-box .box-label {
+            font-weight: 700;
+            color: #4f46e5;
+            text-transform: uppercase;
+            margin-bottom: 15px;
+            display: block;
+        }
+
+        /* References */
+        .references-box {
+            margin-top: 50px;
+            padding-top: 30px;
+            border-top: 1px solid #eee;
+            font-size: 14px;
+            color: #666;
+        }
+
+        .references-box h4 {
+            color: #333;
+            margin-bottom: 15px;
+        }
+
+        .references-box ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .references-box li {
+            margin-bottom: 10px;
+            line-height: 1.5;
+        }
+
+        /* Footer */
+        .lesson-footer {
+            text-align: center;
+            padding-top: 50px;
+            margin-top: 60px;
+            border-top: 1px solid #eee;
+        }
+
+        .footer-logo {
+            max-width: 140px;
+            opacity: 0.8;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="lesson-container">
+        <div class="brand-header">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="brand-logo">
+        </div>
+
+        <header class="module-header">
+            <p class="module-label">Module 4: W: Whole Family Wellness</p>
+            <h1 class="lesson-title">Lesson 4.6: Optimizing the Home Food Environment</h1>
+            <div class="lesson-meta">
+                <span class="meta-item">35 min read</span>
+                <span class="meta-item">Lesson 6 of 8</span>
+            </div>
+        </header>
+
+        <div class="toc-box">
+            <p class="box-label">In This Lesson</p>
+            <ul class="toc-list">
+                <li><a href="#section1"><span class="section-num">1</span>The 'Food Scape' Analysis</a></li>
+                <li><a href="#section2"><span class="section-num">2</span>Screen-Free Zones & Satiety</a></li>
+                <li><a href="#section3"><span class="section-num">3</span>Pantry Organization for Autonomy</a></li>
+                <li><a href="#section4"><span class="section-num">4</span>Mitigating Stealth Advertising</a></li>
+                <li><a href="#section5"><span class="section-num">5</span>Environmental Nudges & Ergonomics</a></li>
+                <li><a href="#section6"><span class="section-num">6</span>Implementation Science</a></li>
+            </ul>
+        </div>
+
+        <div class="objectives-box">
+            <p class="box-label">Learning Objectives</p>
+            <ul>
+                <li>Conduct a comprehensive 'Food Scape' analysis to identify visual cues that trigger mindless eating.</li>
+                <li>Explain the physiological link between distracted eating (screens) and caloric overconsumption.</li>
+                <li>Design a pantry "Yes-Zone" that fosters child autonomy while adhering to G.R.O.W. principles.</li>
+                <li>Implement environmental "nudges" including plate size and accessibility to influence nutrient density.</li>
+                <li>Identify and mitigate the impact of internal food branding and advertising within the home.</li>
+            </ul>
+        </div>
+
+        <h2 id="section1">1. The 'Food Scape' Analysis: Visual Salience</h2>
+        <p>In the <span class="highlight">G.R.O.W. Kids Nutrition Method™</span>, the "W" (Whole Family Wellness) emphasizes that willpower is a finite resource. For a child, whose executive function is still developing, the home environment acts as the primary "Choice Architecture." If a child sees a cookie, they want a cookie. This is known as <strong>Visual Salience</strong>.</p>
+        
+        <p>A "Food Scape" analysis involves auditing the kitchen layout to determine what is visible versus what is hidden. Research consistently shows that individuals eat what they see first. A 2015 study by Wansink et al. found that women who had a fruit bowl on their counter weighed an average of <span class="stat-highlight">13 pounds less</span> than those who did not, while those with breakfast cereal visible on the counter weighed <span class="stat-highlight">20 pounds more</span>.</p>
+
+        <div class="principle-card">
+            <p class="principle-title">The Countertop Rule</p>
+            <p class="principle-text">The only food items allowed to reside permanently on the countertop are whole fruits, vegetables, or water. All ultra-processed snacks must be stored in opaque containers behind closed cabinet doors to reduce dopamine-driven visual triggers.</p>
+        </div>
+
+        <h2 id="section2">2. Screen-Free Zones: The Distracted Eating Mechanism</h2>
+        <p>Distracted eating is one of the most significant contributors to pediatric caloric overconsumption. When a child eats while watching a tablet or television, the brain’s <span class="highlight">satiety signaling</span> is interrupted. The "Cephalic Phase" of digestion—where the sight and smell of food prepare the body for intake—is bypassed.</p>
+
+        <p>A 2013 meta-analysis published in the <em>American Journal of Clinical Nutrition</em> (n=24 studies) demonstrated that being distracted during a meal led to a <span class="stat-highlight">10% increase</span> in immediate intake and a staggering <span class="stat-highlight">25% increase</span> in food consumed later in the day. The brain fails to "register" the meal, leading to a diminished memory of eating and subsequent hunger.</p>
+
+        <div class="case-study">
+            <div class="case-study-header">
+                <div class="box-label">Case Study: The "Tablet Diner"</div>
+            </div>
+            <div class="case-study-content">
+                <div class="patient-profile">
+                    <div>
+                        <h4>Leo, Age 6</h4>
+                        <p>Presenting: Excessive grazing and lack of interest in family dinners.</p>
+                    </div>
+                </div>
+                <p><strong>Intervention:</strong> Leo’s parents implemented a "Zero-Screen Dining" policy. For the first week, Leo resisted. The coach introduced a "Sensory Plate" where Leo had to describe the crunch, color, and temperature of his food.</p>
+                <p><strong>Outcome:</strong> Within 3 weeks, Leo’s "grazing" decreased by 40%. He began recognizing "tummy full" cues earlier in the meal, and his caloric intake during dinner increased while his evening snack requests vanished.</p>
+            </div>
+        </div>
+
+        <h2 id="section3">3. Pantry Organization for Autonomy: The 'Yes' Zones</h2>
+        <p>Building on Lesson 4.2 (Division of Responsibility), we must provide children with a sense of <span class="highlight">agency</span> within boundaries. This is achieved through strategic pantry organization. Instead of a pantry where every shelf is a "negotiation," we create specific zones.</p>
+
+        <div class="data-table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Zone Type</th>
+                        <th>Location</th>
+                        <th>Approved Items</th>
+                        <th>Access Level</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>The "Yes" Zone</strong></td>
+                        <td>Bottom shelf/drawer</td>
+                        <td>Pre-cut veggies, fruit, nuts, seeds, yogurt.</td>
+                        <td>Unlimited / Child-led</td>
+                    </tr>
+                    <tr>
+                        <td><strong>The "Bridge" Zone</strong></td>
+                        <td>Eye-level shelf</td>
+                        <td>Whole grain crackers, cheese sticks, hummus.</td>
+                        <td>Requires "Ask" or scheduled snack time.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>The "Occasional" Zone</strong></td>
+                        <td>Top shelf (Hidden)</td>
+                        <td>Desserts, ultra-processed treats.</td>
+                        <td>Parent-led only.</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <p>By creating a "Yes" zone, we remediate neophobia (Module 2, Lesson 4) by making healthy options the <em>easiest</em> path to autonomy. When a child feels hungry, the "Yes" zone provides an immediate, parent-approved solution that doesn't involve a power struggle.</p>
+
+        <h2 id="section4">4. Mitigating Food Advertising in the Home</h2>
+        <p>Advertising doesn't stop at the television screen; it enters the home through packaging. "Advergames" and bright, character-driven packaging on cereal boxes or snack bags are designed to trigger a <span class="highlight">pester power</span> response. A 2011 study showed that children preferred the taste of identical foods when they were wrapped in branded (e.g., McDonald's) packaging versus plain packaging.</p>
+
+        <p>As a Pediatric Nutrition Coach, you must teach parents to "De-Brand" the kitchen:</p>
+        <ul class="content-list">
+            <li><strong>Decanting:</strong> Move dry goods (cereals, crackers, pretzels) into clear glass or BPA-free plastic containers. This removes the visual "marketing" and focuses the child on the food itself.</li>
+            <li><strong>The "Lid" Strategy:</strong> Use opaque lids for treat containers and transparent lids for fruit/veg containers.</li>
+            <li><strong>Ad-Blockers:</strong> Encourage the use of ad-free streaming services to reduce the exposure to high-sugar, low-nutrient food commercials.</li>
+        </ul>
+
+        <h2 id="section5">5. Environmental Nudges: Plate Size & Ergonomics</h2>
+        <p>The physical tools of eating—plates, bowls, and glasses—significantly influence intake through the <strong>Delboeuf Illusion</strong>. When the same amount of food is placed on a large plate versus a small plate, the portion on the large plate looks smaller, leading to perceived dissatisfaction.</p>
+
+        <p>For children, the ergonomics of the table are critical for "O" (Optimize Development). If a child's feet are dangling, they are less likely to stay at the table and more likely to feel restless. Proper physical support (footrests) allows for better focus on the eating process.</p>
+
+        <div class="principle-card">
+            <p class="principle-title">The "Nudge" Checklist</p>
+            <ul>
+                <li><strong>Plate Size:</strong> Use 7-inch "salad" plates for children to make portions appear substantial.</li>
+                <li><strong>Glass Shape:</strong> Use tall, narrow glasses for juice/milk (appears more) and wide, short glasses for water.</li>
+                <li><strong>Color Contrast:</strong> High contrast between food and plate (e.g., green broccoli on a white plate) can increase intake by making the food more visually distinct.</li>
+            </ul>
+        </div>
+
+        <h2 id="section6">6. Implementation Science: Moving from Theory to Table</h2>
+        <p>Optimizing the home environment is not about a "kitchen purge," which can trigger scarcity mindsets and binge behavior. Instead, it is about <span class="highlight">Choice Architecture</span>. We are making the "preferred" choices the "easy" choices.</p>
+
+        <p>When working with clients, use the <strong>Environmental Audit Tool</strong>. Ask the parent to take five photos: the countertop, the eye-level pantry shelf, the refrigerator's middle shelf, the dining area, and the "snack drawer." Analyze these photos together to identify "Friction Points"—areas where the environment is working against the family's health goals.</p>
+
+        <div class="check-understanding">
+            <p class="box-label">Check Your Understanding</p>
+            <div class="question-item">
+                <span class="question-number">1</span>
+                <p class="question-text">How does "Visual Salience" specifically impact a child's snack choices according to the Food Scape analysis?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-text">Visual Salience refers to the prominence of a food item. Children (and adults) are significantly more likely to consume foods that are visible and easily accessible. By keeping fruit visible and hiding ultra-processed snacks in opaque containers, we reduce the dopamine-driven urge to snack mindlessly.</div>
+            </div>
+
+            <div class="question-item">
+                <span class="question-number">2</span>
+                <p class="question-text">What is the primary physiological reason screen-time during meals leads to overeating?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-text">Screens cause "distracted eating," which interrupts the brain's satiety signaling and the cephalic phase of digestion. This prevents the brain from accurately "registering" the calories consumed, leading to both immediate overconsumption and increased hunger later in the day.</div>
+            </div>
+        </div>
+
+        <div class="takeaways-box">
+            <p class="box-label">Key Takeaways</p>
+            <ul>
+                <li><strong>Architecture over Willpower:</strong> Design the home so the healthy choice is the easiest choice.</li>
+                <li><strong>Visual Cues:</strong> If it's on the counter, it's in the stomach. Keep the "G.R.O.W." foods visible.</li>
+                <li><strong>The Satiety Gap:</strong> Screen-free zones are mandatory to allow the gut-brain axis to communicate fullness.</li>
+                <li><strong>Autonomy Zones:</strong> Use "Yes" zones in the pantry to foster independence without nutritional compromise.</li>
+                <li><strong>De-Branding:</strong> Decant foods to remove the influence of character-driven marketing within the home.</li>
+            </ul>
+        </div>
+
+        <div class="references-box">
+            <h4>References & Further Reading</h4>
+            <ul>
+                <li>Wansink, B., et al. (2015). "Slim by Design: Kitchen Countertop Correlates of BMI." <em>Health Education & Behavior.</em></li>
+                <li>Robinson, E., et al. (2013). "Eating attentively: A systematic review and meta-analysis of the effect of food intake memory and awareness on eating." <em>American Journal of Clinical Nutrition.</em></li>
+                <li>Robinson, T. N., et al. (2007). "Effects of Fast Food Branding on Young Children's Taste Preferences." <em>Archives of Pediatrics & Adolescent Medicine.</em></li>
+                <li>Van der Horst, K., et al. (2013). "A sticky plate: The effect of plate color and size on children's vegetable intake." <em>Appetite.</em></li>
+                <li>Herman, C. P., & Polivy, J. (2008). "External Cues and Food Intake: A Review and Critique." <em>Eating Behaviors.</em></li>
+                <li>Coon, J. T., et al. (2001). "Relationships between use of television during meals and children's food consumption patterns." <em>Pediatrics.</em></li>
+            </ul>
+        </div>
+
+        <footer class="lesson-footer">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="footer-logo">
+            <p class="brand">AccrediPro Academy: Pediatric Nutrition Certification</p>
+            <p class="copyright">&copy; 2024 AccrediPro Academy. All rights reserved. The G.R.O.W. Kids Nutrition Method™ is a proprietary framework.</p>
+        </footer>
+    </div>
+</body>
+
+</html>

@@ -1,0 +1,632 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lesson 29.6: Biometric Data Synthesis: Predictive Results Tracking</title>
+    <style>
+        /* Base & Reset */
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Georgia, 'Times New Roman', serif;
+            line-height: 1.8;
+            color: #2d2d2d;
+            background: #f8f6f3;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Main Container */
+        .lesson-container {
+            max-width: 860px;
+            margin: 0 auto;
+            padding: 40px 30px;
+            background: #ffffff;
+            min-height: 100vh;
+            box-shadow: 0 0 60px rgba(0, 0, 0, 0.08);
+        }
+
+        /* Brand Header */
+        .brand-header {
+            text-align: center;
+            padding-bottom: 30px;
+            margin-bottom: 35px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .brand-logo {
+            max-width: 220px;
+            height: auto;
+            margin-bottom: 5px;
+        }
+
+        /* Module Header - BLUE/GOLD theme for Master Integration */
+        .module-header {
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+            padding: 35px 35px 30px;
+            border-radius: 16px;
+            margin-bottom: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .module-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+            transform: translate(100px, -100px);
+        }
+
+        .module-header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, #B8860B, #D4A84B, #B8860B);
+        }
+
+        .module-label {
+            margin: 0;
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.75);
+            text-transform: uppercase;
+            letter-spacing: 2.5px;
+            font-weight: 500;
+        }
+
+        .lesson-title {
+            margin: 10px 0 0 0;
+            font-size: 28px;
+            color: #ffffff;
+            font-weight: 700;
+            line-height: 1.3;
+            position: relative;
+        }
+
+        .lesson-meta {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+            padding-top: 18px;
+            border-top: 1px solid rgba(255, 255, 255, 0.15);
+            flex-wrap: wrap;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.85);
+            background: rgba(255, 255, 255, 0.1);
+            padding: 5px 12px;
+            border-radius: 4px;
+        }
+
+        /* Table of Contents */
+        .toc-box {
+            background: linear-gradient(135deg, #fafafa 0%, #f5f5f5 100%);
+            border-radius: 14px;
+            padding: 24px 28px;
+            margin-bottom: 35px;
+            border: 1px solid #e8e8e8;
+        }
+
+        .toc-box .box-label {
+            font-weight: 600;
+            color: #1e3a8a;
+            margin: 0 0 18px 0;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .toc-list {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px 24px;
+        }
+
+        .toc-list a {
+            display: flex;
+            align-items: center;
+            padding: 8px 12px;
+            color: #555;
+            text-decoration: none;
+            font-size: 14px;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+        }
+
+        .toc-list a:hover {
+            background: white;
+            color: #1e3a8a;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+        }
+
+        .toc-list .section-num {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 26px;
+            height: 26px;
+            background: #1e3a8a;
+            color: white;
+            font-weight: 600;
+            font-size: 11px;
+            border-radius: 6px;
+            margin-right: 12px;
+            flex-shrink: 0;
+        }
+
+        /* Learning Objectives */
+        .objectives-box {
+            background: #eff6ff;
+            border: 2px solid #3b82f6;
+            border-radius: 14px;
+            padding: 30px 35px;
+            margin-bottom: 40px;
+        }
+
+        .objectives-box .box-label {
+            font-weight: 600;
+            color: #1e3a8a;
+            margin: 0 0 18px 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .objectives-box .box-label::before {
+            content: '🎯';
+            font-size: 18px;
+        }
+
+        .objectives-box ul {
+            margin: 0;
+            padding-left: 22px;
+        }
+
+        .objectives-box li {
+            margin-bottom: 14px;
+            font-size: 16px;
+            line-height: 1.7;
+        }
+
+        /* Section Headings */
+        h2 {
+            font-size: 24px;
+            color: #1e3a8a;
+            margin: 50px 0 20px 0;
+            font-weight: 600;
+            position: relative;
+            padding-bottom: 12px;
+        }
+
+        h2::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 60px;
+            height: 3px;
+            background: #B8860B;
+        }
+
+        /* Paragraphs */
+        p {
+            font-size: 17px;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        /* Highlights */
+        .highlight {
+            background: linear-gradient(180deg, transparent 60%, #FFF59D 60%);
+            padding: 0 4px;
+            font-weight: 500;
+        }
+
+        /* Statistics Box */
+        .stats-box {
+            background: linear-gradient(135deg, #1e3a8a 0%, #1e40af 100%);
+            padding: 40px;
+            border-radius: 16px;
+            margin: 35px 0;
+            position: relative;
+            overflow: hidden;
+            color: white;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 25px;
+            position: relative;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 38px;
+            font-weight: 700;
+            color: #D4A84B;
+            line-height: 1;
+            margin-bottom: 8px;
+        }
+
+        .stat-label {
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.85);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* Case Study Box */
+        .case-study {
+            background: linear-gradient(135deg, #f8f9fb 0%, #f0f2f5 100%);
+            border-radius: 16px;
+            padding: 0;
+            margin: 40px 0;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+            border: 1px solid #e5e5e5;
+        }
+
+        .case-study-header {
+            background: linear-gradient(135deg, #1e3a8a 0%, #1e40af 100%);
+            padding: 20px 30px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .case-study-header .box-label {
+            font-weight: 600;
+            color: #ffffff;
+            margin: 0;
+            font-size: 16px;
+        }
+
+        .case-study-content {
+            padding: 28px 30px;
+        }
+
+        .patient-profile {
+            display: flex;
+            align-items: center;
+            gap: 18px;
+            padding: 18px 22px;
+            background: white;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            border: 1px solid #e5e5e5;
+        }
+
+        /* Tables */
+        .data-table-container {
+            margin: 30px 0;
+            overflow-x: auto;
+            border-radius: 12px;
+            border: 1px solid #e5e5e5;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 15px;
+            text-align: left;
+        }
+
+        th {
+            background: #f1f5f9;
+            color: #1e3a8a;
+            font-weight: 600;
+            padding: 15px;
+            border-bottom: 2px solid #e2e8f0;
+        }
+
+        td {
+            padding: 15px;
+            border-bottom: 1px solid #f1f5f9;
+            color: #444;
+        }
+
+        /* Check Understanding */
+        .check-understanding {
+            background: #fffaf0;
+            border: 2px solid #D4A84B;
+            border-radius: 16px;
+            padding: 32px;
+            margin: 45px 0;
+        }
+
+        .question-item {
+            background: white;
+            border-radius: 12px;
+            padding: 22px 24px;
+            margin-bottom: 16px;
+            border: 1px solid #e8e4dc;
+        }
+
+        .reveal-btn {
+            background: #1e3a8a;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+
+        .answer-text {
+            display: none;
+            padding: 15px;
+            background: #f0fdf4;
+            border-radius: 8px;
+            margin-top: 10px;
+            color: #166534;
+        }
+
+        /* Takeaways */
+        .takeaways-box {
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            padding: 30px;
+            border-radius: 14px;
+            margin: 40px 0;
+        }
+
+        .takeaways-box .box-label {
+            color: #1e3a8a;
+            font-weight: 700;
+            text-transform: uppercase;
+            font-size: 13px;
+            letter-spacing: 1px;
+            margin-bottom: 15px;
+            display: block;
+        }
+
+        /* References */
+        .references-box {
+            background: #f1f5f9;
+            padding: 25px;
+            border-radius: 12px;
+            font-size: 14px;
+            color: #475569;
+            margin-top: 50px;
+        }
+
+        .references-box h4 {
+            margin-top: 0;
+            color: #1e3a8a;
+        }
+
+        .lesson-footer {
+            text-align: center;
+            padding: 40px 0;
+            border-top: 1px solid #eee;
+            margin-top: 50px;
+        }
+
+        .footer-logo {
+            max-width: 140px;
+            opacity: 0.8;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="lesson-container">
+        <div class="brand-header">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="brand-logo">
+        </div>
+
+        <header class="module-header">
+            <p class="module-label">Module 29: L3: Master Integration</p>
+            <h1 class="lesson-title">Lesson 6: Biometric Data Synthesis: Predictive Results Tracking</h1>
+            <div class="lesson-meta">
+                <span class="meta-item">⏱️ 35 min read</span>
+                <span class="meta-item">🎓 Level 3 Mastery</span>
+            </div>
+        </header>
+
+        <div class="toc-box">
+            <p class="box-label">In This Lesson</p>
+            <ul class="toc-list">
+                <li><a href="#paradigm-shift"><span class="section-num">1</span>The Predictive Paradigm</a></li>
+                <li><a href="#wearable-synergy"><span class="section-num">2</span>Wearable Synergy: HRV & CGM</a></li>
+                <li><a href="#biomarker-deep-dive"><span class="section-num">3</span>Integrating Blood Biomarkers</a></li>
+                <li><a href="#biofeedback-loop"><span class="section-num">4</span>The Bio-Feedback Loop</a></li>
+                <li><a href="#ai-visualization"><span class="section-num">5</span>AI & Data Visualization</a></li>
+                <li><a href="#ethics-privacy"><span class="section-num">6</span>Ethics in Monitoring</a></li>
+            </ul>
+        </div>
+
+        <div class="objectives-box">
+            <p class="box-label">Learning Objectives</p>
+            <ul>
+                <li>Transition from retrospective "outcome" tracking to predictive "readiness" modeling.</li>
+                <li>Synthesize Heart Rate Variability (HRV), Continuous Glucose Monitoring (CGM), and Sleep staging into a unified performance dashboard.</li>
+                <li>Integrate critical blood biomarkers (Iron, Vitamin D, Cortisol) into the Results Tracking (R) pillar of the PERFORM™ Method.</li>
+                <li>Implement real-time fueling adjustments based on autonomic and metabolic bio-feedback.</li>
+                <li>Navigate the ethical landscape of high-level biometric surveillance and data privacy.</li>
+            </ul>
+        </div>
+
+        <h2 id="paradigm-shift">1. Beyond Retrospective Tracking: The Predictive Paradigm</h2>
+        <p>In traditional sports nutrition, the <span class="highlight">Results Tracking (R)</span> pillar has often been retrospective. We looked at what the athlete ate, how they performed, and how their body composition changed over weeks or months. While valuable, this "rear-view mirror" approach fails to account for the acute, daily fluctuations in physiological readiness that dictate whether an athlete should push their limits or prioritize recovery.</p>
+
+        <p>Predictive Results Tracking moves the needle from "What happened?" to "What is likely to happen today?" By synthesizing multi-modal biometric data, we can forecast performance windows and injury risks. A 2022 study published in the <em>Journal of Sports Sciences</em> demonstrated that combining subjective wellness scores with objective biometrics could predict overreaching symptoms with 84% accuracy, significantly higher than using either metric in isolation.</p>
+
+        <div class="stats-box">
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <div class="stat-number">84%</div>
+                    <div class="stat-label">Prediction Accuracy</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">3.2x</div>
+                    <div class="stat-label">Injury Risk Reduction</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">15%</div>
+                    <div class="stat-label">Performance Ceiling Increase</div>
+                </div>
+            </div>
+        </div>
+
+        <h2 id="wearable-synergy">2. Wearable Synergy: HRV, CGM, and Sleep</h2>
+        <p>The modern sports nutrition coach must act as a data scientist, interpreting the intersection of the autonomic nervous system and metabolic health. We focus on three primary streams:</p>
+
+        <ul>
+            <li><strong>Heart Rate Variability (HRV):</strong> A proxy for Autonomic Nervous System (ANS) balance. High HRV indicates parasympathetic dominance (readiness), while a suppressed HRV suggests sympathetic over-drive (stress).</li>
+            <li><strong>Continuous Glucose Monitoring (CGM):</strong> Provides real-time insights into <span class="highlight">glycemic variability</span>. For an athlete, CGM isn't just about diabetes prevention; it's about identifying "fueling gaps" during training and nocturnal hypoglycemic events that impair recovery.</li>
+            <li><strong>Sleep Staging:</strong> Moving beyond "hours slept" to analyzing REM and Deep Sleep ratios. Deep sleep is the primary window for growth hormone release and tissue repair (the 'R' in PERFORM™).</li>
+        </ul>
+
+        <div class="data-table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Biometric</th>
+                        <th>Nutrition Intervention (High/Optimal)</th>
+                        <th>Nutrition Intervention (Low/Suppressed)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>HRV</strong></td>
+                        <td>Maintain current macro-periodization; focus on performance fueling.</td>
+                        <td>Increase anti-inflammatory functional foods; increase carbohydrate intake to lower cortisol.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>CGM (Stability)</strong></td>
+                        <td>Metabolic flexibility achieved; continue current "E" strategy.</td>
+                        <td>Refine pre-workout timing; adjust fiber/protein pairing to flatten spikes.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Deep Sleep</strong></td>
+                        <td>Optimal repair; maintain current protein distribution.</td>
+                        <td>Assess evening caffeine; consider tart cherry juice or magnesium bisglycinate.</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <h2 id="biomarker-deep-dive">3. Integrating Blood Biomarker Analysis</h2>
+        <p>While wearables provide "live" data, blood biomarkers provide the "structural" data. In the PERFORM™ Method, we integrate quarterly blood panels to ensure the internal machinery is capable of handling the external load. Three non-negotiable markers for the elite athlete include:</p>
+
+        <ol>
+            <li><strong>Iron Status (Ferritin & Hemoglobin):</strong> Critical for the <span class="highlight">Oxidative Phosphorylation (E3)</span> system. Even sub-clinical iron deficiency without anemia (IDNA) can reduce VO2 max and training efficiency.</li>
+            <li><strong>Vitamin D (25(OH)D):</strong> Directly linked to muscle force production and immune function. Levels below 75 nmol/L are associated with increased risk of stress fractures and respiratory infections.</li>
+            <li><strong>Cortisol:Testosterone Ratio:</strong> The ultimate marker of anabolic/catabolic balance. A rising ratio over a mesocycle indicates that the "P" (Periodization) strategy is outstripping the "R" (Recovery) capacity.</li>
+        </ol>
+
+        <div class="case-study">
+            <div class="case-study-header">
+                <div class="box-label">Case Study: The "Unexplained" Plateau</div>
+            </div>
+            <div class="case-study-content">
+                <div class="patient-profile">
+                    <div class="patient-info">
+                        <h4>Marcus S., 26, Professional Crossfit Athlete</h4>
+                        <p>Presenting: Stagnant strength gains, increased perceived exertion, and poor "Morning Readiness" scores despite 9 hours of sleep.</p>
+                    </div>
+                </div>
+                <p><strong>Intervention:</strong> Synthesis of CGM and Blood Panels. CGM revealed significant nocturnal hypoglycemia (glucose dropping to <60 mg/dL at 3 AM). Blood work showed Ferritin at 22 ng/mL (low-normal) and Vitamin D at 45 nmol/L (deficient).</p>
+                <p><strong>Outcome:</strong> By introducing a slow-digesting casein/carb snack pre-sleep (stabilizing CGM) and aggressive Vitamin D/Iron repletion, Marcus's HRV increased by 18% over 4 weeks, and his back squat 1RM improved by 12kg as his recovery capacity caught up to his training load.</p>
+            </div>
+        </div>
+
+        <h2 id="biofeedback-loop">4. The Bio-Feedback Loop: Real-Time Fueling Adjustments</h2>
+        <p>The "Bio-Feedback Loop" is the practical application of data synthesis. It allows the coach to adjust the <span class="highlight">Energy Systems (E)</span> fueling strategy on a daily microcycle basis. If an athlete wakes up with a "Red" readiness score (Low HRV + Elevated Resting HR), the nutrition plan for that day must shift from "Performance" to "Support."</p>
+
+        <p>In a "Support" state, we prioritize <span class="highlight">Glycemic Stability</span>. High-intensity training is often scaled back, and nutritional focus shifts toward micronutrient density and parasympathetic-supporting nutrients like Omega-3s and polyphenols. Conversely, a "Green" day (High HRV + Stable Glucose) provides a window for high-intensity carbohydrate loading and pushing the limits of the Glycolytic (E2) system.</p>
+
+        <h2 id="ai-visualization">5. Using AI and Data Visualization for Communication</h2>
+        <p>Data is useless if the athlete cannot understand it. Elite practitioners use visualization tools (like TrainingPeaks, Kinduct, or custom PowerBI dashboards) to show the relationship between nutrition and biometrics. AI-driven platforms can now identify patterns that the human eye might miss—for example, a specific correlation between "late-night blue light exposure" and "next-day glucose volatility."</p>
+
+        <p>When communicating with athletes:
+            <ul>
+                <li><strong>Simplify the Output:</strong> Use "Traffic Light" systems (Green/Yellow/Red).</li>
+                <li><strong>Focus on Trends:</strong> Don't obsess over a single night of bad sleep; look at the 7-day rolling average.</li>
+                <li><strong>Correlation vs. Causation:</strong> Help the athlete see how their post-game "cheat meal" affects their recovery HRV for the next 48 hours.</li>
+            </ul>
+        </p>
+
+        <h2 id="ethics-privacy">6. Ethical Considerations and Data Privacy</h2>
+        <p>As we move into predictive modeling, we enter a sensitive area of "biometric surveillance." Practitioners must maintain strict ethical standards:</p>
+        <ul>
+            <li><strong>Data Sovereignty:</strong> The athlete owns their data. They should have the right to revoke access at any time.</li>
+            <li><strong>Psychological Impact:</strong> Constant monitoring can lead to <span class="highlight">orthosomnia</span> (anxiety about sleep data) or disordered eating triggered by CGM spikes. The coach must monitor the athlete's mental relationship with the data.</li>
+            <li><strong>Privacy:</strong> Ensure all data storage is HIPAA/GDPR compliant. In a professional team setting, be clear about what data is shared with the head coach vs. what stays between the athlete and the nutritionist.</li>
+        </ul>
+
+        <div class="check-understanding">
+            <p class="box-label">Check Your Understanding</p>
+            <div class="question-item">
+                <p class="question-text">1. Why is HRV considered a "predictive" rather than "retrospective" metric in the PERFORM™ Method?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-text">HRV measures the current state of the Autonomic Nervous System. A suppressed HRV predicts a reduced capacity to handle stress and a higher risk of injury if high-intensity training is attempted, allowing for proactive adjustments to the training and nutrition plan before a failure occurs.</div>
+            </div>
+
+            <div class="question-item">
+                <p class="question-text">2. An athlete's CGM shows frequent spikes and rapid crashes during a long endurance session. Which Energy System (E) pillar is likely being compromised?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-text">The Oxidative Phosphorylation (E3) system and Metabolic Flexibility. Rapid glucose fluctuations suggest a reliance on exogenous sugar and poor fat oxidation efficiency, leading to "bonking" or premature fatigue.</div>
+            </div>
+        </div>
+
+        <div class="takeaways-box">
+            <p class="box-label">Key Takeaways</p>
+            <ul>
+                <li>Predictive tracking uses real-time biometrics to forecast performance windows and mitigate injury risk.</li>
+                <li>HRV, CGM, and Sleep staging provide a holistic view of the athlete’s autonomic and metabolic "readiness."</li>
+                <li>Blood biomarkers like Ferritin and Vitamin D are essential to ensure the structural capacity for high-performance output.</li>
+                <li>The "Bio-Feedback Loop" allows for daily micro-adjustments to the PERFORM™ nutrition strategy based on physiological data.</li>
+                <li>Ethical data management is paramount to maintain athlete trust and psychological well-being.</li>
+            </ul>
+        </div>
+
+        <div class="references-box">
+            <h4>References & Further Reading</h4>
+            <ul>
+                <li>Plews, D. J., et al. (2013). "Heart rate variability in elite triathletes, is variation in variability the key to effective training? A case comparison." <em>European Journal of Applied Physiology.</em></li>
+                <li>Moore, D. R., et al. (2018). "Biomarkers of Muscle Protein Synthesis and Human Performance." <em>Sports Medicine.</em></li>
+                <li>Ishihara, K., et al. (2020). "Application of Continuous Glucose Monitoring in Sports Nutrition: A Review." <em>Nutrients.</em></li>
+                <li>Heikura, I. A., et al. (2021). "The Interplay Between Nutrition, Training Load, and Biometric Markers in Elite Athletes." <em>Frontiers in Sports and Active Living.</em></li>
+                <li>Seshadri, D. R., et al. (2019). "Wearable Sensors for Monitoring the Internal and External Workload of the Athlete." <em>NPJ Digital Medicine.</em></li>
+                <li>Burke, L. M., et al. (2019). "Guidelines for Blood Biomarker Monitoring in Elite Athletes." <em>International Journal of Sport Nutrition and Exercise Metabolism.</em></li>
+            </ul>
+        </div>
+
+        <footer class="lesson-footer">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="footer-logo">
+            <p class="brand">AccrediPro Academy: Sports Nutrition Coach Certification</p>
+            <p class="copyright">&copy; 2024 AccrediPro Academy. All rights reserved. The PERFORM™ Method is a proprietary framework.</p>
+        </footer>
+    </div>
+</body>
+
+</html>

@@ -1,0 +1,651 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lesson 20.8: Integrating Data: The PERFORM™ Dashboard</title>
+    <style>
+        /* Base & Reset */
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Georgia, 'Times New Roman', serif;
+            line-height: 1.8;
+            color: #2d2d2d;
+            background: #f8f6f3;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Main Container */
+        .lesson-container {
+            max-width: 860px;
+            margin: 0 auto;
+            padding: 40px 30px;
+            background: #ffffff;
+            min-height: 100vh;
+            box-shadow: 0 0 60px rgba(0, 0, 0, 0.08);
+        }
+
+        /* Brand Header */
+        .brand-header {
+            text-align: center;
+            padding-bottom: 30px;
+            margin-bottom: 35px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .brand-logo {
+            max-width: 220px;
+            height: auto;
+            margin-bottom: 5px;
+        }
+
+        /* Module Header - BLUE theme for Assessment/Data */
+        .module-header {
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+            padding: 35px 35px 30px;
+            border-radius: 16px;
+            margin-bottom: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .module-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+            transform: translate(100px, -100px);
+        }
+
+        .module-header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, #B8860B, #D4A84B, #B8860B);
+        }
+
+        .module-label {
+            margin: 0;
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.75);
+            text-transform: uppercase;
+            letter-spacing: 2.5px;
+            font-weight: 500;
+        }
+
+        .lesson-title {
+            margin: 10px 0 0 0;
+            font-size: 28px;
+            color: #ffffff;
+            font-weight: 700;
+            line-height: 1.3;
+            position: relative;
+        }
+
+        .lesson-meta {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+            padding-top: 18px;
+            border-top: 1px solid rgba(255, 255, 255, 0.15);
+            flex-wrap: wrap;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.85);
+            background: rgba(255, 255, 255, 0.1);
+            padding: 5px 12px;
+            border-radius: 4px;
+        }
+
+        /* Table of Contents */
+        .toc-box {
+            background: linear-gradient(135deg, #fafafa 0%, #f5f5f5 100%);
+            border-radius: 14px;
+            padding: 24px 28px;
+            margin-bottom: 35px;
+            border: 1px solid #e8e8e8;
+        }
+
+        .toc-box .box-label {
+            font-weight: 600;
+            color: #1e3a8a;
+            margin: 0 0 18px 0;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .toc-list {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px 24px;
+        }
+
+        .toc-list li {
+            margin: 0;
+        }
+
+        .toc-list a {
+            display: flex;
+            align-items: center;
+            padding: 8px 12px;
+            color: #555;
+            text-decoration: none;
+            font-size: 14px;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+        }
+
+        .toc-list a:hover {
+            background: white;
+            color: #1e3a8a;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+        }
+
+        .toc-list .section-num {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 26px;
+            height: 26px;
+            background: #1e3a8a;
+            color: white;
+            font-weight: 600;
+            font-size: 11px;
+            border-radius: 6px;
+            margin-right: 12px;
+            flex-shrink: 0;
+        }
+
+        /* Learning Objectives */
+        .objectives-box {
+            background: #eff6ff;
+            border: 2px solid #3b82f6;
+            border-radius: 14px;
+            padding: 30px 35px;
+            margin-bottom: 40px;
+        }
+
+        .objectives-box .box-label {
+            font-weight: 600;
+            color: #1e3a8a;
+            margin: 0 0 18px 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .objectives-box .box-label::before {
+            content: '📊';
+            font-size: 18px;
+        }
+
+        .objectives-box ul {
+            margin: 0;
+            padding-left: 22px;
+        }
+
+        .objectives-box li {
+            margin-bottom: 14px;
+            font-size: 16px;
+            line-height: 1.7;
+        }
+
+        /* Section Headings */
+        h2 {
+            font-size: 24px;
+            color: #1e3a8a;
+            margin: 50px 0 20px 0;
+            font-weight: 600;
+            position: relative;
+            padding-bottom: 12px;
+        }
+
+        h2::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 60px;
+            height: 3px;
+            background: #B8860B;
+        }
+
+        h3 {
+            font-size: 20px;
+            color: #2d3748;
+            margin: 35px 0 15px 0;
+            font-weight: 600;
+        }
+
+        /* Paragraphs */
+        p {
+            font-size: 17px;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        /* Highlights */
+        .highlight {
+            background: linear-gradient(180deg, transparent 60%, #FFF59D 60%);
+            padding: 0 4px;
+            font-weight: 500;
+        }
+
+        .stat-highlight {
+            color: #1e3a8a;
+            font-weight: 700;
+        }
+
+        /* Case Study Box */
+        .case-study {
+            background: linear-gradient(135deg, #f8f9fb 0%, #f0f2f5 100%);
+            border-radius: 16px;
+            padding: 0;
+            margin: 40px 0;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+            border: 1px solid #e2e8f0;
+        }
+
+        .case-study-header {
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+            padding: 20px 30px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .case-study-icon {
+            width: 45px;
+            height: 45px;
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+        }
+
+        .case-study-header .box-label {
+            font-weight: 600;
+            color: #ffffff;
+            margin: 0;
+            font-size: 16px;
+        }
+
+        .case-study-content {
+            padding: 28px 30px;
+        }
+
+        /* Data Tables */
+        .data-table-container {
+            overflow-x: auto;
+            margin: 35px 0;
+            border-radius: 12px;
+            border: 1px solid #e2e8f0;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 15px;
+            text-align: left;
+        }
+
+        th {
+            background: #f1f5f9;
+            padding: 15px;
+            font-weight: 600;
+            color: #1e3a8a;
+            border-bottom: 2px solid #e2e8f0;
+        }
+
+        td {
+            padding: 15px;
+            border-bottom: 1px solid #e2e8f0;
+            color: #4a5568;
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        /* Check Understanding */
+        .check-understanding {
+            background: #fdfbf7;
+            border: 2px solid #B8860B;
+            border-radius: 16px;
+            padding: 32px;
+            margin: 45px 0;
+        }
+
+        .question-item {
+            background: white;
+            border-radius: 12px;
+            padding: 22px 24px;
+            margin-bottom: 16px;
+            border: 1px solid #e8e4dc;
+        }
+
+        .reveal-btn {
+            background: #1e3a8a;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+
+        .answer-text {
+            display: none;
+            margin-top: 15px;
+            padding: 15px;
+            background: #f0fdf4;
+            border-radius: 8px;
+            color: #166534;
+            font-size: 15px;
+        }
+
+        /* Takeaways & References */
+        .takeaways-box {
+            background: #f1f5f9;
+            padding: 30px;
+            border-radius: 14px;
+            margin-top: 50px;
+        }
+
+        .references-box {
+            margin-top: 40px;
+            padding-top: 25px;
+            border-top: 1px solid #eee;
+            font-size: 14px;
+            color: #666;
+        }
+
+        .references-box h4 {
+            color: #1e3a8a;
+            margin-bottom: 15px;
+        }
+
+        .references-box ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .references-box li {
+            margin-bottom: 8px;
+        }
+
+        .footer-logo {
+            max-width: 140px;
+            opacity: 0.8;
+            margin-top: 20px;
+        }
+
+        .alert-box.warning {
+            background: #fff7ed;
+            border-left: 5px solid #f97316;
+            padding: 20px;
+            margin: 25px 0;
+            border-radius: 0 12px 12px 0;
+        }
+
+        .alert-label {
+            font-weight: 700;
+            color: #c2410c;
+            display: block;
+            margin-bottom: 5px;
+            text-transform: uppercase;
+            font-size: 12px;
+        }
+
+        @media (max-width: 768px) {
+            .toc-list {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="lesson-container">
+        <div class="brand-header">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="brand-logo">
+        </div>
+
+        <header class="module-header">
+            <p class="module-label">Module 20: Advanced Assessment Tools</p>
+            <h1 class="lesson-title">Lesson 8: Integrating Data: The PERFORM™ Dashboard</h1>
+            <div class="lesson-meta">
+                <span class="meta-item">35 min read</span>
+                <span class="meta-item">Lesson 8 of 8</span>
+            </div>
+        </header>
+
+        <div class="toc-box">
+            <p class="box-label">In This Lesson</p>
+            <ul class="toc-list">
+                <li><a href="#section1"><span class="section-num">1</span>The Synthesis of the Athlete Profile</a></li>
+                <li><a href="#section2"><span class="section-num">2</span>Setting Results Tracking (R) KPIs</a></li>
+                <li><a href="#section3"><span class="section-num">3</span>Red Flag Thresholds & Intervention</a></li>
+                <li><a href="#section4"><span class="section-num">4</span>Visualizing Trends vs. Noise</a></li>
+                <li><a href="#section5"><span class="section-num">5</span>The FEEDBACK Loop to Periodization</a></li>
+            </ul>
+        </div>
+
+        <div class="objectives-box">
+            <p class="box-label">Learning Objectives</p>
+            <ul>
+                <li>Synthesize anthropometric, biochemical, and biofeedback data into a cohesive Athlete Profile.</li>
+                <li>Establish statistically significant Key Performance Indicators (KPIs) for the 'Results Tracking' (R) phase.</li>
+                <li>Define specific 'Red Flag' thresholds for immediate nutritional and load adjustments.</li>
+                <li>Apply data visualization techniques to communicate complex trends to athletes and coaching staff.</li>
+                <li>Utilize integrated data to drive the next iteration of the 'Periodized Nutrition' (P) plan.</li>
+            </ul>
+        </div>
+
+        <h2 id="section1">1. The Synthesis of the Athlete Profile</h2>
+        <p>In the previous lessons of this module, we dissected individual assessment domains: from sweat sodium concentrations to heart rate variability (HRV) and gastrointestinal (GI) mapping. However, data in isolation is merely noise. The <span class="highlight">PERFORM™ Dashboard</span> is the practitioner’s "Grand Synthesis"—the point where disparate data points converge to reveal the athlete’s current physiological reality.</p>
+
+        <p>A 2022 systematic review of high-performance monitoring systems (n=54 organizations) found that <span class="stat-highlight">82% of practitioners</span> cited "data integration" as their primary challenge, yet those who successfully integrated biochemical and subjective data saw a <span class="stat-highlight">14% improvement</span> in intervention adherence. The PERFORM™ method solves this by creating a unified <strong>Athlete Profile</strong> that balances three distinct layers:</p>
+
+        <ul>
+            <li><strong>The Hard Metrics (Biochemical/Physical):</strong> Blood biomarkers, body composition, and sweat rates.</li>
+            <li><strong>The Dynamic Metrics (Biofeedback):</strong> HRV, sleep architecture, and morning readiness scores.</li>
+            <li><strong>The Subjective Metrics (Psychological/Behavioral):</strong> RPE (Rate of Perceived Exertion), GI comfort, and dietary compliance.</li>
+        </ul>
+
+        <h2 id="section2">2. Setting Results Tracking (R) KPIs</h2>
+        <p>The 'R' in the PERFORM™ method—<strong>Results Tracking</strong>—requires the identification of Key Performance Indicators (KPIs) that are both sensitive to nutritional changes and relevant to the athlete's sport-specific goals. We differentiate between <em>Leading Indicators</em> (predictive of future success) and <em>Lagging Indicators</em> (measuring past outcomes).</p>
+
+        <div class="data-table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Assessment Domain</th>
+                        <th>Leading Indicator (KPI)</th>
+                        <th>Lagging Indicator (Outcome)</th>
+                        <th>Target Precision</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Metabolic/Energy</td>
+                        <td>Resting Metabolic Rate (RMR)</td>
+                        <td>Fat-Free Mass Index (FFMI)</td>
+                        <td>+/- 5% Variance</td>
+                    </tr>
+                    <tr>
+                        <td>Hydration</td>
+                        <td>Morning Urine Specific Gravity (USG)</td>
+                        <td>Sweat Loss per Hour (L/h)</td>
+                        <td>USG < 1.020</td>
+                    </tr>
+                    <tr>
+                        <td>Recovery</td>
+                        <td>HRV (RMSSD) 7-Day Baseline</td>
+                        <td>Serum Creatine Kinase (CK)</td>
+                        <td>Coefficient of Var < 10%</td>
+                    </tr>
+                    <tr>
+                        <td>Nutritional Status</td>
+                        <td>Serum Ferritin / Vitamin D</td>
+                        <td>Power Output at Lactate Threshold</td>
+                        <td>Clinical Optimal Range</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <p>When setting these KPIs, the practitioner must account for the <span class="highlight">Smallest Worthwhile Change (SWC)</span>. For an elite sprinter, a 1% change in body fat may be significant, whereas for a recreational endurance athlete, the "noise" in BIA (Bioelectrical Impedance Analysis) measurements might exceed that 1%, rendering the data point useless unless integrated with skinfold measurements.</p>
+
+        <h2 id="section3">3. Red Flag Thresholds & Intervention</h2>
+        <p>The PERFORM™ Dashboard is not just a tracking tool; it is a <span class="highlight">Decision Support System</span>. We must establish "Red Flag" thresholds—pre-defined values that trigger an immediate pivot in the nutrition or training plan. A 2023 study published in the <em>Journal of Sports Sciences</em> demonstrated that athletes whose coaches used automated red-flag alerts for sleep and HRV had <span class="stat-highlight">28% fewer non-functional overreaching (NFO) episodes</span>.</p>
+
+        <div class="alert-box warning">
+            <span class="alert-label">Critical Red Flag Thresholds</span>
+            <p><strong>Rapid Weight Loss:</strong> >3% body mass reduction within 24 hours (Hydration Crisis).</p>
+            <p><strong>HRV Suppression:</strong> A drop of >2 Standard Deviations (SD) from the 7-day rolling average (Sympathetic Overdrive).</p>
+            <p><strong>Biomarker Shift:</strong> Ferritin dropping below 30 ng/mL in female athletes (Iron Deficiency risk).</p>
+            <p><strong>GI Distress:</strong> >4 consecutive days of "Type 6 or 7" on the Bristol Stool Scale during training (Malabsorption risk).</p>
+        </div>
+
+        <div class="case-study">
+            <div class="case-study-header">
+                <div class="case-study-icon">👤</div>
+                <div>
+                    <p class="box-label">Case Study 1: The "Overtrained" Marathoner</p>
+                    <p style="margin:0; font-size:12px; color:rgba(255,255,255,0.8)">Integration of HRV, GI, and Energy Intake</p>
+                </div>
+            </div>
+            <div class="case-study-content">
+                <p><strong>Client:</strong> Sarah, 34, Elite Amateur Marathoner.
+                <br><strong>Presenting Symptoms:</strong> Stalled race times, chronic fatigue, and "heavy legs" despite high carbohydrate intake.</p>
+                <p><strong>The Integrated Data (Dashboard View):</strong>
+                <ul>
+                    <li><strong>HRV:</strong> 12% drop below baseline for 10 days.</li>
+                    <li><strong>GI Assessment:</strong> High frequency of upper-GI distress during long runs.</li>
+                    <li><strong>Biomarkers:</strong> Cortisol:DHEA ratio elevated; Ferritin at 22 ng/mL.</li>
+                    <li><strong>Dietary Analysis:</strong> Meeting calorie goals, but 70% of carbs coming from high-fructose processed gels.</li>
+                </ul></p>
+                <p><strong>Intervention:</strong> The dashboard revealed that Sarah wasn't "undereating" calories, but her GI distress (Functional Food 'F' failure) was causing malabsorption and systemic inflammation, reflected in her HRV. We pivoted the 'P' (Periodization) to a low-intensity microcycle and shifted to glucose-polymer based fueling.</p>
+                <p><strong>Outcome:</strong> HRV returned to baseline within 14 days; Ferritin stabilized at 45 ng/mL after 8 weeks; 5km PR achieved in the following mesocycle.</p>
+            </div>
+        </div>
+
+        <h2 id="section4">4. Visualizing Trends vs. Noise</h2>
+        <p>Athletes are often overwhelmed by raw data. The practitioner’s role is to translate <span class="highlight">signal from noise</span>. Effective visualization uses "Z-scores" or "Traffic Light Systems" to show how far a current metric deviates from the athlete's own historical average, rather than just comparing them to "population norms."</p>
+        
+        <p>A 2021 meta-analysis on athlete feedback (n=1,200) found that <span class="stat-highlight">visual dashboards</span> (bar charts, radar plots) increased athlete "buy-in" and dietary protocol adherence by <span class="stat-highlight">41%</span> compared to verbal or text-based reporting. The PERFORM™ Dashboard utilizes the <strong>Radar Plot</strong> to visualize the balance across the 7 pillars: Periodization, Energy, Recovery, Functional Foods, Hydration, Results, and Mental Edge.</p>
+
+        <h2 id="section5">5. The FEEDBACK Loop to Periodization</h2>
+        <p>The ultimate purpose of the PERFORM™ Dashboard is to inform the next phase of the <strong>Periodized Nutrition (P)</strong> plan. This creates a closed-loop system where assessment data dictates the nutritional volume and intensity.</p>
+
+        <h3>The "Pivot Logic" Table</h3>
+        <div class="data-table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>If Dashboard Shows...</th>
+                        <th>Physiological Interpretation</th>
+                        <th>Nutritional Pivot (The 'P' Adjustment)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Low HRV + High RPE</td>
+                        <td>Inadequate Recovery / CNS Fatigue</td>
+                        <td>Increase Protein (Repair) + Antioxidants (F)</td>
+                    </tr>
+                    <tr>
+                        <td>High USG + Low Power Output</td>
+                        <td>Intracellular Dehydration</td>
+                        <td>Adjust Electrolyte Concentration (O)</td>
+                    </tr>
+                    <tr>
+                        <td>Stable Weight + Rising Body Fat %</td>
+                        <td>Anabolic Resistance / Low MPS</td>
+                        <td>Refine Protein Timing + Leucine Threshold</td>
+                    </tr>
+                    <tr>
+                        <td>Low Fasting Glucose + Mood Swings</td>
+                        <td>Glycogen Depletion / Brain Fuel Deficit</td>
+                        <td>Increase CHO Periodization (E) for Mental Edge</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="check-understanding">
+            <p class="box-label">Check Your Understanding</p>
+            <div class="question-item">
+                <p class="question-text">1. Why is the "Smallest Worthwhile Change" (SWC) critical when analyzing an athlete's body composition data on a dashboard?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-text">The SWC helps the practitioner distinguish between meaningful physiological changes and the "typical error" or "noise" inherent in the measurement tool (e.g., BIA or skinfolds). Without it, a practitioner might make unnecessary changes based on a 0.5% fluctuation that is statistically insignificant.</div>
+            </div>
+
+            <div class="question-item">
+                <p class="question-text">2. An athlete presents with a "Red Flag" HRV drop of 3 Standard Deviations, but their dietary compliance is 100%. What is the most likely next step in the PERFORM™ method?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-text">The practitioner should pivot the 'P' (Periodization) plan to a recovery-focused microcycle. This may include increasing anti-inflammatory functional foods (F), increasing total caloric intake to support the stress response, and communicating with the sport coach to reduce training load.</div>
+            </div>
+        </div>
+
+        <div class="takeaways-box">
+            <p class="box-label">Key Takeaways</p>
+            <ul>
+                <li><strong>Integration is Mastery:</strong> The PERFORM™ Dashboard transforms isolated data points into a cohesive narrative of athlete readiness.</li>
+                <li><strong>KPIs Must Be Specific:</strong> Use leading indicators (like HRV or USG) to predict and prevent performance decrements before lagging indicators (like race times) suffer.</li>
+                <li><strong>Automate Red Flags:</strong> Establish thresholds for weight loss, HRV suppression, and GI distress to trigger immediate nutritional pivots.</li>
+                <li><strong>The Closed-Loop System:</strong> Assessment data is the "brain" that directs the "muscles" of the Periodized Nutrition plan.</li>
+                <li><strong>Visual Communication:</strong> Use radar plots and Z-scores to increase athlete buy-in and clarify the "why" behind nutritional changes.</li>
+            </ul>
+        </div>
+
+        <div class="references-box">
+            <h4>References & Further Reading</h4>
+            <ul>
+                <li>Heishman et al. (2022). "Integrating Monitoring Tools in High-Performance Sport: A Systematic Review." <em>Journal of Strength and Conditioning Research.</em></li>
+                <li>Thornton et al. (2021). "The Role of Data Visualization in Athlete Monitoring: Increasing Adherence and Performance." <em>International Journal of Sports Physiology and Performance.</em></li>
+                <li>Burke et al. (2023). "Nutritional Periodization and the Feedback Loop: A Modern Framework for Elite Athletes." <em>Sports Medicine Journal.</em></li>
+                <li>Costa et al. (2022). "Gastrointestinal Assessment in Endurance Athletes: From Mapping to Intervention." <em>Journal of the International Society of Sports Nutrition.</em></li>
+                <li>Plews et al. (2021). "Heart Rate Variability in Elite Athletes: Defining the Smallest Worthwhile Change." <em>Frontiers in Physiology.</em></li>
+                <li>Mountjoy et al. (2023). "The IOC Consensus Statement on Relative Energy Deficiency in Sport (REDs)." <em>British Journal of Sports Medicine.</em></li>
+            </ul>
+        </div>
+
+        <footer class="lesson-footer">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="footer-logo">
+            <p class="brand">AccrediPro Academy: Sports Nutrition Coach Certification</p>
+            <p class="copyright">&copy; 2024 AccrediPro. All Rights Reserved. The PERFORM Method™ is a proprietary framework.</p>
+        </footer>
+    </div>
+</body>
+
+</html>

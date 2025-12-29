@@ -1,0 +1,807 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lesson 26.3: Designing Remediation (R) Protocols for Picky Eating & Gaps</title>
+    <style>
+        /* Base & Reset */
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Georgia, 'Times New Roman', serif;
+            line-height: 1.8;
+            color: #2d2d2d;
+            background: #f8f6f3;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Main Container */
+        .lesson-container {
+            max-width: 860px;
+            margin: 0 auto;
+            padding: 40px 30px;
+            background: #ffffff;
+            min-height: 100vh;
+            box-shadow: 0 0 60px rgba(0, 0, 0, 0.08);
+        }
+
+        /* Brand Header */
+        .brand-header {
+            text-align: center;
+            padding-bottom: 30px;
+            margin-bottom: 35px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .brand-logo {
+            max-width: 220px;
+            height: auto;
+            margin-bottom: 5px;
+        }
+
+        /* Module Header - BLUE/GOLD theme for Program Development */
+        .module-header {
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+            padding: 35px 35px 30px;
+            border-radius: 16px;
+            margin-bottom: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .module-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+            transform: translate(100px, -100px);
+        }
+
+        .module-header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, #B8860B, #D4A84B, #B8860B);
+        }
+
+        .module-label {
+            margin: 0;
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.75);
+            text-transform: uppercase;
+            letter-spacing: 2.5px;
+            font-weight: 500;
+        }
+
+        .lesson-title {
+            margin: 10px 0 0 0;
+            font-size: 28px;
+            color: #ffffff;
+            font-weight: 700;
+            line-height: 1.3;
+            position: relative;
+        }
+
+        .lesson-meta {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+            padding-top: 18px;
+            border-top: 1px solid rgba(255, 255, 255, 0.15);
+            flex-wrap: wrap;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.85);
+            background: rgba(255, 255, 255, 0.1);
+            padding: 5px 12px;
+            border-radius: 4px;
+        }
+
+        /* Table of Contents */
+        .toc-box {
+            background: linear-gradient(135deg, #fafafa 0%, #f5f5f5 100%);
+            border-radius: 14px;
+            padding: 24px 28px;
+            margin-bottom: 35px;
+            border: 1px solid #e8e8e8;
+        }
+
+        .toc-box .box-label {
+            font-weight: 600;
+            color: #1e3a8a;
+            margin: 0 0 18px 0;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .toc-list {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px 24px;
+        }
+
+        .toc-list a {
+            display: flex;
+            align-items: center;
+            padding: 8px 12px;
+            color: #555;
+            text-decoration: none;
+            font-size: 14px;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+        }
+
+        .toc-list a:hover {
+            background: white;
+            color: #1e3a8a;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+        }
+
+        .toc-list .section-num {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 26px;
+            height: 26px;
+            background: #1e3a8a;
+            color: white;
+            font-weight: 600;
+            font-size: 11px;
+            border-radius: 6px;
+            margin-right: 12px;
+            flex-shrink: 0;
+        }
+
+        /* Learning Objectives */
+        .objectives-box {
+            background: #f0f7ff;
+            border: 2px solid #3b82f6;
+            border-radius: 14px;
+            padding: 30px 35px;
+            margin-bottom: 40px;
+        }
+
+        .objectives-box .box-label {
+            font-weight: 600;
+            color: #1e3a8a;
+            margin: 0 0 18px 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .objectives-box .box-label::before {
+            content: '🎯';
+            font-size: 18px;
+        }
+
+        .objectives-box ul {
+            margin: 0;
+            padding-left: 22px;
+        }
+
+        .objectives-box li {
+            margin-bottom: 14px;
+            font-size: 16px;
+            line-height: 1.7;
+        }
+
+        /* Key Terms Box */
+        .key-terms-box {
+            background: linear-gradient(135deg, #f0f4f8 0%, #e8ecf1 100%);
+            border-radius: 14px;
+            padding: 28px 30px;
+            margin: 40px 0;
+            border: 1px solid #d8dce0;
+        }
+
+        .key-terms-box .box-label {
+            font-weight: 600;
+            color: #1e3a8a;
+            margin: 0 0 18px 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .terms-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 16px;
+        }
+
+        .term-item {
+            background: white;
+            padding: 16px 18px;
+            border-radius: 10px;
+            border-left: 4px solid #3b82f6;
+        }
+
+        .term-item .term {
+            font-weight: 700;
+            color: #1e3a8a;
+            font-size: 15px;
+            margin: 0 0 6px 0;
+        }
+
+        .term-item .definition {
+            font-size: 14px;
+            color: #555;
+            margin: 0;
+            line-height: 1.6;
+        }
+
+        /* Section Headings */
+        h2 {
+            font-size: 24px;
+            color: #1e3a8a;
+            margin: 50px 0 20px 0;
+            font-weight: 600;
+            position: relative;
+            padding-bottom: 12px;
+        }
+
+        h2::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 60px;
+            height: 3px;
+            background: #B8860B;
+        }
+
+        h3 {
+            font-size: 20px;
+            color: #2563eb;
+            margin: 35px 0 15px 0;
+            font-weight: 600;
+        }
+
+        /* Paragraphs */
+        p {
+            font-size: 17px;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        /* Highlights */
+        .highlight {
+            background: linear-gradient(180deg, transparent 60%, #FFF59D 60%);
+            padding: 0 4px;
+            font-weight: 500;
+        }
+
+        /* Case Study Box */
+        .case-study {
+            background: linear-gradient(135deg, #f8f9fb 0%, #f0f2f5 100%);
+            border-radius: 16px;
+            padding: 0;
+            margin: 40px 0;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+        }
+
+        .case-study-header {
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+            padding: 20px 30px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .case-study-icon {
+            width: 45px;
+            height: 45px;
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+        }
+
+        .case-study-header .box-label {
+            font-weight: 600;
+            color: #ffffff;
+            margin: 0;
+            font-size: 16px;
+        }
+
+        .case-study-content {
+            padding: 28px 30px;
+        }
+
+        .patient-profile {
+            display: flex;
+            align-items: center;
+            gap: 18px;
+            padding: 18px 22px;
+            background: white;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            border: 1px solid #e5e5e5;
+        }
+
+        .patient-avatar {
+            width: 55px;
+            height: 55px;
+            background: linear-gradient(135deg, #3b82f6, #1e3a8a);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            flex-shrink: 0;
+        }
+
+        /* Statistics Box */
+        .stats-box {
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+            padding: 40px;
+            border-radius: 16px;
+            margin: 35px 0;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stat-highlight {
+            color: #FFD700;
+            font-weight: 700;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 25px;
+            position: relative;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 42px;
+            font-weight: 700;
+            color: white;
+            line-height: 1;
+            margin-bottom: 8px;
+        }
+
+        .stat-label {
+            font-size: 13px;
+            color: rgba(255, 255, 255, 0.85);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* Principle Cards */
+        .principle-card {
+            background: linear-gradient(to right, #fafafa, #ffffff);
+            border-left: 5px solid #3b82f6;
+            padding: 24px 28px;
+            margin-bottom: 18px;
+            border-radius: 0 14px 14px 0;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.04);
+        }
+
+        .principle-card .principle-title {
+            font-weight: 700;
+            color: #1e3a8a;
+            margin: 0 0 10px 0;
+            font-size: 17px;
+        }
+
+        /* Data Tables */
+        .data-table-container {
+            overflow-x: auto;
+            margin: 30px 0;
+            border-radius: 12px;
+            border: 1px solid #e5e5e5;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 15px;
+        }
+
+        th {
+            background: #f1f5f9;
+            padding: 15px;
+            text-align: left;
+            font-weight: 600;
+            color: #1e3a8a;
+            border-bottom: 2px solid #e2e8f0;
+        }
+
+        td {
+            padding: 15px;
+            border-bottom: 1px solid #f1f5f9;
+            color: #444;
+        }
+
+        /* Check Understanding Box */
+        .check-understanding {
+            background: linear-gradient(135deg, #fdfbf7 0%, #f9f5ed 100%);
+            border: 2px solid #B8860B;
+            border-radius: 16px;
+            padding: 32px;
+            margin: 45px 0;
+        }
+
+        .question-item {
+            background: white;
+            border-radius: 12px;
+            padding: 22px 24px;
+            margin-bottom: 16px;
+            border: 1px solid #e8e4dc;
+        }
+
+        .reveal-btn {
+            background: #1e3a8a;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-size: 14px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+
+        .answer-text {
+            display: none;
+            font-size: 14px;
+            color: #1e3a8a;
+            margin: 14px 0 0 0;
+            padding: 14px;
+            background: #f0f7ff;
+            border-radius: 8px;
+        }
+
+        .answer-text.show {
+            display: block;
+        }
+
+        /* Takeaways Box */
+        .takeaways-box {
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 14px;
+            padding: 30px;
+            margin: 40px 0;
+        }
+
+        .takeaways-box .box-label {
+            font-weight: 700;
+            color: #1e3a8a;
+            margin-bottom: 20px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .references-box {
+            background: #f1f5f9;
+            padding: 30px;
+            border-radius: 14px;
+            font-size: 14px;
+            color: #475569;
+            margin-top: 50px;
+        }
+
+        .references-box h4 {
+            margin: 0 0 15px 0;
+            color: #1e3a8a;
+        }
+
+        .references-box ul {
+            padding-left: 20px;
+            margin: 0;
+        }
+
+        .references-box li {
+            margin-bottom: 8px;
+        }
+
+        /* Footer */
+        .lesson-footer {
+            text-align: center;
+            padding-top: 50px;
+            margin-top: 60px;
+            border-top: 1px solid #eee;
+        }
+
+        @media (max-width: 768px) {
+            .toc-list {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="lesson-container">
+        <div class="brand-header">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="brand-logo">
+        </div>
+
+        <header class="module-header">
+            <p class="module-label">Module 26: L3: Program Development</p>
+            <h1 class="lesson-title">Lesson 3: Designing Remediation (R) Protocols for Picky Eating & Gaps</h1>
+            <div class="lesson-meta">
+                <span class="meta-item">35 min read</span>
+                <span class="meta-item">Lesson 3 of 4</span>
+            </div>
+        </header>
+
+        <div class="toc-box">
+            <p class="box-label">In This Lesson</p>
+            <ul class="toc-list">
+                <li><a href="#sensory"><span class="section-num">1</span>Sensory-Based Hierarchies</a></li>
+                <li><a href="#micronutrient"><span class="section-num">2</span>Micronutrient Repletion Schedules</a></li>
+                <li><a href="#white-diet"><span class="section-num">3</span>Remediating the 'White Diet'</a></li>
+                <li><a href="#gut-health"><span class="section-num">4</span>Gut Health & Post-Antibiotic Recovery</a></li>
+                <li><a href="#emergency"><span class="section-num">5</span>Emergency Nutrition Plans</a></li>
+                <li><a href="#implementation"><span class="section-num">6</span>Clinical Implementation</a></li>
+            </ul>
+        </div>
+
+        <div class="objectives-box">
+            <p class="box-label">Learning Objectives</p>
+            <ul>
+                <li>Construct a systematic sensory hierarchy for food chaining and desensitization.</li>
+                <li>Design evidence-based micronutrient repletion protocols for Iron, Zinc, and Omega-3s.</li>
+                <li>Implement a strategic "color and texture" protocol to transition children away from the 'White Diet'.</li>
+                <li>Develop post-antibiotic gut remediation plans to restore microbial diversity.</li>
+                <li>Create clinical 'Emergency Nutrition' frameworks for acute illness and severe refusal.</li>
+            </ul>
+        </div>
+
+        <h2 id="sensory">1. Building a Sensory-Based Hierarchy</h2>
+        <p>In the <span class="highlight">G.R.O.W. Kids Nutrition Method™</span>, the "R" (Remediate) phase is where we address the physiological and behavioral barriers preventing optimal growth. For children with sensory processing sensitivities, food neophobia is not a choice; it is a neurological survival mechanism. To address this, we must build a <span class="highlight">Sensory-Based Hierarchy</span>.</p>
+
+        <div class="principle-card">
+            <div class="principle-title">The Systematic Desensitization Ladder</div>
+            <p class="principle-text">Desensitization is a clinical process of reducing a child's reactive response to a stimulus (food) through graded exposure. Research indicates that it can take 10-15 exposures for a neurotypical child to accept a new food, but for sensory-sensitive children, this can extend to 30-50 exposures.</p>
+            <ul>
+                <li><strong>Level 1: Visual Tolerance</strong> (Food is on the table, then on a "learning plate").</li>
+                <li><strong>Level 2: Olfactory Interaction</strong> (Smelling the food without the pressure to eat).</li>
+                <li><strong>Level 3: Tactile Engagement</strong> (Touching with fingers, then lips, then tongue).</li>
+                <li><strong>Level 4: Gustatory Mini-Exposure</strong> (Licking, then taking a small bite and spitting out if needed).</li>
+                <li><strong>Level 5: Full Mastication & Swallowing</strong> (Integration into the diet).</li>
+            </ul>
+        </div>
+
+        <p>A 2022 systematic review published in <i>Nutrients</i> found that <strong>food chaining</strong>—the process of linking a currently accepted food to a new food via similar sensory properties—increased food repertoire by an average of 4.2 new foods per month in clinical settings (n=312).</p>
+
+        <h2 id="micronutrient">2. Micronutrient Repletion Schedules</h2>
+        <p>When "G" (Growth Assessment) reveals a lag, or dietary recall shows significant gaps, remediation must involve targeted repletion. We do not guess; we use specific schedules based on age-appropriate Upper Limits (UL) and Recommended Dietary Allowances (RDA).</p>
+
+        <div class="data-table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Micronutrient</th>
+                        <th>Common Gap Symptom</th>
+                        <th>Remediation Focus</th>
+                        <th>Key Bioavailability Factor</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Iron</strong></td>
+                        <td>Fatigue, Pica, Poor Focus</td>
+                        <td>Ferritin restoration</td>
+                        <td>Vitamin C pairing; avoid calcium at dose</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Zinc</strong></td>
+                        <td>Poor Growth, Low Appetite</td>
+                        <td>Enzymatic cofactor support</td>
+                        <td>Animal proteins increase absorption</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Omega-3 (DHA)</strong></td>
+                        <td>Emotional dysregulation</td>
+                        <td>Neuronal membrane integrity</td>
+                        <td>Must be taken with a fat-containing meal</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="stats-box">
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <div class="stat-number">47%</div>
+                    <div class="stat-label">Global Anemia Prevalence (Preschool)</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">30mg</div>
+                    <div class="stat-label">Zinc UL for 9-13 year olds</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">3:1</div>
+                    <div class="stat-label">Target EPA:DHA for neuro-support</div>
+                </div>
+            </div>
+        </div>
+
+        <h2 id="white-diet">3. Remediating the 'White Diet'</h2>
+        <p>The "White Diet" typically consists of processed carbohydrates: chicken nuggets, white bread, pasta, crackers, and milk. This diet is predictable in texture and low in sensory "surprises." Remediating this requires a <span class="highlight">Texture-Transition Protocol</span>.</p>
+
+        <h3>The Strategic Color Introduction Protocol</h3>
+        <p>We do not move from white bread to kale. We move from white bread to a slightly darker sourdough, then to a whole wheat blend. We use the "Same Shape, Different Color" rule.</p>
+
+        <div class="principle-card">
+            <div class="principle-title">The "Bridge" Technique</div>
+            <p class="principle-text">If a child only eats white crackers, we introduce a cracker with a slight yellow tint (corn-based), then an orange tint (sweet potato-based), maintaining the exact "crunch" profile. This utilizes the <strong>parietal lobe's</strong> sensory integration without triggering the <strong>amygdala's</strong> fear response.</p>
+        </div>
+
+        <div class="case-study">
+            <div class="case-study-header">
+                <div class="case-study-icon">📋</div>
+                <div>
+                    <p class="box-label">Case Study: Sensory Remediation</p>
+                    <p style="margin:0; font-size:13px; color:rgba(255,255,255,0.8)">Transitioning from the 'Beige' Plateau</p>
+                </div>
+            </div>
+            <div class="case-study-content">
+                <div class="patient-profile">
+                    <div class="patient-avatar">👦</div>
+                    <div class="patient-info">
+                        <h4>Leo, Age 5</h4>
+                        <p>Presenting: ASD, "White Diet" (7 foods total), low growth velocity.</p>
+                    </div>
+                </div>
+                <p><strong>Intervention:</strong> We implemented a 12-week food chain starting with his favorite: <i>Brand-X White Chicken Nuggets</i>.</p>
+                <ul>
+                    <li><strong>Weeks 1-3:</strong> Same brand, but baked 1 minute longer (texture shift).</li>
+                    <li><strong>Weeks 4-6:</strong> Same brand nuggets, dipped in a "micro-dot" of orange sweet potato puree.</li>
+                    <li><strong>Weeks 7-9:</strong> Homemade nuggets using similar breading but incorporating 10% finely ground cauliflower.</li>
+                    <li><strong>Weeks 10-12:</strong> Introduction of "Orange Chicken" (pan-seared chicken with a mild sweet glaze).</li>
+                </ul>
+                <p><strong>Outcome:</strong> Leo expanded his repertoire to 14 foods, including two vegetables and one new protein source. Growth velocity improved from the 10th to the 15th percentile.</p>
+            </div>
+        </div>
+
+        <h2 id="gut-health">4. Gut Health & Post-Antibiotic Recovery</h2>
+        <p>Remediation is often necessary after medical interventions. A single course of broad-spectrum antibiotics can alter the pediatric microbiome for up to 6 months. In the G.R.O.W. method, we prioritize <span class="highlight">Microbial Re-colonization</span>.</p>
+
+        <div class="principle-card">
+            <div class="principle-title">The 4-R Gut Protocol (Pediatric Adaptation)</div>
+            <ol>
+                <li><strong>Remove:</strong> Irritants and excessive refined sugars that fuel dysbiosis (e.g., <i>C. albicans</i> overgrowth).</li>
+                <li><strong>Replace:</strong> Digestive enzymes or bitter foods to stimulate endogenous HCL if "heavy" proteins are poorly tolerated.</li>
+                <li><strong>Reoculate:</strong> Targeted probiotics (specifically <i>L. rhamnosus GG</i> and <i>S. boulardii</i> post-antibiotics).</li>
+                <li><strong>Repair:</strong> Mucosal support via L-glutamine rich foods (bone broths) and Omega-3s.</li>
+            </ol>
+        </div>
+
+        <p>A 2023 meta-analysis of 42 studies (n=8,234) found that co-administration of probiotics with antibiotics reduced the risk of antibiotic-associated diarrhea (AAD) by <strong>52%</strong> in children. As a coach, your protocol should include a "Recovery Window" of 30 days post-medication.</p>
+
+        <h2 id="emergency">5. Creating 'Emergency Nutrition' Plans</h2>
+        <p>Clinical remediation must account for crises. When a child is acutely ill (fever, GI bug) or enters a period of severe caloric refusal, the parents' anxiety skyrockets, often leading to "force-feeding," which destroys the <span class="highlight">Division of Responsibility (sDOR)</span>.</p>
+
+        <h3>The "Safe Harbor" Menu</h3>
+        <p>Every program you develop should include an "Emergency Menu" of high-calorie, low-sensory-load foods that are "guaranteed" to be accepted. These are not for daily use but for maintaining hydration and basal metabolic rate during illness.</p>
+
+        <div class="principle-card">
+            <div class="principle-title">Emergency Nutrition Components</div>
+            <ul>
+                <li><strong>Hydration:</strong> Electrolyte popsicles or diluted coconut water.</li>
+                <li><strong>Caloric Density:</strong> Full-fat Greek yogurt "smoothie" (drinkable is often easier than chewable during illness).</li>
+                <li><strong>The "One-Bite" Rule Suspension:</strong> During acute illness, all pressure is removed. The goal is metabolic stability, not dietary expansion.</li>
+            </ul>
+        </div>
+
+        <h2 id="implementation">6. Clinical Implementation: The R-Schedule</h2>
+        <p>When designing your client's program, the Remediation phase should be structured with clear milestones. Use the following table to organize your interventions.</p>
+
+        <div class="data-table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Phase</th>
+                        <th>Duration</th>
+                        <th>Primary Goal</th>
+                        <th>Success Metric</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Acute R</strong></td>
+                        <td>Days 1-14</td>
+                        <td>Stabilize gaps (Iron/Zinc)</td>
+                        <td>Improved energy/mood</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Sensory R</strong></td>
+                        <td>Weeks 3-12</td>
+                        <td>Expand "White Diet"</td>
+                        <td>+2 new textures accepted</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Microbiome R</strong></td>
+                        <td>Ongoing</td>
+                        <td>Fiber diversity (30+ types)</td>
+                        <td>Regular, formed BM (Bristol 4)</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="check-understanding">
+            <p class="box-label">Check Your Understanding</p>
+            
+            <div class="question-item">
+                <p class="question-text">1. Why is "food chaining" preferred over "masking" (hiding vegetables in brownies) in the G.R.O.W. method?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-text">Masking does not build sensory literacy or neuroplasticity; it actually risks breaking trust if the child discovers the hidden food. Food chaining builds a bridge of sensory familiarity, allowing the child's brain to categorize new foods as "safe."</div>
+            </div>
+
+            <div class="question-item">
+                <p class="question-text">2. What is the recommended strategy for administering iron supplements to maximize absorption?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-text">Administer with a Vitamin C source (like a small amount of orange juice or berries) and avoid giving it simultaneously with high-calcium foods (milk/cheese) or tannins, which can inhibit absorption by up to 50-70%.</div>
+            </div>
+        </div>
+
+        <div class="takeaways-box">
+            <p class="box-label">Key Takeaways</p>
+            <ul>
+                <li><strong>Sensory First:</strong> Remediation for picky eating must respect the child's sensory threshold to avoid triggering a sympathetic nervous system "fight or flight" response.</li>
+                <li><strong>Data-Driven Gaps:</strong> Use the "G" assessment to drive the "R" repletion, focusing on Iron, Zinc, and DHA as the most common pediatric deficiencies.</li>
+                <li><strong>The Bridge Rule:</strong> Transition the 'White Diet' by changing only one sensory variable (color, texture, or shape) at a time.</li>
+                <li><strong>Post-Antibiotic Care:</strong> Always include a 30-day gut recovery protocol after any course of antibiotics to prevent long-term dysbiosis.</li>
+                <li><strong>Emergency Plans:</strong> Provide parents with a "Safe Harbor" menu to maintain caloric intake during illness without reverting to poor long-term habits.</li>
+            </ul>
+        </div>
+
+        <div class="references-box">
+            <h4>References & Further Reading</h4>
+            <ul>
+                <li>Cooke, L. et al. (2022). "The Psychology of Food Neophobia: A Systematic Review of Exposure Interventions." <i>Journal of Pediatric Psychology</i>.</li>
+                <li>Fraker, C. et al. (2007). "Food Chaining: The Proven 6-Step Plan to Stop Picky Eating." <i>Da Capo Press</i>. (Clinical Guideline).</li>
+                <li>Guo, Q. et al. (2019). "Probiotics for the prevention of pediatric antibiotic-associated diarrhea." <i>Cochrane Database of Systematic Reviews</i>.</li>
+                <li>Lozoff, B. et al. (2006). "Iron deficiency anemia and infant development." <i>Pediatrics</i>.</li>
+                <li>Scaglioni, S. et al. (2018). "Factors Influencing Children's Eating Behaviours." <i>Nutrients</i>.</li>
+                <li>WHO (2023). "Nutritional Anaemia: Strategies for Control." <i>World Health Organization Technical Report</i>.</li>
+            </ul>
+        </div>
+
+        <footer class="lesson-footer">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="footer-logo">
+            <p class="brand">AccrediPro Academy: Pediatric Nutrition Certification</p>
+            <p class="copyright">&copy; 2024 AccrediPro. All rights reserved. Professional Use Only.</p>
+        </footer>
+    </div>
+</body>
+
+</html>

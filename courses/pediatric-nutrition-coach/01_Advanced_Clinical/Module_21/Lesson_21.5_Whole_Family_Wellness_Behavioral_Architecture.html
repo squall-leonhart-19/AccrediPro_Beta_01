@@ -1,0 +1,633 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lesson 21.5: Whole Family Wellness: Behavioral Architecture</title>
+    <style>
+        /* Base & Reset */
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Georgia, 'Times New Roman', serif;
+            line-height: 1.8;
+            color: #2d2d2d;
+            background: #f8f6f3;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Main Container */
+        .lesson-container {
+            max-width: 860px;
+            margin: 0 auto;
+            padding: 40px 30px;
+            background: #ffffff;
+            min-height: 100vh;
+            box-shadow: 0 0 60px rgba(0, 0, 0, 0.08);
+        }
+
+        /* Brand Header */
+        .brand-header {
+            text-align: center;
+            padding-bottom: 30px;
+            margin-bottom: 35px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .brand-logo {
+            max-width: 220px;
+            height: auto;
+            margin-bottom: 5px;
+        }
+
+        /* Module Header - BLUE theme for Treatment Planning */
+        .module-header {
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+            padding: 35px 35px 30px;
+            border-radius: 16px;
+            margin-bottom: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .module-header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, #B8860B, #D4A84B, #B8860B);
+        }
+
+        .module-label {
+            margin: 0;
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.75);
+            text-transform: uppercase;
+            letter-spacing: 2.5px;
+            font-weight: 500;
+        }
+
+        .lesson-title {
+            margin: 10px 0 0 0;
+            font-size: 28px;
+            color: #ffffff;
+            font-weight: 700;
+            line-height: 1.3;
+            position: relative;
+        }
+
+        .lesson-meta {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+            padding-top: 18px;
+            border-top: 1px solid rgba(255, 255, 255, 0.15);
+            flex-wrap: wrap;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.85);
+            background: rgba(255, 255, 255, 0.1);
+            padding: 5px 12px;
+            border-radius: 4px;
+        }
+
+        /* Table of Contents */
+        .toc-box {
+            background: linear-gradient(135deg, #fafafa 0%, #f5f5f5 100%);
+            border-radius: 14px;
+            padding: 24px 28px;
+            margin-bottom: 35px;
+            border: 1px solid #e8e8e8;
+        }
+
+        .toc-box .box-label {
+            font-weight: 600;
+            color: #1e3a8a;
+            margin: 0 0 18px 0;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .toc-list {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px 24px;
+        }
+
+        .toc-list a {
+            display: flex;
+            align-items: center;
+            padding: 8px 12px;
+            color: #555;
+            text-decoration: none;
+            font-size: 14px;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+        }
+
+        .toc-list a:hover {
+            background: white;
+            color: #1e3a8a;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+        }
+
+        .toc-list .section-num {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 26px;
+            height: 26px;
+            background: #1e3a8a;
+            color: white;
+            font-weight: 600;
+            font-size: 11px;
+            border-radius: 6px;
+            margin-right: 12px;
+            flex-shrink: 0;
+        }
+
+        /* Learning Objectives */
+        .objectives-box {
+            background: #f0f7ff;
+            border: 2px solid #3b82f6;
+            border-radius: 14px;
+            padding: 30px 35px;
+            margin-bottom: 40px;
+        }
+
+        .objectives-box .box-label {
+            font-weight: 600;
+            color: #1e3a8a;
+            margin: 0 0 18px 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .objectives-box .box-label::before {
+            content: '🎯';
+            font-size: 18px;
+        }
+
+        .objectives-box ul {
+            margin: 0;
+            padding-left: 22px;
+        }
+
+        .objectives-box li {
+            margin-bottom: 14px;
+            font-size: 16px;
+            line-height: 1.7;
+        }
+
+        /* Section Headings */
+        h2 {
+            font-size: 24px;
+            color: #1e3a8a;
+            margin: 50px 0 20px 0;
+            font-weight: 600;
+            position: relative;
+            padding-bottom: 12px;
+        }
+
+        h2::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 60px;
+            height: 3px;
+            background: #B8860B;
+        }
+
+        h3 {
+            font-size: 20px;
+            color: #3b82f6;
+            margin: 30px 0 15px 0;
+        }
+
+        /* Paragraphs & Lists */
+        p {
+            font-size: 17px;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        .highlight {
+            background: linear-gradient(180deg, transparent 60%, #FFF59D 60%);
+            padding: 0 4px;
+            font-weight: 500;
+        }
+
+        /* Case Study Box */
+        .case-study {
+            background: linear-gradient(135deg, #f8f9fb 0%, #f0f2f5 100%);
+            border-radius: 16px;
+            padding: 0;
+            margin: 40px 0;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+            border: 1px solid #e5e7eb;
+        }
+
+        .case-study-header {
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+            padding: 20px 30px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .case-study-header .box-label {
+            font-weight: 600;
+            color: #ffffff;
+            margin: 0;
+            font-size: 16px;
+        }
+
+        .case-study-content {
+            padding: 28px 30px;
+        }
+
+        .patient-profile {
+            display: flex;
+            align-items: center;
+            gap: 18px;
+            padding: 18px 22px;
+            background: white;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            border: 1px solid #e5e5e5;
+        }
+
+        /* Data Tables */
+        .data-table-container {
+            margin: 35px 0;
+            overflow-x: auto;
+            border-radius: 12px;
+            border: 1px solid #e5e7eb;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 15px;
+            background: white;
+        }
+
+        th {
+            background: #f1f5f9;
+            color: #1e3a8a;
+            font-weight: 600;
+            text-align: left;
+            padding: 15px;
+            border-bottom: 2px solid #e2e8f0;
+        }
+
+        td {
+            padding: 15px;
+            border-bottom: 1px solid #e2e8f0;
+            vertical-align: top;
+        }
+
+        /* Stat Highlight */
+        .stat-highlight {
+            background: #eff6ff;
+            border-left: 4px solid #3b82f6;
+            padding: 20px;
+            margin: 30px 0;
+            font-style: italic;
+            color: #1e40af;
+        }
+
+        /* Check Understanding */
+        .check-understanding {
+            background: #fdfbf7;
+            border: 2px solid #B8860B;
+            border-radius: 16px;
+            padding: 32px;
+            margin: 45px 0;
+        }
+
+        .reveal-btn {
+            background: #1e3a8a;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+
+        .answer-text {
+            display: none;
+            margin-top: 15px;
+            padding: 15px;
+            background: #f0fdf4;
+            border-radius: 8px;
+            border: 1px solid #bbf7d0;
+        }
+
+        .answer-text.show {
+            display: block;
+        }
+
+        /* Takeaways & References */
+        .takeaways-box {
+            background: #f8fafc;
+            padding: 25px;
+            border-radius: 12px;
+            border: 1px solid #e2e8f0;
+            margin-top: 40px;
+        }
+
+        .references-box {
+            margin-top: 40px;
+            padding-top: 25px;
+            border-top: 1px solid #eee;
+            font-size: 14px;
+            color: #666;
+        }
+
+        .reference-list {
+            list-style: none;
+            padding: 0;
+        }
+
+        .reference-list li {
+            margin-bottom: 10px;
+        }
+
+        /* Footer */
+        .lesson-footer {
+            text-align: center;
+            padding-top: 50px;
+            margin-top: 60px;
+            border-top: 1px solid #eee;
+        }
+
+        @media (max-width: 768px) {
+            .toc-list { grid-template-columns: 1fr; }
+            .lesson-container { padding: 20px 15px; }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="lesson-container">
+        <div class="brand-header">
+            <img src="https://accredipro.com/wp-content/uploads/2023/05/AccrediPro-Logo-Horizontal-Gold-Black.png" alt="AccrediPro Academy" class="brand-logo">
+        </div>
+
+        <header class="module-header">
+            <p class="module-label">Module 21: L2 Treatment Planning</p>
+            <h1 class="lesson-title">Lesson 5: Whole Family Wellness: Behavioral Architecture</h1>
+            <div class="lesson-meta">
+                <span class="meta-item">35 min read</span>
+                <span class="meta-item">G.R.O.W. Method™: Pillar W</span>
+            </div>
+        </header>
+
+        <div class="toc-box">
+            <p class="box-label">In This Lesson</p>
+            <ul class="toc-list">
+                <li><a href="#section1"><span class="section-num">1</span>The Parental Pressure Cycle</a></li>
+                <li><a href="#section2"><span class="section-num">2</span>The Family Feeding Agreement (FFA)</a></li>
+                <li><a href="#section3"><span class="section-num">3</span>Healing Second-Hand Dieting</a></li>
+                <li><a href="#section4"><span class="section-num">4</span>Socioeconomic & Cultural Scaffolding</a></li>
+                <li><a href="#section5"><span class="section-num">5</span>Bridge Foods & Exposure Therapy</a></li>
+                <li><a href="#section6"><span class="section-num">6</span>Clinical Implementation</a></li>
+            </ul>
+        </div>
+
+        <div class="objectives-box">
+            <p class="box-label">Learning Objectives</p>
+            <ul>
+                <li>Deconstruct the neurological and behavioral mechanics of the 'Parental Pressure' cycle in pediatric nutrition.</li>
+                <li>Synthesize a 'Family Feeding Agreement' (FFA) using advanced sDOR modifications for complex households.</li>
+                <li>Identify and mitigate the 'Second-Hand Dieting' effect to preserve the child's innate hunger-satiety cues.</li>
+                <li>Adapt evidence-based feeding protocols for diverse socioeconomic statuses and cultural culinary traditions.</li>
+                <li>Utilize 'Bridge Foods' and systematic exposure therapy within the behavioral architecture of the home.</li>
+            </ul>
+        </div>
+
+        <h2 id="section1">1. The Parental Pressure Cycle: A Neurological Barrier</h2>
+        <p>In the previous lessons of Module 21, we focused on the clinical precision of <span class="highlight">Remediating Deficiencies</span> and <span class="highlight">Optimizing Development</span>. However, even the most scientifically perfect nutrition plan will fail if the delivery mechanism—the family meal—is a site of psychological warfare. The 'Parental Pressure' cycle is a self-perpetuating feedback loop that active practitioners must identify and dismantle.</p>
+
+        <div class="stat-highlight">
+            A 2022 longitudinal study involving 1,240 parent-child dyads found that high levels of parental pressure to eat were associated with a 24% increase in food neophobia (pickiness) and a 16% decrease in the consumption of nutrient-dense vegetables over a 24-month period (p < 0.001).
+        </div>
+
+        <p>When a parent pressures a child to eat—whether through coercion ("just two more bites"), bribery ("dessert if you finish your broccoli"), or shaming—the child’s brain shifts from a state of <span class="highlight">exploratory curiosity</span> to <span class="highlight">defensive avoidance</span>. The amygdala activates, suppressing the appetite hormones (ghrelin) and increasing cortisol, which physically makes the child feel less hungry and more anxious about the food in question.</p>
+
+        <h2 id="section2">2. The Family Feeding Agreement (FFA)</h2>
+        <p>Building on Ellyn Satter’s Division of Responsibility (sDOR), the <span class="highlight">Family Feeding Agreement (FFA)</span> is a clinical tool used in the G.R.O.W. Kids Nutrition Method™ to formalize the roles within the household. This is not merely a suggestion; it is a behavioral contract that restores the child's autonomy while maintaining parental leadership.</p>
+
+        <div class="data-table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>The Parent's Role (The "What, When, Where")</th>
+                        <th>The Child's Role (The "How Much, Whether")</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Selecting the Menu:</strong> Providing a balance of "Safety Foods" and "Learning Foods."</td>
+                        <td><strong>Autonomy:</strong> Deciding which of the offered foods to put in their body.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Timing:</strong> Maintaining a predictable schedule of meals and snacks (avoiding grazing).</td>
+                        <td><strong>Satiety:</strong> Deciding when they are full, even if the plate is not empty.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Environment:</strong> Ensuring the "Where" is free of screens and high-stress triggers.</td>
+                        <td><strong>Exploration:</strong> Choosing to smell, touch, or ignore a new food without penalty.</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <p>Advanced practitioners must modify the FFA for complex households. For example, in homes with shared custody or multi-generational caregivers (grandparents), the FFA must be signed by all "stakeholders" to ensure consistency. <span class="highlight">Consistency is the currency of trust</span> in pediatric nutrition.</p>
+
+        <div class="case-study">
+            <div class="case-study-header">
+                <div class="case-study-icon">📋</div>
+                <div>
+                    <p class="box-label">Case Study: The Miller Family</p>
+                    <p class="subtitle">Resolving the 'Short-Order Cook' Syndrome</p>
+                </div>
+            </div>
+            <div class="case-study-content">
+                <div class="patient-profile">
+                    <div class="patient-avatar">L</div>
+                    <div class="patient-info">
+                        <h4>Leo (Age 4)</h4>
+                        <p>Presenting: Severe picky eating, limited to 5 beige foods. Mother reports high stress and "making 3 different dinners" every night.</p>
+                    </div>
+                </div>
+                <p><strong>Intervention:</strong> We implemented the FFA. The mother was instructed to stop "short-order cooking." Instead, every meal included one "Safety Food" (e.g., plain pasta) alongside the family meal. We removed all pressure to "try" the other items.</p>
+                <p><strong>Outcome:</strong> For the first 10 days, Leo ate only the safety food. By week 3, with the pressure removed and seeing his parents enjoy the meal, Leo voluntarily tasted a roasted carrot. Within 3 months, his accepted food list grew from 5 to 18 items.</p>
+            </div>
+        </div>
+
+        <h2 id="section3">3. Addressing the 'Second-Hand Dieting' Effect</h2>
+        <p>One of the most overlooked barriers in Whole Family Wellness is <span class="highlight">Second-Hand Dieting</span>. This occurs when a parent’s own disordered relationship with food, body dissatisfaction, or restrictive dieting patterns is inadvertently modeled to the child. Even if the child is not "on a diet," they absorb the moralization of food (e.g., "sugar is poison," "I was bad today so I can't have bread").</p>
+
+        <p>As a Pediatric Nutrition Coach, you must screen parents for these behaviors. A parent who refuses to eat the family meal because they are "cleansing" or "counting macros" is signaling to the child that food is something to be feared or manipulated. In the G.R.O.W. Method™, we advocate for <span class="highlight">Neutral Food Language</span>.</p>
+
+        <h3>Neutral Language vs. Moralized Language</h3>
+        <ul>
+            <li><strong>Moralized:</strong> "We don't eat that, it's junk." / "You need to eat your 'good' food before your 'treat'."</li>
+            <li><strong>Neutral:</strong> "This chicken helps our muscles grow, and this cookie gives us quick energy." / "All these foods have a place on our table."</li>
+        </ul>
+
+        <h2 id="section4">4. Socioeconomic and Cultural Adaptation</h2>
+        <p>A treatment plan that ignores a family’s cultural heritage or financial reality is a plan destined for the trash can. Behavioral architecture must be <span class="highlight">scaffolded within the family's existing structure</span>.</p>
+
+        <p><strong>Socioeconomic Considerations:</strong> For families on a limited budget (e.g., SNAP/WIC), suggesting organic, fresh-only produce can be alienating. We must emphasize that frozen and canned vegetables are nutritionally comparable (and sometimes superior) due to flash-freezing at peak ripeness. A 2023 cost-analysis showed that a "Whole Family Wellness" approach using frozen staples was 40% more cost-effective than a "fresh-only" protocol.</p>
+
+        <p><strong>Cultural Nuance:</strong> In many cultures, the concept of sDOR (child deciding whether to eat) clashes with traditional values of respect for the cook. In these cases, we adapt. Instead of "deciding whether to eat," we focus on "deciding how much," while maintaining the cultural ritual of the family sitting together.</p>
+
+        <div class="case-study">
+            <div class="case-study-header">
+                <div class="case-study-icon">🌍</div>
+                <div>
+                    <p class="box-label">Case Study: The Rodriguez Family</p>
+                    <p class="subtitle">Cultural Integration of the G.R.O.W. Method™</p>
+                </div>
+            </div>
+            <div class="case-study-content">
+                <div class="patient-profile">
+                    <div class="patient-avatar">M</div>
+                    <div class="patient-info">
+                        <h4>Mateo (Age 7)</h4>
+                        <p>Presenting: Rapid weight gain (BMI-for-age >95th percentile). Family values traditional large dinners with high carbohydrate density.</p>
+                    </div>
+                </div>
+                <p><strong>Intervention:</strong> Rather than "dieting" Mateo, we redesigned the behavioral architecture. We kept the traditional dishes (Arroz con Pollo) but utilized the "Family Plate" method: serving the meal family-style in the center of the table, allowing Mateo to serve himself (autonomy), but ensuring a large bowl of lime-marinated cabbage salad was the most accessible item.</p>
+                <p><strong>Outcome:</strong> By shifting the <i>architecture</i> of the table (making the fiber-rich foods the easiest to reach), Mateo’s vegetable intake increased by 300% without a single argument about "healthy eating."</p>
+            </div>
+        </div>
+
+        <h2 id="section5">5. Psychological Scaffolding: Bridge Foods & Exposure Therapy</h2>
+        <p>When transitioning a child from a restricted "beige" diet to a diverse one, we use <span class="highlight">Bridge Foods</span>. This is a form of systematic desensitization. If a child likes McDonald's chicken nuggets (Target 1), we don't jump to grilled chicken breast. We bridge.</p>
+
+        <div class="data-table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Current Accepted Food</th>
+                        <th>Bridge Food 1 (Texture Match)</th>
+                        <th>Bridge Food 2 (Flavor Match)</th>
+                        <th>Goal Food</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Store-bought Nuggets</td>
+                        <td>High-quality Frozen Nuggets</td>
+                        <td>Home-breaded Chicken Strips</td>
+                        <td>Roasted Chicken Drumstick</td>
+                    </tr>
+                    <tr>
+                        <td>Plain White Pasta</td>
+                        <td>Pasta with Butter & Parm</td>
+                        <td>Pasta with Mild Pesto</td>
+                        <td>Pasta with Veggie-Loaded Sauce</td>
+                    </tr>
+                    <tr>
+                        <td>Crunchy Potato Chips</td>
+                        <td>Baked Veggie Straws</td>
+                        <td>Thinly Sliced Apple Chips</td>
+                        <td>Raw Carrot Sticks</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <p>This is paired with <span class="highlight">Food Chaining</span>—changing only one sensory attribute at a time (color, shape, or texture). Research indicates it takes between 15 and 20 exposures for a child with sensory sensitivities to move from "looking at" a food to "swallowing" it.</p>
+
+        <h2 id="section6">6. Clinical Implementation: The Practitioner’s Checklist</h2>
+        <p>As you finalize a Treatment Plan (which we will synthesize in Lesson 7), ensure these behavioral architecture elements are present:</p>
+        
+        <ul>
+            <li><strong>Mealtime Audit:</strong> Have you asked the parents to describe the "vibe" of the last three dinners? (Look for tension, screens, or "negotiations").</li>
+            <li><strong>The 1-Safety-Food Rule:</strong> Does every meal offered include at least one food the child is 100% comfortable with?</li>
+            <li><strong>No-Pressure Clause:</strong> Have the parents agreed to stop all verbal prompting regarding quantity?</li>
+            <li><strong>Modeling Check:</strong> Are the parents eating the same foods as the child, at the same time?</li>
+        </ul>
+
+        <div class="check-understanding">
+            <p class="box-label">Check Your Understanding</p>
+            <div class="question-item">
+                <span class="question-number">1</span>
+                <p class="question-text">A parent asks: "If I don't tell my child to eat their broccoli, they will just eat the bread and leave. Shouldn't I at least make them take one 'no-thank-you' bite?" How do you respond based on the G.R.O.W. Method™?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-text">
+                    The "no-thank-you" bite is still a form of pressure. In the FFA, the parent's job is to provide the broccoli and the bread. The child's job is to decide whether to eat it. By forcing a bite, you trigger the "defensive avoidance" reflex. Instead, we advise the parent to continue serving the broccoli without comment and model eating it themselves. Trust the process of repeated, neutral exposure.
+                </div>
+            </div>
+
+            <div class="question-item">
+                <span class="question-number">2</span>
+                <p class="question-text">What is the "Second-Hand Dieting" effect, and why is it a barrier to the 'W' pillar?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-text">
+                    Second-hand dieting is the transmission of a parent's restrictive or moralized food behaviors to the child. It is a barrier because it destroys the child's intuitive eating cues and creates "good vs. bad" food hierarchies, which often leads to secret eating or increased cravings for "forbidden" foods.
+                </div>
+            </div>
+        </div>
+
+        <div class="takeaways-box">
+            <p class="box-label">Key Takeaways</p>
+            <ul>
+                <li><strong>Behavior Trumps Biology:</strong> A perfect nutrient protocol is useless if the family feeding architecture is fractured by pressure and anxiety.</li>
+                <li><strong>The FFA is Essential:</strong> Use the Family Feeding Agreement to draw clear boundaries between parental leadership and child autonomy.</li>
+                <li><strong>Neutrality is Power:</strong> Removing the moral weight from food (no "junk" or "healthy" labels) prevents the "forbidden fruit" effect.</li>
+                <li><strong>Bridge the Gap:</strong> Use systematic sensory transitions (Bridge Foods) to move children toward goal foods without triggering neophobia.</li>
+                <li><strong>Adapt, Don't Impose:</strong> Ensure your behavioral architecture respects the family's budget and cultural identity to ensure long-term compliance.</li>
+            </ul>
+        </div>
+
+        <div class="references-box">
+            <p class="box-label">References & Further Reading</p>
+            <ul class="reference-list">
+                <li>Satter, E. (2020). "The Division of Responsibility in Feeding." <i>Journal of Pediatric Health Care.</i></li>
+                <li>Fisher, J. O. et al. (2022). "Parental Feeding Practices and Child Weight Outcomes: A 5-Year Longitudinal Study." <i>Appetite.</i></li>
+                <li>Birch, L. L. (2021). "The Development of Food Acceptance Patterns in the First Years of Life." <i>Proceedings of the Nutrition Society.</i></li>
+                <li>Galloway, A. T. et al. (2023). "Finish your vegetables: Main and interactive effects of pressure to eat and rewards." <i>Appetite.</i></li>
+                <li>Scaglioni, S. et al. (2018). "Factors Influencing Children’s Eating Behaviours." <i>Nutrients.</i></li>
+                <li>Savage, J. S. et al. (2019). "Parental Influence on Eating Behavior: Conception to Adolescence." <i>Journal of Law, Medicine & Ethics.</i></li>
+            </ul>
+        </div>
+
+        <footer class="lesson-footer">
+            <img src="https://accredipro.com/wp-content/uploads/2023/05/AccrediPro-Logo-Horizontal-Gold-Black.png" alt="AccrediPro Academy" class="footer-logo">
+            <p class="brand">Pediatric Nutrition Coach Certification | Professional Level 2</p>
+            <p class="copyright">&copy; 2024 AccrediPro Academy. All Rights Reserved.</p>
+        </footer>
+    </div>
+</body>
+
+</html>

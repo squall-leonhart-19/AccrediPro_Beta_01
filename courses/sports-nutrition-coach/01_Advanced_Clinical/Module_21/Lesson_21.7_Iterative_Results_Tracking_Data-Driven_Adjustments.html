@@ -1,0 +1,582 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lesson 21.7: Iterative Results Tracking: Data-Driven Adjustments</title>
+    <style>
+        /* Base & Reset */
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Georgia, 'Times New Roman', serif;
+            line-height: 1.8;
+            color: #2d2d2d;
+            background: #f8f6f3;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Main Container */
+        .lesson-container {
+            max-width: 860px;
+            margin: 0 auto;
+            padding: 40px 30px;
+            background: #ffffff;
+            min-height: 100vh;
+            box-shadow: 0 0 60px rgba(0, 0, 0, 0.08);
+        }
+
+        /* Brand Header */
+        .brand-header {
+            text-align: center;
+            padding-bottom: 30px;
+            margin-bottom: 35px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .brand-logo {
+            max-width: 220px;
+            height: auto;
+            margin-bottom: 5px;
+        }
+
+        /* Module Header - BLUE/NAVY theme for Treatment Planning */
+        .module-header {
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+            padding: 35px 35px 30px;
+            border-radius: 16px;
+            margin-bottom: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .module-header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, #B8860B, #D4A84B, #B8860B);
+        }
+
+        .module-label {
+            margin: 0;
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.75);
+            text-transform: uppercase;
+            letter-spacing: 2.5px;
+            font-weight: 500;
+        }
+
+        .lesson-title {
+            margin: 10px 0 0 0;
+            font-size: 28px;
+            color: #ffffff;
+            font-weight: 700;
+            line-height: 1.3;
+            position: relative;
+        }
+
+        .lesson-meta {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+            padding-top: 18px;
+            border-top: 1px solid rgba(255, 255, 255, 0.15);
+            flex-wrap: wrap;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.85);
+            background: rgba(255, 255, 255, 0.1);
+            padding: 5px 12px;
+            border-radius: 4px;
+        }
+
+        /* Table of Contents */
+        .toc-box {
+            background: linear-gradient(135deg, #fafafa 0%, #f5f5f5 100%);
+            border-radius: 14px;
+            padding: 24px 28px;
+            margin-bottom: 35px;
+            border: 1px solid #e8e8e8;
+        }
+
+        .toc-box .box-label {
+            font-weight: 600;
+            color: #1e3a8a;
+            margin: 0 0 18px 0;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .toc-list {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px 24px;
+        }
+
+        .toc-list a {
+            display: flex;
+            align-items: center;
+            padding: 8px 12px;
+            color: #555;
+            text-decoration: none;
+            font-size: 14px;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+        }
+
+        .toc-list a:hover {
+            background: white;
+            color: #3b82f6;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+        }
+
+        .toc-list .section-num {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 26px;
+            height: 26px;
+            background: #1e3a8a;
+            color: white;
+            font-weight: 600;
+            font-size: 11px;
+            border-radius: 6px;
+            margin-right: 12px;
+            flex-shrink: 0;
+        }
+
+        /* Learning Objectives */
+        .objectives-box {
+            background: #f0f7ff;
+            border: 2px solid #3b82f6;
+            border-radius: 14px;
+            padding: 30px 35px;
+            margin-bottom: 40px;
+        }
+
+        .objectives-box .box-label {
+            font-weight: 600;
+            color: #1e3a8a;
+            margin: 0 0 18px 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .objectives-box ul {
+            margin: 0;
+            padding-left: 22px;
+        }
+
+        .objectives-box li {
+            margin-bottom: 14px;
+            font-size: 16px;
+            line-height: 1.7;
+        }
+
+        /* Section Headings */
+        h2 {
+            font-size: 24px;
+            color: #1e3a8a;
+            margin: 50px 0 20px 0;
+            font-weight: 600;
+            position: relative;
+            padding-bottom: 12px;
+        }
+
+        h2::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 60px;
+            height: 3px;
+            background: #B8860B;
+        }
+
+        /* Highlights */
+        .highlight {
+            background: linear-gradient(180deg, transparent 60%, #e0e7ff 60%);
+            padding: 0 4px;
+            font-weight: 600;
+            color: #1e3a8a;
+        }
+
+        /* Case Study Box */
+        .case-study {
+            background: linear-gradient(135deg, #f8f9fb 0%, #f0f2f5 100%);
+            border-radius: 16px;
+            padding: 0;
+            margin: 40px 0;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+        }
+
+        .case-study-header {
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+            padding: 20px 30px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .case-study-header .box-label {
+            font-weight: 600;
+            color: #ffffff;
+            margin: 0;
+            font-size: 16px;
+        }
+
+        .case-study-content {
+            padding: 28px 30px;
+        }
+
+        .patient-profile {
+            display: flex;
+            align-items: center;
+            gap: 18px;
+            padding: 18px 22px;
+            background: white;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            border: 1px solid #e5e5e5;
+        }
+
+        /* Data Tables */
+        .data-table-container {
+            overflow-x: auto;
+            margin: 30px 0;
+            border-radius: 12px;
+            border: 1px solid #e5e7eb;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 15px;
+            text-align: left;
+        }
+
+        th {
+            background: #f8fafc;
+            padding: 15px;
+            font-weight: 600;
+            color: #1e3a8a;
+            border-bottom: 2px solid #e5e7eb;
+        }
+
+        td {
+            padding: 15px;
+            border-bottom: 1px solid #f1f5f9;
+            color: #4b5563;
+        }
+
+        /* Stats Highlight */
+        .stat-highlight {
+            background: #1e3a8a;
+            color: white;
+            padding: 25px;
+            border-radius: 14px;
+            text-align: center;
+            margin: 30px 0;
+        }
+
+        .stat-value {
+            font-size: 32px;
+            font-weight: 700;
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        .stat-desc {
+            font-size: 14px;
+            opacity: 0.9;
+        }
+
+        /* Check Understanding */
+        .check-understanding {
+            background: #fefce8;
+            border: 2px solid #eab308;
+            border-radius: 16px;
+            padding: 32px;
+            margin: 45px 0;
+        }
+
+        .reveal-btn {
+            background: #eab308;
+            color: #422006;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 15px;
+        }
+
+        .answer-text {
+            display: none;
+            margin-top: 15px;
+            padding: 15px;
+            background: #fef9c3;
+            border-radius: 8px;
+            border-left: 4px solid #eab308;
+        }
+
+        /* Takeaways */
+        .takeaways-box {
+            background: #f1f5f9;
+            border-left: 5px solid #1e3a8a;
+            padding: 25px;
+            margin: 40px 0;
+            border-radius: 0 12px 12px 0;
+        }
+
+        .references-box {
+            background: #fafafa;
+            padding: 30px;
+            border-radius: 12px;
+            font-size: 14px;
+            color: #666;
+            margin-top: 50px;
+            border: 1px solid #eee;
+        }
+
+        .lesson-footer {
+            text-align: center;
+            padding: 40px 0;
+            border-top: 1px solid #eee;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="lesson-container">
+        <div class="brand-header">
+            <img src="https://accredipro.com/wp-content/uploads/2023/05/AccrediPro-Logo-Horizontal-1.png" alt="AccrediPro Academy" class="brand-logo">
+        </div>
+
+        <header class="module-header">
+            <p class="module-label">Module 21: L2: Treatment Planning</p>
+            <h1 class="lesson-title">Lesson 7: Iterative Results Tracking: Data-Driven Adjustments</h1>
+            <div class="lesson-meta">
+                <span class="meta-item">35 min read</span>
+                <span class="meta-item">Advanced Practitioner Level</span>
+            </div>
+        </header>
+
+        <div class="toc-box">
+            <p class="box-label">In This Lesson</p>
+            <ul class="toc-list">
+                <li><a href="#loop"><span class="section-num">1</span>The Results Tracking Loop</a></li>
+                <li><a href="#biometrics"><span class="section-num">2</span>CGM & HRV Interpretation</a></li>
+                <li><a href="#non-responders"><span class="section-num">3</span>Identifying Non-Responders</a></li>
+                <li><a href="#pivot"><span class="section-num">4</span>The Pivot Point Analysis</a></li>
+                <li><a href="#reporting"><span class="section-num">5</span>Professional Reporting</a></li>
+                <li><a href="#case-study"><span class="section-num">6</span>Clinical Application</a></li>
+            </ul>
+        </div>
+
+        <div class="objectives-box">
+            <p class="box-label">Learning Objectives</p>
+            <ul>
+                <li>Master the integration of the "R" (Results Tracking) loop within the PERFORM™ Method.</li>
+                <li>Analyze high-frequency data from CGM and HRV to dictate nutritional periodization.</li>
+                <li>Establish clinical criteria for identifying 'Non-Responders' and executing protocol pivots.</li>
+                <li>Determine the physiological 'Pivot Point' between body composition and performance phases.</li>
+                <li>Develop professional-grade performance summaries for multi-disciplinary athletic teams.</li>
+            </ul>
+        </div>
+
+        <h2 id="loop">1. The Results Tracking (R) Loop: Beyond Static Checks</h2>
+        <p>In the <span class="highlight">PERFORM™ Method</span>, results tracking is not a retrospective post-mortem of a failed season; it is a live, iterative feedback loop. Traditional nutrition coaching often relies on "weigh-ins" every 14 days. For an elite athlete, 14 days is a lifetime of metabolic adaptation, inflammatory signaling, and potential performance degradation.</p>
+
+        <p>The <strong>Results Tracking Loop</strong> comprises three distinct but overlapping data streams:</p>
+        <ul>
+            <li><strong>Hard Biometrics:</strong> Body composition (DXA/BIA), blood biomarkers, and wearable data (HRV, Sleep).</li>
+            <li><strong>Subjective Wellness:</strong> RPE (Rate of Perceived Exertion), muscle soreness, mood, and appetite signaling.</li>
+            <li><strong>Performance Metrics:</strong> Power output (Watts), velocity (VBT), time-to-exhaustion, and skill-specific accuracy.</li>
+        </ul>
+
+        <div class="stat-highlight">
+            <span class="stat-value">22%</span>
+            <span class="stat-desc">Increase in intervention adherence when athletes receive bi-weekly data visualizations of their own physiological progress (n=450, 2022 Performance Study).</span>
+        </div>
+
+        <h2 id="biometrics">2. High-Frequency Interpretation: CGM & HRV</h2>
+        <p>Advanced sports nutrition is shifting toward <span class="highlight">near-real-time metabolism monitoring</span>. Two tools have revolutionized our ability to iterate plans mid-microcycle: Continuous Glucose Monitoring (CGM) and Heart Rate Variability (HRV).</p>
+
+        <h3>Continuous Glucose Monitoring (CGM) in Non-Diabetics</h3>
+        <p>For the sports coach, CGM is used to assess <span class="highlight">Glycemic Variability (GV)</span> and "fueling efficacy." We aren't just looking for high or low blood sugar; we are looking for the "Glycemic Fingerprint" of a training session. If an athlete's glucose drops significantly during a high-intensity interval session despite a pre-workout meal, the <em>timing</em> or <em>composition</em> of that meal must be adjusted in the next iteration.</p>
+
+        <h3>Heart Rate Variability (HRV) and Allostatic Load</h3>
+        <p>HRV represents the balance between the sympathetic (fight or flight) and parasympathetic (rest and digest) nervous systems. In the context of nutrition:
+            <ul>
+                <li><strong>Low HRV (Sympathetic Dominance):</strong> May indicate systemic inflammation or inadequate carbohydrate availability to meet the demands of the CNS.</li>
+                <li><strong>High/Stable HRV:</strong> Suggests the current nutritional periodization is effectively buffering the stress of training.</li>
+            </ul>
+        </p>
+
+        <div class="data-table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Metric</th>
+                        <th>Observation</th>
+                        <th>Nutritional Adjustment (The Iteration)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>CGM</strong></td>
+                        <td>Post-prandial spike > 140mg/dL followed by a "crash" < 70mg/dL during training.</td>
+                        <td>Increase fiber/fat in pre-ex meal; switch to lower glycemic index carb source.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>HRV</strong></td>
+                        <td>7-day rolling average decrease of >1 standard deviation.</td>
+                        <td>Implement "Recovery Architecture": Increase total kcal by 15%, focus on anti-inflammatory bioactives.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>BIA (Phase Angle)</strong></td>
+                        <td>Decrease in Phase Angle (< 6.0 for males, < 5.5 for females).</td>
+                        <td>Suspect cellular dehydration or overreaching. Increase electrolyte density and rest.</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <h2 id="non-responders">3. Identifying 'Non-Responders' and Physiological Resistance</h2>
+        <p>As a Sports Nutrition Coach, you will encounter clients who follow the plan perfectly but fail to see results. We call this <span class="highlight">Physiological Resistance</span>. Identifying a non-responder early is the difference between a successful coach and one who simply blames the client's "willpower."</p>
+
+        <p>Criteria for identifying a Non-Responder in a fat-loss/cutting phase:</p>
+        <ol>
+            <li><strong>The 3-Week Flatline:</strong> Zero change in body weight, waist circumference, or skinfold thickness despite a calculated 20% deficit.</li>
+            <li><strong>Downregulated NEAT:</strong> Subjective reports of extreme lethargy, "heavy limbs," and decreased fidgeting (Non-Exercise Activity Thermogenesis).</li>
+            <li><strong>Suppressed Morning Temperature:</strong> A consistent drop in basal body temperature (indicating metabolic adaptation/thyroid downregulation).</li>
+        </ol>
+
+        <div class="alert-box warning">
+            <p class="alert-label">PRACTITIONER TIP</p>
+            <p>If an athlete is a non-responder, do NOT decrease calories further. This often exacerbates the metabolic "lockdown." Instead, iterate toward a <strong>Diet Break</strong> or <strong>Refeed Microcycle</strong> to restore leptin sensitivity and thyroid output.</p>
+        </div>
+
+        <h2 id="pivot">4. The 'Pivot Point' Analysis</h2>
+        <p>One of the most difficult decisions in treatment planning is determining when to shift focus. The <span class="highlight">Pivot Point</span> is the moment where the pursuit of one goal (e.g., fat loss) begins to actively cannibalize another (e.g., power output).</p>
+
+        <p>A "Pivot" is required when performance metrics trend downward for 10-14 consecutive days. If a weight-class athlete is losing weight but their vertical jump height has dropped by 5% and their RPE for standard loads has moved from a 7 to a 9, they have reached the Pivot Point. At this stage, the coach must pivot to a <span class="highlight">Performance Maintenance Phase</span>, even if the target weight hasn't been reached.</p>
+
+        <h2 id="case-study">5. Case Study: The Iterative Pivot</h2>
+        <div class="case-study">
+            <div class="case-study-header">
+                <div class="case-study-icon">🏃‍♂️</div>
+                <div>
+                    <p class="box-label">Case Study: Elite Middle-Distance Runner</p>
+                    <p class="subtitle">Metabolic Adaptation vs. Performance Scaling</p>
+                </div>
+            </div>
+            <div class="case-study-content">
+                <div class="patient-profile">
+                    <div class="patient-avatar">JD</div>
+                    <div class="patient-info">
+                        <h4>James D., 24</h4>
+                        <p>800m Specialist | Goal: Body Recomposition (-3kg fat) while maintaining speed.</p>
+                    </div>
+                </div>
+                <p><strong>Initial Intervention:</strong> 2,800 kcal/day, high-protein, carb-periodized (high on track days, low on recovery days).</p>
+                <p><strong>Data Feedback (Weeks 1-3):</strong> Weight dropped 1.2kg. HRV remained stable. Performance times were 1% faster than baseline.</p>
+                <p><strong>The "Wall" (Week 4):</strong> Weight loss stalled. HRV dropped 15 points. Morning glucose (CGM) showed fasting levels rising (sign of cortisol-induced gluconeogenesis). James reported "heavy legs" during the final 200m of intervals.</p>
+                <p><strong>The Iterative Adjustment:</strong> The coach recognized the <strong>Pivot Point</strong>. Instead of cutting calories further, the coach implemented a 48-hour "Refeed" (4,000 kcal, mostly carbs) followed by a shift to 3,100 kcal (isocaloric). 
+                <p><strong>Outcome:</strong> HRV recovered within 72 hours. Weight actually <em>dropped</em> another 0.5kg (water release from lowered cortisol). Track times returned to personal best levels. The data-driven pivot prevented a full overtraining syndrome.</p>
+            </div>
+        </div>
+
+        <h2 id="reporting">6. Professional Documentation & Performance Summaries</h2>
+        <p>In a professional setting, your data is only as good as your ability to communicate it to the Performance Team (Head Coach, Athletic Trainer, Team Physician). A "Performance Summary" should be concise, visual, and actionable.</p>
+
+        <p>Key components of a professional report:</p>
+        <ul>
+            <li><strong>Executive Summary:</strong> One paragraph on the athlete's current status and the primary nutritional focus.</li>
+            <li><strong>The "Traffic Light" System:</strong>
+                <ul>
+                    <li><span style="color: green; font-weight: bold;">Green:</span> All metrics on track. No adjustments needed.</li>
+                    <li><span style="color: #b8860b; font-weight: bold;">Yellow:</span> Minor deviations in HRV or sleep. Monitoring closely.</li>
+                    <li><span style="color: red; font-weight: bold;">Red:</span> Pivot Point reached. Immediate protocol change implemented.</li>
+                </ul>
+            </li>
+            <li><strong>Correlation Analysis:</strong> Showing how nutrition (e.g., increased carb intake) directly correlated with performance (e.g., increased training volume).</li>
+        </ul>
+
+        <div class="check-understanding">
+            <p class="box-label">Check Your Understanding</p>
+            <p class="box-subtitle">Test your clinical reasoning on data-driven adjustments.</p>
+            
+            <div class="question-item">
+                <p class="question-text">An athlete's HRV is trending downward, but their performance in the gym is still increasing. What is the most likely interpretation and the next iterative step?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Clinical Logic</button>
+                <div class="answer-text">
+                    This suggests the athlete is in a state of "functional overreaching." They are successfully adapting to the stress, but their nervous system is beginning to redline. The iterative step is to maintain current intensity but increase recovery nutrition (antioxidants, sleep hygiene, and potentially a 10% increase in total calories) to prevent the slide into non-functional overreaching.
+                </div>
+            </div>
+
+            <div class="question-item">
+                <p class="question-text">What is the primary indicator of the "Pivot Point" during a fat-loss phase for a strength athlete?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-text">
+                    The primary indicator is a decrease in absolute strength or power output (e.g., a drop in 1RM or bar velocity) that persists for more than two sessions, regardless of whether the body composition goal has been met.
+                </div>
+            </div>
+        </div>
+
+        <div class="takeaways-box">
+            <p class="box-label">Key Takeaways</p>
+            <ul>
+                <li><strong>Dynamic Tracking:</strong> Results tracking is an ongoing loop of Biometrics, Subjective Wellness, and Performance metrics.</li>
+                <li><strong>Wearable Integration:</strong> Use HRV to measure allostatic load and CGM to assess the "glycemic fingerprint" of training sessions.</li>
+                <li><strong>Non-Responder Protocol:</strong> Identify non-responders via metabolic adaptation markers (temp, NEAT) and pivot to refeeds rather than further deficits.</li>
+                <li><strong>The Pivot Point:</strong> Prioritize performance over aesthetics; when performance drops, the nutritional phase must change.</li>
+                <li><strong>Team Communication:</strong> Use professional summaries with visual "Traffic Light" systems to keep the performance team aligned.</li>
+            </ul>
+        </div>
+
+        <div class="references-box">
+            <p class="box-label">References & Further Reading</p>
+            <ul>
+                <li>Flatt et al. (2022). "Heart Rate Variability and Training Load in Elite Athletes: A Meta-Analysis." <i>Journal of Science and Medicine in Sport.</i></li>
+                <li>Holway et al. (2021). "Continuous Glucose Monitoring in Elite Sport: Applications for Performance and Recovery." <i>International Journal of Sport Nutrition and Exercise Metabolism.</i></li>
+                <li>Trexler et al. (2014). "Metabolic adaptation to weight loss: implications for the athlete." <i>Journal of the International Society of Sports Nutrition.</i></li>
+                <li>Mountjoy et al. (2018). "IOC consensus statement on relative energy deficiency in sport (RED-S): 2018 update." <i>British Journal of Sports Medicine.</i></li>
+                <li>Williams et al. (2023). "Data-Driven Decision Making in Professional Sports Nutrition: A Case Series." <i>Sports Medicine - Open.</i></li>
+                <li>Thorpe et al. (2017). "Monitoring Fatigue Status in Elite Team Sport Athletes: Implications for Practice." <i>International Journal of Sports Physiology and Performance.</i></li>
+            </ul>
+        </div>
+
+        <footer class="lesson-footer">
+            <img src="https://accredipro.com/wp-content/uploads/2023/05/AccrediPro-Logo-Horizontal-1.png" alt="AccrediPro Academy" class="footer-logo">
+            <p class="brand">AccrediPro Academy: Sports Nutrition Coach Certification</p>
+            <p class="copyright">&copy; 2024 AccrediPro. All rights reserved. The PERFORM Method™ is a trademarked framework.</p>
+        </footer>
+    </div>
+</body>
+
+</html>

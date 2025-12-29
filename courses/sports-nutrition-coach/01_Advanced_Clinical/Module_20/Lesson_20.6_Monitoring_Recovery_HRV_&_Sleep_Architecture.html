@@ -1,0 +1,695 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lesson 20.6: Monitoring Recovery: HRV & Sleep Architecture</title>
+    <style>
+        /* Base & Reset */
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Georgia, 'Times New Roman', serif;
+            line-height: 1.8;
+            color: #2d2d2d;
+            background: #f8f6f3;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Main Container */
+        .lesson-container {
+            max-width: 860px;
+            margin: 0 auto;
+            padding: 40px 30px;
+            background: #ffffff;
+            min-height: 100vh;
+            box-shadow: 0 0 60px rgba(0, 0, 0, 0.08);
+        }
+
+        /* Brand Header */
+        .brand-header {
+            text-align: center;
+            padding-bottom: 30px;
+            margin-bottom: 35px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .brand-logo {
+            max-width: 220px;
+            height: auto;
+            margin-bottom: 5px;
+        }
+
+        /* Module Header - BLUE theme for Assessment/Tracking */
+        .module-header {
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+            padding: 35px 35px 30px;
+            border-radius: 16px;
+            margin-bottom: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .module-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+            transform: translate(100px, -100px);
+        }
+
+        .module-header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, #B8860B, #D4A84B, #B8860B);
+        }
+
+        .module-label {
+            margin: 0;
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.75);
+            text-transform: uppercase;
+            letter-spacing: 2.5px;
+            font-weight: 500;
+        }
+
+        .lesson-title {
+            margin: 10px 0 0 0;
+            font-size: 28px;
+            color: #ffffff;
+            font-weight: 700;
+            line-height: 1.3;
+            position: relative;
+        }
+
+        .lesson-meta {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+            padding-top: 18px;
+            border-top: 1px solid rgba(255, 255, 255, 0.15);
+            flex-wrap: wrap;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.85);
+            background: rgba(255, 255, 255, 0.1);
+            padding: 5px 12px;
+            border-radius: 4px;
+        }
+
+        /* Table of Contents */
+        .toc-box {
+            background: linear-gradient(135deg, #fafafa 0%, #f5f5f5 100%);
+            border-radius: 14px;
+            padding: 24px 28px;
+            margin-bottom: 35px;
+            border: 1px solid #e8e8e8;
+        }
+
+        .toc-box .box-label {
+            font-weight: 600;
+            color: #1e3a8a;
+            margin: 0 0 18px 0;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .toc-list {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px 24px;
+        }
+
+        .toc-list li {
+            margin: 0;
+        }
+
+        .toc-list a {
+            display: flex;
+            align-items: center;
+            padding: 8px 12px;
+            color: #555;
+            text-decoration: none;
+            font-size: 14px;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+        }
+
+        .toc-list a:hover {
+            background: white;
+            color: #1e3a8a;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+        }
+
+        .toc-list .section-num {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 26px;
+            height: 26px;
+            background: #1e3a8a;
+            color: white;
+            font-weight: 600;
+            font-size: 11px;
+            border-radius: 6px;
+            margin-right: 12px;
+            flex-shrink: 0;
+        }
+
+        /* Learning Objectives */
+        .objectives-box {
+            background: #eff6ff;
+            border: 2px solid #3b82f6;
+            border-radius: 14px;
+            padding: 30px 35px;
+            margin-bottom: 40px;
+        }
+
+        .objectives-box .box-label {
+            font-weight: 600;
+            color: #1e3a8a;
+            margin: 0 0 18px 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .objectives-box .box-label::before {
+            content: '🎯';
+            font-size: 18px;
+        }
+
+        .objectives-box ul {
+            margin: 0;
+            padding-left: 22px;
+        }
+
+        .objectives-box li {
+            margin-bottom: 14px;
+            font-size: 16px;
+            line-height: 1.7;
+        }
+
+        /* Section Headings */
+        h2 {
+            font-size: 24px;
+            color: #1e3a8a;
+            margin: 50px 0 20px 0;
+            font-weight: 600;
+            position: relative;
+            padding-bottom: 12px;
+        }
+
+        h2::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 60px;
+            height: 3px;
+            background: #B8860B;
+        }
+
+        h3 {
+            font-size: 20px;
+            color: #2d3748;
+            margin: 35px 0 15px 0;
+            font-weight: 600;
+        }
+
+        /* Paragraphs & Text */
+        p {
+            font-size: 17px;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        .highlight {
+            background: linear-gradient(180deg, transparent 60%, #FFF59D 60%);
+            padding: 0 4px;
+            font-weight: 500;
+        }
+
+        /* Case Study Box */
+        .case-study {
+            background: linear-gradient(135deg, #f8f9fb 0%, #f0f2f5 100%);
+            border-radius: 16px;
+            padding: 0;
+            margin: 40px 0;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+        }
+
+        .case-study-header {
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+            padding: 20px 30px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .case-study-header .box-label {
+            font-weight: 600;
+            color: #ffffff;
+            margin: 0;
+            font-size: 16px;
+        }
+
+        .case-study-content {
+            padding: 28px 30px;
+        }
+
+        .patient-profile {
+            display: flex;
+            align-items: center;
+            gap: 18px;
+            padding: 18px 22px;
+            background: white;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            border: 1px solid #e5e5e5;
+        }
+
+        .patient-avatar {
+            width: 55px;
+            height: 55px;
+            background: linear-gradient(135deg, #3b82f6, #1e3a8a);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            flex-shrink: 0;
+        }
+
+        /* Statistics Highlight */
+        .stat-highlight {
+            background: #f0f7ff;
+            padding: 4px 8px;
+            border-radius: 4px;
+            color: #1e40af;
+            font-weight: 700;
+            font-family: 'Courier New', Courier, monospace;
+        }
+
+        /* Data Table */
+        .data-table-container {
+            overflow-x: auto;
+            margin: 30px 0;
+            border-radius: 12px;
+            border: 1px solid #e5e7eb;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 15px;
+            text-align: left;
+        }
+
+        th {
+            background: #f9fafb;
+            padding: 16px;
+            font-weight: 600;
+            color: #374151;
+            border-bottom: 2px solid #e5e7eb;
+        }
+
+        td {
+            padding: 16px;
+            border-bottom: 1px solid #e5e7eb;
+            color: #4b5563;
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        /* Alert Boxes */
+        .alert-box {
+            padding: 26px 30px;
+            margin: 35px 0;
+            border-radius: 0 14px 14px 0;
+            border-left: 5px solid;
+        }
+
+        .alert-box.info {
+            background: #e3f2fd;
+            border-left-color: #2196f3;
+        }
+
+        .alert-box.warning {
+            background: #fff8e6;
+            border-left-color: #ff9800;
+        }
+
+        /* Check Your Understanding */
+        .check-understanding {
+            background: #fdfbf7;
+            border: 2px solid #B8860B;
+            border-radius: 16px;
+            padding: 32px;
+            margin: 45px 0;
+        }
+
+        .question-item {
+            background: white;
+            border-radius: 12px;
+            padding: 22px 24px;
+            margin-bottom: 16px;
+            border: 1px solid #e8e4dc;
+        }
+
+        .reveal-btn {
+            background: #1e3a8a;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+
+        .answer-text {
+            display: none;
+            margin-top: 15px;
+            padding: 15px;
+            background: #f0fdf4;
+            border-radius: 8px;
+            color: #166534;
+        }
+
+        /* Takeaways */
+        .takeaways-box {
+            background: #f3f4f6;
+            padding: 30px;
+            border-radius: 14px;
+            margin: 40px 0;
+            border: 1px solid #d1d5db;
+        }
+
+        .takeaways-box .box-label {
+            font-weight: 700;
+            color: #111827;
+            margin-bottom: 15px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* References Box */
+        .references-box {
+            margin-top: 50px;
+            padding: 30px;
+            background: #fafafa;
+            border-top: 1px solid #eee;
+            font-size: 14px;
+        }
+
+        .references-box h4 {
+            margin-bottom: 15px;
+            color: #666;
+        }
+
+        .references-box ul {
+            padding-left: 20px;
+            color: #777;
+        }
+
+        .references-box li {
+            margin-bottom: 8px;
+        }
+
+        /* Footer */
+        .lesson-footer {
+            text-align: center;
+            padding-top: 40px;
+            border-top: 1px solid #eee;
+            margin-top: 40px;
+        }
+
+        .footer-logo {
+            max-width: 140px;
+            opacity: 0.8;
+        }
+
+        @media (max-width: 768px) {
+            .toc-list {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="lesson-container">
+        <div class="brand-header">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="brand-logo">
+        </div>
+
+        <header class="module-header">
+            <p class="module-label">Module 20: Assessment Tools</p>
+            <h1 class="lesson-title">Lesson 6: Monitoring Recovery: HRV & Sleep Architecture</h1>
+            <div class="lesson-meta">
+                <span class="meta-item">35 min read</span>
+                <span class="meta-item">The PERFORM Method™: Results Tracking</span>
+            </div>
+        </header>
+
+        <div class="toc-box">
+            <p class="box-label">In This Lesson</p>
+            <ul class="toc-list">
+                <li><a href="#section1"><span class="section-num">1</span>The Physiology of HRV</a></li>
+                <li><a href="#section2"><span class="section-num">2</span>RMSSD Analysis & Trends</a></li>
+                <li><a href="#section3"><span class="section-num">3</span>Deconstructing Sleep Architecture</a></li>
+                <li><a href="#section4"><span class="section-num">4</span>Nutrition's Impact on Recovery Markers</a></li>
+                <li><a href="#section5"><span class="section-num">5</span>Subjective vs. Objective Readiness</a></li>
+                <li><a href="#section6"><span class="section-num">6</span>Fatigue vs. Chronic Overreaching</a></li>
+            </ul>
+        </div>
+
+        <div class="objectives-box">
+            <p class="box-label">Learning Objectives</p>
+            <ul>
+                <li>Master the interpretation of RMSSD trends to guide training intensity.</li>
+                <li>Evaluate sleep architecture (REM vs. Deep Sleep) using consumer-grade polysomnography-lite.</li>
+                <li>Identify the specific physiological impact of late-night feeding and alcohol on overnight recovery.</li>
+                <li>Differentiate between acute fatigue and chronic overreaching using multi-day biometric triangulation.</li>
+                <li>Integrate subjective Readiness-to-Train (RTT) scales with objective HRV data for holistic coaching.</li>
+            </ul>
+        </div>
+
+        <h2 id="section1">1. The Autonomic Fingerprint: Understanding HRV</h2>
+        <p>In previous lessons, we explored biochemical markers and anthropometric data. However, to truly master the <span class="highlight">Results Tracking (R)</span> pillar of the PERFORM Method™, we must look at the real-time status of the Autonomic Nervous System (ANS). Heart Rate Variability (HRV) is not a measure of heart rate, but a measure of the <em>variation in time</em> between consecutive heartbeats (the R-R interval).</p>
+
+        <p>A high HRV generally indicates a robust, flexible nervous system capable of adapting to stressors, signifying <span class="highlight">parasympathetic dominance</span> (rest and digest). Conversely, a low HRV suggests a system locked in a sympathetic "fight or flight" state. For the sports nutrition coach, HRV serves as a "check engine light" for the athlete's metabolic and neurological recovery capacity.</p>
+
+        <div class="alert-box info">
+            <p class="alert-label">Pro Tip</p>
+            <p>HRV is highly individual. A raw score of 60ms might be "peak recovery" for a 45-year-old cyclist but "severely overreached" for a 22-year-old elite swimmer. Always focus on the athlete's <strong>rolling 7-day average</strong> rather than isolated daily scores.</p>
+        </div>
+
+        <h2 id="section2">2. RMSSD Analysis: The Gold Standard for Athletes</h2>
+        <p>While there are dozens of HRV metrics (SDNN, PNN50, LF/HF ratios), the <span class="highlight">Root Mean Square of Successive Differences (RMSSD)</span> is the most widely validated for athletic populations. RMSSD specifically reflects the activity of the vagus nerve, providing a direct window into parasympathetic reactivation after training.</p>
+
+        <p>A 2022 meta-analysis of elite athletes (n=1,420) demonstrated that a drop in RMSSD of <span class="stat-highlight">>0.5 standard deviations</span> from the athlete's baseline was correlated with a <span class="stat-highlight">12-15% decrease</span> in power output during subsequent sessions. As a coach, you are looking for "The Swamp"—a multi-day downward trend in RMSSD that signals the need for nutritional intervention or training volume reduction.</p>
+
+        <div class="data-table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Trend Pattern</th>
+                        <th>Physiological State</th>
+                        <th>Nutritional Action Item</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Stable RMSSD / Rising Baseline</td>
+                        <td>Positive Adaptation / Supercompensation</td>
+                        <td>Maintain current macro-periodization; focus on performance fueling.</td>
+                    </tr>
+                    <tr>
+                        <td>Acute Drop (1 Day)</td>
+                        <td>Normal Response to High Load</td>
+                        <td>Aggressive rehydration and glycogen replenishment (The 3 Rs).</td>
+                    </tr>
+                    <tr>
+                        <td>Chronic Decline (3+ Days)</td>
+                        <td>Functional Overreaching / Accumulating Fatigue</td>
+                        <td>Increase caloric intake (+10-15%); prioritize anti-inflammatory bioactives.</td>
+                    </tr>
+                    <tr>
+                        <td>Abnormally High ("Frozen")</td>
+                        <td>Parasympathetic Saturation (Deep Exhaustion)</td>
+                        <td>Immediate deload; check micronutrient status (Iron, B12, Vit D).</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <h2 id="section3">3. Sleep Architecture: Beyond the 8-Hour Myth</h2>
+        <p>If HRV is the "status report," sleep architecture is the "repair shop." While total sleep duration is important, the <em>quality</em> of that sleep—specifically the distribution of <span class="highlight">Slow Wave Sleep (SWS)</span> and <span class="highlight">Rapid Eye Movement (REM)</span>—dictates the type of recovery achieved.</p>
+
+        <h3>Slow Wave Sleep (Deep Sleep/N3)</h3>
+        <p>This is the stage where the majority of physical repair occurs. The pituitary gland releases the bulk of the day's <span class="highlight">Growth Hormone (GH)</span> during SWS. For strength and power athletes, SWS is non-negotiable. Research indicates that just two nights of SWS restriction can reduce muscle protein synthesis rates by up to <span class="stat-highlight">18%</span>.</p>
+
+        <h3>REM Sleep</h3>
+        <p>REM is primarily responsible for cognitive restoration, memory consolidation, and the fine-tuning of motor skills. For technical athletes (gymnasts, quarterbacks, combat sports), REM deficits lead to "mental fog" and increased reaction times. A study published in <em>Sleep Medicine</em> found that athletes with <span class="stat-highlight"><15% REM sleep</span> were 2.3x more likely to sustain an overuse injury.</p>
+
+        <div class="case-study">
+            <div class="case-study-header">
+                <div class="case-study-icon">👤</div>
+                <div>
+                    <p class="box-label">Case Study: The "Recovered" Powerlifter</p>
+                    <p class="subtitle">Identifying the REM/SWS Imbalance</p>
+                </div>
+            </div>
+            <div class="case-study-content">
+                <div class="patient-profile">
+                    <div class="patient-avatar">M</div>
+                    <div class="patient-info">
+                        <h4>Marcus, 31, Competitive Powerlifter</h4>
+                        <p>Symptoms: Stagnant strength, high irritability, "heavy" legs despite 9 hours of sleep.</p>
+                    </div>
+                </div>
+                <p><strong>Assessment:</strong> Marcus utilized a wearable tracker (polysomnography-lite). Data showed 9 hours total sleep, but only 40 minutes of SWS (Normal: 90-120 min) and high "awake" time during the second half of the night.</p>
+                <p><strong>Intervention:</strong> Moved his 8:00 PM pre-workout supplement (containing high-dose caffeine) to 4:00 PM and introduced a 300mg Magnesium Bisglycinate protocol 60 minutes before bed.</p>
+                <p><strong>Outcome:</strong> SWS increased to 110 minutes within 14 days. HRV (RMSSD) rose from a baseline of 42ms to 58ms. Strength plateaus broke in the subsequent mesocycle.</p>
+            </div>
+        </div>
+
+        <h2 id="section4">4. The Metabolic Tax: Alcohol & Late-Night Feeding</h2>
+        <p>As a Sports Nutrition Coach, you must understand how nutritional timing directly alters recovery biometrics. Two major disruptors often hide in an athlete's "off-season" or "social" habits: alcohol and heavy late-night meals.</p>
+
+        <p><strong>Alcohol:</strong> Even a "moderate" dose (2 standard drinks) can suppress RMSSD by <span class="stat-highlight">20-30%</span> for up to 24 hours. Alcohol disrupts the sequence of sleep cycles, typically suppressing REM in the first half of the night and causing "rebound" wakefulness in the second half. This prevents the glymphatic system from effectively clearing metabolic waste from the brain.</p>
+
+        <p><strong>Late-Night Feeding:</strong> Large, high-fat, or high-protein meals consumed within 90 minutes of sleep require significant splanchnic blood flow for digestion. This elevates core body temperature and heart rate, preventing the <span class="highlight">nocturnal dip</span> required for deep sleep. Data from the <em>Journal of Clinical Sleep Medicine</em> suggests that late-night "heavy" eaters show a <span class="stat-highlight">10 bpm higher</span> average sleeping heart rate compared to those who finish eating 3 hours prior to sleep.</p>
+
+        <h2 id="section5">5. Triangulating Readiness: Subjective vs. Objective</h2>
+        <p>Data is powerful, but it is not infallible. The PERFORM Method™ advocates for a <span class="highlight">triangulation approach</span>: combining objective biometrics (HRV/Sleep) with subjective Readiness-to-Train (RTT) scales.</p>
+
+        <div class="principle-card">
+            <div class="principle-title">The Triangulation Framework</div>
+            <p class="principle-text">When coaching an athlete, look for alignment across three domains:</p>
+            <ul>
+                <li><strong>Objective HRV:</strong> Is the RMSSD within the athlete's normal "green" zone?</li>
+                <li><strong>Subjective RPE/RTT:</strong> Does the athlete feel "heavy," "sore," or "unmotivated"? (Scale of 1-10).</li>
+                <li><strong>Performance Output:</strong> Is the athlete hitting their prescribed loads/paces?</li>
+            </ul>
+        </div>
+
+        <p>Discrepancies are where the real coaching happens. For example, if HRV is high but the athlete feels "exhausted," they may be entering <span class="highlight">parasympathetic overreaching</span>, where the body is so fatigued it has lost the ability to mount a sympathetic response. This is a critical warning sign that requires an immediate reduction in training volume.</p>
+
+        <h2 id="section6">6. Fatigue vs. Chronic Overreaching</h2>
+        <p>Distinguishing between "good" fatigue (necessary for adaptation) and "bad" overreaching (precursor to injury/burnout) is the hallmark of an expert coach. Multi-day recovery assessment is the tool for this distinction.</p>
+
+        <div class="data-table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Metric</th>
+                        <th>Acute Fatigue (Normal)</th>
+                        <th>Chronic Overreaching (Warning)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>HRV (RMSSD)</strong></td>
+                        <td>1-2 day dip, quick recovery.</td>
+                        <td>Downward trend over 5+ days.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Resting HR</strong></td>
+                        <td>Stable or +2-3 bpm.</td>
+                        <td>+5-10 bpm above baseline.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Sleep Quality</strong></td>
+                        <td>"Sleep like a log" (Deep).</td>
+                        <td>Difficulty falling asleep; frequent waking.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Mood/Motivation</strong></td>
+                        <td>Tired but "ready to work."</td>
+                        <td>Apathy, irritability, loss of "competitive fire."</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="check-understanding">
+            <p class="box-label">Check Your Understanding</p>
+            <p class="box-subtitle">Test your mastery of recovery biometrics</p>
+
+            <div class="question-item">
+                <div class="question-number">1</div>
+                <p class="question-text">An athlete presents with a consistently high RMSSD (well above their average) but reports feeling profoundly lethargic and "slow" in their movements. What is the most likely physiological explanation?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-text">This is likely "Parasympathetic Saturation" or "Parasympathetic Overreaching." The nervous system is so depleted that it is stuck in a low-energy, rest-dominant state and cannot "rev up" for performance. It is a sign of deep, systemic fatigue, not superior recovery.</div>
+            </div>
+
+            <div class="question-item">
+                <div class="question-number">2</div>
+                <p class="question-text">How does late-night alcohol consumption specifically impact sleep architecture and subsequent recovery?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-text">Alcohol suppresses REM sleep in the first half of the night, increases the number of micro-awakenings (fragmentation), and elevates the nocturnal heart rate, which lowers HRV and prevents the glymphatic system from clearing metabolic waste.</div>
+            </div>
+        </div>
+
+        <div class="takeaways-box">
+            <p class="box-label">Key Takeaways</p>
+            <ul>
+                <li><strong>Focus on RMSSD:</strong> Use the Root Mean Square of Successive Differences as your primary HRV metric for assessing parasympathetic recovery.</li>
+                <li><strong>Architecture Matters:</strong> Total sleep time is secondary to the quality and distribution of SWS (physical repair) and REM (cognitive repair).</li>
+                <li><strong>The 3-Day Rule:</strong> A single bad HRV score is noise; a 3-day downward trend is a signal to adjust nutrition and training.</li>
+                <li><strong>Timing is Assessment:</strong> Late-night feeding and alcohol are the two most common "stealth" destroyers of recovery biometrics.</li>
+                <li><strong>Triangulate:</strong> Never rely on a wearable alone; always cross-reference objective data with the athlete's subjective readiness and actual performance.</li>
+            </ul>
+        </div>
+
+        <div class="references-box">
+            <h4>References & Further Reading</h4>
+            <ul>
+                <li>Bellenger et al. (2016). "Heart Rate Variability to Assess Training Response: A Systematic Review." Sports Medicine.</li>
+                <li>Halson, S. L. (2014). "Sleep in Elite Athletes and Nutritional Interventions to Enhance Sleep." Sports Medicine.</li>
+                <li>Plews et al. (2013). "Training Adaptation and Heart Rate Variability in Elite Endurance Athletes." International Journal of Sports Physiology and Performance.</li>
+                <li>Bird, S. P. (2013). "Sleep, Recovery, and Athletic Performance: A Brief Review and Recommendations." Strength and Conditioning Journal.</li>
+                <li>Laborde et al. (2017). "Heart Rate Variability and Cardiac Vagal Tone in Psychophysiological Research." Frontiers in Psychology.</li>
+                <li>Daanen et al. (2012). "A Systematic Review on Heart-Rate-Recovery to Monitor Fatigue." Journal of Strength and Conditioning Research.</li>
+            </ul>
+        </div>
+
+        <footer class="lesson-footer">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="footer-logo">
+            <p class="brand">AccrediPro Academy: Sports Nutrition Coach Certification</p>
+            <p class="copyright">&copy; 2024 AccrediPro. All rights reserved. The PERFORM Method™ is a registered trademark.</p>
+        </footer>
+    </div>
+</body>
+
+</html>

@@ -1,0 +1,627 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lesson 21.4: Recovery Architecture: CNS and Tissue Repair Protocols</title>
+    <style>
+        /* Base & Reset */
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Georgia, 'Times New Roman', serif;
+            line-height: 1.8;
+            color: #2d2d2d;
+            background: #f8f6f3;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Main Container */
+        .lesson-container {
+            max-width: 860px;
+            margin: 0 auto;
+            padding: 40px 30px;
+            background: #ffffff;
+            min-height: 100vh;
+            box-shadow: 0 0 60px rgba(0, 0, 0, 0.08);
+        }
+
+        /* Brand Header */
+        .brand-header {
+            text-align: center;
+            padding-bottom: 30px;
+            margin-bottom: 35px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .brand-logo {
+            max-width: 220px;
+            height: auto;
+            margin-bottom: 5px;
+        }
+
+        /* Module Header - BLUE theme for Recovery/Treatment */
+        .module-header {
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+            padding: 35px 35px 30px;
+            border-radius: 16px;
+            margin-bottom: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .module-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+            transform: translate(100px, -100px);
+        }
+
+        .module-header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, #B8860B, #D4A84B, #B8860B);
+        }
+
+        .module-label {
+            margin: 0;
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.75);
+            text-transform: uppercase;
+            letter-spacing: 2.5px;
+            font-weight: 500;
+        }
+
+        .lesson-title {
+            margin: 10px 0 0 0;
+            font-size: 28px;
+            color: #ffffff;
+            font-weight: 700;
+            line-height: 1.3;
+            position: relative;
+        }
+
+        .lesson-meta {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+            padding-top: 18px;
+            border-top: 1px solid rgba(255, 255, 255, 0.15);
+            flex-wrap: wrap;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.85);
+            background: rgba(255, 255, 255, 0.1);
+            padding: 5px 12px;
+            border-radius: 4px;
+        }
+
+        /* Table of Contents */
+        .toc-box {
+            background: linear-gradient(135deg, #fafafa 0%, #f5f5f5 100%);
+            border-radius: 14px;
+            padding: 24px 28px;
+            margin-bottom: 35px;
+            border: 1px solid #e8e8e8;
+        }
+
+        .toc-box .box-label {
+            font-weight: 600;
+            color: #1e3a8a;
+            margin: 0 0 18px 0;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .toc-list {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px 24px;
+        }
+
+        .toc-list a {
+            display: flex;
+            align-items: center;
+            padding: 8px 12px;
+            color: #555;
+            text-decoration: none;
+            font-size: 14px;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+        }
+
+        .toc-list a:hover {
+            background: white;
+            color: #1e3a8a;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+        }
+
+        .toc-list .section-num {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 26px;
+            height: 26px;
+            background: #1e3a8a;
+            color: white;
+            font-weight: 600;
+            font-size: 11px;
+            border-radius: 6px;
+            margin-right: 12px;
+            flex-shrink: 0;
+        }
+
+        /* Learning Objectives */
+        .objectives-box {
+            background: #eff6ff;
+            border: 2px solid #3b82f6;
+            border-radius: 14px;
+            padding: 30px 35px;
+            margin-bottom: 40px;
+        }
+
+        .objectives-box .box-label {
+            font-weight: 600;
+            color: #1e3a8a;
+            margin: 0 0 18px 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .objectives-box .box-label::before {
+            content: '🎯';
+            font-size: 18px;
+        }
+
+        .objectives-box ul {
+            margin: 0;
+            padding-left: 22px;
+        }
+
+        .objectives-box li {
+            margin-bottom: 14px;
+            font-size: 16px;
+            line-height: 1.7;
+        }
+
+        /* Section Headings */
+        h2 {
+            font-size: 24px;
+            color: #1e3a8a;
+            margin: 50px 0 20px 0;
+            font-weight: 600;
+            position: relative;
+            padding-bottom: 12px;
+        }
+
+        h2::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 60px;
+            height: 3px;
+            background: #D4A84B;
+        }
+
+        h3 {
+            font-size: 20px;
+            color: #1e40af;
+            margin: 35px 0 15px 0;
+        }
+
+        /* Paragraphs */
+        p {
+            font-size: 17px;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        /* Highlights */
+        .highlight {
+            background: linear-gradient(180deg, transparent 60%, #DBEAFE 60%);
+            padding: 0 4px;
+            font-weight: 600;
+            color: #1e3a8a;
+        }
+
+        /* Case Study Box */
+        .case-study {
+            background: linear-gradient(135deg, #f8f9fb 0%, #f0f2f5 100%);
+            border-radius: 16px;
+            padding: 0;
+            margin: 40px 0;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+            border: 1px solid #e5e7eb;
+        }
+
+        .case-study-header {
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+            padding: 20px 30px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .case-study-header .box-label {
+            font-weight: 600;
+            color: #ffffff;
+            margin: 0;
+            font-size: 16px;
+        }
+
+        .case-study-content {
+            padding: 28px 30px;
+        }
+
+        .patient-profile {
+            display: flex;
+            align-items: center;
+            gap: 18px;
+            padding: 18px 22px;
+            background: white;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            border: 1px solid #e5e5e5;
+        }
+
+        /* Stats Highlight */
+        .stat-highlight {
+            background: #f0fdf4;
+            padding: 4px 8px;
+            border-radius: 4px;
+            color: #166534;
+            font-weight: 700;
+            border: 1px solid #bbf7d0;
+        }
+
+        /* Data Table */
+        .data-table-container {
+            overflow-x: auto;
+            margin: 35px 0;
+            border-radius: 12px;
+            border: 1px solid #e5e7eb;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 15px;
+            background: white;
+        }
+
+        th {
+            background: #f1f5f9;
+            color: #1e3a8a;
+            font-weight: 700;
+            text-align: left;
+            padding: 15px;
+            border-bottom: 2px solid #e2e8f0;
+        }
+
+        td {
+            padding: 15px;
+            border-bottom: 1px solid #f1f5f9;
+            vertical-align: top;
+        }
+
+        /* Check Understanding Box */
+        .check-understanding {
+            background: linear-gradient(135deg, #fdfbf7 0%, #f9f5ed 100%);
+            border: 2px solid #D4A84B;
+            border-radius: 16px;
+            padding: 32px;
+            margin: 45px 0;
+        }
+
+        .question-item {
+            background: white;
+            border-radius: 12px;
+            padding: 22px 24px;
+            margin-bottom: 16px;
+            border: 1px solid #e8e4dc;
+        }
+
+        .answer-text {
+            display: none;
+            font-size: 14px;
+            color: #1e3a8a;
+            margin: 14px 0 0 0;
+            padding: 14px;
+            background: #eff6ff;
+            border-radius: 8px;
+        }
+
+        .answer-text.show {
+            display: block;
+        }
+
+        .reveal-btn {
+            background: #1e3a8a;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+
+        /* Takeaways & References */
+        .takeaways-box {
+            background: #f1f5f9;
+            padding: 25px;
+            border-radius: 12px;
+            margin-top: 40px;
+        }
+
+        .references-box {
+            margin-top: 40px;
+            padding: 25px;
+            background: #fafafa;
+            border-top: 1px solid #eee;
+            font-size: 14px;
+        }
+
+        .references-box h4 {
+            margin-top: 0;
+            color: #1e3a8a;
+        }
+
+        .references-box ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .references-box li {
+            margin-bottom: 10px;
+        }
+
+        .lesson-footer {
+            text-align: center;
+            padding: 40px 0;
+            border-top: 1px solid #eee;
+            margin-top: 40px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="lesson-container">
+        <div class="brand-header">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="brand-logo">
+        </div>
+
+        <header class="module-header">
+            <p class="module-label">Module 21: L2: Treatment Planning</p>
+            <h1 class="lesson-title">Lesson 4: Recovery Architecture: CNS and Tissue Repair Protocols</h1>
+            <div class="lesson-meta">
+                <span class="meta-item">35 min read</span>
+                <span class="meta-item">Lesson 4 of 4</span>
+            </div>
+        </header>
+
+        <div class="toc-box">
+            <p class="box-label">In This Lesson</p>
+            <ul class="toc-list">
+                <li><a href="#section1"><span class="section-num">1</span>CNS vs. Peripheral Fatigue</a></li>
+                <li><a href="#section2"><span class="section-num">2</span>The 24-Hour Recovery Window</a></li>
+                <li><a href="#section3"><span class="section-num">3</span>Connective Tissue Remodeling</a></li>
+                <li><a href="#section4"><span class="section-num">4</span>Circadian-Aligned Nutrition</a></li>
+                <li><a href="#section5"><span class="section-num">5</span>Inflammation Management</a></li>
+                <li><a href="#section6"><span class="section-num">6</span>The Rapid Re-synthesis Protocol</a></li>
+            </ul>
+        </div>
+
+        <div class="objectives-box">
+            <p class="box-label">Learning Objectives</p>
+            <ul>
+                <li>Differentiate between central nervous system (CNS) and peripheral fatigue pathways.</li>
+                <li>Design targeted nutritional protocols for collagen synthesis and ligamentous repair.</li>
+                <li>Implement circadian-aligned amino acid strategies to enhance sleep architecture.</li>
+                <li>Balance acute inflammatory signaling with long-term systemic recovery.</li>
+                <li>Execute the "Rapid Re-synthesis" protocol for multi-session athletic performance.</li>
+            </ul>
+        </div>
+
+        <h2 id="section1">1. The Dual Nature of Fatigue: CNS vs. Peripheral</h2>
+        <p>In the <span class="highlight">PERFORM Method™</span>, recovery is not a passive state; it is an active physiological architecture. To build a treatment plan, we must first identify which system is fatigued. <span class="highlight">Peripheral fatigue</span> occurs within the muscle (e.g., glycogen depletion, pH changes), while <span class="highlight">Central Nervous System (CNS) fatigue</span> involves a reduction in the neural drive to the muscle.</p>
+
+        <p>A 2022 study on elite athletes found that while muscle glycogen could be restored within 24 hours, neural drive (measured via voluntary activation) often remained suppressed for up to <span class="stat-highlight">72 hours</span> after high-intensity eccentric loading. This suggests that nutritional protocols focusing solely on carbohydrates may fail to address the "Central Governor" of performance.</p>
+
+        <div class="data-table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Fatigue Type</th>
+                        <th>Primary Mechanism</th>
+                        <th>Key Nutritional Target</th>
+                        <th>Recovery Marker</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Peripheral</strong></td>
+                        <td>Glycogen depletion, Ca2+ handling, H+ accumulation.</td>
+                        <td>Carbohydrates, Electrolytes, Creatine.</td>
+                        <td>Muscle Soreness (DOMS), Power Output.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>CNS</strong></td>
+                        <td>Neurotransmitter imbalance (Serotonin/Dopamine ratio).</td>
+                        <td>BCAAs (Large Neutral Amino Acids), Tyrosine, Choline.</td>
+                        <td>Grip Strength, HRV, Cognitive Speed.</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <h2 id="section2">2. Designing the 'Recovery Window' (R)</h2>
+        <p>The "Anabolic Window" is a misnomer often used to describe the 30-60 minutes post-exercise. In clinical treatment planning, we view the <span class="highlight">Recovery Window</span> as a 24-48 hour metabolic state characterized by increased sensitivity to nutrients. However, the first <span class="stat-highlight">0-4 hours</span> remain critical for athletes performing twice-daily sessions.</p>
+
+        <p>Research indicates that the rate of glycogen resynthesis is <span class="stat-highlight">~1.2g/kg/hr</span> when carbohydrates are ingested at frequent intervals. When protein is co-ingested with carbohydrates (0.4g/kg/hr), the insulinogenic response may further accelerate glycogen storage while simultaneously initiating muscle protein synthesis (MPS).</p>
+
+        <div class="case-study">
+            <div class="case-study-header">
+                <div class="case-study-icon">📋</div>
+                <div>
+                    <p class="box-label">Case Study 1: The Overtrained Decathlete</p>
+                    <p class="subtitle">CNS Fatigue Management</p>
+                </div>
+            </div>
+            <div class="case-study-content">
+                <div class="patient-profile">
+                    <div class="patient-avatar">MA</div>
+                    <div class="patient-info">
+                        <h4>Marcus A., 26</h4>
+                        <p>Elite Decathlete | Presenting with "Heavy Legs," 15% drop in grip strength, and poor sleep quality.</p>
+                    </div>
+                </div>
+                <p><strong>Intervention:</strong> Marcus was initially following a high-carb, low-protein recovery protocol. We shifted his "M" (Mental Edge) and "R" (Recovery) factors by introducing:</p>
+                <ul>
+                    <li><strong>BCAA Supplementation (6g):</strong> Specifically to compete with Tryptophan for entry into the brain, reducing central serotonin production.</li>
+                    <li><strong>L-Tyrosine (2g):</strong> Pre-training to support dopamine synthesis.</li>
+                    <li><strong>Phosphatidylserine (600mg):</strong> Post-training to blunt the cortisol response.</li>
+                </ul>
+                <p><strong>Outcome:</strong> Within 14 days, Marcus's Heart Rate Variability (HRV) increased by <span class="stat-highlight">22%</span>, and his morning grip strength returned to baseline.</p>
+            </div>
+        </div>
+
+        <h2 id="section3">3. Connective Tissue Remodeling: The Collagen Protocol</h2>
+        <p>Unlike muscle tissue, which is highly vascular, tendons and ligaments rely on <span class="highlight">mechanotransduction</span> and diffusion for nutrient delivery. For athletes recovering from injury or managing chronic tendinopathy, the timing of nutrient delivery is paramount.</p>
+
+        <p>A landmark meta-analysis (2023) of 12 studies (n=245) demonstrated that ingesting <span class="stat-highlight">15g of collagen peptides</span> combined with <span class="stat-highlight">50mg of Vitamin C</span> approximately 60 minutes before loading (exercise or rehab) significantly increased procollagen synthesis markers in the blood. This "pre-loading" strategy ensures that amino acids like proline and hydroxyproline are at peak concentration when blood flow to the tendon is increased during movement.</p>
+
+        <h3>The Tissue Repair Stack:</h3>
+        <ul>
+            <li><strong>Hydrolyzed Collagen:</strong> 15-20g (rich in Glycine/Proline).</li>
+            <li><strong>Vitamin C:</strong> 50-100mg (essential co-factor for cross-linking).</li>
+            <li><strong>Leucine:</strong> 3g (to maintain muscle mass during reduced loading).</li>
+            <li><strong>Omega-3s:</strong> 3-4g (to resolve acute inflammation).</li>
+        </ul>
+
+        <h2 id="section4">4. Circadian-Aligned Nutrition & Sleep Architecture</h2>
+        <p>Sleep is the most potent recovery tool in the athlete's arsenal. Nutritional choices in the evening can either disrupt or enhance <span class="highlight">Sleep Architecture</span>—the cycles of REM and Deep (Slow-Wave) Sleep. The goal is to maximize Growth Hormone (GH) release during deep sleep while providing a steady stream of amino acids for tissue repair.</p>
+
+        <p>The <span class="highlight">Pre-Sleep Casein Protocol</span> involves consuming 30-40g of casein protein 30 minutes before bed. Because casein clots in the stomach, it provides a sustained release of amino acids for <span class="stat-highlight">6-8 hours</span>, preventing a negative net protein balance overnight. Furthermore, foods high in tryptophan (e.g., pumpkin seeds, turkey) can cross the blood-brain barrier to produce melatonin, provided they are consumed with a small amount of carbohydrate to trigger insulin.</p>
+
+        <h2 id="section5">5. Managing Systemic Inflammation: The Hormetic Balance</h2>
+        <p>A common mistake in treatment planning is the over-suppression of inflammation. <span class="highlight">Acute inflammation</span> is the signal for adaptation. If we immediately use high-dose antioxidants (e.g., 1000mg Vitamin C and 400IU Vitamin E) post-workout, we may blunt the mitochondrial biogenesis and hypertrophy we are trying to achieve.</p>
+
+        <p>However, <span class="highlight">Chronic Systemic Inflammation</span> prevents recovery. The PERFORM Method™ suggests a "Pulsed Antioxidant" approach:</p>
+        <ul>
+            <li><strong>Phase 1 (Intense Training):</strong> Allow natural inflammation; use whole-food anti-inflammatories (Tart Cherry Juice, Turmeric).</li>
+            <li><strong>Phase 2 (Competition/Peak):</strong> Use targeted supplements to accelerate recovery at the expense of long-term adaptation.</li>
+        </ul>
+
+        <div class="case-study">
+            <div class="case-study-header">
+                <div class="case-study-icon">🦴</div>
+                <div>
+                    <p class="box-label">Case Study 2: ACL Reconstruction Recovery</p>
+                    <p class="subtitle">Structural Architecture Planning</p>
+                </div>
+            </div>
+            <div class="case-study-content">
+                <div class="patient-profile">
+                    <div class="patient-avatar">SJ</div>
+                    <div class="patient-info">
+                        <h4>Sarah J., 22</h4>
+                        <p>Professional Soccer Player | Post-Op Week 4 ACL Repair.</p>
+                    </div>
+                </div>
+                <p><strong>Goal:</strong> Prevent quadriceps atrophy and enhance graft integration.</p>
+                <p><strong>Protocol:</strong> 
+                    1. 15g Collagen + 50mg Vit C taken 60 mins before daily physical therapy.<br>
+                    2. 3g Creatine Monohydrate daily (shown to reduce muscle atrophy during immobilization).<br>
+                    3. 40g Casein before sleep to maximize overnight MPS.
+                </p>
+                <p><strong>Outcome:</strong> Sarah retained <span class="stat-highlight">88%</span> of her lean mass in the surgical limb compared to the 65-70% average seen in clinical literature at the 4-week mark.</p>
+            </div>
+        </div>
+
+        <h2 id="section6">6. Post-Exercise Re-synthesis: The PERFORM Protocol</h2>
+        <p>When an athlete has less than 8 hours between sessions, recovery must be aggressive. This is the "Rapid Re-synthesis" protocol used in professional tournaments and multi-day events.</p>
+
+        <p><strong>The PERFORM Rapid Protocol:</strong></p>
+        <ol>
+            <li><strong>Immediate (0-30m):</strong> 1.2g/kg high-GI carbohydrates + 0.4g/kg hydrolyzed whey + 500-750ml fluid per kg of weight lost.</li>
+            <li><strong>Intermediate (2h):</strong> Balanced meal with complex carbohydrates, lean protein, and 1,000mg of Omega-3s.</li>
+            <li><strong>Evening:</strong> 300mg Magnesium Bisglycinate + 40g Casein.</li>
+        </ol>
+
+        <div class="check-understanding">
+            <p class="box-label">Check Your Understanding</p>
+            <p class="box-subtitle">Test your knowledge of recovery architecture.</p>
+
+            <div class="question-item">
+                <p class="question-text">Why is the timing of collagen ingestion (60 mins before exercise) more important than simply hitting a daily total?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-text">Collagen synthesis in tendons and ligaments is driven by mechanotransduction (movement). Because these tissues have poor blood supply, ingesting the amino acids 60 minutes before exercise ensures peak plasma concentrations when blood flow to the connective tissue is temporarily increased during the workout.</div>
+            </div>
+
+            <div class="question-item">
+                <p class="question-text">An athlete reports high levels of mental fatigue and "brain fog" despite high calorie intake. Which fatigue pathway is likely dominant?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-text">CNS (Central Nervous System) fatigue. This is often driven by an increase in the serotonin-to-dopamine ratio in the brain. Interventions should focus on BCAAs (to block tryptophan) and tyrosine (to support dopamine).</div>
+            </div>
+        </div>
+
+        <div class="takeaways-box">
+            <p class="box-label">Key Takeaways</p>
+            <ul>
+                <li>Recovery is multi-dimensional; address the CNS for neural drive and peripheral systems for fuel.</li>
+                <li>Connective tissue requires specific co-factors (Vitamin C) and mechanical loading to utilize supplemental collagen.</li>
+                <li>Sleep architecture is enhanced by pre-sleep protein (Casein) and magnesium.</li>
+                <li>Avoid "over-antioxidizing" during the hypertrophy phase to allow for hormetic adaptation.</li>
+                <li>Rapid glycogen resynthesis requires 1.2g/kg/hr of carbohydrates in the immediate post-exercise window.</li>
+            </ul>
+        </div>
+
+        <div class="references-box">
+            <h4>References & Further Reading</h4>
+            <ul>
+                <li>Baar, K. (2017). "Minimizing Injury and Maximizing Return to Play: Lessons from Engineered Ligaments." <em>Sports Medicine.</em></li>
+                <li>Burke, L. M., et al. (2021). "Post-Exercise Muscle Glycogen Resynthesis in Humans." <em>Nutrients.</em></li>
+                <li>Halson, S. L. (2014). "Sleep in Elite Athletes and Nutritional Interventions to Enhance Sleep." <em>Sports Medicine.</em></li>
+                <li>Meeusen, R., et al. (2021). "Central Fatigue: The Role of Neurotransmitters in Performance." <em>International Journal of Sports Physiology and Performance.</em></li>
+                <li>Shaw, G., et al. (2017). "Vitamin C-enriched gelatin supplementation before intermittent activity augments collagen synthesis." <em>American Journal of Clinical Nutrition.</em></li>
+                <li>Trommelen, J., & van Loon, L. J. (2016). "Pre-Sleep Protein Ingestion to Improve the Skeletal Muscle Adaptive Response to Exercise Training." <em>Nutrients.</em></li>
+            </ul>
+        </div>
+
+        <footer class="lesson-footer">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="footer-logo">
+            <p class="brand">AccrediPro Academy: Sports Nutrition Coach Certification</p>
+            <p class="copyright">&copy; 2024 AccrediPro. All rights reserved. The PERFORM Method™ is a proprietary framework.</p>
+        </footer>
+    </div>
+</body>
+
+</html>

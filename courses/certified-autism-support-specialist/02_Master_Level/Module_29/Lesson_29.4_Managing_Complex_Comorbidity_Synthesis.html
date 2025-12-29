@@ -1,0 +1,694 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lesson 29.4: Managing Complex Comorbidity Synthesis</title>
+    <style>
+        /* Base & Reset */
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Georgia, 'Times New Roman', serif;
+            line-height: 1.8;
+            color: #2d2d2d;
+            background: #f8f6f3;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Main Container */
+        .lesson-container {
+            max-width: 860px;
+            margin: 0 auto;
+            padding: 40px 30px;
+            background: #ffffff;
+            min-height: 100vh;
+            box-shadow: 0 0 60px rgba(0, 0, 0, 0.08);
+        }
+
+        /* Brand Header */
+        .brand-header {
+            text-align: center;
+            padding-bottom: 30px;
+            margin-bottom: 35px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .brand-logo {
+            max-width: 220px;
+            height: auto;
+            margin-bottom: 5px;
+        }
+
+        /* Module Header - BLUE/GOLD theme for Master Integration */
+        .module-header {
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+            padding: 35px 35px 30px;
+            border-radius: 16px;
+            margin-bottom: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .module-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+            transform: translate(100px, -100px);
+        }
+
+        .module-header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, #B8860B, #D4A84B, #B8860B);
+        }
+
+        .module-label {
+            margin: 0;
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.75);
+            text-transform: uppercase;
+            letter-spacing: 2.5px;
+            font-weight: 500;
+        }
+
+        .lesson-title {
+            margin: 10px 0 0 0;
+            font-size: 28px;
+            color: #ffffff;
+            font-weight: 700;
+            line-height: 1.3;
+            position: relative;
+        }
+
+        .lesson-meta {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+            padding-top: 18px;
+            border-top: 1px solid rgba(255, 255, 255, 0.15);
+            flex-wrap: wrap;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.85);
+            background: rgba(255, 255, 255, 0.1);
+            padding: 5px 12px;
+            border-radius: 4px;
+        }
+
+        /* Table of Contents */
+        .toc-box {
+            background: linear-gradient(135deg, #fafafa 0%, #f5f5f5 100%);
+            border-radius: 14px;
+            padding: 24px 28px;
+            margin-bottom: 35px;
+            border: 1px solid #e8e8e8;
+        }
+
+        .toc-box .box-label {
+            font-weight: 600;
+            color: #1e3a8a;
+            margin: 0 0 18px 0;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .toc-list {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px 24px;
+        }
+
+        .toc-list li {
+            margin: 0;
+        }
+
+        .toc-list a {
+            display: flex;
+            align-items: center;
+            padding: 8px 12px;
+            color: #555;
+            text-decoration: none;
+            font-size: 14px;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+        }
+
+        .toc-list a:hover {
+            background: white;
+            color: #1e3a8a;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+        }
+
+        .toc-list .section-num {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 26px;
+            height: 26px;
+            background: #1e3a8a;
+            color: white;
+            font-weight: 600;
+            font-size: 11px;
+            border-radius: 6px;
+            margin-right: 12px;
+            flex-shrink: 0;
+        }
+
+        /* Learning Objectives */
+        .objectives-box {
+            background: #eff6ff;
+            border: 2px solid #3b82f6;
+            border-radius: 14px;
+            padding: 30px 35px;
+            margin-bottom: 40px;
+        }
+
+        .objectives-box .box-label {
+            font-weight: 600;
+            color: #1e3a8a;
+            margin: 0 0 18px 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .objectives-box .box-label::before {
+            content: '🎯';
+            font-size: 18px;
+        }
+
+        .objectives-box ul {
+            margin: 0;
+            padding-left: 22px;
+        }
+
+        .objectives-box li {
+            margin-bottom: 14px;
+            font-size: 16px;
+            line-height: 1.7;
+        }
+
+        /* Key Terms Box */
+        .key-terms-box {
+            background: linear-gradient(135deg, #f0f4f8 0%, #e8ecf1 100%);
+            border-radius: 14px;
+            padding: 28px 30px;
+            margin: 40px 0;
+            border: 1px solid #d8dce0;
+        }
+
+        .key-terms-box .box-label {
+            font-weight: 600;
+            color: #1e3a8a;
+            margin: 0 0 18px 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .terms-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 16px;
+        }
+
+        .term-item {
+            background: white;
+            padding: 16px 18px;
+            border-radius: 10px;
+            border-left: 4px solid #3b82f6;
+        }
+
+        .term-item .term {
+            font-weight: 700;
+            color: #1e3a8a;
+            font-size: 15px;
+            margin: 0 0 6px 0;
+        }
+
+        .term-item .definition {
+            font-size: 14px;
+            color: #555;
+            margin: 0;
+            line-height: 1.6;
+        }
+
+        /* Section Headings */
+        h2 {
+            font-size: 24px;
+            color: #1e3a8a;
+            margin: 50px 0 20px 0;
+            font-weight: 600;
+            position: relative;
+            padding-bottom: 12px;
+        }
+
+        h2::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 60px;
+            height: 3px;
+            background: #B8860B;
+        }
+
+        h3 {
+            font-size: 20px;
+            color: #3b82f6;
+            margin: 30px 0 15px 0;
+            font-weight: 600;
+        }
+
+        /* Paragraphs */
+        p {
+            font-size: 17px;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        /* Highlights */
+        .highlight {
+            background: linear-gradient(180deg, transparent 60%, #FFF59D 60%);
+            padding: 0 4px;
+            font-weight: 500;
+        }
+
+        /* Alert Boxes */
+        .alert-box {
+            padding: 26px 30px;
+            margin: 35px 0;
+            border-radius: 0 14px 14px 0;
+            border-left: 5px solid;
+        }
+
+        .alert-box.warning {
+            background: #fff8e6;
+            border-left-color: #ff9800;
+        }
+
+        .alert-box.info {
+            background: #e3f2fd;
+            border-left-color: #2196f3;
+        }
+
+        /* Case Study Box */
+        .case-study {
+            background: linear-gradient(135deg, #f8f9fb 0%, #f0f2f5 100%);
+            border-radius: 16px;
+            padding: 0;
+            margin: 40px 0;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+        }
+
+        .case-study-header {
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+            padding: 20px 30px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .case-study-icon {
+            width: 45px;
+            height: 45px;
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+        }
+
+        .case-study-header .box-label {
+            font-weight: 600;
+            color: #ffffff;
+            margin: 0;
+            font-size: 16px;
+        }
+
+        .case-study-content {
+            padding: 28px 30px;
+        }
+
+        .patient-profile {
+            display: flex;
+            align-items: center;
+            gap: 18px;
+            padding: 18px 22px;
+            background: white;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            border: 1px solid #e5e5e5;
+        }
+
+        /* Data Tables */
+        .data-table-container {
+            margin: 35px 0;
+            overflow-x: auto;
+            border-radius: 12px;
+            border: 1px solid #e5e7eb;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 15px;
+            text-align: left;
+        }
+
+        th {
+            background: #f3f4f6;
+            padding: 15px;
+            font-weight: 600;
+            color: #1e3a8a;
+            border-bottom: 2px solid #e5e7eb;
+        }
+
+        td {
+            padding: 15px;
+            border-bottom: 1px solid #e5e7eb;
+            vertical-align: top;
+        }
+
+        /* Statistics Highlight */
+        .stat-highlight {
+            display: inline-block;
+            background: #eff6ff;
+            color: #1e40af;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-weight: 600;
+            font-family: 'Courier New', Courier, monospace;
+        }
+
+        /* Check Understanding Box */
+        .check-understanding {
+            background: linear-gradient(135deg, #fdfbf7 0%, #f9f5ed 100%);
+            border: 2px solid #B8860B;
+            border-radius: 16px;
+            padding: 32px;
+            margin: 45px 0;
+        }
+
+        .reveal-btn {
+            background: #1e3a8a;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-size: 14px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+
+        .answer-text {
+            display: none;
+            margin-top: 15px;
+            padding: 15px;
+            background: #f0f8f0;
+            border-radius: 8px;
+            color: #1e40af;
+        }
+
+        /* Takeaways & References */
+        .takeaways-box {
+            background: #f3f4f6;
+            padding: 25px;
+            border-radius: 12px;
+            margin-top: 40px;
+        }
+
+        .references-box {
+            margin-top: 40px;
+            padding-top: 20px;
+            border-top: 1px solid #eee;
+            font-size: 14px;
+            color: #666;
+        }
+
+        .references-box h4 {
+            color: #1e3a8a;
+            margin-bottom: 15px;
+        }
+
+        .lesson-footer {
+            text-align: center;
+            margin-top: 60px;
+            padding-bottom: 40px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="lesson-container">
+        <div class="brand-header">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="brand-logo">
+        </div>
+
+        <header class="module-header">
+            <p class="module-label">Module 29: L3: Master Integration</p>
+            <h1 class="lesson-title">Lesson 4: Managing Complex Comorbidity Synthesis</h1>
+            <div class="lesson-meta">
+                <span class="meta-item">35 min read</span>
+                <span class="meta-item">Advanced Practitioner Level</span>
+            </div>
+        </header>
+
+        <div class="toc-box">
+            <p class="box-label">In This Lesson</p>
+            <ul class="toc-list">
+                <li><a href="#section1"><span class="section-num">1</span>The Synthesis Paradigm</a></li>
+                <li><a href="#section2"><span class="section-num">2</span>Differential Diagnosis: ASD vs. C-PTSD</a></li>
+                <li><a href="#section3"><span class="section-num">3</span>Rare Genetic Syndromes & ASD</a></li>
+                <li><a href="#section4"><span class="section-num">4</span>Pharmacological Awareness</a></li>
+                <li><a href="#section5"><span class="section-num">5</span>The Physiological Trifecta: EDS/POTS/GI</a></li>
+                <li><a href="#section6"><span class="section-num">6</span>Preventing Diagnostic Overshadowing</a></li>
+            </ul>
+        </div>
+
+        <div class="objectives-box">
+            <p class="box-label">Learning Objectives</p>
+            <ul>
+                <li>Master the clinical nuances between ASD traits and Complex PTSD/Personality Disorders to prevent misdiagnosis.</li>
+                <li>Synthesize behavioral support strategies for co-occurring rare genetic syndromes including Rett and Fragile X.</li>
+                <li>Evaluate the interaction between common psychotropic medications and behavioral interventions in high-acuity clients.</li>
+                <li>Analyze the impact of chronic physiological conditions (Ehlers-Danlos, POTS) on the neurodivergent sensory profile.</li>
+                <li>Implement strategies to eliminate "diagnostic overshadowing" in multidisciplinary clinical settings.</li>
+            </ul>
+        </div>
+
+        <h2 id="section1">1. The Synthesis Paradigm: Beyond Linear Comorbidity</h2>
+        <p>In the earlier stages of your certification, we focused on identifying individual comorbidities—anxiety, ADHD, or sensory processing disorder. At the <span class="highlight">Master Integration level</span>, we move away from a "list-based" approach to a "synthesis-based" approach. We no longer ask "Does this client have ASD <em>and</em> POTS?" Instead, we ask "How does the autonomic instability of POTS exacerbate the sensory gating deficits of this client's specific ASD phenotype?"</p>
+
+        <p>A 2022 large-scale cohort study (n=12,450) revealed that <span class="stat-highlight">92%</span> of autistic adults have at least one co-occurring psychiatric condition, and <span class="stat-highlight">78%</span> have at least one chronic physical health condition. When these overlap, the clinical picture becomes "high-acuity," requiring a practitioner who can synthesize data across medical, psychiatric, and behavioral domains.</p>
+
+        <div class="alert-box info">
+            <p class="alert-label">The Practitioner's Role</p>
+            <p>As a Master Specialist, you act as the "Clinical Architect." You are not a doctor, but you are the person responsible for ensuring that the neurologist's findings, the psychiatrist's prescriptions, and the physical therapist's exercises are synthesized into a coherent, neuro-affirming daily support plan.</p>
+        </div>
+
+        <h2 id="section2">2. Differential Diagnosis: ASD vs. Complex PTSD & Personality Disorders</h2>
+        <p>One of the most challenging areas of master-level practice is distinguishing between neurodevelopmental traits and the results of chronic trauma (C-PTSD) or personality-based presentations (specifically Borderline Personality Disorder - BPD). Because the "Masking Phenotype" often involves high levels of social chameleonism and internalizing distress, misdiagnosis is rampant.</p>
+
+        <div class="data-table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Feature</th>
+                        <th>Autism Spectrum (ASD)</th>
+                        <th>Complex PTSD (C-PTSD)</th>
+                        <th>Borderline Personality (BPD)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Social Motivation</strong></td>
+                        <td>Often high, but hampered by pragmatic/sensory barriers.</td>
+                        <td>Avoidant due to fear of betrayal or harm.</td>
+                        <td>Intense, characterized by "fear of abandonment."</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Sensory Profile</strong></td>
+                        <td>Primary; neurological gating issues present since infancy.</td>
+                        <td>Secondary; hypervigilance creates a sensory "filter" of threat.</td>
+                        <td>Variable; often linked to emotional dysregulation states.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Interests</strong></td>
+                        <td>Monotropic; deep, narrow focus provides regulation.</td>
+                        <td>Focus is often on safety, hypervigilance, or escapism.</td>
+                        <td>Interests may shift rapidly based on social circle (identity diffusion).</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Meltdowns</strong></td>
+                        <td>Neurological "overload"; recovery requires sensory reduction.</td>
+                        <td>Emotional "flashback"; recovery requires safety/grounding.</td>
+                        <td>Relational "protest"; recovery requires emotional validation.</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <p>A meta-analysis by <span class="highlight">Foulds et al. (2021)</span> found that <span class="stat-highlight">35-50%</span> of women diagnosed with BPD met the diagnostic criteria for ASD when re-evaluated with neuro-affirming tools. The Master Specialist must look for the "Neurological Constant"—traits that persist even when the client feels safe and regulated.</p>
+
+        <h2 id="section3">3. Rare Genetic Syndromes: Managing Phenotypic Complexity</h2>
+        <p>While most ASD cases are idiopathic, co-occurrence with known genetic syndromes requires specialized synthesis. These conditions often present with "Autism-Plus" profiles, where the genetic mutation dictates specific behavioral and physiological trajectories.</p>
+
+        <h3>Fragile X Syndrome (FXS)</h3>
+        <p>FXS is the most common inherited cause of intellectual disability and autism. In FXS, the "sensory profile" is almost always characterized by extreme <span class="highlight">hyper-arousal</span>. Behavioral interventions that work for idiopathic ASD (like direct eye contact training) can be physiologically painful for a client with FXS due to the intense amygdala activation it triggers.</p>
+
+        <h3>Tuberous Sclerosis Complex (TSC)</h3>
+        <p>TSC involves the growth of benign tumors in the brain and other organs. <span class="stat-highlight">40-50%</span> of individuals with TSC are autistic. The Master Specialist must synthesize the "Seizure Load" with behavioral data. Subtle behavioral regressions in these clients often signal subclinical seizure activity (tuber-related) rather than behavioral "non-compliance."</p>
+
+        <div class="case-study">
+            <div class="case-study-header">
+                <div class="case-study-icon">🧬</div>
+                <div>
+                    <p class="box-label">Case Study: The Genetic Synthesis</p>
+                    <p class="subtitle">Client: Liam, Age 9 (Fragile X + ASD)</p>
+                </div>
+            </div>
+            <div class="case-study-content">
+                <p><strong>Presenting Symptoms:</strong> Extreme aggression during transitions, refusal to enter the school cafeteria, and self-injurious hand-biting.</p>
+                <p><strong>Initial Assessment:</strong> Previous providers focused on "escape-maintained behavior" and used traditional ABA prompts. Behavior worsened.</p>
+                <p><strong>Master Synthesis Intervention:</strong> Recognizing the FXS-specific hyper-arousal, the specialist shifted the focus to <em>autonomic regulation</em>. We implemented "Side-by-Side" communication (avoiding direct eye contact to lower amygdala firing) and pre-transition heavy work (proprioceptive input).</p>
+                <p><strong>Outcome:</strong> Aggression reduced by <span class="stat-highlight">70%</span> within 3 weeks. The "behavior" was actually a physiological "fight or flight" response to the social-sensory demands of the previous intervention.</p>
+            </div>
+        </div>
+
+        <h2 id="section4">4. Pharmacological Awareness for the Master Practitioner</h2>
+        <p>While the Specialist does not prescribe, they are often the only professional seeing the client in their natural environment. You must understand how medications interact with the "Autistic Neurology."</p>
+
+        <ul>
+            <li><strong>Stimulants (ADHD):</strong> Can increase sensory sensitivity. A client who was "fine" with loud noises may become hyper-reactive once on methylphenidate.</li>
+            <li><strong>SSRIs (Anxiety/Depression):</strong> Autistic individuals often have "sluggish" serotonin metabolism. Low doses may be highly effective, while standard doses may cause "activation syndrome" (agitation and insomnia).</li>
+            <li><strong>Antipsychotics (Aggression/Irritability):</strong> Medications like Risperidone are FDA-approved for ASD irritability but can cause metabolic syndrome. The Specialist must track the "Trade-off"—is the reduction in aggression worth the lethargy that prevents social engagement?</li>
+        </ul>
+
+        <div class="alert-box warning">
+            <p class="alert-label">Critical Warning: Paradoxical Reactions</p>
+            <p>Neurodivergent brains frequently experience paradoxical reactions to medication (e.g., Benadryl causing hyperactivity instead of drowsiness). Always document "Baseline Shifts" immediately following any medication change.</p>
+        </div>
+
+        <h2 id="section5">5. The Physiological Trifecta: EDS, POTS, and GI Issues</h2>
+        <p>Recent research has highlighted a "systemic cluster" that frequently co-occurs with the ASD masking phenotype, particularly in those assigned female at birth. This is often referred to as the "Trifecta."</p>
+
+        <p><strong>1. Ehlers-Danlos Syndrome (EDS) / Hypermobility:</strong> A 2020 study found that hypermobile individuals are <span class="stat-highlight">7 times</span> more likely to be neurodivergent. Collagen affects not just joints, but the "wiring" of the nervous system.</p>
+        <p><strong>2. Postural Orthostatic Tachycardia Syndrome (POTS):</strong> Dysautonomia causes the heart rate to spike upon standing. For an autistic client, the internal sensation of a racing heart (interoception) is often misinterpreted as "anxiety," leading to a cycle of panic that is actually physiological.</p>
+        <p><strong>3. Gastrointestinal (GI) Dysfunction:</strong> Up to <span class="stat-highlight">85%</span> of autistic children experience chronic GI issues. The "Gut-Brain Axis" is not just a theory; gut inflammation directly correlates with increased repetitive behaviors and decreased social communication.</p>
+
+        <h2 id="section6">6. Preventing Diagnostic Overshadowing</h2>
+        <p><span class="highlight">Diagnostic Overshadowing</span> occurs when a healthcare professional attributes all of a patient's symptoms to their primary diagnosis (Autism), thereby missing a secondary, treatable condition.</p>
+
+        <p>Example: An autistic non-speaking adult begins head-banging. 
+            <br><em>Overshadowing View:</em> "It's just an autistic stim/behavior."
+            <br><em>Master Synthesis View:</em> "This is a new behavior. We must rule out dental pain, ear infections, or GI distress before assuming it is behavioral."
+        </p>
+
+        <div class="check-understanding">
+            <p class="box-label">Check Your Understanding</p>
+            <p class="box-subtitle">Test your mastery of complex synthesis</p>
+
+            <div class="question-item">
+                <div class="question-number">1</div>
+                <p class="question-text">A 22-year-old client with ASD and POTS reports a sudden increase in "social anxiety" during grocery shopping. Their heart rate is 135 bpm. What is the most likely synthesis?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-text">
+                    This is likely "Physiological Mimicry." The POTS-induced tachycardia is being interpreted by the client's brain as anxiety. The intervention should focus on physical stabilization (hydration, compression, or sitting) rather than just cognitive-behavioral anxiety tools.
+                </div>
+            </div>
+
+            <div class="question-item">
+                <div class="question-number">2</div>
+                <p class="question-text">Why might traditional "Eye Contact" goals be contraindicated for a client with Fragile X Syndrome?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-text">
+                    In Fragile X, the FMRP protein deficiency leads to extreme amygdala hypersensitivity. Direct gaze triggers a massive sympathetic nervous system spike (fight/flight), making social interaction physically distressing rather than just "difficult."
+                </div>
+            </div>
+        </div>
+
+        <div class="case-study">
+            <div class="case-study-header">
+                <div class="case-study-icon">🩺</div>
+                <div>
+                    <p class="box-label">Case Study: The Physiological Trifecta</p>
+                    <p class="subtitle">Client: Elena, Age 26 (L1 ASD, EDS, POTS)</p>
+                </div>
+            </div>
+            <div class="case-study-content">
+                <div class="patient-profile">
+                    <div class="patient-avatar">E</div>
+                    <div class="patient-info">
+                        <h4>Elena M.</h4>
+                        <p>High-masking, chronic fatigue, "treatment-resistant" anxiety.</p>
+                    </div>
+                </div>
+                <p><strong>The Challenge:</strong> Elena was labeled "non-compliant" in therapy because she refused to practice "exposure therapy" for her agoraphobia.</p>
+                <p><strong>The Synthesis:</strong> The Specialist identified that Elena's "agoraphobia" was actually a fear of fainting due to undiagnosed POTS. Her "sensory meltdowns" were occurring when she was physically exhausted from her joints (EDS) working too hard to keep her upright.</p>
+                <p><strong>The Intervention:</strong> We pivoted to a "Body-First" approach: salt/fluid loading, recumbent exercise, and using a wheelchair for long outings. We modified her sensory environment to include high-back chairs that provided proprioceptive "hugging" for her hypermobile joints.</p>
+                <p><strong>Outcome:</strong> Elena’s "anxiety" scores dropped by <span class="stat-highlight">60%</span>. She wasn't anxious about the world; she was anxious about her body's inability to support her in it.</p>
+            </div>
+        </div>
+
+        <div class="takeaways-box">
+            <p class="box-label">Master Key Takeaways</p>
+            <ul>
+                <li><strong>Synthesis over Summation:</strong> Don't just list comorbidities; analyze how they interact to create a unique clinical phenotype.</li>
+                <li><strong>Biology First:</strong> Always rule out physiological pain or autonomic instability (POTS/GI) before implementing behavioral modifications.</li>
+                <li><strong>The Trauma Distinction:</strong> ASD is a neurodevelopmental constant; C-PTSD is an overlay. Look for the sensory/pragmatic roots to distinguish between them.</li>
+                <li><strong>Medication Monitoring:</strong> Be the "eyes and ears" for the medical team, watching for paradoxical reactions or sensory shifts caused by psychotropics.</li>
+                <li><strong>Advocacy against Overshadowing:</strong> Protect your clients from the "It's just the Autism" trap in medical settings.</li>
+            </ul>
+        </div>
+
+        <div class="references-box">
+            <h4>References & Further Reading</h4>
+            <ul>
+                <li>Casanova, E. L., et al. (2020). "The relationship between autism and Ehlers-Danlos syndromes/hypermobility spectrum disorders." <em>Journal of Personalized Medicine.</em></li>
+                <li>Foulds, J., et al. (2021). "The overlap between Autistic Spectrum Disorder and Borderline Personality Disorder: A systematic review." <em>Psychiatry Research.</em></li>
+                <li>Hagerman, R. J., et al. (2017). "Fragile X syndrome." <em>Nature Reviews Disease Primers.</em></li>
+                <li>Kulas, J. F., et al. (2022). "Diagnostic overshadowing in the context of Autism Spectrum Disorder: A clinical review." <em>Journal of Autism and Developmental Disorders.</em></li>
+                <li>Monaco, K., et al. (2023). "Autonomic dysfunction in neurodivergent populations: POTS, EDS, and the ASD phenotype." <em>Clinical Autonomic Research.</em></li>
+                <li>Raitasalo, H., et al. (2021). "Pharmacological management of irritability in ASD: A meta-analysis of effect sizes and side-effect profiles." <em>JAMA Psychiatry.</em></li>
+            </ul>
+        </div>
+
+        <footer class="lesson-footer">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="footer-logo">
+            <p class="brand">AccrediPro Academy Certified Autism Support Specialist</p>
+            <p class="copyright">&copy; 2024 AccrediPro Academy. All rights reserved. Professional Use Only.</p>
+        </footer>
+    </div>
+</body>
+
+</html>

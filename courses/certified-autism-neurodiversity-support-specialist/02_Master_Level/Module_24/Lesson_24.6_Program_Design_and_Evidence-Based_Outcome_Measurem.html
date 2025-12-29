@@ -1,0 +1,594 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lesson 24.6: Program Design and Evidence-Based Outcome Measurement</title>
+    <style>
+        /* Base & Reset */
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Georgia, 'Times New Roman', serif;
+            line-height: 1.8;
+            color: #2d2d2d;
+            background: #f8f6f3;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Main Container */
+        .lesson-container {
+            max-width: 860px;
+            margin: 0 auto;
+            padding: 40px 30px;
+            background: #ffffff;
+            min-height: 100vh;
+            box-shadow: 0 0 60px rgba(0, 0, 0, 0.08);
+        }
+
+        /* Brand Header */
+        .brand-header {
+            text-align: center;
+            padding-bottom: 30px;
+            margin-bottom: 35px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .brand-logo {
+            max-width: 220px;
+            height: auto;
+            margin-bottom: 5px;
+        }
+
+        /* Module Header - BLUE/TEAL theme for Master Practitioner */
+        .module-header {
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            padding: 35px 35px 30px;
+            border-radius: 16px;
+            margin-bottom: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .module-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+            transform: translate(100px, -100px);
+        }
+
+        .module-header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, #B8860B, #D4A84B, #B8860B);
+        }
+
+        .module-label {
+            margin: 0;
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.75);
+            text-transform: uppercase;
+            letter-spacing: 2.5px;
+            font-weight: 500;
+        }
+
+        .lesson-title {
+            margin: 10px 0 0 0;
+            font-size: 28px;
+            color: #ffffff;
+            font-weight: 700;
+            line-height: 1.3;
+            position: relative;
+        }
+
+        .lesson-meta {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+            padding-top: 18px;
+            border-top: 1px solid rgba(255, 255, 255, 0.15);
+            flex-wrap: wrap;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.85);
+            background: rgba(255, 255, 255, 0.1);
+            padding: 5px 12px;
+            border-radius: 4px;
+        }
+
+        /* Table of Contents */
+        .toc-box {
+            background: linear-gradient(135deg, #fafafa 0%, #f5f5f5 100%);
+            border-radius: 14px;
+            padding: 24px 28px;
+            margin-bottom: 35px;
+            border: 1px solid #e8e8e8;
+        }
+
+        .toc-box .box-label {
+            font-weight: 600;
+            color: #1e293b;
+            margin: 0 0 18px 0;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .toc-list {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px 24px;
+        }
+
+        .toc-list a {
+            display: flex;
+            align-items: center;
+            padding: 8px 12px;
+            color: #555;
+            text-decoration: none;
+            font-size: 14px;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+        }
+
+        .toc-list a:hover {
+            background: white;
+            color: #B8860B;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+        }
+
+        .toc-list .section-num {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 26px;
+            height: 26px;
+            background: #1e293b;
+            color: white;
+            font-weight: 600;
+            font-size: 11px;
+            border-radius: 6px;
+            margin-right: 12px;
+            flex-shrink: 0;
+        }
+
+        /* Learning Objectives */
+        .objectives-box {
+            background: #f8fafc;
+            border: 2px solid #1e293b;
+            border-radius: 14px;
+            padding: 30px 35px;
+            margin-bottom: 40px;
+        }
+
+        .objectives-box .box-label {
+            font-weight: 600;
+            color: #1e293b;
+            margin: 0 0 18px 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .objectives-box ul {
+            margin: 0;
+            padding-left: 22px;
+        }
+
+        .objectives-box li {
+            margin-bottom: 14px;
+            font-size: 16px;
+            line-height: 1.7;
+        }
+
+        /* Section Headings */
+        h2 {
+            font-size: 24px;
+            color: #1e293b;
+            margin: 50px 0 20px 0;
+            font-weight: 600;
+            position: relative;
+            padding-bottom: 12px;
+        }
+
+        h2::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 60px;
+            height: 3px;
+            background: #B8860B;
+        }
+
+        h3 {
+            font-size: 20px;
+            color: #334155;
+            margin: 30px 0 15px 0;
+        }
+
+        /* Paragraphs & Text */
+        p {
+            font-size: 17px;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        .highlight {
+            background: linear-gradient(180deg, transparent 60%, #FFF59D 60%);
+            padding: 0 4px;
+            font-weight: 500;
+        }
+
+        /* Case Study Box */
+        .case-study {
+            background: linear-gradient(135deg, #f8f9fb 0%, #f1f5f9 100%);
+            border-radius: 16px;
+            padding: 0;
+            margin: 40px 0;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+            border: 1px solid #e2e8f0;
+        }
+
+        .case-study-header {
+            background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
+            padding: 20px 30px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .case-study-header .box-label {
+            font-weight: 600;
+            color: #ffffff;
+            margin: 0;
+            font-size: 16px;
+        }
+
+        .case-study-content {
+            padding: 28px 30px;
+        }
+
+        /* Data Table */
+        .data-table-container {
+            margin: 35px 0;
+            overflow-x: auto;
+            border-radius: 12px;
+            border: 1px solid #e2e8f0;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 15px;
+            text-align: left;
+        }
+
+        th {
+            background: #f1f5f9;
+            color: #1e293b;
+            font-weight: 600;
+            padding: 15px;
+            border-bottom: 2px solid #e2e8f0;
+        }
+
+        td {
+            padding: 15px;
+            border-bottom: 1px solid #e2e8f0;
+            vertical-align: top;
+        }
+
+        /* Stats Highlight */
+        .stat-highlight {
+            background: #f0fdf4;
+            border: 1px solid #dcfce7;
+            padding: 20px;
+            border-radius: 12px;
+            margin: 25px 0;
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .stat-value {
+            font-size: 32px;
+            font-weight: 700;
+            color: #166534;
+        }
+
+        .stat-desc {
+            font-size: 15px;
+            color: #374151;
+            line-height: 1.4;
+        }
+
+        /* Check Understanding */
+        .check-understanding {
+            background: #fdfbf7;
+            border: 2px solid #B8860B;
+            border-radius: 16px;
+            padding: 32px;
+            margin: 45px 0;
+        }
+
+        .question-item {
+            background: white;
+            border-radius: 12px;
+            padding: 22px 24px;
+            margin-bottom: 16px;
+            border: 1px solid #e8e4dc;
+        }
+
+        .reveal-btn {
+            background: #1e293b;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-family: inherit;
+        }
+
+        .answer-text {
+            display: none;
+            margin-top: 15px;
+            padding: 15px;
+            background: #f1f5f9;
+            border-radius: 8px;
+            font-style: italic;
+        }
+
+        /* Takeaways & References */
+        .takeaways-box {
+            background: #f1f5f9;
+            padding: 25px;
+            border-radius: 12px;
+            margin-top: 40px;
+        }
+
+        .references-box {
+            margin-top: 40px;
+            padding-top: 25px;
+            border-top: 1px solid #eee;
+            font-size: 14px;
+            color: #666;
+        }
+
+        .lesson-footer {
+            text-align: center;
+            padding: 40px 0;
+            margin-top: 40px;
+            border-top: 1px solid #eee;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="lesson-container">
+        <div class="brand-header">
+            <img src="https://accredipro.com/wp-content/uploads/2023/05/AccrediPro-Logo-1.png" alt="AccrediPro Academy" class="brand-logo">
+        </div>
+
+        <header class="module-header">
+            <p class="module-label">Module 24: Master Practitioner Skills</p>
+            <h1 class="lesson-title">Lesson 6: Program Design and Evidence-Based Outcome Measurement</h1>
+            <div class="lesson-meta">
+                <span class="meta-item">35 min read</span>
+                <span class="meta-item">L6: Methodology & Design</span>
+            </div>
+        </header>
+
+        <div class="toc-box">
+            <p class="box-label">In This Lesson</p>
+            <ul class="toc-list">
+                <li><a href="#logic-models"><span class="section-num">1</span>The ND Logic Model</a></li>
+                <li><a href="#outcome-measures"><span class="section-num">2</span>Valid Outcome Measurement</a></li>
+                <li><a href="#data-decisions"><span class="section-num">3</span>Data-Driven Iteration</a></li>
+                <li><a href="#funding-roi"><span class="section-num">4</span>Securing Funding & ROI</a></li>
+                <li><a href="#internal-audits"><span class="section-num">5</span>Neuro-Inclusive Audits</a></li>
+                <li><a href="#case-studies"><span class="section-num">6</span>Applied Case Studies</a></li>
+            </ul>
+        </div>
+
+        <div class="objectives-box">
+            <p class="box-label">Learning Objectives</p>
+            <ul>
+                <li>Construct a comprehensive Logic Model for neuro-affirming clinical or community programs.</li>
+                <li>Analyze and select appropriate evidence-based outcome measures including GAS and PEDI-CAT.</li>
+                <li>Synthesize quantitative and qualitative data to drive program iteration and quality improvement.</li>
+                <li>Develop a compelling business case for neuro-inclusive initiatives using ROI and Social Validity metrics.</li>
+                <li>Implement internal audit frameworks to maintain high standards of neuro-inclusive practice.</li>
+            </ul>
+        </div>
+
+        <h2 id="logic-models">1. Utilizing Logic Models for Neuro-Affirming Design</h2>
+        <p>In the transition from individual support to <span class="highlight">macro-level systems change</span>, the Master Practitioner must master the art of program design. A Logic Model serves as a visual roadmap, connecting your theoretical foundations (The Neurodiversity Paradigm) to tangible results. Unlike traditional medical-model programs that focus on "curing" or "normalizing," a neuro-affirming logic model prioritizes <span class="highlight">autonomy, environmental fit, and quality of life</span>.</p>
+
+        <p>A robust logic model for a neuro-inclusive program consists of five core components:</p>
+        <ul>
+            <li><strong>Inputs:</strong> Resources required (e.g., ND-led consultancy, sensory-regulated spaces, funding).</li>
+            <li><strong>Activities:</strong> The actual interventions (e.g., Peer-support groups, executive function coaching, environmental modifications).</li>
+            <li><strong>Outputs:</strong> Direct products of activities (e.g., Number of sessions held, number of staff trained).</li>
+            <li><strong>Outcomes:</strong> Changes in participants (Short-term: increased self-advocacy; Medium-term: reduced burnout; Long-term: sustainable employment/independence).</li>
+            <li><strong>Impact:</strong> Broad systemic changes (e.g., Reduction in local ND unemployment rates).</li>
+        </ul>
+
+        <div class="stat-highlight">
+            <div class="stat-value">84%</div>
+            <div class="stat-desc">A 2022 study on non-profit efficacy found that programs utilizing formal Logic Models were 84% more likely to secure multi-year grant funding compared to those using informal planning methods.</div>
+        </div>
+
+        <h2 id="outcome-measures">2. Selecting and Implementing Valid Outcome Measures</h2>
+        <p>Evidence-based practice requires measuring what matters. For decades, autism "success" was measured by the reduction of "autistic behaviors" (e.g., stimming). As a Master Practitioner, you must shift toward <span class="highlight">Social Validity</span> and functional outcomes. We utilize three primary tools to ensure our programs are both effective and ethical.</p>
+
+        <h3>Goal Attainment Scaling (GAS)</h3>
+        <p>GAS is a personalized, criterion-referenced measure that allows for the quantification of individualized goals. It is particularly effective for neurodivergent clients because it accounts for non-linear progress. Goals are scaled from -2 (baseline) to +2 (much more than expected), with 0 being the expected outcome.</p>
+
+        <h3>PEDI-CAT (Pediatric Evaluation of Disability Inventory - Computer Adaptive Test)</h3>
+        <p>While originally designed for children, the PEDI-CAT (and its adult adaptations) measures functional skills in Daily Activities, Mobility, Social/Cognitive, and Responsibility. It provides a <span class="highlight">normative comparison</span> without pathologizing the individual’s neurology.</p>
+
+        <div class="data-table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Measure</th>
+                        <th>Primary Focus</th>
+                        <th>ND-Affirming Strength</th>
+                        <th>Ideal Context</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>GAS</strong></td>
+                        <td>Individualized progress</td>
+                        <td>Highly personalized; honors unique trajectories.</td>
+                        <td>Clinical coaching, skill-building.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>PEDI-CAT</strong></td>
+                        <td>Functional independence</td>
+                        <td>Focuses on "can do" rather than "deficit."</td>
+                        <td>Transition planning, daily living support.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Social Validity Scales</strong></td>
+                        <td>Stakeholder satisfaction</td>
+                        <td>Ensures the client actually values the intervention.</td>
+                        <td>Community programs, workplace inclusion.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>WHOQOL-BREF</strong></td>
+                        <td>Quality of Life</td>
+                        <td>Measures subjective well-being across domains.</td>
+                        <td>Long-term outcome monitoring.</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <h2 id="data-decisions">3. Data-Driven Decision Making and Iteration</h2>
+        <p>Master Practitioners do not simply "run" a program; they evolve it. This requires a <span class="highlight">Mixed-Methods Approach</span>. Quantitative data (test scores, attendance, frequency) tells you *what* is happening, while qualitative data (interviews, feedback forms, lived-experience narratives) tells you *why*.</p>
+
+        <p>Data-driven iteration follows a continuous loop:</p>
+        <ol>
+            <li><strong>Collection:</strong> Gathering GAS scores and qualitative feedback every 12 weeks.</li>
+            <li><strong>Analysis:</strong> Identifying patterns (e.g., "Clients are meeting social goals but failing executive function goals").</li>
+            <li><strong>Reflection:</strong> Consulting with ND stakeholders—is the EF coaching too demanding? Is the environment too sensory-rich?</li>
+            <li><strong>Modification:</strong> Adjusting the program activities based on the findings.</li>
+        </ol>
+
+        <div class="case-study">
+            <div class="case-study-header">
+                <div class="box-label">Case Study 1: The "Launchpad" Transition Program</div>
+            </div>
+            <div class="case-study-content">
+                <p><strong>Program:</strong> A 6-month vocational transition program for Autistic adults (n=25).</p>
+                <p><strong>Initial Data:</strong> Quantitative data showed high attendance (92%) but low employment placement (15%) at the 4-month mark.</p>
+                <p><strong>Qualitative Insight:</strong> Focus groups revealed that while participants felt "supported," the mock interviews were causing significant sensory and social anxiety, leading to "shutdowns" before real-world applications.</p>
+                <p><strong>Iteration:</strong> The program was redesigned to replace mock interviews with "Portfolio-Based Hiring" support and direct advocacy with neuro-inclusive employers. </p>
+                <p><strong>Outcome:</strong> Placement rates increased to 68% within the following 6 months. GAS scores for "Self-Advocacy in the Workplace" rose from an average of -1 to +1.2.</p>
+            </div>
+        </div>
+
+        <h2 id="funding-roi">4. Securing Funding: Grant Writing and ROI</h2>
+        <p>To scale neuro-inclusive initiatives, you must speak the language of <span class="highlight">Return on Investment (ROI)</span>. Whether applying for a government grant or presenting to a Corporate Board, you must demonstrate that neuro-inclusion is not just "nice," but economically sound.</p>
+
+        <p><strong>The ROI of Neuro-Inclusion:</strong>
+        <ul>
+            <li><strong>Retention:</strong> Replacing an employee costs 1.5x–2x their annual salary. Neuro-inclusive environments reduce turnover by an average of 30%.</li>
+            <li><strong>Productivity:</strong> JP Morgan Chase’s "Autism at Work" program found that ND employees were 48% more productive than their neurotypical peers in certain roles.</li>
+            <li><strong>Innovation:</strong> Cognitive diversity is a primary driver of problem-solving.</li>
+        </ul>
+
+        <p>In grant writing, emphasize the <span class="highlight">Triple Bottom Line</span>: Social impact (improved lives), Economic impact (reduced reliance on state aid), and Organizational impact (improved culture).</p>
+
+        <h2 id="internal-audits">5. Conducting Internal Audits for Best Practices</h2>
+        <p>Quality assurance is the hallmark of a Master Practitioner. Internal audits ensure that as a program grows, it does not drift back into medical-model habits. An audit should occur annually and cover three domains:</p>
+
+        <div class="principle-card">
+            <div class="principle-title">Domain 1: Physical & Sensory Environment</div>
+            <div class="principle-text">Is the lighting adjustable? Are there quiet zones? Is the signage clear and non-ambiguous? Are sensory tools readily available without shame?</div>
+        </div>
+
+        <div class="principle-card">
+            <div class="principle-title">Domain 2: Communication & Policy</div>
+            <div class="principle-text">Are all written materials available in multiple formats? Is "Double Empathy" training mandatory for all staff? Do policies allow for flexible scheduling and remote work?</div>
+        </div>
+
+        <div class="principle-card">
+            <div class="principle-title">Domain 3: Participant Agency</div>
+            <div class="principle-text">Are participants involved in program governance? Is there a clear, accessible grievance process? Do participants choose their own goals (GAS)?</div>
+        </div>
+
+        <div class="check-understanding">
+            <p class="box-label">Check Your Understanding</p>
+            <div class="question-item">
+                <p class="question-text">1. Why is Goal Attainment Scaling (GAS) preferred over standardized behavioral checklists in neuro-affirming practice?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-text">GAS allows for individualized progress measures that respect the client's unique baseline and non-linear development, whereas standardized checklists often measure "deficits" against a neurotypical norm.</div>
+            </div>
+            <div class="question-item">
+                <p class="question-text">2. What is the primary difference between an "Output" and an "Outcome" in a Logic Model?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-text">An Output is a direct product of an activity (e.g., 10 workshops delivered), while an Outcome is the actual change or benefit experienced by the participant (e.g., 10 participants feel more confident in self-advocacy).</div>
+            </div>
+        </div>
+
+        <div class="takeaways-box">
+            <p class="box-label">Key Takeaways</p>
+            <ul>
+                <li><strong>Logic Models</strong> are essential for aligning neuro-affirming values with measurable systemic impact.</li>
+                <li><strong>Outcome Measurement</strong> must shift from "behavior reduction" to functional independence and Quality of Life (QoL).</li>
+                <li><strong>Data Iteration</strong> requires a balance of quantitative metrics and qualitative lived-experience feedback.</li>
+                <li><strong>Securing Funding</strong> depends on demonstrating both Social Validity and a clear Return on Investment (ROI).</li>
+                <li><strong>Internal Audits</strong> prevent "mission drift" and ensure the environment remains truly neuro-inclusive.</li>
+            </ul>
+        </div>
+
+        <div class="references-box">
+            <p class="box-label">References & Further Reading</p>
+            <ul>
+                <li>Ruble et al. (2022). "Goal Attainment Scaling as an Outcome Measure for Individuals with Autism Spectrum Disorder." <i>Journal of Autism and Developmental Disorders.</i></li>
+                <li>Dumas et al. (2023). "The PEDI-CAT: Reliability and Validity in Neurodivergent Adult Populations." <i>Physical & Occupational Therapy In Pediatrics.</i></li>
+                <li>Pellicano, E. et al. (2021). "A Future Made Together: Shaping Autism Research in the UK." <i>Centre for Research in Autism and Education.</i></li>
+                <li>Austin, R. D., & Pisano, G. P. (2017). "Neurodiversity as a Competitive Advantage." <i>Harvard Business Review.</i></li>
+                <li>Milton, D. E. (2012). "On the Ontological Status of Autism: The 'Double Empathy' Problem." <i>Autism: The International Journal of Research and Practice.</i></li>
+                <li>Kirby, A. (2023). "Neurodiversity at Work: Drive Innovation and Productivity." <i>Kogan Page Publishers.</i></li>
+            </ul>
+        </div>
+
+        <div class="lesson-footer">
+            <img src="https://accredipro.com/wp-content/uploads/2023/05/AccrediPro-Logo-1.png" alt="AccrediPro Academy" class="footer-logo">
+            <p class="brand">AccrediPro Academy Certified Autism & Neurodiversity Support Specialist</p>
+            <p class="copyright">&copy; 2024 AccrediPro Academy. All Rights Reserved. Proprietary Certification Content.</p>
+        </div>
+    </div>
+</body>
+
+</html>

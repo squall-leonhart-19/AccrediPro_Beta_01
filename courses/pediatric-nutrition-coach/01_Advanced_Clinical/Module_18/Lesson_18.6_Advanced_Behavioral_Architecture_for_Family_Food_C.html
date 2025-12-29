@@ -1,0 +1,655 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lesson 18.6: Advanced Behavioral Architecture for Family Food Culture</title>
+    <style>
+        /* Base & Reset */
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Georgia, 'Times New Roman', serif;
+            line-height: 1.8;
+            color: #2d2d2d;
+            background: #f8f6f3;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Main Container */
+        .lesson-container {
+            max-width: 860px;
+            margin: 0 auto;
+            padding: 40px 30px;
+            background: #ffffff;
+            min-height: 100vh;
+            box-shadow: 0 0 60px rgba(0, 0, 0, 0.08);
+        }
+
+        /* Brand Header */
+        .brand-header {
+            text-align: center;
+            padding-bottom: 30px;
+            margin-bottom: 35px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .brand-logo {
+            max-width: 220px;
+            height: auto;
+            margin-bottom: 5px;
+        }
+
+        /* Module Header - BLUE/TEAL theme for Advanced Behavioral */
+        .module-header {
+            background: linear-gradient(135deg, #0f172a 0%, #334155 100%);
+            padding: 35px 35px 30px;
+            border-radius: 16px;
+            margin-bottom: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .module-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+            transform: translate(100px, -100px);
+        }
+
+        .module-header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, #B8860B, #D4A84B, #B8860B);
+        }
+
+        .module-label {
+            margin: 0;
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.75);
+            text-transform: uppercase;
+            letter-spacing: 2.5px;
+            font-weight: 500;
+        }
+
+        .lesson-title {
+            margin: 10px 0 0 0;
+            font-size: 28px;
+            color: #ffffff;
+            font-weight: 700;
+            line-height: 1.3;
+            position: relative;
+        }
+
+        .lesson-meta {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+            padding-top: 18px;
+            border-top: 1px solid rgba(255, 255, 255, 0.15);
+            flex-wrap: wrap;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.85);
+            background: rgba(255, 255, 255, 0.1);
+            padding: 5px 12px;
+            border-radius: 4px;
+        }
+
+        /* Table of Contents */
+        .toc-box {
+            background: linear-gradient(135deg, #fafafa 0%, #f5f5f5 100%);
+            border-radius: 14px;
+            padding: 24px 28px;
+            margin-bottom: 35px;
+            border: 1px solid #e8e8e8;
+        }
+
+        .toc-box .box-label {
+            font-weight: 600;
+            color: #334155;
+            margin: 0 0 18px 0;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .toc-list {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px 24px;
+        }
+
+        .toc-list li {
+            margin: 0;
+        }
+
+        .toc-list a {
+            display: flex;
+            align-items: center;
+            padding: 8px 12px;
+            color: #555;
+            text-decoration: none;
+            font-size: 14px;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+        }
+
+        .toc-list a:hover {
+            background: white;
+            color: #0f172a;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+        }
+
+        .toc-list .section-num {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 26px;
+            height: 26px;
+            background: #334155;
+            color: white;
+            font-weight: 600;
+            font-size: 11px;
+            border-radius: 6px;
+            margin-right: 12px;
+            flex-shrink: 0;
+        }
+
+        /* Learning Objectives */
+        .objectives-box {
+            background: #f8fafc;
+            border: 2px solid #334155;
+            border-radius: 14px;
+            padding: 30px 35px;
+            margin-bottom: 40px;
+        }
+
+        .objectives-box .box-label {
+            font-weight: 600;
+            color: #334155;
+            margin: 0 0 18px 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .objectives-box .box-label::before {
+            content: '🎯';
+            font-size: 18px;
+        }
+
+        .objectives-box ul {
+            margin: 0;
+            padding-left: 22px;
+        }
+
+        .objectives-box li {
+            margin-bottom: 14px;
+            font-size: 16px;
+            line-height: 1.7;
+        }
+
+        /* Section Headings */
+        h2 {
+            font-size: 24px;
+            color: #0f172a;
+            margin: 50px 0 20px 0;
+            font-weight: 600;
+            position: relative;
+            padding-bottom: 12px;
+        }
+
+        h2::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 60px;
+            height: 3px;
+            background: #B8860B;
+        }
+
+        h3 {
+            font-size: 20px;
+            color: #334155;
+            margin: 35px 0 15px 0;
+            font-weight: 600;
+        }
+
+        /* Paragraphs & Lists */
+        p {
+            font-size: 17px;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        .content-list {
+            font-size: 17px;
+            margin: 20px 0;
+            padding-left: 24px;
+        }
+
+        .content-list li {
+            margin-bottom: 14px;
+            line-height: 1.7;
+        }
+
+        /* Highlights */
+        .highlight {
+            background: linear-gradient(180deg, transparent 60%, #e2e8f0 60%);
+            padding: 0 4px;
+            font-weight: 600;
+            color: #0f172a;
+        }
+
+        /* Case Study Box */
+        .case-study {
+            background: linear-gradient(135deg, #f8f9fb 0%, #f1f5f9 100%);
+            border-radius: 16px;
+            padding: 0;
+            margin: 40px 0;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+            border: 1px solid #e2e8f0;
+        }
+
+        .case-study-header {
+            background: linear-gradient(135deg, #0f172a 0%, #334155 100%);
+            padding: 20px 30px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .case-study-icon {
+            width: 45px;
+            height: 45px;
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+        }
+
+        .case-study-header .box-label {
+            font-weight: 600;
+            color: #ffffff;
+            margin: 0;
+            font-size: 16px;
+            letter-spacing: 0.5px;
+        }
+
+        .case-study-content {
+            padding: 28px 30px;
+        }
+
+        .patient-profile {
+            display: flex;
+            align-items: center;
+            gap: 18px;
+            padding: 18px 22px;
+            background: white;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            border: 1px solid #e2e8f0;
+        }
+
+        .patient-avatar {
+            width: 55px;
+            height: 55px;
+            background: #334155;
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            flex-shrink: 0;
+        }
+
+        /* Statistics Box */
+        .stat-highlight {
+            background: #0f172a;
+            color: white;
+            padding: 30px;
+            border-radius: 14px;
+            margin: 30px 0;
+            display: flex;
+            align-items: center;
+            gap: 25px;
+        }
+
+        .stat-value {
+            font-size: 48px;
+            font-weight: 800;
+            color: #D4A84B;
+            line-height: 1;
+        }
+
+        .stat-desc {
+            font-size: 16px;
+            line-height: 1.4;
+            color: #e2e8f0;
+        }
+
+        /* Data Table */
+        .data-table-container {
+            overflow-x: auto;
+            margin: 35px 0;
+            border-radius: 12px;
+            border: 1px solid #e2e8f0;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 15px;
+            text-align: left;
+        }
+
+        th {
+            background: #f1f5f9;
+            padding: 16px;
+            font-weight: 600;
+            color: #0f172a;
+            border-bottom: 2px solid #e2e8f0;
+        }
+
+        td {
+            padding: 16px;
+            border-bottom: 1px solid #e2e8f0;
+            color: #444;
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        /* Check Understanding Box */
+        .check-understanding {
+            background: #fdfbf7;
+            border: 2px solid #B8860B;
+            border-radius: 16px;
+            padding: 32px;
+            margin: 45px 0;
+        }
+
+        .question-item {
+            background: white;
+            border-radius: 12px;
+            padding: 22px 24px;
+            margin-bottom: 16px;
+            border: 1px solid #e8e4dc;
+        }
+
+        .reveal-btn {
+            background: #334155;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-family: inherit;
+        }
+
+        .answer-text {
+            display: none;
+            margin-top: 15px;
+            padding: 15px;
+            background: #f1f5f9;
+            border-radius: 8px;
+            font-style: italic;
+        }
+
+        /* Takeaways & References */
+        .takeaways-box {
+            background: #0f172a;
+            color: white;
+            padding: 30px;
+            border-radius: 14px;
+            margin-top: 50px;
+        }
+
+        .takeaways-box h4 {
+            color: #D4A84B;
+            margin-top: 0;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .references-box {
+            margin-top: 40px;
+            padding: 25px;
+            background: #f8f9fa;
+            border-radius: 12px;
+            font-size: 14px;
+            color: #666;
+        }
+
+        .lesson-footer {
+            text-align: center;
+            padding-top: 50px;
+            margin-top: 60px;
+            border-top: 1px solid #eee;
+        }
+
+        @media (max-width: 768px) {
+            .lesson-container { padding: 20px 15px; }
+            .toc-list { grid-template-columns: 1fr; }
+            .stat-highlight { flex-direction: column; text-align: center; }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="lesson-container">
+        <div class="brand-header">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="brand-logo">
+        </div>
+
+        <header class="module-header">
+            <p class="module-label">Module 18: Integration & Synthesis</p>
+            <h1 class="lesson-title">Lesson 18.6: Advanced Behavioral Architecture for Family Food Culture</h1>
+            <div class="lesson-meta">
+                <span class="meta-item">35 min read</span>
+                <span class="meta-item">Expert Level Certification</span>
+            </div>
+        </header>
+
+        <div class="toc-box">
+            <p class="box-label">In This Lesson</p>
+            <ul class="toc-list">
+                <li><a href="#section1"><span class="section-num">1</span>Systemic Family Nutrition Theory</a></li>
+                <li><a href="#section2"><span class="section-num">2</span>The G.R.O.W. Ripple Effect</a></li>
+                <li><a href="#section3"><span class="section-num">3</span>Conditioning vs. Intuitive Synthesis</a></li>
+                <li><a href="#section4"><span class="section-num">4</span>Advanced Environmental Design</a></li>
+                <li><a href="#section5"><span class="section-num">5</span>Psychology of the Problem Eater</a></li>
+                <li><a href="#section6"><span class="section-num">6</span>Clinical Synthesis Protocols</a></li>
+            </ul>
+        </div>
+
+        <div class="objectives-box">
+            <p class="box-label">Learning Objectives</p>
+            <ul>
+                <li>Apply <span class="highlight">Family Systems Theory</span> to identify and resolve multi-generational mealtime power struggles.</li>
+                <li>Quantify the "Ripple Effect" of pediatric nutritional remediation on parental mental health and household cortisol levels.</li>
+                <li>Synthesize behavioral conditioning techniques with intuitive eating principles to create a sustainable "Middle Way."</li>
+                <li>Design a "Choice Architecture" for the home environment using Thaler’s Nudge Theory.</li>
+                <li>Differentiate between sensory processing food refusal and emotional/behavioral refusal in complex cases.</li>
+            </ul>
+        </div>
+
+        <h2 id="section1">1. Systemic Family Nutrition: Beyond the Individual Child</h2>
+        <p>In the <span class="highlight">G.R.O.W. Kids Nutrition Method™</span>, we recognize that the child is not an island. While previous modules focused on the biological "G" (Growth) and "R" (Remediate), the "W" (Whole Family Wellness) is where long-term success is anchored. Traditional pediatric nutrition often treats the child as the "patient," but advanced practitioners view the entire family as the <span class="highlight">systemic unit of change</span>.</p>
+        
+        <p>Family Systems Theory (FST) suggests that individuals cannot be understood in isolation from one another. In the context of nutrition, a child's food refusal is often a functional, albeit maladaptive, response to family dynamics. Power struggles at the table are rarely about the broccoli; they are about <span class="highlight">autonomy, control, and emotional regulation</span> within the family hierarchy.</p>
+
+        <div class="stat-highlight">
+            <div class="stat-value">64%</div>
+            <div class="stat-desc">A 2022 study of 1,450 households found that 64% of high-conflict mealtimes were directly correlated with parental "controlling feeding practices," creating a feedback loop of resistance (p < 0.001).</div>
+        </div>
+
+        <h2 id="section2">2. The 'Ripple Effect' of G.R.O.W. Remediation</h2>
+        <p>One of the most profound discoveries in advanced pediatric coaching is the bidirectional relationship between a child's nutritional status and the family's psychosocial health. We call this the <span class="highlight">G.R.O.W. Ripple Effect</span>. When we effectively remediate (R) a child's micronutrient deficiencies—specifically iron, zinc, and Omega-3 fatty acids—we often see a "spillover" effect that improves parental wellbeing.</p>
+        
+        <p>Consider the neurobiology: A child with <span class="highlight">Iron Deficiency (ID)</span> often exhibits increased irritability and sleep disturbances. This leads to parental sleep deprivation, increased maternal/paternal cortisol, and a decreased capacity for "gentle parenting" during mealtimes. By fixing the child's iron status, we aren't just improving their hematology; we are architecting a lower-stress household.</p>
+
+        <div class="case-study">
+            <div class="case-study-header">
+                <div class="case-study-icon">📋</div>
+                <div>
+                    <p class="box-label">Case Study: The Ripple Effect in Action</p>
+                    <p class="subtitle">The Miller Family (Systemic Remediation)</p>
+                </div>
+            </div>
+            <div class="case-study-content">
+                <div class="patient-profile">
+                    <div class="patient-avatar">L</div>
+                    <div class="patient-info">
+                        <h4>Leo (Age 4) & Parents</h4>
+                        <p>Presenting: Severe picky eating, nightly meltdowns, parental "burnout."</p>
+                    </div>
+                </div>
+                <p><strong>Initial Assessment:</strong> Leo was in the 15th percentile for weight (G). Diet was 80% ultra-processed beige foods. Parents were using "bribes" (dessert) to get Leo to eat, leading to 45-minute mealtime battles.</p>
+                <p><strong>Intervention:</strong> Instead of focusing on "making him eat," the coach focused on <span class="highlight">Remediating (R)</span> a suspected zinc and iron gap via fortified smoothies while implementing a "No-Pressure Zone" (W). </p>
+                <p><strong>Outcomes:</strong> Within 6 weeks, Leo's appetite increased (zinc effect). His improved mood led to better sleep. His mother reported a 40% reduction in her own "parenting stress" scores, allowing her to stop using coercive feeding tactics. The system stabilized because the child's biology no longer triggered the parents' anxiety.</p>
+            </div>
+        </div>
+
+        <h2 id="section3">3. Behavioral Conditioning vs. Intuitive Eating: The Synthesis</h2>
+        <p>A common debate in pediatric nutrition is the tension between <span class="highlight">Behavioral Conditioning</span> (rewarding/structuring behavior) and <span class="highlight">Intuitive Eating/sDOR</span> (trusting the child's internal cues). As an expert coach, your role is to find the "Synthesis of Architecture."</p>
+
+        <div class="data-table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Concept</th>
+                        <th>Behavioral Architecture (The How)</th>
+                        <th>Intuitive Synthesis (The Why)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Meal Structure</strong></td>
+                        <td>Rigid timing to regulate blood sugar.</td>
+                        <td>Predictable "rhythm" that allows hunger to build naturally.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Food Exposure</strong></td>
+                        <td>Systematic desensitization (touching, smelling).</td>
+                        <td>Autonomy-led exploration without "tasting" requirements.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Positive Reinforcement</strong></td>
+                        <td>Praising the <i>effort</i> of trying new textures.</td>
+                        <td>Avoiding "good boy" for eating; focusing on "curiosity."</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Reward Systems</strong></td>
+                        <td>Non-food rewards (stickers, extra play).</td>
+                        <td>The reward is the <i>mastery</i> of a new food skill.</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <h2 id="section4">4. Advanced Environmental Design: The 'Nudge' Theory</h2>
+        <p>Behavioral architecture relies heavily on <span class="highlight">Environmental Design</span>. Based on the work of Nobel laureate Richard Thaler, "Nudging" involves altering the environment to make the healthy choice the easiest, or "default," choice without forbidding any options or significantly changing economic incentives.</p>
+        
+        <h3>The 3 Pillars of Kitchen Architecture:</h3>
+        <ul class="content-list">
+            <li><strong>Visibility (The Eye-Level Rule):</strong> A 2019 meta-analysis (n=3,400) showed that placing fruit in clear bowls on the counter increased consumption by <span class="highlight">103%</span> compared to keeping it in the refrigerator crisper drawer.</li>
+            <li><strong>Convenience (The Friction Rule):</strong> Reducing the "steps to eat" for nutrient-dense foods (e.g., pre-sliced peppers) while increasing the steps for ultra-processed foods (e.g., keeping crackers on a high, opaque shelf).</li>
+            <li><strong>Portion Architecture:</strong> Using smaller plates for children (18-20cm) reduces the visual "overwhelm" of new foods, which is a primary trigger for sensory food refusal.</li>
+        </ul>
+
+        <h2 id="section5">5. Psychology of the 'Problem Eater': Sensory vs. Emotional Refusal</h2>
+        <p>To synthesize a solution, you must distinguish between the <i>biological root</i> and the <i>behavioral habit</i>. As we learned in Module 5, sensory processing issues are often the root, but by the time a family reaches a coach, a "behavioral crust" has formed over the sensory issue.</p>
+
+        <p><strong>Sensory Root (The 'R' and 'O'):</strong> The child's nervous system perceives certain textures as "threats." This is often exacerbated by <span class="highlight">Zinc deficiency</span>, which can cause metallic tastes or blunted flavor perception (dysgeusia).</p>
+        
+        <p><strong>Emotional Crust (The 'W'):</strong> The child uses food refusal to gain a sense of agency in an environment where they feel powerless. If a parent is over-controlling in other areas (homework, schedule), the dinner table becomes the child's "Alamo"—the one place they can say "No" and win.</p>
+
+        <div class="check-understanding">
+            <p class="box-label">Check Your Understanding</p>
+            <div class="question-item">
+                <p class="question-text">1. According to Family Systems Theory, why might a child's food refusal persist even after a nutritional deficiency is corrected?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-text">The behavior may have become a "functional" part of the family dynamic, used by the child to exert autonomy or by the system to deflect from other parental conflicts. This is the "behavioral crust."</div>
+            </div>
+            <div class="question-item">
+                <p class="question-text">2. How does the "Ripple Effect" specifically involve the 'W' (Whole Family) in the G.R.O.W. method?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-text">By remediating the child's deficiencies (R), we reduce the child's irritability and improve sleep, which lowers parental cortisol and stress, creating a more regulated environment for the entire family (W).</div>
+            </div>
+        </div>
+
+        <h2 id="section6">6. Clinical Synthesis Protocols for the Coach</h2>
+        <p>When integrating these concepts into a 12-month roadmap (as discussed in Lesson 18.4), your "Behavioral Architecture" protocol should follow these steps:</p>
+        
+        <ol class="content-list">
+            <li><strong>De-Escalation Phase (Weeks 1-4):</strong> Remove all pressure. Implement sDOR (Division of Responsibility). The goal is to lower the "Mealtime Heart Rate" of the parents.</li>
+            <li><strong>Biological Priming (Weeks 5-12):</strong> Focus on <span class="highlight">Remediating (R)</span> gaps (Iron, Zinc, Magnesium) through "stealth health" or supplementation to fix the sensory/neurological baseline.</li>
+            <li><strong>Architecture Phase (Weeks 13-24):</strong> Redesign the kitchen environment (Nudge Theory). Introduce "Food Exploration" as a non-eating activity (Sensory Play).</li>
+            <li><strong>Maintenance & Mentorship (Months 6-12):</strong> Transition the parents from "Feeding Managers" to "Food Mentors," focusing on long-term <span class="highlight">Parental Modeling</span>.</li>
+        </ol>
+
+        <div class="takeaways-box">
+            <h4>Key Lesson Takeaways</h4>
+            <ul>
+                <li><strong>The Family is the Unit:</strong> Effective pediatric coaching treats the family system, not just the child's plate.</li>
+                <li><strong>Biology Drives Behavior:</strong> Fixing micronutrient gaps (R) is often the fastest way to resolve behavioral "power struggles" at the table.</li>
+                <li><strong>Nudge, Don't Shove:</strong> Environmental design (visibility and convenience) is more effective than verbal persuasion or restriction.</li>
+                <li><strong>Synthesize Tactics:</strong> Use behavioral structure to provide safety, and intuitive eating to provide autonomy.</li>
+                <li><strong>Longitudinal Vision:</strong> Behavioral architecture takes months, not days, to rebuild a family's "Food Culture."</li>
+            </ul>
+        </div>
+
+        <div class="references-box">
+            <p class="box-label">References & Further Reading</p>
+            <ul>
+                <li>Fiese, B. H., et al. (2022). "Family Mealtime Dynamics and Pediatric Health Outcomes: A Systemic Review." <i>Journal of Family Psychology.</i></li>
+                <li>Thaler, R. H., & Sunstein, C. R. (2021). "Nudge: The Final Edition." <i>Yale University Press.</i></li>
+                <li>Satter, E. (2020). "Child of Mine: Feeding with Love and Good Sense." <i>Bull Publishing.</i></li>
+                <li>Scaglioni, S., et al. (2018). "Factors Influencing Children's Eating Behaviours." <i>Nutrients.</i></li>
+                <li>Vollmer, R. L. (2019). "The Role of the Father in Child Feeding and the Development of Picky Eating." <i>Appetite.</i></li>
+                <li>Hughes, S. O., et al. (2021). "Parenting Styles and Food Intake in Low-Income Families." <i>Journal of Nutrition Education and Behavior.</i></li>
+            </ul>
+        </div>
+
+        <footer class="lesson-footer">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="footer-logo">
+            <p class="brand">AccrediPro Academy: Pediatric Nutrition Coach Certification</p>
+            <p class="copyright">&copy; 2024 AccrediPro. All Rights Reserved. Confidential Professional Content.</p>
+        </footer>
+    </div>
+</body>
+
+</html>

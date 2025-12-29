@@ -8,6 +8,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { ChatAnalyticsCards } from "@/components/admin/chat-analytics-cards";
 import {
   MessageSquare,
   Send,
@@ -24,6 +25,7 @@ import {
   Phone,
   UserCheck,
   Trash2,
+  Star,
 } from "lucide-react";
 
 interface ChatMessage {
@@ -239,6 +241,9 @@ export default function LiveChatAdminPage() {
         </Button>
       </div>
 
+      {/* Analytics Dashboard */}
+      <ChatAnalyticsCards />
+
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 h-[calc(100vh-200px)]">
         {/* Conversations List */}
         <Card className="lg:col-span-1">
@@ -411,8 +416,8 @@ export default function LiveChatAdminPage() {
                       >
                         <div
                           className={`max-w-[80%] rounded-lg p-3 ${msg.isFromVisitor
-                              ? "bg-gray-100 text-gray-900"
-                              : "bg-[#6B2C40] text-white"
+                            ? "bg-gray-100 text-gray-900"
+                            : "bg-[#6B2C40] text-white"
                             }`}
                         >
                           <div className="flex items-center gap-2 mb-1">

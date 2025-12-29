@@ -1,0 +1,657 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lesson 18.2: Advanced Data Synthesis: Merging Clinical & Behavioral Metrics</title>
+    <style>
+        /* Base & Reset */
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Georgia, 'Times New Roman', serif;
+            line-height: 1.8;
+            color: #2d2d2d;
+            background: #f8f6f3;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Main Container */
+        .lesson-container {
+            max-width: 860px;
+            margin: 0 auto;
+            padding: 40px 30px;
+            background: #ffffff;
+            min-height: 100vh;
+            box-shadow: 0 0 60px rgba(0, 0, 0, 0.08);
+        }
+
+        /* Brand Header */
+        .brand-header {
+            text-align: center;
+            padding-bottom: 30px;
+            margin-bottom: 35px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .brand-logo {
+            max-width: 220px;
+            height: auto;
+            margin-bottom: 5px;
+        }
+
+        /* Module Header - GOLD theme for Advanced Synthesis */
+        .module-header {
+            background: linear-gradient(135deg, #B8860B 0%, #D4A84B 100%);
+            padding: 35px 35px 30px;
+            border-radius: 16px;
+            margin-bottom: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .module-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+            transform: translate(100px, -100px);
+        }
+
+        .module-header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, #059669, #10B981, #059669);
+        }
+
+        .module-label {
+            margin: 0;
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.9);
+            text-transform: uppercase;
+            letter-spacing: 2.5px;
+            font-weight: 500;
+        }
+
+        .lesson-title {
+            margin: 10px 0 0 0;
+            font-size: 28px;
+            color: #ffffff;
+            font-weight: 700;
+            line-height: 1.3;
+            position: relative;
+        }
+
+        .lesson-meta {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+            padding-top: 18px;
+            border-top: 1px solid rgba(255, 255, 255, 0.15);
+            flex-wrap: wrap;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.9);
+            background: rgba(255, 255, 255, 0.1);
+            padding: 5px 12px;
+            border-radius: 4px;
+        }
+
+        /* Table of Contents */
+        .toc-box {
+            background: linear-gradient(135deg, #fafafa 0%, #f5f5f5 100%);
+            border-radius: 14px;
+            padding: 24px 28px;
+            margin-bottom: 35px;
+            border: 1px solid #e8e8e8;
+        }
+
+        .toc-box .box-label {
+            font-weight: 600;
+            color: #B8860B;
+            margin: 0 0 18px 0;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .toc-list {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px 24px;
+        }
+
+        .toc-list a {
+            display: flex;
+            align-items: center;
+            padding: 8px 12px;
+            color: #555;
+            text-decoration: none;
+            font-size: 14px;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+        }
+
+        .toc-list a:hover {
+            background: white;
+            color: #B8860B;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+        }
+
+        .toc-list .section-num {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 26px;
+            height: 26px;
+            background: #B8860B;
+            color: white;
+            font-weight: 600;
+            font-size: 11px;
+            border-radius: 6px;
+            margin-right: 12px;
+            flex-shrink: 0;
+        }
+
+        /* Objectives Box */
+        .objectives-box {
+            background: #fdfaf3;
+            border: 2px solid #D4A84B;
+            border-radius: 14px;
+            padding: 30px 35px;
+            margin-bottom: 40px;
+        }
+
+        .objectives-box .box-label {
+            font-weight: 600;
+            color: #B8860B;
+            margin: 0 0 18px 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .objectives-box .box-label::before {
+            content: '🎯';
+            font-size: 18px;
+        }
+
+        .objectives-box ul {
+            margin: 0;
+            padding-left: 22px;
+        }
+
+        .objectives-box li {
+            margin-bottom: 14px;
+            font-size: 16px;
+            line-height: 1.7;
+        }
+
+        /* Section Headings */
+        h2 {
+            font-size: 24px;
+            color: #B8860B;
+            margin: 50px 0 20px 0;
+            font-weight: 600;
+            position: relative;
+            padding-bottom: 12px;
+        }
+
+        h2::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 60px;
+            height: 3px;
+            background: #059669;
+        }
+
+        h3 {
+            font-size: 20px;
+            color: #333;
+            margin: 30px 0 15px 0;
+            font-weight: 600;
+        }
+
+        /* Paragraphs & Text */
+        p {
+            font-size: 17px;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        .highlight {
+            background: linear-gradient(180deg, transparent 60%, #FFF59D 60%);
+            padding: 0 4px;
+            font-weight: 500;
+        }
+
+        .stat-highlight {
+            color: #059669;
+            font-weight: 700;
+        }
+
+        /* Case Study Box */
+        .case-study {
+            background: linear-gradient(135deg, #f8f9fb 0%, #f0f2f5 100%);
+            border-radius: 16px;
+            padding: 0;
+            margin: 40px 0;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+            border: 1px solid #e5e5e5;
+        }
+
+        .case-study-header {
+            background: linear-gradient(135deg, #B8860B 0%, #D4A84B 100%);
+            padding: 20px 30px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .case-study-icon {
+            width: 45px;
+            height: 45px;
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+        }
+
+        .case-study-header .box-label {
+            font-weight: 600;
+            color: #ffffff;
+            margin: 0;
+            font-size: 16px;
+        }
+
+        .case-study-content {
+            padding: 28px 30px;
+        }
+
+        .patient-profile {
+            display: flex;
+            align-items: center;
+            gap: 18px;
+            padding: 18px 22px;
+            background: white;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            border: 1px solid #e5e5e5;
+        }
+
+        .patient-avatar {
+            width: 55px;
+            height: 55px;
+            background: #B8860B;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            color: white;
+        }
+
+        /* Data Table */
+        .data-table-container {
+            margin: 35px 0;
+            overflow-x: auto;
+            border-radius: 12px;
+            border: 1px solid #e5e5e5;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 15px;
+            text-align: left;
+        }
+
+        th {
+            background: #f1f1f1;
+            padding: 15px;
+            font-weight: 600;
+            color: #444;
+            border-bottom: 2px solid #ddd;
+        }
+
+        td {
+            padding: 15px;
+            border-bottom: 1px solid #eee;
+            vertical-align: top;
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        /* Check Understanding */
+        .check-understanding {
+            background: #fdfbf7;
+            border: 2px solid #B8860B;
+            border-radius: 16px;
+            padding: 32px;
+            margin: 45px 0;
+        }
+
+        .question-item {
+            background: white;
+            border-radius: 12px;
+            padding: 22px 24px;
+            margin-bottom: 16px;
+            border: 1px solid #e8e4dc;
+        }
+
+        .reveal-btn {
+            background: #B8860B;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-family: inherit;
+        }
+
+        .answer-text {
+            display: none;
+            margin-top: 15px;
+            padding: 15px;
+            background: #f0f8f0;
+            border-radius: 8px;
+            color: #2e7d32;
+        }
+
+        .answer-text.show {
+            display: block;
+        }
+
+        /* Takeaways & References */
+        .takeaways-box {
+            background: #f4f4f4;
+            padding: 25px 30px;
+            border-radius: 12px;
+            margin: 40px 0;
+            border-left: 5px solid #059669;
+        }
+
+        .references-box {
+            background: #fafafa;
+            padding: 25px 30px;
+            border-radius: 12px;
+            font-size: 14px;
+            color: #666;
+            margin-top: 50px;
+        }
+
+        .references-box h4 {
+            margin: 0 0 15px 0;
+            color: #333;
+            font-size: 16px;
+        }
+
+        .lesson-footer {
+            text-align: center;
+            padding-top: 40px;
+            border-top: 1px solid #eee;
+            margin-top: 60px;
+        }
+
+        .footer-logo {
+            max-width: 140px;
+            opacity: 0.8;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="lesson-container">
+        <div class="brand-header">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="brand-logo">
+        </div>
+
+        <header class="module-header">
+            <p class="module-label">Module 18: Integration & Synthesis</p>
+            <h1 class="lesson-title">Lesson 2: Advanced Data Synthesis: Merging Clinical & Behavioral Metrics</h1>
+            <div class="lesson-meta">
+                <span class="meta-item">35 min read</span>
+                <span class="meta-item">Level 2 Certification</span>
+            </div>
+        </header>
+
+        <div class="toc-box">
+            <p class="box-label">In This Lesson</p>
+            <ul class="toc-list">
+                <li><a href="#triangulation"><span class="section-num">1</span>Triangulating Growth Velocity</a></li>
+                <li><a href="#silent-deficit"><span class="section-num">2</span>The 'Silent Deficit' Identification</a></li>
+                <li><a href="#neurodiversity"><span class="section-num">3</span>Bio-individual Markers in ASD/ADHD</a></li>
+                <li><a href="#quant-qual"><span class="section-num">4</span>Quantitative vs. Qualitative Tracking</a></li>
+                <li><a href="#pnst-tools"><span class="section-num">5</span>Advanced PNST Application</a></li>
+                <li><a href="#protocol"><span class="section-num">6</span>The Synthesis Protocol</a></li>
+            </ul>
+        </div>
+
+        <div class="objectives-box">
+            <p class="box-label">Learning Objectives</p>
+            <ul>
+                <li>Master the triangulation of WHO/CDC growth trends with serum micronutrient data and FFQs.</li>
+                <li>Identify subclinical "silent deficits" that bypass traditional growth chart screening.</li>
+                <li>Adapt the G.R.O.W. Method™ for neurodivergent populations using bio-individual metabolic markers.</li>
+                <li>Develop a balanced scoring system for caloric density vs. "Mealtime Peace" qualitative metrics.</li>
+                <li>Implement advanced Pediatric Nutrition Screening Tools (PNST) for high-level case management.</li>
+            </ul>
+        </div>
+
+        <h2 id="triangulation">1. Triangulating the G.R.O.W. Data Ecosystem</h2>
+        <p>In clinical practice, data points are rarely useful in isolation. A child’s <span class="highlight">growth percentile</span> (G) may appear stable, yet their <span class="highlight">neuro-developmental trajectory</span> (O) may be faltering. As an AccrediPro Certified Pediatric Nutrition Coach, your role is to act as a "Data Architect," merging disparate metrics into a cohesive clinical picture.</p>
+        
+        <p>Triangulation involves the simultaneous analysis of three distinct data streams:</p>
+        <ol>
+            <li><strong>Kinetic Growth Data:</strong> Velocity trends over 6-12 months rather than static "snapshot" percentiles.</li>
+            <li><strong>Serum Biomarkers:</strong> Clinical evidence of remediated or persisting deficiencies (R).</li>
+            <li><strong>Food Frequency Questionnaires (FFQ):</strong> The behavioral reality of nutrient intake and dietary diversity.</li>
+        </ol>
+
+        <div class="case-study">
+            <div class="case-study-header">
+                <div class="case-study-icon">📋</div>
+                <div>
+                    <p class="box-label">Case Study: The Illusion of Stability</p>
+                    <p style="color: white; margin: 0; font-size: 13px;">Triangulating G, R, and O pillars</p>
+                </div>
+            </div>
+            <div class="case-study-content">
+                <div class="patient-profile">
+                    <div class="patient-avatar">E</div>
+                    <div class="patient-info">
+                        <h4>Ethan, Age 4</h4>
+                        <p>Presenting: Fatigue, irritability, and "brain fog" despite a "healthy" weight.</p>
+                    </div>
+                </div>
+                <p><strong>Clinical Metrics:</strong> Ethan sits at the 50th percentile for BMI-for-age. His growth chart looks perfect. However, a 3-day weighed food record (FFQ) showed an average daily iron intake of only 4.2mg (RDA is 7-10mg). </p>
+                <p><strong>The Synthesis:</strong> While his <strong>Growth (G)</strong> was stable, his <strong>Remediation (R)</strong> pillar was failing. Serum ferritin revealed a level of 12 ng/mL (subclinical deficiency). The synthesis showed that he was consuming enough calories to grow physically, but not enough micronutrients to support <strong>Optimization (O)</strong> of cognitive function.</p>
+                <p><strong>Outcome:</strong> Targeted heme-iron introduction and Vitamin C synergy improved his "Focus Score" by 40% within 8 weeks.</p>
+            </div>
+        </div>
+
+        <h2 id="silent-deficit">2. Interpreting the 'Silent Deficit'</h2>
+        <p>A <span class="highlight">Silent Deficit</span> occurs when a child meets caloric requirements for physical growth but fails to meet the metabolic demands for neurological or immunological maturity. These deficits are "silent" because they do not trigger red flags on standard CDC growth charts until they reach a critical, late-stage state.</p>
+
+        <p>A 2023 meta-analysis published in <i>The Lancet Child & Adolescent Health</i> (n=12,450) found that <span class="stat-highlight">28.4% of children</span> with "normal" height and weight metrics presented with at least two subclinical micronutrient deficiencies, most commonly Iron, Zinc, and Vitamin D.</p>
+
+        <div class="data-table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Biomarker</th>
+                        <th>Standard "Normal" Range</th>
+                        <th>G.R.O.W. Optimal (Pediatric)</th>
+                        <th>Subclinical 'Silent' Signs</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Serum Ferritin</td>
+                        <td>>10-12 ng/mL</td>
+                        <td>>30 ng/mL</td>
+                        <td>Poor sleep, restless legs, emotional lability.</td>
+                    </tr>
+                    <tr>
+                        <td>25(OH)D</td>
+                        <td>>20 ng/mL</td>
+                        <td>>40-50 ng/mL</td>
+                        <td>Frequent respiratory infections, "growing pains."</td>
+                    </tr>
+                    <tr>
+                        <td>Zinc (Plasma)</td>
+                        <td>>60 µg/dL</td>
+                        <td>>80 µg/dL</td>
+                        <td>Poor wound healing, white spots on nails, picky eating.</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <h2 id="neurodiversity">3. Bio-individual Markers: Neurodivergent vs. Neurotypical</h2>
+        <p>When synthesizing data for children with ASD or ADHD, the "normal" baseline often shifts. Neurodivergent populations frequently exhibit <span class="highlight">increased metabolic demand</span> for specific nutrients involved in neurotransmitter synthesis (B6, Magnesium, Omega-3s).</p>
+
+        <p>In these cases, we merge sensory processing scores with nutritional metrics. For instance, a child with high oral-sensory defensiveness (from a Sensory Profile 2 assessment) will likely have a skewed FFQ toward "beige" processed foods. The synthesis here isn't just "eat more vegetables," but rather mapping the <span class="highlight">sensory-nutrient gap</span>.</p>
+
+        <p>A 2021 study (n=450) indicated that children with ADHD utilized magnesium at a rate <span class="stat-highlight">1.8x higher</span> than neurotypical peers during periods of high cognitive load. This means a "normal" dietary intake of magnesium may actually be a deficiency for an ADHD brain.</p>
+
+        <h2 id="quant-qual">4. Quantitative vs. Qualitative: The 'Mealtime Peace' Score</h2>
+        <p>In the <strong>Whole Family Wellness (W)</strong> pillar, we must balance hard data (calories, grams of protein) with qualitative behavioral metrics. A child eating 1,500 calories in a state of high cortisol (fighting with parents) absorbs nutrients differently than a child eating 1,200 calories in a relaxed environment.</p>
+
+        <p>We use the <strong>Mealtime Peace Score (MPS)</strong>—a 1-10 scale where 1 is "combat zone" and 10 is "harmonious connection." Synthesis requires looking at the inverse relationship: as MPS increases, dietary variety usually follows, even if total caloric intake temporarily dips.</p>
+
+        <div class="case-study">
+            <div class="case-study-header">
+                <div class="case-study-icon">🏠</div>
+                <div>
+                    <p class="box-label">Case Study: Qualitative Shift</p>
+                    <p style="color: white; margin: 0; font-size: 13px;">The W Pillar in Action</p>
+                </div>
+            </div>
+            <div class="case-study-content">
+                <div class="patient-profile">
+                    <div class="patient-avatar">M</div>
+                    <div class="patient-info">
+                        <h4>Maya, Age 7</h4>
+                        <p>History of extreme picky eating and "dinner time meltdowns."</p>
+                    </div>
+                </div>
+                <p><strong>Quantitative Data:</strong> Caloric intake was 110% of requirements, but 90% came from ultra-processed carbohydrates. MPS was 2/10.</p>
+                <p><strong>Intervention:</strong> Instead of focusing on "new foods" (R), we focused on the <strong>Division of Responsibility (W)</strong>. We stopped tracking grams and started tracking MPS.</p>
+                <p><strong>Synthesis:</strong> Within 3 months, MPS rose to 8/10. Because the stress was removed, Maya’s natural curiosity returned, leading to a 300% increase in dietary vegetable variety, despite a slight decrease in total "safe food" calories.</p>
+            </div>
+        </div>
+
+        <h2 id="pnst-tools">5. Advanced Pediatric Nutrition Screening Tools (PNST)</h2>
+        <p>While basic PNST tools are used in hospitals to identify malnutrition, the AccrediPro practitioner uses an <span class="highlight">Expanded PNST</span>. This includes:</p>
+        <ul>
+            <li><strong>Weight Loss/Gain Velocity:</strong> Has the child crossed two or more major percentile lines?</li>
+            <li><strong>Nutrient Density Index (NDI):</strong> The ratio of micronutrients to total calories.</li>
+            <li><strong>The "Mirror Effect" Assessment:</strong> Quantifying parental modeling (from Module 4).</li>
+        </ul>
+
+        <p>Research indicates that using a structured PNST in a coaching environment increases the identification of nutritional risk by <span class="stat-highlight">42% compared to informal observation</span>. This allows for early intervention before growth velocity (G) is compromised.</p>
+
+        <h2 id="protocol">6. The Synthesis Protocol: Step-by-Step</h2>
+        <p>To produce a premium-level client report, follow this synthesis sequence:</p>
+        
+        <div class="principle-card">
+            <p class="principle-title">Step 1: The 'G' Baseline</p>
+            <p class="principle-text">Plot the last 3-4 data points on a WHO/CDC chart. Look for "stalling" velocity even if the child remains within the 5th-95th percentiles.</p>
+        </div>
+
+        <div class="principle-card">
+            <p class="principle-title">Step 2: The 'R' Overlay</p>
+            <p class="principle-text">Compare growth trends with FFQ data. If growth is high but FFQ variety is low, flag for "Silent Deficit" and request serum labs (Ferritin, D, B12).</p>
+        </div>
+
+        <div class="principle-card" style="border-left-color: #B8860B;">
+            <p class="principle-title">Step 3: The 'O' Stress Test</p>
+            <p class="principle-text">Evaluate neuro-behavioral symptoms (focus, mood, sleep). If these are poor despite "good" growth, the optimization pillar requires bio-individual nutrient loading.</p>
+        </div>
+
+        <div class="principle-card" style="border-left-color: #B8860B;">
+            <p class="principle-title">Step 4: The 'W' Climate Check</p>
+            <p class="principle-text">Factor in the Mealtime Peace Score. A low MPS invalidates the sustainability of any nutritional remediation (R) plan.</p>
+        </div>
+
+        <div class="check-understanding">
+            <p class="box-label">Check Your Understanding</p>
+            <p class="box-subtitle">Test your clinical synthesis skills below.</p>
+
+            <div class="question-item">
+                <p class="question-text">1. A child is on the 75th percentile for weight but the 10th for height. Their FFQ shows high processed sugar intake. What is the most likely synthesis?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <p class="answer-text">This suggests "over-nutrition" in calories but "under-nutrition" in bone-building micronutrients (Zinc, Protein, Vitamin D). This is a classic "Silent Deficit" where caloric abundance masks linear growth stunting.</p>
+            </div>
+
+            <div class="question-item">
+                <p class="question-text">2. Why is a "Mealtime Peace Score" critical for the Remediate (R) pillar?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <p class="answer-text">High stress (low MPS) triggers the sympathetic nervous system, which impairs digestion (decreased enzyme production) and creates food neophobia. Without peace, remediation attempts usually lead to power struggles and further restriction.</p>
+            </div>
+        </div>
+
+        <div class="takeaways-box">
+            <p class="box-label">Key Takeaways</p>
+            <ul>
+                <li><strong>Triangulation is Mandatory:</strong> Never rely on a growth chart alone; always cross-reference with behavioral and dietary data.</li>
+                <li><strong>Silent Deficits are Real:</strong> Subclinical deficiencies impact brain and immune function long before they impact weight.</li>
+                <li><strong>Neuro-Metabolic Demand:</strong> ASD/ADHD populations require higher-than-RDA levels of key co-factors (Mg, B6, Zinc).</li>
+                <li><strong>Peace Over Proportions:</strong> In the G.R.O.W. Method™, the qualitative environment (W) is the foundation upon which all quantitative success (G, R, O) is built.</li>
+            </ul>
+        </div>
+
+        <div class="references-box">
+            <h4>References & Further Reading</h4>
+            <ul style="list-style: none; padding: 0;">
+                <li>Stevens et al. (2022). "Global prevalence of micronutrient deficiencies in preschool-aged children." <i>The Lancet Global Health</i>.</li>
+                <li>Higgins et al. (2023). "Subclinical Iron Deficiency and Cognitive Function in School-Aged Children: A Systematic Review." <i>Nutrients</i>.</li>
+                <li>Satter, E. (2021). "The Division of Responsibility in Feeding: 20-Year Retrospective." <i>Journal of Nutrition Education and Behavior</i>.</li>
+                <li>Gow et al. (2021). "Magnesium and ADHD: A review of the current evidence." <i>Journal of Attention Disorders</i>.</li>
+                <li>WHO (2023). "Pediatric Growth Velocity Standards: Clinical Application Guidelines." <i>World Health Organization Press</i>.</li>
+                <li>Miller et al. (2022). "The Gut-Brain Axis in Neurodivergent Populations: Nutritional Implications." <i>Frontiers in Psychiatry</i>.</li>
+                <li>Smith et al. (2023). "Pediatric Nutrition Screening Tools: A Comparative Analysis in Private Practice." <i>Journal of Pediatric Healthcare</i>.</li>
+            </ul>
+        </div>
+
+        <footer class="lesson-footer">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="footer-logo">
+            <p class="brand">AccrediPro Academy | Pediatric Nutrition Coach Certification</p>
+            <p class="copyright">&copy; 2024 AccrediPro. All rights reserved. Professional Use Only.</p>
+        </footer>
+    </div>
+</body>
+
+</html>

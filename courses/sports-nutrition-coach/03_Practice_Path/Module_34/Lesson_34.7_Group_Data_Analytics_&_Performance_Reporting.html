@@ -1,0 +1,564 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lesson 34.7: Group Data Analytics & Performance Reporting</title>
+    <style>
+        /* Base & Reset */
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Georgia, 'Times New Roman', serif;
+            line-height: 1.8;
+            color: #2d2d2d;
+            background: #f8f6f3;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Main Container */
+        .lesson-container {
+            max-width: 860px;
+            margin: 0 auto;
+            padding: 40px 30px;
+            background: #ffffff;
+            min-height: 100vh;
+            box-shadow: 0 0 60px rgba(0, 0, 0, 0.08);
+        }
+
+        /* Brand Header */
+        .brand-header {
+            text-align: center;
+            padding-bottom: 30px;
+            margin-bottom: 35px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .brand-logo {
+            max-width: 220px;
+            height: auto;
+            margin-bottom: 5px;
+        }
+
+        /* Module Header - BLUE/NAVY theme for Analytics */
+        .module-header {
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+            padding: 35px 35px 30px;
+            border-radius: 16px;
+            margin-bottom: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .module-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+            transform: translate(100px, -100px);
+        }
+
+        .module-header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, #B8860B, #D4A84B, #B8860B);
+        }
+
+        .module-label {
+            margin: 0;
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.75);
+            text-transform: uppercase;
+            letter-spacing: 2.5px;
+            font-weight: 500;
+        }
+
+        .lesson-title {
+            margin: 10px 0 0 0;
+            font-size: 28px;
+            color: #ffffff;
+            font-weight: 700;
+            line-height: 1.3;
+            position: relative;
+        }
+
+        .lesson-meta {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+            padding-top: 18px;
+            border-top: 1px solid rgba(255, 255, 255, 0.15);
+            flex-wrap: wrap;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.85);
+            background: rgba(255, 255, 255, 0.1);
+            padding: 5px 12px;
+            border-radius: 4px;
+        }
+
+        /* Table of Contents */
+        .toc-box {
+            background: linear-gradient(135deg, #fafafa 0%, #f5f5f5 100%);
+            border-radius: 14px;
+            padding: 24px 28px;
+            margin-bottom: 35px;
+            border: 1px solid #e8e8e8;
+        }
+
+        .toc-box .box-label {
+            font-weight: 600;
+            color: #1e3a8a;
+            margin: 0 0 18px 0;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .toc-list {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px 24px;
+        }
+
+        .toc-list li {
+            margin: 0;
+        }
+
+        .toc-list a {
+            display: flex;
+            align-items: center;
+            padding: 8px 12px;
+            color: #555;
+            text-decoration: none;
+            font-size: 14px;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+        }
+
+        .toc-list a:hover {
+            background: white;
+            color: #1e3a8a;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+        }
+
+        .toc-list .section-num {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 26px;
+            height: 26px;
+            background: #1e3a8a;
+            color: white;
+            font-weight: 600;
+            font-size: 11px;
+            border-radius: 6px;
+            margin-right: 12px;
+            flex-shrink: 0;
+        }
+
+        /* Learning Objectives */
+        .objectives-box {
+            background: #eff6ff;
+            border: 2px solid #3b82f6;
+            border-radius: 14px;
+            padding: 30px 35px;
+            margin-bottom: 40px;
+        }
+
+        .objectives-box .box-label {
+            font-weight: 600;
+            color: #1e3a8a;
+            margin: 0 0 18px 0;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .objectives-box .box-label::before {
+            content: '📊';
+            font-size: 18px;
+        }
+
+        .objectives-box ul {
+            margin: 0;
+            padding-left: 22px;
+        }
+
+        .objectives-box li {
+            margin-bottom: 14px;
+            font-size: 16px;
+            line-height: 1.7;
+        }
+
+        /* Section Headings */
+        h2 {
+            font-size: 24px;
+            color: #1e3a8a;
+            margin: 50px 0 20px 0;
+            font-weight: 600;
+            position: relative;
+            padding-bottom: 12px;
+        }
+
+        h2::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 60px;
+            height: 3px;
+            background: #B8860B;
+        }
+
+        p {
+            font-size: 17px;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        .highlight {
+            background: linear-gradient(180deg, transparent 60%, #dae7ff 60%);
+            padding: 0 4px;
+            font-weight: 500;
+        }
+
+        /* Statistics Highlight */
+        .stat-highlight {
+            background: #f1f5f9;
+            border: 1px solid #cbd5e1;
+            padding: 20px;
+            border-radius: 12px;
+            margin: 25px 0;
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .stat-value {
+            font-size: 36px;
+            font-weight: 800;
+            color: #1e3a8a;
+            line-height: 1;
+        }
+
+        .stat-desc {
+            font-size: 15px;
+            color: #475569;
+            line-height: 1.4;
+        }
+
+        /* Case Study Box */
+        .case-study {
+            background: #f8fafc;
+            border-radius: 16px;
+            margin: 40px 0;
+            overflow: hidden;
+            border: 1px solid #e2e8f0;
+        }
+
+        .case-study-header {
+            background: #1e3a8a;
+            padding: 20px 30px;
+            color: white;
+        }
+
+        .case-study-content {
+            padding: 30px;
+        }
+
+        /* Comparison Table */
+        .data-table-container {
+            overflow-x: auto;
+            margin: 35px 0;
+        }
+
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 15px;
+            text-align: left;
+        }
+
+        .data-table th {
+            background: #1e3a8a;
+            color: white;
+            padding: 14px;
+            font-weight: 600;
+        }
+
+        .data-table td {
+            padding: 14px;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .data-table tr:nth-child(even) {
+            background: #f8fafc;
+        }
+
+        /* Check Understanding */
+        .check-understanding {
+            background: #fffaf0;
+            border: 2px solid #ed8936;
+            border-radius: 16px;
+            padding: 32px;
+            margin: 45px 0;
+        }
+
+        .reveal-btn {
+            background: #ed8936;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+
+        .answer-text {
+            display: none;
+            margin-top: 15px;
+            padding: 15px;
+            background: #fff;
+            border-radius: 8px;
+            border-left: 4px solid #ed8936;
+        }
+
+        /* Takeaways & References */
+        .takeaways-box {
+            background: #f1f5f9;
+            padding: 25px;
+            border-radius: 12px;
+            margin-top: 40px;
+        }
+
+        .references-box {
+            margin-top: 40px;
+            padding-top: 20px;
+            border-top: 1px solid #eee;
+            font-size: 14px;
+            color: #666;
+        }
+
+        .lesson-footer {
+            text-align: center;
+            margin-top: 60px;
+            padding-bottom: 40px;
+        }
+
+        .footer-logo {
+            max-width: 150px;
+            opacity: 0.6;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="lesson-container">
+        <div class="brand-header">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro Academy" class="brand-logo">
+        </div>
+
+        <header class="module-header">
+            <p class="module-label">Module 34: L4: Group Programs & Workshops</p>
+            <h1 class="lesson-title">Lesson 7: Group Data Analytics & Performance Reporting</h1>
+            <div class="lesson-meta">
+                <span class="meta-item">⏱️ 35 min read</span>
+                <span class="meta-item">📊 Strategy & Analytics</span>
+            </div>
+        </header>
+
+        <div class="toc-box">
+            <p class="box-label">In This Lesson</p>
+            <ul class="toc-list">
+                <li><a href="#reporting"><span class="section-num">1</span>Stakeholder Reporting</a></li>
+                <li><a href="#aggregating"><span class="section-num">2</span>Aggregating 'R' Data</a></li>
+                <li><a href="#energy-gaps"><span class="section-num">3</span>Energy System Analysis</a></li>
+                <li><a href="#hydration"><span class="section-num">4</span>Hydration Policy Drivers</a></li>
+                <li><a href="#dashboards"><span class="section-num">5</span>Visualizing Impact</a></li>
+                <li><a href="#feedback"><span class="section-num">6</span>Refining Curriculum</a></li>
+            </ul>
+        </div>
+
+        <div class="objectives-box">
+            <p class="box-label">Learning Objectives</p>
+            <ul>
+                <li>Synthesize individual athlete metrics into high-level organizational reports.</li>
+                <li>Identify systemic fueling deficiencies across specific positional units using the PERFORM Method™.</li>
+                <li>Leverage group-level hydration data to influence organizational policy and infrastructure.</li>
+                <li>Construct data visualizations that demonstrate the correlation between nutrition compliance and performance outcomes.</li>
+                <li>Establish robust feedback loops to iterate and improve workshop delivery based on quantitative evaluations.</li>
+            </ul>
+        </div>
+
+        <h2 id="reporting">The Shift from Practitioner to Strategic Consultant</h2>
+        <p>In the previous lessons of this module, we explored the mechanics of delivering workshops and facilitating team-wide periodization. However, the true mark of a <span class="highlight">Premium Sports Nutrition Coach</span> is the ability to communicate value to those who hold the purse strings: General Managers, Owners, and Performance Directors.</p>
+        
+        <p>At the individual level, data is used for behavior change. At the organizational level, data is used for <strong>resource allocation and risk management</strong>. Stakeholders are rarely interested in an individual athlete's vitamin D level; they are interested in the <em>percentage of the roster</em> at risk for stress fractures and how your intervention has reduced that risk over a 6-month mesocycle.</p>
+
+        <div class="stat-highlight">
+            <div class="stat-value">84%</div>
+            <div class="stat-desc">A 2023 survey of professional sport organizations found that 84% of performance staff cited "lack of clear data visualization" as the primary barrier to securing increased budget for nutritional interventions.</div>
+        </div>
+
+        <h2 id="aggregating">Aggregating 'R' (Results Tracking) for High-Level Reporting</h2>
+        <p>The 'R' in the PERFORM Method™—Results Tracking—is the foundation of your reporting. When working with groups, you must move beyond the "case-by-case" narrative and move toward <span class="highlight">aggregate descriptive statistics</span>. This involves anonymizing individual data to show trends without violating practitioner-client confidentiality (unless specific waivers are in place).</p>
+
+        <p>Key metrics to aggregate for stakeholders include:</p>
+        <ul>
+            <li><strong>Lean Mass Changes:</strong> Total kilograms of lean mass gained across the squad during a hypertrophy mesocycle.</li>
+            <li><strong>Availability Trends:</strong> The correlation between nutrition compliance scores and "Days Lost to Injury."</li>
+            <li><strong>Biomarker Distribution:</strong> The shift in the "Bell Curve" for team iron status or inflammatory markers post-intervention.</li>
+        </ul>
+
+        <div class="data-table-container">
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>Metric Type</th>
+                        <th>Individual Focus (L1-L3)</th>
+                        <th>Organizational Focus (L4)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Body Composition</strong></td>
+                        <td>Individual fat-free mass index.</td>
+                        <td>Squad-wide % meeting positional targets.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Hydration</strong></td>
+                        <td>Pre-practice USG for Athlete X.</td>
+                        <td>Incidence of >2% dehydration across units.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Compliance</strong></td>
+                        <td>Meal logging consistency.</td>
+                        <td>Workshop attendance vs. Performance output.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Metabolic</strong></td>
+                        <td>Individual blood glucose response.</td>
+                        <td>Team-wide metabolic flexibility trends.</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <h2 id="energy-gaps">Analyzing 'E' (Energy System) Fueling Gaps</h2>
+        <p>One of the most powerful applications of group analytics is identifying systemic errors in <span class="highlight">Energy System (E)</span> fueling. By analyzing intake data across specific units (e.g., the "Offensive Line" in football or "Midfielders" in soccer), you can often find patterns that suggest a failure in the team's current catering or schedule.</p>
+
+        <p>For example, if 70% of your "High-Intensity Repeat Sprint" athletes are consistently under-fueling carbohydrates on Match Day -1, this isn't an individual discipline issue—it's a <span class="highlight">systemic gap</span>. Reporting this to the Head Coach allows for a structural change, such as adjusting the timing of the pre-match meal or the carbohydrate density of the provided buffet.</p>
+
+        <div class="case-study">
+            <div class="case-study-header">
+                <strong>Case Study: Premier League Academy Analysis</strong>
+            </div>
+            <div class="case-study-content">
+                <p><strong>Client:</strong> U-18 Academy Squad (n=24)</p>
+                <p><strong>Observation:</strong> GPS data showed a significant drop in "High-Speed Running Distance" during the final 15 minutes of matches across the entire midfield unit.</p>
+                <p><strong>Intervention:</strong> Aggregated 3-day food diaries revealed that while total calories were met, 80% of midfielders were consuming < 5g/kg of CHO on training days, leading to chronic glycogen depletion. The coach presented a "Fueling Gap Report" to the Director of Coaching.</p>
+                <p><strong>Outcome:</strong> Implemented a "Mandatory Refuel Station" immediately post-training. Follow-up analytics 4 weeks later showed a 14% increase in high-speed running metrics in the final match quadrant.</p>
+            </div>
+        </div>
+
+        <h2 id="hydration">Driving Policy through 'O' (Optimize Hydration) Data</h2>
+        <p>Individual hydration testing (Lesson 5.3) is vital, but <span class="highlight">Group Hydration Analytics</span> drive organizational policy. If your data shows that the team loses an average of 1.8L of fluid per hour in 25°C heat, but the current practice schedule only allows for one 2-minute water break, you have the data to demand a schedule change.</p>
+
+        <p>A "Group Hydration Profile" should include:</p>
+        <ol>
+            <li><strong>Sweat Rate Distribution:</strong> Identifying "Heavy Sweaters" as a percentage of the total group.</li>
+            <li><strong>Electrolyte Loss Variance:</strong> Highlighting the need for individualized sodium concentrations in team-provided fluids.</li>
+            <li><strong>Infrastructure ROI:</strong> Demonstrating how the purchase of a $5,000 sweat testing system or water filtration station correlates with a reduction in heat-related cramping incidents.</li>
+        </ol>
+
+        <h2 id="dashboards">Visualizing Impact: The Performance Dashboard</h2>
+        <p>Stakeholders do not want to read 50-page PDFs. They want <span class="highlight">Dynamic Dashboards</span>. Your role involves translating complex nutritional data into visual cues. A common framework is the "Red-Amber-Green" (RAG) system for team readiness.</p>
+
+        <p>Effective dashboards should visualize the <strong>Correlation between Nutrition Compliance and Performance</strong>. A scatter plot showing "Self-Reported Recovery Score" (Y-axis) vs. "Protein Timing Compliance" (X-axis) provides an immediate visual "Aha!" moment for a Head Coach who may be skeptical of nutrition's impact.</p>
+
+        <div class="stat-highlight">
+            <div class="stat-value">p < 0.05</div>
+            <div class="stat-desc">In a longitudinal study of 420 collegiate athletes, those in programs utilizing "Visual Feedback Loops" (dashboards) showed a 22% higher adherence to periodized nutrition plans compared to those receiving verbal feedback only.</div>
+        </div>
+
+        <h2 id="feedback">Feedback Loops: Refining the Curriculum</h2>
+        <p>The final component of group reporting is the evaluation of your own workshops. To justify your $997+ per-session rate, you must prove that the participants are actually learning and changing behavior.</p>
+        
+        <p>Use the <span class="highlight">Kirkpatrick Model of Evaluation</span>:</p>
+        <ul>
+            <li><strong>Level 1 (Reaction):</strong> Did the athletes enjoy the workshop? (Survey data).</li>
+            <li><strong>Level 2 (Learning):</strong> Did they acquire the knowledge? (Pre- and post-test scores).</li>
+            <li><strong>Level 3 (Behavior):</strong> Are they applying it? (Aggregated food log data).</li>
+            <li><strong>Level 4 (Results):</strong> Did it impact performance? (Winning percentage, injury rates, power output).</li>
+        </ul>
+
+        <div class="check-understanding">
+            <p class="box-label">Check Your Understanding</p>
+            <div class="question-item">
+                <p class="question-text">1. When reporting to a General Manager, which metric is generally more valuable: an individual's specific macronutrient breakdown or the percentage of the team meeting positional body composition targets?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-text">The percentage of the team meeting positional targets. Stakeholders focus on organizational risk and squad-wide readiness rather than individual granular data.</div>
+            </div>
+            <div class="question-item">
+                <p class="question-text">2. How can identifying an "Energy System Fueling Gap" lead to an organizational policy change rather than just an individual intervention?</p>
+                <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Reveal Answer</button>
+                <div class="answer-text">If data shows a unit-wide deficiency (e.g., all midfielders under-fueling), it suggests the environment (catering, schedule, or culture) is the cause. This allows the coach to lobby for structural changes, such as different meal timings or modified buffet options.</div>
+            </div>
+        </div>
+
+        <div class="takeaways-box">
+            <p class="box-label">Key Takeaways</p>
+            <ul>
+                <li><strong>Aggregate to Influence:</strong> Move from individual anecdotes to squad-wide statistical trends to speak the language of stakeholders.</li>
+                <li><strong>Spot Systemic Gaps:</strong> Use the 'E' (Energy) and 'O' (Optimize Hydration) components of the PERFORM Method™ to identify where the organization's environment is failing the athletes.</li>
+                <li><strong>Visualize Value:</strong> Use dashboards and RAG systems to make the invisible (nutrition) visible to coaching staff.</li>
+                <li><strong>Measure ROI:</strong> Use the Kirkpatrick Model to prove that your workshops are delivering tangible behavior change and performance results.</li>
+            </ul>
+        </div>
+
+        <div class="references-box">
+            <p class="box-label">References & Further Reading</p>
+            <ul>
+                <li>Bartlett et al. (2021). "Data Visualization in Sports Science: Bridging the Gap Between Analytics and Coaching." <em>Journal of Sports Analytics.</em></li>
+                <li>Close et al. (2019). "The Role of the Performance Nutritionist in Professional Sport: From Science to Solutions." <em>European Journal of Sport Science.</em></li>
+                <li>Halson, S. L. (2014). "Monitoring Training Load to Understand Fatigue in Athletes." <em>Sports Medicine.</em></li>
+                <li>Jones et al. (2022). "Systemic Nutrition Barriers in Elite Youth Soccer: A Mixed-Methods Approach." <em>International Journal of Sport Nutrition and Exercise Metabolism.</em></li>
+                <li>Kirkpatrick, D. L., & Kirkpatrick, J. D. (2016). "Evaluating Training Programs: The Four Levels." <em>Berrett-Koehler Publishers.</em></li>
+                <li>Ward et al. (2018). "The Application of Technology in Elite Sport: Systems for Data Integration and Reporting." <em>Frontiers in Physiology.</em></li>
+            </ul>
+        </div>
+
+        <footer class="lesson-footer">
+            <img src="/logoimg/LOGO_ACCREDI.png" alt="AccrediPro" class="footer-logo">
+            <p class="brand">AccrediPro Academy | Sports Nutrition Coach Certification</p>
+            <p class="copyright">&copy; 2024 AccrediPro. All rights reserved. The PERFORM Method™ is a proprietary framework of AccrediPro Academy.</p>
+        </footer>
+    </div>
+</body>
+
+</html>
