@@ -50,10 +50,20 @@ export const authOptions: NextAuthOptions = {
           throw new Error("Account is deactivated");
         }
 
-        const isPasswordValid = await bcrypt.compare(
-          credentials.password,
-          user.passwordHash
-        );
+        let isPasswordValid = false;
+        try {
+          isPasswordValid = await bcrypt.compare(
+            credentials.password,
+            user.passwordHash
+          );
+        } catch (bcryptError) {
+          console.error("[AUTH] bcrypt.compare error:", bcryptError, {
+            email: credentials.email,
+            hashLength: user.passwordHash?.length,
+            hashPrefix: user.passwordHash?.substring(0, 10),
+          });
+          throw new Error("Password verification failed");
+        }
 
         if (!isPasswordValid) {
           throw new Error("Invalid credentials");

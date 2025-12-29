@@ -44,12 +44,19 @@ function LoginForm() {
       });
 
       if (result?.error) {
-        setError("Invalid email or password. Please try again.");
+        // Show the actual error message from NextAuth
+        console.error("[LOGIN ERROR]", result.error);
+        if (result.error === "CredentialsSignin") {
+          setError("Invalid email or password. Please try again.");
+        } else {
+          setError(result.error);
+        }
       } else {
         router.push(callbackUrl);
         router.refresh();
       }
-    } catch {
+    } catch (err) {
+      console.error("[LOGIN EXCEPTION]", err);
       setError("An error occurred. Please try again.");
     } finally {
       setLoading(false);
