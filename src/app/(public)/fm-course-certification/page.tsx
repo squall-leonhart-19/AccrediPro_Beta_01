@@ -36,6 +36,7 @@ export default function FMCourseCertificationPage() {
     const [messages, setMessages] = useState<{ role: string; content: string }[]>([]);
     const [inputValue, setInputValue] = useState("");
     const [isTyping, setIsTyping] = useState(false);
+    const [showProactivePopup, setShowProactivePopup] = useState(false);
 
     useEffect(() => {
         // Show floating CTA after scrolling 200px
@@ -58,6 +59,19 @@ export default function FMCourseCertificationPage() {
 
         return () => window.removeEventListener("scroll", handleScroll);
     }, []);
+
+    // Proactive popup: Show after 30s, once per session
+    useEffect(() => {
+        const hasSeenPopup = sessionStorage.getItem("fm-chat-popup-seen");
+        if (hasSeenPopup || chatOpen) return;
+
+        const timer = setTimeout(() => {
+            setShowProactivePopup(true);
+            sessionStorage.setItem("fm-chat-popup-seen", "true");
+        }, 30000); // 30 seconds
+
+        return () => clearTimeout(timer);
+    }, [chatOpen]);
 
     const startChat = () => {
         if (!userName.trim()) return;
@@ -306,6 +320,35 @@ export default function FMCourseCertificationPage() {
                                 </div>
                             </>
                         )}
+                    </div>
+                )}
+
+                {/* Proactive Popup (appears after 30s, once per session) */}
+                {showProactivePopup && !chatOpen && (
+                    <div className="absolute bottom-24 right-0 bg-white rounded-lg shadow-2xl p-4 w-72 border-2 border-[#D4AF37] animate-[slideIn_0.3s_ease-out]">
+                        <button
+                            onClick={() => setShowProactivePopup(false)}
+                            className="absolute -top-2 -right-2 w-6 h-6 bg-gray-600 text-white rounded-full text-xs hover:bg-gray-700 flex items-center justify-center font-bold"
+                        >
+                            ✕
+                        </button>
+                        <div className="flex gap-3 items-start">
+                            <img
+                                src="https://coach.accredipro.academy/wp-content/uploads/2025/10/Sarah-M.webp"
+                                alt="Sarah"
+                                className="w-10 h-10 rounded-full border-2 border-[#D4AF37] flex-shrink-0"
+                            />
+                            <div className="flex-1">
+                                <p className="text-sm font-semibold text-gray-900 mb-1">Sarah here!</p>
+                                <p className="text-sm text-gray-600 mb-3">👋 Have questions about the certification? I'm here to help!</p>
+                                <button
+                                    onClick={() => { setChatOpen(true); setShowProactivePopup(false); }}
+                                    className="w-full bg-gradient-to-r from-[#722F37] to-[#5A2435] text-white px-4 py-2 rounded-lg text-sm font-semibold hover:opacity-90 transition-opacity"
+                                >
+                                    Ask Me Anything
+                                </button>
+                            </div>
+                        </div>
                     </div>
                 )}
 
