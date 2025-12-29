@@ -2,8 +2,6 @@ import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import OpenAI from "openai";
 
-const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
-
 // Check for conversations that need auto-reply
 export async function GET() {
     try {
@@ -71,6 +69,9 @@ export async function GET() {
 }
 
 async function sendAutoReply(messages: any[], visitorId: string) {
+    // Lazy initialize OpenAI only when needed (avoids build-time errors)
+    const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
+
     // Build conversation history for AI
     const conversationHistory: OpenAI.ChatCompletionMessageParam[] = messages.map((m) => ({
         role: m.isFromVisitor ? ("user" as const) : ("assistant" as const),
